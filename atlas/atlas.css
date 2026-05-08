@@ -115,6 +115,25 @@ a:hover {
   margin: 0;
 }
 
+/* A single quiet doorway under the intro. Same serif, accent colour
+   (already established in the palette as the deep burgundy used for
+   in-text links). No frame, no button, no animation — a placard line. */
+.invitation {
+  margin: 2rem 0 0;
+  font-family: var(--serif);
+  font-size: 1rem;
+}
+
+.invitation a {
+  color: var(--accent);
+}
+
+.invitation a:hover {
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  text-decoration-thickness: 1px;
+}
+
 /* World page content (rendered from the world's index.md) */
 
 .world-content {

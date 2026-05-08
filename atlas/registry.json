@@ -13,33 +13,35 @@
       "atlas_path": "/archive",
       "visibility": "featured",
       "status": "active",
+      "local_authoring": true,
       "tags": ["texts", "history", "religion", "editing"],
       "relationships": [],
       "depends_on": ["pdf-extractor"],
       "produces_for": [],
-      "notes": "v1 flagship world. Source folder is named 'Digital Archive'; public world name is 'Archive'. Finish in-flight migration."
+      "notes": "v1 flagship world. Source folder is named 'Digital Archive'; public world name is 'Archive'. Authoring has migrated to workspace-hub/archive/ (see workspace-hub/archive/SYNC.md). local_authoring=true tells sync_atlas.py to leave the destination canonical."
     },
     {
       "id": "language",
       "title": "Language",
-      "summary": "Scripts, sounds, and the shape of language.",
+      "summary": "An early study desk for sound, script, and language history.",
       "category": "world",
       "world": "language",
       "parent_id": null,
-      "source_path": "projects/language/Languages",
+      "source_path": "projects/language",
       "atlas_path": "/language",
       "visibility": "featured",
       "status": "active",
+      "local_authoring": true,
       "tags": ["linguistics", "writing-systems", "phonetics", "scripts"],
       "relationships": [],
       "depends_on": [],
       "produces_for": [],
-      "notes": "v1 flagship world. Opening view sourced from projects/language/Languages — verify scope per atlas_v1_plan §7 Q1."
+      "notes": "v1 flagship world. Authoring is canonical at projects/language/ (Phonos study desk, see PROJECT.md). Public-facing copy at workspace-hub/language/ is mirrored manually; local_authoring=true tells sync_atlas.py not to touch it."
     },
     {
       "id": "gods",
       "title": "Gods",
-      "summary": "Pantheons across cultures, set beside one another.",
+      "summary": "An early comparative archive of pantheons — gods set beside one another across time and place.",
       "category": "world",
       "world": "gods",
       "parent_id": null,
@@ -47,64 +49,64 @@
       "atlas_path": "/gods",
       "visibility": "featured",
       "status": "active",
+      "local_authoring": true,
       "tags": ["mythology", "religion", "cross-cultural", "pantheons"],
       "relationships": [],
       "depends_on": [],
       "produces_for": [],
-      "notes": "v1 flagship world. Already live at workspace-hub/gods/. Polish to Atlas visual standard in v1."
+      "notes": "v1 flagship world. The app and data live canonically at workspace-hub/gods/map/. The projects-side folder holds historical build scripts and the source for index.md only. local_authoring=true tells sync_atlas.py not to overwrite the deploy."
     },
     {
       "id": "arabic",
       "title": "Arabic",
-      "summary": "A close reading of Arabic — its script, sound, and grammar.",
+      "summary": "Short reading notes inside the Phonos language world.",
       "category": "subworld",
       "world": "language",
       "parent_id": "language",
-      "source_path": "projects/language/Arabic",
+      "source_path": "projects/language/arabic",
       "atlas_path": "/language/arabic",
       "visibility": "listed",
       "status": "active",
+      "local_authoring": true,
       "tags": ["arabic", "semitic", "script"],
-      "relationships": [
-        {"type": "uses-script", "target_id": "digital-symbols"}
-      ],
+      "relationships": [],
       "depends_on": [],
       "produces_for": [],
-      "notes": "Promote to standalone world if it outgrows the Language world."
+      "notes": "Lives inside the Phonos study desk as a journal page; not a standalone world."
     },
     {
       "id": "ipa",
       "title": "IPA",
-      "summary": "The International Phonetic Alphabet, laid out to be read and heard.",
+      "summary": "The IPA chart — currently the home page of the Phonos language world.",
       "category": "subworld",
       "world": "language",
       "parent_id": "language",
-      "source_path": "projects/language/IPA",
-      "atlas_path": "/language/ipa",
-      "visibility": "listed",
-      "status": "active",
+      "source_path": "projects/language",
+      "atlas_path": "/language",
+      "visibility": "hidden",
+      "status": "deferred",
       "tags": ["phonetics", "transcription", "ipa"],
       "relationships": [],
       "depends_on": [],
       "produces_for": [],
-      "notes": null
+      "notes": "The chart is not a separate subworld — it is the Phonos home. Entry kept for reference but hidden from sync; remove in a later registry cleanup."
     },
     {
       "id": "digital-symbols",
       "title": "Digital Symbols",
-      "summary": "Notes on the symbols we still use, and the ones we have not yet named.",
+      "summary": "Unicode / digital-symbols explorer — deferred.",
       "category": "subworld",
       "world": "language",
       "parent_id": "language",
-      "source_path": "projects/language/Digital Symbols",
+      "source_path": "projects/language/_archive",
       "atlas_path": "/language/digital-symbols",
-      "visibility": "listed",
-      "status": "draft",
+      "visibility": "hidden",
+      "status": "deferred",
       "tags": ["symbols", "scripts", "unicode"],
       "relationships": [],
       "depends_on": [],
       "produces_for": [],
-      "notes": "Scope pending per atlas_v1_plan §7 Q2 — subworld or resource. Status stays 'draft' until confirmed."
+      "notes": "Deferred per Phonos PROJECT.md §7. Not a v1 surface; entry kept for reference but hidden from sync."
     },
     {
       "id": "pdf-extractor",
@@ -122,6 +124,25 @@
       "depends_on": [],
       "produces_for": ["archive"],
       "notes": "Feeds Archive. Never public."
+    },
+    {
+      "id": "graph",
+      "title": "Graph",
+      "summary": "The texts of the Archive, seen as a single structural map.",
+      "category": "world",
+      "world": "graph",
+      "parent_id": null,
+      "source_path": "Atlas/examples",
+      "atlas_path": "/graph",
+      "visibility": "featured",
+      "status": "active",
+      "tags": ["atlas", "graph", "structure"],
+      "relationships": [
+        {"type": "reads-from", "target_id": "archive"}
+      ],
+      "depends_on": [],
+      "produces_for": [],
+      "notes": "Static export from Atlas core. Refresh by re-running the pipeline and copying the JSON via tools/sync_atlas_graph.py."
     }
   ]
 }

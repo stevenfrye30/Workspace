@@ -48,6 +48,13 @@
         var level = h[1].length;
         return "<h" + level + ">" + renderInline(h[2]) + "</h" + level + ">";
       }
+      var listLines = block.split(/\n/);
+      if (listLines.every(function (l) { return /^[-*]\s+/.test(l); })) {
+        var items = listLines.map(function (l) {
+          return "<li>" + renderInline(l.replace(/^[-*]\s+/, "")) + "</li>";
+        });
+        return "<ul>" + items.join("") + "</ul>";
+      }
       return "<p>" + renderInline(block.replace(/\n/g, " ")) + "</p>";
     }).filter(Boolean).join("\n");
   }
