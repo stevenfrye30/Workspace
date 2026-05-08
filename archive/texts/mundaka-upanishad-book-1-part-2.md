@@ -1,0 +1,46 @@
+---
+id: mundaka-upanishad-book-1-part-2
+title: "Mundaka Upanishad, Book 1, Part 2"
+summary: The Second Khanda of the First Mundaka — the Upanishad turns from the opening distinction between higher and lower knowledge to a sustained treatment of the lower side, cataloguing the form of Vedic sacrifice (the two portions of melted butter, the seven named flames of the fire, the auxiliary rites that must accompany the Agnihotra) before naming the sacrifices "frail boats" by which fools imagine they reach the highest good, and closing with the figure of the Brahmana who has examined the worlds gained by works, approaches a teacher with fuel in his hand, and is given the knowledge of Brahman.
+tradition: Hindu
+period: c. 4th–2nd c. BCE
+language: Sanskrit
+author: Anonymous
+part_of: upanishads
+tags: [knowledge, dialogue, sanskrit, upanishad]
+library_id: upanishads-muller-part2
+library_chapter: 5
+---
+
+# Mundaka Upanishad, Book 1, Part 2
+
+Book 1, Part 2 of the Mundaka Upanishad — the Second Khanda of the First Mundaka — continues the inquiry the First Khanda opened. Where the First Khanda named the two kinds of knowledge and listed the lower (the four Vedas and the six *vedangas*), the Second Khanda enters the lower side from within. The opening verses give the form of the Vedic sacrifice: the oblations offered between the two portions of melted butter when the flame flickers; the named flames of the fire — *Kali*, *Karali*, *Manogava*, *Sulohita*, *Sudhumravarna*, *Sphulingini*, and the brilliant *Visvarupi*; the auxiliary rites — new-moon and full-moon, the four-months' offerings, the harvest sacrifice, the Vaisvadeva, the entertainment of guests — without which the Agnihotra is held to be incomplete. From the catalogue the Khanda turns: the sacrifices, the eighteen, are frail boats; those who praise this as the highest good are subject again and again to old age and death; fools dwelling in darkness, wise in their own conceit, go round and round staggering to and fro, like blind men led by the blind. The Khanda closes with the figure of those who depart through the sun to the immortal Person — and with the Brahmana who, having examined all the worlds gained by works, comes with fuel in his hand to the teacher who is learned and dwells entirely in Brahman, and to whom the knowledge of Brahman is then truly told.
+
+## Context
+
+The Mundaka Upanishad is one of the principal (*mukhya*) Upanishads — a small group of texts traditionally received as the philosophical core of the late Vedic literature. It is associated with the Atharvaveda branch of the Vedic corpus and is composed in Sanskrit verse. Modern scholarship places its composition somewhat later than the Katha, in roughly the fourth to second century BCE; the principal Upanishads as a group are dated to the centuries on either side of the Buddha. The text is anonymous; the principal Upanishads are received in the tradition as *śruti*, the revealed Vedic literature, without identified authorship.
+
+Book 1, Part 2 is the second of the six parts of the Mundaka and continues directly from Book 1, Part 1. The First Khanda set the dialogic frame and named the two kinds of knowledge; the Second Khanda enters the lower knowledge in detail and tests it against its own claims. The pattern — first the careful listing, then the evaluative turn — is common to the Vedic-Upanishadic literature of this period: the older sacrificial procedure is not denied or set aside, but located, weighed, and given a place inside a larger teaching. The Khanda closes with the same gesture the First Khanda opened on: the inquirer comes with fuel in hand to a teacher, and the teaching of Brahman is given. The Second Mundaka, opening at the next Khanda, will then give that higher teaching.
+
+## Reading note
+
+Two habits help. First, the Khanda is built on the contrast between lasting and limited. The early verses describe the sacrifice in detail — the flames are named, the oblations placed, the auxiliary rites listed — and the closing verses then name what these works gain and what they do not. The works gain the height of heaven, the rewards of the ancestors, the worlds attainable through deeds; they do not gain the eternal, which is not made and cannot be reached by what is made. Reading the Khanda with attention to the recurring evaluative phrase — "frail boats," "fools dwelling in darkness," "considering sacrifice and good works as the best, these fools know no higher good" — and to where the language of "the eternal" begins to appear, recovers the form the teaching has.
+
+Second, the Khanda makes its distinction by listing rather than by argument. The eighteen sacrifices, the seven flames, the auxiliary rites required for the Agnihotra, the worlds gained by works — these are catalogued, and the catalogue itself sets the limit. The Khanda does not argue that ritual is wrong; it draws the boundary of what ritual reaches. Reading the verses as observation rather than polemic — the sacrificer arriving where the sacrifice carries him, and no further — keeps the form the Mundaka gives this part of its inquiry. The closing image of the Brahmana approaching the guru with fuel in his hand is the Khanda's answer to its own catalogue: it is the gesture of one who has examined the worlds-gained-by-works and seen what they do not gain.
+
+## The text
+
+The text is held in the Archive library under `upanishads-muller-part2`, chapter 5 (Müller translation, 1884 — *The Sacred Books of the East*, Volume XV; via SacredTexts.com). Library chapter 5 is shared across the Katha entries (Book 1, Part 3 and Book 2, Parts 1–3) and the Mundaka entries already in the Archive (Book 1, Part 1 at passages `5.77` through `5.89`); Book 1, Part 2 of the Mundaka — the entity here — occupies passages `5.90` through `5.105`. Passage `5.90` is the "Second Khanda" header; passages `5.91` through `5.105` carry the thirteen numbered verses of the Khanda, with verse 3 split across passages `5.93` and `5.94` and verse 12 split across passages `5.103` and `5.104` where Müller's footnotes interrupt the verses mid-line. Passage `5.106` is the "Second Mundaka" header that opens Book 2, Part 1 of the Mundaka and is not part of this entity. The library chapter continues past this entity into the rest of the Mundaka and the remaining Upanishads of the volume. Thirteen verses; about ten minutes' reading.
+
+## Related
+
+- **structural-parallel** → Bhagavad Gita, Chapter 4 (Jnana Karma Sanyasa Yoga) — paired Sanskrit passages on the relation between ritual sacrifice and knowledge; the Gita's Chapter 4 names a series of sacrifices — material, breath, sense-restraint, study, austerity — and closes with the line that the sacrifice of knowledge is greater than any material sacrifice and that all action complete in itself ends in knowledge (Gita 4.33), the Mundaka's Second Khanda lays out the same relation in the other direction, cataloguing the material sacrifice in detail before naming the boats as frail and turning the inquirer to the teacher who holds the knowledge.
+- **structural-parallel** → Bhagavad Gita, Chapter 3 (Karma Yoga) — paired passages on action and its limits; the Gita's Chapter 3 distinguishes prescribed action from action seeking its fruits and teaches how the obligatory may be performed without the binding consequence the Mundaka's Second Khanda names — those who consider sacrifice and good works as the best entering again the world or a lower one — both texts holding the same care for the form of the action and the same caution about the result that is taken to be its highest good.
+- **structural-parallel** → Dhammapada, Chapter 2 (Appamadavagga, Heedfulness) — paired short passages on the contrast between the heedful and the heedless; the Dhammapada's second chapter names the heedful as those who reach the deathless and the heedless as those who, though alive, are as if dead, the Mundaka's Second Khanda names "fools dwelling in darkness, wise in their own conceit" who go round and round like blind men led by the blind, and the wise who depart free from passion to the immortal Person — paired observations of the same divide held in close vocabulary across the two traditions.
+
+## Resources
+
+- **Translation (loaded).** F. Max Müller, *The Upanishads, Part II*, Sacred Books of the East, Volume XV (1884), public domain via [SacredTexts.com](https://sacred-texts.com/hin/sbe15/index.htm); the translation held in the Archive library. Müller's *Upanishads, Part I* (Volume I of the SBE, 1879) is also held under `upanishads-muller-part1`.
+- **Critical edition.** Patrick Olivelle, ed. and trans., *The Early Upanishads: Annotated Text and Translation* (Oxford University Press, 1998) — Sanskrit text with modern English translation and critical apparatus; the standard scholarly bilingual edition.
+- **Recommended translation upgrade.** Patrick Olivelle, *Upaniṣads*, Oxford World's Classics (Oxford University Press, 1996) — clear modern English with introduction and notes; the standard contemporary teaching translation.
+- **Commentary.** Signe Cohen, *Text and Authority in the Older Upaniṣads* (Brill, 2008) — the modern scholarly study of the Upanishadic text tradition, including the Mundaka.

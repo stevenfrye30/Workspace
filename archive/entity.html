@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Archive &mdash; Atlas</title>
+  <meta name="description" content="A small, careful archive of historical and religious texts, edited so they can be read.">
+  <link rel="stylesheet" href="../atlas/atlas.css">
+  <style>
+    /* Deep-link reading view styles. Scoped to entity.html; no
+       global atlas.css edits. All colours pulled from the existing
+       parchment palette so this never feels like a separate UI. */
+
+    /* Primary-text section. Distinct from Atlas commentary by a
+       quiet left-border accent and slightly tighter rhythm; nothing
+       loud — the verses are already typographically separated by
+       their bold leading numbers. The section wrapper is inserted
+       at runtime by groupPrimaryTextSection() so the markdown source
+       can stay pure. */
+    .primary-text {
+      border-left: 2px solid rgba(108, 46, 46, 0.18);
+      padding-left: 1.25rem;
+      margin: 1rem 0 2rem;
+    }
+    .primary-text > h2 {
+      margin-top: 0 !important;
+    }
+
+    /* Soft accent on the linked passage. Tint, not highlight. */
+    .passage-highlighted {
+      background: rgba(108, 46, 46, 0.06);
+      border-left: 3px solid var(--accent);
+      margin-left: -1.25rem;
+      padding-left: 1rem;
+    }
+
+    /* Tiny italic tag inserted into the highlighted passage:
+       "From graph · self-as-illusion". */
+    .passage-tag {
+      display: block;
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      font-style: italic;
+      letter-spacing: 0.02em;
+    }
+    .passage-tag a { color: var(--accent); }
+
+    /* Soft note shown when the locator's passage number cannot be
+       aligned with this archive text. Sits at the very top of the
+       article so the reader sees the situation immediately. */
+    .passage-note {
+      font-size: 0.85rem;
+      color: var(--muted);
+      font-style: italic;
+      margin: 0 0 1.5rem;
+      max-width: var(--measure);
+    }
+
+    /* Quiet card showing the structural neighbours of the linked
+       node. Sits between the title and the body. Same parchment
+       palette, no shadows, no animation. */
+    .graph-connections {
+      margin: 1.5rem 0 2.5rem;
+      padding: 0.85rem 1.25rem;
+      background: rgba(0, 0, 0, 0.025);
+      border: 1px solid var(--rule);
+      font-size: 0.95rem;
+      max-width: var(--measure);
+    }
+    .graph-connections h2 {
+      font-size: 0.72rem !important;
+      margin: 0 0 0.5rem !important;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .graph-connections ul { list-style: none; padding: 0; margin: 0; }
+    .graph-connections li {
+      margin: 0.3rem 0;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    .graph-connections .gc-rel  { color: var(--muted); margin-right: 0.4em; }
+    .graph-connections .gc-name { color: var(--ink); font-weight: 500; }
+    .graph-connections a.gc-link { color: inherit; }
+    .graph-connections a.gc-link:hover .gc-name { color: var(--accent); }
+    .graph-connections .gc-foot {
+      margin-top: 0.65rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+    }
+    .graph-connections .gc-foot a { color: var(--accent); }
+
+    /* Reverse bridge: this text -> graph nodes that it contributes to.
+       Plain vertical list, no card, no border — just small typed
+       metadata that lives at the head of the article. */
+    .text-contributors {
+      margin: 0.5rem 0 2rem;
+      max-width: var(--measure);
+    }
+    .text-contributors h2 {
+      font-size: 0.72rem !important;
+      margin: 0 0 0.4rem !important;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .text-contributors ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .text-contributors li {
+      margin: 0.15rem 0;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    .text-contributors a.tc-link    { color: inherit; }
+    .text-contributors a.tc-link:hover { color: var(--accent); }
+
+    /* Related concepts: graph-attached nodes that produced no in-text
+       evidence (no phrase grounding, no structural rule fire in the
+       primary text). Quieter than Contributes-to: smaller, more muted,
+       a single italic clarifying line. The reader can still follow
+       these out to the graph room, but the framing is honest about
+       the absence of in-verse support. */
+    .text-related-concepts {
+      margin: 0.25rem 0 2rem;
+      max-width: var(--measure);
+    }
+    .text-related-concepts h2 {
+      font-size: 0.72rem !important;
+      margin: 0 0 0.3rem !important;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .text-related-concepts .trc-note {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      margin: 0 0 0.45rem;
+      line-height: 1.45;
+    }
+    .text-related-concepts ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .text-related-concepts li {
+      margin: 0.1rem 0;
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .text-related-concepts a.trc-link {
+      color: inherit;
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(108, 46, 46, 0.20);
+    }
+    .text-related-concepts a.trc-link:hover {
+      color: var(--accent);
+    }
+
+    /* Phrase-level grounding. The static .grounding span is invisible —
+       the rendered text reads exactly as it always did. The accent
+       treatment is opt-in: applied when the page is opened with
+       ?node=<id> (grounding-active) or when the user hovers a node
+       link in the connections / contributors panels (grounding-flash).
+       Both are deliberately quieter than the passage highlight: a
+       faint accent tint on the substring, with a 1-px accent
+       underline. Never yellow, never animated, never stacked. */
+    .grounding {
+      /* No default visual. */
+    }
+    .grounding.grounding-active,
+    .grounding.grounding-flash {
+      background: rgba(108, 46, 46, 0.10);
+      border-bottom: 1px solid rgba(108, 46, 46, 0.40);
+      padding: 0 0.05em;
+      border-radius: 1px;
+    }
+
+    /* Structural grounding: shown only for contributors whose phrase
+       grounding came up empty AND for which a hand-written rule yields
+       at least one evidence sentence. Same parchment palette as the
+       graph-connections card; an italic blockquote-style border on the
+       evidence line marks it as a verbatim pull from the body. */
+    .text-grounding {
+      margin: 1.5rem 0 2.5rem;
+      padding: 0.85rem 1.25rem;
+      background: rgba(0, 0, 0, 0.025);
+      border: 1px solid var(--rule);
+      font-size: 0.95rem;
+      max-width: var(--measure);
+    }
+    .text-grounding h2 {
+      font-size: 0.72rem !important;
+      margin: 0 0 0.6rem !important;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .tg-node {
+      margin: 0.6rem 0 0.9rem;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px dashed var(--rule);
+    }
+    .tg-node:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+      margin-bottom: 0;
+    }
+    .tg-name {
+      display: inline-block;
+      color: var(--ink);
+      font-weight: 500;
+      font-size: 0.98rem;
+      margin-bottom: 0.4rem;
+      text-decoration: none;
+    }
+    .tg-name:hover { color: var(--accent); }
+    .tg-evidence {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 0.45rem;
+    }
+    .tg-evidence li {
+      margin: 0.25rem 0;
+      padding-left: 0.9rem;
+      border-left: 2px solid rgba(108, 46, 46, 0.20);
+      color: var(--ink-soft);
+      font-style: italic;
+      line-height: 1.55;
+    }
+    .tg-explain {
+      margin: 0.35rem 0 0;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.55;
+    }
+
+    /* Sentence-level interaction (currently scoped to dhammapada-3).
+       Static .sentence wrappers are visually invisible — they exist
+       only to give the click handler a target. .sentence-supportive
+       is the gentle hint that a sentence has graph contributors:
+       cursor pointer + a near-imperceptible hover tint. .sentence-
+       expansion is the inline footnote that appears below a clicked
+       sentence; it's a span with display:block so the paragraph can
+       legally contain it. */
+    .sentence {
+      cursor: default;
+    }
+    .sentence-supportive {
+      cursor: pointer;
+    }
+    .sentence-supportive:hover {
+      background: rgba(108, 46, 46, 0.035);
+    }
+    /* Node-to-sentence highlight. Triggered by clicking a node link
+       in the Contributes-to / Graph-connections / structural-grounding
+       panels. Slightly stronger than the .sentence-supportive hover
+       tint, but well below .grounding-active so a phrase span inside
+       still reads through. Source order matters: this rule sits after
+       :hover so it wins when both apply. */
+    .sentence.sentence-active {
+      background: rgba(108, 46, 46, 0.06);
+      border-radius: 1px;
+    }
+    .sentence.sentence-active.sentence-supportive:hover {
+      background: rgba(108, 46, 46, 0.08);
+    }
+    .sentence-expansion {
+      display: block;
+      margin: 0.35rem 0 0.6rem;
+      padding-left: 1rem;
+      border-left: 2px solid rgba(108, 46, 46, 0.18);
+      font-size: 0.82rem;
+      font-style: italic;
+      color: var(--muted);
+      line-height: 1.5;
+      letter-spacing: 0.01em;
+    }
+    .sentence-expansion .se-label {
+      color: var(--muted);
+      margin-right: 0.4em;
+    }
+    .sentence-expansion .se-link {
+      color: var(--ink-soft);
+      text-decoration: none;
+      border-bottom: 1px dotted rgba(108, 46, 46, 0.30);
+      font-style: normal;
+    }
+    .sentence-expansion .se-link:hover {
+      color: var(--accent);
+    }
+    .sentence-expansion .se-sep {
+      color: var(--muted);
+      margin: 0 0.25em;
+    }
+  </style>
+</head>
+<body>
+  <header class="atlas-header">
+    <nav class="atlas-nav" aria-label="Primary">
+      <a class="brand" href="../">Atlas</a>
+      <ul class="worlds-nav" id="worlds-nav" aria-label="Worlds"></ul>
+    </nav>
+  </header>
+
+  <main class="atlas-main">
+    <article class="world-content" id="world-content"></article>
+  </main>
+
+  <footer class="atlas-footer">
+    <p>Atlas &mdash; built slowly, read slowly.</p>
+  </footer>
+
+  <script src="../atlas/atlas.js"></script>
+  <script>
+    /*
+     * Deep-link format (all extensions are optional — entity.html
+     * still works with just `?id=`):
+     *
+     *   entity.html
+     *     ?id=<text-id>
+     *     &node=<node-id>          (graph node, drives the connections panel)
+     *     &locator=<corpus-locator> (drives the passage scroll/highlight)
+     *
+     * Passage anchors are derived from the locator suffix:
+     *   "buddhist/dhammapada-3:2"  ->  passage 2  ->  #passage-2
+     *
+     * Anchors are assigned to top-level children of #world-content
+     * after markdown render (1-indexed). When the archive text and
+     * the source corpus don't share a numbering scheme, the anchor
+     * may not align with the semantically right block; in that case
+     * we drop a soft note at the top rather than fabricate a match.
+     *
+     * Reverse bridge:
+     *   Even on a plain `?id=<text-id>` URL we fetch the graph and
+     *   mapping so we can render a small "CONTRIBUTES TO" list of
+     *   every node whose corpus_locators map to this text. Each
+     *   entry links back to ../graph/?node=<id>. The list is
+     *   suppressed entirely when there are no contributors or when
+     *   the graph data can't be loaded.
+     *
+     * Phrase-level grounding (this layer):
+     *   We additionally fetch ../graph/node_phrases.json — the literal
+     *   trigger phrases each MotifRule looked for. For every node
+     *   listed in the contributors set, every occurrence of one of its
+     *   phrases inside the article is wrapped in a tiny
+     *   <span class="grounding" data-node-id="X">. Static state is
+     *   invisible. When ?node=X is in the URL we apply
+     *   .grounding-active to those spans (subtle accent tint), and
+     *   hovering a node link in the connections / contributors panels
+     *   flashes the matching spans via .grounding-flash. The locator
+     *   format is unchanged — we don't fabricate sentence indices we
+     *   can't honestly source. The honest unit is the phrase itself.
+     */
+
+    (function () {
+      var params = new URLSearchParams(location.search);
+      var id = params.get("id");
+      var nodeId = params.get("node");
+      var locator = params.get("locator");
+      var target = document.getElementById("world-content");
+
+      if (!id || !/^[a-z0-9-]+$/.test(id)) {
+        target.innerHTML = '<p class="atlas-error">No entity selected.</p>';
+        return;
+      }
+
+      // ---------- helpers ----------
+
+      function escapeHtml(s) {
+        return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+          return { "&":"&amp;", "<":"&lt;", ">":"&gt;",
+                   '"':"&quot;", "'":"&#39;" }[c];
+        });
+      }
+
+      function passageNumberFromLocator(loc) {
+        if (!loc || typeof loc !== "string") return null;
+        var i = loc.indexOf(":");
+        if (i < 0) return null;
+        var n = parseInt(loc.slice(i + 1), 10);
+        return isFinite(n) && n > 0 ? n : null;
+      }
+
+      // Number every top-level child of the article (1-indexed) so a
+      // locator-driven scroll has a stable anchor to land on. Skip
+      // anything that already carries an id (e.g. inserted panels).
+      function numberPassages(article) {
+        var n = 0;
+        var children = article.children;
+        for (var i = 0; i < children.length; i++) {
+          var el = children[i];
+          if (el.classList.contains("graph-connections")) continue;
+          if (el.classList.contains("passage-note")) continue;
+          n += 1;
+          if (!el.id) el.id = "passage-" + n;
+        }
+        return n;
+      }
+
+      // Walk the graph for the selected node's edges. Return a
+      // verb-grouped map ready for rendering. Verbs respect direction
+      // for asymmetric edge types; symmetric types get a single verb.
+      function collectConnections(graph, nodeId) {
+        var byId = {};
+        graph.nodes.forEach(function (n) { byId[n.id] = n; });
+        var center = byId[nodeId];
+        if (!center) return null;
+
+        var groups = {};
+        function add(label, other) {
+          if (!other) return;
+          (groups[label] = groups[label] || []).push(other);
+        }
+
+        graph.edges.forEach(function (e) {
+          if (e.source !== nodeId && e.target !== nodeId) return;
+          var isSrc = e.source === nodeId;
+          var other = byId[isSrc ? e.target : e.source];
+          switch (e.type) {
+            case "contradiction":      add("Contradicts",     other); break;
+            case "equivalence":        add("Equivalent to",   other); break;
+            case "functional-overlap": add("Overlaps with",   other); break;
+            case "inversion":
+              add(isSrc ? "Inverts" : "Inverted by", other); break;
+            case "hierarchical-refinement":
+              add(isSrc ? "Grounds" : "Grounded by", other); break;
+            case "causal-dependency":
+              add(isSrc ? "Causes"  : "Arises from", other); break;
+            default:                   add("Related to",      other);
+          }
+        });
+        return { center: center, groups: groups };
+      }
+
+      // Build a quiet link to the OTHER node's reading view, using
+      // the same node-to-archive mapping the Graph room uses. If no
+      // mapping exists for any of that node's locators, return plain
+      // text so the connections panel never offers a broken link.
+      // The `data-node-id` lets the grounding-hover handler find this
+      // link without needing to parse its href.
+      function connectionLink(other, mapping) {
+        var text = other.subtype || other.id;
+        var nameSpan = '<span class="gc-name">' + escapeHtml(text) + "</span>";
+        var nodeAttr = ' data-node-id="' + escapeHtml(other.id) + '"';
+        if (!mapping) {
+          return '<span class="gc-link"' + nodeAttr + '>' + nameSpan + "</span>";
+        }
+        var locs = other.corpus_locators || [];
+        for (var i = 0; i < locs.length; i++) {
+          var loc = String(locs[i]);
+          var base = loc.split(":")[0];
+          if (mapping[base]) {
+            var href =
+              "entity.html" +
+              "?id=" + encodeURIComponent(mapping[base]) +
+              "&node=" + encodeURIComponent(other.id) +
+              "&locator=" + encodeURIComponent(loc);
+            return '<a class="gc-link" href="' + href + '"' + nodeAttr + '>' +
+                   nameSpan + "</a>";
+          }
+        }
+        return '<span class="gc-link"' + nodeAttr + '>' + nameSpan + "</span>";
+      }
+
+      function renderConnections(article, conn, mapping) {
+        if (!conn || !Object.keys(conn.groups).length) return;
+        var html = '<aside class="graph-connections" aria-label="Graph connections">';
+        html += '<h2>Graph connections &mdash; ' +
+                escapeHtml(conn.center.subtype || conn.center.id) + '</h2>';
+        html += '<ul>';
+        Object.keys(conn.groups).forEach(function (rel) {
+          conn.groups[rel].forEach(function (other) {
+            html += '<li>' +
+              '<span class="gc-rel">' + escapeHtml(rel) + ':</span>' +
+              ' ' + connectionLink(other, mapping) +
+              '</li>';
+          });
+        });
+        html += '</ul>';
+        html += '<p class="gc-foot">Open the ' +
+                '<a href="../graph/">Graph</a> for the full structural map.</p>';
+        html += '</aside>';
+
+        // Insert after the article's first heading if there is one,
+        // so the reader sees title -> connections -> body.
+        var firstHeading = article.querySelector("h1, h2");
+        var wrap = document.createElement("div");
+        wrap.innerHTML = html;
+        var card = wrap.firstChild;
+        if (firstHeading && firstHeading.nextSibling) {
+          article.insertBefore(card, firstHeading.nextSibling);
+        } else {
+          article.insertBefore(card, article.firstChild);
+        }
+      }
+
+      // Reverse index: every node whose corpus_locators include any
+      // base that maps (via node_to_archive.json) to this text's id.
+      // One match is enough; alphabetical by subtype for a calm,
+      // deterministic order.
+      function collectContributors(graph, mapping, textId) {
+        if (!graph || !mapping) return [];
+        var out = [];
+        graph.nodes.forEach(function (n) {
+          var locs = n.corpus_locators || [];
+          for (var i = 0; i < locs.length; i++) {
+            var base = String(locs[i]).split(":")[0];
+            if (mapping[base] === textId) {
+              out.push(n);
+              return;
+            }
+          }
+        });
+        out.sort(function (a, b) {
+          var aKey = (a.subtype || a.id);
+          var bKey = (b.subtype || b.id);
+          return aKey.localeCompare(bKey);
+        });
+        return out;
+      }
+
+      // Render the small "CONTRIBUTES TO" list. Inserted after the
+      // connections panel if present, otherwise after the article's
+      // first heading. Suppressed entirely when the list is empty.
+      function renderContributors(article, contributors) {
+        if (!contributors || !contributors.length) return;
+        var html = '<aside class="text-contributors" aria-label="Graph contributions">';
+        html += '<h2>Contributes to</h2>';
+        html += '<ul>';
+        contributors.forEach(function (n) {
+          var label = escapeHtml(n.subtype || n.id);
+          var href = "../graph/?node=" + encodeURIComponent(n.id);
+          // data-node-id powers the grounding-flash hover behaviour.
+          html += '<li><a class="tc-link" href="' + href + '"' +
+                  ' data-node-id="' + escapeHtml(n.id) + '">' +
+                  label + "</a></li>";
+        });
+        html += '</ul>';
+        html += '</aside>';
+
+        var wrap = document.createElement("div");
+        wrap.innerHTML = html;
+        var card = wrap.firstChild;
+
+        // Prefer "after the connections panel" so the order reads
+        // title -> connections -> contributes-to -> body. Fall back
+        // to "after the first heading" when no connections panel
+        // was rendered.
+        var connPanel = article.querySelector(".graph-connections");
+        if (connPanel) {
+          if (connPanel.nextSibling) {
+            article.insertBefore(card, connPanel.nextSibling);
+          } else {
+            article.appendChild(card);
+          }
+          return;
+        }
+        var firstHeading = article.querySelector("h1, h2");
+        if (firstHeading && firstHeading.nextSibling) {
+          article.insertBefore(card, firstHeading.nextSibling);
+        } else {
+          article.insertBefore(card, article.firstChild);
+        }
+      }
+
+      // Render the "Related concepts" panel for nodes whose corpus
+      // locator maps to this text but which produced no in-text
+      // evidence (Tier E per the Archive contribution-validity policy).
+      // The panel is visually quieter than Contributes-to and carries
+      // an explicit one-line note. Each link goes straight to the
+      // graph room — these nodes are deliberately NOT wired into the
+      // sentence-highlight or grounding-hover handlers (the .trc-link
+      // class is intentionally outside their selectors), because there
+      // are no spans or sentences to highlight.
+      function renderRelatedConcepts(article, related) {
+        if (!related || !related.length) return;
+        var html = '<aside class="text-related-concepts" aria-label="Related concepts">';
+        html += '<h2>Related concepts</h2>';
+        html += '<p class="trc-note">Linked in the broader graph; ' +
+                'not directly supported in these verses.</p>';
+        html += '<ul>';
+        related.forEach(function (n) {
+          var label = escapeHtml(n.subtype || n.id);
+          var href = "../graph/?node=" + encodeURIComponent(n.id);
+          html += '<li><a class="trc-link" href="' + href + '"' +
+                  ' data-node-id="' + escapeHtml(n.id) + '">' +
+                  label + "</a></li>";
+        });
+        html += '</ul>';
+        html += '</aside>';
+
+        var wrap = document.createElement("div");
+        wrap.innerHTML = html;
+        var card = wrap.firstChild;
+
+        // Insert after the structural-grounding card if present,
+        // else after Contributes-to, else after Graph-connections,
+        // else after the first heading. Final document order reads
+        // title -> connections -> contributes-to -> grounding-card
+        // -> related-concepts -> body.
+        var anchor = article.querySelector(".text-grounding") ||
+                     article.querySelector(".text-contributors") ||
+                     article.querySelector(".graph-connections");
+        if (anchor) {
+          if (anchor.nextSibling) {
+            article.insertBefore(card, anchor.nextSibling);
+          } else {
+            article.appendChild(card);
+          }
+          return;
+        }
+        var firstHeading = article.querySelector("h1, h2");
+        if (firstHeading && firstHeading.nextSibling) {
+          article.insertBefore(card, firstHeading.nextSibling);
+        } else {
+          article.insertBefore(card, article.firstChild);
+        }
+      }
+
+      // Walk every text node under `root`, skipping the obvious
+       // non-prose containers (headings, code, the inserted panels)
+       // so we never wrap titles or rule out trigger words inside
+       // panel chrome.
+      function eachTextNode(root, fn) {
+        var EXCLUDE = ".graph-connections, .text-contributors, " +
+                      ".text-related-concepts, " +
+                      "h1, h2, h3, h4, h5, h6, code, pre";
+        var walker = document.createTreeWalker(
+          root, NodeFilter.SHOW_TEXT, {
+            acceptNode: function (node) {
+              if (!node.parentElement) return NodeFilter.FILTER_REJECT;
+              if (node.parentElement.closest(EXCLUDE)) return NodeFilter.FILTER_REJECT;
+              if (node.parentElement.classList &&
+                  node.parentElement.classList.contains("grounding")) {
+                return NodeFilter.FILTER_REJECT;
+              }
+              return NodeFilter.FILTER_ACCEPT;
+            }
+          }
+        );
+        // Snapshot first, since splitting a text node mutates the tree
+        // and would confuse the walker mid-iteration.
+        var nodes = [];
+        while (walker.nextNode()) nodes.push(walker.currentNode);
+        nodes.forEach(fn);
+      }
+
+      // Replace the first occurrence of `phrase` (case-insensitive)
+      // inside `textNode` with a <span class="grounding"> wrapping it.
+      // Returns whatever text-node trails after the wrap, so callers
+      // can keep matching inside that remainder.
+      function wrapFirstMatch(textNode, phrase, nodeId) {
+        var text = textNode.nodeValue;
+        var idx = text.toLowerCase().indexOf(phrase.toLowerCase());
+        if (idx < 0) return null;
+        var match = text.slice(idx, idx + phrase.length);
+        var before = text.slice(0, idx);
+        var after = text.slice(idx + phrase.length);
+        var span = document.createElement("span");
+        span.className = "grounding";
+        span.setAttribute("data-node-id", nodeId);
+        span.textContent = match;
+        var parent = textNode.parentNode;
+        if (before) parent.insertBefore(document.createTextNode(before), textNode);
+        parent.insertBefore(span, textNode);
+        var trailing = null;
+        if (after) {
+          trailing = document.createTextNode(after);
+          parent.insertBefore(trailing, textNode);
+        }
+        parent.removeChild(textNode);
+        return trailing;
+      }
+
+      // Wrap every occurrence of every contributor's trigger phrases.
+      // Longer phrases first so that "no permanent self" gets wrapped
+      // before its substring "non-self" can swallow it. Multiple
+      // wraps for the same node id in the same paragraph are fine —
+      // each becomes its own <span>.
+      function wrapGroundings(article, contributors, phrases) {
+        if (!phrases || !contributors || !contributors.length) return 0;
+        var pairs = [];
+        contributors.forEach(function (n) {
+          var arr = phrases[n.id];
+          if (!arr || !arr.length) return;
+          // Each entry is either a plain string (legacy format) or a
+          // {phrase, tier, confidence} object (tiered format from
+          // sync_node_phrases.py). The grounding wrapper only needs
+          // the phrase itself; tier/confidence are reserved for a
+          // future filter UI.
+          arr.forEach(function (p) {
+            var phrase = (typeof p === "string")
+              ? p
+              : (p && typeof p.phrase === "string" ? p.phrase : null);
+            if (phrase) pairs.push([n.id, phrase]);
+          });
+        });
+        pairs.sort(function (a, b) { return b[1].length - a[1].length; });
+
+        // Scope to .primary-text when the entry has been migrated to
+        // the Archive Source Integrity Standard, so phrase grounding
+        // never lands on Atlas commentary. Fall back to whole-article
+        // for entries that haven't been migrated yet.
+        var root = article.querySelector(".primary-text") || article;
+
+        var wrapped = 0;
+        pairs.forEach(function (pair) {
+          var nodeId = pair[0], phrase = pair[1];
+          // Iterate fresh: each wrap mutates the tree.
+          eachTextNode(root, function (tn) {
+            // Bail early if this text node is now detached.
+            if (!tn.parentNode) return;
+            var trailing = tn;
+            // Re-walk the trailing chunk so we catch repeats in the
+            // same original text node ("non-self" appears twice in
+            // a verse).
+            while (trailing) {
+              trailing = wrapFirstMatch(trailing, phrase, nodeId);
+              if (trailing) wrapped += 1;
+            }
+          });
+          if (pairs.indexOf(pair) === 0) wrapped += 1;  // first match counts
+        });
+        // We don't trust the inner counter exactly (the early
+        // increment is fragile); just return total span count.
+        return article.querySelectorAll(".grounding").length;
+      }
+
+      function activateGroundings(article, nodeId) {
+        var spans = article.querySelectorAll(
+          '.grounding[data-node-id="' + cssEscape(nodeId) + '"]'
+        );
+        spans.forEach(function (s) { s.classList.add("grounding-active"); });
+        return spans.length > 0;
+      }
+
+      function scrollToFirstGrounding(article, nodeId) {
+        var first = article.querySelector(
+          '.grounding[data-node-id="' + cssEscape(nodeId) + '"]'
+        );
+        if (!first) return false;
+        setTimeout(function () {
+          first.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 60);
+        return true;
+      }
+
+      // Modest CSS-selector escape for our id format (letters / digits /
+      // hyphens). CSS.escape isn't universally polyfilled.
+      function cssEscape(s) {
+        return String(s).replace(/[^a-zA-Z0-9_-]/g, function (c) {
+          return "\\" + c;
+        });
+      }
+
+      // Hover wiring: pointing at a node link in either the
+      // connections panel (.gc-link) or the contributors list
+      // (.tc-link) flashes that node's grounding spans. Idempotent —
+      // mouseout removes everything we added.
+      function wireGroundingHover() {
+        document.addEventListener("mouseover", function (e) {
+          var el = e.target.closest && e.target.closest(".gc-link, .tc-link");
+          if (!el) return;
+          var nid = el.getAttribute("data-node-id");
+          if (!nid) return;
+          document.querySelectorAll(
+            '.grounding[data-node-id="' + cssEscape(nid) + '"]'
+          ).forEach(function (s) { s.classList.add("grounding-flash"); });
+        });
+        document.addEventListener("mouseout", function (e) {
+          var el = e.target.closest && e.target.closest(".gc-link, .tc-link");
+          if (!el) return;
+          document.querySelectorAll(".grounding-flash")
+            .forEach(function (s) { s.classList.remove("grounding-flash"); });
+        });
+      }
+
+      // Wrap the Primary Text section in a <section class="primary-text">
+      // so downstream layers can scope themselves to the actual source
+      // text rather than Atlas commentary. The trigger is an H2 whose
+      // trimmed text is "primary text" (case-insensitive); we move
+      // that H2 plus every following sibling up to the next H2 into
+      // the section. No-op when the article doesn't carry a Primary
+      // Text heading — other archive entries continue to render as
+      // before.
+      function groupPrimaryTextSection(article) {
+        var existing = article.querySelector(".primary-text");
+        if (existing) return existing;
+        var heads = article.querySelectorAll("h2");
+        var startH2 = null;
+        for (var i = 0; i < heads.length; i++) {
+          var t = (heads[i].textContent || "").trim().toLowerCase();
+          if (t === "primary text") { startH2 = heads[i]; break; }
+        }
+        if (!startH2) return null;
+
+        var section = document.createElement("section");
+        section.className = "primary-text";
+        startH2.parentNode.insertBefore(section, startH2);
+
+        var node = startH2;
+        while (node) {
+          var next = node.nextSibling;
+          if (node !== startH2 &&
+              node.nodeType === Node.ELEMENT_NODE &&
+              node.tagName === "H2") {
+            break;
+          }
+          section.appendChild(node);
+          node = next;
+        }
+        return section;
+      }
+
+      // Collect the article's rendered prose as a single string,
+      // skipping inserted panels, headings, and code so we never quote
+      // chrome or section titles back as "evidence." Joining with a
+      // single space is enough — block boundaries are lost, but the
+      // sentence splitter below recovers reasonable units.
+      //
+      // When a .primary-text section exists, we narrow the walk to
+      // it. This keeps Atlas commentary (Atlas notes, Context, Reading
+      // note) out of the structural-grounding evidence pool, so the
+      // matcher pulls from verses rather than from our own framing.
+      function collectProseText(article) {
+        var root = article.querySelector(".primary-text") || article;
+        var EXCLUDE = ".graph-connections, .text-contributors, " +
+                      ".text-grounding, .passage-note, " +
+                      "h1, h2, h3, h4, h5, h6, code, pre";
+        var pieces = [];
+        var walker = document.createTreeWalker(
+          root, NodeFilter.SHOW_TEXT, {
+            acceptNode: function (node) {
+              if (!node.parentElement) return NodeFilter.FILTER_REJECT;
+              if (node.parentElement.closest(EXCLUDE)) return NodeFilter.FILTER_REJECT;
+              return NodeFilter.FILTER_ACCEPT;
+            }
+          }
+        );
+        while (walker.nextNode()) pieces.push(walker.currentNode.nodeValue);
+        return pieces.join(" ");
+      }
+
+      // Split prose into sentence-shaped units. Splitting on sentence-
+      // ending punctuation followed by whitespace and a capital/quote
+      // is enough for the source register (Müller 1881, modern editorial
+      // prose). Drop empties and leading/trailing whitespace.
+      function splitSentences(text) {
+        if (!text) return [];
+        var compact = String(text).replace(/\s+/g, " ").trim();
+        if (!compact) return [];
+        // Require a letter immediately before the sentence-ending
+        // punctuation so verse-number patterns like "33." don't split
+        // off as their own sentence inside a paragraph.
+        var raw = compact.split(/(?<=[a-zA-Z][.!?])\s+(?=["'A-Z])/);
+        var out = [];
+        for (var i = 0; i < raw.length; i++) {
+          var s = raw[i].trim();
+          if (s.length > 0) out.push(s);
+        }
+        return out;
+      }
+
+      // A sentence counts as evidence for a rule when it contains at
+      // least one primary keyword AND at least one secondary keyword
+      // (case-insensitive substring). Order is preserved (document
+      // order); the first `max_evidence` matches win.
+      function matchEvidenceSentences(sentences, rule) {
+        var primary = (rule.primary || []).map(function (s) { return String(s).toLowerCase(); });
+        var secondary = (rule.secondary || []).map(function (s) { return String(s).toLowerCase(); });
+        if (!primary.length || !secondary.length) return [];
+        var max = (typeof rule.max_evidence === "number" && rule.max_evidence > 0)
+          ? rule.max_evidence : 2;
+        var out = [];
+        for (var i = 0; i < sentences.length; i++) {
+          var lc = sentences[i].toLowerCase();
+          var hasP = false, hasS = false;
+          for (var j = 0; j < primary.length; j++) {
+            if (lc.indexOf(primary[j]) >= 0) { hasP = true; break; }
+          }
+          if (!hasP) continue;
+          for (var k = 0; k < secondary.length; k++) {
+            if (lc.indexOf(secondary[k]) >= 0) { hasS = true; break; }
+          }
+          if (hasP && hasS) {
+            out.push(sentences[i]);
+            if (out.length >= max) break;
+          }
+        }
+        return out;
+      }
+
+      // Set of node ids that already have at least one phrase-grounding
+      // span in the rendered article. Used to gate structural grounding
+      // — phrase grounding is the more specific layer, so when it has
+      // already spoken for a node we stay silent.
+      //
+      // Scoped to .primary-text when present so a phrase that fires
+      // only in commentary doesn't suppress a structural-grounding
+      // card that would have shown legitimate verse-level evidence.
+      function nodeIdsWithPhraseGrounding(article) {
+        var root = article.querySelector(".primary-text") || article;
+        var set = {};
+        root.querySelectorAll(".grounding[data-node-id]").forEach(function (s) {
+          set[s.getAttribute("data-node-id")] = true;
+        });
+        return set;
+      }
+
+      // Set of node ids whose structural-grounding rule produces at least
+      // one evidence sentence in the primary-text section. Reuses the
+      // same matchEvidenceSentences logic that renderStructuralGrounding
+      // uses for the evidence card; we just collect ids instead of
+      // formatting a card. Used by the Stage-1 tiering pass to decide
+      // which contributors carry real in-text support (Tier B).
+      function nodeIdsWithStructuralEvidence(article, contributors, rules) {
+        var set = {};
+        if (!contributors || !contributors.length || !rules) return set;
+        var prose = collectProseText(article);
+        var sentences = splitSentences(prose);
+        if (!sentences.length) return set;
+        contributors.forEach(function (n) {
+          var rule = rules[n.id];
+          if (!rule) return;
+          var ev = matchEvidenceSentences(sentences, rule);
+          if (ev && ev.length > 0) set[n.id] = true;
+        });
+        return set;
+      }
+
+      // Render the "Why this text contributes" card. Each entry shows
+      // the node's subtype as a link to the Graph room, up to two
+      // verbatim evidence sentences, and a one-line structural
+      // explanation. The whole card is suppressed when no contributor
+      // produces evidence — honest absence over decorative summary.
+      function renderStructuralGrounding(article, contributors, rules, phraseSet) {
+        if (!contributors || !contributors.length || !rules) return;
+        var prose = collectProseText(article);
+        var sentences = splitSentences(prose);
+        if (!sentences.length) return;
+
+        var entries = [];
+        contributors.forEach(function (n) {
+          if (phraseSet[n.id]) return;
+          var rule = rules[n.id];
+          if (!rule) return;
+          var ev = matchEvidenceSentences(sentences, rule);
+          if (!ev.length) return;
+          entries.push({
+            node: n,
+            label: rule.label || (n.subtype || n.id),
+            evidence: ev,
+            explanation: rule.explanation || ""
+          });
+        });
+        if (!entries.length) return;
+
+        var html = '<aside class="text-grounding" aria-label="Structural grounding">';
+        html += '<h2>Why this text contributes</h2>';
+        entries.forEach(function (e) {
+          var href = "../graph/?node=" + encodeURIComponent(e.node.id);
+          html += '<div class="tg-node">';
+          html += '<a class="tg-name" href="' + href + '"' +
+                  ' data-node-id="' + escapeHtml(e.node.id) + '">' +
+                  escapeHtml(e.label) + '</a>';
+          html += '<ul class="tg-evidence">';
+          e.evidence.forEach(function (s) {
+            html += '<li>&ldquo;' + escapeHtml(s) + '&rdquo;</li>';
+          });
+          html += '</ul>';
+          if (e.explanation) {
+            html += '<p class="tg-explain">' + escapeHtml(e.explanation) + '</p>';
+          }
+          html += '</div>';
+        });
+        html += '</aside>';
+
+        var wrap = document.createElement("div");
+        wrap.innerHTML = html;
+        var card = wrap.firstChild;
+
+        // Insert order: title -> connections -> contributes-to ->
+        // structural-grounding -> body. Anchor to the deepest of those
+        // panels we actually rendered; fall back to the first heading.
+        var anchor = article.querySelector(".text-contributors") ||
+                     article.querySelector(".graph-connections");
+        if (anchor) {
+          if (anchor.nextSibling) {
+            article.insertBefore(card, anchor.nextSibling);
+          } else {
+            article.appendChild(card);
+          }
+          return;
+        }
+        var firstHeading = article.querySelector("h1, h2");
+        if (firstHeading && firstHeading.nextSibling) {
+          article.insertBefore(card, firstHeading.nextSibling);
+        } else {
+          article.insertBefore(card, article.firstChild);
+        }
+      }
+
+      // ---------- sentence-level interaction (scoped) ----------
+      //
+      // Wrap each sentence in <span class="sentence" data-sentence-
+      // index="N">. We split text-by-text inside paragraph-shaped
+      // blocks (currently <p> only — list items in Related/Resources
+      // stay un-wrapped to keep this minimal). Sentence boundaries
+      // mirror splitSentences: punctuation + whitespace + capital/
+      // quote. Whitespace between sentences stays as bare text nodes
+      // OUTSIDE the wrappers so the rendered prose reads identically
+      // to before. Inline children (<em>, <a>) attach to whichever
+      // sentence is currently being collected.
+
+      function wrapSentencesInArticle(article) {
+        // Prefer .primary-text scope so sentence interactions land on
+        // the source verses rather than Atlas commentary. Falls back
+        // to the whole article for archive entries that haven't been
+        // restructured yet.
+        var root = article.querySelector(".primary-text") || article;
+        var EXCLUDE = ".graph-connections, .text-contributors, " +
+                      ".text-grounding, .passage-note";
+        var blocks = root.querySelectorAll("p");
+        var idx = 0;
+        for (var i = 0; i < blocks.length; i++) {
+          var p = blocks[i];
+          if (p.closest(EXCLUDE)) continue;
+          idx = wrapSentencesInBlock(p, idx);
+        }
+        return idx;
+      }
+
+      function wrapSentencesInBlock(block, startIndex) {
+        var children = Array.prototype.slice.call(block.childNodes);
+        // sentences: array of segments. Each segment is either
+        //   { kind: "sentence", nodes: [...], hasContent: bool }
+        // or
+        //   { kind: "between", nodes: [...] }
+        // The "between" segments preserve the whitespace that lived
+        // between sentences in the original text.
+        var segments = [];
+        var current = [];
+        var currentHasContent = false;
+
+        function pushSentence() {
+          segments.push({
+            kind: "sentence",
+            nodes: current,
+            hasContent: currentHasContent
+          });
+          current = [];
+          currentHasContent = false;
+        }
+
+        children.forEach(function (node) {
+          if (node.nodeType !== Node.TEXT_NODE) {
+            current.push(node);
+            if (node.textContent && node.textContent.trim()) {
+              currentHasContent = true;
+            }
+            return;
+          }
+          var text = node.nodeValue;
+          // Sentence-ending punctuation must be preceded by a letter,
+          // matching splitSentences. Verse numbers like "33." inside
+          // a paragraph won't be torn off as their own sentence.
+          var re = /([a-zA-Z][.!?])(\s+)(?=["'A-Z])/g;
+          var lastIdx = 0;
+          var m;
+          while ((m = re.exec(text)) !== null) {
+            var endPunct = m.index + m[1].length;
+            var startNext = endPunct + m[2].length;
+            var endText = text.slice(lastIdx, endPunct);
+            if (endText.length > 0) {
+              current.push(document.createTextNode(endText));
+              if (endText.trim()) currentHasContent = true;
+            }
+            pushSentence();
+            // Whitespace between sentences as a "between" segment so
+            // the rendered prose stays visually identical.
+            segments.push({
+              kind: "between",
+              nodes: [document.createTextNode(m[2])]
+            });
+            lastIdx = startNext;
+          }
+          var rest = text.slice(lastIdx);
+          if (rest.length > 0) {
+            current.push(document.createTextNode(rest));
+            if (rest.trim()) currentHasContent = true;
+          }
+        });
+        // Flush the trailing sentence (the one with no following capital).
+        if (current.length > 0) pushSentence();
+
+        // Rebuild block contents.
+        while (block.firstChild) block.removeChild(block.firstChild);
+        var idx = startIndex;
+        segments.forEach(function (seg) {
+          if (seg.kind === "between") {
+            seg.nodes.forEach(function (n) { block.appendChild(n); });
+            return;
+          }
+          if (!seg.hasContent) {
+            // Whitespace-only fragment — append unwrapped.
+            seg.nodes.forEach(function (n) { block.appendChild(n); });
+            return;
+          }
+          var span = document.createElement("span");
+          span.className = "sentence";
+          span.setAttribute("data-sentence-index", String(idx));
+          seg.nodes.forEach(function (n) { span.appendChild(n); });
+          block.appendChild(span);
+          idx += 1;
+        });
+        return idx;
+      }
+
+      // For each wrapped sentence, build the union of:
+      //   (a) node ids of phrase-grounding spans nested inside it
+      //   (b) node ids whose rule's primary+secondary keywords both
+      //       appear in the sentence's lowercased text
+      // Restricted to nodes in `contributors` so we never link to a
+      // node that isn't already declared for this text.
+      function buildSentenceNodeMap(article, contributors, rules) {
+        var contribIds = {};
+        contributors.forEach(function (n) { contribIds[n.id] = true; });
+
+        var map = {};
+        var spans = article.querySelectorAll("span.sentence[data-sentence-index]");
+        spans.forEach(function (span) {
+          var idx = parseInt(span.getAttribute("data-sentence-index"), 10);
+          if (!isFinite(idx)) return;
+          var ids = {};
+
+          // (a) phrase grounding nested inside this sentence
+          span.querySelectorAll(".grounding[data-node-id]").forEach(function (g) {
+            var nid = g.getAttribute("data-node-id");
+            if (nid && contribIds[nid]) ids[nid] = true;
+          });
+
+          // (b) structural rules
+          var sentText = (span.textContent || "").toLowerCase();
+          if (sentText) {
+            contributors.forEach(function (n) {
+              var rule = rules[n.id];
+              if (!rule) return;
+              var primary = rule.primary || [];
+              var secondary = rule.secondary || [];
+              if (!primary.length || !secondary.length) return;
+              var hasP = false;
+              for (var i = 0; i < primary.length; i++) {
+                if (sentText.indexOf(String(primary[i]).toLowerCase()) >= 0) {
+                  hasP = true;
+                  break;
+                }
+              }
+              if (!hasP) return;
+              for (var j = 0; j < secondary.length; j++) {
+                if (sentText.indexOf(String(secondary[j]).toLowerCase()) >= 0) {
+                  ids[n.id] = true;
+                  break;
+                }
+              }
+            });
+          }
+
+          var keys = Object.keys(ids);
+          map[idx] = keys;
+          if (keys.length > 0) span.classList.add("sentence-supportive");
+        });
+        return map;
+      }
+
+      function closeSentenceExpansions(article) {
+        article.querySelectorAll(".sentence-expansion").forEach(function (e) {
+          if (e.parentNode) e.parentNode.removeChild(e);
+        });
+        article.querySelectorAll(".sentence-expanded").forEach(function (s) {
+          s.classList.remove("sentence-expanded");
+        });
+      }
+
+      function buildSentenceExpansion(ids, nodeById) {
+        var expansion = document.createElement("span");
+        expansion.className = "sentence-expansion";
+        var label = document.createElement("span");
+        label.className = "se-label";
+        label.textContent = "Supports:";
+        expansion.appendChild(label);
+        ids.forEach(function (nid, i) {
+          if (i > 0) {
+            var sep = document.createElement("span");
+            sep.className = "se-sep";
+            sep.textContent = ",";
+            expansion.appendChild(sep);
+            expansion.appendChild(document.createTextNode(" "));
+          } else {
+            expansion.appendChild(document.createTextNode(" "));
+          }
+          var n = nodeById[nid];
+          var text = (n && (n.subtype || n.id)) || nid;
+          var a = document.createElement("a");
+          a.className = "se-link";
+          a.href = "../graph/?node=" + encodeURIComponent(nid);
+          a.setAttribute("data-node-id", nid);
+          a.textContent = text;
+          expansion.appendChild(a);
+        });
+        return expansion;
+      }
+
+      function wireSentenceClicks(article, sentenceMap, nodeById) {
+        article.addEventListener("click", function (e) {
+          // Don't intercept clicks inside an open expansion — let
+          // the link's natural href navigation work.
+          if (e.target.closest && e.target.closest(".sentence-expansion")) return;
+          var span = e.target.closest && e.target.closest("span.sentence");
+          if (!span) return;
+          var idx = parseInt(span.getAttribute("data-sentence-index"), 10);
+          if (!isFinite(idx)) return;
+          var ids = sentenceMap[idx] || [];
+          if (!ids.length) return;
+
+          var alreadyOpen = span.classList.contains("sentence-expanded");
+          closeSentenceExpansions(article);
+          if (alreadyOpen) return;
+
+          var expansion = buildSentenceExpansion(ids, nodeById);
+          if (span.parentNode) {
+            span.parentNode.insertBefore(expansion, span.nextSibling);
+            span.classList.add("sentence-expanded");
+          }
+        });
+      }
+
+      // ---------- node-to-sentence highlight (scoped) ----------
+      //
+      // Inversion of sentenceNodeMap: given a node id, find every
+      // sentence that supports it. Built once after the per-sentence
+      // map is built; used by the click handler below and by the
+      // auto-highlight pass for ?node= URLs.
+
+      function buildNodeToSentencesMap(sentenceMap) {
+        var rev = {};
+        Object.keys(sentenceMap).forEach(function (idx) {
+          var arr = sentenceMap[idx];
+          if (!arr || !arr.length) return;
+          var n = parseInt(idx, 10);
+          if (!isFinite(n)) return;
+          arr.forEach(function (nid) {
+            if (!rev[nid]) rev[nid] = [];
+            rev[nid].push(n);
+          });
+        });
+        Object.keys(rev).forEach(function (nid) {
+          rev[nid].sort(function (a, b) { return a - b; });
+        });
+        return rev;
+      }
+
+      function clearSentenceActive(article) {
+        article.querySelectorAll(".sentence.sentence-active")
+          .forEach(function (s) { s.classList.remove("sentence-active"); });
+      }
+
+      // Apply .sentence-active to every sentence whose index is in
+      // nodeToSentences[nodeId]. Returns the first matched span (or
+      // null) so callers can scroll. Passing nodeId=null just clears.
+      function highlightSentencesForNode(article, nodeId, nodeToSentences) {
+        clearSentenceActive(article);
+        if (!nodeId) return null;
+        var indices = nodeToSentences[nodeId];
+        if (!indices || !indices.length) return null;
+        var first = null;
+        for (var i = 0; i < indices.length; i++) {
+          var span = article.querySelector(
+            'span.sentence[data-sentence-index="' + indices[i] + '"]'
+          );
+          if (span) {
+            span.classList.add("sentence-active");
+            if (!first) first = span;
+          }
+        }
+        return first;
+      }
+
+      // Wire the inverse interaction: click a node link in the
+      // article's panels, highlight the supporting sentences,
+      // toggle off when the same node is clicked again. Clicks on
+      // links whose node has NO local sentences fall through to
+      // normal navigation; modifier and middle-click also fall
+      // through so the user can still open in a new tab.
+      function wireNodeHighlight(article, nodeToSentences, initialNodeId) {
+        // Closure-local "currently spotlighted" id, used for the
+        // toggle-on-second-click behaviour.
+        var activeNodeId = null;
+
+        // Auto-highlight on load if the URL's ?node= names a node
+        // with sentences in this text. We don't auto-scroll here —
+        // existing scrollToFirstGrounding / highlightPassage already
+        // handle the load-time scroll, and stacking another smooth
+        // scroll on top just causes jitter.
+        if (initialNodeId && nodeToSentences[initialNodeId]) {
+          highlightSentencesForNode(article, initialNodeId, nodeToSentences);
+          activeNodeId = initialNodeId;
+        }
+
+        article.addEventListener("click", function (e) {
+          if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey ||
+              e.button === 1) {
+            return;
+          }
+          var link = e.target.closest &&
+                     e.target.closest(".gc-link, .tc-link, .tg-name");
+          if (!link) return;
+          var nid = link.getAttribute("data-node-id");
+          if (!nid) return;
+          // Node has no local sentences -> let the link's normal
+          // navigation run. Avoids silent clicks on connections
+          // that point at non-contributor neighbours.
+          if (!nodeToSentences[nid]) return;
+          e.preventDefault();
+
+          if (activeNodeId === nid) {
+            clearSentenceActive(article);
+            activeNodeId = null;
+            return;
+          }
+
+          var first = highlightSentencesForNode(
+            article, nid, nodeToSentences
+          );
+          activeNodeId = nid;
+          if (first) {
+            setTimeout(function () {
+              first.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 60);
+          }
+        });
+      }
+
+      function highlightPassage(article, locator, nodeSubtype) {
+        var n = passageNumberFromLocator(locator);
+        if (!n) return;
+        var el = document.getElementById("passage-" + n);
+        if (!el) {
+          var note = document.createElement("p");
+          note.className = "passage-note";
+          note.textContent =
+            "Linked from graph (passage " + n +
+            "); the exact passage could not be aligned with this " +
+            "archive text. Showing the full text.";
+          article.insertBefore(note, article.firstChild);
+          return;
+        }
+        el.classList.add("passage-highlighted");
+        if (nodeSubtype) {
+          var tag = document.createElement("aside");
+          tag.className = "passage-tag";
+          tag.textContent = "From graph · " + nodeSubtype;
+          el.insertBefore(tag, el.firstChild);
+        }
+        // Defer scroll so the layout has settled.
+        setTimeout(function () {
+          el.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 60);
+      }
+
+      // ---------- main ----------
+
+      fetch("./texts/" + id + ".md", { cache: "no-cache" })
+        .then(function (r) {
+          if (!r.ok) throw new Error("Content load failed: " + r.status);
+          return r.text();
+        })
+        .then(function (md) {
+          target.innerHTML = Atlas.renderMarkdown(md);
+          // Wrap the Primary Text H2 + following block elements in a
+          // <section class="primary-text"> so the sentence-wrapping
+          // and structural-grounding layers can scope themselves to
+          // the actual source verses. Idempotent and a no-op when the
+          // article has no Primary Text heading.
+          groupPrimaryTextSection(target);
+          numberPassages(target);
+
+          // Always attempt to load the graph, mapping, and phrases.
+          // All three are optional — the markdown is the only
+          // required artifact. We need the graph for the reverse-
+          // bridge "Contributes to" list even on a plain
+          // ?id=<text-id> URL, so this fetch can no longer be gated
+          // on the deep-link params.
+          return Promise.all([
+            fetch("../graph/atlas_graph.json", { cache: "no-cache" })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .catch(function () { return null; }),
+            fetch("../graph/node_to_archive.json", { cache: "no-cache" })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .catch(function () { return null; }),
+            fetch("../graph/node_phrases.json", { cache: "no-cache" })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .catch(function () { return null; }),
+            fetch("../graph/node_grounding_rules.json", { cache: "no-cache" })
+              .then(function (r) { return r.ok ? r.json() : null; })
+              .catch(function () { return null; })
+          ]).then(function (results) {
+            var graph = results[0];
+            var rawMap = results[1] || {};
+            var rawPhrases = results[2] || {};
+            var rawRules = results[3] || {};
+
+            var mapping = {};
+            Object.keys(rawMap).forEach(function (k) {
+              if (k !== "_comment" && typeof rawMap[k] === "string") {
+                mapping[k] = rawMap[k];
+              }
+            });
+            var phrases = {};
+            Object.keys(rawPhrases).forEach(function (k) {
+              if (k !== "_comment" && Array.isArray(rawPhrases[k])) {
+                phrases[k] = rawPhrases[k];
+              }
+            });
+            var rules = {};
+            Object.keys(rawRules).forEach(function (k) {
+              if (k !== "_comment" && rawRules[k] && typeof rawRules[k] === "object") {
+                rules[k] = rawRules[k];
+              }
+            });
+
+            // 1. Forward bridge: connections panel for the node we
+            //    arrived at (when &node= was present).
+            var conn = (graph && nodeId) ? collectConnections(graph, nodeId) : null;
+            if (conn) renderConnections(target, conn, mapping);
+
+            // 2. Collect the full reverse-bridge contributor list (every
+            //    node whose corpus_locator base maps to this text via
+            //    node_to_archive.json). We do NOT render it yet — the
+            //    Stage-1 contribution-validity policy splits this list
+            //    into Tier B (real in-text evidence) vs Tier E (graph-
+            //    attached only) based on what wrapGroundings produces
+            //    and what the structural matcher finds. Tiering needs
+            //    both to have run.
+            var contributors = collectContributors(graph, mapping, id);
+
+            // 3a. Sentence wrapping (scoped to dhammapada-chapter-3).
+            //     Runs BEFORE phrase grounding so the .grounding
+            //     spans nest cleanly inside .sentence spans, which
+            //     makes the click->nodes mapping a simple inner
+            //     query.
+            var SENTENCE_TEXTS = {
+              "chandogya-upanishad-core": true,
+              "dhammapada-chapter-1": true,
+              "dhammapada-chapter-11": true,
+              "dhammapada-chapter-3": true,
+              "dhammapada-chapter-20": true,
+              "dhammapada-chapter-24": true
+            };
+            var sentencesEnabled = !!SENTENCE_TEXTS[id];
+            if (sentencesEnabled) wrapSentencesInArticle(target);
+
+            // 3b. Phrase grounding: wrap every occurrence of each
+            //    contributor's trigger phrases. Static state is
+            //    invisible; activation comes from URL or hover.
+            wrapGroundings(target, contributors, phrases);
+            wireGroundingHover();
+
+            // 3c. Stage-1 tiering. A contributor is Tier B (real
+            //     in-text support) if it has at least one phrase
+            //     grounding span inside .primary-text OR at least one
+            //     structural-rule evidence sentence. Otherwise it is
+            //     Tier E (graph-attached only — typically a fossil of
+            //     synthetic-fixture phrasing that doesn't appear in
+            //     the real archive verses) and surfaces in the
+            //     "Related concepts" panel instead of "Contributes to".
+            var phraseSet = nodeIdsWithPhraseGrounding(target);
+            var structuralSet = nodeIdsWithStructuralEvidence(
+              target, contributors, rules
+            );
+            var tierBNodes = contributors.filter(function (n) {
+              return phraseSet[n.id] || structuralSet[n.id];
+            });
+            var tierENodes = contributors.filter(function (n) {
+              return !phraseSet[n.id] && !structuralSet[n.id];
+            });
+
+            // 4a. Reverse bridge: render only Tier B as Contributes-to.
+            if (tierBNodes.length) renderContributors(target, tierBNodes);
+
+            // 4b. Structural grounding: evidence card for Tier B
+            //     contributors whose phrase grounding came up empty
+            //     (the rule then carries the explanation). Runs after
+            //     wrapGroundings so we can read the live span set;
+            //     collectProseText skips the card it inserts.
+            renderStructuralGrounding(target, contributors, rules, phraseSet);
+
+            // 4c. Render Tier E as Related-concepts. Inserts after
+            //     the structural-grounding card (when present) so the
+            //     reading order is contributors -> grounding -> related.
+            if (tierENodes.length) renderRelatedConcepts(target, tierENodes);
+
+            // 4d. Sentence-level interaction (scoped). Build the
+            //     sentence -> node map (phrase + structural rules,
+            //     unioned, restricted to contributors) and wire the
+            //     toggle click handler. Sentences with zero matches
+            //     do nothing on click.
+            //
+            // 4e. Inverse interaction: build the node -> sentences
+            //     index and wire node-link clicks (in the panels)
+            //     to highlight the supporting sentences. If the URL
+            //     already names a contributor with local sentences,
+            //     auto-highlight on load.
+            if (sentencesEnabled) {
+              var nodeById = {};
+              if (graph && graph.nodes) {
+                graph.nodes.forEach(function (n) { nodeById[n.id] = n; });
+              }
+              var sentenceMap = buildSentenceNodeMap(target, contributors, rules);
+              wireSentenceClicks(target, sentenceMap, nodeById);
+
+              var nodeToSentences = buildNodeToSentencesMap(sentenceMap);
+              wireNodeHighlight(target, nodeToSentences, nodeId);
+            }
+
+            // 5. Active node: tint its grounding spans. If we have
+            //    NO locator, also scroll to the first match so the
+            //    reader lands on the grounded passage.
+            if (nodeId) {
+              activateGroundings(target, nodeId);
+              if (!locator) scrollToFirstGrounding(target, nodeId);
+            }
+
+            // 6. Passage scroll/highlight (when &locator= was set).
+            //    Runs after activateGroundings so a passage scroll
+            //    wins over a grounding scroll when both fire.
+            if (locator) {
+              highlightPassage(
+                target, locator,
+                conn ? (conn.center.subtype || conn.center.id) : null
+              );
+            }
+          });
+        })
+        .catch(function (err) {
+          console.error("Archive entity: failed to load content", err);
+          target.innerHTML = '<p class="atlas-error">This entry is being prepared.</p>';
+        });
+    })();
+  </script>
+</body>
+</html>

@@ -13,3 +13,19 @@ Thumbs.db
 # Python artifacts
 **/__pycache__/
 *.pyc
+
+# Convention: underscore-prefixed top-level dirs are private
+# (see CONVENTIONS.md). _legacy holds retired surfaces; _internal
+# holds build scripts and other non-deployed tooling.
+_legacy/
+_internal/
+
+# Legacy file at root (still tracked until git rm --cached;
+# rule prevents reintroduction)
+_legacy_home.html
+
+# Process artifacts
+*.pid
+
+# Local-use bat files (deployment is web-only)
+open-mirror.bat

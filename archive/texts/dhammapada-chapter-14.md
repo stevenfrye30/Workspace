@@ -1,0 +1,48 @@
+---
+id: dhammapada-chapter-14
+title: "Dhammapada, Chapter 14 (The Buddha)"
+summary: The fourteenth chapter of the Dhammapada — seventeen short verses on the Awakened, his tracklessness, the brief summary of his teaching, the false and true refuges, and the immeasurable merit of paying him homage.
+tradition: Buddhist
+period: c. 3rd century BCE (Theravada compilation)
+language: Pali
+author: Anonymous
+part_of: dhammapada
+tags: [buddha, refuge, awakening, verse, theravada, pali]
+library_id: dhammapada
+library_chapter: 14
+---
+
+# Dhammapada, Chapter 14 (The Buddha)
+
+Chapter 14 of the Dhammapada — the *Buddha-vagga*, "The Buddha" — is a chapter of seventeen verses on the figure of the Awakened. The opening pair states the central image: *he whose conquest is not conquered again, into whose conquest no one in this world enters, by what track can you lead him, the Awakened, the Omniscient, the trackless?* (179); *he whom no desire with its snares and poisons can lead astray, by what track can you lead him, the Awakened, the Omniscient, the trackless?* (180). The verses share an unanswered question — *by what track* — and the answer is implied: there is no track. The next verses turn the figure across positions. Even the gods envy those who are awakened and not forgetful (181). Four things are difficult to obtain — human birth, mortal life, the hearing of the True Law, and the birth of the Awakened (182). Verse 183 holds the chapter's compressed summary of the teaching: *not to commit any sin, to do good, and to purify one's mind, that is the teaching of (all) the Awakened.* Verses 184–185 add patience and long-suffering as the highest penance and Nirvana, and a list of restraints — not to blame, not to strike, to be moderate in eating, to sleep and sit alone, to dwell on the highest thoughts. Verses 186–187 pair the unsatisfiability of lusts with the disciple's finding no satisfaction even in heavenly pleasures. Verses 188–192 hold the chapter's central five-verse passage on refuge: men driven by fear go to mountains, forests, groves, and sacred trees, but those are not safe refuges (188–189); the true refuge is in the Buddha, the Law, and the Church, with the seeing of the Four Holy Truths and the Eightfold Way (190–192). Verse 193 holds the rarity of the Buddha's birth, verse 194 the four happinesses (arising of the awakened, teaching of the True Law, peace in the church, devotion of those at peace), and verse 195 the measureless merit of paying homage to such as have found deliverance.
+
+## Context
+
+The Dhammapada is one of the books of the Khuddaka Nikaya, the fifth and shortest section of the Sutta Pitaka in the Pali Canon. It collects 423 verses arranged in twenty-six chapters by theme — pairs, heedfulness, mind, flowers, the sage, evil, and so on. The verses are attributed to the Buddha and were transmitted orally for several centuries before being committed to writing in Sri Lanka in the first century BCE. The collection took shape in roughly the third century BCE, in connection with the Theravada transmission of the canon.
+
+Chapter 14 is the *Buddha-vagga*, "The Buddha." Its verses are numbered 179 through 195 in F. Max Müller's 1881 translation, the version held in the Archive library — seventeen passages, where the standard continuous Pali numbering of the Dhammapada gives eighteen verses (179–196). Müller has combined what is conventionally verses 195 and 196 into a single English period at passage 14.195: the *paying-homage-to-those-who-have-overcome-the-host-and-crossed-the-flood* statement and the *paying-homage-to-those-who-have-found-deliverance-and-know-no-fear* statement are run together as one sentence, with no passage numbered 14.196 in the source. Per Atlas-rule **OCR/transcription honesty**, the merged passage is preserved as Müller wrote it; the chapter therefore has seventeen passages here against the standard eighteen verses elsewhere — the fifth instance of the same kind of merging in Müller's translation, after Chapter 4 (verses 58–59), Chapter 6 (verses 87–88), Chapter 8 (verses 104–105), and Chapter 11 (verses 153–154). The next chapter opens at passage 15.197. Each verse is short — two or four lines in the Pali — and each completes one statement of the figure, except the merged passage 14.195, which completes two.
+
+## Reading note
+
+Two habits help. First, the chapter is built across three sequences. The first is the figure of tracklessness (179–187): the Awakened cannot be led by any track, the gods envy him, the rare four things, the brief summary of the teaching, the practices of patience and restraint, and the disciple who finds no satisfaction even in heavenly pleasures. The second is the figure of refuge (188–192): the false refuges of mountains, forests, groves, and sacred trees against the true refuge of Buddha, Law, and Church, with the Four Holy Truths and the Eightfold Way. The third is the figure of homage (193–195): the rarity of the Buddha's birth, the four happinesses, and the measureless merit of paying homage to those who have crossed. Reading the chapter as three sequences, rather than as seventeen separate aphorisms, recovers the form the chapter is built on.
+
+Second, verse 183 holds the chapter's compressed summary — *not to commit any sin, to do good, and to purify one's mind, that is the teaching of (all) the Awakened.* The verse is one of the most quoted in the Pali tradition, where it is sometimes called the *ovāda-pāṭimokkha*, the rule shared by all the Buddhas. Reading the verse as a structural pillar of the chapter, with the surrounding verses spelling out what such purification involves (patience, restraint, non-injury, moderation, the discernment of the Four Truths, the Eightfold Way), keeps the form the chapter has.
+
+## The text
+
+The text is held in the Archive library under `dhammapada`, chapter 14 (Müller translation, 1881 — Project Gutenberg edition of *The Sacred Books of the East*, Volume X). Seventeen passages, numbered 179 through 195 in Müller's translation, covering the standard eighteen verses (179–196) with verses 195 and 196 merged into a single English period at passage 14.195. About nine minutes' reading.
+
+## Related
+
+- **structural-parallel** → Dhammapada, Chapter 7 (The Venerable) — the earlier chapter that already worked the figure of the trackless path; Chapter 7 verses 92–93 hold the path of those who have perceived void and unconditioned freedom as difficult to track, like the path of birds in the air, Chapter 14 verses 179–180 hold the same figure as the Awakened himself: *by what track can you lead him, the Awakened, the Omniscient, the trackless?* The figure of tracklessness is held across the two chapters with the venerable in Chapter 7 and the Buddha in Chapter 14.
+- **structural-parallel** → Dhammapada, Chapter 4 (Flowers), Chapter 6 (The Wise Man), Chapter 8 (The Thousands), and Chapter 11 (Old Age) — the earlier chapters with the same kind of Müller merging-irregularity at their close, middle, or hinge; Chapter 4 combines verses 58 and 59, Chapter 6 combines 87 and 88, Chapter 8 combines 104 and 105, Chapter 11 combines 153 and 154, Chapter 14 combines 195 and 196. The merging is a recurring feature of Müller's 1881 translation across the collection.
+- **structural-parallel** → Dhammapada, Chapter 13 (The World) — the immediate predecessor on the shelf; Chapter 13 with twelve verses on the world as bubble and mirage and on the first step in holiness as better than sovereignty, Chapter 14 with seventeen verses on the Buddha as the trackless one and the true refuge that delivers from all pain. The two chapters together hold the figure that the world is what one is to be delivered from (Chapter 13) and the Buddha is the one through whom the deliverance is found (Chapter 14).
+- **structural-parallel** → Plato, Apology — the Greek pair on the rare and exemplary teacher; Plato's Socrates as the figure who turns Athens to the care of the soul, Dhammapada 14 with its rare-birth verse (193), its four happinesses (194), and its measureless merit of paying homage to such as have found deliverance (195). Both texts hold the figure of the rare teacher whose appearance is itself an event.
+- **structural-parallel** → Matthew 5 — the Christian shelf-pair on the figure of the teacher whose teaching is a refuge; the Sermon on the Mount as a sustained ethical instruction issued from a single authoritative voice, Dhammapada 14 verse 183 as the brief summary of the same kind of authoritative teaching: not to commit sin, to do good, to purify one's mind. Both texts compress the teaching of the Awakened or the Christ into compact statements that the rest elaborates.
+
+## Resources
+
+- **Translation (loaded).** F. Max Müller, *The Dhammapada*, Sacred Books of the East, Volume X (1881), public domain via [Project Gutenberg](https://www.gutenberg.org/ebooks/2017); the version held in the Archive library. Bhikkhu Sujato's modern English translation (2022) is held in the library as a second translation under `dhammapada-sujato`.
+- **Critical edition.** Oskar von Hinüber and K. R. Norman, eds., *Dhammapada* (Pali Text Society, 1995) — the modern critical Pali text.
+- **Recommended translation upgrade.** Gil Fronsdal, *The Dhammapada: A New Translation of the Buddhist Classic with Annotations* (Shambhala, 2005) — clear modern English with verse-by-verse notes; the standard contemporary teaching edition.
+- **Commentary.** E. W. Burlingame, trans., *Buddhist Legends*, Harvard Oriental Series, vols. 28–30 (1921) — English translation of the *Dhammapada-atthakatha*, the classical Pali commentary attributed to Buddhaghosa; still the standard ancient commentary in English.

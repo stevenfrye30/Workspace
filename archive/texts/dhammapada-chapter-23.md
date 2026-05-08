@@ -1,0 +1,48 @@
+---
+id: dhammapada-chapter-23
+title: "Dhammapada, Chapter 23 (The Elephant)"
+summary: The twenty-third chapter of the Dhammapada — fourteen short verses turning the figure of the elephant through several positions: the battle-elephant enduring arrows, the tamed-elephant ridden by kings, the self-tamed who alone reaches the untrodden country, the elephant in mud and the elephant in the forest.
+tradition: Buddhist
+period: c. 3rd century BCE (Theravada compilation)
+language: Pali
+author: Anonymous
+part_of: dhammapada
+tags: [elephant, training, self-mastery, verse, theravada, pali]
+library_id: dhammapada
+library_chapter: 23
+---
+
+# Dhammapada, Chapter 23 (The Elephant)
+
+Chapter 23 of the Dhammapada — the *Nāga-vagga*, "The Elephant" — is a chapter of fourteen verses turning the figure of the elephant across several positions. The opening verse states the form: *silently shall I endure abuse as the elephant in battle endures the arrow sent from the bow: for the world is ill-natured* (320). Verse 321 holds the tamed elephant as the figure of the silently-enduring man: they lead a tamed elephant to battle, the king mounts a tamed elephant; the tamed is the best among men. Verses 322 and 323 hold the chapter's central comparison: mules are good if tamed, noble Sindhu horses if tamed, elephants with large tusks if tamed — *but he who tames himself is better still*; for with these animals no man reaches the untrodden country (Nirvana), where a tamed man goes on a tamed animal, *on his own well-tamed self*. Verse 324 holds the figure of the bound elephant longing for the grove: *the elephant called Dhanapalaka, his temples running with sap, and difficult to hold, does not eat a morsel when bound; the elephant longs for the elephant grove.* Verse 325 turns the figure to the opposite — the fat and sleepy fool, like a hog fed on wash, is born again and again. Verse 326 holds the figure of holding in the wandering mind: *I shall now hold it in thoroughly, as the rider who holds the hook holds in the furious elephant.* Verse 327 holds the elephant-sunk-in-mud: be not thoughtless, watch your thoughts, draw yourself out of the evil way like an elephant sunk in mud. Verses 328–330 hold the companion-or-alone sequence: walk with a prudent companion if one is found (328); if not, walk alone like a king who has left his conquered country, like an elephant in the forest (329); *it is better to live alone, there is no companionship with a fool; let a man walk alone, let him commit no sin, with few wishes, like an elephant in the forest* (330). The closing three verses hold a sequence of *pleasant* statements that turn the chapter to a quieter register: pleasant are friends when occasion arises, work at the hour of death, the giving up of grief (331); pleasant the state of mother, father, Samana, Brahmana (332); pleasant virtue lasting to old age, faith firmly rooted, attainment of intelligence, avoidance of sins (333).
+
+## Context
+
+The Dhammapada is one of the books of the Khuddaka Nikaya, the fifth and shortest section of the Sutta Pitaka in the Pali Canon. It collects 423 verses arranged in twenty-six chapters by theme — pairs, heedfulness, mind, flowers, the sage, evil, and so on. The verses are attributed to the Buddha and were transmitted orally for several centuries before being committed to writing in Sri Lanka in the first century BCE. The collection took shape in roughly the third century BCE, in connection with the Theravada transmission of the canon.
+
+Chapter 23 is the *Nāga-vagga*, "The Elephant." Its fourteen verses are numbered 320 through 333 in the standard continuous numbering of the Dhammapada — and in F. Max Müller's 1881 translation, the version held in the Archive library, the count and numbering match the standard exactly, with no merged or missing verse of the kind that occurs in Chapters 4, 6, 8, 11, 14, 17, and 19. The Pali word *nāga* — elephant, also used for the cobra and the mythical serpent-deity, and as an epithet of the noble or distinguished — is rendered uniformly by Müller as "elephant" through the chapter; the figure is consistently animal rather than mythological. Müller preserves the proper name *Dhanapalaka* (the bound elephant of verse 324) and the geographical *Sindhu* (the noble horse of verse 322). Each verse is short — two or four lines in the Pali — and each completes one statement of the figure.
+
+## Reading note
+
+Two habits help. First, the chapter is built on the elephant figure taken across positions. The battle-elephant who endures arrows (320). The tamed elephant ridden by the king (321). The taming of mules, horses, and elephants compared with the taming of self (322–323). The elephant Dhanapalaka who refuses food when bound (324). The fat and sleepy fool as anti-figure (325). The wandering mind held by the rider's hook as the furious elephant is held (326). The elephant sunk in mud (327). The elephant in the forest (329, 330). Reading the chapter as a single figure walked across nine elephant-positions, plus a closing three verses on what is pleasant, recovers the form the chapter is built on. The figure is not a doctrine of the elephant; it is the elephant used as a figure for the trainable mind and the self.
+
+Second, verses 322 and 323 hold the chapter's structural pillar: *he who tames himself is better still*; the untrodden country (Nirvana) is reached by no animal but by the self-tamed man on his own well-tamed self. The chapter's other verses set up and elaborate this central comparison — the elephant-figures show what taming looks like, and verse 323 names what cannot be reached without it. Reading the chapter with this pillar held visible, with the rest of the verses arranged around it, keeps the form the chapter has.
+
+## The text
+
+The text is held in the Archive library under `dhammapada`, chapter 23 (Müller translation, 1881 — Project Gutenberg edition of *The Sacred Books of the East*, Volume X). Fourteen verses, numbered 320 through 333 in the standard continuous numbering of the Dhammapada; about seven minutes' reading.
+
+## Related
+
+- **structural-parallel** → Dhammapada, Chapter 3 (Thought) — the earlier chapter that already worked the figure of the trembling, unsteady mind through different images of taming and guarding; Chapter 3 verses 33–37 hold the figure of the mind as a trembling fish, a flighty thing to be tamed and guarded, Chapter 23 verse 326 holds the same figure as the wandering mind held in by the rider's hook as a furious elephant is held. Both chapters work the figure of mind-as-trainable-creature; Chapter 3 uses fish, arrow, and citadel images, Chapter 23 uses the elephant.
+- **structural-parallel** → Dhammapada, Chapter 6 (The Wise Man) — the earlier chapter on the wise man's self-fashioning; Chapter 6 verse 80 holds the figure that *well-makers lead the water, fletchers bend the arrow, carpenters bend a log of wood, wise people fashion themselves*, Chapter 23 verses 322–323 hold the figure that *mules are good if tamed, Sindhu horses, elephants with large tusks; but he who tames himself is better still*. Both chapters work the figure of self-cultivation as a craft, with Chapter 6 using craftspeople and Chapter 23 using animal-trainers as the analogue.
+- **structural-parallel** → Dhammapada, Chapter 12 (Self) — the earlier chapter on self-government; Chapter 12 verse 160 holds *self is the lord of self, who else could be the lord? With self well subdued, a man finds a lord such as few can find*, Chapter 23 verse 323 holds *a tamed man goes on a tamed animal, viz. on his own well-tamed self*. The two chapters share the figure of the self as both the trainer and the trained — Chapter 12 in the lord-and-purifier vocabulary, Chapter 23 in the elephant-and-rider figure.
+- **structural-parallel** → Dhammapada, Chapter 5 (The Fool) — the earlier chapter on the fool as the figure who does not perceive; Chapter 23 verse 325 turns to the same figure compactly: *if a man becomes fat and a great eater, if he is sleepy and rolls himself about, that fool, like a hog fed on wash, is born again and again*. The hog-and-wash image is the Nāga-vagga's anti-figure to the elephant — the trained beast against the untrained one.
+- **structural-parallel** → Plato, Apology — the Greek pair on the figure of silent endurance under abuse; Socrates' demeanour under accusation and verdict, his refusal to plead or weep, Dhammapada 23 verse 320 with *silently shall I endure abuse as the elephant in battle endures the arrow*. Both texts hold the figure that the trained person bears insult without retaliation or distress; Plato in the courtroom, the Dhammapada in the elephant-figure.
+
+## Resources
+
+- **Translation (loaded).** F. Max Müller, *The Dhammapada*, Sacred Books of the East, Volume X (1881), public domain via [Project Gutenberg](https://www.gutenberg.org/ebooks/2017); the version held in the Archive library. Bhikkhu Sujato's modern English translation (2022) is held in the library as a second translation under `dhammapada-sujato`.
+- **Critical edition.** Oskar von Hinüber and K. R. Norman, eds., *Dhammapada* (Pali Text Society, 1995) — the modern critical Pali text.
+- **Recommended translation upgrade.** Gil Fronsdal, *The Dhammapada: A New Translation of the Buddhist Classic with Annotations* (Shambhala, 2005) — clear modern English with verse-by-verse notes; the standard contemporary teaching edition.
+- **Commentary.** E. W. Burlingame, trans., *Buddhist Legends*, Harvard Oriental Series, vols. 28–30 (1921) — English translation of the *Dhammapada-atthakatha*, the classical Pali commentary attributed to Buddhaghosa; still the standard ancient commentary in English.

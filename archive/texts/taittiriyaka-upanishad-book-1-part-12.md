@@ -1,0 +1,46 @@
+---
+id: taittiriyaka-upanishad-book-1-part-12
+title: "Taittiriyaka Upanishad, Book 1, Part 12"
+summary: The Twelfth Anuvaka of the Sikshavalli — the closing peace invocation that brings the First Valli to a close. The same deities are called on as in the opening Anuvaka — Mitra, Varuna, Aryaman, Indra, Brihaspati, the wide-striding Vishnu — and the same adoration is given to Brahman and to Vayu the visible Brahman, but the verbs that opened the Valli in pledge — *I shall proclaim* — return now in fulfillment: *I proclaimed thee alone as the visible Brahman; I proclaimed the right; I proclaimed the true; it protected me; it protected the teacher.* The Anuvaka closes with the threefold sealing *Om! Peace! peace! peace!*
+tradition: Hindu
+period: c. 6th–5th c. BCE
+language: Sanskrit
+author: Anonymous
+part_of: upanishads
+tags: [recitation, invocation, sanskrit, upanishad]
+library_id: upanishads-muller-part2
+library_chapter: 5
+---
+
+# Taittiriyaka Upanishad, Book 1, Part 12
+
+Book 1, Part 12 of the Taittiriyaka Upanishad — the Twelfth Anuvaka of the Sikshavalli — closes the First Valli. The Anuvaka is short, and its function is structural: it returns to the opening peace invocation of the Sikshavalli and gives it again with the verbs of pledge turned into the verbs of fulfillment. The same six deities are called on — Mitra, Varuna, Aryaman, Indra, Brihaspati, the wide-striding Vishnu; the same adoration is given to Brahman, and to Vayu the air, named here once more as the visible Brahman; but the future-tense pledges of the First Anuvaka — *I shall proclaim thee alone as the visible Brahman; I shall proclaim the right; I shall proclaim the true; may it protect me, may it protect the teacher* — return as past-tense declarations: *I proclaimed thee alone as the visible Brahman; I proclaimed the right; I proclaimed the true; it protected me; it protected the teacher; yes, it protected me, it protected the teacher.* The Anuvaka closes with the same threefold sealing the Valli began on: *Om! Peace! peace! peace!*
+
+## Context
+
+The Taittiriyaka Upanishad is one of the principal (*mukhya*) Upanishads — a small group of texts traditionally received as the philosophical core of the late Vedic literature. It belongs to the Krishna Yajurveda branch of the Vedic corpus and to the Taittiriya school of that branch; the Upanishad sits inside the Taittiriya Aranyaka. Modern scholarship places it among the older prose Upanishads, in roughly the sixth to fifth century BCE — earlier than the verse Upanishads of the Katha and Mundaka. The text is anonymous; the principal Upanishads are received in the tradition as *śruti*, the revealed Vedic literature, without identified authorship.
+
+Book 1, Part 12 is the closing Anuvaka of the Sikshavalli and completes the First Valli of the Taittiriyaka. The First Anuvaka set the protective frame; the Second through Eleventh Anuvakas filled the frame with instruction — naming the discipline of pronunciation, teaching the *samhita* and the *vyāhṛti* through paired correspondences, giving the teacher's *medha-sūkta* prayer for retentive memory, gathering fivefold lists of the cosmos and the body, praising the syllable *Om* and the practice of *svādhyāya*, placing Trisanku's recited verse, and giving the convocation address that sends the student into household life. The Twelfth Anuvaka closes the frame from the inside: what the First Anuvaka pledged, the Twelfth Anuvaka declares to have been done. The Valli is sealed by the same words that opened it, with their tense changed.
+
+## Reading note
+
+Two habits help. First, the Anuvaka is built on tense. The deities, the adoration to Brahman and to Vayu, the threefold *Peace* — all are unchanged from the First Anuvaka. What is changed is the grammatical mood of the verbs in between: future imperatives have become past indicatives. Reading the Anuvaka with the First Anuvaka held alongside, attending to the inversion of tense rather than to any new content, recovers the form the Sikshavalli has at its close. The Valli does not end with a new claim; it ends with the recognition that what was promised has been said, and what protection was asked has been given.
+
+Second, the Anuvaka closes a structural frame rather than a doctrine. The eleven preceding anuvakas held the substance of the Valli — pronunciation, correspondences, prayer, lists, syllable, study, recited verse, convocation address. The closing Anuvaka does not summarize them; it returns to the framing recitation and seals it. Reading the Twelfth Anuvaka with the structure of the whole Valli held in mind — the protective opening, the body of instruction, the matching close — keeps the form the school-text gives to its instructional unit.
+
+## The text
+
+The text is held in the Archive library under `upanishads-muller-part2`, chapter 5 (Müller translation, 1884 — *The Sacred Books of the East*, Volume XV; via SacredTexts.com). Library chapter 5 is shared across twenty-one Archive entities — four parts of the Katha Upanishad, the six parts of the Mundaka Upanishad, and Books 1, Parts 1 through 11 of the Taittiriyaka — and continues here into the Twelfth Anuvaka without break in the chapter. Book 1, Part 12 of the Taittiriyaka — the entity here — occupies passages `5.222` through `5.224`. Passage `5.222` is the "Twelfth Anuvaka" header. Passage `5.223` carries the body of the Anuvaka in Müller's prose presentation, opening with the verse marker `1.` Passage `5.224` opens with the editorial sub-marker `(1-5)` carried over from the source — Müller's bracketed grouping that signals the closing past-tense recitation and the threefold *Om! Peace! peace! peace!* as a continuation of verse 1 rather than as new verses of their own; the bracketed range `(1-5)` is the same notation used for the opening Anuvaka of the Valli (`5.166`), reflecting the parallel structure between the First and Twelfth Anuvakas. After this Anuvaka the Sikshavalli closes: passage `5.225` is the "Second Valli" header, which opens the Brahmanandavalli — the second of the three vallis of the Taittiriyaka — and is not part of this entity. The library chapter continues past this entity into the rest of the Taittiriyaka and the remaining Upanishads of the volume. About one minute's reading.
+
+## Related
+
+- **structural-parallel** → Taittiriyaka Upanishad, Book 1, Part 1 — paired opening and closing Anuvakas of the Sikshavalli that frame the Valli through tense; the First Anuvaka holds the same recitation in pledge — *I shall proclaim thee alone as the visible Brahman; I shall proclaim the right; I shall proclaim the true; may it protect me, may it protect the teacher* — the Twelfth Anuvaka holds the same recitation in fulfillment — *I proclaimed thee alone as the visible Brahman; I proclaimed the right; I proclaimed the true; it protected me; it protected the teacher.* The framing pair sealing one of the most carefully constructed instructional units in the late-Vedic corpus.
+- **structural-parallel** → Taittiriyaka Upanishad, Book 1, Part 11 — paired immediately consecutive Anuvakas at the close of the Sikshavalli; the Eleventh Anuvaka holds the convocation address that the teacher gives the student before the student returns to household life and seals the address with the line that this is the rule, the teaching, the true purport of the Veda, the Twelfth Anuvaka closes the recitation that the address is given inside — the convocation finished, the protective frame sealed, the Valli ended. Two adjacent units that together complete the instruction and close the recitation.
+- **structural-parallel** → Mundaka Upanishad, Book 3, Part 2 — paired Upanishadic closures held by formula material rather than by new doctrine; the Mundaka's closing Khanda gathers the figures of the rivers entering the sea and the wise man freed from name and form going to the divine Person, names the colophon of the Rishi Angiras, and seals the text with the salutation *adoration to the highest Rishis*, the Taittiriyaka's Twelfth Anuvaka closes the Sikshavalli by returning to the opening recitation in fulfilled tense and sealing it with the threefold *Om! Peace! peace! peace!* Both texts close their respective units by returning to formula rather than by extending the teaching.
+
+## Resources
+
+- **Translation (loaded).** F. Max Müller, *The Upanishads, Part II*, Sacred Books of the East, Volume XV (1884), public domain via [SacredTexts.com](https://sacred-texts.com/hin/sbe15/index.htm); the translation held in the Archive library. Müller's *Upanishads, Part I* (Volume I of the SBE, 1879) is also held under `upanishads-muller-part1`.
+- **Critical edition.** Patrick Olivelle, ed. and trans., *The Early Upanishads: Annotated Text and Translation* (Oxford University Press, 1998) — Sanskrit text with modern English translation and critical apparatus; the standard scholarly bilingual edition.
+- **Recommended translation upgrade.** Patrick Olivelle, *Upaniṣads*, Oxford World's Classics (Oxford University Press, 1996) — clear modern English with introduction and notes; the standard contemporary teaching translation.
+- **Commentary.** Signe Cohen, *Text and Authority in the Older Upaniṣads* (Brill, 2008) — the modern scholarly study of the Upanishadic text tradition, including the Taittiriyaka.
