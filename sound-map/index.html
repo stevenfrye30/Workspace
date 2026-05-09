@@ -11,8 +11,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 #sm-header .sub { font-size: 12px; color: var(--muted); font-style: italic; flex: 1; }
 #sm-header a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 5px 12px; border: 1px solid var(--bdr); border-radius: var(--radius); }
 #sm-header a:hover { color: var(--gold); border-color: var(--gold); }
-#panel-sound, #panel-chart, #panel-flow { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-#panel-sound.active, #panel-chart.active, #panel-flow.active { display: flex; }
+#panel-sound, #panel-coverage, #panel-flow { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+#panel-sound.active, #panel-coverage.active, #panel-flow.active { display: flex; }
 
 /* ════════════════════ FLOW LAB (nested sub-tabs) ════════════════════ */
 #fl-tab-nav{display:flex;background:var(--surf2);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 14px;gap:2px;align-items:flex-end}
@@ -56,7 +56,11 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 }
 
 /* ════════════════════ PHONETIC CHART ════════════════════ */
-#panel-chart .pc-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
+#panel-coverage .pc-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
+/* Section divider between Coverage and Chart inside the Coverage panel */
+#panel-coverage .pc-section-divider{margin:8px 0 18px;padding:14px 0 0;border-top:1px solid var(--bdr)}
+#panel-coverage .pc-section-divider .pc-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:4px}
+#panel-coverage .pc-section-divider .pc-section-sub{color:var(--muted);font-size:11px;font-style:italic}
 .pc-intro{color:var(--muted);font-size:13px;max-width:780px;margin-bottom:18px;line-height:1.65}
 .pc-intro strong{color:var(--text)}
 .pc-intro code{font-family:var(--mono);background:var(--surf2);color:var(--gold);padding:1px 6px;border-radius:3px;font-size:12px}
@@ -356,14 +360,14 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-view-btn.active{background:var(--gold);color:#111}
 
 /* ── View containers ── */
-#sm-view-map,#sm-view-timeline,#sm-view-stats,#sm-view-coverage{display:none}
+#sm-view-map,#sm-view-timeline,#sm-view-stats{display:none}
 #sm-output[data-view="map"] #sm-view-map{display:block}
 #sm-output[data-view="timeline"] #sm-view-timeline{display:flex;flex-direction:column;gap:18px}
 #sm-output[data-view="stats"] #sm-view-stats{display:flex;flex-direction:column;gap:22px}
-#sm-output[data-view="coverage"] #sm-view-coverage{display:flex;flex-direction:column;gap:18px}
 #sm-output[data-view="timeline"] #sm-vtract,
-#sm-output[data-view="stats"] #sm-vtract,
-#sm-output[data-view="coverage"] #sm-vtract{display:none}
+#sm-output[data-view="stats"] #sm-vtract{display:none}
+/* Coverage view now lives in its own top-level panel, not inside #sm-output */
+#panel-coverage #sm-view-coverage{display:flex;flex-direction:column;gap:18px}
 
 /* ── Timeline view ── */
 #sm-tl-stage{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
@@ -846,30 +850,582 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   .flow-score-cell{display:none}
 }
 
+/* ════════════════════ VAULT + BAR BUILDER PERSISTENCE ════════════════════ */
+.bb-vault-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 8px 0 4px;
+  border-top: 1px solid var(--bdr);
+  margin-top: 8px;
+  width: 100%;
+}
+.bb-persona-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.bb-persona-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+#bb-persona {
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  padding: 6px 10px;
+  outline: none;
+  cursor: pointer;
+  min-width: 160px;
+  transition: border-color .15s;
+}
+#bb-persona:focus { border-color: var(--gold); }
+#bb-save, #bb-save-rev {
+  background: var(--gold);
+  border: none;
+  border-radius: var(--radius);
+  color: #111;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: 7px 14px;
+  text-transform: uppercase;
+  transition: opacity .15s;
+}
+#bb-save:disabled, #bb-save-rev:disabled {
+  opacity: .35;
+  cursor: not-allowed;
+}
+#bb-save:hover:not(:disabled),
+#bb-save-rev:hover:not(:disabled) { opacity: .85; }
+#bb-state-indicator {
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  font-style: italic;
+  color: var(--muted);
+}
+.bb-state-saved    { color: var(--green); font-style: normal; }
+.bb-state-modified { color: var(--gold); }
+.bb-state-draft    { color: var(--muted); }
+.bb-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  padding: 3px 4px 3px 8px;
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+}
+#bb-bar-chip-clear {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0 4px;
+  font-size: 14px;
+  line-height: 1;
+  border-radius: 3px;
+}
+#bb-bar-chip-clear:hover { color: var(--red); background: var(--bg); }
+
+/* padding-only override; visibility/flex inherited from .fl-tab-panel + .fl-tab-panel.active */
+#fl-panel-bars { padding: 0; }
+#fl-panel-bars > .panel-scroll { display: none !important; }
+#vault-shell { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
+#vault-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--bdr);
+  background: var(--surf);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+}
+#vault-search {
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  padding: 7px 11px;
+  flex: 1;
+  min-width: 200px;
+  outline: none;
+  transition: border-color .15s;
+}
+#vault-search:focus { border-color: var(--gold); }
+#vault-persona-filter {
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  padding: 6px 10px;
+  cursor: pointer;
+  outline: none;
+}
+#vault-persona-filter:focus { border-color: var(--gold); }
+.vault-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.vault-toggle input { margin: 0; cursor: pointer; }
+.vault-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+#vault-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2px 0 24px;
+}
+.vault-empty {
+  color: var(--muted);
+  font-style: italic;
+  font-size: 13px;
+  padding: 40px 24px;
+  text-align: center;
+  line-height: 1.6;
+}
+.vault-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px 12px 13px;
+  border-bottom: 1px solid var(--bdr);
+  border-left: 3px solid var(--row-color, var(--bdr));
+  cursor: pointer;
+  transition: background .12s;
+}
+.vault-row:hover { background: var(--surf); }
+.vault-row:focus { outline: none; background: var(--surf); }
+.vault-row-archived { opacity: .55; font-style: italic; }
+.vault-row-archived .vault-text { color: var(--muted); }
+.vault-glyph {
+  flex-shrink: 0;
+  width: 18px;
+  text-align: center;
+  font-size: 16px;
+  line-height: 1.3;
+}
+.vault-content { flex: 1; min-width: 0; }
+.vault-text {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--text);
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+.vault-meta {
+  margin-top: 4px;
+  font-size: 10px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.vault-meta-rev {
+  color: var(--gold);
+  font-family: var(--mono);
+  letter-spacing: .03em;
+  text-transform: none;
+}
+.vault-meta-revs {
+  color: var(--muted);
+  font-style: italic;
+  text-transform: none;
+}
+.vault-tags {
+  margin-top: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.vault-tag {
+  font-size: 10px;
+  font-family: var(--mono);
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: 3px;
+  padding: 1px 6px;
+  color: var(--muted);
+}
+.vault-actions {
+  flex-shrink: 0;
+  align-self: center;
+  opacity: 0;
+  transition: opacity .12s;
+}
+.vault-row:hover .vault-actions,
+.vault-row:focus-within .vault-actions { opacity: 1; }
+.vault-action-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  padding: 4px 9px;
+  border-radius: 3px;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.vault-action-btn:hover {
+  color: var(--text);
+  border-color: var(--bdr);
+  background: var(--bg);
+}
+
+/* ════════════════════ SOUND MAP CAPTURE (PR3) ════════════════════ */
+.sm-capture-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0 0;
+  margin-top: 6px;
+  border-top: 1px solid var(--bdr);
+  width: 100%;
+  flex-wrap: wrap;
+}
+#sm-capture-btn {
+  background: var(--gold);
+  border: none;
+  border-radius: var(--radius);
+  color: #111;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: 7px 14px;
+  text-transform: uppercase;
+  transition: opacity .15s;
+}
+#sm-capture-btn:disabled { opacity: .35; cursor: not-allowed; }
+#sm-capture-btn:hover:not(:disabled) { opacity: .85; }
+.sm-capture-persona {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  padding: 4px 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+#sm-capture-persona-glyph { font-size: 14px; line-height: 1; }
+#sm-capture-persona-name  { color: var(--text); }
+.sm-capture-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.sm-capture-toggle input { margin: 0; cursor: pointer; }
+.sm-capture-status {
+  font-size: 11px;
+  letter-spacing: .04em;
+  color: var(--muted);
+  font-family: var(--mono);
+  margin-left: auto;
+  min-width: 0;
+}
+.sm-capture-status-ok    { color: var(--green); }
+.sm-capture-status-warn  { color: var(--gold); }
+.sm-capture-status-error { color: var(--red); }
+
+/* ════════════════════ VAULT EXPORT / IMPORT (PR4) ════════════════════ */
+.vault-toolbar-sep {
+  width: 1px;
+  height: 20px;
+  background: var(--bdr);
+  margin: 0 4px;
+  flex-shrink: 0;
+}
+.vault-toolbar-btn {
+  background: none;
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 11px;
+  letter-spacing: .04em;
+  padding: 5px 11px;
+  text-transform: uppercase;
+  transition: color .12s, border-color .12s;
+}
+.vault-toolbar-btn:hover:not(:disabled) {
+  color: var(--gold);
+  border-color: var(--gold);
+}
+.vault-toolbar-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+.vault-import-preview {
+  background: var(--surf);
+  border-bottom: 1px solid var(--bdr);
+  padding: 10px 16px;
+  flex-shrink: 0;
+}
+.vip-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+#vip-summary {
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 600;
+}
+.vip-detail {
+  font-family: var(--mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: .04em;
+}
+.vip-spacer { flex: 1; min-width: 12px; }
+.vip-btn {
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: 6px 14px;
+  text-transform: uppercase;
+  transition: opacity .15s, color .12s, border-color .12s, background .12s;
+}
+.vip-btn-primary { background: var(--gold); color: #111; }
+.vip-btn-primary:hover:not(:disabled) { opacity: .85; }
+.vip-btn-primary:disabled { opacity: .35; cursor: not-allowed; }
+.vip-btn-secondary {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--bdr);
+}
+.vip-btn-secondary:hover {
+  color: var(--text);
+  border-color: var(--text);
+}
+
+.vault-status {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--bdr);
+  background: var(--surf);
+  font-size: 12px;
+  font-family: var(--mono);
+  flex-shrink: 0;
+}
+.vault-status-ok    { color: var(--green); }
+.vault-status-warn  { color: var(--gold); }
+.vault-status-error { color: var(--red); }
+
+/* ════════════════════ PHONEME PROGRESSION PLAYBACK (Phase A) ════════════════════ */
+.sm-flow-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0 0;
+  margin-top: 6px;
+  border-top: 1px solid var(--bdr);
+  width: 100%;
+  flex-wrap: wrap;
+}
+#sm-play-flow {
+  background: var(--gold);
+  border: 1px solid var(--gold);
+  border-radius: var(--radius);
+  color: #111;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  padding: 7px 14px;
+  text-transform: uppercase;
+  transition: opacity .15s, background .15s, color .15s;
+}
+#sm-play-flow:hover { opacity: .85; }
+#sm-play-flow[data-state="playing"] {
+  background: var(--surf2);
+  color: var(--gold);
+}
+.sm-flow-tempo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.sm-flow-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+#sm-flow-tempo {
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-size: 13px;
+  padding: 5px 9px;
+  outline: none;
+  cursor: pointer;
+}
+#sm-flow-tempo:focus { border-color: var(--gold); }
+.sm-flow-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.sm-flow-toggle input { margin: 0; cursor: pointer; }
+
+/* Active phoneme glow — wins over voicing buzz via cascade order. */
+.sm-phon.sm-active {
+  box-shadow: 0 0 0 2px var(--gold), 0 0 14px rgba(212, 162, 76, .65);
+  filter: brightness(1.18);
+  z-index: 2;
+  animation: none;
+}
+
+/* Stress pulse — brief scale + halo on stressed-syllable starts. */
+.sm-syllable.sm-stress-pulse {
+  animation: sm-stress-pulse .32s cubic-bezier(.2, .8, .3, 1);
+}
+@keyframes sm-stress-pulse {
+  0%   { transform: scale(1); }
+  35%  {
+    transform: scale(1.055);
+    box-shadow: 0 0 14px rgba(212, 162, 76, .35);
+  }
+  100% { transform: scale(1); box-shadow: none; }
+}
+
+/* ════════════════════ SOUND MAP COMPACT TOGGLE ════════════════════ */
+/* Reserve a fixed-width gutter on the right of the toolbar so the
+   absolutely-positioned Compact/Expand pill never overlaps flex children
+   (notably the view-switcher tabs ending in "Coverage"). */
+#sm-toolbar { position: relative; padding-right: 112px; }
+@media (max-width: 560px) {
+  /* On very narrow viewports the pill collapses to icon-only width;
+     reduce the reserved gutter accordingly. */
+  #sm-toolbar { padding-right: 56px; }
+  .sm-compact-label { display: none; }
+}
+.sm-compact-btn {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 3;
+  padding: 5px 11px;
+  background: var(--surf2);
+  border: 1px solid var(--bdr);
+  border-radius: var(--radius);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  font-family: inherit;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color .12s, border-color .12s, background .12s;
+}
+.sm-compact-btn:hover {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: var(--surf);
+}
+.sm-compact-btn:focus-visible {
+  outline: none;
+  border-color: var(--gold);
+}
+.sm-compact-chevron {
+  font-family: var(--mono);
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 0;
+  color: var(--gold);
+}
+#sm-toolbar.sm-compact {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  gap: 8px;
+}
+#sm-toolbar.sm-compact #sm-input {
+  min-height: 36px !important;
+  height: 36px !important;
+}
+#sm-toolbar.sm-compact #sm-mode-picker,
+#sm-toolbar.sm-compact #sm-legend,
+#sm-toolbar.sm-compact #sm-flow-row,
+#sm-toolbar.sm-compact #sm-capture-row {
+  display: none !important;
+}
 </style>
 </head>
 <body>
+<div style="background:#3a2a18;border-bottom:1px solid #5a4520;color:#d4a24c;padding:8px 24px;font-family:Georgia,serif;font-size:12px;line-height:1.5;">
+  <strong style="font-weight:600;">Legacy app.</strong>
+  This is the older "Sound Map" — phoneme analysis and a Flow Lab. It is
+  <em>not</em> the Phonos study desk at
+  <a href="../language/" style="color:#d4a24c;text-decoration:underline;">/language/</a>.
+  Phonos is a quiet IPA chart for sound, script, and language history;
+  this app is a separate, earlier experiment.
+</div>
 <header id="sm-header">
-  <h1>Sound</h1>
+  <h1>Sound <span style="font-size:10px;color:#8a8a8a;letter-spacing:0;text-transform:none;font-weight:400;">(legacy)</span></h1>
   <span class="sub">English phoneme analysis + an IPA-across-scripts chart.</span>
-  <a href="../languages/">← Languages</a>
+  <a href="../languages/">← Languages (legacy)</a>
 </header>
 
 <nav id="tab-nav" role="tablist">
   <button class="tab-btn active" type="button" data-tab="sound" role="tab" aria-selected="true">Sound Map</button>
-  <button class="tab-btn" type="button" data-tab="chart" role="tab" aria-selected="false">Chart</button>
   <button class="tab-btn" type="button" data-tab="flow" role="tab" aria-selected="false">Flow Lab</button>
+  <button class="tab-btn" type="button" data-tab="coverage" role="tab" aria-selected="false">Coverage</button>
 </nav>
 
 <div id="panel-sound" class="active" role="tabpanel">
   <div id="sm-toolbar">
+    <button id="sm-compact-toggle" type="button" class="sm-compact-btn" aria-label="Compact controls" title="Compact controls" aria-pressed="false"><span class="sm-compact-chevron" aria-hidden="true">▴</span><span class="sm-compact-label">Compact</span></button>
     <textarea id="sm-input" placeholder="paste a sentence or phrase (one line per verse line)…" rows="3" spellcheck="false"></textarea>
     <button id="sm-visualize" type="button">Visualize</button>
     <div id="sm-view-switcher" role="group" aria-label="Visualization mode">
       <button type="button" class="sm-view-btn active" data-view="map">Phoneme Map</button>
       <button type="button" class="sm-view-btn" data-view="timeline">Articulation</button>
       <button type="button" class="sm-view-btn" data-view="stats">Stats</button>
-      <button type="button" class="sm-view-btn" data-view="coverage">Coverage</button>
     </div>
     <div id="sm-mode-picker" role="group" aria-label="Highlight mode">
       <span class="sm-mode-label">Highlight</span>
@@ -895,6 +1451,35 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
       <span class="sm-legend-item"><span class="sm-swatch" style="background:#b499d9"></span>back vowel</span>
       <span class="sm-legend-item"><span class="sm-swatch sm-swatch-gradient"></span>diphthong</span>
       <span class="sm-legend-item"><span class="sm-swatch sm-swatch-voice"></span>glow = voiced (cords buzzing)</span>
+    </div>
+    <!-- ── Play Flow (Phase A) ── -->
+    <div id="sm-flow-row" class="sm-flow-row">
+      <button id="sm-play-flow" type="button" data-state="idle">Play Flow</button>
+      <label class="sm-flow-tempo-wrap">
+        <span class="sm-flow-label">Tempo</span>
+        <select id="sm-flow-tempo" aria-label="Playback tempo">
+          <option value="slow">Slow</option>
+          <option value="natural" selected>Natural</option>
+          <option value="fast">Fast</option>
+        </select>
+      </label>
+      <label class="sm-flow-toggle">
+        <input type="checkbox" id="sm-flow-loop" />
+        <span>Loop</span>
+      </label>
+    </div>
+    <!-- ── Capture to Vault (PR3) ── -->
+    <div id="sm-capture-row" class="sm-capture-row">
+      <button id="sm-capture-btn" type="button">Capture to Vault</button>
+      <span id="sm-capture-persona" class="sm-capture-persona" aria-label="Active persona">
+        <span id="sm-capture-persona-glyph">·</span>
+        <span id="sm-capture-persona-name">(no persona)</span>
+      </span>
+      <label class="sm-capture-toggle">
+        <input type="checkbox" id="sm-capture-open-after" />
+        <span>Open in Bar Builder after</span>
+      </label>
+      <span id="sm-capture-status" class="sm-capture-status" aria-live="polite"></span>
     </div>
   </div>
   <div id="sm-output" data-view="map">
@@ -948,7 +1533,6 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
     </div>
     <div id="sm-view-timeline"></div>
     <div id="sm-view-stats"></div>
-    <div id="sm-view-coverage"></div>
   </div>
   <div id="sm-similar" class="hidden">
     <div id="sm-similar-header">
@@ -959,8 +1543,15 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   </div>
 </div>
 
-<div id="panel-chart" role="tabpanel">
+<div id="panel-coverage" role="tabpanel">
   <div class="pc-scroll">
+    <!-- Phonetic coverage section (formerly nested under Sound Map) -->
+    <div id="sm-view-coverage"></div>
+    <!-- IPA chart comparison section (formerly the top-level Chart tab) -->
+    <div class="pc-section-divider">
+      <div class="pc-section-title">IPA Chart · Scripts Comparison</div>
+      <div class="pc-section-sub">How each phoneme is written across Latin, Arabic, and Telugu.</div>
+    </div>
     <div class="pc-intro">
       Rows are phonemes in the <strong>International Phonetic Alphabet</strong> (IPA).
       Columns show the typical grapheme in each script. Click any cell to copy.
@@ -1001,7 +1592,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
     <button class="fl-tab-btn active" role="tab" aria-selected="true" aria-controls="fl-panel-rhyme" data-fl-tab="rhyme" onclick="flSwitchTab('rhyme',this)">Rhyme Finder</button>
     <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-endings" data-fl-tab="endings" onclick="flSwitchTab('endings',this)">Rap Endings</button>
     <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bar-builder" data-fl-tab="bar-builder" onclick="flSwitchTab('bar-builder',this)">Bar Builder</button>
-    <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bars" data-fl-tab="bars" onclick="flSwitchTab('bars',this)">Bar Sheet</button>
+    <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bars" data-fl-tab="bars" onclick="flSwitchTab('bars',this)">Vault</button>
   </nav>
 
   <!-- ── Rhyme Finder ── -->
@@ -1048,6 +1639,19 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
     <div id="bb-toolbar">
       <textarea id="bb-input" placeholder="type or paste bars, one per line…" rows="3" spellcheck="false"></textarea>
       <button id="bb-analyze" type="button">Analyze</button>
+      <div id="bb-vault-controls" class="bb-vault-row">
+        <label class="bb-persona-wrap">
+          <span class="bb-persona-label">Persona</span>
+          <select id="bb-persona" aria-label="Active persona"></select>
+        </label>
+        <button id="bb-save"     type="button" disabled>Save to Vault</button>
+        <button id="bb-save-rev" type="button" hidden>Save Revision</button>
+        <span   id="bb-state-indicator" class="bb-state-draft" aria-live="polite">no text</span>
+        <span   id="bb-bar-chip" class="bb-chip" hidden>
+          <span id="bb-bar-chip-text"></span>
+          <button id="bb-bar-chip-clear" type="button" aria-label="Unload bar">×</button>
+        </span>
+      </div>
       <div id="bb-legend">
         <span class="sm-legend-item"><span class="sm-swatch" style="background:#f5a5c9"></span>lips</span>
         <span class="sm-legend-item"><span class="sm-swatch" style="background:#f5b58a"></span>teeth/lip</span>
@@ -1066,8 +1670,39 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
     </div>
   </div>
 
-  <!-- ── Bar Sheet ── -->
-  <div id="fl-panel-bars" class="fl-tab-panel" role="tabpanel" aria-label="Bar Sheet">
+  <!-- ── Vault (replaces Bar Sheet visibly; legacy Bar Sheet DOM kept hidden below for inline JS bindings) ── -->
+  <div id="fl-panel-bars" class="fl-tab-panel" role="tabpanel" aria-label="Vault">
+    <div id="vault-shell">
+      <div id="vault-toolbar">
+        <input id="vault-search" type="search" placeholder="search bars, notes, tags, persona…" spellcheck="false" autocomplete="off" />
+        <select id="vault-persona-filter" aria-label="Filter by persona">
+          <option value="__all">All personas</option>
+          <option value="__none">(no persona)</option>
+        </select>
+        <label class="vault-toggle">
+          <input type="checkbox" id="vault-show-archived" />
+          <span>Show archived</span>
+        </label>
+        <span id="vault-count" class="vault-count" aria-live="polite"></span>
+        <span class="vault-toolbar-sep"></span>
+        <button id="vault-export" type="button" class="vault-toolbar-btn" title="Export Vault as JSON">Export</button>
+        <button id="vault-import" type="button" class="vault-toolbar-btn" title="Import a previously exported Vault">Import…</button>
+        <input type="file" id="vault-import-file" accept="application/json,.json" hidden />
+      </div>
+      <div id="vault-import-preview" class="vault-import-preview" hidden>
+        <div class="vip-row">
+          <span id="vip-summary"></span>
+          <span id="vip-detail" class="vip-detail"></span>
+          <span class="vip-spacer"></span>
+          <button id="vip-cancel"  type="button" class="vip-btn vip-btn-secondary">Cancel</button>
+          <button id="vip-confirm" type="button" class="vip-btn vip-btn-primary">Confirm Import</button>
+        </div>
+      </div>
+      <div id="vault-status" class="vault-status" hidden aria-live="polite"></div>
+      <div id="vault-list" role="list">
+        <div id="vault-empty" class="vault-empty">No saved bars yet. Switch to Bar Builder, type a bar, click Save.</div>
+      </div>
+    </div>
     <div class="panel-scroll">
 
       <!-- Song Metadata -->
@@ -1155,6 +1790,17 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 <script src="../data/cmudict.js"></script>
 <script src="../data/phonetics.js"></script>
 <script src="../data/language_phonetics.js"></script>
+<script src="./js/ulid.js"></script>
+<script src="./js/schemas.js"></script>
+<script src="./js/vault.js"></script>
+<script src="./js/bars.js"></script>
+<script src="./js/personas.js"></script>
+<script src="./js/ui_integration.js"></script>
+<script src="./js/ui_vault.js"></script>
+<script src="./js/ui_capture.js"></script>
+<script src="./js/performance.js"></script>
+<script src="./js/ui_performance.js"></script>
+<script src="./js/ui_compact.js"></script>
 <script>
 // ══════════════════════════════════
 //  SOUND MAP
@@ -3795,7 +4441,8 @@ function smSwitchView(view) {
     b.classList.toggle("active", b.dataset.view === view);
   });
   if (view !== "timeline") smStopTimeline();
-  if (view === "coverage" && !smCovRendered) smCovRender();
+  // Coverage view is no longer a sub-view of Sound Map; it's a top-level tab now.
+  // setTab("coverage") handles its lazy render.
 }
 
 document.querySelectorAll(".sm-view-btn").forEach(btn => {
@@ -4016,7 +4663,7 @@ function pcToast(msg) {
   clearTimeout(pcToast._t);
   pcToast._t = setTimeout(() => t.classList.remove("show"), 900);
 }
-document.getElementById("panel-chart").addEventListener("click", (e) => {
+document.getElementById("panel-coverage").addEventListener("click", (e) => {
   const cell = e.target.closest(".pc-col-script");
   if (!cell || cell.classList.contains("empty")) return;
   const v = cell.dataset.copy;
@@ -5581,14 +6228,19 @@ document.getElementById("bb-input").addEventListener("keydown", e => {
 //  TAB SWITCHING
 // ══════════════════════════════════
 function setTab(name) {
+  // Backwards-compat: legacy "chart" routes map to the new combined "coverage" tab.
+  if (name === "chart") name = "coverage";
   document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
     const on = b.dataset.tab === name;
     b.classList.toggle("active", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
   });
   document.getElementById("panel-sound").classList.toggle("active", name === "sound");
-  document.getElementById("panel-chart").classList.toggle("active", name === "chart");
+  document.getElementById("panel-coverage").classList.toggle("active", name === "coverage");
   document.getElementById("panel-flow").classList.toggle("active", name === "flow");
+  if (name === "coverage" && typeof smCovRender === "function" && !smCovRendered) {
+    try { smCovRender(); } catch(_) {}
+  }
   try { localStorage.setItem("sm-tab", name); } catch(_) {}
 }
 document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
@@ -5599,8 +6251,10 @@ document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
   const fromUrl = params.get("tab");
   let saved = null;
   try { saved = localStorage.getItem("sm-tab"); } catch(_) {}
-  const validUrl = (fromUrl === "chart" || fromUrl === "sound" || fromUrl === "flow") ? fromUrl : null;
-  const validSaved = (saved === "chart" || saved === "sound" || saved === "flow") ? saved : null;
+  // "chart" still accepted (legacy bookmarks) — setTab() will remap it.
+  const VALID = new Set(["sound", "flow", "coverage", "chart"]);
+  const validUrl = VALID.has(fromUrl) ? fromUrl : null;
+  const validSaved = VALID.has(saved) ? saved : null;
   const initial = validUrl || validSaved || "sound";
   if (initial !== "sound") setTab(initial);
 })();
@@ -5610,7 +6264,7 @@ document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
 // ══════════════════════════════════
 // Supported hashes:
 //   #vt=<ipa>     → Sound Map tab, vocal tract focused on that phoneme
-//   #chart=<ipa>  → Chart tab, scroll matching IPA row into view + flash
+//   #chart=<ipa>  → Coverage tab (legacy "chart"), scroll matching IPA row into view + flash
 // Used by Phonetic Center "See articulation" links and any other inbound deep link.
 
 function smHandleHash() {
@@ -5629,10 +6283,10 @@ function smHandleHash() {
     // but the SVG is in the DOM at parse time, so this is safe.
     if (typeof smUpdateVocalTract === "function") smUpdateVocalTract(val);
   } else if (key === "chart") {
-    setTab("chart");
-    // Wait one frame so the chart panel's display:flex has applied before scroll.
+    setTab("coverage");
+    // Wait one frame so the coverage panel's display:flex has applied before scroll.
     requestAnimationFrame(() => {
-      const row = document.querySelector(`#panel-chart tr[data-ipa="${CSS.escape(val)}"]`);
+      const row = document.querySelector(`#panel-coverage tr[data-ipa="${CSS.escape(val)}"]`);
       if (!row) return;
       row.scrollIntoView({ behavior: "smooth", block: "center" });
       row.classList.remove("pc-row-flash");
