@@ -7,21 +7,43 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — material refinement layer.
-       Structure unchanged from prior cycle; only surface, containment,
-       hover, and accent richness adjusted. */
+    /* Workspace — color & material atmosphere refinement.
+       Structure unchanged. Each world receives a restrained archival
+       pigment, applied as kind-label color, drawer-label left-edge,
+       and hovered-name color. Used in tiny elements only — the page
+       reads as cream and ink with quiet pigment accents. */
 
     :root {
-      /* Deeper scholarly accents */
-      --accent-warm:   #7a4e26;   /* deeper warm bronze: kind labels, within-label */
-      --accent-deep:   #5e2828;   /* deeper oxblood: institutional rules + hover */
-      --rule-warm:     #c8b88f;   /* warm cream rule for column dividers */
-      /* Surface layer — almost imperceptible inset cream */
+      /* Existing scholarly accents (kept) */
+      --accent-warm:   #7a4e26;
+      --accent-deep:   #5e2828;
+      --rule-warm:     #c8b88f;
       --surface-tint:        rgba(0, 0, 0, 0.012);
       --surface-border:      rgba(122, 78, 38, 0.10);
       --surface-tint-hover:  rgba(122, 78, 38, 0.045);
       --surface-border-hover:rgba(122, 78, 38, 0.32);
-      --surface-shadow-hover:rgba(122, 78, 38, 0.16);
+
+      /* Per-world archival pigments — desaturated, matte, print-like */
+      /* Triad */
+      --w-archive:        #7a2828;   /* oxblood — Digital-Archive */
+      --w-atlas:          #3e4f6e;   /* slate indigo — Atlas */
+      --w-glyphs:         #6b4f28;   /* dark sandstone — Glyphs */
+      /* Directory (15 worlds) */
+      --w-pantheons:      #2c3a5e;   /* celestial navy */
+      --w-soundmap:       #4f6240;   /* dark sage */
+      --w-images:         #5e3d4d;   /* muted plum */
+      --w-cosmos:         #1f2a3a;   /* deep blue-black */
+      --w-language:       #5a6b3e;   /* olive sage */
+      --w-philosophy:     #5e3340;   /* muted wine */
+      --w-flags:          #4e4a40;   /* iron earth */
+      --w-nutrilens:      #3e6060;   /* muted teal */
+      --w-math:           #3a3a3a;   /* graphite */
+      --w-milwaukee:      #6b3f28;   /* terra cotta */
+      --w-mirror:         #4a4a4e;   /* warm slate */
+      --w-science:        #2e5e5e;   /* archival teal */
+      --w-emoji:          #5a5048;   /* warm umber */
+      --w-graph:          #4a5670;   /* slate (sibling of Atlas) */
+      --w-archive-shelf:  #6b4520;   /* parchment bronze (sibling of Archive) */
     }
 
     .atlas-main { padding-top: 2rem; padding-bottom: 3rem; }
@@ -38,6 +60,12 @@
       border-top: 1px solid var(--accent-deep);
       border-bottom: 1px solid var(--accent-deep);
     }
+
+    /* Each doorway carries its world's pigment as --w */
+    .doorway:nth-child(1) { --w: var(--w-archive); }
+    .doorway:nth-child(2) { --w: var(--w-atlas); }
+    .doorway:nth-child(3) { --w: var(--w-glyphs); }
+
     .doorway {
       display: block;
       padding: 1rem 1.2rem 1.15rem 1.2rem;
@@ -51,8 +79,8 @@
     .doorway:hover {
       text-decoration: none;
       background: var(--surface-tint-hover);
-      border-color: var(--surface-border-hover);
-      box-shadow: 0 1px 0 var(--surface-shadow-hover);
+      border-color: color-mix(in srgb, var(--w) 50%, transparent);
+      box-shadow: 0 1px 0 color-mix(in srgb, var(--w) 30%, transparent);
     }
     .doorway-kind {
       display: block;
@@ -60,7 +88,7 @@
       font-size: 0.66rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--accent-warm);
+      color: var(--w);
       margin-bottom: 0.4rem;
       font-weight: 600;
     }
@@ -77,8 +105,8 @@
       transition: color 0.15s, border-bottom-color 0.15s;
     }
     .doorway:hover .doorway-name {
-      color: var(--accent-deep);
-      border-bottom-color: var(--accent-deep);
+      color: var(--w);
+      border-bottom-color: var(--w);
     }
     .doorway-desc {
       display: block;
@@ -108,7 +136,6 @@
       margin: 0;
       column-count: 3;
       column-gap: 2rem;
-      column-rule: 1px solid var(--rule-warm);
     }
     .within-list li {
       break-inside: avoid;
@@ -116,14 +143,17 @@
     }
     .within-list a {
       display: block;
-      padding: 0.28rem 0.45rem;
-      border-radius: 2px;
+      padding: 0.28rem 0.5rem 0.3rem 0.55rem;
+      border-left: 2px solid var(--w, var(--rule-warm));
+      border-radius: 0 2px 2px 0;
       color: var(--ink);
       text-decoration: none;
-      transition: background 0.15s;
+      transition: background 0.15s, border-left-color 0.15s, padding-left 0.15s;
     }
     .within-list a:hover {
-      background: var(--surface-tint-hover);
+      background: color-mix(in srgb, var(--w, var(--accent-warm)) 7%, transparent);
+      border-left-width: 3px;
+      padding-left: 0.5rem;   /* keeps text from shifting when border thickens */
     }
     .within-name {
       font-family: var(--serif);
@@ -131,7 +161,7 @@
       font-weight: 600;
       transition: color 0.15s;
     }
-    .within-list a:hover .within-name { color: var(--accent-deep); }
+    .within-list a:hover .within-name { color: var(--w, var(--accent-deep)); }
     .within-desc {
       display: block;
       font-family: var(--sans);
@@ -141,9 +171,25 @@
       margin-top: 0.02rem;
     }
 
+    /* ── Footer ─────────────────────────────────────────────────── */
+
     .atlas-footer {
-      margin-top: 1.25rem;
+      margin-top: 1.5rem;
+      padding-top: 1.25rem;
       border-top: 1px solid var(--rule-warm);
+      position: relative;
+    }
+    /* Quiet fleuron above the footer text — illuminated-manuscript restraint */
+    .atlas-footer::before {
+      content: '❦';
+      position: absolute;
+      top: -0.65rem;
+      left: 0;
+      background: var(--bg);
+      padding: 0 0.5rem 0 0;
+      font-size: 0.95rem;
+      color: var(--accent-warm);
+      line-height: 1;
     }
     .atlas-footer p {
       font-style: italic;
@@ -168,10 +214,7 @@
         padding: 1.5rem 0;
       }
       .doorway-name { font-size: 1.4rem; }
-      .within-list {
-        column-count: 1;
-        column-rule: 0;
-      }
+      .within-list { column-count: 1; }
     }
   </style>
 </head>
@@ -205,63 +248,63 @@
     <section class="within" aria-labelledby="within-label">
       <h2 id="within-label" class="within-label">Within Workspace</h2>
       <ul class="within-list">
-        <li><a href="gods/">
+        <li><a href="gods/" style="--w: var(--w-pantheons);">
           <span class="within-name">Pantheons</span>
           <span class="within-desc">Cross-cultural map of deities.</span>
         </a></li>
-        <li><a href="sound-map/">
+        <li><a href="sound-map/" style="--w: var(--w-soundmap);">
           <span class="within-name">Sound Map</span>
           <span class="within-desc">Phonetic correspondences.</span>
         </a></li>
-        <li><a href="images/">
+        <li><a href="images/" style="--w: var(--w-images);">
           <span class="within-name">Images</span>
           <span class="within-desc">Art and visual reference.</span>
         </a></li>
-        <li><a href="cosmos/">
+        <li><a href="cosmos/" style="--w: var(--w-cosmos);">
           <span class="within-name">Cosmos</span>
           <span class="within-desc">Solar system, galaxy, universe.</span>
         </a></li>
-        <li><a href="language/">
+        <li><a href="language/" style="--w: var(--w-language);">
           <span class="within-name">Language</span>
           <span class="within-desc">Phonos — sounds and scripts.</span>
         </a></li>
-        <li><a href="philosophy/">
+        <li><a href="philosophy/" style="--w: var(--w-philosophy);">
           <span class="within-name">Philosophy</span>
           <span class="within-desc">Reading notes and short essays.</span>
         </a></li>
-        <li><a href="flags/">
+        <li><a href="flags/" style="--w: var(--w-flags);">
           <span class="within-name">Flags</span>
           <span class="within-desc">Countries and geography.</span>
         </a></li>
-        <li><a href="nutrilens/">
+        <li><a href="nutrilens/" style="--w: var(--w-nutrilens);">
           <span class="within-name">NutriLens</span>
           <span class="within-desc">Offline nutrient explorer.</span>
         </a></li>
-        <li><a href="math/">
+        <li><a href="math/" style="--w: var(--w-math);">
           <span class="within-name">Math</span>
           <span class="within-desc">Graphs, symbols, notes.</span>
         </a></li>
-        <li><a href="milwaukee/">
+        <li><a href="milwaukee/" style="--w: var(--w-milwaukee);">
           <span class="within-name">Milwaukee</span>
           <span class="within-desc">Local guide.</span>
         </a></li>
-        <li><a href="mirror/">
+        <li><a href="mirror/" style="--w: var(--w-mirror);">
           <span class="within-name">Mirror</span>
           <span class="within-desc">Personal self-tracking.</span>
         </a></li>
-        <li><a href="science/">
+        <li><a href="science/" style="--w: var(--w-science);">
           <span class="within-name">Science</span>
           <span class="within-desc">Topic clusters and glossary.</span>
         </a></li>
-        <li><a href="emoji-games/">
+        <li><a href="emoji-games/" style="--w: var(--w-emoji);">
           <span class="within-name">Emoji Games</span>
           <span class="within-desc">Casual games.</span>
         </a></li>
-        <li><a href="graph/">
+        <li><a href="graph/" style="--w: var(--w-graph);">
           <span class="within-name">Graph</span>
           <span class="within-desc">Structural map of archive texts.</span>
         </a></li>
-        <li><a href="archive/">
+        <li><a href="archive/" style="--w: var(--w-archive-shelf);">
           <span class="within-name">Archive Shelf</span>
           <span class="within-desc">Curated doorway into selected texts.</span>
         </a></li>
