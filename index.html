@@ -7,31 +7,33 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — institutional layout.
-       Three-tier hierarchy:
-         1. Header brand (smallest typographic weight)
-         2. Institutional band (largest weight; framed by rule lines)
-         3. Within-Workspace index (compact directory rows) */
+    /* Workspace — final composition.
+       Density tightened so the institutional triad and the start of the
+       directory are visible together on standard desktop/laptop viewports. */
+
+    /* Pull main padding inward — atlas.css gives 4.5rem top/bottom; we
+       compress to 2.5rem so the page seats higher in the viewport. */
+    .atlas-main { padding-top: 2.5rem; padding-bottom: 4rem; }
 
     .opening {
       max-width: var(--measure);
-      margin: 0 0 3rem 0;
+      margin: 0 0 1.75rem 0;
     }
     .opening p {
-      font-size: 1.05rem;
+      font-size: 1rem;
       color: var(--ink-soft);
       margin: 0;
     }
 
-    /* ── Institutional band ─────────────────────────────────────── */
+    /* ── Institutional triad ────────────────────────────────────── */
 
     .doorways {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      column-gap: 4rem;
-      row-gap: 3rem;
-      margin: 0 0 5rem 0;
-      padding: 4rem 0;
+      grid-template-columns: repeat(3, 1fr);
+      column-gap: 2.5rem;
+      row-gap: 2rem;
+      margin: 0 0 2.75rem 0;
+      padding: 2.25rem 0 2rem 0;
       border-top: 1px solid var(--ink-soft);
       border-bottom: 1px solid var(--ink-soft);
     }
@@ -44,22 +46,22 @@
     .doorway-kind {
       display: block;
       font-family: var(--sans);
-      font-size: 0.7rem;
+      font-size: 0.66rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--muted);
-      margin-bottom: 0.55rem;
+      margin-bottom: 0.4rem;
       font-weight: 600;
     }
     .doorway-name {
       display: inline-block;
       font-family: var(--serif);
-      font-size: 1.85rem;
+      font-size: 1.65rem;
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.1;
-      margin-bottom: 0.7rem;
-      padding-bottom: 3px;
+      margin-bottom: 0.45rem;
+      padding-bottom: 2px;
       border-bottom: 1px solid transparent;
       transition: color 0.15s, border-bottom-color 0.15s;
     }
@@ -70,10 +72,10 @@
     .doorway-desc {
       display: block;
       font-family: var(--sans);
-      font-size: 0.92rem;
+      font-size: 0.84rem;
       color: var(--ink-soft);
-      line-height: 1.5;
-      max-width: 22rem;
+      line-height: 1.45;
+      max-width: 18rem;
     }
 
     /* ── Within-Workspace directory ─────────────────────────────── */
@@ -83,11 +85,11 @@
     }
     .within-label {
       font-family: var(--sans);
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
+      font-size: 0.66rem;
+      letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--muted);
-      margin: 0 0 1.25rem 0;
+      margin: 0 0 0.85rem 0;
       font-weight: 600;
     }
     .within-list {
@@ -95,22 +97,22 @@
       padding: 0;
       margin: 0;
       column-count: 2;
-      column-gap: 3rem;
+      column-gap: 2.5rem;
       column-rule: 1px solid var(--rule);
     }
     .within-list li {
       break-inside: avoid;
-      margin-bottom: 0.55rem;
+      margin-bottom: 0.4rem;
     }
     .within-list a {
       display: block;
       color: var(--ink);
       text-decoration: none;
-      padding: 0.1rem 0;
+      padding: 0.05rem 0;
     }
     .within-name {
       font-family: var(--serif);
-      font-size: 0.92rem;
+      font-size: 0.9rem;
       font-weight: 600;
       transition: color 0.15s;
     }
@@ -118,22 +120,38 @@
     .within-desc {
       display: block;
       font-family: var(--sans);
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       color: var(--muted);
-      line-height: 1.4;
-      margin-top: 0.05rem;
+      line-height: 1.35;
+      margin-top: 0.02rem;
     }
 
+    /* Compress the footer too — atlas.css default is 6rem padding-bottom
+       on .atlas-main; we shortened it. Footer naturally sits closer. */
+    .atlas-footer {
+      margin-top: 1.5rem;
+    }
     .atlas-footer p { font-style: italic; }
 
-    @media (max-width: 720px) {
+    /* ── Responsive ─────────────────────────────────────────────── */
+
+    /* Tablet / small laptop: triad still in 3 columns but tighter. */
+    @media (max-width: 900px) {
+      .doorway-name { font-size: 1.4rem; }
+      .doorway-desc { font-size: 0.8rem; }
+      .doorways { column-gap: 1.75rem; padding: 1.75rem 0 1.5rem 0; }
+    }
+
+    /* Phone: stack triad and collapse directory. */
+    @media (max-width: 640px) {
+      .atlas-main { padding-top: 1.5rem; }
       .doorways {
         grid-template-columns: 1fr;
         column-gap: 0;
-        row-gap: 2.5rem;
-        padding: 2.5rem 0;
+        row-gap: 1.75rem;
+        padding: 1.75rem 0;
       }
-      .doorway-name { font-size: 1.55rem; }
+      .doorway-name { font-size: 1.45rem; }
       .within-list {
         column-count: 1;
         column-rule: 0;
@@ -157,12 +175,17 @@
       <a class="doorway" href="https://stevenfrye30.github.io/Digital-Archive/">
         <span class="doorway-kind">Reading</span>
         <span class="doorway-name">Digital-Archive</span>
-        <span class="doorway-desc">A reading room for historical and sacred texts. Apparatus visible; stewardship recorded.</span>
+        <span class="doorway-desc">Historical and sacred texts. Apparatus visible; stewardship recorded.</span>
       </a>
       <a class="doorway" href="https://stevenfrye30.github.io/Atlas/">
         <span class="doorway-kind">Engine</span>
         <span class="doorway-name">Atlas</span>
-        <span class="doorway-desc">The structural map of the archive — a typed semantic graph over the texts.</span>
+        <span class="doorway-desc">Structural map of the archive — a typed semantic graph over the texts.</span>
+      </a>
+      <a class="doorway" href="https://github.com/stevenfrye30/Glyphs">
+        <span class="doorway-kind">Script</span>
+        <span class="doorway-name">Glyphs</span>
+        <span class="doorway-desc">Early alphabet forms and symbolic descent.</span>
       </a>
     </nav>
 
