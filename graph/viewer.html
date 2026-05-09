@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Atlas Visualizer</title>
+<script src="https://unpkg.com/cytoscape@3.30.0/dist/cytoscape.min.js"></script>
+<script src="https://unpkg.com/layout-base@2.0.1/layout-base.js"></script>
+<script src="https://unpkg.com/cose-base@2.2.0/cose-base.js"></script>
+<script src="https://unpkg.com/cytoscape-cose-bilkent@4.1.0/cytoscape-cose-bilkent.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    color: #222; background: #f4f5f7;
+  }
+  header {
+    padding: 8px 16px; background: #2b2b35; color: #f5f5f7;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid #1a1a22;
+  }
+  header h1 { margin: 0; font-size: 15px; font-weight: 600; letter-spacing: 0.4px; }
+  header .status { font-size: 12px; color: #aab; font-family: ui-monospace, Menlo, Consolas, monospace; }
+
+  main {
+    display: grid;
+    grid-template-columns: 280px 1fr 320px;
+    height: calc(100vh - 38px);
+    overflow: hidden;
+  }
+  aside {
+    background: #fff; padding: 14px 16px;
+    overflow-y: auto;
+    border-right: 1px solid #e0e2e6;
+  }
+  aside.right { border-right: none; border-left: 1px solid #e0e2e6; }
+  aside h2 {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 0.7px;
+    color: #777; margin: 16px 0 6px; font-weight: 600;
+  }
+  aside h2:first-child { margin-top: 0; }
+
+  .upload-row { display: flex; gap: 6px; align-items: center; }
+  input[type="file"] { font-size: 12px; flex: 1; }
+  button {
+    font-size: 12px; padding: 6px 10px; border: 1px solid #ccc;
+    background: #f7f7fa; cursor: pointer; border-radius: 4px;
+  }
+  button:hover { background: #ebebef; }
+  select { font-size: 12px; padding: 4px 6px; border-radius: 4px;
+           border: 1px solid #ccc; background: white; width: 100%; }
+
+  .filter-row {
+    display: flex; align-items: center; gap: 8px;
+    margin: 3px 0; font-size: 12px;
+  }
+  .filter-row input[type="checkbox"] { margin: 0; }
+  .filter-row label { flex: 1; cursor: pointer; user-select: none; }
+  .swatch {
+    display: inline-block; width: 14px; height: 14px;
+    border-radius: 3px; border: 1px solid rgba(0,0,0,0.2); flex: none;
+  }
+  .swatch.line {
+    width: 22px; height: 0; border-radius: 0;
+    border: 0; border-top-width: 3px;
+  }
+
+  #cy { width: 100%; height: 100%; background: #fafbfc; }
+
+  .cluster-card {
+    border: 1px solid #e2e4e8; border-left-width: 4px;
+    border-radius: 4px; padding: 8px 10px; margin: 6px 0;
+    cursor: pointer; user-select: none; background: #fafbfc;
+    transition: background 0.15s, border-color 0.15s;
+  }
+  .cluster-card:hover { background: #f0f1f4; }
+  .cluster-card.active {
+    background: #fff8e6; border-color: #b88600; border-left-color: #b88600;
+  }
+  .cluster-card .cluster-label {
+    font-size: 12.5px; font-weight: 600; color: #333; margin-bottom: 3px;
+  }
+  .cluster-card .cluster-meta {
+    font-size: 11px; color: #777; line-height: 1.4;
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+  }
+
+  #inspector { font-size: 12.5px; line-height: 1.55; }
+  #inspector .placeholder { color: #999; font-style: italic; }
+  #inspector .row { margin: 4px 0; }
+  #inspector .label {
+    display: inline-block; width: 80px; color: #666; font-size: 11px;
+  }
+  #inspector code {
+    font-family: ui-monospace, Menlo, Consolas, monospace;
+    background: #f1f2f5; padding: 1px 5px; border-radius: 3px; font-size: 11px;
+  }
+  #inspector .pill {
+    display: inline-block; padding: 1px 8px; border-radius: 10px;
+    font-size: 11px; color: white; font-weight: 600;
+  }
+  #inspector ul { margin: 4px 0 0; padding-left: 18px; }
+  #inspector h3 {
+    font-size: 12px; margin: 12px 0 4px; color: #333;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .small { font-size: 11px; color: #888; }
+  .help-block { font-size: 11px; color: #666; margin: 6px 0; line-height: 1.45; }
+  .help-block code { background: #f1f2f5; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Atlas Visualizer</h1>
+  <span class="status" id="status">no graph loaded</span>
+</header>
+<main>
+  <aside class="left">
+    <h2>Load graph</h2>
+    <div class="upload-row">
+      <input type="file" id="fileInput" accept=".json,application/json">
+    </div>
+    <p class="help-block">
+      Or use the bundled multi-tradition sample (Buddhist + Upanishadic
+      + Stoic + Platonic):
+    </p>
+    <button id="loadSample" style="width:100%">load bundled sample</button>
+
+    <h2>Clusters <span class="small" id="clusterCount" style="font-weight:normal;text-transform:none;letter-spacing:0;"></span></h2>
+    <div id="clusterList">
+      <p class="help-block"><em>No clusters yet.</em></p>
+    </div>
+
+    <h2>Node types</h2>
+    <div id="nodeFilters"></div>
+
+    <h2>Edge types</h2>
+    <div id="edgeFilters"></div>
+
+    <h2>Layout</h2>
+    <select id="layoutSel">
+      <option value="cose-bilkent" selected>cose-bilkent (clustered)</option>
+      <option value="cose">force-directed (cose)</option>
+      <option value="concentric">concentric</option>
+      <option value="circle">circle</option>
+      <option value="grid">grid</option>
+      <option value="breadthfirst">breadthfirst</option>
+    </select>
+    <button id="relayout" style="margin-top:6px;width:100%">re-run layout</button>
+
+    <h2>Tip</h2>
+    <p class="help-block">
+      Generate a graph file from Atlas with:<br>
+      <code>json.dump(graph.to_dict(), open("g.json","w"))</code>
+    </p>
+  </aside>
+
+  <div id="cy"></div>
+
+  <aside class="right">
+    <h2>Inspector</h2>
+    <div id="inspector">
+      <p class="placeholder">Click a node, edge, or cluster to inspect. Hover any node to highlight its neighborhood.</p>
+    </div>
+  </aside>
+</main>
+
+<script>
+// ============================================================
+//  Constants
+// ============================================================
+const NODE_TYPES = ["IM", "LM", "CS", "CM", "OM"];
+const NODE_COLORS = {
+  IM: "#d6404a",  // red
+  LM: "#3b6cd8",  // blue
+  CS: "#2c9c54",  // green
+  CM: "#e69830",  // orange
+  OM: "#8b54c8",  // purple
+};
+const NODE_LONG = {
+  IM: "IdentityModel",
+  LM: "LiberationModel",
+  CS: "ControlSystem",
+  CM: "CausalityModel",
+  OM: "OntologicalModel",
+};
+
+const EDGE_TYPES = [
+  "contradiction",
+  "inversion",
+  "causal-dependency",
+  "equivalence",
+  "hierarchical-refinement",
+  "functional-overlap",
+];
+// Default widths intentionally thinner than before so the graph reads
+// cleanly at low opacity. Hover highlight thickens the active region.
+const EDGE_STYLE = {
+  "contradiction":           { color: "#d62828", width: 2.5, dashed: false, arrow: false },
+  "inversion":               { color: "#666",    width: 1.5, dashed: true,  arrow: true  },
+  "causal-dependency":       { color: "#2b2b35", width: 1.6, dashed: false, arrow: true  },
+  "equivalence":             { color: "#999",    width: 1.0, dashed: false, arrow: false },
+  "hierarchical-refinement": { color: "#2962ff", width: 1.4, dashed: false, arrow: true  },
+  "functional-overlap":      { color: "#86d49b", width: 1.8, dashed: false, arrow: false },
+};
+
+// Cluster-label rules. Deterministic: counts each node-type, then matches
+// in priority order. Mirrors the spec exactly.
+function labelCluster(types) {
+  const total = types.length || 1;
+  const c = {};
+  types.forEach(t => { c[t] = (c[t] || 0) + 1; });
+  const f = t => (c[t] || 0) / total;
+
+  if (f("IM") >= 0.4 && f("LM") >= 0.4) return "Identity-Liberation Tension Cluster";
+  if (f("IM") > 0.5)  return "Identity Structure Cluster";
+  if (f("LM") > 0.5)  return "Liberation Mechanism Cluster";
+  if (f("CS") > 0.5)  return "Control System Cluster";
+  if (f("CM") > 0.5)  return "Causal Structure Cluster";
+  if (f("OM") > 0.5)  return "Ontological Structure Cluster";
+  return "Mixed Structural Cluster";
+}
+
+// Map node type to the structural function it carries. Used in the
+// explainer's "dominant function" line.
+const TYPE_FUNCTION = {
+  IM: "identity modeling",
+  LM: "liberation mechanism",
+  CS: "discipline / regulation",
+  CM: "causal grounding",
+  OM: "ontological grounding",
+};
+
+// Same priority order as labelCluster, but returns the type code that
+// drove the label (or "mixed" / "mixed-im-lm").
+function dominantType(typeCounts) {
+  const total = NODE_TYPES.reduce((s, t) => s + (typeCounts[t] || 0), 0);
+  if (!total) return "mixed";
+  const f = t => (typeCounts[t] || 0) / total;
+  if (f("IM") >= 0.4 && f("LM") >= 0.4) return "mixed-im-lm";
+  if (f("IM") > 0.5) return "IM";
+  if (f("LM") > 0.5) return "LM";
+  if (f("CS") > 0.5) return "CS";
+  if (f("CM") > 0.5) return "CM";
+  if (f("OM") > 0.5) return "OM";
+  return "mixed";
+}
+
+// Tradition is the first segment of a corpus locator. Two locator
+// shapes are recognized:
+//   "buddhist/dhammapada-3:1"   -> "buddhist"   (tree layout)
+//   "buddhist-sample"           -> "buddhist"   (flat layout, hyphen)
+// Anything else falls back to the locator itself.
+function traditionOf(loc) {
+  if (typeof loc !== "string" || !loc) return "unknown";
+  if (loc.indexOf("/") >= 0) return loc.split("/")[0];
+  if (loc.indexOf("-") >= 0) return loc.split("-")[0];
+  return loc;
+}
+
+// Strip the trailing ":<passage-index>" from a locator to recover the
+// underlying text id (one text -> potentially many passage locators).
+function textIdOf(loc) {
+  if (typeof loc !== "string" || !loc) return "unknown";
+  return loc.split(":")[0];
+}
+
+function titleCase(s) {
+  if (!s) return s;
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+// ============================================================
+//  Embedded sample (auto-generated from examples/multi_corpus)
+// ============================================================
+const EMBEDDED_SAMPLE = {
+  "nodes": [
+    {"id":"OM-028a568b","type":"OM","subtype":"monism","label":"all-is-one","axes":["absolute","non-duality"],"operation":"assert","corpus_locators":["plato/republic:2","upanishads/chandogya:3","upanishads/kena:3"]},
+    {"id":"IM-0dc1c8dd","type":"IM","subtype":"self-as-illusion","label":"self-is-illusion","axes":["non-self","self"],"operation":"negate","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
+    {"id":"CS-1ad1dc09","type":"CS","subtype":"renunciation","label":"renunciation-of-world","axes":["renunciation","world"],"operation":"dissolve","corpus_locators":["buddhist/dhammapada-3:3","buddhist/prajnaparamita:2"]},
+    {"id":"LM-36ebce29","type":"LM","subtype":"liberation-by-realization","label":"liberation-by-realization","axes":["absolute","freedom","non-duality"],"operation":"align","corpus_locators":["upanishads/chandogya:3","upanishads/kena:3"]},
+    {"id":"LM-59d26971","type":"LM","subtype":"liberation-by-ethical-conduct","label":"liberation-by-ethical-conduct","axes":["discipline","freedom"],"operation":"align","corpus_locators":["epictetus/discourses:1","epictetus/discourses:2"]},
+    {"id":"IM-6657916a","type":"IM","subtype":"self-as-substance","label":"self-is-permanent-substance","axes":["permanence","self"],"operation":"assert","corpus_locators":["plato/republic:2","upanishads/chandogya:1","upanishads/kena:1"]},
+    {"id":"IM-69f621d6","type":"IM","subtype":"self-as-process","label":"self-as-process-of-aggregates","axes":["impermanence","self"],"operation":"situate","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
+    {"id":"LM-9ea458a9","type":"LM","subtype":"liberation-by-knowledge","label":"liberation-by-knowledge","axes":["absolute","freedom","knowledge"],"operation":"align","corpus_locators":["plato/republic:1","upanishads/chandogya:2","upanishads/kena:2"]},
+    {"id":"LM-c101ae16","type":"LM","subtype":"liberation-by-cessation","label":"liberation-by-cessation","axes":["freedom","impermanence","non-self"],"operation":"dissolve","corpus_locators":["buddhist/dhammapada-3:2","buddhist/prajnaparamita:2"]},
+    {"id":"IM-c2113c94","type":"IM","subtype":"self-as-witness","label":"self-witness-of-experience","axes":["knowledge","self"],"operation":"situate","corpus_locators":["plato/republic:2","upanishads/chandogya:1","upanishads/chandogya:2","upanishads/kena:1","upanishads/kena:2"]},
+    {"id":"OM-e1f9907b","type":"OM","subtype":"non-self","label":"non-self-ontology","axes":["impermanence","non-self"],"operation":"negate","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
+    {"id":"CS-fd9b8818","type":"CS","subtype":"cognitive-regulation","label":"discipline-of-mind","axes":["discipline","knowledge"],"operation":"regulate","corpus_locators":["buddhist/dhammapada-3:3","buddhist/prajnaparamita:3","epictetus/discourses:2"]},
+    {"id":"CM-fe58aea2","type":"CM","subtype":"conditioned-arising","label":"conditioned-arising","axes":["cause","effect","impermanence"],"operation":"produce","corpus_locators":["buddhist/dhammapada-3:2","buddhist/prajnaparamita:3"]}
+  ],
+  "edges": [
+    {"id":"E-0001","type":"causal-dependency","source":"CM-fe58aea2","target":"LM-c101ae16","rationale":"CM grounds LM via shared causal/freedom axes","corpus_locators":["buddhist/dhammapada-3:2"]},
+    {"id":"E-0002","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"CM-fe58aea2","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":[]},
+    {"id":"E-0003","type":"inversion","source":"IM-0dc1c8dd","target":"IM-6657916a","rationale":"IM nodes with opposed self/non-self axes and reversed operations","corpus_locators":[]},
+    {"id":"E-0004","type":"contradiction","source":"IM-0dc1c8dd","target":"IM-6657916a","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
+    {"id":"E-0005","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"IM-0dc1c8dd","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
+    {"id":"E-0006","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"IM-69f621d6","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
+    {"id":"E-0007","type":"contradiction","source":"LM-36ebce29","target":"LM-c101ae16","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
+    {"id":"E-0008","type":"functional-overlap","source":"LM-36ebce29","target":"OM-028a568b","rationale":"cross-type axis overlap","corpus_locators":["upanishads/chandogya:3","upanishads/kena:3"]},
+    {"id":"E-0009","type":"hierarchical-refinement","source":"OM-028a568b","target":"LM-36ebce29","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":["upanishads/chandogya:3","upanishads/kena:3"]},
+    {"id":"E-0010","type":"contradiction","source":"LM-59d26971","target":"LM-c101ae16","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
+    {"id":"E-0011","type":"contradiction","source":"LM-9ea458a9","target":"LM-c101ae16","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
+    {"id":"E-0012","type":"hierarchical-refinement","source":"OM-028a568b","target":"LM-9ea458a9","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":[]},
+    {"id":"E-0013","type":"functional-overlap","source":"LM-c101ae16","target":"OM-e1f9907b","rationale":"cross-type axis overlap","corpus_locators":[]},
+    {"id":"E-0014","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"LM-c101ae16","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":[]}
+  ]
+};
+
+// ============================================================
+//  State
+// ============================================================
+let cy = null;
+let activeClusterIdx = null;     // currently highlighted cluster row
+let clusters = [];               // [{ id, label, members:[nodeId,...] }, ...]
+let currentGraph = null;         // last-loaded JSON; used by the explainer
+const nodeFilterState = {};
+const edgeFilterState = {};
+NODE_TYPES.forEach(t => { nodeFilterState[t] = true; });
+EDGE_TYPES.forEach(t => { edgeFilterState[t] = true; });
+
+// ============================================================
+//  Filter UI
+// ============================================================
+function buildFilterUI() {
+  const nf = document.getElementById("nodeFilters");
+  nf.innerHTML = "";
+  NODE_TYPES.forEach(t => {
+    const row = document.createElement("div");
+    row.className = "filter-row";
+    const swatch = document.createElement("span");
+    swatch.className = "swatch";
+    swatch.style.background = NODE_COLORS[t];
+    const label = document.createElement("label");
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = true;
+    cb.addEventListener("change", e => {
+      nodeFilterState[t] = e.target.checked;
+      applyFilters();
+    });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(" " + t + "  "));
+    const small = document.createElement("span");
+    small.className = "small"; small.textContent = NODE_LONG[t];
+    label.appendChild(small);
+    row.appendChild(swatch); row.appendChild(label);
+    nf.appendChild(row);
+  });
+
+  const ef = document.getElementById("edgeFilters");
+  ef.innerHTML = "";
+  EDGE_TYPES.forEach(t => {
+    const s = EDGE_STYLE[t];
+    const row = document.createElement("div");
+    row.className = "filter-row";
+    const swatch = document.createElement("span");
+    swatch.className = "swatch line";
+    swatch.style.borderTopColor = s.color;
+    swatch.style.borderTopStyle = s.dashed ? "dashed" : "solid";
+    swatch.style.borderTopWidth = "3px";
+    const label = document.createElement("label");
+    const cb = document.createElement("input");
+    cb.type = "checkbox"; cb.checked = true;
+    cb.addEventListener("change", e => {
+      edgeFilterState[t] = e.target.checked;
+      applyFilters();
+    });
+    label.appendChild(cb);
+    label.appendChild(document.createTextNode(" " + t));
+    row.appendChild(swatch); row.appendChild(label);
+    ef.appendChild(row);
+  });
+}
+
+function applyFilters() {
+  if (!cy) return;
+  cy.batch(() => {
+    cy.nodes('[!isCluster]').forEach(n => {
+      const visible = !!nodeFilterState[n.data("type")];
+      n.style("display", visible ? "element" : "none");
+    });
+    cy.edges().forEach(e => {
+      const srcVis = !!nodeFilterState[e.source().data("type")];
+      const tgtVis = !!nodeFilterState[e.target().data("type")];
+      const typeVis = !!edgeFilterState[e.data("type")];
+      e.style("display", (srcVis && tgtVis && typeVis) ? "element" : "none");
+    });
+    // Hide compound parents whose entire child population is hidden.
+    cy.nodes('[?isCluster]').forEach(parent => {
+      const hasVisibleChild = parent.children().some(c => c.style("display") !== "none");
+      parent.style("display", hasVisibleChild ? "element" : "none");
+    });
+  });
+}
+
+// ============================================================
+//  Cytoscape
+// ============================================================
+function cyStyleSheet() {
+  const styles = [
+    // Compound type-cluster parents: subtle tinted backdrop. They give
+    // cose-bilkent a hard signal to keep same-type nodes near each other,
+    // and they double as a visual grouping cue.
+    {
+      selector: 'node[?isCluster]',
+      style: {
+        "background-color": "data(color)",
+        "background-opacity": 0.06,
+        "border-color": "data(color)",
+        "border-width": 1,
+        "border-opacity": 0.35,
+        "shape": "round-rectangle",
+        "label": "data(label)",
+        "text-valign": "top",
+        "text-halign": "center",
+        "text-margin-y": -4,
+        "font-size": 10,
+        "font-weight": "bold",
+        "color": "data(color)",
+        "text-outline-width": 0,
+        "padding": 14,
+        "z-compound-depth": "bottom",
+        "events": "no",   // clicks pass through to children / background
+      }
+    },
+    // Default leaf node style.
+    {
+      selector: 'node[!isCluster]',
+      style: {
+        "label": "data(id)",
+        "font-size": 9,
+        "text-valign": "center",
+        "text-halign": "center",
+        "color": "#fff",
+        "text-outline-width": 1.5,
+        "text-outline-color": "#222",
+        "background-color": "#888",
+        "width": 36, "height": 36,
+        "border-width": 1.5,
+        "border-color": "#222",
+        "transition-property": "opacity, border-width, border-color, width, height",
+        "transition-duration": "180ms",
+      }
+    },
+    // Default edge: thin and partially transparent. Hover/cluster
+    // highlight pumps these back up.
+    {
+      selector: "edge",
+      style: {
+        "curve-style": "bezier",
+        "width": 1.4,
+        "line-color": "#888",
+        "target-arrow-color": "#888",
+        "target-arrow-shape": "none",
+        "opacity": 0.4,
+        "transition-property": "opacity, width, line-color",
+        "transition-duration": "180ms",
+      }
+    },
+    { selector: ".faded",     style: { "opacity": 0.08 } },
+    { selector: ".cluster-faded", style: { "opacity": 0.08 } },
+    { selector: "node.highlighted",
+      style: { "border-color": "#000", "border-width": 3, "opacity": 1 } },
+    { selector: "edge.highlighted",
+      style: { "opacity": 1, "width": 3.2, "z-index": 999 } },
+    { selector: "node.cluster-active",
+      style: { "border-color": "#b88600", "border-width": 4, "opacity": 1 } },
+    { selector: "edge.cluster-active",
+      style: { "opacity": 1, "width": 3, "z-index": 998 } },
+    { selector: ":selected",
+      style: { "border-color": "#000", "border-width": 4 } },
+  ];
+  Object.keys(NODE_COLORS).forEach(t => {
+    styles.push({
+      selector: `node[type="${t}"][!isCluster]`,
+      style: {
+        "background-color": NODE_COLORS[t],
+        "text-outline-color": NODE_COLORS[t],
+      }
+    });
+  });
+  Object.keys(EDGE_STYLE).forEach(t => {
+    const s = EDGE_STYLE[t];
+    styles.push({
+      selector: `edge[type="${t}"]`,
+      style: {
+        "line-color": s.color,
+        "target-arrow-color": s.color,
+        "width": s.width,
+        "line-style": s.dashed ? "dashed" : "solid",
+        "target-arrow-shape": s.arrow ? "triangle" : "none",
+      }
+    });
+  });
+  return styles;
+}
+
+function buildCytoscape(json) {
+  if (!json || !Array.isArray(json.nodes) || !Array.isArray(json.edges)) {
+    alert('Invalid graph JSON: expected {"nodes": [...], "edges": [...]}.');
+    return;
+  }
+  currentGraph = json;
+  // Compute which type-clusters are needed (only emit a parent for types
+  // actually present in the graph).
+  const presentTypes = new Set();
+  json.nodes.forEach(n => { if (n && n.type) presentTypes.add(n.type); });
+
+  const elements = [];
+  // Compound type-parents first (cytoscape resolves parent-id references).
+  presentTypes.forEach(t => {
+    elements.push({
+      group: "nodes",
+      data: {
+        id: "cluster-" + t,
+        isCluster: 1,
+        label: NODE_LONG[t] || t,
+        color: NODE_COLORS[t] || "#888",
+        type: t,
+      }
+    });
+  });
+
+  const seenNodeIds = new Set();
+  json.nodes.forEach(n => {
+    if (!n.id) return;
+    seenNodeIds.add(n.id);
+    elements.push({
+      group: "nodes",
+      data: {
+        id: n.id,
+        type: n.type || "?",
+        subtype: n.subtype || "",
+        label: n.label || n.id,
+        operation: n.operation || "",
+        axes: n.axes || [],
+        sources: n.corpus_sources || n.corpus_locators || [],
+        parent: presentTypes.has(n.type) ? "cluster-" + n.type : undefined,
+      }
+    });
+  });
+
+  let dropped = 0;
+  json.edges.forEach((e, i) => {
+    if (!seenNodeIds.has(e.source) || !seenNodeIds.has(e.target)) {
+      dropped += 1; return;
+    }
+    elements.push({
+      group: "edges",
+      data: {
+        id: e.id || ("E-" + (i + 1)),
+        source: e.source,
+        target: e.target,
+        type: e.type || "equivalence",
+        rationale: e.rationale || "",
+        sources: e.corpus_sources || e.corpus_locators || [],
+      }
+    });
+  });
+
+  if (cy) { cy.destroy(); }
+  cy = cytoscape({
+    container: document.getElementById("cy"),
+    elements: elements,
+    style: cyStyleSheet(),
+    layout: layoutOptions(document.getElementById("layoutSel").value),
+    wheelSensitivity: 0.3,
+    minZoom: 0.1, maxZoom: 4,
+  });
+
+  cy.on("tap", "node", e => {
+    if (e.target.data("isCluster")) return;
+    showNode(e.target);
+  });
+  cy.on("tap", "edge", e => showEdge(e.target));
+  cy.on("tap", e => {
+    if (e.target === cy) {
+      clearInspector();
+      clearClusterHighlight();
+    }
+  });
+
+  cy.on("mouseover", "node", e => {
+    if (e.target.data("isCluster")) return;
+    if (activeClusterIdx === null) highlightNeighborhood(e.target);
+  });
+  cy.on("mouseout",  "node", () => {
+    if (activeClusterIdx === null) clearHighlight();
+  });
+  cy.on("mouseover", "edge", e => {
+    if (activeClusterIdx === null) highlightEdge(e.target);
+  });
+  cy.on("mouseout",  "edge", () => {
+    if (activeClusterIdx === null) clearHighlight();
+  });
+
+  // Detect contradiction clusters and render the cluster panel.
+  detectAndRenderClusters(json);
+
+  const status = json.nodes.length + " nodes · " + json.edges.length + " edges · "
+    + clusters.length + " contradiction cluster" + (clusters.length === 1 ? "" : "s")
+    + (dropped ? "  (" + dropped + " edges skipped)" : "");
+  document.getElementById("status").textContent = status;
+  applyFilters();
+}
+
+function layoutOptions(name) {
+  if (name === "cose-bilkent") {
+    return {
+      name: "cose-bilkent",
+      animate: "end",
+      animationDuration: 700,
+      randomize: false,
+      fit: true,
+      padding: 30,
+      nodeRepulsion: 8000,
+      idealEdgeLength: 110,
+      edgeElasticity: 0.45,
+      nestingFactor: 0.1,
+      gravity: 0.25,
+      gravityRangeCompound: 1.5,
+      gravityCompound: 1.0,
+      numIter: 2500,
+      tile: true,
+      tilingPaddingVertical: 12,
+      tilingPaddingHorizontal: 12,
+    };
+  }
+  return { name: name, animate: false, padding: 30 };
+}
+
+function highlightNeighborhood(node) {
+  if (!cy) return;
+  const region = node.closedNeighborhood();
+  cy.elements().not(region).addClass("faded");
+  region.addClass("highlighted");
+}
+function highlightEdge(edge) {
+  if (!cy) return;
+  const region = edge.connectedNodes().union(edge);
+  cy.elements().not(region).addClass("faded");
+  region.addClass("highlighted");
+}
+function clearHighlight() {
+  if (!cy) return;
+  cy.elements().removeClass("faded").removeClass("highlighted");
+}
+
+// ============================================================
+//  Cluster detection + labeling
+// ============================================================
+function detectAndRenderClusters(json) {
+  const nodeTypeById = {};
+  json.nodes.forEach(n => { nodeTypeById[n.id] = n.type; });
+
+  // Connected components in the contradiction-edge subgraph.
+  const parent = {};
+  const find = x => {
+    while (parent[x] !== x) { parent[x] = parent[parent[x]]; x = parent[x]; }
+    return x;
+  };
+  const union = (a, b) => {
+    const ra = find(a), rb = find(b);
+    if (ra !== rb) parent[ra] = rb;
+  };
+
+  json.edges.forEach(e => {
+    if (e.type !== "contradiction") return;
+    if (!(e.source in parent)) parent[e.source] = e.source;
+    if (!(e.target in parent)) parent[e.target] = e.target;
+    union(e.source, e.target);
+  });
+
+  const groups = {};
+  Object.keys(parent).forEach(k => {
+    const r = find(k);
+    if (!groups[r]) groups[r] = [];
+    groups[r].push(k);
+  });
+
+  clusters = Object.values(groups)
+    .filter(members => members.length >= 2)
+    .map((members, i) => {
+      const sortedMembers = members.slice().sort();
+      const types = sortedMembers.map(id => nodeTypeById[id] || "?");
+      return {
+        id: "cluster-" + i,
+        label: labelCluster(types),
+        members: sortedMembers,
+        types: types,
+      };
+    })
+    .sort((a, b) => b.members.length - a.members.length || a.label.localeCompare(b.label));
+
+  renderClusterList();
+}
+
+function renderClusterList() {
+  const host = document.getElementById("clusterList");
+  const countEl = document.getElementById("clusterCount");
+  countEl.textContent = clusters.length ? "(" + clusters.length + ")" : "";
+
+  host.innerHTML = "";
+  if (clusters.length === 0) {
+    host.innerHTML = '<p class="help-block"><em>No contradiction clusters detected.</em></p>';
+    return;
+  }
+
+  clusters.forEach((cl, idx) => {
+    const card = document.createElement("div");
+    card.className = "cluster-card";
+    // Color the left border by the dominant type.
+    const dom = dominantType(cl.types);
+    card.style.borderLeftColor = NODE_COLORS[dom] || "#999";
+
+    const lbl = document.createElement("div");
+    lbl.className = "cluster-label";
+    lbl.textContent = cl.label;
+
+    const meta = document.createElement("div");
+    meta.className = "cluster-meta";
+    const typeCounts = countTypes(cl.types);
+    meta.textContent = "" + cl.members.length + " nodes · " + typeCounts;
+
+    card.appendChild(lbl);
+    card.appendChild(meta);
+    card.addEventListener("click", () => toggleCluster(idx));
+    host.appendChild(card);
+  });
+}
+
+function dominantType(types) {
+  const c = countTypesObj(types);
+  let best = null, n = -1;
+  Object.keys(c).forEach(k => { if (c[k] > n) { n = c[k]; best = k; } });
+  return best;
+}
+function countTypesObj(types) {
+  const c = {};
+  types.forEach(t => { c[t] = (c[t] || 0) + 1; });
+  return c;
+}
+function countTypes(types) {
+  const c = countTypesObj(types);
+  return Object.keys(c).sort().map(k => k + ":" + c[k]).join(" ");
+}
+
+function toggleCluster(idx) {
+  if (activeClusterIdx === idx) {
+    clearClusterHighlight();
+    return;
+  }
+  activeClusterIdx = idx;
+  const cl = clusters[idx];
+  if (!cy || !cl) return;
+
+  const memberSet = new Set(cl.members);
+  const memberNodes = cy.nodes().filter(n => memberSet.has(n.id()));
+  const internalEdges = cy.edges().filter(e =>
+    memberSet.has(e.source().id()) && memberSet.has(e.target().id())
+  );
+  const region = memberNodes.union(internalEdges);
+
+  cy.elements().removeClass("faded highlighted cluster-active");
+  cy.elements().not(region).addClass("cluster-faded");
+  region.addClass("cluster-active");
+
+  // Update card visual state.
+  document.querySelectorAll(".cluster-card").forEach((el, i) => {
+    el.classList.toggle("active", i === idx);
+  });
+
+  // Show cluster details in the inspector.
+  showClusterInspector(cl);
+}
+
+function clearClusterHighlight() {
+  activeClusterIdx = null;
+  if (cy) cy.elements().removeClass("cluster-faded cluster-active");
+  document.querySelectorAll(".cluster-card.active").forEach(el => el.classList.remove("active"));
+}
+
+// ============================================================
+//  Inspector
+// ============================================================
+function escapeHTML(s) {
+  return String(s == null ? "" : s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+}
+function chipList(items) {
+  if (!items || !items.length) return '<span class="small">(none)</span>';
+  return items.map(x => "<code>" + escapeHTML(x) + "</code>").join(" ");
+}
+
+function showNode(node) {
+  const d = node.data();
+  const color = NODE_COLORS[d.type] || "#888";
+  const edges = node.connectedEdges();
+  const items = edges.map(e => {
+    const src = e.source(), tgt = e.target();
+    const isOut = src.id() === node.id();
+    const other = isOut ? tgt : src;
+    const t = e.data("type");
+    const directed = (EDGE_STYLE[t] && EDGE_STYLE[t].arrow);
+    const arrow = directed ? (isOut ? "&rarr;" : "&larr;") : "&harr;";
+    return '<li>' + arrow + ' <code>' + escapeHTML(other.id()) + '</code> '
+         + '<span class="small">(' + escapeHTML(t) + ')</span></li>';
+  }).join("");
+
+  document.getElementById("inspector").innerHTML =
+      '<h3>Node</h3>'
+    + '<div class="row"><span class="label">id</span><code>' + escapeHTML(d.id) + '</code></div>'
+    + '<div class="row"><span class="label">type</span>'
+        + '<span class="pill" style="background:' + color + '">' + escapeHTML(d.type) + '</span> '
+        + '<span class="small">' + escapeHTML(NODE_LONG[d.type] || "") + '</span></div>'
+    + '<div class="row"><span class="label">subtype</span><code>' + escapeHTML(d.subtype) + '</code></div>'
+    + '<div class="row"><span class="label">operation</span><code>' + escapeHTML(d.operation) + '</code></div>'
+    + '<div class="row"><span class="label">label</span>' + escapeHTML(d.label) + '</div>'
+    + '<div class="row"><span class="label">axes</span>' + chipList(d.axes) + '</div>'
+    + '<div class="row"><span class="label">sources</span>' + chipList(d.sources) + '</div>'
+    + '<h3>Edges (' + edges.length + ')</h3>'
+    + '<ul>' + (items || '<li class="small">none</li>') + '</ul>';
+}
+
+function showEdge(edge) {
+  const d = edge.data();
+  const s = EDGE_STYLE[d.type] || { color: "#888" };
+  document.getElementById("inspector").innerHTML =
+      '<h3>Edge</h3>'
+    + '<div class="row"><span class="label">id</span><code>' + escapeHTML(d.id) + '</code></div>'
+    + '<div class="row"><span class="label">type</span>'
+        + '<span class="pill" style="background:' + s.color + '">' + escapeHTML(d.type) + '</span></div>'
+    + '<div class="row"><span class="label">from</span><code>' + escapeHTML(d.source) + '</code></div>'
+    + '<div class="row"><span class="label">to</span><code>' + escapeHTML(d.target) + '</code></div>'
+    + '<div class="row"><span class="label">rationale</span>'
+        + '<span class="small">' + escapeHTML(d.rationale || "(none)") + '</span></div>'
+    + '<div class="row"><span class="label">sources</span>' + chipList(d.sources) + '</div>';
+}
+
+// ============================================================
+//  Cluster Explanation Layer
+//
+//  Pure rule-based interpretability: takes a cluster + the source graph
+//  and returns a structured explanation of what the cluster represents
+//  in *structural* terms only — no philosophical interpretation, no ML.
+// ============================================================
+function explainCluster(cl, json) {
+  const byId = {};
+  json.nodes.forEach(n => { byId[n.id] = n; });
+
+  const memberSet = new Set(cl.members);
+  const memberNodes = cl.members.map(id => byId[id]).filter(Boolean);
+
+  // 1. Type counts (always include all five types so the breakdown is
+  //    canonical and zero-fills are visible).
+  const typeCounts = { IM: 0, LM: 0, CS: 0, CM: 0, OM: 0 };
+  memberNodes.forEach(n => {
+    if (n.type in typeCounts) typeCounts[n.type] += 1;
+  });
+  const presentTypes = NODE_TYPES.filter(t => typeCounts[t] > 0);
+
+  // 2. Internal edges (both endpoints in cluster). Strongest edge type
+  //    is determined by count, ties broken alphabetically.
+  const internalEdges = json.edges.filter(e =>
+    memberSet.has(e.source) && memberSet.has(e.target)
+  );
+  const edgeTypeCounts = {};
+  internalEdges.forEach(e => {
+    edgeTypeCounts[e.type] = (edgeTypeCounts[e.type] || 0) + 1;
+  });
+  const sortedEdgeTypes = Object.keys(edgeTypeCounts).sort();
+  let strongestEdgeType = null, strongestCount = 0;
+  sortedEdgeTypes.forEach(k => {
+    if (edgeTypeCounts[k] > strongestCount) {
+      strongestEdgeType = k; strongestCount = edgeTypeCounts[k];
+    }
+  });
+
+  const contradictionEdges = internalEdges.filter(e => e.type === "contradiction");
+  const inversionEdges    = internalEdges.filter(e => e.type === "inversion");
+
+  // Contradiction density: fraction of node-pairs with a contradiction.
+  const N = cl.members.length;
+  const maxPairs = N >= 2 ? (N * (N - 1)) / 2 : 1;
+  const contradictionDensity = contradictionEdges.length / maxPairs;
+
+  // 3. Cross-text composition.
+  //    - allLocators : every corpus locator that appears in any cluster
+  //                    member's source list (preserves duplicates so a
+  //                    single text contributing to many nodes counts more)
+  //    - textSet     : distinct underlying text ids (locator minus passage)
+  //    - traditionTotals : tradition -> raw locator count
+  const allLocators = [];
+  memberNodes.forEach(n => {
+    const srcs = n.corpus_locators || n.corpus_sources || [];
+    srcs.forEach(l => allLocators.push(l));
+  });
+  const textSet = new Set();
+  const traditionTotals = {};
+  allLocators.forEach(l => {
+    textSet.add(textIdOf(l));
+    const t = traditionOf(l);
+    traditionTotals[t] = (traditionTotals[t] || 0) + 1;
+  });
+  const traditions = Object.keys(traditionTotals).sort();
+  const totalLocCount = allLocators.length || 1;
+  const traditionPct = {};
+  traditions.forEach(t => {
+    traditionPct[t] = traditionTotals[t] / totalLocCount;
+  });
+
+  // Qualitative cross-tradition overlap.
+  let crossTraditionOverlap;
+  if (traditions.length === 0)      crossTraditionOverlap = "none";
+  else if (traditions.length === 1) crossTraditionOverlap = "low";
+  else if (traditions.length >= 3)  crossTraditionOverlap = "high";
+  else {
+    // Two traditions: balanced (>=25% minority share) reads as "high",
+    // skewed reads as "medium".
+    const shares = traditions.map(t => traditionPct[t]);
+    const minShare = Math.min.apply(null, shares);
+    crossTraditionOverlap = (minShare >= 0.25) ? "high" : "medium";
+  }
+
+  // Qualitative cross-text alignment (counts distinct texts).
+  const numTexts = textSet.size;
+  let crossTextAlignment;
+  if (numTexts <= 1)      crossTextAlignment = "none";
+  else if (numTexts === 2) crossTextAlignment = "low";
+  else if (numTexts <= 4) crossTextAlignment = "moderate";
+  else                    crossTextAlignment = "high";
+
+  const isMonoText = numTexts <= 1;
+
+  // 4. Dominant function from type counts.
+  const dom = dominantType(typeCounts);
+  let dominantFunction;
+  if (dom === "mixed-im-lm") {
+    dominantFunction = "identity / liberation tension";
+  } else if (dom === "mixed") {
+    dominantFunction = "mixed structural function";
+  } else {
+    dominantFunction = TYPE_FUNCTION[dom] || "unspecified";
+  }
+
+  // 5. Contradiction node-pairs (rendered with subtype labels).
+  const contradictionPairs = contradictionEdges.map(e => {
+    const a = byId[e.source], b = byId[e.target];
+    return {
+      sourceId: e.source,
+      targetId: e.target,
+      sourceSubtype: a ? a.subtype : e.source,
+      targetSubtype: b ? b.subtype : e.target,
+    };
+  });
+
+  return {
+    title: cl.label,
+    dom: dom,
+    dominantFunction: dominantFunction,
+    typeCounts: typeCounts,
+    presentTypes: presentTypes,
+    internalEdges: internalEdges,
+    edgeTypeCounts: edgeTypeCounts,
+    strongestEdgeType: strongestEdgeType,
+    contradictionEdges: contradictionEdges,
+    contradictionDensity: contradictionDensity,
+    inversionEdges: inversionEdges,
+    contradictionPairs: contradictionPairs,
+    traditions: traditions,
+    traditionPct: traditionPct,
+    crossTraditionOverlap: crossTraditionOverlap,
+    crossTextAlignment: crossTextAlignment,
+    isMonoText: isMonoText,
+    numTexts: numTexts,
+    memberCount: cl.members.length,
+  };
+}
+
+function renderClusterExplanation(exp) {
+  const titleColor =
+    (exp.dom === "mixed-im-lm" || exp.dom === "mixed")
+      ? "#888" : (NODE_COLORS[exp.dom] || "#888");
+
+  const presentList = exp.presentTypes.length
+    ? exp.presentTypes.join(", ") : "(none)";
+
+  // Tradition lines, sorted by share descending.
+  const traditionsByShare = exp.traditions.slice().sort(
+    (a, b) => exp.traditionPct[b] - exp.traditionPct[a]
+  );
+  const traditionLines = traditionsByShare.map(t => {
+    const pct = Math.round(exp.traditionPct[t] * 100);
+    return '<li><strong>' + escapeHTML(titleCase(t)) + '</strong>: '
+         + pct + '%</li>';
+  }).join("");
+
+  // Edge-type breakdown inside the cluster (used in Internal Structure).
+  const edgeBreakdown = Object.keys(exp.edgeTypeCounts).sort().map(k =>
+    escapeHTML(k) + ": " + exp.edgeTypeCounts[k]
+  ).join(", ") || "(none)";
+
+  const contradictionList = exp.contradictionPairs.length === 0
+    ? '<li class="small">none</li>'
+    : exp.contradictionPairs.map(p =>
+        '<li><code>' + escapeHTML(p.sourceSubtype) + '</code> '
+      + '&harr; '
+      + '<code>' + escapeHTML(p.targetSubtype) + '</code> '
+      + '<span class="small">(structural incompatibility)</span></li>'
+      ).join("");
+
+  const monoLabel = exp.isMonoText
+    ? "mono-text origin"
+    : "multi-text (" + exp.numTexts + " distinct texts)";
+
+  // Structural Summary bullets.
+  const summary = [];
+  summary.push("node types present: <code>" + escapeHTML(presentList) + "</code>");
+  summary.push("dominant function: <strong>" + escapeHTML(exp.dominantFunction) + "</strong>");
+  if (exp.contradictionEdges.length > 0) {
+    summary.push(exp.contradictionEdges.length
+      + " internal contradiction edge"
+      + (exp.contradictionEdges.length === 1 ? "" : "s"));
+  } else {
+    summary.push("no internal contradictions");
+  }
+  if (exp.inversionEdges.length > 0) {
+    summary.push("inversion present (" + exp.inversionEdges.length + " edge"
+      + (exp.inversionEdges.length === 1 ? "" : "s") + ")");
+  }
+  summary.push("cross-text alignment: <strong>" + escapeHTML(exp.crossTextAlignment) + "</strong>");
+  summary.push(exp.traditions.length <= 1
+    ? "single-tradition source"
+    : "cross-tradition source (" + exp.traditions.length + " traditions)");
+
+  return ''
+    + '<h3>Cluster Explanation</h3>'
+    + '<div class="row"><span class="label">title</span>'
+    +    '<strong style="color:' + titleColor + '">'
+    +      escapeHTML(exp.title)
+    +    '</strong></div>'
+    + '<div class="row"><span class="label">size</span>'
+    +    exp.memberCount + ' nodes</div>'
+
+    + '<h3>Structural Summary</h3>'
+    + '<ul>'
+    + summary.map(s => '<li>' + s + '</li>').join("")
+    + '</ul>'
+
+    + '<h3>Internal Structure</h3>'
+    + '<ul>'
+    + '  <li>IM: ' + exp.typeCounts.IM
+    +     '   LM: ' + exp.typeCounts.LM
+    +     '   CS: ' + exp.typeCounts.CS
+    +     '   CM: ' + exp.typeCounts.CM
+    +     '   OM: ' + exp.typeCounts.OM
+    +     '</li>'
+    + '  <li>strongest edge type: <code>'
+    +    escapeHTML(exp.strongestEdgeType || "none")
+    +    '</code></li>'
+    + '  <li>contradiction density: '
+    +    exp.contradictionDensity.toFixed(2)
+    +    ' (' + exp.contradictionEdges.length + '/' + Math.max(1, (exp.memberCount * (exp.memberCount - 1)) / 2) + ' pairs)</li>'
+    + '  <li>inversion edges: ' + exp.inversionEdges.length + '</li>'
+    + '  <li>edge-type breakdown: <span class="small">'
+    +    edgeBreakdown
+    +    '</span></li>'
+    + '</ul>'
+
+    + '<h3>Cross-Text Composition</h3>'
+    + '<ul>' + (traditionLines || '<li class="small">(no sources)</li>') + '</ul>'
+    + '<div class="row"><span class="label">overlap</span>'
+    +    '<strong>' + escapeHTML(exp.crossTraditionOverlap) + '</strong></div>'
+    + '<div class="row"><span class="label">scope</span>'
+    +    escapeHTML(monoLabel) + '</div>'
+
+    + '<h3>Key Contradictions</h3>'
+    + '<ul>' + contradictionList + '</ul>';
+}
+
+function showClusterInspector(cl) {
+  if (!currentGraph) return;
+  const exp = explainCluster(cl, currentGraph);
+  document.getElementById("inspector").innerHTML = renderClusterExplanation(exp);
+}
+
+function clearInspector() {
+  document.getElementById("inspector").innerHTML =
+    '<p class="placeholder">Click a node, edge, or cluster to inspect. Hover any node to highlight its neighborhood.</p>';
+}
+
+// ============================================================
+//  Wiring
+// ============================================================
+document.getElementById("fileInput").addEventListener("change", evt => {
+  const file = evt.target.files && evt.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      buildCytoscape(JSON.parse(reader.result));
+    } catch (err) {
+      alert("Could not parse JSON: " + err.message);
+    }
+  };
+  reader.onerror = () => alert("Could not read file.");
+  reader.readAsText(file);
+});
+
+document.getElementById("loadSample").addEventListener("click", () => {
+  buildCytoscape(EMBEDDED_SAMPLE);
+});
+
+document.getElementById("relayout").addEventListener("click", () => {
+  if (!cy) return;
+  cy.layout(layoutOptions(document.getElementById("layoutSel").value)).run();
+});
+document.getElementById("layoutSel").addEventListener("change", () => {
+  if (!cy) return;
+  cy.layout(layoutOptions(document.getElementById("layoutSel").value)).run();
+});
+
+// ============================================================
+//  Boot
+// ============================================================
+buildFilterUI();
+buildCytoscape(EMBEDDED_SAMPLE);
+</script>
+</body>
+</html>

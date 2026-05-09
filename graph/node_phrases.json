@@ -1,0 +1,777 @@
+{
+  "_comment": "Trigger phrases per Atlas MotifRule, keyed by the node id that rule produces. The Archive's reading view (entity.html) wraps occurrences of these phrases in <span class='grounding' data-node-id='...'>; when the page is opened with ?node=<id>, those spans are gently highlighted. Phrases here are the literal substrings the rule looked for — no AI, no fuzzy matching. Each phrase is exported as an object {phrase, tier, confidence} so downstream consumers can filter by reliability. The browser code accepts both the new object form and the legacy plain-string form for backward compatibility. Refresh via tools/sync_node_phrases.py.",
+  "IM-6657916a": [
+    {
+      "phrase": "eternal self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "permanent self alone",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "atman is",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "the soul is",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self is real",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self that is unchanging",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "atman is unchanging",
+      "tier": "modern_terms",
+      "confidence": "high"
+    }
+  ],
+  "IM-0dc1c8dd": [
+    {
+      "phrase": "anatta",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "anatman",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "non-self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "no self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "no permanent self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self is empty",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "perceived void",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "illusory, like magic",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "false, like a dream",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "wine of illusion",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "empty this boat",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "like nothings",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "IM-69f621d6": [
+    {
+      "phrase": "aggregates",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "stream of",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "skandhas",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "process of mind",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "succession of moments",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "all created things perish",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    }
+  ],
+  "IM-c2113c94": [
+    {
+      "phrase": "witness",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "seer",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "the knower",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "pure consciousness",
+      "tier": "modern_terms",
+      "confidence": "high"
+    }
+  ],
+  "CM-fe58aea2": [
+    {
+      "phrase": "pratityasamutpada",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "dependent origination",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "conditioned arising",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "this arising, that arises",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "what arises ceases",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "house-builder",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "the rafters are broken",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "maker of the tabernacle",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "thy rafters are broken",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "ridge-pole is sundered",
+      "tier": "symbolic_phrases",
+      "confidence": "high"
+    }
+  ],
+  "CM-d6d2c618": [
+    {
+      "phrase": "karma",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "karma-vipaka",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "karmic",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "vipaka",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "karmaphala",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "karma-yoga",
+      "tier": "technical_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "moral causation",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "action and consequence",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "action and result",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "fruit of action",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "fruits of action",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "fruit of",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "result of",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "follows him",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "evil-doer",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "doer of evil",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "doer of good",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "bears fruit",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "wages of",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "shadow that never leaves",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "wheel follows",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "LM-9ea458a9": [
+    {
+      "phrase": "knowledge of brahman",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "freed by knowing",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "liberation through knowledge",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "knower of the self is free",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "wisdom liberates",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "thou, O Svetaketu, art it",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "It is the Self",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "LM-c101ae16": [
+    {
+      "phrase": "cessation of craving",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "extinguishing",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "nirvana",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "extinction of suffering",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "blowing out",
+      "tier": "modern_terms",
+      "confidence": "high"
+    }
+  ],
+  "LM-59d26971": [
+    {
+      "phrase": "right conduct",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "noble path",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "virtuous life",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "ethical living",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "moral discipline",
+      "tier": "modern_terms",
+      "confidence": "high"
+    }
+  ],
+  "LM-36ebce29": [
+    {
+      "phrase": "realization of the absolute",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self-realization",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "becoming brahman",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "tat tvam asi",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "thou art that",
+      "tier": "modern_terms",
+      "confidence": "high"
+    }
+  ],
+  "CS-fd9b8818": [
+    {
+      "phrase": "discipline of mind",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "guard the mind",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "mindfulness",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "watchful mind",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "mental restraint",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self-mastery",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self-watchfulness",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "self-direction",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "discipline of desire",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "well subdued",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "tames himself",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "watch your thoughts",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "restraint in the eye",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "restraint in the ear",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "three roads of action",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "CS-1ad1dc09": [
+    {
+      "phrase": "renunciation",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "abandon attachment",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "leave the household",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "renounce",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "give up the world",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "without attachment",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "free from desire",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "free from passion",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "I have left all",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "we call nothing our own",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "fruits of action",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "renouncing the fruits",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "cut down the whole forest",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "forest of lust",
+      "tier": "symbolic_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "OM-028a568b": [
+    {
+      "phrase": "all is one",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "one without a second",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "everything is brahman",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "all this is the self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "one only, without a second",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "thou, O Svetaketu, art it",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "all that exists has its self",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "OM-52056395": [
+    {
+      "phrase": "having no name, it is the Originator of heaven and earth",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    }
+  ],
+  "OM-0722c84e": [
+    {
+      "phrase": "the eye does not go thither, nor speech, nor mind",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "we do not understand, how any one can teach it",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    }
+  ],
+  "OM-0fe9235c": [
+    {
+      "phrase": "there are two forms of brahman",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "the true of the true",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "the senses being the true, and he (the brahman) the true of them",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    }
+  ],
+  "OM-b7b1f8af": [
+    {
+      "phrase": "of God Himself can no man think",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "He may well be loved, but not thought",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "smite upon that thick cloud of unknowing",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "OM-389a76f9": [
+    {
+      "phrase": "not from itself, not from another, not from both, not without cause",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "emptiness is a dependent designation",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "those for whom emptiness is a view are incurable",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "OM-95dd4337": [
+    {
+      "phrase": "the One is beyond being",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "it is not any thing that is",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    }
+  ],
+  "OM-e1f9907b": [
+    {
+      "phrase": "everything is non-self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "all dharmas are non-self",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "no abiding entity",
+      "tier": "modern_terms",
+      "confidence": "high"
+    },
+    {
+      "phrase": "all forms are unreal",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "all created things perish",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    },
+    {
+      "phrase": "all created things are grief",
+      "tier": "translation_phrases",
+      "confidence": "medium"
+    }
+  ],
+  "LM-a99883f8": [
+    {
+      "phrase": "By love may He be gotten and holden",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "but by thought never",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "smite upon that thick cloud of unknowing with a sharp dart of longing love",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "lift up thine heart unto God with a meek stirring of love",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    }
+  ],
+  "LM-147ad91d": [
+    {
+      "phrase": "cease to do evil, learn to do good, purify the mind",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "yoga is the cessation of the fluctuations of the mind",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "this is the teaching of the Buddhas",
+      "tier": "translation_phrases",
+      "confidence": "high"
+    },
+    {
+      "phrase": "eightfold path",
+      "tier": "modern_terms",
+      "confidence": "high"
+    }
+  ]
+}

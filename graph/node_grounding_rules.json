@@ -1,0 +1,84 @@
+{
+  "_comment": "Structural grounding rules — a *fallback* layer for entity.html when phrase-level grounding (node_phrases.json) produces no matches in a given Archive text. Each entry is keyed by node id and supplies two keyword lists (primary + secondary) plus a hand-written explanation. A sentence in the rendered prose counts as evidence for a node when it contains at least one primary keyword AND at least one secondary keyword (case-insensitive substring). Up to `max_evidence` verbatim sentences are quoted, in document order, and the explanation is shown beneath them. The browser only renders this section when (a) the node contributes to this text via node_to_archive.json AND (b) no phrase grounding spans exist for that node AND (c) at least one evidence sentence is found. Honest absence wins: if no rule matches, nothing is shown — the connection is left to the corpus-locator metadata alone.",
+
+  "CS-fd9b8818": {
+    "label": "discipline-of-mind",
+    "primary": ["mind", "thought", "thoughts", "citta", "attention"],
+    "secondary": [
+      "tame", "taming", "tamed",
+      "guard", "guarding", "guarded",
+      "train", "trained", "training",
+      "steady", "steadied", "steadying",
+      "discipline", "regulate", "regulation",
+      "control", "controlled",
+      "hold", "holding", "held",
+      "directed", "well-directed", "ill-directed",
+      "bridle"
+    ],
+    "max_evidence": 2,
+    "explanation": "These lines describe the mind as restless and in need of being trained, guarded, or steadied — the structural pattern of cognitive regulation."
+  },
+
+  "CS-1ad1dc09": {
+    "label": "renunciation-of-world",
+    "primary": ["world", "household", "home", "family", "passion", "desire", "desires", "possessions"],
+    "secondary": [
+      "leave", "leaves", "leaving",
+      "abandon", "abandons", "abandoning", "abandoned",
+      "release", "releases", "releasing", "released",
+      "renounce", "renounces", "renouncing", "renunciation",
+      "give up", "gives up", "giving up",
+      "let go", "lets go", "letting go",
+      "withdraw", "withdraws", "withdrawing"
+    ],
+    "max_evidence": 2,
+    "explanation": "These lines describe the act of leaving, abandoning, or releasing — the structural pattern of renunciation."
+  },
+
+  "IM-69f621d6": {
+    "label": "self-as-process-of-aggregates",
+    "primary": ["mind", "thought", "thoughts", "citta", "self", "consciousness"],
+    "secondary": [
+      "trembling", "tremble", "trembles",
+      "restless", "restlessness",
+      "unsteady", "unsteadiness",
+      "fleeting", "fluctuating",
+      "flow", "flowing",
+      "process", "aggregates",
+      "hard to hold", "prone to escape",
+      "fragile", "fragility",
+      "wandering", "wanders"
+    ],
+    "max_evidence": 2,
+    "explanation": "These lines treat mind or thought as a flow rather than a fixed thing — the structural pattern of self-as-process."
+  },
+
+  "CM-d6d2c618": {
+    "label": "action-bears-fruit",
+    "primary": [
+      "thought", "thoughts",
+      "deeds",
+      "action", "actions",
+      "doer",
+      "intention", "intentions",
+      "virtuous",
+      "conduct"
+    ],
+    "secondary": [
+      "follows", "followed",
+      "result", "results",
+      "fruit", "fruits",
+      "consequence", "consequences",
+      "reap", "reaps", "reaped",
+      "recompense",
+      "pain", "pains",
+      "suffer", "suffers", "suffered", "suffering",
+      "mourns", "mourned", "mourning",
+      "delights", "delighted",
+      "rejoices", "rejoicing",
+      "happiness", "happy"
+    ],
+    "max_evidence": 2,
+    "explanation": "These lines describe a quality of action producing a fitting quality of outcome — the structural pattern of moral causation."
+  }
+}

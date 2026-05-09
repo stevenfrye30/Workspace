@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Graph &mdash; Atlas</title>
+  <meta name="description" content="A small structural map of the texts already housed in the Archive.">
+  <link rel="stylesheet" href="../atlas/atlas.css">
+  <link rel="stylesheet" href="graph.css">
+</head>
+<body>
+  <header class="atlas-header">
+    <nav class="atlas-nav" aria-label="Primary">
+      <a class="brand" href="../">Atlas</a>
+      <ul class="worlds-nav" id="worlds-nav" aria-label="Worlds"></ul>
+    </nav>
+  </header>
+
+  <main class="atlas-main">
+    <article class="world-content">
+      <h1>Graph</h1>
+      <p>A small structural map drawn from the texts already housed in
+      the <a href="../archive/">Archive</a>. Each <em>node</em> is a
+      structural claim &mdash; a way of identity, a model of causality,
+      a path to liberation, a regulating practice, an ontology
+      &mdash; that more than one text agrees on. Each <em>edge</em>
+      records how those claims sit beside each other:
+      equivalent, inverted, contradicting, grounding, overlapping.</p>
+
+      <p id="graph-overview" class="intro">Loading the graph&hellip;</p>
+
+      <h2>Nodes</h2>
+      <div id="graph-nodes"></div>
+
+      <h2>Contradictions</h2>
+      <ol id="graph-contradictions"></ol>
+
+      <h2>Timeline</h2>
+      <ol id="graph-timeline"></ol>
+
+      <p class="atlas-note">
+        <em>This graph is a static export from Atlas core. To refresh,
+        rebuild Atlas and run
+        <code>python tools/sync_atlas_graph.py</code>. For an
+        interactive Cytoscape view of the same data,
+        <a href="viewer.html">open the viewer &rarr;</a></em>
+      </p>
+    </article>
+  </main>
+
+  <footer class="atlas-footer">
+    <p>Atlas &mdash; built slowly, read slowly.</p>
+  </footer>
+
+  <script src="../atlas/atlas.js"></script>
+  <script src="graph.js"></script>
+</body>
+</html>

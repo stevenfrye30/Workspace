@@ -1,0 +1,12 @@
+{
+  "_comment": "Maps a corpus-locator base (everything before the ':passage' suffix) to an Archive text id. The text id is the filename stem of an .md file in workspace-hub/archive/texts/, the same value that archive/entity.html accepts as its ?id= query parameter. graph.js looks up each node's locators against this table; the first match wins, the rest are ignored. Unmapped locators stay as quiet uninteractive text — never as broken links. To extend, add high-confidence pairs here. Avoid mapping a corpus base to a text that is merely 'thematically close'; honest gaps are better than misleading links.",
+
+  "buddhist/dhammapada-1": "dhammapada-chapter-1",
+  "buddhist/dhammapada-11": "dhammapada-chapter-11",
+  "buddhist/dhammapada-20": "dhammapada-chapter-20",
+  "buddhist/dhammapada-24": "dhammapada-chapter-24",
+  "buddhist/dhammapada-3": "dhammapada-chapter-3",
+  "upanishads/kena": "kena-upanishad",
+  "upanishads/chandogya": "chandogya-upanishad-core",
+  "daoist/daodejing-1": "daodejing-chapter-1"
+}
