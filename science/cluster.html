@@ -72,10 +72,15 @@
   .loading { color: var(--muted); text-align: center; padding: 30px; font-size: 14px; }
   .error { color: #fca5a5; text-align: center; padding: 30px; font-size: 14px; }
 </style>
+<link rel="stylesheet" href="../_shared/hub-nav.css">
 </head>
 <body>
+<nav class="ws-hub-nav" aria-label="Workspace navigation">
+<a class="ws-hub-home" href="../">← Hub</a>
+<span class="ws-hub-sep" aria-hidden="true"></span>
+<a class="ws-hub-prev" href="./">Science</a>
+</nav>
 <div class="page">
-  <a class="back" href="./">&larr; Science</a>
   <div id="root"><div class="loading">Loading&hellip;</div></div>
 </div>
 
