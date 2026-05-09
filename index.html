@@ -7,18 +7,15 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — tactile atmospheric pass.
-       Structure unchanged. Adds: per-world iconography, deeper surface
-       material, hover elevation with pigmented shadow, parchment ambient
-       gradients, engraved edge highlights. */
+    /* Workspace — pigment-in-surface pass.
+       Structure unchanged. Pigment now lives inside surfaces themselves
+       via per-world cream-pigment gradients, stamped icon seals, and
+       layered ambient light on the page. */
 
     :root {
       --accent-warm:   #7a4e26;
       --accent-deep:   #5e2828;
       --rule-warm:     #c8b88f;
-      --surface-tint:        rgba(0, 0, 0, 0.014);
-      --surface-border:      rgba(122, 78, 38, 0.12);
-      --surface-tint-hover:  rgba(122, 78, 38, 0.05);
 
       /* Per-world archival pigments */
       --w-archive:        #7a2828;
@@ -41,11 +38,15 @@
       --w-archive-shelf:  #6b4520;
     }
 
-    /* Parchment ambient — two soft warm radial tints under the page */
+    /* Page atmosphere — five layered radial tints + top-light + bottom-vignette.
+       Reads as cream paper with absorbed regional warmth and ambient lamp-light. */
     body {
       background:
-        radial-gradient(ellipse 80% 40% at 30% -10%, rgba(140, 100, 50, 0.07), transparent 70%),
-        radial-gradient(ellipse 60% 30% at 80% 110%, rgba(94, 58, 72, 0.05), transparent 70%),
+        radial-gradient(ellipse 80% 40% at 50% -5%, rgba(255, 250, 238, 0.55), transparent 70%),
+        radial-gradient(ellipse 70% 35% at 50% 105%, rgba(60, 40, 20, 0.06), transparent 70%),
+        radial-gradient(ellipse 70% 50% at 22% 28%, rgba(140, 100, 50, 0.07), transparent 65%),
+        radial-gradient(ellipse 60% 45% at 80% 65%, rgba(94, 58, 72, 0.05), transparent 65%),
+        radial-gradient(ellipse 55% 40% at 60% 18%, rgba(46, 94, 94, 0.035), transparent 60%),
         var(--bg);
       background-attachment: fixed;
     }
@@ -69,30 +70,47 @@
     .doorway:nth-child(2) { --w: var(--w-atlas); }
     .doorway:nth-child(3) { --w: var(--w-glyphs); }
 
+    /* Triad plate: per-world cream-pigment gradient
+       reads as cream paper steeped in the world's tone */
     .doorway {
       position: relative;
       display: block;
       padding: 1.05rem 1.25rem 1.2rem 1.25rem;
-      background: var(--surface-tint);
-      border: 1px solid var(--surface-border);
+      background:
+        linear-gradient(
+          155deg,
+          color-mix(in srgb, var(--w) 11%, var(--bg)) 0%,
+          color-mix(in srgb, var(--w) 6%, var(--bg)) 60%,
+          color-mix(in srgb, var(--w) 9%, var(--bg)) 100%
+        );
+      border: 1px solid color-mix(in srgb, var(--w) 22%, transparent);
       border-radius: 2px;
       text-decoration: none;
       color: var(--ink);
-      box-shadow: inset 0 1px 0 rgba(255, 252, 240, 0.5);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 252, 240, 0.6),
+        inset 0 -8px 20px -10px color-mix(in srgb, var(--w) 12%, transparent);
       transition:
-        background 0.2s,
+        background 0.25s,
         border-color 0.2s,
         box-shadow 0.25s ease,
         transform 0.15s ease;
     }
     .doorway:hover {
       text-decoration: none;
-      background: color-mix(in srgb, var(--w) 5%, var(--surface-tint-hover));
-      border-color: color-mix(in srgb, var(--w) 45%, transparent);
+      background:
+        linear-gradient(
+          155deg,
+          color-mix(in srgb, var(--w) 17%, var(--bg)) 0%,
+          color-mix(in srgb, var(--w) 11%, var(--bg)) 60%,
+          color-mix(in srgb, var(--w) 14%, var(--bg)) 100%
+        );
+      border-color: color-mix(in srgb, var(--w) 50%, transparent);
       box-shadow:
         0 6px 18px -6px color-mix(in srgb, var(--w) 35%, transparent),
         0 2px 4px -2px color-mix(in srgb, var(--w) 22%, transparent),
-        inset 0 1px 0 rgba(255, 252, 240, 0.6);
+        inset 0 1px 0 rgba(255, 252, 240, 0.7),
+        inset 0 -8px 20px -10px color-mix(in srgb, var(--w) 16%, transparent);
       transform: translateY(-1px);
     }
     .doorway:active {
@@ -102,18 +120,42 @@
         inset 0 1px 0 rgba(255, 252, 240, 0.4);
     }
 
-    .doorway-icon {
+    /* Stamped seal behind triad icon */
+    .doorway-icon-wrap {
       position: absolute;
-      top: 0.9rem;
-      right: 1rem;
-      width: 26px;
-      height: 26px;
-      color: var(--w);
-      opacity: 0.4;
-      transition: opacity 0.2s, transform 0.2s ease;
-      filter: drop-shadow(0 1px 0 rgba(255, 252, 240, 0.5));
+      top: 0.85rem;
+      right: 0.95rem;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(
+        circle at 35% 30%,
+        color-mix(in srgb, var(--w) 28%, transparent) 0%,
+        color-mix(in srgb, var(--w) 12%, transparent) 55%,
+        transparent 90%
+      );
+      border-radius: 50%;
+      transition: background 0.25s;
     }
-    .doorway:hover .doorway-icon { opacity: 0.85; }
+    .doorway:hover .doorway-icon-wrap {
+      background: radial-gradient(
+        circle at 35% 30%,
+        color-mix(in srgb, var(--w) 40%, transparent) 0%,
+        color-mix(in srgb, var(--w) 18%, transparent) 55%,
+        transparent 90%
+      );
+    }
+    .doorway-icon {
+      width: 24px;
+      height: 24px;
+      color: var(--w);
+      opacity: 0.78;
+      filter: drop-shadow(0 1px 0 rgba(255, 252, 240, 0.55));
+      transition: opacity 0.2s;
+    }
+    .doorway:hover .doorway-icon { opacity: 1; }
 
     .doorway-kind {
       display: block;
@@ -147,7 +189,7 @@
       font-size: 0.84rem;
       color: var(--ink-soft);
       line-height: 1.45;
-      max-width: 85%;
+      max-width: 78%;
     }
 
     /* ── Within-Workspace directory ─────────────────────────────── */
@@ -159,7 +201,7 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--accent-warm);
-      margin: 0 0 0.7rem 0;
+      margin: 0 0 0.85rem 0;
       font-weight: 600;
     }
     .within-list {
@@ -167,45 +209,88 @@
       padding: 0;
       margin: 0;
       column-count: 3;
-      column-gap: 2rem;
+      column-gap: 1.5rem;
     }
     .within-list li {
       break-inside: avoid;
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.45rem;
     }
+
+    /* Directory entry: small archival drawer plate
+       — pigmented surface at rest, deeper bloom on hover */
     .within-list a {
       display: grid;
       grid-template:
         "icon name" auto
         "icon desc" auto / auto 1fr;
       column-gap: 0.55rem;
-      padding: 0.32rem 0.5rem 0.34rem 0.55rem;
-      border-left: 2px solid var(--w, var(--rule-warm));
+      padding: 0.4rem 0.55rem 0.42rem 0.6rem;
+      background:
+        linear-gradient(
+          150deg,
+          color-mix(in srgb, var(--w) 6.5%, var(--bg)) 0%,
+          color-mix(in srgb, var(--w) 3.5%, var(--bg)) 100%
+        );
+      border-left: 2px solid var(--w);
       border-radius: 0 2px 2px 0;
+      box-shadow: inset 0 1px 0 rgba(255, 252, 240, 0.45);
       color: var(--ink);
       text-decoration: none;
       transition:
-        background 0.15s,
+        background 0.2s,
         border-left-width 0.15s,
         padding-left 0.15s,
         box-shadow 0.2s;
     }
     .within-list a:hover {
-      background: color-mix(in srgb, var(--w, var(--accent-warm)) 7%, transparent);
+      background:
+        linear-gradient(
+          150deg,
+          color-mix(in srgb, var(--w) 13%, var(--bg)) 0%,
+          color-mix(in srgb, var(--w) 7%, var(--bg)) 100%
+        );
       border-left-width: 3px;
-      padding-left: 0.5rem;
-      box-shadow: 0 2px 8px -4px color-mix(in srgb, var(--w, var(--accent-warm)) 22%, transparent);
+      padding-left: 0.55rem;
+      box-shadow:
+        0 2px 8px -4px color-mix(in srgb, var(--w) 28%, transparent),
+        inset 0 1px 0 rgba(255, 252, 240, 0.55);
     }
-    .within-icon {
+
+    /* Stamped seal behind directory icon */
+    .within-icon-wrap {
       grid-area: icon;
       align-self: center;
-      width: 16px;
-      height: 16px;
-      color: var(--w, var(--accent-warm));
-      opacity: 0.55;
+      width: 22px;
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(
+        circle at 35% 30%,
+        color-mix(in srgb, var(--w) 24%, transparent) 0%,
+        color-mix(in srgb, var(--w) 8%, transparent) 60%,
+        transparent 90%
+      );
+      border-radius: 50%;
+      transition: background 0.15s;
+    }
+    .within-list a:hover .within-icon-wrap {
+      background: radial-gradient(
+        circle at 35% 30%,
+        color-mix(in srgb, var(--w) 36%, transparent) 0%,
+        color-mix(in srgb, var(--w) 14%, transparent) 60%,
+        transparent 90%
+      );
+    }
+    .within-icon {
+      width: 14px;
+      height: 14px;
+      color: var(--w);
+      opacity: 0.85;
       transition: opacity 0.15s;
     }
-    .within-list a:hover .within-icon { opacity: 0.95; }
+    .within-list a:hover .within-icon { opacity: 1; }
+
     .within-name {
       grid-area: name;
       font-family: var(--serif);
@@ -213,14 +298,14 @@
       font-weight: 600;
       transition: color 0.15s;
     }
-    .within-list a:hover .within-name { color: var(--w, var(--accent-deep)); }
+    .within-list a:hover .within-name { color: var(--w); }
     .within-desc {
       grid-area: desc;
       font-family: var(--sans);
       font-size: 0.7rem;
       color: var(--muted);
       line-height: 1.35;
-      margin-top: 0.02rem;
+      margin-top: 0.04rem;
     }
 
     /* ── Footer ─────────────────────────────────────────────────── */
@@ -252,10 +337,11 @@
     @media (max-width: 900px) {
       .doorway-name { font-size: 1.45rem; }
       .doorway-desc { font-size: 0.8rem; }
-      .doorway { padding: 0.9rem 1rem 1rem 1rem; }
-      .doorway-icon { width: 22px; height: 22px; top: 0.75rem; right: 0.85rem; }
+      .doorway { padding: 0.95rem 1rem 1.05rem 1rem; }
+      .doorway-icon-wrap { width: 32px; height: 32px; top: 0.7rem; right: 0.8rem; }
+      .doorway-icon { width: 20px; height: 20px; }
       .doorways { column-gap: 1rem; padding: 1.5rem 0 1.25rem 0; }
-      .within-list { column-count: 2; column-gap: 2rem; }
+      .within-list { column-count: 2; column-gap: 1.5rem; }
     }
 
     @media (max-width: 600px) {
@@ -281,37 +367,43 @@
 
     <nav class="doorways" aria-label="Primary destinations">
       <a class="doorway" href="https://stevenfrye30.github.io/Digital-Archive/">
-        <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M3 5.5 v13 a1 1 0 0 0 1 1 h7.5 v-14 a1 1 0 0 0 -1 -1 h-6.5 a1 1 0 0 0 -1 1z"/>
-          <path d="M21 5.5 v13 a1 1 0 0 1 -1 1 h-7.5 v-14 a1 1 0 0 1 1 -1 h6.5 a1 1 0 0 1 1 1z"/>
-          <path d="M6 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
-          <path d="M14.5 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
-        </svg>
+        <span class="doorway-icon-wrap">
+          <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 5.5 v13 a1 1 0 0 0 1 1 h7.5 v-14 a1 1 0 0 0 -1 -1 h-6.5 a1 1 0 0 0 -1 1z"/>
+            <path d="M21 5.5 v13 a1 1 0 0 1 -1 1 h-7.5 v-14 a1 1 0 0 1 1 -1 h6.5 a1 1 0 0 1 1 1z"/>
+            <path d="M6 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
+            <path d="M14.5 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
+          </svg>
+        </span>
         <span class="doorway-kind">Reading</span>
         <span class="doorway-name">Digital-Archive</span>
         <span class="doorway-desc">Historical and sacred texts. Apparatus visible; stewardship recorded.</span>
       </a>
       <a class="doorway" href="https://stevenfrye30.github.io/Atlas/">
-        <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="6" cy="6" r="1.8"/>
-          <circle cx="18" cy="6" r="1.8"/>
-          <circle cx="6" cy="18" r="1.8"/>
-          <circle cx="18" cy="18" r="1.8"/>
-          <circle cx="12" cy="12" r="1.8"/>
-          <line x1="7.3" y1="7.3" x2="10.7" y2="10.7"/>
-          <line x1="16.7" y1="7.3" x2="13.3" y2="10.7"/>
-          <line x1="7.3" y1="16.7" x2="10.7" y2="13.3"/>
-          <line x1="16.7" y1="16.7" x2="13.3" y2="13.3"/>
-        </svg>
+        <span class="doorway-icon-wrap">
+          <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="6" cy="6" r="1.8"/>
+            <circle cx="18" cy="6" r="1.8"/>
+            <circle cx="6" cy="18" r="1.8"/>
+            <circle cx="18" cy="18" r="1.8"/>
+            <circle cx="12" cy="12" r="1.8"/>
+            <line x1="7.3" y1="7.3" x2="10.7" y2="10.7"/>
+            <line x1="16.7" y1="7.3" x2="13.3" y2="10.7"/>
+            <line x1="7.3" y1="16.7" x2="10.7" y2="13.3"/>
+            <line x1="16.7" y1="16.7" x2="13.3" y2="13.3"/>
+          </svg>
+        </span>
         <span class="doorway-kind">Engine</span>
         <span class="doorway-name">Atlas</span>
         <span class="doorway-desc">Structural map of the archive — a typed semantic graph over the texts.</span>
       </a>
       <a class="doorway" href="https://stevenfrye30.github.io/Glyphs/">
-        <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M5 19 L12 4 L19 19"/>
-          <path d="M8 14 H16"/>
-        </svg>
+        <span class="doorway-icon-wrap">
+          <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 19 L12 4 L19 19"/>
+            <path d="M8 14 H16"/>
+          </svg>
+        </span>
         <span class="doorway-kind">Script</span>
         <span class="doorway-name">Glyphs</span>
         <span class="doorway-desc">Early alphabet forms and symbolic descent.</span>
@@ -323,147 +415,147 @@
       <ul class="within-list">
 
         <li><a href="gods/" style="--w: var(--w-pantheons);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 8 L12 3 L21 8 H3z"/>
             <path d="M5 8 v10 m4 -10 v10 m6 -10 v10 m4 -10 v10"/>
             <path d="M3 19 H21"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Pantheons</span>
           <span class="within-desc">Cross-cultural map of deities.</span>
         </a></li>
 
         <li><a href="sound-map/" style="--w: var(--w-soundmap);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M2 12 q3 -7 6 0 t6 0 t6 0"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Sound Map</span>
           <span class="within-desc">Phonetic correspondences.</span>
         </a></li>
 
         <li><a href="images/" style="--w: var(--w-images);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="5" width="18" height="14" rx="1"/>
             <path d="M3 16 L8 11 L13 15 L17 12 L21 16"/>
             <circle cx="16" cy="9" r="1.3"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Images</span>
           <span class="within-desc">Art and visual reference.</span>
         </a></li>
 
         <li><a href="cosmos/" style="--w: var(--w-cosmos);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(120 12 12)"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Cosmos</span>
           <span class="within-desc">Solar system, galaxy, universe.</span>
         </a></li>
 
         <li><a href="language/" style="--w: var(--w-language);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 19 v-9 m4 9 v-13 m4 13 v-7 m4 13 v-11 m4 5 v-7"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Language</span>
           <span class="within-desc">Phonos — sounds and scripts.</span>
         </a></li>
 
         <li><a href="philosophy/" style="--w: var(--w-philosophy);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M19 4 C 13 6 8 10 6 16 L4 20 L8 18 C 14 16 18 11 19 4 z"/>
             <path d="M11 14 L17 8"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Philosophy</span>
           <span class="within-desc">Reading notes and short essays.</span>
         </a></li>
 
         <li><a href="flags/" style="--w: var(--w-flags);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M5 4 v16"/>
             <path d="M5 5 q5 -1 10 1 q4 1.5 7 -0.5 v6 q-3 2 -7 0.5 q-5 -2 -10 -1 z"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Flags</span>
           <span class="within-desc">Countries and geography.</span>
         </a></li>
 
         <li><a href="nutrilens/" style="--w: var(--w-nutrilens);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M4 20 q-1 -11 8 -16 q9 5 8 16 q-8 -2 -16 0 z"/>
             <path d="M12 4 v16"/>
-          </svg>
+          </svg></span>
           <span class="within-name">NutriLens</span>
           <span class="within-desc">Offline nutrient explorer.</span>
         </a></li>
 
         <li><a href="math/" style="--w: var(--w-math);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M19 5 H6 L13 12 L6 19 H19"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Math</span>
           <span class="within-desc">Graphs, symbols, notes.</span>
         </a></li>
 
         <li><a href="milwaukee/" style="--w: var(--w-milwaukee);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 20 H21"/>
             <path d="M5 20 v-7 h3 v7"/>
             <path d="M10 20 v-12 h3 v12"/>
             <path d="M15 20 v-5 h3 v5"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Milwaukee</span>
           <span class="within-desc">Local guide.</span>
         </a></li>
 
         <li><a href="mirror/" style="--w: var(--w-mirror);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <ellipse cx="12" cy="9" rx="6" ry="6"/>
             <path d="M12 15 v6 m-3 0 h6"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Mirror</span>
           <span class="within-desc">Personal self-tracking.</span>
         </a></li>
 
         <li><a href="science/" style="--w: var(--w-science);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(-60 12 12)"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Science</span>
           <span class="within-desc">Topic clusters and glossary.</span>
         </a></li>
 
         <li><a href="emoji-games/" style="--w: var(--w-emoji);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="8" width="18" height="10" rx="3"/>
             <circle cx="8" cy="13" r="1.3"/>
             <circle cx="16" cy="13" r="1.3"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Emoji Games</span>
           <span class="within-desc">Casual games.</span>
         </a></li>
 
         <li><a href="graph/" style="--w: var(--w-graph);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="5" cy="6" r="1.7"/>
             <circle cx="19" cy="6" r="1.7"/>
             <circle cx="12" cy="18" r="1.7"/>
             <line x1="6.5" y1="7" x2="11" y2="16.5"/>
             <line x1="17.5" y1="7" x2="13" y2="16.5"/>
             <line x1="6.5" y1="6" x2="17.5" y2="6"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Graph</span>
           <span class="within-desc">Structural map of archive texts.</span>
         </a></li>
 
         <li><a href="archive/" style="--w: var(--w-archive-shelf);">
-          <svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <path d="M3 5 v14 m18 -14 v14"/>
             <path d="M3 5 H21 M3 12 H21 M3 19 H21"/>
             <path d="M6 7 v3 m3 -3 v3 m4 6 v3"/>
-          </svg>
+          </svg></span>
           <span class="within-name">Archive Shelf</span>
           <span class="within-desc">Curated doorway into selected texts.</span>
         </a></li>
