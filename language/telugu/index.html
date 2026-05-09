@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Telugu</title>
+<link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <h1>Telugu</h1>
+      <div class="subtitle">తెలుగు — notes.</div>
+    </div>
+    <a class="back" href="../">← Chart</a>
+  </header>
+
+  <main class="journal">
+
+    <p>
+      Retroflex series: <a class="phone">ʈ</a> <a class="phone">ɖ</a>
+      <a class="phone">ɳ</a> <a class="phone">ɭ</a>. The South Asian column.
+      Tongue tip curls back rather than touching the alveolar ridge — Arabic
+      has none of these.
+    </p>
+
+    <p>
+      Telugu marks long vowels with a separate sign on the syllable.
+      ా lengthens to <a class="phone">aː</a>; ీ lengthens to
+      <a class="phone">iː</a>; ూ lengthens to <a class="phone">uː</a>.
+    </p>
+
+  </main>
+</div>
+
+<script type="module">
+const res = await fetch("../shared/phones.json");
+const data = await res.json();
+const bySymbol = Object.fromEntries(data.phones.map(p => [p.symbol, p.slug]));
+for (const a of document.querySelectorAll("a.phone")) {
+  const sym = a.textContent.trim();
+  const slug = bySymbol[sym];
+  if (slug) a.href = `../phones/?p=${encodeURIComponent(slug)}`;
+  else a.classList.add("unresolved");
+}
+</script>
+</body>
+</html>

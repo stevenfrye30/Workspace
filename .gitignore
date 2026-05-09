@@ -29,3 +29,6 @@ _legacy_home.html
 
 # Local-use bat files (deployment is web-only)
 open-mirror.bat
+
+# .bat launchers are local-use only; never deploy
+*.bat

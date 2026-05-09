@@ -1,28 +1,35 @@
-# Gods
+# Gods — map app
 
-A cross-cultural temporal map of gods, heroes, and mythic figures.
+The single working view for the Gods world. A self-contained HTML app
+backed by `data.json`.
 
-**Live**: [stevenfrye30.github.io/workspace-hub/gods/map](https://stevenfrye30.github.io/workspace-hub/gods/map/)
+**Live:** [stevenfrye30.github.io/Workspace/gods/map](https://stevenfrye30.github.io/Workspace/gods/map/)
 
-## What's in it
+## Tabs
 
-- **57 pantheons** — Indo-European, Near Eastern, East Asian, African, Indigenous American, Oceanian, Aboriginal Australian, Abrahamic, and syncretic traditions.
-- **1000 figures** catalogued with parent / child / consort / sibling / archetype / cross-cultural-parallel relations.
-- **16 archetypes** (sky-father, earth-mother, trickster, psychopomp, serpent-dragon, …) linking deities across cultures.
-- **76 notable mentions** — semi-divine or culturally significant figures outside the main catalogue.
-
-Top-tier pantheons by catalogued figures: Greek 183 · Hindu/Vedic 84 · Norse 64 · Egyptian 54 · Mesopotamian 49 · Roman 42 · Shinto 31 · Chinese 30 · Celtic-Irish 28 · Aztec 26.
-
-## Views
-
-- **Pantheons** — grouped or list view, sortable; click into any pantheon for full roster.
-- **Family Trees** — vis-network genealogies with thumbnails and co-parent grouping.
-- **Timeline** — temporal map of pantheons' active + peak periods.
-- **Archetypes** — cross-cultural groupings around recurring divine roles.
-- **Deified Humans** — figures elevated to godhood (emperors, saints, teachers).
-- **Notable Mentions** — supporting cast.
-- **Browse All** — full flat list.
+- **Pantheons** — grid view, grouped or sorted by era / size /
+  alphabetical. Click a pantheon to open its family tree.
+- **Family Trees** — focus view: parents above, consorts and siblings
+  to the sides, children below, cross-cultural parallels at the
+  bottom. Any figure can become the focus.
+- **Timeline** — when each tradition was active and at peak.
+- **Archetypes** — cross-cultural groupings (sky-father, earth-mother,
+  trickster, psychopomp, serpent-dragon, …).
+- **Deified Humans** — figures elevated to godhood (emperors, saints,
+  teachers).
+- **Notable Mentions** — semi-divine and culturally significant figures
+  outside the main rosters.
+- **Browse All** — flat search across the catalogue.
 
 ## Data
 
-All content lives in `data.json`. Schema documented in the working folder at `projects/culture/Gods/README.md`.
+All content lives in `data.json`. Schema and growth notes are in the
+authoring README at `projects/culture/Gods/README.md`.
+
+Coverage is intentionally uneven by tradition. Empty patches are
+expected and will fill as reading continues.
+
+## Requirements
+
+The app fetches `data.json` and looks up Wikipedia images at runtime.
+Open it via an HTTP server, not `file://`.

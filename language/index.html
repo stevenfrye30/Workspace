@@ -1,44 +1,151 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Language &mdash; Atlas</title>
-  <meta name="description" content="A close study of language — its scripts, its sounds, and specific languages worth reading closely.">
-  <link rel="stylesheet" href="../atlas/atlas.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phonos — IPA chart</title>
+<link rel="stylesheet" href="shared/style.css">
 </head>
 <body>
-  <header class="atlas-header">
-    <nav class="atlas-nav" aria-label="Primary">
-      <a class="brand" href="../">Atlas</a>
-      <ul class="worlds-nav" id="worlds-nav" aria-label="Worlds"></ul>
+<div class="page">
+  <header>
+    <div>
+      <h1>IPA chart</h1>
+      <div class="subtitle">An early study desk for sound, script, and language history. Click a symbol to open a phone.</div>
+    </div>
+    <nav class="quiet-nav">
+      <a href="arabic/">Arabic</a> · <a href="telugu/">Telugu</a> · <a href="about/">About</a>
     </nav>
   </header>
 
-  <main class="atlas-main">
-    <article class="world-content" id="world-content"></article>
-  </main>
+  <section class="chart-section">
+    <h2>Consonants</h2>
+    <div class="chart-scroll">
+      <div class="grid" id="consonants"></div>
+    </div>
+  </section>
 
-  <footer class="atlas-footer">
-    <p>Atlas &mdash; built slowly, read slowly.</p>
+  <section class="chart-section">
+    <h2>Vowels</h2>
+    <div class="chart-scroll">
+      <div class="grid" id="vowels"></div>
+    </div>
+  </section>
+
+  <p id="error" class="error" hidden></p>
+
+  <footer class="quiet-footer">
+    <p>Empty cells are intentional. The chart fills as the project grows. <a href="about/">More about this study desk →</a></p>
   </footer>
+</div>
 
-  <script src="../atlas/atlas.js"></script>
-  <script>
-    fetch("./index.md", { cache: "no-cache" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("Content load failed: " + r.status);
-        return r.text();
-      })
-      .then(function (md) {
-        document.getElementById("world-content").innerHTML =
-          Atlas.renderMarkdown(md);
-      })
-      .catch(function (err) {
-        console.error("Language: failed to load content", err);
-        document.getElementById("world-content").innerHTML =
-          '<p class="atlas-error">This world is being prepared.</p>';
-      });
-  </script>
+<script type="module">
+const consPlaces = [
+  "bilabial", "labiodental", "dental", "alveolar", "postalveolar",
+  "retroflex", "palatal", "velar", "labio-velar", "uvular",
+  "pharyngeal", "glottal"
+];
+const placeAbbr = {
+  "bilabial": "Bilab", "labiodental": "Labd", "dental": "Dent",
+  "alveolar": "Alv", "postalveolar": "Post", "retroflex": "Retro",
+  "palatal": "Pal", "velar": "Vel", "labio-velar": "Lab-V",
+  "uvular": "Uvul", "pharyngeal": "Phar", "glottal": "Glot"
+};
+const consManners = [
+  "stop", "affricate", "nasal", "fricative", "tap", "trill", "lateral", "approximant"
+];
+const vowelHeights = ["close", "near-close", "close-mid", "mid", "open-mid", "near-open", "open"];
+const vowelBacknesses = ["front", "central", "back"];
+
+let phones;
+try {
+  const res = await fetch("shared/phones.json");
+  if (!res.ok) throw new Error(res.statusText);
+  phones = (await res.json()).phones;
+} catch (err) {
+  const e = document.getElementById("error");
+  e.hidden = false;
+  e.textContent = "Could not load phones.json.";
+  throw err;
+}
+
+const cons = phones.filter(p => p.type === "consonant");
+const vows = phones.filter(p => p.type === "vowel");
+
+renderConsonants(document.getElementById("consonants"), cons);
+renderVowels(document.getElementById("vowels"), vows);
+
+function renderConsonants(grid, cons) {
+  grid.style.gridTemplateColumns = `110px repeat(${consPlaces.length}, minmax(50px, 1fr))`;
+  grid.append(headerCell(""));
+  for (const place of consPlaces) grid.append(headerCell(placeAbbr[place], place));
+  for (const manner of consManners) {
+    grid.append(rowLabel(manner));
+    for (const place of consPlaces) {
+      const cellPhones = cons
+        .filter(p => p.articulation.manner === manner && p.articulation.place === place)
+        .sort(byVoicing);
+      grid.append(phoneCell(cellPhones));
+    }
+  }
+}
+
+function renderVowels(grid, vows) {
+  grid.style.gridTemplateColumns = `110px repeat(${vowelBacknesses.length}, minmax(80px, 1fr))`;
+  grid.append(headerCell(""));
+  for (const back of vowelBacknesses) grid.append(headerCell(back));
+  for (const height of vowelHeights) {
+    grid.append(rowLabel(height));
+    for (const back of vowelBacknesses) {
+      const cellPhones = vows
+        .filter(p => p.articulation.height === height && backnessMatches(p.articulation.backness, back))
+        .sort(byRounded);
+      grid.append(phoneCell(cellPhones));
+    }
+  }
+}
+
+function backnessMatches(phoneBack, columnBack) {
+  return phoneBack === columnBack || phoneBack === `near-${columnBack}`;
+}
+
+function byVoicing(a, b) {
+  const order = { voiceless: 0, voiced: 1 };
+  return (order[a.articulation.voicing] ?? 2) - (order[b.articulation.voicing] ?? 2);
+}
+
+function byRounded(a, b) {
+  return (a.articulation.rounded ? 1 : 0) - (b.articulation.rounded ? 1 : 0);
+}
+
+function headerCell(text, title) {
+  const div = document.createElement("div");
+  div.className = "cell header-cell";
+  div.textContent = text;
+  if (title) div.title = title;
+  return div;
+}
+
+function rowLabel(text) {
+  const div = document.createElement("div");
+  div.className = "cell row-label";
+  div.textContent = text;
+  return div;
+}
+
+function phoneCell(phones) {
+  const div = document.createElement("div");
+  div.className = "cell";
+  for (const p of phones) {
+    const a = document.createElement("a");
+    a.className = "phone-link";
+    a.href = `phones/?p=${encodeURIComponent(p.slug)}`;
+    a.textContent = p.symbol;
+    a.title = p.name;
+    div.append(a);
+  }
+  return div;
+}
+</script>
 </body>
 </html>

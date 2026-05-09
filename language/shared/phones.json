@@ -1,0 +1,615 @@
+{
+  "version": 1,
+  "phones": [
+    {
+      "symbol": "p",
+      "slug": "p",
+      "type": "consonant",
+      "name": "voiceless bilabial stop",
+      "articulation": { "place": "bilabial", "manner": "stop", "voicing": "voiceless" },
+      "description": "Lips closed, then released with no vocal-fold vibration. English 'p' in 'pin'.",
+      "neighbors": ["b", "t", "m"],
+      "audio": ""
+    },
+    {
+      "symbol": "b",
+      "slug": "b",
+      "type": "consonant",
+      "name": "voiced bilabial stop",
+      "articulation": { "place": "bilabial", "manner": "stop", "voicing": "voiced" },
+      "description": "Lips closed, released with voicing. English 'b' in 'bin'.",
+      "neighbors": ["p", "d", "m"],
+      "audio": ""
+    },
+    {
+      "symbol": "t",
+      "slug": "t",
+      "type": "consonant",
+      "name": "voiceless alveolar stop",
+      "articulation": { "place": "alveolar", "manner": "stop", "voicing": "voiceless" },
+      "description": "Tongue tip against the alveolar ridge, released without voicing. English 't' in 'top'.",
+      "neighbors": ["d", "p", "n"],
+      "audio": ""
+    },
+    {
+      "symbol": "d",
+      "slug": "d",
+      "type": "consonant",
+      "name": "voiced alveolar stop",
+      "articulation": { "place": "alveolar", "manner": "stop", "voicing": "voiced" },
+      "description": "Tongue tip against the alveolar ridge, released with voicing. English 'd' in 'dog'.",
+      "neighbors": ["t", "b", "n"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʈ",
+      "slug": "t-retroflex",
+      "type": "consonant",
+      "name": "voiceless retroflex stop",
+      "articulation": { "place": "retroflex", "manner": "stop", "voicing": "voiceless" },
+      "description": "Tongue tip curled back to the post-alveolar region. Telugu and Hindi 'ṭ'.",
+      "neighbors": ["ɖ", "t", "ɳ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɖ",
+      "slug": "d-retroflex",
+      "type": "consonant",
+      "name": "voiced retroflex stop",
+      "articulation": { "place": "retroflex", "manner": "stop", "voicing": "voiced" },
+      "description": "Tongue tip curled back, with voicing. Telugu and Hindi 'ḍ'.",
+      "neighbors": ["ʈ", "d", "ɳ"],
+      "audio": ""
+    },
+    {
+      "symbol": "c",
+      "slug": "c-palatal",
+      "type": "consonant",
+      "name": "voiceless palatal stop",
+      "articulation": { "place": "palatal", "manner": "stop", "voicing": "voiceless" },
+      "description": "Body of the tongue against the hard palate, released without voicing. Hungarian 'ty'.",
+      "neighbors": ["ɟ", "k", "ɲ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɟ",
+      "slug": "j-palatal-stop",
+      "type": "consonant",
+      "name": "voiced palatal stop",
+      "articulation": { "place": "palatal", "manner": "stop", "voicing": "voiced" },
+      "description": "Body of the tongue against the hard palate, with voicing. Hungarian 'gy'.",
+      "neighbors": ["c", "ɡ", "ɲ"],
+      "audio": ""
+    },
+    {
+      "symbol": "k",
+      "slug": "k",
+      "type": "consonant",
+      "name": "voiceless velar stop",
+      "articulation": { "place": "velar", "manner": "stop", "voicing": "voiceless" },
+      "description": "Back of the tongue against the soft palate, released without voicing. English 'k' in 'kit'.",
+      "neighbors": ["ɡ", "q", "ŋ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɡ",
+      "slug": "g",
+      "type": "consonant",
+      "name": "voiced velar stop",
+      "articulation": { "place": "velar", "manner": "stop", "voicing": "voiced" },
+      "description": "Back of the tongue against the soft palate, with voicing. English 'g' in 'go'.",
+      "neighbors": ["k", "ɟ", "ŋ"],
+      "audio": ""
+    },
+    {
+      "symbol": "q",
+      "slug": "q",
+      "type": "consonant",
+      "name": "voiceless uvular stop",
+      "articulation": { "place": "uvular", "manner": "stop", "voicing": "voiceless" },
+      "description": "Back of the tongue against the uvula. Arabic 'ق' (qaf).",
+      "neighbors": ["k", "ʔ", "ħ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʔ",
+      "slug": "glottal-stop",
+      "type": "consonant",
+      "name": "glottal stop",
+      "articulation": { "place": "glottal", "manner": "stop", "voicing": "voiceless" },
+      "description": "Vocal folds closed and abruptly released. The catch in 'uh-oh'; Arabic 'ء' (hamza).",
+      "neighbors": ["q", "k", "h"],
+      "audio": ""
+    },
+    {
+      "symbol": "m",
+      "slug": "m",
+      "type": "consonant",
+      "name": "bilabial nasal",
+      "articulation": { "place": "bilabial", "manner": "nasal", "voicing": "voiced" },
+      "description": "Lips closed, air flows through the nose. English 'm' in 'man'.",
+      "neighbors": ["n", "p", "b"],
+      "audio": ""
+    },
+    {
+      "symbol": "n",
+      "slug": "n",
+      "type": "consonant",
+      "name": "alveolar nasal",
+      "articulation": { "place": "alveolar", "manner": "nasal", "voicing": "voiced" },
+      "description": "Tongue against the alveolar ridge, air flows through the nose. English 'n' in 'no'.",
+      "neighbors": ["m", "ɳ", "ɲ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɳ",
+      "slug": "n-retroflex",
+      "type": "consonant",
+      "name": "retroflex nasal",
+      "articulation": { "place": "retroflex", "manner": "nasal", "voicing": "voiced" },
+      "description": "Tongue tip curled back, air through the nose. Telugu 'ṇ'.",
+      "neighbors": ["n", "ɲ", "ʈ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɲ",
+      "slug": "n-palatal",
+      "type": "consonant",
+      "name": "palatal nasal",
+      "articulation": { "place": "palatal", "manner": "nasal", "voicing": "voiced" },
+      "description": "Body of the tongue at the palate, air through the nose. Spanish 'ñ', French 'gn'.",
+      "neighbors": ["n", "ŋ", "ɳ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ŋ",
+      "slug": "ng",
+      "type": "consonant",
+      "name": "velar nasal",
+      "articulation": { "place": "velar", "manner": "nasal", "voicing": "voiced" },
+      "description": "Back of the tongue at the soft palate, air through the nose. English 'ng' in 'sing'.",
+      "neighbors": ["ɲ", "n", "k"],
+      "audio": ""
+    },
+    {
+      "symbol": "f",
+      "slug": "f",
+      "type": "consonant",
+      "name": "voiceless labiodental fricative",
+      "articulation": { "place": "labiodental", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Upper teeth on lower lip, air flows through. English 'f' in 'fan'.",
+      "neighbors": ["v", "p", "θ"],
+      "audio": ""
+    },
+    {
+      "symbol": "v",
+      "slug": "v",
+      "type": "consonant",
+      "name": "voiced labiodental fricative",
+      "articulation": { "place": "labiodental", "manner": "fricative", "voicing": "voiced" },
+      "description": "Upper teeth on lower lip, with voicing. English 'v' in 'van'.",
+      "neighbors": ["f", "b", "ð"],
+      "audio": ""
+    },
+    {
+      "symbol": "θ",
+      "slug": "theta",
+      "type": "consonant",
+      "name": "voiceless dental fricative",
+      "articulation": { "place": "dental", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Tongue tip lightly behind the upper teeth; air flows through. English 'th' in 'thin'; Arabic 'ث'.",
+      "neighbors": ["ð", "f", "s"],
+      "audio": ""
+    },
+    {
+      "symbol": "ð",
+      "slug": "eth",
+      "type": "consonant",
+      "name": "voiced dental fricative",
+      "articulation": { "place": "dental", "manner": "fricative", "voicing": "voiced" },
+      "description": "Tongue tip lightly behind the upper teeth, with voicing. English 'th' in 'this'; Arabic 'ذ'.",
+      "neighbors": ["θ", "v", "z"],
+      "audio": ""
+    },
+    {
+      "symbol": "s",
+      "slug": "s",
+      "type": "consonant",
+      "name": "voiceless alveolar fricative",
+      "articulation": { "place": "alveolar", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Tongue near the alveolar ridge, air channeled through a groove. English 's' in 'sit'.",
+      "neighbors": ["z", "θ", "ʃ"],
+      "audio": ""
+    },
+    {
+      "symbol": "z",
+      "slug": "z",
+      "type": "consonant",
+      "name": "voiced alveolar fricative",
+      "articulation": { "place": "alveolar", "manner": "fricative", "voicing": "voiced" },
+      "description": "Tongue near the alveolar ridge, with voicing. English 'z' in 'zoo'.",
+      "neighbors": ["s", "ð", "ʒ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʃ",
+      "slug": "esh",
+      "type": "consonant",
+      "name": "voiceless postalveolar fricative",
+      "articulation": { "place": "postalveolar", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Tongue blade slightly behind the alveolar ridge, lips often rounded. English 'sh' in 'ship'.",
+      "neighbors": ["ʒ", "s", "ʂ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʒ",
+      "slug": "ezh",
+      "type": "consonant",
+      "name": "voiced postalveolar fricative",
+      "articulation": { "place": "postalveolar", "manner": "fricative", "voicing": "voiced" },
+      "description": "Tongue blade behind the alveolar ridge, with voicing. English 's' in 'measure'.",
+      "neighbors": ["ʃ", "z", "dʒ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʂ",
+      "slug": "s-retroflex",
+      "type": "consonant",
+      "name": "voiceless retroflex fricative",
+      "articulation": { "place": "retroflex", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Tongue tip curled back, air channeled through. Telugu 'ష'; Mandarin 'sh'.",
+      "neighbors": ["ʃ", "ʈ", "x"],
+      "audio": ""
+    },
+    {
+      "symbol": "x",
+      "slug": "x",
+      "type": "consonant",
+      "name": "voiceless velar fricative",
+      "articulation": { "place": "velar", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Back of the tongue near the soft palate, air friction without voicing. German 'ch' in 'Bach'; Arabic 'خ'.",
+      "neighbors": ["ɣ", "k", "h"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɣ",
+      "slug": "gamma",
+      "type": "consonant",
+      "name": "voiced velar fricative",
+      "articulation": { "place": "velar", "manner": "fricative", "voicing": "voiced" },
+      "description": "Back of the tongue near the soft palate, with voicing. Arabic 'غ'; Greek 'γ' before back vowels.",
+      "neighbors": ["x", "ɡ", "ʕ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ħ",
+      "slug": "h-pharyngeal",
+      "type": "consonant",
+      "name": "voiceless pharyngeal fricative",
+      "articulation": { "place": "pharyngeal", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Constriction in the pharynx, voiceless. Arabic 'ح'.",
+      "neighbors": ["ʕ", "x", "h"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʕ",
+      "slug": "ayn",
+      "type": "consonant",
+      "name": "voiced pharyngeal fricative",
+      "articulation": { "place": "pharyngeal", "manner": "fricative", "voicing": "voiced" },
+      "description": "Constriction in the pharynx, with voicing. Arabic 'ع' (ʿayn).",
+      "neighbors": ["ħ", "ɣ", "ʔ"],
+      "audio": ""
+    },
+    {
+      "symbol": "h",
+      "slug": "h",
+      "type": "consonant",
+      "name": "voiceless glottal fricative",
+      "articulation": { "place": "glottal", "manner": "fricative", "voicing": "voiceless" },
+      "description": "Air friction at the glottis, no oral constriction. English 'h' in 'hat'; Arabic 'ه'.",
+      "neighbors": ["x", "ʔ", "ħ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɾ",
+      "slug": "r-tap",
+      "type": "consonant",
+      "name": "alveolar tap",
+      "articulation": { "place": "alveolar", "manner": "tap", "voicing": "voiced" },
+      "description": "A single quick tap of the tongue tip against the alveolar ridge. Spanish single 'r'; American English 'tt' in 'butter'.",
+      "neighbors": ["r", "t", "n"],
+      "audio": ""
+    },
+    {
+      "symbol": "r",
+      "slug": "r-trill",
+      "type": "consonant",
+      "name": "alveolar trill",
+      "articulation": { "place": "alveolar", "manner": "trill", "voicing": "voiced" },
+      "description": "Multiple rapid taps of the tongue against the alveolar ridge. Spanish double 'rr'; Arabic 'ر'.",
+      "neighbors": ["ɾ", "l", "n"],
+      "audio": ""
+    },
+    {
+      "symbol": "l",
+      "slug": "l",
+      "type": "consonant",
+      "name": "alveolar lateral approximant",
+      "articulation": { "place": "alveolar", "manner": "lateral", "voicing": "voiced" },
+      "description": "Tongue at the alveolar ridge, air flows around the sides. English 'l' in 'lip'.",
+      "neighbors": ["r", "ɭ", "n"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɭ",
+      "slug": "l-retroflex",
+      "type": "consonant",
+      "name": "retroflex lateral approximant",
+      "articulation": { "place": "retroflex", "manner": "lateral", "voicing": "voiced" },
+      "description": "Tongue tip curled back, air flows around the sides. Telugu 'ళ'; Tamil 'ள'.",
+      "neighbors": ["l", "ɳ", "ʈ"],
+      "audio": ""
+    },
+    {
+      "symbol": "j",
+      "slug": "j",
+      "type": "consonant",
+      "name": "palatal approximant",
+      "articulation": { "place": "palatal", "manner": "approximant", "voicing": "voiced" },
+      "description": "Body of the tongue close to the palate without friction. English 'y' in 'yes'.",
+      "neighbors": ["w", "ɲ", "i"],
+      "audio": ""
+    },
+    {
+      "symbol": "w",
+      "slug": "w",
+      "type": "consonant",
+      "name": "labio-velar approximant",
+      "articulation": { "place": "labio-velar", "manner": "approximant", "voicing": "voiced" },
+      "description": "Lips rounded and back of the tongue raised. English 'w' in 'wet'.",
+      "neighbors": ["j", "u", "v"],
+      "audio": ""
+    },
+    {
+      "symbol": "tʃ",
+      "slug": "t-esh",
+      "type": "consonant",
+      "name": "voiceless postalveolar affricate",
+      "articulation": { "place": "postalveolar", "manner": "affricate", "voicing": "voiceless" },
+      "description": "A 't' released directly into 'ʃ'. English 'ch' in 'church'; Arabic dialect 'چ'.",
+      "neighbors": ["dʒ", "ʃ", "ts"],
+      "audio": ""
+    },
+    {
+      "symbol": "dʒ",
+      "slug": "d-ezh",
+      "type": "consonant",
+      "name": "voiced postalveolar affricate",
+      "articulation": { "place": "postalveolar", "manner": "affricate", "voicing": "voiced" },
+      "description": "A 'd' released directly into 'ʒ'. English 'j' in 'judge'; Arabic 'ج' (in many dialects).",
+      "neighbors": ["tʃ", "ʒ", "dz"],
+      "audio": ""
+    },
+    {
+      "symbol": "ts",
+      "slug": "ts",
+      "type": "consonant",
+      "name": "voiceless alveolar affricate",
+      "articulation": { "place": "alveolar", "manner": "affricate", "voicing": "voiceless" },
+      "description": "A 't' released directly into 's'. German 'z' in 'Zeit'; Italian 'zz' in 'pizza'.",
+      "neighbors": ["dz", "s", "tʃ"],
+      "audio": ""
+    },
+    {
+      "symbol": "dz",
+      "slug": "dz",
+      "type": "consonant",
+      "name": "voiced alveolar affricate",
+      "articulation": { "place": "alveolar", "manner": "affricate", "voicing": "voiced" },
+      "description": "A 'd' released directly into 'z'. Italian 'zz' in 'mezzo'.",
+      "neighbors": ["ts", "z", "dʒ"],
+      "audio": ""
+    },
+    {
+      "symbol": "i",
+      "slug": "i",
+      "type": "vowel",
+      "name": "close front unrounded vowel",
+      "articulation": { "height": "close", "backness": "front", "rounded": false },
+      "description": "Tongue high and forward, lips spread. English 'ee' in 'see'; Arabic 'ـِ' long.",
+      "neighbors": ["ɪ", "e", "y"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɪ",
+      "slug": "i-lax",
+      "type": "vowel",
+      "name": "near-close near-front unrounded vowel",
+      "articulation": { "height": "near-close", "backness": "near-front", "rounded": false },
+      "description": "Slightly lower and more central than 'i'. English 'i' in 'sit'.",
+      "neighbors": ["i", "e", "ʊ"],
+      "audio": ""
+    },
+    {
+      "symbol": "e",
+      "slug": "e",
+      "type": "vowel",
+      "name": "close-mid front unrounded vowel",
+      "articulation": { "height": "close-mid", "backness": "front", "rounded": false },
+      "description": "Tongue forward, mid-high, lips spread. Spanish 'e' in 'mesa'.",
+      "neighbors": ["ɛ", "i", "ø"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɛ",
+      "slug": "epsilon",
+      "type": "vowel",
+      "name": "open-mid front unrounded vowel",
+      "articulation": { "height": "open-mid", "backness": "front", "rounded": false },
+      "description": "Tongue forward, mid-low, lips spread. English 'e' in 'bed'.",
+      "neighbors": ["e", "æ", "a"],
+      "audio": ""
+    },
+    {
+      "symbol": "æ",
+      "slug": "ash",
+      "type": "vowel",
+      "name": "near-open front unrounded vowel",
+      "articulation": { "height": "near-open", "backness": "front", "rounded": false },
+      "description": "Tongue forward, low, mouth open. English 'a' in 'cat'.",
+      "neighbors": ["ɛ", "a", "ə"],
+      "audio": ""
+    },
+    {
+      "symbol": "a",
+      "slug": "a",
+      "type": "vowel",
+      "name": "open front unrounded vowel",
+      "articulation": { "height": "open", "backness": "front", "rounded": false },
+      "description": "Tongue forward and low, mouth fully open. Spanish 'a' in 'casa'.",
+      "neighbors": ["æ", "ɑ", "ə"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɨ",
+      "slug": "i-central",
+      "type": "vowel",
+      "name": "close central unrounded vowel",
+      "articulation": { "height": "close", "backness": "central", "rounded": false },
+      "description": "Tongue high and centered. Russian 'ы'; Romanian 'î'.",
+      "neighbors": ["ə", "i", "u"],
+      "audio": ""
+    },
+    {
+      "symbol": "ə",
+      "slug": "schwa",
+      "type": "vowel",
+      "name": "mid central vowel",
+      "articulation": { "height": "mid", "backness": "central", "rounded": false },
+      "description": "Tongue at rest in the center of the mouth. English unstressed 'a' in 'about'.",
+      "neighbors": ["ɨ", "æ", "ɔ"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɑ",
+      "slug": "a-back",
+      "type": "vowel",
+      "name": "open back unrounded vowel",
+      "articulation": { "height": "open", "backness": "back", "rounded": false },
+      "description": "Tongue back and low, lips relaxed. English 'a' in American 'father'.",
+      "neighbors": ["a", "ɔ", "ə"],
+      "audio": ""
+    },
+    {
+      "symbol": "ɔ",
+      "slug": "open-o",
+      "type": "vowel",
+      "name": "open-mid back rounded vowel",
+      "articulation": { "height": "open-mid", "backness": "back", "rounded": true },
+      "description": "Tongue back, mid-low, lips rounded. English 'aw' in 'thought' (in many accents).",
+      "neighbors": ["o", "ɑ", "ə"],
+      "audio": ""
+    },
+    {
+      "symbol": "o",
+      "slug": "o",
+      "type": "vowel",
+      "name": "close-mid back rounded vowel",
+      "articulation": { "height": "close-mid", "backness": "back", "rounded": true },
+      "description": "Tongue back, mid-high, lips rounded. Spanish 'o' in 'lobo'.",
+      "neighbors": ["ɔ", "u", "ø"],
+      "audio": ""
+    },
+    {
+      "symbol": "ʊ",
+      "slug": "u-lax",
+      "type": "vowel",
+      "name": "near-close near-back rounded vowel",
+      "articulation": { "height": "near-close", "backness": "near-back", "rounded": true },
+      "description": "Slightly lower and more central than 'u'. English 'oo' in 'foot'.",
+      "neighbors": ["u", "o", "ɪ"],
+      "audio": ""
+    },
+    {
+      "symbol": "u",
+      "slug": "u",
+      "type": "vowel",
+      "name": "close back rounded vowel",
+      "articulation": { "height": "close", "backness": "back", "rounded": true },
+      "description": "Tongue high and back, lips rounded. Spanish 'u' in 'luna'.",
+      "neighbors": ["ʊ", "o", "y"],
+      "audio": ""
+    },
+    {
+      "symbol": "y",
+      "slug": "y",
+      "type": "vowel",
+      "name": "close front rounded vowel",
+      "articulation": { "height": "close", "backness": "front", "rounded": true },
+      "description": "Tongue high and forward, lips rounded. French 'u' in 'tu'; German 'ü'.",
+      "neighbors": ["i", "ø", "u"],
+      "audio": ""
+    },
+    {
+      "symbol": "ø",
+      "slug": "o-front",
+      "type": "vowel",
+      "name": "close-mid front rounded vowel",
+      "articulation": { "height": "close-mid", "backness": "front", "rounded": true },
+      "description": "Tongue forward and mid-high, lips rounded. French 'eu' in 'peu'; German 'ö'.",
+      "neighbors": ["e", "o", "y"],
+      "audio": ""
+    },
+    {
+      "symbol": "iː",
+      "slug": "i-long",
+      "type": "vowel",
+      "name": "close front unrounded long vowel",
+      "articulation": { "height": "close", "backness": "front", "rounded": false, "length": "long" },
+      "description": "Long version of 'i'. Arabic 'ـِي'; Telugu 'ీ'.",
+      "neighbors": ["i", "eː", "uː"],
+      "audio": ""
+    },
+    {
+      "symbol": "aː",
+      "slug": "a-long",
+      "type": "vowel",
+      "name": "open front unrounded long vowel",
+      "articulation": { "height": "open", "backness": "front", "rounded": false, "length": "long" },
+      "description": "Long version of 'a'. Arabic 'ـَا'; Telugu 'ా'.",
+      "neighbors": ["a", "ɑ", "oː"],
+      "audio": ""
+    },
+    {
+      "symbol": "uː",
+      "slug": "u-long",
+      "type": "vowel",
+      "name": "close back rounded long vowel",
+      "articulation": { "height": "close", "backness": "back", "rounded": true, "length": "long" },
+      "description": "Long version of 'u'. Arabic 'ـُو'; Telugu 'ూ'.",
+      "neighbors": ["u", "oː", "iː"],
+      "audio": ""
+    },
+    {
+      "symbol": "eː",
+      "slug": "e-long",
+      "type": "vowel",
+      "name": "close-mid front unrounded long vowel",
+      "articulation": { "height": "close-mid", "backness": "front", "rounded": false, "length": "long" },
+      "description": "Long version of 'e'. Telugu 'ే'.",
+      "neighbors": ["e", "iː", "oː"],
+      "audio": ""
+    },
+    {
+      "symbol": "oː",
+      "slug": "o-long",
+      "type": "vowel",
+      "name": "close-mid back rounded long vowel",
+      "articulation": { "height": "close-mid", "backness": "back", "rounded": true, "length": "long" },
+      "description": "Long version of 'o'. Telugu 'ో'.",
+      "neighbors": ["o", "eː", "uː"],
+      "audio": ""
+    }
+  ]
+}

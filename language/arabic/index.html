@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Arabic</title>
+<link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <h1>Arabic</h1>
+      <div class="subtitle">العربية — notes.</div>
+    </div>
+    <a class="back" href="../">← Chart</a>
+  </header>
+
+  <main class="journal">
+
+    <p>
+      ع (<a class="phone">ʕ</a>) and ح (<a class="phone">ħ</a>) — voiced and
+      voiceless pharyngeal fricatives. Easy to confuse on hearing. English
+      speakers tend to flatten both into a hint of <em>h</em>, or drop them.
+    </p>
+
+    <p>
+      ثلاثة — <em>three</em>. Two <a class="phone">θ</a>'s framing the word.
+    </p>
+
+    <p>
+      ج ح خ share the same skeleton: a curve below the line. The dot above —
+      or its absence, or its position — tells which is which.
+    </p>
+
+  </main>
+</div>
+
+<script type="module">
+const res = await fetch("../shared/phones.json");
+const data = await res.json();
+const bySymbol = Object.fromEntries(data.phones.map(p => [p.symbol, p.slug]));
+for (const a of document.querySelectorAll("a.phone")) {
+  const sym = a.textContent.trim();
+  const slug = bySymbol[sym];
+  if (slug) a.href = `../phones/?p=${encodeURIComponent(slug)}`;
+  else a.classList.add("unresolved");
+}
+</script>
+</body>
+</html>

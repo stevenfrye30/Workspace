@@ -1,44 +1,157 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Gods &mdash; Atlas</title>
-  <meta name="description" content="A cross-cultural atlas of gods — pantheons set beside one another across time and place.">
-  <link rel="stylesheet" href="../atlas/atlas.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gods — A Comparative Archive</title>
+<meta name="description" content="An early comparative archive of pantheons — gods set beside one another across time and place.">
+<style>
+  :root {
+    --bg:#0a0b1a; --panel:#141829; --panel2:#1d2238;
+    --ink:#e8ddc3; --muted:#8a91b0;
+    --gold:#e5c158; --gold-deep:#b8901f;
+    --line:#2a2f4a; --gold-soft:rgba(229,193,88,0.4); --gold-faint:rgba(229,193,88,0.1);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Iowan Old Style', Georgia, 'Hoefler Text', serif;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 15% 10%, rgba(122,94,168,0.10), transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(160,48,64,0.08), transparent 55%);
+    color: var(--ink); line-height: 1.7; min-height: 100vh;
+  }
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 56px 28px 80px;
+  }
+  header {
+    text-align: center;
+    border-bottom: 1px solid var(--gold-faint);
+    padding-bottom: 28px;
+    margin-bottom: 36px;
+  }
+  h1 {
+    font-size: 32px; font-weight: normal; letter-spacing: 8px;
+    color: var(--gold); font-variant: small-caps;
+    text-shadow: 0 1px 0 #000, 0 0 28px rgba(229,193,88,0.18);
+  }
+  h1::before { content: '☾'; color: #c5c9d9; margin-right: 22px; font-size: 0.9em; opacity: 0.9; }
+  h1::after  { content: '☉'; color: var(--gold); margin-left: 22px; font-size: 0.9em; opacity: 0.9; }
+  .lede {
+    margin-top: 10px;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 13px;
+    letter-spacing: 1.2px;
+  }
+  main { font-size: 16px; }
+  main p { margin-bottom: 16px; color: var(--ink); }
+  main h2 {
+    font-size: 12px; font-weight: 600;
+    color: var(--gold-deep);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin: 32px 0 12px;
+  }
+  main ul { margin: 0 0 16px 1.2em; }
+  main li { margin-bottom: 6px; color: var(--ink); }
+  main a { color: var(--gold); }
+  .cta {
+    text-align: center;
+    margin: 40px 0 8px;
+  }
+  .cta a {
+    display: inline-block;
+    padding: 14px 28px;
+    background: linear-gradient(180deg, var(--panel), var(--panel2));
+    border: 1px solid var(--gold-soft);
+    border-radius: 14px / 50%;
+    color: var(--gold);
+    text-decoration: none;
+    font-size: 13px;
+    letter-spacing: 3px;
+    font-variant: small-caps;
+    transition: border-color .15s, background .15s, color .15s;
+  }
+  .cta a:hover {
+    background: linear-gradient(180deg, var(--gold), var(--gold-deep));
+    color: #0a0b1a;
+    border-color: var(--gold);
+  }
+  footer {
+    margin-top: 48px;
+    padding-top: 18px;
+    border-top: 1px solid var(--gold-faint);
+    color: var(--muted);
+    font-size: 12px;
+    text-align: center;
+    font-style: italic;
+  }
+  footer a { color: var(--gold); text-decoration: none; }
+</style>
 </head>
 <body>
-  <header class="atlas-header">
-    <nav class="atlas-nav" aria-label="Primary">
-      <a class="brand" href="../">Atlas</a>
-      <ul class="worlds-nav" id="worlds-nav" aria-label="Worlds"></ul>
-    </nav>
+<div class="page">
+  <header>
+    <h1>GODS</h1>
+    <p class="lede">A comparative archive — pantheons set beside one another</p>
   </header>
 
-  <main class="atlas-main">
-    <article class="world-content" id="world-content"></article>
+  <main>
+    <p>
+      An early personal attempt to set the gods of many traditions beside
+      one another — to read their family trees, their adjacencies, and
+      their echoes together rather than apart. Entries are added one
+      tradition at a time and checked against sources before they are
+      pinned in.
+    </p>
+
+    <p>
+      The aim is not coverage. It is composition: pantheons placed where
+      a reader can see who sits next to whom.
+    </p>
+
+    <div class="cta">
+      <a href="map/">Open the archive →</a>
+    </div>
+
+    <h2>What is here now</h2>
+    <ul>
+      <li>A grid of pantheons, grouped by tradition or sortable by era and size.</li>
+      <li>Family trees — parents above, consorts and siblings to the sides, children below, cross-cultural parallels at the bottom.</li>
+      <li>A timeline of when each tradition was active and at peak.</li>
+      <li>Cross-cultural archetypes (sky-father, earth-mother, trickster, psychopomp, serpent-dragon, …).</li>
+      <li>Catalogues of deified humans and notable mentions outside the main rosters.</li>
+      <li>A flat browse view for searching the whole archive.</li>
+    </ul>
+    <p>
+      Coverage is uneven by design. Well-documented traditions (Greek,
+      Hindu/Vedic, Norse, Egyptian) are heavier; smaller pantheons sit as
+      sketches until more reading happens.
+    </p>
+
+    <h2>What is intentionally unfinished</h2>
+    <ul>
+      <li>Smaller regional pantheons are sketched, not filled in.</li>
+      <li>Source citations exist in the working data but are not surfaced in the view yet.</li>
+      <li>Wikipedia images are fetched live; some figures will show a glyph instead.</li>
+      <li>A geographic map view (latitude / longitude per cultural centre) is planned but not built.</li>
+    </ul>
+
+    <h2>What is not here</h2>
+    <p>
+      This is not a theology. It is not a comparative-religion course. It
+      is not an argument that the traditions are the same. It is a careful
+      arrangement, growing slowly. Empty patches are intentional and will
+      fill as reading continues.
+    </p>
   </main>
 
-  <footer class="atlas-footer">
-    <p>Atlas &mdash; built slowly, read slowly.</p>
+  <footer>
+    <p>An early public-facing version. Empty patches are intentional.</p>
   </footer>
-
-  <script src="../atlas/atlas.js"></script>
-  <script>
-    fetch("./index.md", { cache: "no-cache" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("Content load failed: " + r.status);
-        return r.text();
-      })
-      .then(function (md) {
-        document.getElementById("world-content").innerHTML =
-          Atlas.renderMarkdown(md);
-      })
-      .catch(function (err) {
-        console.error("Gods: failed to load content", err);
-        document.getElementById("world-content").innerHTML =
-          '<p class="atlas-error">This world is being prepared.</p>';
-      });
-  </script>
+</div>
 </body>
 </html>

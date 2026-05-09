@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phone — IPA chart</title>
+<link rel="stylesheet" href="../shared/style.css">
+</head>
+<body>
+<div class="page">
+  <header>
+    <a class="back" href="../">← Chart</a>
+  </header>
+
+  <main id="phone-detail" class="phone-detail">
+    <p class="error">Loading…</p>
+  </main>
+</div>
+
+<script type="module">
+const main = document.getElementById("phone-detail");
+const slug = new URLSearchParams(location.search).get("p");
+
+if (!slug) {
+  main.innerHTML = `<p class="error">No phone specified. <a href="../">Return to chart.</a></p>`;
+} else {
+  let data;
+  try {
+    const res = await fetch("../shared/phones.json");
+    if (!res.ok) throw new Error(res.statusText);
+    data = await res.json();
+  } catch (err) {
+    main.innerHTML = `<p class="error">Could not load phones.json.</p>`;
+    throw err;
+  }
+
+  const phone = data.phones.find(p => p.slug === slug);
+  if (!phone) {
+    main.innerHTML = `<p class="error">Phone "${slug}" not found. <a href="../">Return to chart.</a></p>`;
+  } else {
+    renderPhone(main, phone, data.phones);
+    document.title = `${phone.symbol} — ${phone.name}`;
+  }
+}
+
+function renderPhone(target, phone, allPhones) {
+  target.replaceChildren();
+
+  const symbol = document.createElement("div");
+  symbol.className = "phone-symbol";
+  symbol.textContent = phone.symbol;
+  target.append(symbol);
+
+  const name = document.createElement("h1");
+  name.className = "phone-name";
+  name.textContent = phone.name;
+  target.append(name);
+
+  const desc = document.createElement("p");
+  desc.className = "phone-description";
+  desc.textContent = phone.description;
+  target.append(desc);
+
+  const neighborsBlock = document.createElement("div");
+  neighborsBlock.className = "neighbors";
+  const list = document.createElement("div");
+  list.className = "neighbors-list";
+  for (const sym of phone.neighbors) {
+    const n = allPhones.find(p => p.symbol === sym);
+    if (n) {
+      const a = document.createElement("a");
+      a.className = "phone-link";
+      a.href = `?p=${encodeURIComponent(n.slug)}`;
+      a.textContent = n.symbol;
+      a.title = n.name;
+      list.append(a);
+    } else {
+      const span = document.createElement("span");
+      span.className = "phone-link";
+      span.style.opacity = "0.4";
+      span.textContent = sym;
+      list.append(span);
+    }
+  }
+  neighborsBlock.append(list);
+  target.append(neighborsBlock);
+}
+</script>
+</body>
+</html>
