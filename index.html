@@ -7,13 +7,15 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — institutional layout. Replaces the prior card grid with a
-       typographic hierarchy: three primary doorways at the top, a quiet
-       two-column index of internal rooms below. */
+    /* Workspace — institutional layout.
+       Three-tier hierarchy:
+         1. Header brand (smallest typographic weight)
+         2. Institutional band (largest weight; framed by rule lines)
+         3. Within-Workspace index (compact directory rows) */
 
     .opening {
       max-width: var(--measure);
-      margin: 0 0 4rem 0;
+      margin: 0 0 3rem 0;
     }
     .opening p {
       font-size: 1.05rem;
@@ -21,15 +23,17 @@
       margin: 0;
     }
 
-    /* Three primary doorways: Digital-Archive, Atlas, Glyphs. */
+    /* ── Institutional band ─────────────────────────────────────── */
+
     .doorways {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 4rem;
+      row-gap: 3rem;
       margin: 0 0 5rem 0;
-      padding: 2.5rem 0;
-      border-top: 1px solid var(--rule);
-      border-bottom: 1px solid var(--rule);
+      padding: 4rem 0;
+      border-top: 1px solid var(--ink-soft);
+      border-bottom: 1px solid var(--ink-soft);
     }
     .doorway {
       display: block;
@@ -37,14 +41,25 @@
       color: var(--ink);
     }
     .doorway:hover { text-decoration: none; }
+    .doorway-kind {
+      display: block;
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.55rem;
+      font-weight: 600;
+    }
     .doorway-name {
       display: inline-block;
       font-family: var(--serif);
-      font-size: 1.4rem;
-      font-weight: 600;
-      letter-spacing: 0.005em;
-      margin-bottom: 0.5rem;
-      padding-bottom: 2px;
+      font-size: 1.85rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+      margin-bottom: 0.7rem;
+      padding-bottom: 3px;
       border-bottom: 1px solid transparent;
       transition: color 0.15s, border-bottom-color 0.15s;
     }
@@ -55,23 +70,24 @@
     .doorway-desc {
       display: block;
       font-family: var(--sans);
-      font-size: 0.88rem;
-      color: var(--muted);
+      font-size: 0.92rem;
+      color: var(--ink-soft);
       line-height: 1.5;
-      max-width: 16rem;
+      max-width: 22rem;
     }
 
-    /* Within-Workspace index — quieter, two-column list. */
+    /* ── Within-Workspace directory ─────────────────────────────── */
+
     .within {
-      max-width: 44rem;
+      max-width: 46rem;
     }
     .within-label {
       font-family: var(--sans);
       font-size: 0.7rem;
-      letter-spacing: 0.13em;
+      letter-spacing: 0.15em;
       text-transform: uppercase;
       color: var(--muted);
-      margin: 0 0 1.5rem 0;
+      margin: 0 0 1.25rem 0;
       font-weight: 600;
     }
     .within-list {
@@ -80,19 +96,21 @@
       margin: 0;
       column-count: 2;
       column-gap: 3rem;
+      column-rule: 1px solid var(--rule);
     }
     .within-list li {
       break-inside: avoid;
-      margin-bottom: 0.85rem;
+      margin-bottom: 0.55rem;
     }
     .within-list a {
       display: block;
       color: var(--ink);
       text-decoration: none;
+      padding: 0.1rem 0;
     }
     .within-name {
       font-family: var(--serif);
-      font-size: 0.98rem;
+      font-size: 0.92rem;
       font-weight: 600;
       transition: color 0.15s;
     }
@@ -100,10 +118,10 @@
     .within-desc {
       display: block;
       font-family: var(--sans);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       color: var(--muted);
-      line-height: 1.45;
-      margin-top: 0.1rem;
+      line-height: 1.4;
+      margin-top: 0.05rem;
     }
 
     .atlas-footer p { font-style: italic; }
@@ -111,10 +129,15 @@
     @media (max-width: 720px) {
       .doorways {
         grid-template-columns: 1fr;
-        gap: 2rem;
-        padding: 2rem 0;
+        column-gap: 0;
+        row-gap: 2.5rem;
+        padding: 2.5rem 0;
       }
-      .within-list { column-count: 1; }
+      .doorway-name { font-size: 1.55rem; }
+      .within-list {
+        column-count: 1;
+        column-rule: 0;
+      }
     }
   </style>
 </head>
@@ -132,16 +155,14 @@
 
     <nav class="doorways" aria-label="Primary destinations">
       <a class="doorway" href="https://stevenfrye30.github.io/Digital-Archive/">
+        <span class="doorway-kind">Reading</span>
         <span class="doorway-name">Digital-Archive</span>
-        <span class="doorway-desc">A reading room for historical and sacred texts.</span>
+        <span class="doorway-desc">A reading room for historical and sacred texts. Apparatus visible; stewardship recorded.</span>
       </a>
       <a class="doorway" href="https://stevenfrye30.github.io/Atlas/">
+        <span class="doorway-kind">Engine</span>
         <span class="doorway-name">Atlas</span>
-        <span class="doorway-desc">The engine and structural map of the archive.</span>
-      </a>
-      <a class="doorway" href="https://stevenfrye30.github.io/Glyphs/">
-        <span class="doorway-name">Glyphs</span>
-        <span class="doorway-desc">Early alphabet forms and symbolic descent.</span>
+        <span class="doorway-desc">The structural map of the archive — a typed semantic graph over the texts.</span>
       </a>
     </nav>
 
@@ -154,7 +175,7 @@
         </a></li>
         <li><a href="language/">
           <span class="within-name">Language</span>
-          <span class="within-desc">Sounds, scripts, and language study.</span>
+          <span class="within-desc">Phonos — sounds and scripts.</span>
         </a></li>
         <li><a href="gods/">
           <span class="within-name">Pantheons</span>
@@ -166,7 +187,7 @@
         </a></li>
         <li><a href="sound-map/">
           <span class="within-name">Sound Map</span>
-          <span class="within-desc">Phonetic correspondences across languages.</span>
+          <span class="within-desc">Phonetic correspondences.</span>
         </a></li>
         <li><a href="graph/">
           <span class="within-name">Graph</span>
@@ -178,7 +199,7 @@
         </a></li>
         <li><a href="images/">
           <span class="within-name">Images</span>
-          <span class="within-desc">Art, architecture, visual reference.</span>
+          <span class="within-desc">Art and visual reference.</span>
         </a></li>
         <li><a href="philosophy/">
           <span class="within-name">Philosophy</span>
@@ -202,7 +223,7 @@
         </a></li>
         <li><a href="milwaukee/">
           <span class="within-name">Milwaukee</span>
-          <span class="within-desc">Local guide and notes.</span>
+          <span class="within-desc">Local guide.</span>
         </a></li>
         <li><a href="emoji-games/">
           <span class="within-name">Emoji Games</span>
