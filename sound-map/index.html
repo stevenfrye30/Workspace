@@ -1345,15 +1345,15 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   position: absolute;
   top: 8px;
   right: 10px;
-  z-index: 3;
-  padding: 5px 11px;
-  background: var(--surf2);
-  border: 1px solid var(--bdr);
+  z-index: 5;
+  padding: 6px 12px;
+  background: var(--surf);
+  border: 1px solid var(--gold);
   border-radius: var(--radius);
-  color: var(--muted);
+  color: var(--gold);
   cursor: pointer;
-  font-size: 10px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   letter-spacing: .06em;
   text-transform: uppercase;
   font-family: inherit;
@@ -1380,24 +1380,91 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   color: var(--gold);
 }
 #sm-toolbar.sm-compact {
-  padding-top: 8px;
-  padding-bottom: 8px;
+  padding-top: 6px;
+  padding-bottom: 6px;
   gap: 8px;
+  row-gap: 0;
 }
 #sm-toolbar.sm-compact #sm-input {
-  min-height: 36px !important;
-  height: 36px !important;
+  min-height: 32px !important;
+  height: 32px !important;
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  font-size: 13px !important;
+}
+#sm-toolbar.sm-compact #sm-visualize {
+  padding: 6px 14px !important;
+  font-size: 12px !important;
 }
 #sm-toolbar.sm-compact #sm-mode-picker,
 #sm-toolbar.sm-compact #sm-legend,
 #sm-toolbar.sm-compact #sm-flow-row,
-#sm-toolbar.sm-compact #sm-capture-row {
+#sm-toolbar.sm-compact #sm-capture-row,
+#sm-toolbar.sm-compact .sm-legacy-disclosure {
   display: none !important;
+}
+
+/* In compact mode, also tighten the surrounding chrome so the user
+   actually gets back vertical real estate, not just toolbar shrinkage. */
+body.sm-mode-compact .sm-legacy-banner { display: none !important; }
+body.sm-mode-compact #sm-header {
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+body.sm-mode-compact #sm-header .sub { display: none; }
+body.sm-mode-compact #sm-header h1 { font-size: 13px; }
+
+/* Active state for the Compact button so users see the toggle landed. */
+.sm-compact-btn[aria-pressed="true"] {
+  color: var(--gold);
+  border-color: var(--gold);
+  background: rgba(212, 162, 76, .08);
+}
+
+/* "Legacy tools" disclosure (Play Flow + Capture to Vault). Defaults to
+   open so existing behavior is preserved; user can collapse to reclaim
+   space without entering compact mode. */
+.sm-legacy-disclosure {
+  width: 100%;
+  margin: 0;
+  border-top: 1px dashed var(--bdr);
+  padding-top: 6px;
+}
+.sm-legacy-disclosure > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 4px 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: color .12s;
+}
+.sm-legacy-disclosure > summary::-webkit-details-marker { display: none; }
+.sm-legacy-disclosure > summary:hover { color: var(--gold); }
+.sm-legacy-disclosure > summary::before {
+  content: "▸";
+  font-family: var(--mono);
+  color: var(--gold);
+  font-size: 10px;
+  transition: transform .12s;
+}
+.sm-legacy-disclosure[open] > summary::before { transform: rotate(90deg); }
+.sm-legacy-disclosure > .sm-legacy-disclosure-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
 }
 </style>
 </head>
 <body>
-<div style="background:#3a2a18;border-bottom:1px solid #5a4520;color:#d4a24c;padding:8px 24px;font-family:Georgia,serif;font-size:12px;line-height:1.5;">
+<div class="sm-legacy-banner" style="background:#3a2a18;border-bottom:1px solid #5a4520;color:#d4a24c;padding:8px 24px;font-family:Georgia,serif;font-size:12px;line-height:1.5;">
   <strong style="font-weight:600;">Legacy app.</strong>
   This is the older "Sound Map" — phoneme analysis and a Flow Lab. It is
   <em>not</em> the Phonos study desk at
@@ -1419,7 +1486,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 
 <div id="panel-sound" class="active" role="tabpanel">
   <div id="sm-toolbar">
-    <button id="sm-compact-toggle" type="button" class="sm-compact-btn" aria-label="Compact controls" title="Compact controls" aria-pressed="false"><span class="sm-compact-chevron" aria-hidden="true">▴</span><span class="sm-compact-label">Compact</span></button>
+    <button id="sm-compact-toggle" type="button" class="sm-compact-btn" aria-label="Compact controls" title="Compact controls" aria-pressed="false" onclick="(function(b){var t=document.getElementById('sm-toolbar');var on=!t.classList.contains('sm-compact');t.classList.toggle('sm-compact',on);document.body.classList.toggle('sm-mode-compact',on);b.setAttribute('aria-pressed',on?'true':'false');b.querySelector('.sm-compact-chevron').textContent=on?'▾':'▴';b.querySelector('.sm-compact-label').textContent=on?'Expand':'Compact';try{localStorage.setItem('sound:sm_compact',on?'1':'0');}catch(_){}})(this);return false;"><span class="sm-compact-chevron" aria-hidden="true">▴</span><span class="sm-compact-label">Compact</span></button>
     <textarea id="sm-input" placeholder="paste a sentence or phrase (one line per verse line)…" rows="3" spellcheck="false"></textarea>
     <button id="sm-visualize" type="button">Visualize</button>
     <div id="sm-view-switcher" role="group" aria-label="Visualization mode">
@@ -1452,35 +1519,41 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
       <span class="sm-legend-item"><span class="sm-swatch sm-swatch-gradient"></span>diphthong</span>
       <span class="sm-legend-item"><span class="sm-swatch sm-swatch-voice"></span>glow = voiced (cords buzzing)</span>
     </div>
-    <!-- ── Play Flow (Phase A) ── -->
-    <div id="sm-flow-row" class="sm-flow-row">
-      <button id="sm-play-flow" type="button" data-state="idle">Play Flow</button>
-      <label class="sm-flow-tempo-wrap">
-        <span class="sm-flow-label">Tempo</span>
-        <select id="sm-flow-tempo" aria-label="Playback tempo">
-          <option value="slow">Slow</option>
-          <option value="natural" selected>Natural</option>
-          <option value="fast">Fast</option>
-        </select>
-      </label>
-      <label class="sm-flow-toggle">
-        <input type="checkbox" id="sm-flow-loop" />
-        <span>Loop</span>
-      </label>
-    </div>
-    <!-- ── Capture to Vault (PR3) ── -->
-    <div id="sm-capture-row" class="sm-capture-row">
-      <button id="sm-capture-btn" type="button">Capture to Vault</button>
-      <span id="sm-capture-persona" class="sm-capture-persona" aria-label="Active persona">
-        <span id="sm-capture-persona-glyph">·</span>
-        <span id="sm-capture-persona-name">(no persona)</span>
-      </span>
-      <label class="sm-capture-toggle">
-        <input type="checkbox" id="sm-capture-open-after" />
-        <span>Open in Bar Builder after</span>
-      </label>
-      <span id="sm-capture-status" class="sm-capture-status" aria-live="polite"></span>
-    </div>
+    <!-- ── Legacy tools disclosure (Play Flow + Capture to Vault) ── -->
+    <details id="sm-legacy-tools" class="sm-legacy-disclosure" open>
+      <summary>Legacy tools · Play Flow · Capture to Vault</summary>
+      <div class="sm-legacy-disclosure-body">
+        <!-- Play Flow (Phase A) -->
+        <div id="sm-flow-row" class="sm-flow-row">
+          <button id="sm-play-flow" type="button" data-state="idle">Play Flow</button>
+          <label class="sm-flow-tempo-wrap">
+            <span class="sm-flow-label">Tempo</span>
+            <select id="sm-flow-tempo" aria-label="Playback tempo">
+              <option value="slow">Slow</option>
+              <option value="natural" selected>Natural</option>
+              <option value="fast">Fast</option>
+            </select>
+          </label>
+          <label class="sm-flow-toggle">
+            <input type="checkbox" id="sm-flow-loop" />
+            <span>Loop</span>
+          </label>
+        </div>
+        <!-- Capture to Vault (PR3) -->
+        <div id="sm-capture-row" class="sm-capture-row">
+          <button id="sm-capture-btn" type="button">Capture to Vault</button>
+          <span id="sm-capture-persona" class="sm-capture-persona" aria-label="Active persona">
+            <span id="sm-capture-persona-glyph">·</span>
+            <span id="sm-capture-persona-name">(no persona)</span>
+          </span>
+          <label class="sm-capture-toggle">
+            <input type="checkbox" id="sm-capture-open-after" />
+            <span>Open in Bar Builder after</span>
+          </label>
+          <span id="sm-capture-status" class="sm-capture-status" aria-live="polite"></span>
+        </div>
+      </div>
+    </details>
   </div>
   <div id="sm-output" data-view="map">
     <div id="sm-vtract" aria-label="Vocal tract diagram">
