@@ -91,49 +91,98 @@ main p { line-height:1.7; }
 
 .intro { color:var(--muted); font-style:italic; margin-bottom:24px; line-height:1.7; }
 
+/* Tab title row — h2 left, description right, on a single baseline */
+.tab-head {
+  display:flex; align-items:baseline; gap:32px; flex-wrap:wrap;
+  margin: 4px 0 26px;
+}
+.tab-head h2 { margin:0; }
+.tab-head .intro {
+  margin:0; padding-bottom:6px;
+  flex:1 1 320px; max-width:64ch; min-width:280px;
+  font-size:13px; line-height:1.55;
+}
+@media (max-width:760px) {
+  .tab-head { gap:8px; margin-bottom:20px; }
+  .tab-head h2 { padding-bottom:10px; }
+  .tab-head .intro { padding-bottom:0; flex-basis:100%; }
+}
+
 .grid { display:grid; gap:16px; }
 .grid-pantheons { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
 
 /* Pantheon view toggle + sort */
 .pantheon-view-controls {
-  display:flex; gap:12px; align-items:center; flex-wrap:wrap;
-  padding:10px 14px; margin-bottom:20px;
-  background:var(--panel); border:1px solid var(--line); border-radius:8px;
+  display:flex; gap:0; align-items:center; flex-wrap:wrap;
+  padding:6px 8px; margin-bottom:24px;
+  background:var(--panel); border:1px solid var(--line); border-radius:10px;
+  box-shadow:inset 0 1px 0 rgba(229,193,88,0.04);
+}
+.pantheon-view-controls .control-group {
+  display:flex; align-items:center; gap:12px;
+  padding:8px 16px;
+}
+.pantheon-view-controls .control-group + .control-group {
+  border-left:1px solid var(--line);
 }
 .pantheon-view-controls label {
-  color:var(--muted); font-size:11px; letter-spacing:1.6px;
+  color:var(--muted); font-size:10px; letter-spacing:1.8px;
   font-variant:small-caps; font-weight:bold;
 }
-.view-toggle { display:flex; gap:4px; }
+.view-toggle { display:flex; gap:2px; padding:2px; background:var(--bg); border:1px solid var(--line); border-radius:7px; }
 .view-toggle button {
-  background:var(--panel2); border:1px solid var(--line); color:var(--muted);
-  padding:7px 14px; border-radius:6px; cursor:pointer;
+  background:transparent; border:1px solid transparent; color:var(--muted);
+  padding:6px 14px; border-radius:5px; cursor:pointer;
   font-family:inherit; font-size:11px; letter-spacing:1.2px;
   font-variant:small-caps; transition:all .15s;
 }
 .view-toggle button.active {
   color:var(--bg); background:linear-gradient(180deg, var(--gold), var(--gold-deep));
   border-color:var(--gold); font-weight:bold;
+  box-shadow:0 1px 0 rgba(0,0,0,0.35), 0 0 0 1px rgba(229,193,88,0.35);
 }
-.view-toggle button:hover:not(.active) { color:var(--gold); border-color:var(--gold-soft); }
+.view-toggle button:hover:not(.active) { color:var(--gold); background:rgba(229,193,88,0.06); }
 .pantheon-view-controls select {
   background:var(--panel2); color:var(--ink); border:1px solid var(--line);
   padding:7px 10px; border-radius:6px; font-family:inherit; font-size:12px;
+  cursor:pointer;
 }
+.pantheon-view-controls select:hover { border-color:var(--gold-soft); }
+.pantheon-view-controls .action-btn {
+  background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+  padding:7px 14px; border-radius:6px; cursor:pointer;
+  font-family:inherit; font-size:11px; letter-spacing:1.2px;
+  font-variant:small-caps; transition:all .15s;
+}
+.pantheon-view-controls .action-btn:hover { color:var(--gold); border-color:var(--gold-soft); background:rgba(229,193,88,0.04); }
 .pantheon-view-controls .total-count {
-  color:var(--muted); font-size:12px; font-style:italic; margin-left:auto;
+  color:var(--muted); font-size:12px; font-style:italic;
+  margin-left:auto; padding:8px 16px 8px 18px;
+  border-left:1px solid var(--line);
 }
 
 /* Grouped pantheons overview */
-.pantheon-group { margin-bottom:32px; }
+.pantheon-group { margin-bottom:44px; }
 .pantheon-group-head {
-  display:flex; align-items:baseline; gap:14px;
-  padding:10px 2px 10px; margin-bottom:12px;
+  display:flex; align-items:baseline; gap:18px;
+  padding:18px 14px 14px;
+  margin: 8px 0 20px;
+  border-top:2px solid var(--gold-soft);
   border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(229,193,88,0.055) 0%, rgba(229,193,88,0.015) 70%, transparent 100%);
+  border-radius:2px 2px 0 0;
   cursor:pointer;
-  transition:border-color .15s;
+  transition:border-color .15s, background .15s;
+  position:relative;
 }
-.pantheon-group-head:hover { border-bottom-color:var(--gold-soft); }
+.pantheon-group-head::before {
+  content:''; position:absolute; left:0; top:-2px;
+  width:64px; height:2px; background:var(--gold);
+}
+.pantheon-group-head:hover {
+  border-bottom-color:var(--gold-soft);
+  background:linear-gradient(180deg, rgba(229,193,88,0.085) 0%, rgba(229,193,88,0.02) 70%, transparent 100%);
+}
 .pantheon-group-head .toggle-icon {
   color:var(--gold); font-size:9px; letter-spacing:0; margin-right:8px;
   transition:transform .2s; display:inline-block;
@@ -195,8 +244,9 @@ main p { line-height:1.7; }
   .pantheon-row .pr-region, .pantheon-row .pr-span { min-width:0; }
 }
 .pantheon-group-head h3 {
-  margin:0; color:var(--gold); font-weight:normal; letter-spacing:2.5px;
-  font-variant:small-caps; font-size:16px;
+  margin:0; color:var(--gold); font-weight:600; letter-spacing:3.2px;
+  font-variant:small-caps; font-size:19px;
+  text-shadow:0 1px 0 rgba(0,0,0,0.5);
 }
 .pantheon-group-head .group-count {
   color:var(--muted); font-size:12px; font-style:italic; letter-spacing:0.5px;
@@ -918,12 +968,17 @@ select:focus:not(:focus-visible),
   .pantheon-group-head .group-era { margin-left:0; }
 
   /* New-UI mobile tweaks */
-  .pantheon-view-controls { padding:8px 10px; gap:8px; }
+  .pantheon-view-controls { padding:6px; gap:0; }
+  .pantheon-view-controls .control-group { padding:6px 10px; gap:8px; }
+  .pantheon-view-controls .control-group + .control-group { border-left:none; border-top:1px solid var(--line); }
   .pantheon-view-controls label { font-size:10px; letter-spacing:1px; }
-  .view-toggle button { padding:6px 10px; font-size:10px; letter-spacing:1px; }
+  .view-toggle button { padding:5px 10px; font-size:10px; letter-spacing:1px; }
   .pantheon-view-controls select { padding:6px 8px; font-size:11px; }
-  .pantheon-view-controls .total-count { width:100%; margin-left:0; text-align:right; }
-  #pantheonCollapseAll { padding:6px 10px !important; font-size:10px !important; }
+  .pantheon-view-controls .action-btn { padding:6px 10px; font-size:10px; letter-spacing:1px; }
+  .pantheon-view-controls .total-count {
+    width:100%; margin-left:0; text-align:right;
+    padding:8px 10px; border-left:none; border-top:1px solid var(--line);
+  }
 
   .pantheon-row { flex-wrap:wrap; gap:4px 10px; padding:8px 10px 8px 14px; }
   .pantheon-row .pr-name { font-size:13px; min-width:0; flex-basis:100%; }
@@ -967,49 +1022,57 @@ select:focus:not(:focus-visible),
   <button class="tab-btn" data-tab="timeline" role="tab" aria-selected="false" aria-controls="tab-timeline">Timeline</button>
   <button class="tab-btn" data-tab="archetypes" role="tab" aria-selected="false" aria-controls="tab-archetypes">Archetypes</button>
   <button class="tab-btn" data-tab="deified" role="tab" aria-selected="false" aria-controls="tab-deified">Deified Humans</button>
-  <button class="tab-btn" data-tab="browse" role="tab" aria-selected="false" aria-controls="tab-browse">Browse All</button>
   <button class="tab-btn" data-tab="mentions" role="tab" aria-selected="false" aria-controls="tab-mentions">Notable Mentions</button>
+  <button class="tab-btn" data-tab="browse" role="tab" aria-selected="false" aria-controls="tab-browse">Browse All</button>
 </nav>
 
 <main>
 
 <section id="tab-overview" class="tab active" role="tabpanel" aria-labelledby="tab-btn-overview">
-  <h2>Pantheons</h2>
-  <p class="intro">
-    Pantheons across many traditions, set beside one another — from
-    Aboriginal Australian Dreamings and the reconstructed sky-fathers of
-    the Proto-Indo-European steppe through to living religions. Click a
-    pantheon to open its family tree. Abrahamic traditions are
-    monotheistic, not pantheons; their entries here list angels,
-    prophets, and opposing figures for cross-cultural comparison only.
-    Coverage is uneven by design — some traditions are well populated,
-    others are deliberately thin.
-  </p>
+  <div class="tab-head">
+    <h2>Pantheons</h2>
+    <p class="intro">
+      Many traditions set beside one another — from Aboriginal Australian
+      Dreamings and the reconstructed sky-fathers of the Proto-Indo-European
+      steppe through to living religions. Click a pantheon to open its
+      family tree. Abrahamic entries list angels, prophets, and opposing
+      figures for cross-cultural comparison only. Coverage is uneven by design.
+    </p>
+  </div>
   <div class="pantheon-view-controls">
-    <label>View</label>
-    <div class="view-toggle" id="pantheonViewToggle" role="tablist" aria-label="Pantheon view mode">
-      <button data-view="grouped" class="active" role="tab" aria-selected="true">Grouped</button>
-      <button data-view="list" role="tab" aria-selected="false">Compact</button>
-      <button data-view="era" role="tab" aria-selected="false">By era</button>
+    <div class="control-group">
+      <label>View</label>
+      <div class="view-toggle" id="pantheonViewToggle" role="tablist" aria-label="Pantheon view mode">
+        <button data-view="grouped" class="active" role="tab" aria-selected="true">Grouped</button>
+        <button data-view="list" role="tab" aria-selected="false">Compact</button>
+        <button data-view="era" role="tab" aria-selected="false">By era</button>
+      </div>
     </div>
-    <label for="pantheonSort">Sort within</label>
-    <select id="pantheonSort" title="Sort order within each group">
-      <option value="era">Era (earliest first)</option>
-      <option value="size">Size (most figures)</option>
-      <option value="alpha">Alphabetical</option>
-    </select>
-    <button id="pantheonCollapseAll" class="view-toggle" style="padding:7px 14px; background:var(--panel2); border:1px solid var(--line); color:var(--muted); border-radius:6px; font-family:inherit; font-size:11px; letter-spacing:1.2px; font-variant:small-caps; cursor:pointer;" title="Collapse or expand all groups">Collapse all</button>
+    <div class="control-group">
+      <label for="pantheonSort">Sort</label>
+      <select id="pantheonSort" title="Sort order within each group">
+        <option value="era">Era (earliest first)</option>
+        <option value="size">Size (most figures)</option>
+        <option value="alpha">Alphabetical</option>
+      </select>
+    </div>
+    <div class="control-group">
+      <button id="pantheonCollapseAll" class="action-btn" type="button" title="Collapse or expand all groups">Collapse all</button>
+    </div>
     <span class="total-count" id="pantheonTotalCount"></span>
   </div>
   <div id="pantheonGroups"></div>
 </section>
 
 <section id="tab-trees" class="tab" role="tabpanel">
-  <h2>Family Trees</h2>
-  <p class="intro">
-    One figure at a time — parents above, siblings and consorts to the sides, children below, cross-cultural
-    parallels at the bottom. Click any connected figure to make them the new focus. Use Back to retrace.
-  </p>
+  <div class="tab-head">
+    <h2>Family Trees</h2>
+    <p class="intro">
+      One figure at a time — parents above, siblings and consorts to the sides,
+      children below, cross-cultural parallels at the bottom. Click any connected
+      figure to make them the new focus. Use Back to retrace.
+    </p>
+  </div>
   <div class="focus-container">
     <div class="focus-controls">
       <label>Pantheon</label>
@@ -1055,50 +1118,68 @@ select:focus:not(:focus-visible),
 </section>
 
 <section id="tab-timeline" class="tab" role="tabpanel">
-  <h2>Temporal Map</h2>
-  <p class="intro">
-    Each bar shows a tradition's active span; the darker inner bar marks its peak of influence.
-    BCE ↔ CE boundary in gold. Traditions still practiced today extend to the right edge.
-    Click a row to open its family tree.
-  </p>
+  <div class="tab-head">
+    <h2>Timeline</h2>
+    <p class="intro">
+      Each bar shows a tradition's active span; the darker inner bar marks its
+      peak of influence. BCE ↔ CE boundary in gold. Traditions still practiced
+      today extend to the right edge. Click a row to open its family tree.
+    </p>
+  </div>
   <div class="timeline">
     <div id="timelineRows" class="timeline-rows"></div>
   </div>
 </section>
 
 <section id="tab-archetypes" class="tab" role="tabpanel">
-  <h2>Cross-Cultural Archetypes</h2>
-  <p class="intro">
-    Many roles — sky-father, storm-serpent-slayer, dying-and-rising god, trickster — recur with striking consistency across
-    unrelated cultures. Some reflect shared Indo-European inheritance (Zeus ≈ Jupiter ≈ Indra from *Dyēus Phter); others are
-    independent convergences on universal human experiences. Click any example to open that god.
-  </p>
+  <div class="tab-head">
+    <h2>Archetypes</h2>
+    <p class="intro">
+      Many roles — sky-father, storm-serpent-slayer, dying-and-rising god,
+      trickster — recur with striking consistency across unrelated cultures.
+      Some reflect shared Indo-European inheritance; others are independent
+      convergences on universal human experiences. Click any example to open it.
+    </p>
+  </div>
   <nav class="archetype-nav" id="archetypeNav"></nav>
   <div id="archetypeList" class="archetype-grid"></div>
 </section>
 
 <section id="tab-deified" class="tab" role="tabpanel">
-  <h2>Deified Humans</h2>
-  <p class="intro">
-    Historical persons elevated to divine status — whether by state decree, posthumous cult, or folk veneration.
-    Rome institutionalized it with the imperial cult; East Asia routinely enshrined sage-kings, generals, and scholars;
-    Egypt deified the architect Imhotep two millennia after his death. The line between "great ancestor" and "god" is porous.
-  </p>
+  <div class="tab-head">
+    <h2>Deified Humans</h2>
+    <p class="intro">
+      Historical persons elevated to divine status — by state decree, posthumous
+      cult, or folk veneration. Rome institutionalized it with the imperial cult;
+      East Asia enshrined sage-kings, generals, and scholars; Egypt deified
+      Imhotep two millennia after his death. The line between great ancestor
+      and god is porous.
+    </p>
+  </div>
   <div id="deifiedGrid" class="god-grid"></div>
 </section>
 
 <section id="tab-mentions" class="tab" role="tabpanel">
-  <h2>Notable Mentions</h2>
-  <p class="intro">
-    Figures worth knowing but not included in the main thousand — secondary heroes, regional deities,
-    already-mentioned-in-descriptions characters, and alternate names of catalogued figures. One-line
-    context only; no family trees.
-  </p>
+  <div class="tab-head">
+    <h2>Notable Mentions</h2>
+    <p class="intro">
+      Figures worth knowing but outside the main thousand — secondary heroes,
+      regional deities, already-mentioned-in-descriptions characters, and
+      alternate names of catalogued figures. One-line context only; no family trees.
+    </p>
+  </div>
   <div id="mentionsList"></div>
 </section>
 
 <section id="tab-browse" class="tab" role="tabpanel">
-  <h2>Browse All Gods</h2>
+  <div class="tab-head">
+    <h2>Browse All</h2>
+    <p class="intro">
+      The full catalogue — every figure across every tradition, searchable
+      and filterable. Use the search box for names, domains, or descriptions;
+      filter by pantheon or category to narrow the list.
+    </p>
+  </div>
   <div class="filters">
     <input type="text" id="searchInput" placeholder="Search by name, domain, or description…">
     <select id="pantheonFilter"><option value="">All pantheons</option></select>
