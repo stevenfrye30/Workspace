@@ -49,7 +49,7 @@
       background-attachment: fixed;
     }
 
-    .atlas-main { padding-top: 2rem; padding-bottom: 3rem; }
+    .atlas-main { padding-top: 0.75rem; padding-bottom: 0.5rem; }
 
     /* ── Institutional triad ────────────────────────────────────── */
 
@@ -58,8 +58,8 @@
       grid-template-columns: repeat(3, 1fr);
       column-gap: 1.5rem;
       row-gap: 1.5rem;
-      margin: 0 0 2.5rem 0;
-      padding: 1.75rem 0 1.5rem 0;
+      margin: 0 0 1rem 0;
+      padding: 0.85rem 0 0.7rem 0;
       border-top: 1px solid var(--accent-deep);
       border-bottom: 1px solid var(--accent-deep);
     }
@@ -71,7 +71,7 @@
     .doorway {
       position: relative;
       display: block;
-      padding: 1.05rem 1.25rem 1.2rem 1.25rem;
+      padding: 0.7rem 1.1rem 0.8rem 1.1rem;
       background:
         linear-gradient(
           155deg,
@@ -118,10 +118,10 @@
 
     .doorway-icon-wrap {
       position: absolute;
-      top: 0.85rem;
-      right: 0.95rem;
-      width: 38px;
-      height: 38px;
+      top: 0.6rem;
+      right: 0.85rem;
+      width: 34px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -143,8 +143,8 @@
       );
     }
     .doorway-icon {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       color: var(--w);
       opacity: 0.78;
       filter: drop-shadow(0 1px 0 rgba(255, 252, 240, 0.55));
@@ -159,17 +159,17 @@
       letter-spacing: 0.18em;
       text-transform: uppercase;
       color: var(--w);
-      margin-bottom: 0.4rem;
+      margin-bottom: 0.18rem;
       font-weight: 600;
     }
     .doorway-name {
       display: inline-block;
       font-family: var(--serif);
-      font-size: 1.7rem;
+      font-size: 1.55rem;
       font-weight: 700;
       letter-spacing: -0.01em;
-      line-height: 1.1;
-      margin-bottom: 0.45rem;
+      line-height: 1.05;
+      margin-bottom: 0.22rem;
       padding-bottom: 2px;
       border-bottom: 1px solid transparent;
       transition: color 0.15s, border-bottom-color 0.15s;
@@ -181,9 +181,9 @@
     .doorway-desc {
       display: block;
       font-family: var(--sans);
-      font-size: 0.84rem;
+      font-size: 0.8rem;
       color: var(--ink-soft);
-      line-height: 1.45;
+      line-height: 1.32;
       max-width: 78%;
     }
 
@@ -196,7 +196,7 @@
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--accent-warm);
-      margin: 0 0 0.95rem 0;
+      margin: 0 0 0.45rem 0;
       font-weight: 600;
     }
     .within-list {
@@ -208,7 +208,7 @@
     }
     .within-list li {
       break-inside: avoid;
-      margin-bottom: 0.6rem;
+      margin-bottom: 0.3rem;
     }
 
     /* Each entry — soft archival tile, slightly raised, world-pigmented */
@@ -218,7 +218,7 @@
         "icon name" auto
         "icon desc" auto / auto 1fr;
       column-gap: 0.7rem;
-      padding: 0.55rem 0.7rem 0.6rem 0.7rem;
+      padding: 0.4rem 0.55rem 0.45rem 0.6rem;
       background:
         linear-gradient(
           150deg,
@@ -303,6 +303,7 @@
       font-family: var(--serif);
       font-size: 0.95rem;
       font-weight: 600;
+      line-height: 1.2;
       transition: color 0.15s;
     }
     .within-list a:hover .within-name { color: var(--w); }
@@ -311,22 +312,22 @@
       font-family: var(--sans);
       font-size: 0.71rem;
       color: var(--muted);
-      line-height: 1.35;
-      margin-top: 0.05rem;
+      line-height: 1.25;
+      margin-top: 0;
     }
 
     /* ── Footer ─────────────────────────────────────────────────── */
 
     .atlas-footer {
-      margin-top: 1.75rem;
-      padding-top: 1.25rem;
+      margin-top: 0.75rem;
+      padding: 0.7rem var(--pad-x);
       border-top: 1px solid var(--rule-warm);
       position: relative;
     }
     .atlas-footer::before {
       content: '❦';
       position: absolute;
-      top: -0.65rem;
+      top: -0.55rem;
       left: 0;
       background: var(--bg);
       padding: 0 0.5rem 0 0;
