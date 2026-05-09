@@ -4,76 +4,117 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Workspace</title>
-  <meta name="description" content="A small public site of reading tools, language work, archives, and other slowly-built things.">
+  <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace dashboard — cards layered on the atlas shell.
-       Uses the variables defined in atlas/atlas.css. */
-    .intro {
+    /* Workspace — institutional layout. Replaces the prior card grid with a
+       typographic hierarchy: three primary doorways at the top, a quiet
+       two-column index of internal rooms below. */
+
+    .opening {
       max-width: var(--measure);
+      margin: 0 0 4rem 0;
+    }
+    .opening p {
       font-size: 1.05rem;
       color: var(--ink-soft);
-      margin: 0 0 3rem 0;
+      margin: 0;
     }
-    .group-label {
+
+    /* Three primary doorways: Digital-Archive, Atlas, Glyphs. */
+    .doorways {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2.5rem;
+      margin: 0 0 5rem 0;
+      padding: 2.5rem 0;
+      border-top: 1px solid var(--rule);
+      border-bottom: 1px solid var(--rule);
+    }
+    .doorway {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .doorway:hover { text-decoration: none; }
+    .doorway-name {
+      display: inline-block;
+      font-family: var(--serif);
+      font-size: 1.4rem;
+      font-weight: 600;
+      letter-spacing: 0.005em;
+      margin-bottom: 0.5rem;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      transition: color 0.15s, border-bottom-color 0.15s;
+    }
+    .doorway:hover .doorway-name {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+    .doorway-desc {
+      display: block;
       font-family: var(--sans);
-      font-size: 0.75rem;
-      letter-spacing: 0.1em;
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 16rem;
+    }
+
+    /* Within-Workspace index — quieter, two-column list. */
+    .within {
+      max-width: 44rem;
+    }
+    .within-label {
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      letter-spacing: 0.13em;
       text-transform: uppercase;
       color: var(--muted);
-      margin: 0 0 1rem 0;
-      padding-bottom: 0.4rem;
-      border-bottom: 1px solid var(--rule);
+      margin: 0 0 1.5rem 0;
       font-weight: 600;
     }
-    .group-section + .group-section { margin-top: 3rem; }
-    .card-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 1rem 1.25rem;
+    .within-list {
       list-style: none;
       padding: 0;
       margin: 0;
+      column-count: 2;
+      column-gap: 3rem;
     }
-    .card {
+    .within-list li {
+      break-inside: avoid;
+      margin-bottom: 0.85rem;
+    }
+    .within-list a {
       display: block;
-      padding: 0.85rem 1.05rem 0.95rem 1.05rem;
-      border: 1px solid var(--rule);
-      border-radius: 3px;
-      background: rgba(255, 255, 255, 0.4);
-      text-decoration: none;
       color: var(--ink);
-      transition: border-color 0.15s, background 0.15s;
-    }
-    .card:hover {
-      border-color: var(--accent);
-      background: rgba(255, 255, 255, 0.75);
       text-decoration: none;
     }
-    .card-title {
-      display: block;
+    .within-name {
       font-family: var(--serif);
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       font-weight: 600;
-      margin-bottom: 0.25rem;
-      line-height: 1.25;
+      transition: color 0.15s;
     }
-    .card-desc {
+    .within-list a:hover .within-name { color: var(--accent); }
+    .within-desc {
       display: block;
       font-family: var(--sans);
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--muted);
       line-height: 1.45;
+      margin-top: 0.1rem;
     }
-    .card.external .card-title::after {
-      content: " ↗";
-      color: var(--muted);
-      font-weight: normal;
-      font-size: 0.85em;
-    }
+
     .atlas-footer p { font-style: italic; }
-    @media (max-width: 480px) {
-      .card-grid { grid-template-columns: 1fr; }
+
+    @media (max-width: 720px) {
+      .doorways {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        padding: 2rem 0;
+      }
+      .within-list { column-count: 1; }
     }
   </style>
 </head>
@@ -85,126 +126,88 @@
   </header>
 
   <main class="atlas-main">
-    <h1 class="visually-hidden" style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Workspace</h1>
-    <p class="intro">A small public site of reading tools, language work, archives, and other slowly-built things.</p>
-
-    <section class="group-section" aria-labelledby="primary-label">
-      <h2 id="primary-label" class="group-label">Primary</h2>
-      <ul class="card-grid">
-        <li>
-          <a class="card external" href="https://stevenfrye30.github.io/Digital-Archive/">
-            <span class="card-title">Digital Archive</span>
-            <span class="card-desc">Full reading room for historical and sacred texts.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="archive/">
-            <span class="card-title">Archive Shelf</span>
-            <span class="card-desc">Curated doorway into selected texts.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="language/">
-            <span class="card-title">Language / Phonos</span>
-            <span class="card-desc">Sounds, scripts, and language study.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card external" href="https://stevenfrye30.github.io/Glyphs/">
-            <span class="card-title">Glyphs</span>
-            <span class="card-desc">Early alphabet forms and symbolic descent.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card external" href="https://stevenfrye30.github.io/Atlas/">
-            <span class="card-title">Atlas</span>
-            <span class="card-desc">Conceptual map and project engine.</span>
-          </a>
-        </li>
-      </ul>
+    <section class="opening" aria-label="About">
+      <p>A small public site of reading tools, language work, and curated archives.</p>
     </section>
 
-    <section class="group-section" aria-labelledby="other-label">
-      <h2 id="other-label" class="group-label">Other projects</h2>
-      <ul class="card-grid">
-        <li>
-          <a class="card" href="gods/">
-            <span class="card-title">Pantheons</span>
-            <span class="card-desc">Cross-cultural map of deities and pantheons.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="cosmos/">
-            <span class="card-title">Cosmos</span>
-            <span class="card-desc">Solar system, galaxy, observable universe.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="sound-map/">
-            <span class="card-title">Sound Map</span>
-            <span class="card-desc">Phonetic correspondences across languages.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="flags/">
-            <span class="card-title">Flags</span>
-            <span class="card-desc">Countries, identification, geography.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="images/">
-            <span class="card-title">Images</span>
-            <span class="card-desc">Art, architecture, visual reference.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="math/">
-            <span class="card-title">Math</span>
-            <span class="card-desc">Grapher, symbols, scratchpad.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="milwaukee/">
-            <span class="card-title">Milwaukee</span>
-            <span class="card-desc">Local guide and engagement notes.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="nutrilens/">
-            <span class="card-title">NutriLens</span>
-            <span class="card-desc">Offline nutrient explorer.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="philosophy/">
-            <span class="card-title">Philosophy</span>
-            <span class="card-desc">Reading notes and short essays.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="science/">
-            <span class="card-title">Science</span>
-            <span class="card-desc">Topic clusters and glossary.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="emoji-games/">
-            <span class="card-title">Emoji Games</span>
-            <span class="card-desc">Casual emoji-themed games.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="mirror/">
-            <span class="card-title">Mirror</span>
-            <span class="card-desc">Personal self-tracking app.</span>
-          </a>
-        </li>
-        <li>
-          <a class="card" href="graph/">
-            <span class="card-title">Graph</span>
-            <span class="card-desc">Structural map of archive texts.</span>
-          </a>
-        </li>
+    <nav class="doorways" aria-label="Primary destinations">
+      <a class="doorway" href="https://stevenfrye30.github.io/Digital-Archive/">
+        <span class="doorway-name">Digital-Archive</span>
+        <span class="doorway-desc">A reading room for historical and sacred texts.</span>
+      </a>
+      <a class="doorway" href="https://stevenfrye30.github.io/Atlas/">
+        <span class="doorway-name">Atlas</span>
+        <span class="doorway-desc">The engine and structural map of the archive.</span>
+      </a>
+      <a class="doorway" href="https://stevenfrye30.github.io/Glyphs/">
+        <span class="doorway-name">Glyphs</span>
+        <span class="doorway-desc">Early alphabet forms and symbolic descent.</span>
+      </a>
+    </nav>
+
+    <section class="within" aria-labelledby="within-label">
+      <h2 id="within-label" class="within-label">Within Workspace</h2>
+      <ul class="within-list">
+        <li><a href="archive/">
+          <span class="within-name">Archive Shelf</span>
+          <span class="within-desc">Curated doorway into selected texts.</span>
+        </a></li>
+        <li><a href="language/">
+          <span class="within-name">Language</span>
+          <span class="within-desc">Sounds, scripts, and language study.</span>
+        </a></li>
+        <li><a href="gods/">
+          <span class="within-name">Pantheons</span>
+          <span class="within-desc">Cross-cultural map of deities.</span>
+        </a></li>
+        <li><a href="cosmos/">
+          <span class="within-name">Cosmos</span>
+          <span class="within-desc">Solar system, galaxy, universe.</span>
+        </a></li>
+        <li><a href="sound-map/">
+          <span class="within-name">Sound Map</span>
+          <span class="within-desc">Phonetic correspondences across languages.</span>
+        </a></li>
+        <li><a href="graph/">
+          <span class="within-name">Graph</span>
+          <span class="within-desc">Structural map of archive texts.</span>
+        </a></li>
+        <li><a href="flags/">
+          <span class="within-name">Flags</span>
+          <span class="within-desc">Countries and geography.</span>
+        </a></li>
+        <li><a href="images/">
+          <span class="within-name">Images</span>
+          <span class="within-desc">Art, architecture, visual reference.</span>
+        </a></li>
+        <li><a href="philosophy/">
+          <span class="within-name">Philosophy</span>
+          <span class="within-desc">Reading notes and short essays.</span>
+        </a></li>
+        <li><a href="science/">
+          <span class="within-name">Science</span>
+          <span class="within-desc">Topic clusters and glossary.</span>
+        </a></li>
+        <li><a href="math/">
+          <span class="within-name">Math</span>
+          <span class="within-desc">Graphs, symbols, notes.</span>
+        </a></li>
+        <li><a href="nutrilens/">
+          <span class="within-name">NutriLens</span>
+          <span class="within-desc">Offline nutrient explorer.</span>
+        </a></li>
+        <li><a href="mirror/">
+          <span class="within-name">Mirror</span>
+          <span class="within-desc">Personal self-tracking.</span>
+        </a></li>
+        <li><a href="milwaukee/">
+          <span class="within-name">Milwaukee</span>
+          <span class="within-desc">Local guide and notes.</span>
+        </a></li>
+        <li><a href="emoji-games/">
+          <span class="within-name">Emoji Games</span>
+          <span class="within-desc">Casual games.</span>
+        </a></li>
       </ul>
     </section>
   </main>
