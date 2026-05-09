@@ -1404,9 +1404,8 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   display: none !important;
 }
 
-/* In compact mode, also tighten the surrounding chrome so the user
-   actually gets back vertical real estate, not just toolbar shrinkage. */
-body.sm-mode-compact .sm-legacy-banner { display: none !important; }
+/* In compact mode, tighten the header so the user gets back vertical
+   real estate, not just toolbar shrinkage. */
 body.sm-mode-compact #sm-header {
   padding-top: 6px;
   padding-bottom: 6px;
@@ -1464,18 +1463,9 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 </style>
 </head>
 <body>
-<div class="sm-legacy-banner" style="background:#3a2a18;border-bottom:1px solid #5a4520;color:#d4a24c;padding:8px 24px;font-family:Georgia,serif;font-size:12px;line-height:1.5;">
-  <strong style="font-weight:600;">Legacy app.</strong>
-  This is the older "Sound Map" — phoneme analysis and a Flow Lab. It is
-  <em>not</em> the Phonos study desk at
-  <a href="../language/" style="color:#d4a24c;text-decoration:underline;">/language/</a>.
-  Phonos is a quiet IPA chart for sound, script, and language history;
-  this app is a separate, earlier experiment.
-</div>
 <header id="sm-header">
-  <h1>Sound <span style="font-size:10px;color:#8a8a8a;letter-spacing:0;text-transform:none;font-weight:400;">(legacy)</span></h1>
-  <span class="sub">English phoneme analysis + an IPA-across-scripts chart.</span>
-  <a href="../languages/">← Languages (legacy)</a>
+  <h1>Sound Lab</h1>
+  <span class="sub">English phoneme analysis + IPA sound tools.</span>
 </header>
 
 <nav id="tab-nav" role="tablist">
