@@ -12,10 +12,11 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0b1a' stroke='%23e5c158' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Georgia' font-size='38' fill='%23e5c158' text-anchor='middle'%3E%E2%98%89%3C/text%3E%3C/svg%3E">
 <style>
 :root {
-  --bg:#0a0b1a; --panel:#141829; --panel2:#1d2238; --ink:#e8ddc3; --muted:#8a91b0;
+  --bg:#0a0b1a; --panel:#181d33; --panel2:#232844; --tint:#2c3155;
+  --ink:#e8ddc3; --muted:#8a91b0;
   --gold:#e5c158; --gold-deep:#b8901f; --blood:#a03040; --blood-deep:#701828;
   --violet:#7a5ea8; --cyan:#5c9bc7; --silver:#c5c9d9;
-  --line:#2a2f4a; --gold-soft:rgba(229,193,88,0.4); --gold-faint:rgba(229,193,88,0.1);
+  --line:#353a5a; --gold-soft:rgba(229,193,88,0.42); --gold-faint:rgba(229,193,88,0.12);
   --star-tint:rgba(197,201,217,0.04);
 }
 * { box-sizing:border-box; }
@@ -55,23 +56,31 @@ header p {
 header p::before { content:'❋  '; color:var(--gold-deep); font-style:normal; }
 header p::after  { content:'  ❋'; color:var(--gold-deep); font-style:normal; }
 nav {
-  display:flex; gap:6px; padding:12px 28px; background:#07081a;
+  display:flex; gap:8px; padding:14px 28px; background:#07081a;
   border-bottom:1px solid var(--line); flex-wrap:wrap;
   justify-content:center;
 }
 nav button {
   background:linear-gradient(180deg, var(--panel), var(--panel2));
-  border:1px solid var(--line); color:var(--muted);
-  padding:9px 18px; font-family:inherit; font-size:12px; letter-spacing:2px;
+  border:1px solid var(--line); color:var(--ink);
+  padding:11px 22px; font-family:inherit; font-size:12.5px; letter-spacing:2px;
   cursor:pointer; text-transform:uppercase; white-space:nowrap;
   border-radius:14px / 50%;
-  transition: color .15s, border-color .15s, background .15s;
+  transition:color .15s, border-color .15s, background .15s, transform .15s, box-shadow .15s;
+  opacity:0.86;
 }
-nav button:hover { color:var(--gold); border-color:var(--gold-soft); }
+nav button:hover {
+  color:var(--gold); border-color:var(--gold-soft);
+  background:linear-gradient(180deg, var(--panel2), var(--tint));
+  transform:translateY(-1px); opacity:1;
+}
 nav button.active {
   color:#0a0b1a;
   background:linear-gradient(180deg, var(--gold), var(--gold-deep));
   border-color:var(--gold); font-weight:bold;
+  opacity:1;
+  box-shadow:0 0 0 1px rgba(229,193,88,0.35), 0 0 18px rgba(229,193,88,0.22), 0 2px 6px rgba(0,0,0,0.4);
+  transform:translateY(-1px);
 }
 main {
   padding:30px 32px 44px;
@@ -430,17 +439,35 @@ main p { line-height:1.7; }
   background:var(--panel); border:1px solid var(--line); border-radius:10px;
   margin-top:16px; position:relative;
 }
-.focus-controls { padding:14px 18px; display:flex; flex-wrap:wrap; gap:10px; align-items:center; border-bottom:1px solid var(--line); }
+.focus-controls {
+  padding:18px 22px; display:flex; flex-wrap:wrap; gap:14px; align-items:center;
+  border-bottom:1px solid var(--line);
+  background:linear-gradient(180deg, rgba(229,193,88,0.025) 0%, transparent 100%);
+}
 .focus-controls label { color:var(--muted); font-size:11px; letter-spacing:1.8px; font-variant:small-caps; font-weight:bold; }
-.focus-controls select { min-width:200px; }
+.focus-controls select {
+  min-width:240px;
+  padding:9px 14px; border-radius:7px; font-size:13px;
+  background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+  font-family:inherit; cursor:pointer;
+  transition:border-color .15s, background .15s;
+}
+.focus-controls select:hover { border-color:var(--gold-soft); }
 .focus-controls button {
   background:var(--panel2); border:1px solid var(--line); color:var(--ink);
-  padding:8px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:12px;
-  letter-spacing:1px; font-variant:small-caps; transition:all .15s;
+  padding:10px 18px; border-radius:7px; cursor:pointer; font-family:inherit; font-size:12.5px;
+  letter-spacing:1.2px; font-variant:small-caps; font-weight:bold;
+  transition:all .15s;
 }
-.focus-controls button:hover:not(:disabled) { border-color:var(--gold-soft); color:var(--gold); }
-.focus-controls button:disabled { opacity:0.4; cursor:not-allowed; }
-.focus-controls .count { color:var(--muted); font-size:12px; margin-left:auto; font-style:italic; }
+.focus-controls button:hover:not(:disabled) {
+  border-color:var(--gold-soft); color:var(--gold);
+  background:linear-gradient(180deg, var(--panel2), var(--panel));
+}
+.focus-controls button:disabled { opacity:0.35; cursor:not-allowed; }
+.focus-controls .count {
+  color:var(--ink); font-size:13px; margin-left:auto; font-style:italic;
+  opacity:0.75; padding-left:10px;
+}
 
 .focus-view { padding:28px 22px 22px; }
 .focus-section-label {
@@ -458,8 +485,8 @@ main p { line-height:1.7; }
 .focus-row { display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
 .focus-row.small-row { gap:6px; }
 .focus-main-row {
-  display:grid; grid-template-columns: 1fr minmax(260px, 360px) 1fr;
-  gap:24px; align-items:start; margin-top:8px;
+  display:grid; grid-template-columns: 1fr minmax(380px, 540px) 1fr;
+  gap:22px; align-items:start; margin-top:8px;
 }
 .focus-side { min-width:0; }
 .focus-side h4 {
@@ -534,15 +561,23 @@ main p { line-height:1.7; }
 .focus-center-card {
   background:linear-gradient(180deg, var(--tint) 0%, var(--panel2) 100%);
   border:2px solid var(--gold); border-radius:12px;
-  padding:24px 26px; position:relative; overflow:hidden;
-  box-shadow:0 0 0 1px var(--gold-faint), 0 12px 32px rgba(0,0,0,0.4);
+  padding:30px 32px 28px; position:relative; overflow:hidden;
+  box-shadow:0 0 0 1px var(--gold-faint), 0 14px 36px rgba(0,0,0,0.45);
 }
 .focus-center-card::before {
   content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
   background:var(--pantheon-color, var(--gold));
 }
 .focus-center-card .focus-header {
-  display:flex; gap:16px; align-items:flex-start; margin-bottom:12px;
+  display:flex; gap:20px; align-items:flex-start;
+  margin-bottom:16px; padding-bottom:16px;
+  border-bottom:1px solid var(--gold-faint);
+  position:relative;
+}
+.focus-center-card .focus-header::after {
+  content:''; position:absolute; left:25%; right:25%; bottom:-1px; height:1px;
+  background:linear-gradient(90deg, transparent, var(--gold-soft), transparent);
+  opacity:0.5;
 }
 .focus-center-card .focus-header-text { flex:1; min-width:0; }
 .god-image, .god-glyph {
@@ -584,18 +619,22 @@ main p { line-height:1.7; }
 }
 .god-image:hover .god-image-caption { opacity:1; }
 .focus-center-card .fpantheon {
-  color:var(--gold-deep); font-size:11px; font-variant:small-caps; letter-spacing:2px; font-weight:bold;
-  margin-bottom:6px;
+  color:var(--gold-deep); font-size:12.5px; font-variant:small-caps; letter-spacing:2.4px; font-weight:bold;
+  margin-bottom:8px;
 }
 .focus-center-card .fname-main {
-  font-size:26px; color:var(--gold); font-weight:normal; margin:0 0 4px;
-  letter-spacing:0.3px;
+  font-size:30px; color:var(--gold); font-weight:normal; margin:0 0 6px;
+  letter-spacing:0.4px; line-height:1.2;
+  text-shadow:0 1px 0 #000, 0 0 22px rgba(229,193,88,0.16);
 }
-.focus-center-card .fepithets { color:var(--cyan); font-size:13px; font-style:italic; margin:4px 0 12px; }
-.focus-center-card .fdomains { display:flex; flex-wrap:wrap; gap:5px; margin:8px 0 12px; }
-.focus-center-card .fdom-tag { background:var(--panel); border:1px solid var(--line); color:var(--ink); padding:3px 10px; border-radius:10px; font-size:11px; }
-.focus-center-card .fcat { color:var(--muted); font-size:11px; font-variant:small-caps; letter-spacing:1.5px; margin-bottom:10px; }
-.focus-center-card .fdesc { color:var(--ink); font-size:13px; line-height:1.55; }
+.focus-center-card .fepithets { color:var(--cyan); font-size:13.5px; font-style:italic; margin:4px 0 10px; line-height:1.4; }
+.focus-center-card .fdomains { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 14px; }
+.focus-center-card .fdom-tag { background:var(--panel); border:1px solid var(--line); color:var(--ink); padding:4px 11px; border-radius:11px; font-size:12px; }
+.focus-center-card .fcat { color:var(--muted); font-size:12px; font-variant:small-caps; letter-spacing:1.6px; margin-bottom:0; }
+.focus-center-card .fdesc { color:var(--ink); font-size:14px; line-height:1.6; }
+.focus-center-card .god-image,
+.focus-center-card .god-glyph { width:110px; height:110px; }
+.focus-center-card .god-glyph { font-size:50px; }
 .focus-center-card .fdetails-btn {
   margin-top:14px; background:none; border:1px solid var(--gold-soft); color:var(--gold);
   padding:6px 14px; border-radius:16px; cursor:pointer; font-family:inherit; font-size:11px;
@@ -677,17 +716,26 @@ main p { line-height:1.7; }
 .cat-filter-count { color:var(--muted); font-size:11px; font-style:italic; flex-basis:100%; text-align:right; }
 
 /* Overall pantheon tree */
-.tree-view-toggle { display:flex; gap:6px; margin-left:10px; }
+.tree-view-toggle {
+  display:flex; gap:2px; padding:3px;
+  background:var(--bg); border:1px solid var(--line); border-radius:8px;
+  margin-left:6px;
+}
 .tree-view-toggle button {
-  background:var(--panel2); border:1px solid var(--line); color:var(--muted);
-  padding:8px 12px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:11px;
-  letter-spacing:1.2px; font-variant:small-caps; transition:all .15s;
+  background:transparent; border:1px solid transparent; color:var(--muted);
+  padding:9px 18px; border-radius:6px; cursor:pointer;
+  font-family:inherit; font-size:12.5px; letter-spacing:1.5px;
+  font-variant:small-caps; font-weight:bold;
+  transition:all .15s;
 }
 .tree-view-toggle button.active {
-  color:var(--bg); background:linear-gradient(180deg, var(--gold), var(--gold-deep));
-  border-color:var(--gold); font-weight:bold;
+  color:#0a0b1a; background:linear-gradient(180deg, var(--gold), var(--gold-deep));
+  border-color:var(--gold);
+  box-shadow:0 1px 0 rgba(0,0,0,0.35), 0 0 0 1px rgba(229,193,88,0.35);
 }
-.tree-view-toggle button:hover:not(.active) { color:var(--gold); border-color:var(--gold-soft); }
+.tree-view-toggle button:hover:not(.active) {
+  color:var(--gold); background:rgba(229,193,88,0.06);
+}
 
 .full-tree-container {
   overflow:visible; padding:24px 20px 30px; position:relative;
