@@ -91,25 +91,45 @@ main p { line-height:1.7; }
 
 .intro { color:var(--muted); font-style:italic; margin-bottom:24px; line-height:1.7; }
 
-/* Tab title row — h2 left, description right, on a single baseline */
+/* Tab title row — h2 left, curatorial framing flowing across the row */
 .tab-head {
-  display:flex; align-items:baseline; gap:32px; flex-wrap:wrap;
-  margin: 4px 0 26px;
+  display:flex; align-items:baseline; gap:36px; flex-wrap:wrap;
+  margin: 4px 0 28px;
 }
-.tab-head h2 { margin:0; }
+.tab-head h2 { margin:0; flex:0 0 auto; }
 .tab-head .intro {
   margin:0; padding-bottom:6px;
-  flex:1 1 320px; max-width:64ch; min-width:280px;
-  font-size:13px; line-height:1.55;
+  flex:1 1 380px; min-width:280px;
+  font-size:13.5px; line-height:1.6;
 }
 @media (max-width:760px) {
-  .tab-head { gap:8px; margin-bottom:20px; }
+  .tab-head { gap:10px; margin-bottom:20px; }
   .tab-head h2 { padding-bottom:10px; }
-  .tab-head .intro { padding-bottom:0; flex-basis:100%; }
+  .tab-head .intro { padding-bottom:0; flex-basis:100%; font-size:13px; }
 }
 
 .grid { display:grid; gap:16px; }
 .grid-pantheons { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+
+/* Quiet utility row above the main view controls */
+.pantheon-utility-row {
+  display:flex; justify-content:flex-end; align-items:baseline;
+  gap:14px; margin: -6px 2px 8px;
+  min-height:22px;
+}
+.pantheon-utility-row .utility-link {
+  background:transparent; border:none; color:var(--muted);
+  padding:2px 4px; cursor:pointer;
+  font-family:inherit; font-size:11px; letter-spacing:1.5px;
+  font-variant:small-caps; font-style:italic;
+  transition:color .15s, opacity .15s;
+  opacity:0.72;
+  border-bottom:1px dotted transparent;
+}
+.pantheon-utility-row .utility-link:hover {
+  color:var(--gold); opacity:1;
+  border-bottom-color:rgba(229,193,88,0.35);
+}
 
 /* Pantheon view toggle + sort */
 .pantheon-view-controls {
@@ -161,33 +181,44 @@ main p { line-height:1.7; }
   border-left:1px solid var(--line);
 }
 
-/* Grouped pantheons overview */
-.pantheon-group { margin-bottom:44px; }
+/* Grouped pantheons overview — section headers as museum hall plates */
+.pantheon-group { margin-bottom:52px; }
 .pantheon-group-head {
-  display:flex; align-items:baseline; gap:18px;
-  padding:18px 14px 14px;
-  margin: 8px 0 20px;
-  border-top:2px solid var(--gold-soft);
-  border-bottom:1px solid var(--line);
-  background:linear-gradient(180deg, rgba(229,193,88,0.055) 0%, rgba(229,193,88,0.015) 70%, transparent 100%);
-  border-radius:2px 2px 0 0;
+  display:flex; align-items:baseline; gap:22px;
+  padding:26px 26px 22px;
+  margin: 18px 0 26px;
+  background:
+    linear-gradient(180deg, #161a32 0%, #0e1124 100%);
+  border-top:1px solid var(--gold);
+  border-bottom:1px solid rgba(229,193,88,0.22);
+  box-shadow:
+    inset 0 -12px 22px rgba(0,0,0,0.35),
+    0 1px 0 rgba(0,0,0,0.4);
   cursor:pointer;
-  transition:border-color .15s, background .15s;
+  transition:background .18s, border-color .18s;
   position:relative;
 }
+/* Inner gold pinstripe — double-rule effect along the top */
 .pantheon-group-head::before {
-  content:''; position:absolute; left:0; top:-2px;
-  width:64px; height:2px; background:var(--gold);
+  content:''; position:absolute; left:0; right:0; top:4px; height:1px;
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(229,193,88,0.42) 22%,
+    rgba(229,193,88,0.42) 78%,
+    transparent 100%);
+  opacity:0.7;
+  pointer-events:none;
 }
 .pantheon-group-head:hover {
-  border-bottom-color:var(--gold-soft);
-  background:linear-gradient(180deg, rgba(229,193,88,0.085) 0%, rgba(229,193,88,0.02) 70%, transparent 100%);
+  background:
+    linear-gradient(180deg, #1a1f3a 0%, #10132a 100%);
+  border-bottom-color:rgba(229,193,88,0.4);
 }
 .pantheon-group-head .toggle-icon {
-  color:var(--gold); font-size:9px; letter-spacing:0; margin-right:8px;
-  transition:transform .2s; display:inline-block;
-  width:10px; text-align:center; vertical-align:middle;
-  opacity:0.75;
+  color:var(--gold-deep); font-size:11px; letter-spacing:0; margin-right:14px;
+  transition:transform .2s, color .2s; display:inline-block;
+  width:12px; text-align:center; vertical-align:middle;
+  opacity:0.7;
 }
 .pantheon-group-head:hover .toggle-icon { opacity:1; }
 .pantheon-group.collapsed .toggle-icon { transform:rotate(-90deg); }
@@ -244,9 +275,9 @@ main p { line-height:1.7; }
   .pantheon-row .pr-region, .pantheon-row .pr-span { min-width:0; }
 }
 .pantheon-group-head h3 {
-  margin:0; color:var(--gold); font-weight:600; letter-spacing:3.2px;
-  font-variant:small-caps; font-size:19px;
-  text-shadow:0 1px 0 rgba(0,0,0,0.5);
+  margin:0; color:var(--gold); font-weight:600; letter-spacing:4px;
+  font-variant:small-caps; font-size:21px;
+  text-shadow:0 1px 0 #000, 0 0 18px rgba(229,193,88,0.13);
 }
 .pantheon-group-head .group-count {
   color:var(--muted); font-size:12px; font-style:italic; letter-spacing:0.5px;
@@ -1039,6 +1070,9 @@ select:focus:not(:focus-visible),
       figures for cross-cultural comparison only. Coverage is uneven by design.
     </p>
   </div>
+  <div class="pantheon-utility-row">
+    <button id="pantheonCollapseAll" class="utility-link" type="button" title="Collapse or expand all pantheon groups">Collapse all</button>
+  </div>
   <div class="pantheon-view-controls">
     <div class="control-group">
       <label>View</label>
@@ -1055,9 +1089,6 @@ select:focus:not(:focus-visible),
         <option value="size">Size (most figures)</option>
         <option value="alpha">Alphabetical</option>
       </select>
-    </div>
-    <div class="control-group">
-      <button id="pantheonCollapseAll" class="action-btn" type="button" title="Collapse or expand all groups">Collapse all</button>
     </div>
     <span class="total-count" id="pantheonTotalCount"></span>
   </div>
