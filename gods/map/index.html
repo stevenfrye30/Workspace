@@ -91,45 +91,53 @@ main p { line-height:1.7; }
 
 .intro { color:var(--muted); font-style:italic; margin-bottom:24px; line-height:1.7; }
 
-/* Tab title row — h2 left, curatorial framing flowing across the row */
+/* Tab title row — h2 left, curatorial framing flowing across the row, compact vertical */
 .tab-head {
-  display:flex; align-items:baseline; gap:36px; flex-wrap:wrap;
-  margin: 4px 0 28px;
+  display:flex; align-items:baseline; gap:28px; flex-wrap:wrap;
+  margin: 0 0 16px;
 }
-.tab-head h2 { margin:0; flex:0 0 auto; }
+.tab-head h2 {
+  margin:0; flex:0 0 auto;
+  padding-bottom:6px;            /* tighter than global h2's 12px */
+}
+.tab-head h2::after { bottom:0; }/* gold underline rides the bottom of the smaller h2 */
 .tab-head .intro {
-  margin:0; padding-bottom:6px;
+  margin:0; padding-bottom:0;
   flex:1 1 380px; min-width:280px;
-  font-size:13.5px; line-height:1.6;
+  font-size:13.5px; line-height:1.5;
 }
 @media (max-width:760px) {
-  .tab-head { gap:10px; margin-bottom:20px; }
-  .tab-head h2 { padding-bottom:10px; }
-  .tab-head .intro { padding-bottom:0; flex-basis:100%; font-size:13px; }
+  .tab-head { gap:6px; margin-bottom:14px; }
+  .tab-head h2 { padding-bottom:8px; }
+  .tab-head .intro { flex-basis:100%; font-size:13px; line-height:1.5; }
 }
 
 .grid { display:grid; gap:16px; }
 .grid-pantheons { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
 
-/* Quiet utility row above the main view controls */
+/* Utility row above the main controls — collapse-all lives here as a real button */
 .pantheon-utility-row {
-  display:flex; justify-content:flex-end; align-items:baseline;
-  gap:14px; margin: -6px 2px 8px;
-  min-height:22px;
+  display:flex; justify-content:flex-end; align-items:center;
+  gap:14px; margin: 0 2px 10px;
 }
 .pantheon-utility-row .utility-link {
-  background:transparent; border:none; color:var(--muted);
-  padding:2px 4px; cursor:pointer;
-  font-family:inherit; font-size:11px; letter-spacing:1.5px;
-  font-variant:small-caps; font-style:italic;
-  transition:color .15s, opacity .15s;
-  opacity:0.72;
-  border-bottom:1px dotted transparent;
+  background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+  padding:7px 16px; border-radius:6px; cursor:pointer;
+  font-family:inherit; font-size:11px; letter-spacing:1.3px;
+  font-variant:small-caps; font-weight:bold;
+  transition:all .15s;
 }
 .pantheon-utility-row .utility-link:hover {
-  color:var(--gold); opacity:1;
-  border-bottom-color:rgba(229,193,88,0.35);
+  color:var(--gold); border-color:var(--gold-soft);
+  background:linear-gradient(180deg, var(--panel2), var(--panel));
+  box-shadow:0 0 0 1px rgba(229,193,88,0.12);
 }
+.pantheon-utility-row .utility-link::before {
+  content:'⌃'; display:inline-block; font-style:normal;
+  margin-right:8px; font-size:10px; vertical-align:middle;
+  opacity:0.75; transition:transform .2s;
+}
+.pantheon-utility-row .utility-link[data-state="all-collapsed"]::before { transform:rotate(180deg); }
 
 /* Pantheon view toggle + sort */
 .pantheon-view-controls {
@@ -181,24 +189,29 @@ main p { line-height:1.7; }
   border-left:1px solid var(--line);
 }
 
-/* Grouped pantheons overview — section headers as museum hall plates */
-.pantheon-group { margin-bottom:52px; }
+/* Grouped pantheons — each group is a self-contained civilizational chamber */
+.pantheon-group {
+  margin-bottom:34px;
+  background:rgba(0,0,0,0.18);
+  border:1px solid var(--line);
+  border-top:1px solid var(--gold);
+  border-radius:3px;
+  overflow:hidden;
+  box-shadow:0 1px 0 rgba(0,0,0,0.45);
+}
 .pantheon-group-head {
   display:flex; align-items:baseline; gap:22px;
-  padding:26px 26px 22px;
-  margin: 18px 0 26px;
+  padding:22px 26px 18px;
+  margin:0;
   background:
     linear-gradient(180deg, #161a32 0%, #0e1124 100%);
-  border-top:1px solid var(--gold);
   border-bottom:1px solid rgba(229,193,88,0.22);
-  box-shadow:
-    inset 0 -12px 22px rgba(0,0,0,0.35),
-    0 1px 0 rgba(0,0,0,0.4);
+  box-shadow:inset 0 -12px 22px rgba(0,0,0,0.35);
   cursor:pointer;
   transition:background .18s, border-color .18s;
   position:relative;
 }
-/* Inner gold pinstripe — double-rule effect along the top */
+/* Inner gold pinstripe — pairs with the chamber's gold top edge for a double-rule */
 .pantheon-group-head::before {
   content:''; position:absolute; left:0; right:0; top:4px; height:1px;
   background:linear-gradient(90deg,
@@ -224,12 +237,13 @@ main p { line-height:1.7; }
 .pantheon-group.collapsed .toggle-icon { transform:rotate(-90deg); }
 .pantheon-group.collapsed .pantheon-group-grid,
 .pantheon-group.collapsed .pantheon-compact-list { display:none; }
-.pantheon-group.collapsed .pantheon-group-head { margin-bottom:6px; }
+.pantheon-group.collapsed .pantheon-group-head { border-bottom-color:transparent; }
 
 /* Compact list row — used in list + era modes */
 .pantheon-compact-list {
-  display:flex; flex-direction:column; gap:3px;
-  margin-bottom:4px;
+  display:flex; flex-direction:column; gap:5px;
+  padding:18px 18px 18px;
+  margin-bottom:0;
 }
 .pantheon-row {
   display:flex; align-items:center; gap:14px;
@@ -280,14 +294,17 @@ main p { line-height:1.7; }
   text-shadow:0 1px 0 #000, 0 0 18px rgba(229,193,88,0.13);
 }
 .pantheon-group-head .group-count {
-  color:var(--muted); font-size:12px; font-style:italic; letter-spacing:0.5px;
+  color:var(--ink); font-size:13.5px; font-style:italic; letter-spacing:0.4px;
+  opacity:0.78;
 }
 .pantheon-group-head .group-era {
-  color:var(--cyan); font-size:11px; font-variant:small-caps; letter-spacing:1.5px; margin-left:auto;
+  color:var(--cyan); font-size:13px; font-variant:small-caps; letter-spacing:1.6px;
+  margin-left:auto; opacity:0.92;
 }
 
 .pantheon-group-grid {
-  display:grid; gap:10px;
+  display:grid; gap:12px;
+  padding:22px 22px 22px;
   grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
 }
 
@@ -1944,6 +1961,7 @@ function updateCollapseAllButtonLabel() {
   if (!sections.length) return;
   const anyOpen = Array.from(sections).some(s => !s.classList.contains('collapsed'));
   btn.textContent = anyOpen ? 'Collapse all' : 'Expand all';
+  btn.dataset.state = anyOpen ? 'all-open' : 'all-collapsed';
 }
 
 function wirePantheonViewControls() {
