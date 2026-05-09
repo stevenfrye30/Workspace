@@ -7,23 +7,17 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — final composition.
-       Density tightened so the institutional triad and the start of the
-       directory are visible together on standard desktop/laptop viewports. */
+    /* Workspace — final canonical composition.
+       Three institutional pillars at top; three-column directory below. */
 
-    /* Pull main padding inward — atlas.css gives 4.5rem top/bottom; we
-       compress to 2.5rem so the page seats higher in the viewport. */
-    .atlas-main { padding-top: 2.5rem; padding-bottom: 4rem; }
+    :root {
+      /* Scholarly accents layered on top of atlas.css palette. Used
+         consistently for tags, labels, and column-rule warmth. */
+      --accent-warm: #8a5a2e;   /* warm bronze: kind labels and section caps */
+      --rule-warm:   #c8b88f;   /* warmer rule for column dividers */
+    }
 
-    .opening {
-      max-width: var(--measure);
-      margin: 0 0 1.75rem 0;
-    }
-    .opening p {
-      font-size: 1rem;
-      color: var(--ink-soft);
-      margin: 0;
-    }
+    .atlas-main { padding-top: 2rem; padding-bottom: 3rem; }
 
     /* ── Institutional triad ────────────────────────────────────── */
 
@@ -31,9 +25,9 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       column-gap: 2.5rem;
-      row-gap: 2rem;
-      margin: 0 0 2.75rem 0;
-      padding: 2.25rem 0 2rem 0;
+      row-gap: 1.75rem;
+      margin: 0 0 2.25rem 0;
+      padding: 1.75rem 0 1.5rem 0;
       border-top: 1px solid var(--ink-soft);
       border-bottom: 1px solid var(--ink-soft);
     }
@@ -49,14 +43,14 @@
       font-size: 0.66rem;
       letter-spacing: 0.18em;
       text-transform: uppercase;
-      color: var(--muted);
+      color: var(--accent-warm);
       margin-bottom: 0.4rem;
       font-weight: 600;
     }
     .doorway-name {
       display: inline-block;
       font-family: var(--serif);
-      font-size: 1.65rem;
+      font-size: 1.7rem;
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.1;
@@ -81,24 +75,24 @@
     /* ── Within-Workspace directory ─────────────────────────────── */
 
     .within {
-      max-width: 46rem;
+      max-width: 60rem;
     }
     .within-label {
       font-family: var(--sans);
       font-size: 0.66rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
-      color: var(--muted);
-      margin: 0 0 0.85rem 0;
+      color: var(--accent-warm);
+      margin: 0 0 0.7rem 0;
       font-weight: 600;
     }
     .within-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      column-count: 2;
-      column-gap: 2.5rem;
-      column-rule: 1px solid var(--rule);
+      column-count: 3;
+      column-gap: 2rem;
+      column-rule: 1px solid var(--rule-warm);
     }
     .within-list li {
       break-inside: avoid;
@@ -112,7 +106,7 @@
     }
     .within-name {
       font-family: var(--serif);
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       font-weight: 600;
       transition: color 0.15s;
     }
@@ -126,32 +120,34 @@
       margin-top: 0.02rem;
     }
 
-    /* Compress the footer too — atlas.css default is 6rem padding-bottom
-       on .atlas-main; we shortened it. Footer naturally sits closer. */
     .atlas-footer {
-      margin-top: 1.5rem;
+      margin-top: 1.25rem;
+      border-top: 1px solid var(--rule-warm);
     }
-    .atlas-footer p { font-style: italic; }
+    .atlas-footer p {
+      font-style: italic;
+      color: var(--ink-soft);
+    }
 
     /* ── Responsive ─────────────────────────────────────────────── */
 
-    /* Tablet / small laptop: triad still in 3 columns but tighter. */
+    /* Small laptop / tablet landscape: triad still 3 cols; list to 2 cols. */
     @media (max-width: 900px) {
-      .doorway-name { font-size: 1.4rem; }
+      .doorway-name { font-size: 1.45rem; }
       .doorway-desc { font-size: 0.8rem; }
-      .doorways { column-gap: 1.75rem; padding: 1.75rem 0 1.5rem 0; }
+      .doorways { column-gap: 1.5rem; padding: 1.5rem 0 1.25rem 0; }
+      .within-list { column-count: 2; column-gap: 2rem; }
     }
 
-    /* Phone: stack triad and collapse directory. */
-    @media (max-width: 640px) {
-      .atlas-main { padding-top: 1.5rem; }
+    /* Phone: stack triad; list to 1 col. */
+    @media (max-width: 600px) {
+      .atlas-main { padding-top: 1.25rem; }
       .doorways {
         grid-template-columns: 1fr;
-        column-gap: 0;
-        row-gap: 1.75rem;
-        padding: 1.75rem 0;
+        row-gap: 1.5rem;
+        padding: 1.5rem 0;
       }
-      .doorway-name { font-size: 1.45rem; }
+      .doorway-name { font-size: 1.4rem; }
       .within-list {
         column-count: 1;
         column-rule: 0;
@@ -167,9 +163,6 @@
   </header>
 
   <main class="atlas-main">
-    <section class="opening" aria-label="About">
-      <p>A small public site of reading tools, language work, and curated archives.</p>
-    </section>
 
     <nav class="doorways" aria-label="Primary destinations">
       <a class="doorway" href="https://stevenfrye30.github.io/Digital-Archive/">
@@ -182,7 +175,7 @@
         <span class="doorway-name">Atlas</span>
         <span class="doorway-desc">Structural map of the archive — a typed semantic graph over the texts.</span>
       </a>
-      <a class="doorway" href="https://github.com/stevenfrye30/Glyphs">
+      <a class="doorway" href="https://stevenfrye30.github.io/Glyphs/">
         <span class="doorway-kind">Script</span>
         <span class="doorway-name">Glyphs</span>
         <span class="doorway-desc">Early alphabet forms and symbolic descent.</span>
@@ -192,65 +185,65 @@
     <section class="within" aria-labelledby="within-label">
       <h2 id="within-label" class="within-label">Within Workspace</h2>
       <ul class="within-list">
-        <li><a href="archive/">
-          <span class="within-name">Archive Shelf</span>
-          <span class="within-desc">Curated doorway into selected texts.</span>
-        </a></li>
-        <li><a href="language/">
-          <span class="within-name">Language</span>
-          <span class="within-desc">Phonos — sounds and scripts.</span>
-        </a></li>
         <li><a href="gods/">
           <span class="within-name">Pantheons</span>
           <span class="within-desc">Cross-cultural map of deities.</span>
-        </a></li>
-        <li><a href="cosmos/">
-          <span class="within-name">Cosmos</span>
-          <span class="within-desc">Solar system, galaxy, universe.</span>
         </a></li>
         <li><a href="sound-map/">
           <span class="within-name">Sound Map</span>
           <span class="within-desc">Phonetic correspondences.</span>
         </a></li>
-        <li><a href="graph/">
-          <span class="within-name">Graph</span>
-          <span class="within-desc">Structural map of archive texts.</span>
-        </a></li>
-        <li><a href="flags/">
-          <span class="within-name">Flags</span>
-          <span class="within-desc">Countries and geography.</span>
-        </a></li>
         <li><a href="images/">
           <span class="within-name">Images</span>
           <span class="within-desc">Art and visual reference.</span>
+        </a></li>
+        <li><a href="cosmos/">
+          <span class="within-name">Cosmos</span>
+          <span class="within-desc">Solar system, galaxy, universe.</span>
+        </a></li>
+        <li><a href="language/">
+          <span class="within-name">Language</span>
+          <span class="within-desc">Phonos — sounds and scripts.</span>
         </a></li>
         <li><a href="philosophy/">
           <span class="within-name">Philosophy</span>
           <span class="within-desc">Reading notes and short essays.</span>
         </a></li>
-        <li><a href="science/">
-          <span class="within-name">Science</span>
-          <span class="within-desc">Topic clusters and glossary.</span>
-        </a></li>
-        <li><a href="math/">
-          <span class="within-name">Math</span>
-          <span class="within-desc">Graphs, symbols, notes.</span>
+        <li><a href="flags/">
+          <span class="within-name">Flags</span>
+          <span class="within-desc">Countries and geography.</span>
         </a></li>
         <li><a href="nutrilens/">
           <span class="within-name">NutriLens</span>
           <span class="within-desc">Offline nutrient explorer.</span>
         </a></li>
-        <li><a href="mirror/">
-          <span class="within-name">Mirror</span>
-          <span class="within-desc">Personal self-tracking.</span>
+        <li><a href="math/">
+          <span class="within-name">Math</span>
+          <span class="within-desc">Graphs, symbols, notes.</span>
         </a></li>
         <li><a href="milwaukee/">
           <span class="within-name">Milwaukee</span>
           <span class="within-desc">Local guide.</span>
         </a></li>
+        <li><a href="mirror/">
+          <span class="within-name">Mirror</span>
+          <span class="within-desc">Personal self-tracking.</span>
+        </a></li>
+        <li><a href="science/">
+          <span class="within-name">Science</span>
+          <span class="within-desc">Topic clusters and glossary.</span>
+        </a></li>
         <li><a href="emoji-games/">
           <span class="within-name">Emoji Games</span>
           <span class="within-desc">Casual games.</span>
+        </a></li>
+        <li><a href="graph/">
+          <span class="within-name">Graph</span>
+          <span class="within-desc">Structural map of archive texts.</span>
+        </a></li>
+        <li><a href="archive/">
+          <span class="within-name">Archive Shelf</span>
+          <span class="within-desc">Curated doorway into selected texts.</span>
         </a></li>
       </ul>
     </section>
