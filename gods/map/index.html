@@ -115,10 +115,11 @@ main p { line-height:1.7; }
 .grid { display:grid; gap:16px; }
 .grid-pantheons { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
 
-/* Utility row above the main controls — collapse-all lives here as a real button */
+/* Utility row above the main controls — collapse-all sits over the View toggle */
 .pantheon-utility-row {
-  display:flex; justify-content:flex-end; align-items:center;
+  display:flex; justify-content:flex-start; align-items:center;
   gap:14px; margin: 0 2px 10px;
+  padding-left:8px;
 }
 .pantheon-utility-row .utility-link {
   background:var(--panel2); border:1px solid var(--line); color:var(--muted);
@@ -191,13 +192,19 @@ main p { line-height:1.7; }
 
 /* Grouped pantheons — each group is a self-contained civilizational chamber */
 .pantheon-group {
-  margin-bottom:34px;
-  background:rgba(0,0,0,0.18);
+  margin-bottom:38px;
+  background:
+    linear-gradient(180deg,
+      rgba(24,28,52,0.55) 0%,
+      rgba(13,15,32,0.48) 100%);
   border:1px solid var(--line);
   border-top:1px solid var(--gold);
   border-radius:3px;
   overflow:hidden;
-  box-shadow:0 1px 0 rgba(0,0,0,0.45);
+  box-shadow:
+    0 6px 22px rgba(0,0,0,0.42),
+    0 1px 0 rgba(0,0,0,0.5),
+    inset 0 1px 0 rgba(229,193,88,0.04);
 }
 .pantheon-group-head {
   display:flex; align-items:baseline; gap:22px;
