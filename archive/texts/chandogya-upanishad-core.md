@@ -7,7 +7,7 @@ language: Sanskrit
 author: Anonymous
 part_of: chandogya-upanishad
 tags: [verse, vedanta, sanskrit]
-library_id: chandogya-upanishad
+library_id: upanishads-muller-part1
 library_chapter: 6
 ---
 

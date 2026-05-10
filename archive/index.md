@@ -47,3 +47,7 @@ A brother came to Scetis to visit Abba Moses and asked him, "Father, give me a w
 This is not a complete library. It is not a substitute for a scholarly edition. It is not a search engine for religious quotations.
 
 It is a small, careful room, holding the texts I have read or am reading, edited in the way I would want to read them.
+
+---
+
+*[Walk further in →](shelves.html)*

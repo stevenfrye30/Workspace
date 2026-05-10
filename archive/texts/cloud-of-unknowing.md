@@ -10,8 +10,9 @@ year: 1922
 source: Project Gutenberg / Internet Archive (public domain modernization, originally John M. Watkins, London)
 part_of: cloud-of-unknowing
 tags: [mystical, apophatic, christian, middle-english, contemplation]
-library_id: cloud-of-unknowing
+library_id: cloud-unknowing-underhill
 library_chapter: 1
+status: shelf
 ---
 
 # The Cloud of Unknowing

@@ -10,6 +10,7 @@ part_of: upanishads
 tags: [knowledge, dialogue, sanskrit, upanishad]
 library_id: upanishads-muller-part2
 library_chapter: 5
+status: shelf
 ---
 
 # Mundaka Upanishad, Book 1, Part 1

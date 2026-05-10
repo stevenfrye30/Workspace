@@ -218,6 +218,33 @@ revisions should address them.
 
 ---
 
-## 11. See also
+## 11. Shelf status (lightweight metadata)
+
+Each entry's frontmatter may carry a `status` field. The contract is
+intentionally small: it tags an entry's relationship to the front-page
+shelf, nothing more.
+
+| Value       | Meaning                                                   |
+|-------------|-----------------------------------------------------------|
+| `shelf`     | Currently linked from the curated front shelf (`index.md`). |
+| `deep-link` | Lives in the deeper shelves (`shelves.md`); reachable by URL or by tradition listing. |
+| `draft`     | Prepared but not yet ready to surface.                     |
+| `legacy`    | Pre-pivot entry, retained for historical continuity.       |
+
+When `status` is absent, the entry is treated as `deep-link` — the
+default for entries not currently surfaced on the front shelf.
+
+`entity.html` reads the `status` field via a regex on the raw
+markdown frontmatter and renders one quiet italic line under the H1
+title for every state except `shelf`. The text is fixed; it is not
+configured per-entry.
+
+This is a metadata-layer convention only. It does not modify passage
+content, commentary, or any other section. It can coexist with §1's
+required entry order and §3's source rule without conflict.
+
+---
+
+## 12. See also
 
 For authoring-surface direction, see `SYNC.md`.

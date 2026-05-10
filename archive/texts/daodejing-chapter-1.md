@@ -7,8 +7,9 @@ language: Classical Chinese
 author: Attributed to Laozi
 part_of: daodejing
 tags: [verse, daoist, classical-chinese]
-library_id: daodejing
+library_id: tao-te-ching
 library_chapter: 1
+status: shelf
 ---
 
 # Daodejing, Chapter 1

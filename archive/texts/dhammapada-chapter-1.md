@@ -10,6 +10,7 @@ part_of: dhammapada
 tags: [ethics, verse, theravada, pali]
 library_id: dhammapada
 library_chapter: 1
+status: shelf
 ---
 
 # Dhammapada, Chapter 1 (The Twin Verses)

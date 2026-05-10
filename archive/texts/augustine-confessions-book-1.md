@@ -10,6 +10,7 @@ part_of: confessions
 tags: [autobiography, late-antique, latin]
 library_id: augustine-confessions
 library_chapter: 1
+status: shelf
 ---
 
 # Augustine, Confessions, Book I

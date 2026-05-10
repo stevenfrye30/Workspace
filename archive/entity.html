@@ -305,6 +305,19 @@
       color: var(--muted);
       margin: 0 0.25em;
     }
+
+    /* Shelf-status note. A single quiet italic line under the H1 title,
+       used to mark non-shelf entries (deep archive, draft, legacy).
+       Shelf entries render nothing. The visual register matches the
+       muted byline already used for passage tags — present, not loud. */
+    .shelf-status {
+      font-size: 0.78rem;
+      color: var(--muted);
+      font-style: italic;
+      letter-spacing: 0.02em;
+      margin: -0.4rem 0 1.6rem;
+      max-width: var(--measure);
+    }
   </style>
   <link rel="stylesheet" href="../_shared/hub-nav.css">
 </head>
@@ -410,6 +423,7 @@
           var el = children[i];
           if (el.classList.contains("graph-connections")) continue;
           if (el.classList.contains("passage-note")) continue;
+          if (el.classList.contains("shelf-status")) continue;
           n += 1;
           if (!el.id) el.id = "passage-" + n;
         }
@@ -642,7 +656,7 @@
        // panel chrome.
       function eachTextNode(root, fn) {
         var EXCLUDE = ".graph-connections, .text-contributors, " +
-                      ".text-related-concepts, " +
+                      ".text-related-concepts, .shelf-status, " +
                       "h1, h2, h3, h4, h5, h6, code, pre";
         var walker = document.createTreeWalker(
           root, NodeFilter.SHOW_TEXT, {
@@ -844,7 +858,7 @@
       function collectProseText(article) {
         var root = article.querySelector(".primary-text") || article;
         var EXCLUDE = ".graph-connections, .text-contributors, " +
-                      ".text-grounding, .passage-note, " +
+                      ".text-grounding, .passage-note, .shelf-status, " +
                       "h1, h2, h3, h4, h5, h6, code, pre";
         var pieces = [];
         var walker = document.createTreeWalker(
@@ -1038,7 +1052,7 @@
         // restructured yet.
         var root = article.querySelector(".primary-text") || article;
         var EXCLUDE = ".graph-connections, .text-contributors, " +
-                      ".text-grounding, .passage-note";
+                      ".text-grounding, .passage-note, .shelf-status";
         var blocks = root.querySelectorAll("p");
         var idx = 0;
         for (var i = 0; i < blocks.length; i++) {
@@ -1386,6 +1400,43 @@
         }, 60);
       }
 
+      // ---------- shelf-status (frontmatter `status` field) ----------
+      //
+      // Lightweight contract: each entry's YAML frontmatter may carry a
+      // `status` field whose value is one of `shelf`, `deep-link`,
+      // `draft`, `legacy`. Absent means `deep-link` (the default for
+      // entries not currently on the front shelf). Shelf entries render
+      // nothing. All other states render a single quiet italic line
+      // under the H1 title. This is a metadata layer only; it does not
+      // touch passage content or commentary.
+
+      function parseShelfStatus(md) {
+        if (typeof md !== "string") return null;
+        var fm = md.match(/^---\s*\n([\s\S]*?)\n---/);
+        if (!fm) return null;
+        var s = fm[1].match(/^status:\s*(\S+)/m);
+        return s ? s[1].trim().toLowerCase() : null;
+      }
+
+      function renderShelfStatus(article, status) {
+        if (status === "shelf") return;
+        var labels = {
+          "deep-link": "From the deeper shelves.",
+          "draft":     "Draft entry.",
+          "legacy":    "Pre-pivot entry, retained for history."
+        };
+        var label = labels[status] || labels["deep-link"];
+        var note = document.createElement("p");
+        note.className = "shelf-status";
+        note.textContent = label;
+        var firstHeading = article.querySelector("h1");
+        if (firstHeading && firstHeading.nextSibling) {
+          article.insertBefore(note, firstHeading.nextSibling);
+        } else {
+          article.insertBefore(note, article.firstChild);
+        }
+      }
+
       // ---------- main ----------
 
       fetch("./texts/" + id + ".md", { cache: "no-cache" })
@@ -1394,7 +1445,9 @@
           return r.text();
         })
         .then(function (md) {
+          var __shelfStatus = parseShelfStatus(md);
           target.innerHTML = Atlas.renderMarkdown(md);
+          renderShelfStatus(target, __shelfStatus);
           // Wrap the Primary Text H2 + following block elements in a
           // <section class="primary-text"> so the sentence-wrapping
           // and structural-grounding layers can scope themselves to
