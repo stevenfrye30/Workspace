@@ -512,6 +512,12 @@ main p { line-height:1.7; }
 .god-card .pantheon { color:var(--gold); font-size:11px; font-variant:small-caps; letter-spacing:1.2px; margin-top:2px; }
 .god-card .cat { color:var(--cyan); font-size:11px; margin-top:2px; font-style:italic; }
 .god-card .domains { color:var(--muted); font-size:11px; margin-top:6px; }
+.god-card .gc-arch {
+  color:var(--gold-deep); font-size:10.5px;
+  font-style:italic; font-variant:small-caps; letter-spacing:1.2px;
+  margin-top:6px; opacity:0.78;
+}
+.god-card .gc-arch::before { content:'— '; opacity:0.6; }
 
 .focus-container {
   background:var(--panel); border:1px solid var(--line); border-radius:10px;
@@ -709,6 +715,20 @@ main p { line-height:1.7; }
 .focus-center-card .fdomains { display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 14px; }
 .focus-center-card .fdom-tag { background:var(--panel); border:1px solid var(--line); color:var(--ink); padding:4px 11px; border-radius:11px; font-size:12px; }
 .focus-center-card .fcat { color:var(--muted); font-size:12px; font-variant:small-caps; letter-spacing:1.6px; margin-bottom:0; }
+.focus-center-card .farchetype {
+  margin:6px 0 0; color:var(--muted); font-size:12.5px;
+  font-style:italic; letter-spacing:0.2px; line-height:1.45;
+}
+.focus-center-card .farchetype-link {
+  color:var(--gold); cursor:pointer; font-style:normal;
+  font-weight:600; letter-spacing:0.3px;
+  border-bottom:1px dotted rgba(229,193,88,0.45);
+  transition:color .15s, border-bottom-color .15s;
+}
+.focus-center-card .farchetype-link:hover,
+.focus-center-card .farchetype-link:focus-visible {
+  color:var(--ink); border-bottom-color:var(--ink); outline:none;
+}
 .focus-center-card .fdesc { color:var(--ink); font-size:14px; line-height:1.6; }
 .focus-center-card .god-image,
 .focus-center-card .god-glyph { width:110px; height:110px; }
@@ -1093,6 +1113,37 @@ main p { line-height:1.7; }
 .modal .pantheon-label { color:var(--gold-deep); font-size:12px; font-variant:small-caps; letter-spacing:2px; margin-bottom:4px; }
 .modal .epithets { color:var(--cyan); font-size:13px; font-style:italic; margin-top:4px; margin-bottom:14px; }
 .modal .desc { line-height:1.7; margin:14px 0; font-size:15px; }
+.modal-archetype {
+  margin:14px 0 4px; padding:11px 16px;
+  background:rgba(229,193,88,0.045);
+  border-left:2px solid var(--gold-soft);
+  color:var(--ink); font-size:13.5px;
+  font-style:italic; line-height:1.5;
+  letter-spacing:0.2px;
+}
+.modal-archetype-link {
+  color:var(--gold); cursor:pointer;
+  font-style:normal; font-weight:600;
+  letter-spacing:0.3px;
+  border-bottom:1px dotted var(--gold-soft);
+  transition:color .15s, border-bottom-color .15s;
+}
+.modal-archetype-link:hover,
+.modal-archetype-link:focus-visible {
+  color:var(--ink); border-bottom-color:var(--ink); outline:none;
+}
+.modal-archetype-link::after { content:' →'; opacity:0.6; margin-left:2px; }
+.modal-parallels {
+  color:var(--ink); font-size:14px; line-height:1.7; margin:4px 0;
+}
+.modal-parallels .god-link {
+  color:var(--cyan); border-bottom-color:rgba(92,155,199,0.40);
+}
+.modal-parallels .god-link:hover { color:var(--ink); border-bottom-color:var(--ink); }
+.modal-category {
+  color:var(--ink); font-size:14px; text-transform:capitalize;
+  opacity:0.78;
+}
 .modal .section-label {
   text-align:center; font-variant:small-caps; letter-spacing:3px;
   color:var(--gold-deep); font-size:11px; font-weight:bold;
@@ -1904,14 +1955,15 @@ function openGod(id) {
   const siblings = (g.siblings || []).map(renderGodLink).filter(Boolean);
   const parallels = (g.parallels || []).map(renderGodLink).filter(Boolean);
 
+  // Genealogical relations only — parallels are cross-cultural and read in their own section
   const rel = [];
   if (parents.length) rel.push(`<div class="rel-row"><span class="rel-label">Parents</span>${parents.join(', ')}</div>`);
   if (consorts.length) rel.push(`<div class="rel-row"><span class="rel-label">Consorts</span>${consorts.join(', ')}</div>`);
   if (children.length) rel.push(`<div class="rel-row"><span class="rel-label">Children</span>${children.join(', ')}</div>`);
   if (siblings.length) rel.push(`<div class="rel-row"><span class="rel-label">Siblings</span>${siblings.join(', ')}</div>`);
-  if (parallels.length) rel.push(`<div class="rel-row"><span class="rel-label">Parallels</span>${parallels.join(', ')}</div>`);
 
-  const archetype = g.archetype ? (DATA.archetypes.find(a => a.id === g.archetype)?.name || g.archetype) : null;
+  const archetypeObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
+  const archetypeName = archetypeObj ? archetypeObj.name : (g.archetype || null);
 
   document.getElementById('modalContent').innerHTML = `
     <div class="modal-head">
@@ -1923,17 +1975,27 @@ function openGod(id) {
       ${godImageHtml(g)}
     </div>
     <div class="desc">${g.description || ''}</div>
+    ${archetypeName ? `<div class="modal-archetype">A figure of the <span class="modal-archetype-link" role="link" tabindex="0" onclick="followArchetype('${g.archetype}', true)">${archetypeName}</span> archetype.</div>` : ''}
     ${g.domains && g.domains.length ? `
       <div class="section-label">Domains</div>
       <div class="domains">${g.domains.map(d => `<span class="domain-tag">${d.replace(/-/g, ' ')}</span>`).join('')}</div>
     ` : ''}
-    ${archetype ? `<div class="section-label" style="margin-top:14px;">Archetype</div><div style="color:var(--ink); font-size:14px;">${archetype}</div>` : ''}
-    ${rel.length ? `<div class="section-label" style="margin-top:18px;">Relations</div>${rel.join('')}` : ''}
-    <div class="section-label" style="margin-top:18px;">Category</div>
-    <div style="color:var(--ink); font-size:14px; text-transform:capitalize;">${(g.category || '').replace(/-/g, ' ')} · ${g.gender === 'M' ? 'masculine' : g.gender === 'F' ? 'feminine' : 'non-gendered / other'}</div>
+    ${rel.length ? `<div class="section-label">Relations</div>${rel.join('')}` : ''}
+    ${parallels.length ? `<div class="section-label">Cross-Cultural Parallels</div><div class="modal-parallels">${parallels.join(', ')}</div>` : ''}
+    <div class="section-label">Category</div>
+    <div class="modal-category">${(g.category || '').replace(/-/g, ' ')} · ${g.gender === 'M' ? 'masculine' : g.gender === 'F' ? 'feminine' : 'non-gendered / other'}</div>
   `;
   document.getElementById('modalBg').classList.add('open');
   document.getElementById('modal').scrollTop = 0;
+}
+
+// Navigate to the comparative atlas of a given archetype. Closes the modal
+// first if we're inside it, then switches tab and scrolls.
+function followArchetype(archId, fromModal) {
+  if (!archId || !DATA.archetypes || !DATA.archetypes.find(a => a.id === archId)) return;
+  if (fromModal) closeModal();
+  selectTab('archetypes', { skipHash: true });
+  setTimeout(() => jumpToArchetype(archId), 30);
 }
 
 function renderGodLink(id) {
@@ -2428,6 +2490,10 @@ function renderFocusView(g) {
   const domains = (g.domains || []).length
     ? `<div class="fdomains">${g.domains.map(d => `<span class="fdom-tag">${d.replace(/-/g,' ')}</span>`).join('')}</div>` : '';
   const catLabel = `${(g.category || '').replace(/-/g,' ')}${genderSymbol(g.gender)}`;
+  const archObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
+  const archetypeLine = archObj
+    ? `<div class="farchetype">A figure of the <span class="farchetype-link" role="link" tabindex="0" onclick="followArchetype('${g.archetype}')">${archObj.name}</span> archetype.</div>`
+    : '';
 
   document.getElementById('focusView').innerHTML = `
     ${grandparentsHtml}
@@ -2446,6 +2512,7 @@ function renderFocusView(g) {
             <h3 class="fname-main">${g.name}</h3>
             ${epithets}
             <div class="fcat">${catLabel}</div>
+            ${archetypeLine}
           </div>
           ${godImageHtml(g)}
         </div>
@@ -3406,12 +3473,14 @@ function renderBrowse() {
 function renderGodCard(g) {
   const p = PANTHEONS_BY_ID[g.pantheon];
   const domains = (g.domains || []).slice(0, 3).map(d => d.replace(/-/g,' ')).join(' · ');
+  const archObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
   return `
     <div class="god-card" style="--pantheon-color:${p ? p.color : 'var(--gold)'}" data-gid="${g.id}" tabindex="0">
       <div class="name">${g.name}</div>
       <div class="pantheon">${p ? p.name : g.pantheon}</div>
       <div class="cat">${(g.category || '').replace(/-/g,' ')}</div>
       ${domains ? `<div class="domains">${domains}</div>` : ''}
+      ${archObj ? `<div class="gc-arch">${archObj.name.toLowerCase()}</div>` : ''}
     </div>
   `;
 }
