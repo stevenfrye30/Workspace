@@ -393,6 +393,22 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 #sm-tl-scrub{width:100%;accent-color:var(--gold);cursor:pointer}
 #sm-tl-scrub-labels{display:flex;justify-content:space-between;color:var(--muted);font-size:10px;font-family:var(--mono);margin-top:4px}
 #sm-tl-strip-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--radius);padding:12px 14px;overflow-x:auto}
+/* Place-of-articulation trajectory ribbon — front-of-mouth at top, back-of-mouth at bottom; x-axis = time. */
+#sm-tl-traj-wrap{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--radius);padding:10px 14px 6px;display:flex;flex-direction:column;gap:6px}
+#sm-tl-traj-title{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;display:flex;align-items:baseline;justify-content:space-between;gap:8px}
+#sm-tl-traj-title .sm-tl-traj-sub{color:var(--muted);font-size:9px;font-style:italic;text-transform:none;letter-spacing:0;font-weight:400}
+#sm-tl-traj{width:100%;height:110px;display:block}
+#sm-tl-traj .sm-tl-traj-axis{font-family:"Segoe UI",Arial,sans-serif;font-size:8px;fill:#8fa3ba;letter-spacing:.04em;text-transform:uppercase}
+#sm-tl-traj .sm-tl-traj-grid{stroke:#32445c;stroke-width:0.5;opacity:.45}
+#sm-tl-traj .sm-tl-traj-line{fill:none;stroke:#5a6e85;stroke-width:1;stroke-linejoin:round;stroke-linecap:round;opacity:.7}
+#sm-tl-traj .sm-tl-traj-dot{stroke:#0d0d0d;stroke-width:0.5;cursor:pointer;transition:r .12s,stroke-width .12s}
+#sm-tl-traj .sm-tl-traj-dot:hover{stroke:var(--gold);stroke-width:1.2}
+#sm-tl-traj .sm-tl-traj-dot.played{opacity:.9}
+#sm-tl-traj .sm-tl-traj-dot.upcoming{opacity:.45}
+#sm-tl-traj .sm-tl-traj-dot.current{stroke:var(--gold);stroke-width:1.6;opacity:1}
+#sm-tl-traj .sm-tl-traj-playhead{stroke:var(--gold);stroke-width:1.4;opacity:.9;pointer-events:none}
+#sm-tl-traj .sm-tl-traj-word-tick{stroke:#32445c;stroke-width:0.6;stroke-dasharray:2 2;opacity:.5}
+#sm-tl-traj .sm-tl-traj-word-label{font-family:"Segoe UI",Arial,sans-serif;font-size:8px;fill:#8fa3ba;text-anchor:middle;pointer-events:none}
 #sm-tl-strip-title{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
 #sm-tl-strip{display:flex;gap:2px;align-items:flex-end;min-width:max-content}
 .sm-tl-word{display:flex;flex-direction:column;align-items:flex-start;padding:4px 6px;border-radius:4px;border:1px solid transparent;transition:border-color .15s,background .15s}
@@ -2245,6 +2261,113 @@ function smFmtMs(ms) {
   return s.toFixed(2) + "s";
 }
 
+// Front-of-mouth (0) → back-of-mouth (1) ordinal for each articulation place.
+// Drives the y-axis of the trajectory ribbon. Vowels are placed by tongue
+// front/back position so they sit naturally between consonant places.
+const SM_TL_PLACE_ORD = {
+  bilabial: 0, labiodental: 1, dental: 2, alveolar: 3, postalveolar: 4,
+  retroflex: 4.5, palatal: 5, velar: 6, uvular: 7, pharyngeal: 8, glottal: 9,
+  "front-vowel": 3, "central-vowel": 5, "back-vowel": 7, diphthong: 5
+};
+const SM_TL_PLACE_ORD_MAX = 9;
+// JS-side color map mirroring the .sm-tl-phon[data-place] CSS rules so the
+// trajectory dots match the strip tiles exactly.
+const SM_TL_PLACE_COLOR = {
+  bilabial: "#f5a5c9", labiodental: "#f5b58a", dental: "#f0d860",
+  alveolar: "#9fdc9f", postalveolar: "#7cd0ce", retroflex: "#b7d68c",
+  palatal: "#9bbde0", velar: "#b9a0db", uvular: "#c99aff",
+  pharyngeal: "#ffa0a0", glottal: "#bbbbbb",
+  "front-vowel": "#f7cf74", "central-vowel": "#d2c0a5",
+  "back-vowel": "#b499d9", diphthong: "#cbb499"
+};
+const SM_TL_TRAJ_W = 1000;
+const SM_TL_TRAJ_H = 110;
+const SM_TL_TRAJ_PAD = { left: 36, right: 8, top: 14, bottom: 14 };
+
+function smTlPlaceY(place) {
+  const o = SM_TL_PLACE_ORD[place];
+  const t = (o == null ? 0.5 : o / SM_TL_PLACE_ORD_MAX);
+  const usable = SM_TL_TRAJ_H - SM_TL_TRAJ_PAD.top - SM_TL_TRAJ_PAD.bottom;
+  return SM_TL_TRAJ_PAD.top + t * usable;
+}
+function smTlTimeX(timeMs, totalMs) {
+  if (!totalMs) return SM_TL_TRAJ_PAD.left;
+  const usable = SM_TL_TRAJ_W - SM_TL_TRAJ_PAD.left - SM_TL_TRAJ_PAD.right;
+  return SM_TL_TRAJ_PAD.left + (timeMs / totalMs) * usable;
+}
+
+function smTlBuildTrajectory(seq, starts, totalMs, processed) {
+  const W = SM_TL_TRAJ_W, H = SM_TL_TRAJ_H;
+  const xLeft = SM_TL_TRAJ_PAD.left;
+  const xRight = W - SM_TL_TRAJ_PAD.right;
+  const yTop = SM_TL_TRAJ_PAD.top;
+  const yBot = H - SM_TL_TRAJ_PAD.bottom;
+  // Frame: front/back guide lines + axis labels.
+  const parts = [];
+  parts.push(`<line class="sm-tl-traj-grid" x1="${xLeft}" y1="${yTop}" x2="${xRight}" y2="${yTop}"/>`);
+  parts.push(`<line class="sm-tl-traj-grid" x1="${xLeft}" y1="${yBot}" x2="${xRight}" y2="${yBot}"/>`);
+  parts.push(`<line class="sm-tl-traj-grid" x1="${xLeft}" y1="${(yTop+yBot)/2}" x2="${xRight}" y2="${(yTop+yBot)/2}"/>`);
+  parts.push(`<text class="sm-tl-traj-axis" x="4" y="${yTop+3}">FRONT</text>`);
+  parts.push(`<text class="sm-tl-traj-axis" x="4" y="${(yTop+yBot)/2+3}">MID</text>`);
+  parts.push(`<text class="sm-tl-traj-axis" x="4" y="${yBot+3}">BACK</text>`);
+
+  // Word boundary ticks + word labels above the ribbon.
+  const wordSpans = new Map(); // wordIdx → {start,end,label}
+  seq.forEach((ev, i) => {
+    const s = starts[i], e = s + ev.durMs;
+    const w = wordSpans.get(ev.wordIdx);
+    if (w) { w.start = Math.min(w.start, s); w.end = Math.max(w.end, e); }
+    else wordSpans.set(ev.wordIdx, { start: s, end: e, label: (processed[ev.wordIdx] && processed[ev.wordIdx].word) || "" });
+  });
+  wordSpans.forEach((w, idx) => {
+    const x1 = smTlTimeX(w.start, totalMs);
+    const x2 = smTlTimeX(w.end, totalMs);
+    const xMid = (x1 + x2) / 2;
+    if (idx > 0) parts.push(`<line class="sm-tl-traj-word-tick" x1="${x1.toFixed(1)}" y1="${yTop-6}" x2="${x1.toFixed(1)}" y2="${yBot+2}"/>`);
+    if (w.label) parts.push(`<text class="sm-tl-traj-word-label" x="${xMid.toFixed(1)}" y="${yTop-4}">${smTlEscape(w.label)}</text>`);
+  });
+
+  // Build polyline through non-pause events; pauses break the line.
+  const polylineRuns = [];
+  let run = [];
+  seq.forEach((ev, i) => {
+    if (ev.isPause) {
+      if (run.length) polylineRuns.push(run);
+      run = [];
+      return;
+    }
+    if (!ev.feat) return;
+    const cx = smTlTimeX(starts[i] + ev.durMs / 2, totalMs);
+    const cy = smTlPlaceY(ev.feat.place);
+    run.push({ x: cx, y: cy });
+  });
+  if (run.length) polylineRuns.push(run);
+  polylineRuns.forEach(r => {
+    if (r.length < 2) return;
+    const pts = r.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
+    parts.push(`<polyline class="sm-tl-traj-line" points="${pts}"/>`);
+  });
+
+  // Phoneme dots.
+  seq.forEach((ev, i) => {
+    if (ev.isPause || !ev.feat) return;
+    const cx = smTlTimeX(starts[i] + ev.durMs / 2, totalMs);
+    const cy = smTlPlaceY(ev.feat.place);
+    const r = ev.stress === 1 ? 4 : 3;
+    const fill = SM_TL_PLACE_COLOR[ev.feat.place] || "#999";
+    parts.push(`<circle class="sm-tl-traj-dot upcoming" data-seq-idx="${i}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${fill}"><title>${smTlEscape(ev.phoneme)} · ${smTlEscape(ev.feat.place || "")}</title></circle>`);
+  });
+
+  // Playhead.
+  parts.push(`<line id="sm-tl-traj-playhead" class="sm-tl-traj-playhead" x1="${xLeft}" y1="${yTop-4}" x2="${xLeft}" y2="${yBot+4}"/>`);
+
+  return `<svg id="sm-tl-traj" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Articulation trajectory over time">${parts.join("")}</svg>`;
+}
+
+function smTlEscape(s) {
+  return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+
 function smRenderTimeline(processed, byLine) {
   const view = document.getElementById("sm-view-timeline");
   view.innerHTML = "";
@@ -2361,6 +2484,20 @@ function smRenderTimeline(processed, byLine) {
   scrubLabels.appendChild(totalLabel);
   scrubWrap.appendChild(scrubLabels);
 
+  // Articulation trajectory ribbon (place-of-articulation over time)
+  const trajWrap = document.createElement("div");
+  trajWrap.id = "sm-tl-traj-wrap";
+  trajWrap.innerHTML =
+    `<div id="sm-tl-traj-title">Articulation trajectory <span class="sm-tl-traj-sub">y-axis: front-of-mouth → back · x-axis: time · click any dot to seek</span></div>` +
+    smTlBuildTrajectory(seq, starts, smTl.totalMs, processed);
+  // Click-to-seek on dots.
+  trajWrap.addEventListener("click", e => {
+    const dot = e.target.closest(".sm-tl-traj-dot");
+    if (!dot) return;
+    const i = parseInt(dot.dataset.seqIdx, 10);
+    if (Number.isFinite(i)) smTlSeekToIndex(i);
+  });
+
   // Phoneme strip
   const stripWrap = document.createElement("div");
   stripWrap.id = "sm-tl-strip-wrap";
@@ -2407,6 +2544,7 @@ function smRenderTimeline(processed, byLine) {
 
   side.appendChild(controls);
   side.appendChild(scrubWrap);
+  side.appendChild(trajWrap);
   side.appendChild(stripWrap);
 
   stage.appendChild(tract);
@@ -2517,14 +2655,32 @@ function smTlFindIndex(timeMs) {
 function smTlUpdateFrame(timeMs) {
   if (!smTl.seq.length) return;
   const idx = smTlFindIndex(timeMs);
-  // Update scrubber + time
+  // Update scrubber + time + trajectory playhead (these run every frame, even
+  // when the index hasn't changed, so the playhead stays smooth between dots).
   if (smTl.scrub) {
     const frac = smTl.totalMs > 0 ? timeMs / smTl.totalMs : 0;
     smTl.scrub.value = String(Math.round(frac * 1000));
     smTl.timeLabel.textContent = smFmtMs(timeMs);
   }
+  const ph = document.getElementById("sm-tl-traj-playhead");
+  if (ph) {
+    const x = smTlTimeX(timeMs, smTl.totalMs).toFixed(1);
+    ph.setAttribute("x1", x);
+    ph.setAttribute("x2", x);
+  }
   if (idx === smTl.curIdx) return;
   smTl.curIdx = idx;
+  // Trajectory dot played/current/upcoming state — only flip on index change.
+  const traj = document.getElementById("sm-tl-traj");
+  if (traj) {
+    traj.querySelectorAll(".sm-tl-traj-dot").forEach(el => {
+      const i = parseInt(el.dataset.seqIdx, 10);
+      el.classList.remove("current", "played", "upcoming");
+      if (i === idx) el.classList.add("current");
+      else if (i < idx) el.classList.add("played");
+      else el.classList.add("upcoming");
+    });
+  }
 
   // Highlight tract for current phoneme
   const ev = smTl.seq[idx];
@@ -4514,7 +4670,9 @@ document.querySelectorAll(".sm-view-btn").forEach(btn => {
 
 document.getElementById("sm-visualize").addEventListener("click", smVisualize);
 document.getElementById("sm-input").addEventListener("keydown", e => {
-  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+  // Plain Enter → Visualize. Shift+Enter still inserts a newline.
+  // Ctrl/Cmd+Enter remains a power-user alias for symmetry with other apps.
+  if (e.key === "Enter" && !e.shiftKey) {
     e.preventDefault();
     smVisualize();
   }
