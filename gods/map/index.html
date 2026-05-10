@@ -916,11 +916,24 @@ main p { line-height:1.7; }
 }
 /* Mythological transition — when the dominant stratum shifts (Primordials
    → Elder powers, Major divinities → Heroes, etc.), the rule above the
-   generation is slightly stronger. The eye perceives an ontological
-   boundary rather than just another numbered step. */
+   generation is slightly stronger AND the gen-label gains a small inscribed
+   ornament. Two layered cues at a single threshold: the rule felt, the
+   ornament read. */
 .full-tree-gen.stratum-transition {
   padding-top:28px;
   border-top:1px solid rgba(229,193,88,0.28);
+}
+.full-tree-gen.stratum-transition .full-tree-gen-label::before {
+  content:'❋';
+  color:var(--gold-deep);
+  margin-right:8px;
+  font-size:0.7em;
+  font-weight:normal;
+  letter-spacing:0;
+  font-style:normal;
+  opacity:0.6;
+  vertical-align:middle;
+  text-shadow:none;
 }
 .full-tree-gen-label {
   flex:0 0 auto; align-self:stretch;
@@ -999,6 +1012,39 @@ main p { line-height:1.7; }
 }
 .full-tree-node .tn-name { font-size:13px; color:var(--ink); font-weight:bold; }
 .full-tree-node .tn-meta { font-size:11px; color:var(--muted); margin-top:3px; font-style:italic; }
+
+/* Semantic weighting per category — quiet visual register, no size scaling.
+   Primordials and titans read as foundational anchors. Heroes, minor figures,
+   and deified-humans read as peripheral. Monsters carry chthonic distinction
+   via the same blood color the consort-line vocabulary uses. Major and
+   abrahamic stay at baseline. */
+.full-tree-node[data-cat="primordial"],
+.full-tree-node[data-cat="titan"] {
+  border-color:rgba(229,193,88,0.30);
+  background:linear-gradient(180deg, rgba(229,193,88,0.045), var(--panel));
+}
+.full-tree-node[data-cat="hero"],
+.full-tree-node[data-cat="minor"],
+.full-tree-node[data-cat="deified-human"] {
+  opacity:0.86;
+}
+.full-tree-node[data-cat="hero"] .tn-name,
+.full-tree-node[data-cat="minor"] .tn-name,
+.full-tree-node[data-cat="deified-human"] .tn-name {
+  font-weight:normal;
+}
+.full-tree-node[data-cat="monster"] {
+  border-color:rgba(160,48,64,0.40);
+}
+.full-tree-node[data-cat="monster"] .tn-name {
+  font-style:italic;
+}
+/* Lineage-active overrides keep the focused chain at full weight regardless
+   of category — peripheral lightness shouldn't fight ancestry tracing. */
+.full-tree-inner.lineage-active .full-tree-node.lineage-hit,
+.full-tree-inner.lineage-active .full-tree-node.lineage-self {
+  opacity:1;
+}
 
 .full-tree-legend {
   display:flex; gap:14px; flex-wrap:wrap; font-size:11px; color:var(--muted);
@@ -3197,6 +3243,7 @@ function renderFullTreeFromState(state) {
     <div class="full-tree-node ${g.id === currentFocusId ? 'focused' : ''}"
          style="--pantheon-color:${p.color}"
          data-gid="${g.id}"
+         data-cat="${g.category || ''}"
          role="button" tabindex="0"
          aria-label="Focus on ${escapeAttr(g.name)}"
          title="${escapeAttr((g.domains || []).slice(0,3).join(' · '))}">
@@ -3324,9 +3371,9 @@ function drawFullTreeConnectors(state) {
         const dy = by - ay;
         const cy1 = ay + dy * 0.5;
         const cy2 = ay + dy * 0.5;
-        lines.push(`<path d="M ${ax} ${ay} C ${ax} ${cy1}, ${bx} ${cy2}, ${bx} ${by}" stroke="#b8901f" stroke-width="1.2" fill="none" opacity="0.55" class="tree-line parent-line" ${dataAttrs}/>`);
+        lines.push(`<path d="M ${ax} ${ay} C ${ax} ${cy1}, ${bx} ${cy2}, ${bx} ${by}" stroke="#b8901f" stroke-width="1.2" fill="none" opacity="0.62" class="tree-line parent-line" ${dataAttrs}/>`);
       } else {
-        lines.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#b8901f" stroke-width="1" opacity="0.3" stroke-dasharray="3,3" class="tree-line parent-line" ${dataAttrs}/>`);
+        lines.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#b8901f" stroke-width="1" opacity="0.34" stroke-dasharray="3,3" class="tree-line parent-line" ${dataAttrs}/>`);
       }
     });
   });
@@ -3346,7 +3393,7 @@ function drawFullTreeConnectors(state) {
       if (Math.abs(a.cy - b.cy) < 90) {
         const left = a.cx < b.cx ? a : b;
         const right = a.cx < b.cx ? b : a;
-        lines.push(`<line x1="${left.right}" y1="${left.cy}" x2="${right.left}" y2="${right.cy}" stroke="#a03040" stroke-width="1" opacity="0.45" stroke-dasharray="4,3" class="tree-line consort-line" data-a="${g.id}" data-b="${sid}"/>`);
+        lines.push(`<line x1="${left.right}" y1="${left.cy}" x2="${right.left}" y2="${right.cy}" stroke="#a03040" stroke-width="1" opacity="0.5" stroke-dasharray="4,3" class="tree-line consort-line" data-a="${g.id}" data-b="${sid}"/>`);
       }
     });
   });
