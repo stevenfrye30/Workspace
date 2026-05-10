@@ -1020,12 +1020,37 @@ main p { line-height:1.7; }
 .archetype-card h3 {
   margin:0 0 4px; color:var(--gold); font-size:15px; font-weight:normal;
   letter-spacing:0.5px; font-variant:small-caps;
+  display:flex; align-items:baseline; gap:10px; flex-wrap:wrap;
+}
+.archetype-card h3 .arch-count {
+  color:var(--muted); font-size:11px; font-style:italic;
+  font-variant:normal; letter-spacing:0.4px; font-weight:normal;
+  opacity:0.78;
 }
 .archetype-card .desc {
-  color:var(--ink); margin:0 0 10px; font-size:12.5px; line-height:1.5;
-  opacity:0.85;
+  color:var(--ink); margin:0 0 12px; padding-bottom:10px;
+  font-size:12.5px; line-height:1.55;
+  opacity:0.88;
+  border-bottom:1px dotted var(--gold-faint);
 }
-.archetype-examples { display:flex; flex-wrap:wrap; gap:4px; }
+/* Comparative geography — examples bucketed by region so clustering and
+   scattered convergence become visually legible without flattening. */
+.arch-clusters { display:flex; flex-direction:column; gap:9px; margin-top:10px; }
+.arch-cluster { display:flex; flex-direction:column; gap:5px; }
+.arch-cluster-label {
+  display:inline-block;
+  font-size:10px; color:var(--gold-deep);
+  font-variant:small-caps; letter-spacing:1.5px;
+  font-weight:bold; opacity:0.78;
+  padding-left:1px;
+}
+.arch-cluster-chips { display:flex; flex-wrap:wrap; gap:4px; }
+.arch-cluster-stubs { margin-top:2px; }
+.arch-cluster-stubs .arch-cluster-label {
+  color:var(--muted); opacity:0.55;
+  font-style:italic; font-variant:normal;
+  letter-spacing:0.5px; font-weight:normal;
+}
 .arch-chip {
   background:var(--panel2); border:1px solid var(--line); color:var(--ink);
   padding:2px 9px; border-radius:11px; font-size:11px; cursor:pointer;
@@ -1033,6 +1058,8 @@ main p { line-height:1.7; }
 }
 .arch-chip:hover { border-color:var(--gold); color:var(--gold); background:rgba(229,193,88,0.06); }
 .arch-chip .p { color:var(--muted); font-size:9px; font-style:italic; letter-spacing:0.5px; }
+.arch-chip-stub { opacity:0.5; cursor:default; }
+.arch-chip-stub:hover { border-color:var(--line); color:var(--ink); background:var(--panel2); }
 
 .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(2px); z-index:100; align-items:center; justify-content:center; padding:24px; }
 .modal-bg.open { display:flex; animation:fadeIn .25s ease; }
@@ -3165,28 +3192,71 @@ function renderTimeline() {
 }
 
 /* ---------- Archetypes tab ---------- */
+// Pantheon-id → group-id lookup, memoized. Used to bucket archetype examples
+// by region so the eye can perceive clustering vs scattered convergence.
+let _PANTHEON_TO_GROUP = null;
+function pantheonToGroupId(pid) {
+  if (!_PANTHEON_TO_GROUP) {
+    _PANTHEON_TO_GROUP = {};
+    PANTHEON_GROUPS.forEach(grp => grp.ids.forEach(id => { _PANTHEON_TO_GROUP[id] = grp.id; }));
+  }
+  return _PANTHEON_TO_GROUP[pid] || 'other';
+}
+
 function renderArchetypes() {
-  // Jump-nav
+  // Jump-nav (unchanged)
   document.getElementById('archetypeNav').innerHTML = DATA.archetypes.map(a =>
     `<a href="#arch-${a.id}" onclick="jumpToArchetype('${a.id}'); return false;">${a.name}</a>`
   ).join('');
 
-  document.getElementById('archetypeList').innerHTML = DATA.archetypes.map(a => `
-    <div class="archetype-card" id="arch-${a.id}">
-      <h3>${a.name} <span style="color:var(--muted);font-size:11px;font-style:italic;font-variant:normal;letter-spacing:0.5px;">· ${(a.examples||[]).filter(id=>GODS_BY_ID[id]).length} gods</span></h3>
-      <div class="desc">${a.description}</div>
-      <div class="archetype-examples">
-        ${(a.examples || []).map(id => {
-          const g = GODS_BY_ID[id];
-          if (g) {
-            const p = PANTHEONS_BY_ID[g.pantheon];
-            return `<span class="arch-chip" onclick="focusFromArchetype('${id}')">${g.name}<span class="p">${p ? p.name : ''}</span></span>`;
-          }
-          return `<span class="arch-chip" style="opacity:0.5;cursor:default;" title="Not yet catalogued">${formatStubName(id)}</span>`;
-        }).join('')}
+  const reach = g => (g.parents||[]).length + (g.children||[]).length
+    + (g.siblings||[]).length + (g.consorts||[]).length + (g.parallels||[]).length;
+  const groupOrder = allPantheonGroups(); // includes 'other' if needed
+
+  document.getElementById('archetypeList').innerHTML = DATA.archetypes.map(a => {
+    const exampleIds = a.examples || [];
+    const knownGods = exampleIds.map(id => GODS_BY_ID[id]).filter(Boolean);
+    const stubIds = exampleIds.filter(id => !GODS_BY_ID[id]);
+
+    // Bucket known gods by pantheon-group so the comparative geography
+    // becomes visible without claiming any equivalence between traditions.
+    const buckets = {};
+    knownGods.forEach(g => {
+      const gid = pantheonToGroupId(g.pantheon);
+      (buckets[gid] = buckets[gid] || []).push(g);
+    });
+
+    const clustersHtml = groupOrder.map(grp => {
+      const list = buckets[grp.id];
+      if (!list || !list.length) return '';
+      const ranked = list.slice().sort((x,y) => reach(y) - reach(x) || x.name.localeCompare(y.name));
+      const chips = ranked.map(g => {
+        const p = PANTHEONS_BY_ID[g.pantheon];
+        return `<span class="arch-chip" onclick="focusFromArchetype('${g.id}')">${g.name}<span class="p">${p ? p.name : ''}</span></span>`;
+      }).join('');
+      return `<div class="arch-cluster"><span class="arch-cluster-label">${grp.name}</span><div class="arch-cluster-chips">${chips}</div></div>`;
+    }).join('');
+
+    const stubsHtml = stubIds.length
+      ? `<div class="arch-cluster arch-cluster-stubs"><span class="arch-cluster-label">Not yet catalogued</span><div class="arch-cluster-chips">${
+          stubIds.map(id => `<span class="arch-chip arch-chip-stub" title="Not yet catalogued">${formatStubName(id)}</span>`).join('')
+        }</div></div>`
+      : '';
+
+    // Scope: figures · traditions · regions. Lets the reader see whether
+    // an archetype is dense, broad, or narrow before reading a single chip.
+    const traditionCount = new Set(knownGods.map(g => g.pantheon)).size;
+    const regionCount = Object.keys(buckets).length;
+    const scope = `${knownGods.length} figure${knownGods.length === 1 ? '' : 's'} · ${traditionCount} tradition${traditionCount === 1 ? '' : 's'} · ${regionCount} region${regionCount === 1 ? '' : 's'}`;
+
+    return `
+      <div class="archetype-card" id="arch-${a.id}">
+        <h3>${a.name}<span class="arch-count">${scope}</span></h3>
+        <div class="desc">${a.description}</div>
+        <div class="arch-clusters">${clustersHtml}${stubsHtml}</div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function jumpToArchetype(id) {
