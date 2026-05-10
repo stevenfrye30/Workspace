@@ -341,7 +341,11 @@ main p { line-height:1.7; }
 }
 
 .pantheon-card {
-  background:var(--panel); border:1px solid var(--line); border-radius:8px;
+  background:linear-gradient(95deg,
+    color-mix(in srgb, var(--pantheon-color, var(--gold)) 8%, var(--panel)) 0%,
+    color-mix(in srgb, var(--pantheon-color, var(--gold)) 3%, var(--panel)) 55%,
+    var(--panel) 100%);
+  border:1px solid var(--line); border-radius:8px;
   padding:12px 14px 11px 17px; cursor:pointer; position:relative; overflow:hidden;
   transition:border-color .2s, transform .15s, box-shadow .2s, background .2s;
   min-height:0;
@@ -353,7 +357,9 @@ main p { line-height:1.7; }
 .pantheon-card:hover {
   border-color:var(--gold-soft); transform:translateY(-2px);
   box-shadow:0 6px 18px rgba(0,0,0,0.4), 0 0 0 1px var(--gold-faint);
-  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--pantheon-color, var(--gold)) 12%, var(--panel)) 0%,
+    var(--panel2) 100%);
 }
 .pantheon-card .card-head {
   display:flex; align-items:baseline; gap:8px; justify-content:space-between;
@@ -380,6 +386,18 @@ main p { line-height:1.7; }
   color:var(--ink); font-size:12px; line-height:1.45;
   display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
   overflow:hidden; opacity:0.82;
+}
+.pantheon-card .figures {
+  margin-top:9px; padding-top:8px;
+  border-top:1px dotted var(--gold-faint);
+  color:var(--ink); font-size:12.5px; line-height:1.45;
+  letter-spacing:0.2px; opacity:0.92;
+  overflow:hidden; text-overflow:ellipsis;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+}
+.pantheon-card .figures .sep {
+  color:var(--gold-deep); margin:0 0.5em;
+  opacity:0.7; font-weight:bold;
 }
 
 .filters { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; align-items:center; }
@@ -1860,6 +1878,33 @@ function pantheonCounts() {
   return counts;
 }
 
+// Headline figures for a pantheon card — the names that turn a category
+// row into a doorway. Rank by category tier (major / primordial / titan
+// before others), then by total relationship reach (parents + children +
+// siblings + consorts + parallels) so genuinely central figures surface
+// over peripheral ones. Cached after first build.
+const _topFiguresCache = {};
+const _CATEGORY_RANK = {
+  'major': 0, 'primordial': 1, 'titan': 2, 'abrahamic': 3,
+  'hero': 4, 'deified-human': 5, 'minor': 6, 'monster': 7
+};
+function topFiguresForPantheon(pid, limit) {
+  limit = limit || 4;
+  const key = pid + '|' + limit;
+  if (_topFiguresCache[key]) return _topFiguresCache[key];
+  const reach = g => (g.parents||[]).length + (g.children||[]).length
+    + (g.siblings||[]).length + (g.consorts||[]).length
+    + (g.parallels||[]).length;
+  const ranked = DATA.gods
+    .filter(g => g.pantheon === pid)
+    .map(g => ({ g, tier: _CATEGORY_RANK[g.category] ?? 99, reach: reach(g) }))
+    .sort((a, b) => a.tier - b.tier || b.reach - a.reach || a.g.name.localeCompare(b.g.name))
+    .slice(0, limit)
+    .map(x => x.g.name);
+  _topFiguresCache[key] = ranked;
+  return ranked;
+}
+
 function sortPantheons(list, counts) {
   const arr = list.slice();
   if (pantheonSortMode === 'size') arr.sort((a,b) => (counts[b.id]||0) - (counts[a.id]||0) || a.name.localeCompare(b.name));
@@ -1901,6 +1946,10 @@ function renderPantheonGroupedCards(counts) {
     const collapsed = collapsedPantheonGroups.has(grp.id) ? ' collapsed' : '';
     const cards = members.map(p => {
       const n = counts[p.id] || 0;
+      const headline = topFiguresForPantheon(p.id, 4);
+      const figuresHtml = headline.length
+        ? `<div class="figures" aria-label="Headline figures">${headline.join('<span class="sep" aria-hidden="true">·</span>')}</div>`
+        : '';
       return `
         <div class="pantheon-card" style="--pantheon-color:${p.color}" data-pid="${p.id}" title="${escapeAttr(p.description)}" role="button" tabindex="0" aria-label="Open ${escapeAttr(p.name)} family tree">
           <div class="card-head">
@@ -1910,6 +1959,7 @@ function renderPantheonGroupedCards(counts) {
           <div class="region">${p.region}</div>
           <div class="span">${fmtYears(p.active_from, p.active_to)}</div>
           <div class="desc">${p.description}</div>
+          ${figuresHtml}
         </div>
       `;
     }).join('');
