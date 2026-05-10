@@ -139,6 +139,54 @@ main p { line-height:1.7; }
 .grid { display:grid; gap:16px; }
 .grid-pantheons { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
 
+/* Thematic threads — a single curator's-note line below the description.
+   Discovery pathway into the Archetypes tab; not a panel, not a tile grid. */
+.pantheon-threads {
+  margin: -2px 4px 14px;
+  padding: 0;
+  font-size: 13px;
+  line-height: 1.85;
+  color: var(--muted);
+  font-style: italic;
+}
+.pantheon-threads .threads-prefix {
+  display: inline-block;
+  margin-right: 12px;
+  color: var(--gold-deep);
+  font-variant: small-caps;
+  letter-spacing: 1.6px;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 11px;
+  opacity: 0.85;
+}
+.pantheon-threads .threads-prefix::after {
+  content: ':';
+  margin-left: 1px;
+  opacity: 0.7;
+}
+.pantheon-threads a {
+  color: var(--ink);
+  text-decoration: none;
+  font-style: normal;
+  opacity: 0.78;
+  border-bottom: 1px dotted transparent;
+  transition: color .15s, opacity .15s, border-bottom-color .15s;
+}
+.pantheon-threads a:hover,
+.pantheon-threads a:focus-visible {
+  color: var(--gold);
+  opacity: 1;
+  border-bottom-color: rgba(229,193,88,0.35);
+  outline: none;
+}
+.pantheon-threads .sep {
+  color: var(--gold-deep);
+  margin: 0 0.55em;
+  opacity: 0.55;
+  font-style: normal;
+}
+
 /* Utility row above the main controls — collapse-all sits over the View toggle */
 .pantheon-utility-row {
   display:flex; justify-content:flex-start; align-items:center;
@@ -1189,6 +1237,9 @@ select:focus:not(:focus-visible),
       figures for cross-cultural comparison only. Coverage is uneven by design.
     </p>
   </div>
+  <p class="pantheon-threads" aria-label="Thematic threads">
+    <span class="threads-prefix">Or follow a thread</span><a href="#archetype/storm-god" data-arch="storm-god">storm gods</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/underworld-ruler" data-arch="underworld-ruler">underworld rulers</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/trickster" data-arch="trickster">tricksters</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/mother-goddess" data-arch="mother-goddess">great mothers</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/sun-god" data-arch="sun-god">sun deities</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/wisdom-god" data-arch="wisdom-god">wisdom figures</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/dying-rising" data-arch="dying-rising">dying-and-rising gods</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/serpent-dragon" data-arch="serpent-dragon">serpent dragons</a>
+  </p>
   <div class="pantheon-utility-row">
     <button id="pantheonCollapseAll" class="utility-link" type="button" title="Collapse or expand all pantheon groups">Collapse all</button>
   </div>
@@ -3150,6 +3201,22 @@ function focusFromArchetype(godId) {
   selectTab('trees', { skipHash: true });
   setFocus(godId); // updates hash to god/<id>
 }
+
+// Discovery threads: clicking a curator-note thread inside the Pantheons tab
+// switches to Archetypes and scrolls to the chosen archetype. Reuses
+// selectTab + jumpToArchetype; needs no new infrastructure.
+function followThread(archId) {
+  if (!DATA.archetypes || !DATA.archetypes.find(a => a.id === archId)) return;
+  selectTab('archetypes', { skipHash: true });
+  // Wait for tab display so the target element is laid out before we scroll.
+  setTimeout(() => jumpToArchetype(archId), 30);
+}
+document.addEventListener('click', e => {
+  const a = e.target.closest('.pantheon-threads a[data-arch]');
+  if (!a) return;
+  e.preventDefault();
+  followThread(a.dataset.arch);
+});
 
 /* ---------- Notable Mentions tab ---------- */
 function renderMentions() {
