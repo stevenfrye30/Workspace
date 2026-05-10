@@ -151,11 +151,15 @@ main p { line-height:1.7; }
 .grid { display:grid; gap:16px; }
 .grid-pantheons { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
 
-/* Thematic threads — a single curator's-note line below the description.
-   Discovery pathway into the Archetypes tab; not a panel, not a tile grid. */
+/* Thematic threads — a quiet bordered channel below the description.
+   Discovery pathway into the Archetypes tab. The bordered-left treatment
+   picks up the same vocabulary the modal-archetype block uses, signalling
+   "this is a parallel navigation route" without becoming a panel. */
 .pantheon-threads {
-  margin: -2px 4px 14px;
-  padding: 0;
+  margin: 0 4px 18px;
+  padding: 9px 16px;
+  background: rgba(229,193,88,0.038);
+  border-left: 2px solid var(--gold-soft);
   font-size: 13px;
   line-height: 1.85;
   color: var(--muted);
@@ -170,7 +174,7 @@ main p { line-height:1.7; }
   font-style: normal;
   font-weight: bold;
   font-size: 11px;
-  opacity: 0.85;
+  opacity: 0.92;
 }
 .pantheon-threads .threads-prefix::after {
   content: ':';
@@ -274,14 +278,17 @@ main p { line-height:1.7; }
   border-left:1px solid var(--line);
 }
 
-/* Grouped pantheons — each group is a self-contained civilizational chamber */
+/* Grouped pantheons — each group is a self-contained civilizational chamber.
+   When --chamber-tint is set (averaged from constituent pantheon colors),
+   the chamber's interior gradient picks up a quiet civilizational wash —
+   honest atmospheric variation per region without bright coloring. */
 .pantheon-group {
   margin-bottom:38px;
   background:
     linear-gradient(180deg,
-      #1a1c3c 0%,
-      #15173a 55%,
-      #11132e 100%);
+      color-mix(in srgb, var(--chamber-tint, transparent) 7%, #1a1c3c) 0%,
+      color-mix(in srgb, var(--chamber-tint, transparent) 4%, #15173a) 55%,
+      color-mix(in srgb, var(--chamber-tint, transparent) 2%, #11132e) 100%);
   border:1px solid var(--line);
   border-top:1px solid var(--gold);
   border-radius:3px;
@@ -2207,6 +2214,28 @@ function pantheonCounts() {
   return counts;
 }
 
+// Chamber atmospheric tint — averaged from constituent pantheon colors.
+// Used at low opacity (~6%) so the chamber's interior gradient picks up
+// a quiet civilizational tone without bright regional coloring or
+// stereotyping. Returns a CSS rgb() string, or null if no member colors.
+function chamberAverageColor(pantheons) {
+  const hexes = pantheons.map(p => p && p.color).filter(Boolean);
+  if (!hexes.length) return null;
+  let r = 0, g = 0, b = 0, n = 0;
+  hexes.forEach(h => {
+    const m = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(h);
+    if (m) { r += parseInt(m[1], 16); g += parseInt(m[2], 16); b += parseInt(m[3], 16); n++; }
+  });
+  if (!n) return null;
+  return `rgb(${Math.round(r/n)}, ${Math.round(g/n)}, ${Math.round(b/n)})`;
+}
+
+// How many member pantheons are still actively practiced (active_to >= 2020).
+// Used in chamber metadata to surface chamber-level vitality without a badge.
+function livingPantheonCount(pantheons) {
+  return pantheons.filter(p => p && p.active_to >= 2020).length;
+}
+
 // Headline figures for a pantheon card — the names that turn a category
 // row into a doorway. Rank by category tier (major / primordial / titan
 // before others), then by total relationship reach (parents + children +
@@ -2273,6 +2302,10 @@ function renderPantheonGroupedCards(counts) {
     const totalFigures = members.reduce((s,p) => s + (counts[p.id] || 0), 0);
     const era = groupEraLabel(members);
     const collapsed = collapsedPantheonGroups.has(grp.id) ? ' collapsed' : '';
+    const tint = chamberAverageColor(members);
+    const tintStyle = tint ? ` style="--chamber-tint:${tint};"` : '';
+    const living = livingPantheonCount(members);
+    const livingSuffix = living > 0 ? ` · ${living} living` : '';
     const cards = members.map(p => {
       const n = counts[p.id] || 0;
       const headline = topFiguresForPantheon(p.id, 4);
@@ -2294,10 +2327,10 @@ function renderPantheonGroupedCards(counts) {
       `;
     }).join('');
     return `
-      <section class="pantheon-group${collapsed}" data-gid="${grp.id}">
+      <section class="pantheon-group${collapsed}" data-gid="${grp.id}"${tintStyle}>
         <div class="pantheon-group-head" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
           <h3><span class="toggle-icon" aria-hidden="true">▾</span>${grp.name}</h3>
-          <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}</span>
+          <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}${livingSuffix}</span>
           <span class="group-era">${era}</span>
         </div>
         <div class="pantheon-group-grid">${cards}</div>
@@ -2327,12 +2360,16 @@ function renderPantheonGroupedList(counts) {
     const totalFigures = members.reduce((s,p) => s + (counts[p.id] || 0), 0);
     const era = groupEraLabel(members);
     const collapsed = collapsedPantheonGroups.has(grp.id) ? ' collapsed' : '';
+    const tint = chamberAverageColor(members);
+    const tintStyle = tint ? ` style="--chamber-tint:${tint};"` : '';
+    const living = livingPantheonCount(members);
+    const livingSuffix = living > 0 ? ` · ${living} living` : '';
     const rows = members.map(p => pantheonRowHtml(p, counts[p.id] || 0)).join('');
     return `
-      <section class="pantheon-group${collapsed}" data-gid="${grp.id}">
+      <section class="pantheon-group${collapsed}" data-gid="${grp.id}"${tintStyle}>
         <div class="pantheon-group-head" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
           <h3><span class="toggle-icon" aria-hidden="true">▾</span>${grp.name}</h3>
-          <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}</span>
+          <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}${livingSuffix}</span>
           <span class="group-era">${era}</span>
         </div>
         <div class="pantheon-compact-list">${rows}</div>
@@ -2371,12 +2408,14 @@ function renderPantheonEraList(counts) {
     const from = Math.min(...entry.members.map(p => p.active_from));
     const to = Math.max(...entry.members.map(p => p.active_to));
     const collapsed = collapsedPantheonGroups.has('era-' + b.id) ? ' collapsed' : '';
+    const living = livingPantheonCount(entry.members);
+    const livingSuffix = living > 0 ? ` · ${living} living` : '';
     const rows = entry.members.map(p => pantheonRowHtml(p, counts[p.id] || 0)).join('');
     return `
       <section class="pantheon-group${collapsed}" data-gid="era-${b.id}">
         <div class="pantheon-group-head" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
           <h3><span class="toggle-icon" aria-hidden="true">▾</span>${b.name}</h3>
-          <span class="group-count">${entry.members.length} tradition${entry.members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}</span>
+          <span class="group-count">${entry.members.length} tradition${entry.members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}${livingSuffix}</span>
           <span class="group-era">${fmtYear(from)} – ${fmtYear(to)}</span>
         </div>
         <div class="pantheon-compact-list">${rows}</div>
