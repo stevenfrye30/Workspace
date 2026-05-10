@@ -271,23 +271,107 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 #sm-vtract-phoneme{color:var(--blue);font-family:var(--mono);font-size:15px;font-weight:700}
 #sm-vtract-svg{width:100%;height:auto;display:block}
 #sm-vtract-readout{color:var(--muted);font-size:10px;margin-top:2px;text-align:center;font-style:italic;min-height:12px}
-.vt-part,.vt-vowel{fill:#3a4c66;stroke:#4a5f82;stroke-width:0.6;transition:fill .2s,stroke .2s}
-.vt-part.active[data-place="bilabial"]{fill:#f5a5c9;stroke:#f5a5c9}
-.vt-part.active[data-place="labiodental"]{fill:#f5b58a;stroke:#f5b58a}
-.vt-part.active[data-place="dental"]{fill:#f0d860;stroke:#f0d860}
-.vt-part.active[data-place="alveolar"]{fill:#9fdc9f;stroke:#9fdc9f}
+/* ── Vocal tract: layered anatomy + activatable articulators ──
+   The tract is built in layers (back → front in paint order):
+     1. <path class="vt-head">         the recognizable side-profile silhouette
+     2. <path class="vt-pharynx">      throat channel down to larynx
+     3. <path class="vt-nasal">        nasal cavity above the palate
+     4. <path class="vt-mouth-cav">    interior of the oral cavity
+     5. <path class="vt-hard-palate">  warm strip along the roof of the mouth
+     6. <path class="vt-velum">        soft palate / velum
+     7. <path class="vt-tongue">       the tongue, recognizable warm body
+     8. <g class="vt-teeth-upper/lower"> small white ticks
+     9. <path class="vt-lip-upper/lower"> visible lips
+    10. <g class="vt-larynx">          vocal-cords cluster
+    11. <ellipse class="vt-part">      transparent zones that glow on activation
+    12. <ellipse class="vt-vowel">     vowel zones on the tongue (front/mid/back)
+    13. <circle .vt-buzz / #vt-buzz>   pulsing voicing ring
+   Architecture is intentionally layered so future work — tongue spline
+   tweens, airflow strokes, coarticulation blends — can hook in without
+   needing to redraw the whole diagram. */
+
+/* Articulator + vowel highlight regions. Invisible at rest; opacity
+   ramps up + a soft drop-shadow appears when .active. The per-place
+   colors below set fill/stroke; this rule controls visibility. */
+#sm-vtract-svg .vt-part, #sm-vtract-svg .vt-vowel,
+#sm-tl-tract svg .vt-part, #sm-tl-tract svg .vt-vowel {
+  fill: #3a4c66;
+  stroke: none;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .25s ease, filter .25s ease, transform .25s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+#sm-vtract-svg .vt-part.active, #sm-vtract-svg .vt-vowel.active,
+#sm-tl-tract svg .vt-part.active, #sm-tl-tract svg .vt-vowel.active {
+  opacity: 0.7;
+  filter: drop-shadow(0 0 6px rgba(232, 200, 64, 0.55));
+}
+#sm-vtract-svg .vt-part.active.stress-1, #sm-vtract-svg .vt-vowel.active.stress-1,
+#sm-tl-tract svg .vt-part.active.stress-1, #sm-tl-tract svg .vt-vowel.active.stress-1 {
+  animation: vt-stress-pulse .55s ease-out;
+}
+
+/* Per-place active palette (matches the legend the rest of the app uses). */
+.vt-part.active[data-place="bilabial"]    {fill:#f5a5c9;stroke:#f5a5c9}
+.vt-part.active[data-place="labiodental"] {fill:#f5b58a;stroke:#f5b58a}
+.vt-part.active[data-place="dental"]      {fill:#f0d860;stroke:#f0d860}
+.vt-part.active[data-place="alveolar"]    {fill:#9fdc9f;stroke:#9fdc9f}
 .vt-part.active[data-place="postalveolar"]{fill:#7cd0ce;stroke:#7cd0ce}
-.vt-part.active[data-place="palatal"]{fill:#9bbde0;stroke:#9bbde0}
-.vt-part.active[data-place="velar"]{fill:#b9a0db;stroke:#b9a0db}
-.vt-part.active[data-place="glottal"]{fill:#bbbbbb;stroke:#bbbbbb}
-.vt-part.active,.vt-vowel.active{animation:vt-pulse 1s ease-in-out infinite}
-.vt-vowel.active[data-vkey="front-vowel"]{fill:#f7cf74;stroke:#f7cf74}
+.vt-part.active[data-place="palatal"]     {fill:#9bbde0;stroke:#9bbde0}
+.vt-part.active[data-place="velar"]       {fill:#b9a0db;stroke:#b9a0db}
+.vt-part.active[data-place="glottal"]     {fill:#bbbbbb;stroke:#bbbbbb}
+.vt-vowel.active[data-vkey="front-vowel"]  {fill:#f7cf74;stroke:#f7cf74}
 .vt-vowel.active[data-vkey="central-vowel"]{fill:#d2c0a5;stroke:#d2c0a5}
-.vt-vowel.active[data-vkey="back-vowel"]{fill:#b499d9;stroke:#b499d9}
-.vt-vowel.active[data-vkey="diphthong"]{fill:#e8c890;stroke:#e8c890}
-#vt-buzz.buzzing{opacity:1;animation:vt-buzz 1s ease-in-out infinite}
-@keyframes vt-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.35)}}
-@keyframes vt-buzz{0%,100%{stroke-width:2;opacity:.4}50%{stroke-width:4;opacity:.9}}
+.vt-vowel.active[data-vkey="back-vowel"]   {fill:#b499d9;stroke:#b499d9}
+.vt-vowel.active[data-vkey="diphthong"]    {fill:#e8c890;stroke:#e8c890}
+
+/* Permanent anatomy layers (visible at all times). */
+.vt-head { transition: filter .3s; }
+.vt-nasal, .vt-mouth-cav, .vt-pharynx { transition: filter .25s; }
+.vt-hard-palate, .vt-velum, .vt-larynx { transition: opacity .25s, filter .25s; }
+.vt-tongue {
+  transition: filter .35s, transform .4s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.vt-tongue.stressed { animation: vt-tongue-stress .55s ease-out; }
+.vt-lip-upper, .vt-lip-lower { transition: filter .3s, transform .3s ease; }
+.vt-teeth-upper rect, .vt-teeth-lower rect { transition: fill .2s, filter .2s; }
+
+/* Subtle, scholarly anatomy labels — small enough to read only if you're looking. */
+.vt-anatomy-label {
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 6px;
+  fill: #a89a82;
+  opacity: 0.55;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  pointer-events: none;
+  font-weight: 600;
+}
+
+/* Voicing — concentric ring expanding from the larynx. */
+#vt-buzz.buzzing, .vt-buzz.buzzing {
+  opacity: 1;
+  animation: vt-buzz-ring 1.1s ease-in-out infinite;
+}
+
+@keyframes vt-stress-pulse {
+  0%   { transform: scale(1); }
+  45%  { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+@keyframes vt-tongue-stress {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  45%      { transform: scale(1.03); filter: brightness(1.18); }
+}
+@keyframes vt-buzz-ring {
+  0%   { stroke-width: 1.2; opacity: 0.0; }
+  50%  { stroke-width: 3.2; opacity: 0.85; }
+  100% { stroke-width: 0.8; opacity: 0.0; }
+}
 @media (max-width:720px){
   #sm-vtract{float:none;width:100%;margin:0 0 14px 0;position:static}
 }
@@ -1568,42 +1652,86 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
         <span id="sm-vtract-phoneme"></span>
       </div>
       <svg id="sm-vtract-svg" viewBox="0 0 260 180" aria-hidden="true">
-        <!-- Head outline (subtle) -->
-        <path d="M 25 95 Q 15 30, 85 20 L 215 22 Q 255 38, 245 90 L 220 105 Q 215 130, 200 142 L 195 172 L 45 172 Q 18 162, 25 95 Z"
-              fill="none" stroke="#32445c" stroke-width="1.4" opacity="0.55"/>
-        <!-- Nasal cavity -->
-        <path d="M 65 50 Q 75 42, 165 45 L 170 70 L 60 68 Z"
-              fill="#263447" stroke="#32445c" stroke-width="1"/>
-        <text x="115" y="62" text-anchor="middle" font-size="8" fill="#8fa3ba" letter-spacing="0.5">nasal</text>
-        <!-- Mouth cavity -->
-        <path d="M 25 95 L 25 120 Q 45 128, 180 125 Q 210 118, 210 95 Q 200 85, 165 88 Q 120 86, 80 93 Q 45 98, 25 95 Z"
-              fill="#2a3a4f" stroke="#32445c" stroke-width="1"/>
-        <!-- Tongue (default mid-position, purely decorative) -->
-        <path d="M 40 120 Q 90 108, 155 118 Q 180 122, 180 132 Q 130 142, 55 138 Q 40 135, 40 120 Z"
-              fill="#d08f6a" opacity="0.45"/>
-        <!-- Articulator regions (activatable) -->
-        <ellipse class="vt-part" data-place="bilabial" cx="22" cy="107" rx="7" ry="13"/>
-        <rect class="vt-part" data-place="labiodental" x="30" y="95" width="9" height="7" rx="1.5"/>
-        <rect class="vt-part" data-place="dental" x="42" y="93" width="10" height="7" rx="1.5"/>
-        <ellipse class="vt-part" data-place="alveolar" cx="58" cy="90" rx="6" ry="4"/>
-        <ellipse class="vt-part" data-place="postalveolar" cx="80" cy="88" rx="9" ry="5"/>
-        <ellipse class="vt-part" data-place="palatal" cx="115" cy="87" rx="20" ry="5"/>
-        <ellipse class="vt-part" data-place="velar" cx="165" cy="92" rx="18" ry="6"/>
-        <ellipse class="vt-part" data-place="glottal" cx="205" cy="138" rx="8" ry="11"/>
-        <!-- Voicing buzz indicator (glottal) -->
-        <circle id="vt-buzz" cx="205" cy="138" r="16" fill="none" stroke="#d4a24c" stroke-width="2" opacity="0" pointer-events="none"/>
-        <!-- Vowel trapezoid -->
-        <g transform="translate(118, 118)" id="vt-vowel-chart">
-          <path d="M 0 0 L 90 0 L 82 38 L 8 38 Z" fill="#263447" stroke="#32445c" stroke-width="1"/>
-          <text x="-4" y="-3" font-size="7" fill="#8fa3ba" text-anchor="end">front</text>
-          <text x="94" y="-3" font-size="7" fill="#8fa3ba">back</text>
-          <text x="-4" y="5" font-size="7" fill="#8fa3ba" text-anchor="end">high</text>
-          <text x="-4" y="40" font-size="7" fill="#8fa3ba" text-anchor="end">low</text>
-          <circle class="vt-vowel" data-vkey="front-vowel" cx="12" cy="8" r="5"/>
-          <circle class="vt-vowel" data-vkey="central-vowel" cx="45" cy="19" r="5"/>
-          <circle class="vt-vowel" data-vkey="back-vowel" cx="78" cy="8" r="5"/>
-          <circle class="vt-vowel" data-vkey="diphthong" cx="45" cy="32" r="5"/>
+        <defs>
+          <linearGradient id="vt-skin-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#3a2f24"/>
+            <stop offset="100%" stop-color="#2a2218"/>
+          </linearGradient>
+          <linearGradient id="vt-tongue-grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#e8987c"/>
+            <stop offset="100%" stop-color="#a85838"/>
+          </linearGradient>
+          <radialGradient id="vt-mouth-grad" cx="50%" cy="40%" r="80%">
+            <stop offset="0%" stop-color="#0a0805"/>
+            <stop offset="100%" stop-color="#1a1208"/>
+          </radialGradient>
+        </defs>
+        <!-- Head silhouette (right-facing profile) -->
+        <path class="vt-head" d="M 5 65 Q 5 14 80 10 Q 180 10 214 28 L 228 50 Q 232 62 244 74 L 250 80 Q 254 88 246 92 L 238 94 Q 232 100 230 106 L 228 110 L 218 110 Q 222 113 220 117 L 220 123 Q 222 127 218 130 L 218 136 Q 222 148 216 156 Q 206 166 184 168 L 70 170 L 60 180 L 5 180 Z"
+              fill="url(#vt-skin-grad)" stroke="#5a4838" stroke-width="1"/>
+        <!-- Nasal cavity (passage above the hard palate) -->
+        <path class="vt-nasal" d="M 145 88 Q 180 86 220 90 L 230 96 L 222 104 Q 180 100 145 100 Q 138 95 145 88 Z"
+              fill="#1a120c" stroke="#3a2818" stroke-width="0.5"/>
+        <text class="vt-anatomy-label" x="180" y="98" text-anchor="middle">nasal</text>
+        <!-- Pharynx (throat channel down to larynx) -->
+        <path class="vt-pharynx" d="M 122 105 L 122 165 L 142 165 L 142 158 Q 134 152 132 142 L 134 116 Q 138 108 142 105 Z"
+              fill="#0a0805"/>
+        <!-- Oral cavity (interior dark space) -->
+        <path class="vt-mouth-cav" d="M 218 110 Q 200 108 170 105 Q 145 105 138 118 L 134 145 Q 138 155 148 158 Q 180 160 210 152 Q 218 144 218 130 Z"
+              fill="url(#vt-mouth-grad)"/>
+        <!-- Hard palate (warm strip on roof of mouth) -->
+        <path class="vt-hard-palate" d="M 158 105 Q 188 107 218 112 L 218 116 Q 188 110 158 109 Z"
+              fill="#c8a888" opacity="0.85"/>
+        <!-- Soft palate / velum -->
+        <path class="vt-velum" d="M 142 106 Q 152 106 158 109 L 158 116 Q 152 118 144 116 Q 138 112 142 106 Z"
+              fill="#a87560" opacity="0.85"/>
+        <!-- Tongue -->
+        <path class="vt-tongue" d="M 140 158 Q 144 144 156 134 Q 180 122 210 130 Q 218 134 215 142 Q 200 152 175 154 Q 156 156 144 158 Z"
+              fill="url(#vt-tongue-grad)" stroke="#7a3818" stroke-width="0.6"/>
+        <!-- Upper teeth -->
+        <g class="vt-teeth-upper">
+          <rect x="218" y="113" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+          <rect x="223" y="113" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+          <rect x="228" y="113" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
         </g>
+        <!-- Lower teeth -->
+        <g class="vt-teeth-lower">
+          <rect x="218" y="120" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+          <rect x="223" y="120" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+          <rect x="228" y="120" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+        </g>
+        <!-- Lips -->
+        <path class="vt-lip-upper" d="M 230 106 Q 238 110 232 116 L 218 116 L 218 110 Z" fill="#c4715a"/>
+        <path class="vt-lip-lower" d="M 218 122 L 232 122 Q 238 127 232 132 L 220 130 Z" fill="#a85a48"/>
+        <!-- Larynx / vocal cords -->
+        <g class="vt-larynx">
+          <ellipse cx="132" cy="167" rx="9" ry="5" fill="#3a1a14" stroke="#5a2a20" stroke-width="0.6"/>
+          <path d="M 124 167 Q 132 165 140 167 Q 132 169 124 167 Z" fill="#7a3828"/>
+        </g>
+        <!-- Voicing buzz (concentric ring at the glottis) -->
+        <circle id="vt-buzz" cx="132" cy="167" r="14" fill="none" stroke="#e8c840" stroke-width="2" opacity="0" pointer-events="none"/>
+        <!-- Articulator highlight regions (consonant places) — invisible until activated -->
+        <ellipse class="vt-part" data-place="bilabial" cx="232" cy="119" rx="9" ry="9"/>
+        <ellipse class="vt-part" data-place="labiodental" cx="226" cy="119" rx="6" ry="5"/>
+        <ellipse class="vt-part" data-place="dental" cx="222" cy="116" rx="5" ry="4"/>
+        <ellipse class="vt-part" data-place="alveolar" cx="212" cy="113" rx="5" ry="3"/>
+        <ellipse class="vt-part" data-place="postalveolar" cx="200" cy="111" rx="6" ry="4"/>
+        <ellipse class="vt-part" data-place="retroflex" cx="195" cy="113" rx="5" ry="4"/>
+        <ellipse class="vt-part" data-place="palatal" cx="185" cy="110" rx="14" ry="4"/>
+        <ellipse class="vt-part" data-place="velar" cx="160" cy="108" rx="9" ry="4"/>
+        <ellipse class="vt-part" data-place="uvular" cx="148" cy="113" rx="4" ry="4"/>
+        <ellipse class="vt-part" data-place="pharyngeal" cx="132" cy="135" rx="5" ry="8"/>
+        <ellipse class="vt-part" data-place="glottal" cx="132" cy="167" rx="10" ry="6"/>
+        <!-- Vowel highlight regions (light up tongue zones by tongue-front/back position) -->
+        <ellipse class="vt-vowel" data-vkey="front-vowel" cx="200" cy="142" rx="10" ry="6"/>
+        <ellipse class="vt-vowel" data-vkey="central-vowel" cx="180" cy="142" rx="10" ry="6"/>
+        <ellipse class="vt-vowel" data-vkey="back-vowel" cx="160" cy="144" rx="10" ry="6"/>
+        <ellipse class="vt-vowel" data-vkey="diphthong" cx="180" cy="144" rx="22" ry="6"/>
+        <!-- Anatomy labels (subtle, only readable if you're looking) -->
+        <text class="vt-anatomy-label" x="240" y="105" text-anchor="end">lips</text>
+        <text class="vt-anatomy-label" x="180" y="155" text-anchor="middle">tongue</text>
+        <text class="vt-anatomy-label" x="190" y="120" text-anchor="middle">palate</text>
+        <text class="vt-anatomy-label" x="138" y="178" text-anchor="end">larynx</text>
       </svg>
       <div id="sm-vtract-readout">Click any phoneme to see where it's made.</div>
     </div>
@@ -2200,38 +2328,77 @@ function smTlBuildSequence(processed) {
 }
 
 // Build a bigger copy of the vocal tract SVG for the timeline stage.
+// Mirrors the anatomy of #sm-vtract-svg above so behavior is identical;
+// only the gradient ids are namespaced (suffixed "-tl") to avoid id collisions
+// when both copies are mounted in the DOM at once.
 function smTlBuildTractSVG() {
   return `
     <svg viewBox="0 0 260 180" aria-hidden="true">
-      <path d="M 25 95 Q 15 30, 85 20 L 215 22 Q 255 38, 245 90 L 220 105 Q 215 130, 200 142 L 195 172 L 45 172 Q 18 162, 25 95 Z"
-            fill="none" stroke="#32445c" stroke-width="1.4" opacity="0.55"/>
-      <path d="M 65 50 Q 75 42, 165 45 L 170 70 L 60 68 Z"
-            fill="#263447" stroke="#32445c" stroke-width="1"/>
-      <text x="115" y="62" text-anchor="middle" font-size="8" fill="#8fa3ba" letter-spacing="0.5">nasal</text>
-      <path d="M 25 95 L 25 120 Q 45 128, 180 125 Q 210 118, 210 95 Q 200 85, 165 88 Q 120 86, 80 93 Q 45 98, 25 95 Z"
-            fill="#2a3a4f" stroke="#32445c" stroke-width="1"/>
-      <path d="M 40 120 Q 90 108, 155 118 Q 180 122, 180 132 Q 130 142, 55 138 Q 40 135, 40 120 Z"
-            fill="#d08f6a" opacity="0.45"/>
-      <ellipse class="vt-part" data-place="bilabial" cx="22" cy="107" rx="7" ry="13"/>
-      <rect class="vt-part" data-place="labiodental" x="30" y="95" width="9" height="7" rx="1.5"/>
-      <rect class="vt-part" data-place="dental" x="42" y="93" width="10" height="7" rx="1.5"/>
-      <ellipse class="vt-part" data-place="alveolar" cx="58" cy="90" rx="6" ry="4"/>
-      <ellipse class="vt-part" data-place="postalveolar" cx="80" cy="88" rx="9" ry="5"/>
-      <ellipse class="vt-part" data-place="palatal" cx="115" cy="87" rx="20" ry="5"/>
-      <ellipse class="vt-part" data-place="velar" cx="165" cy="92" rx="18" ry="6"/>
-      <ellipse class="vt-part" data-place="glottal" cx="205" cy="138" rx="8" ry="11"/>
-      <circle class="vt-buzz" cx="205" cy="138" r="16" fill="none" stroke="#d4a24c" stroke-width="2" opacity="0" pointer-events="none"/>
-      <g transform="translate(118, 118)">
-        <path d="M 0 0 L 90 0 L 82 38 L 8 38 Z" fill="#263447" stroke="#32445c" stroke-width="1"/>
-        <text x="-4" y="-3" font-size="7" fill="#8fa3ba" text-anchor="end">front</text>
-        <text x="94" y="-3" font-size="7" fill="#8fa3ba">back</text>
-        <text x="-4" y="5" font-size="7" fill="#8fa3ba" text-anchor="end">high</text>
-        <text x="-4" y="40" font-size="7" fill="#8fa3ba" text-anchor="end">low</text>
-        <circle class="vt-vowel" data-vkey="front-vowel" cx="12" cy="8" r="5"/>
-        <circle class="vt-vowel" data-vkey="central-vowel" cx="45" cy="19" r="5"/>
-        <circle class="vt-vowel" data-vkey="back-vowel" cx="78" cy="8" r="5"/>
-        <circle class="vt-vowel" data-vkey="diphthong" cx="45" cy="32" r="5"/>
+      <defs>
+        <linearGradient id="vt-skin-grad-tl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#3a2f24"/>
+          <stop offset="100%" stop-color="#2a2218"/>
+        </linearGradient>
+        <linearGradient id="vt-tongue-grad-tl" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#e8987c"/>
+          <stop offset="100%" stop-color="#a85838"/>
+        </linearGradient>
+        <radialGradient id="vt-mouth-grad-tl" cx="50%" cy="40%" r="80%">
+          <stop offset="0%" stop-color="#0a0805"/>
+          <stop offset="100%" stop-color="#1a1208"/>
+        </radialGradient>
+      </defs>
+      <path class="vt-head" d="M 5 65 Q 5 14 80 10 Q 180 10 214 28 L 228 50 Q 232 62 244 74 L 250 80 Q 254 88 246 92 L 238 94 Q 232 100 230 106 L 228 110 L 218 110 Q 222 113 220 117 L 220 123 Q 222 127 218 130 L 218 136 Q 222 148 216 156 Q 206 166 184 168 L 70 170 L 60 180 L 5 180 Z"
+            fill="url(#vt-skin-grad-tl)" stroke="#5a4838" stroke-width="1"/>
+      <path class="vt-nasal" d="M 145 88 Q 180 86 220 90 L 230 96 L 222 104 Q 180 100 145 100 Q 138 95 145 88 Z"
+            fill="#1a120c" stroke="#3a2818" stroke-width="0.5"/>
+      <text class="vt-anatomy-label" x="180" y="98" text-anchor="middle">nasal</text>
+      <path class="vt-pharynx" d="M 122 105 L 122 165 L 142 165 L 142 158 Q 134 152 132 142 L 134 116 Q 138 108 142 105 Z"
+            fill="#0a0805"/>
+      <path class="vt-mouth-cav" d="M 218 110 Q 200 108 170 105 Q 145 105 138 118 L 134 145 Q 138 155 148 158 Q 180 160 210 152 Q 218 144 218 130 Z"
+            fill="url(#vt-mouth-grad-tl)"/>
+      <path class="vt-hard-palate" d="M 158 105 Q 188 107 218 112 L 218 116 Q 188 110 158 109 Z"
+            fill="#c8a888" opacity="0.85"/>
+      <path class="vt-velum" d="M 142 106 Q 152 106 158 109 L 158 116 Q 152 118 144 116 Q 138 112 142 106 Z"
+            fill="#a87560" opacity="0.85"/>
+      <path class="vt-tongue" d="M 140 158 Q 144 144 156 134 Q 180 122 210 130 Q 218 134 215 142 Q 200 152 175 154 Q 156 156 144 158 Z"
+            fill="url(#vt-tongue-grad-tl)" stroke="#7a3818" stroke-width="0.6"/>
+      <g class="vt-teeth-upper">
+        <rect x="218" y="113" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+        <rect x="223" y="113" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+        <rect x="228" y="113" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
       </g>
+      <g class="vt-teeth-lower">
+        <rect x="218" y="120" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+        <rect x="223" y="120" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+        <rect x="228" y="120" width="3" height="5" rx="0.4" fill="#f0e8d0" stroke="#c0b8a0" stroke-width="0.3"/>
+      </g>
+      <path class="vt-lip-upper" d="M 230 106 Q 238 110 232 116 L 218 116 L 218 110 Z" fill="#c4715a"/>
+      <path class="vt-lip-lower" d="M 218 122 L 232 122 Q 238 127 232 132 L 220 130 Z" fill="#a85a48"/>
+      <g class="vt-larynx">
+        <ellipse cx="132" cy="167" rx="9" ry="5" fill="#3a1a14" stroke="#5a2a20" stroke-width="0.6"/>
+        <path d="M 124 167 Q 132 165 140 167 Q 132 169 124 167 Z" fill="#7a3828"/>
+      </g>
+      <circle class="vt-buzz" cx="132" cy="167" r="14" fill="none" stroke="#e8c840" stroke-width="2" opacity="0" pointer-events="none"/>
+      <ellipse class="vt-part" data-place="bilabial" cx="232" cy="119" rx="9" ry="9"/>
+      <ellipse class="vt-part" data-place="labiodental" cx="226" cy="119" rx="6" ry="5"/>
+      <ellipse class="vt-part" data-place="dental" cx="222" cy="116" rx="5" ry="4"/>
+      <ellipse class="vt-part" data-place="alveolar" cx="212" cy="113" rx="5" ry="3"/>
+      <ellipse class="vt-part" data-place="postalveolar" cx="200" cy="111" rx="6" ry="4"/>
+      <ellipse class="vt-part" data-place="retroflex" cx="195" cy="113" rx="5" ry="4"/>
+      <ellipse class="vt-part" data-place="palatal" cx="185" cy="110" rx="14" ry="4"/>
+      <ellipse class="vt-part" data-place="velar" cx="160" cy="108" rx="9" ry="4"/>
+      <ellipse class="vt-part" data-place="uvular" cx="148" cy="113" rx="4" ry="4"/>
+      <ellipse class="vt-part" data-place="pharyngeal" cx="132" cy="135" rx="5" ry="8"/>
+      <ellipse class="vt-part" data-place="glottal" cx="132" cy="167" rx="10" ry="6"/>
+      <ellipse class="vt-vowel" data-vkey="front-vowel" cx="200" cy="142" rx="10" ry="6"/>
+      <ellipse class="vt-vowel" data-vkey="central-vowel" cx="180" cy="142" rx="10" ry="6"/>
+      <ellipse class="vt-vowel" data-vkey="back-vowel" cx="160" cy="144" rx="10" ry="6"/>
+      <ellipse class="vt-vowel" data-vkey="diphthong" cx="180" cy="144" rx="22" ry="6"/>
+      <text class="vt-anatomy-label" x="240" y="105" text-anchor="end">lips</text>
+      <text class="vt-anatomy-label" x="180" y="155" text-anchor="middle">tongue</text>
+      <text class="vt-anatomy-label" x="190" y="120" text-anchor="middle">palate</text>
+      <text class="vt-anatomy-label" x="138" y="178" text-anchor="end">larynx</text>
     </svg>`;
 }
 
@@ -2686,16 +2853,30 @@ function smTlUpdateFrame(timeMs) {
   const ev = smTl.seq[idx];
   const svg = smTl.tractSvg;
   if (svg) {
-    svg.querySelectorAll(".vt-part.active,.vt-vowel.active").forEach(el => el.classList.remove("active"));
+    svg.querySelectorAll(".vt-part.active,.vt-vowel.active").forEach(el => {
+      el.classList.remove("active", "stress-1");
+    });
     const buzz = svg.querySelector(".vt-buzz");
     if (buzz) { buzz.classList.remove("buzzing"); buzz.style.opacity = "0"; }
+    const tongue = svg.querySelector(".vt-tongue");
+    if (tongue) tongue.classList.remove("stressed");
     if (!ev.isPause && ev.feat) {
+      let el = null;
       if (ev.feat.type === "C") {
-        const el = svg.querySelector(`.vt-part[data-place="${ev.feat.place}"]`);
-        if (el) el.classList.add("active");
+        el = svg.querySelector(`.vt-part[data-place="${ev.feat.place}"]`);
       } else {
-        const el = svg.querySelector(`.vt-vowel[data-vkey="${ev.feat.place}"]`);
-        if (el) el.classList.add("active");
+        el = svg.querySelector(`.vt-vowel[data-vkey="${ev.feat.place}"]`);
+      }
+      if (el) {
+        el.classList.add("active");
+        if (ev.stress === 1) el.classList.add("stress-1");
+      }
+      // Stress pulse on the tongue itself: brief scale-up so the rhythm of
+      // the phrase is felt, not just inferred from tile colors.
+      if (ev.stress === 1 && tongue) {
+        // Force animation restart by reading layout between class flips.
+        tongue.getBoundingClientRect();
+        tongue.classList.add("stressed");
       }
       if (ev.feat.voice && buzz) { buzz.classList.add("buzzing"); buzz.style.opacity = "1"; }
     }
