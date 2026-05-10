@@ -985,18 +985,23 @@ main p { line-height:1.7; }
 }
 
 /* Lineage highlight: fade non-related, emphasize ancestry chain */
-.full-tree-inner.lineage-active .full-tree-node { opacity:0.18; filter:saturate(0.35); }
-.full-tree-inner.lineage-active .family-block.couple { opacity:0.4; }
-.full-tree-inner.lineage-active .full-tree-node.lineage-hit {
-  opacity:1; filter:none;
-}
+.full-tree-inner.lineage-active .full-tree-node { opacity:0.45; }
+.full-tree-inner.lineage-active .family-block.couple { opacity:0.6; }
+.full-tree-inner.lineage-active .full-tree-node.lineage-hit { opacity:1; }
 .full-tree-inner.lineage-active .full-tree-node.lineage-self {
-  opacity:1; filter:none;
+  opacity:1;
   box-shadow:0 0 0 2px var(--gold), 0 0 24px rgba(229,193,88,0.35);
   border-color:var(--gold);
 }
 .full-tree-inner.lineage-active .family-block.couple.lineage-family-hit {
   opacity:1;
+}
+/* Click-selected node — distinct from focused (gold ring slightly thicker
+   and softer-glowing) so the user can see at a glance which figure their
+   inspector is on, separately from whichever god last opened Focus view. */
+.full-tree-node.selected {
+  border-color:var(--gold);
+  box-shadow:0 0 0 2px rgba(229,193,88,0.55), 0 0 20px rgba(229,193,88,0.22);
 }
 .full-tree-node::before {
   content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
@@ -1356,6 +1361,78 @@ select:focus:not(:focus-visible),
 }
 .img-lightbox-close:hover { opacity:1; transform:rotate(90deg); }
 
+/* Tree inspector — appears when a node is clicked in Full Tree mode.
+   Persistent counterpart to the ephemeral hover preview. Floating
+   bottom-anchored panel; doesn't push tree layout. Closes on ✕ / Esc /
+   re-clicking the same node. "Focus this figure" is the explicit
+   gesture for switching into Focus view. */
+.tree-inspector {
+  position:fixed;
+  bottom:18px; left:50%; transform:translateX(-50%);
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  border:1px solid var(--gold-soft);
+  border-radius:12px;
+  padding:14px 18px 14px 22px;
+  z-index:80;
+  box-shadow:0 14px 36px rgba(0,0,0,0.55), 0 0 0 1px var(--gold-faint);
+  display:none;
+  max-width:min(720px, 92vw);
+  align-items:center;
+  gap:18px;
+}
+.tree-inspector.open { display:flex; }
+.tree-inspector-info { flex:1; min-width:0; }
+.tree-inspector .ti-name {
+  font-size:16px; color:var(--gold); font-weight:bold;
+  letter-spacing:0.3px; line-height:1.2;
+}
+.tree-inspector .ti-meta {
+  font-size:11px; color:var(--muted); font-style:italic;
+  margin-top:4px; letter-spacing:0.2px;
+}
+.tree-inspector .ti-meta .ti-sep { opacity:0.5; }
+.tree-inspector .ti-arch {
+  font-size:12px; color:var(--gold-deep); font-style:italic;
+  margin-top:4px; font-variant:small-caps; letter-spacing:1.2px;
+}
+.tree-inspector .ti-domains {
+  font-size:11.5px; color:var(--cyan); margin-top:3px;
+  font-style:italic; opacity:0.85;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.tree-inspector .ti-desc {
+  font-size:12.5px; color:var(--ink); margin-top:6px;
+  opacity:0.82; line-height:1.45;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+.tree-inspector-actions {
+  display:flex; gap:6px; flex-shrink:0; align-items:center;
+}
+.tree-inspector .ti-btn {
+  background:var(--panel2); border:1px solid var(--line); color:var(--ink);
+  padding:8px 14px; border-radius:6px;
+  font-family:inherit; font-size:11.5px; letter-spacing:1.2px;
+  font-variant:small-caps; font-weight:bold;
+  cursor:pointer; transition:all .15s;
+}
+.tree-inspector .ti-btn:hover {
+  border-color:var(--gold-soft); color:var(--gold);
+  background:rgba(229,193,88,0.05);
+}
+.tree-inspector .ti-btn-close {
+  width:32px; padding:8px 0;
+  font-size:18px; letter-spacing:0;
+  font-variant:normal; font-weight:normal;
+}
+@media (max-width: 700px) {
+  .tree-inspector { left:8px; right:8px; transform:none; bottom:10px; max-width:none; padding:12px 14px; gap:12px; }
+  .tree-inspector.open { flex-wrap:wrap; }
+  .tree-inspector-info { flex:1 1 100%; min-width:0; }
+  .tree-inspector-actions { flex:1 1 100%; justify-content:flex-end; }
+  .tree-inspector .ti-name { font-size:14.5px; }
+}
+
 /* Initial loading state */
 #loading {
   position:fixed; inset:0; display:flex; flex-direction:column;
@@ -1639,6 +1716,23 @@ select:focus:not(:focus-visible),
 </section>
 
 </main>
+
+<div class="tree-inspector" id="treeInspector" role="region" aria-label="Selected figure inspector">
+  <div class="tree-inspector-info">
+    <div class="ti-name"></div>
+    <div class="ti-meta">
+      <span class="ti-pantheon"></span><span class="ti-sep"> · </span><span class="ti-era"></span><span class="ti-sep"> · </span><span class="ti-cat"></span>
+    </div>
+    <div class="ti-arch"></div>
+    <div class="ti-domains"></div>
+    <div class="ti-desc"></div>
+  </div>
+  <div class="tree-inspector-actions">
+    <button class="ti-btn" data-action="focus" type="button">Focus</button>
+    <button class="ti-btn" data-action="details" type="button">Details</button>
+    <button class="ti-btn ti-btn-close" data-action="close" type="button" aria-label="Close inspector">×</button>
+  </div>
+</div>
 
 <div class="img-lightbox-bg" id="imgLightboxBg" role="dialog" aria-modal="true" aria-label="Enlarged image">
   <button class="img-lightbox-close" id="imgLightboxClose" aria-label="Close enlarged image">×</button>
@@ -2089,15 +2183,38 @@ function wireModal() {
     cycleGodImage(t, e.key === 'ArrowLeft' ? -1 : 1);
   });
 
-  // Esc closes lightbox first, then modal
+  // Esc closes lightbox first, then tree-inspector, then modal
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (document.getElementById('imgLightboxBg').classList.contains('open')) {
       closeImgLightbox();
+    } else if (currentSelectedId) {
+      clearTreeSelection();
     } else {
       closeModal();
     }
   });
+
+  // Tree inspector button actions
+  const treeInspector = document.getElementById('treeInspector');
+  if (treeInspector) {
+    treeInspector.addEventListener('click', e => {
+      const btn = e.target.closest('.ti-btn');
+      if (!btn) return;
+      const gid = treeInspector.dataset.gid;
+      const action = btn.dataset.action;
+      if (action === 'focus' && gid) {
+        // Capture the gid before clearing selection — clearTreeSelection
+        // resets currentSelectedId, which we don't want to read after.
+        clearTreeSelection();
+        setFocus(gid); // setFocus's existing logic flips Full Tree → Focus mode
+      } else if (action === 'details' && gid) {
+        openGod(gid);
+      } else if (action === 'close') {
+        clearTreeSelection();
+      }
+    });
+  }
 }
 
 function openImgLightbox(url, alt, g) {
@@ -2616,6 +2733,8 @@ function renderTreeSelect() {
 
 function setTreeMode(mode) {
   currentTreeMode = mode;
+  // Leaving Full Tree drops any selection state and inspector
+  if (mode !== 'full') clearTreeSelection();
   document.getElementById('viewFocusBtn').classList.toggle('active', mode === 'focus');
   document.getElementById('viewFullBtn').classList.toggle('active', mode === 'full');
   document.getElementById('focusView').style.display = mode === 'focus' ? '' : 'none';
@@ -2992,6 +3111,11 @@ function renderFullTree(pantheonId) {
   const p = PANTHEONS_BY_ID[pantheonId];
   if (!p) return;
 
+  // Different pantheon than what's selected — clear inspector before swap.
+  if (currentSelectedId && fullTreeState && fullTreeState.pantheonId !== pantheonId) {
+    clearTreeSelection();
+  }
+
   // Fast path: same pantheon already rendered — just re-apply focused highlight
   if (fullTreeState && fullTreeState.pantheonId === pantheonId) {
     const inner = document.getElementById('fullTreeInner');
@@ -3014,8 +3138,21 @@ function renderFullTree(pantheonId) {
   const pgods = DATA.gods.filter(g => g.pantheon === pantheonId && categoryAllowed(g.category));
   const byId = Object.fromEntries(pgods.map(g => [g.id, g]));
 
-  // Compute generation for each god via longest-path from roots
+  // Compute generation for each god via longest-path from roots.
+  //
+  // Distinguish two kinds of parentlessness:
+  //   * Cosmological roots (primordial/titan/major/minor/monster/abrahamic
+  //     with no recorded parents) — these are genuine origins, gen 0.
+  //   * Heroic orphans (hero / deified-human whose parents weren't
+  //     catalogued, e.g., Odysseus's mortal parents Laertes & Anticleia) —
+  //     these are NOT cosmological origins. Defer them; place below the
+  //     deepest non-heroic figure so heroes don't end up beside Chaos.
+  //
+  // Pass 1: parent-based. Heroic orphans return undefined (deferred).
+  // Pass 2: place heroic orphans at heroicFloor; their descendants cascade.
+  const HEROIC_CATS = new Set(['hero', 'deified-human']);
   const gen = {};
+
   const getGen = (id, visited = new Set()) => {
     if (gen[id] !== undefined) return gen[id];
     if (visited.has(id)) return 0;
@@ -3023,12 +3160,37 @@ function renderFullTree(pantheonId) {
     const g = byId[id];
     if (!g) return 0;
     const inPantheonParents = (g.parents || []).filter(pid => byId[pid]);
-    if (inPantheonParents.length === 0) { gen[id] = 0; return 0; }
-    const maxParent = Math.max(...inPantheonParents.map(pid => getGen(pid, visited)));
-    gen[id] = maxParent + 1;
+    if (inPantheonParents.length === 0) {
+      if (HEROIC_CATS.has(g.category)) return undefined; // defer to pass 2
+      gen[id] = 0; return 0;
+    }
+    const parentGens = inPantheonParents.map(pid => getGen(pid, visited));
+    const valid = parentGens.filter(v => v !== undefined);
+    if (!valid.length) return undefined; // every parent is a deferred heroic orphan
+    gen[id] = Math.max(...valid) + 1;
     return gen[id];
   };
   pgods.forEach(g => getGen(g.id));
+
+  // Heroic floor: one tier below the deepest non-heroic placement, so heroes
+  // sit clearly after divine strata. If the tradition has no non-heroic
+  // placements at all (heroes-only data), heroicFloor stays at 0.
+  const placed = Object.values(gen);
+  const heroicFloor = placed.length ? Math.max(...placed) + 1 : 0;
+
+  const getHeroicGen = (id, visited = new Set()) => {
+    if (gen[id] !== undefined) return gen[id];
+    if (visited.has(id)) return heroicFloor;
+    visited.add(id);
+    const g = byId[id];
+    if (!g) return heroicFloor;
+    const inPantheonParents = (g.parents || []).filter(pid => byId[pid]);
+    if (inPantheonParents.length === 0) { gen[id] = heroicFloor; return heroicFloor; }
+    const parentGens = inPantheonParents.map(pid => getHeroicGen(pid, visited));
+    gen[id] = Math.max(...parentGens) + 1;
+    return gen[id];
+  };
+  pgods.forEach(g => { if (gen[g.id] === undefined) getHeroicGen(g.id); });
 
   // Group gods by generation
   const byGen = {};
@@ -3288,20 +3450,35 @@ function renderFullTreeFromState(state) {
 
   // Event delegation (single listener on the container) — cheaper than per-node
   if (!inner.dataset.wired) {
+    // Click in Full Tree = SELECT (open inspector + persistent lineage trace)
+    // — not Focus. The user stays on the page; "Focus this figure" in the
+    // inspector is the explicit gesture for switching to Focus view.
     inner.addEventListener('click', e => {
       const node = e.target.closest('.full-tree-node');
-      if (node && inner.contains(node)) setFocus(node.dataset.gid);
+      if (!node || !inner.contains(node)) return;
+      const gid = node.dataset.gid;
+      if (currentSelectedId === gid) clearTreeSelection();
+      else selectTreeNode(gid);
     });
+    // Hover preview is ephemeral — disabled while a selection is locked.
     inner.addEventListener('mouseover', e => {
+      if (currentSelectedId) return;
       const node = e.target.closest('.full-tree-node');
       if (node && inner.contains(node)) highlightLineage(node.dataset.gid);
     });
-    inner.addEventListener('mouseleave', clearLineageHighlight);
+    inner.addEventListener('mouseleave', () => {
+      if (currentSelectedId) return;
+      clearLineageHighlight();
+    });
     inner.addEventListener('focusin', e => {
+      if (currentSelectedId) return;
       const node = e.target.closest('.full-tree-node');
       if (node && inner.contains(node)) highlightLineage(node.dataset.gid);
     });
-    inner.addEventListener('focusout', clearLineageHighlight);
+    inner.addEventListener('focusout', () => {
+      if (currentSelectedId) return;
+      clearLineageHighlight();
+    });
     inner.dataset.wired = '1';
   }
 
@@ -3402,6 +3579,69 @@ function drawFullTreeConnectors(state) {
 }
 
 /* Hover-dim: highlight the hovered god and all their ancestors + descendants */
+// Persistent click-selection state for Full Tree exploration. Distinct from
+// currentFocusId (the figure whose Focus view was last opened). Selection
+// keeps the user in Full Tree, locks the lineage trace, and opens an
+// inspector with figure metadata + explicit action buttons.
+let currentSelectedId = null;
+
+function selectTreeNode(godId) {
+  if (!fullTreeState || !fullTreeState.byId[godId]) return;
+  currentSelectedId = godId;
+  const inner = document.getElementById('fullTreeInner');
+  if (inner) {
+    inner.querySelectorAll('.full-tree-node').forEach(el => {
+      el.classList.toggle('selected', el.dataset.gid === godId);
+    });
+  }
+  highlightLineage(godId);  // persistent — won't be cleared by mouseleave
+  showTreeInspector(godId);
+}
+
+function clearTreeSelection() {
+  if (currentSelectedId === null) return;
+  currentSelectedId = null;
+  const inner = document.getElementById('fullTreeInner');
+  if (inner) {
+    inner.querySelectorAll('.full-tree-node.selected').forEach(el => el.classList.remove('selected'));
+  }
+  clearLineageHighlight();
+  hideTreeInspector();
+}
+
+function showTreeInspector(godId) {
+  const inspector = document.getElementById('treeInspector');
+  const g = GODS_BY_ID[godId];
+  if (!inspector || !g) return;
+  const p = PANTHEONS_BY_ID[g.pantheon];
+  const archObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
+  const eraText = (p && Number.isFinite(p.active_from) && Number.isFinite(p.active_to))
+    ? fmtYears(p.active_from, p.active_to) : '';
+  const catText = (g.category || '').replace(/-/g, ' ');
+  const domains = (g.domains || []).slice(0, 4).map(d => d.replace(/-/g,' ')).join(' · ');
+  inspector.querySelector('.ti-name').textContent = g.name;
+  inspector.querySelector('.ti-pantheon').textContent = p ? p.name : g.pantheon;
+  inspector.querySelector('.ti-era').textContent = eraText;
+  inspector.querySelector('.ti-cat').textContent = catText;
+  const archEl = inspector.querySelector('.ti-arch');
+  archEl.textContent = archObj ? archObj.name : '';
+  archEl.style.display = archObj ? '' : 'none';
+  const domEl = inspector.querySelector('.ti-domains');
+  domEl.textContent = domains;
+  domEl.style.display = domains ? '' : 'none';
+  inspector.querySelector('.ti-desc').textContent = g.description || '';
+  inspector.dataset.gid = godId;
+  inspector.classList.add('open');
+}
+
+function hideTreeInspector() {
+  const inspector = document.getElementById('treeInspector');
+  if (inspector) {
+    inspector.classList.remove('open');
+    inspector.dataset.gid = '';
+  }
+}
+
 function highlightLineage(godId) {
   if (!fullTreeState || !fullTreeState.byId[godId]) return;
   // Use precomputed lineage maps — O(1) lookup instead of DFS per hover
@@ -3439,11 +3679,11 @@ function highlightLineage(godId) {
     }
     if (keep) {
       ln.setAttribute('data-orig-opacity', ln.getAttribute('opacity'));
-      ln.setAttribute('opacity', '0.95');
+      ln.setAttribute('opacity', '0.9');
       ln.setAttribute('stroke-width', ln.classList.contains('parent-line') ? '1.8' : '1.4');
     } else {
       ln.setAttribute('data-orig-opacity', ln.getAttribute('opacity'));
-      ln.setAttribute('opacity', '0.06');
+      ln.setAttribute('opacity', '0.20');
     }
   });
 }
