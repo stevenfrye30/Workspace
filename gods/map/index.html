@@ -1324,7 +1324,7 @@ select:focus:not(:focus-visible),
 </nav>
 <div id="loading" role="status" aria-live="polite">
   <div class="spinner" aria-hidden="true"></div>
-  <div id="loadingMsg">Summoning the gods…</div>
+  <div id="loadingMsg">Opening the archive…</div>
 </div>
 <header>
   <h1>GODS</h1>
@@ -1386,9 +1386,11 @@ select:focus:not(:focus-visible),
   <div class="tab-head">
     <h2>Family Trees</h2>
     <p class="intro">
-      One figure at a time — parents above, siblings and consorts to the sides,
-      children below, cross-cultural parallels at the bottom. Click any connected
-      figure to make them the new focus. Use Back to retrace.
+      Genealogy as a way of reading a tradition — parents above, siblings and
+      consorts beside, children below, the same archetypal role across other
+      cultures at the bottom. Some traditions kept extensive divine families;
+      others passed mythic relation through ritual rather than lineage, and read
+      thinner here by design. Click any connected figure to follow the line.
     </p>
   </div>
   <div class="focus-container">
@@ -1439,9 +1441,10 @@ select:focus:not(:focus-visible),
   <div class="tab-head">
     <h2>Timeline</h2>
     <p class="intro">
-      Each bar shows a tradition's active span; the darker inner bar marks its
-      peak of influence. BCE ↔ CE boundary in gold. Traditions still practiced
-      today extend to the right edge. Click a row to open its family tree.
+      Each bar is a tradition's active span; the darker inner band marks its
+      peak. Traditions still practiced today reach the right edge; those that
+      lapsed end where they did. The BCE/CE boundary is in gold. Click a row to
+      open its family tree.
     </p>
   </div>
   <div class="timeline">
@@ -1481,9 +1484,9 @@ select:focus:not(:focus-visible),
   <div class="tab-head">
     <h2>Notable Mentions</h2>
     <p class="intro">
-      Figures worth knowing but outside the main thousand — secondary heroes,
-      regional deities, already-mentioned-in-descriptions characters, and
-      alternate names of catalogued figures. One-line context only; no family trees.
+      Figures kept outside the main thousand — secondary heroes, regional
+      deities, names that appear inside other figures' stories, and alternate
+      names of catalogued gods. One line of context each; no family trees.
     </p>
   </div>
   <div id="mentionsList"></div>
@@ -1493,9 +1496,9 @@ select:focus:not(:focus-visible),
   <div class="tab-head">
     <h2>Browse All</h2>
     <p class="intro">
-      The full catalogue — every figure across every tradition, searchable
-      and filterable. Use the search box for names, domains, or descriptions;
-      filter by pantheon or category to narrow the list.
+      The full catalogue — every figure across every tradition. Search by
+      name, domain, or descriptive phrase; filter by pantheon or category to
+      narrow the field.
     </p>
   </div>
   <div class="filters">
@@ -2488,10 +2491,10 @@ function renderFocusView(g) {
   const pColor = p ? p.color : 'var(--gold)';
 
   const grandparentsHtml = renderGrandparentsRow(g);
-  const parentCards = (g.parents || []).map(id => relCard(id, 'small')).join('') || emptyNote('No parents recorded');
+  const parentCards = (g.parents || []).map(id => relCard(id, 'small')).join('') || emptyNote('None recorded');
 
-  const siblingCards = renderSideCappedList(g.siblings, 'No siblings recorded');
-  const consortCards = renderSideCappedList(g.consorts, 'No consorts recorded');
+  const siblingCards = renderSideCappedList(g.siblings, 'None recorded');
+  const consortCards = renderSideCappedList(g.consorts, 'None recorded');
 
   const childrenIds = g.children || [];
   const childrenHtml = renderChildrenGrouped(g, childrenIds);
@@ -2593,7 +2596,7 @@ function emptyNote(text) {
 }
 
 function renderChildrenGrouped(focus, childrenIds) {
-  if (!childrenIds.length) return emptyNote('No children recorded');
+  if (!childrenIds.length) return emptyNote('None recorded');
 
   const CHILD_LIMIT_TOTAL = 48;
   const UNKNOWN = '__unknown__';
