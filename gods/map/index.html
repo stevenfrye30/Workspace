@@ -856,10 +856,18 @@ main p { line-height:1.7; }
   row-gap:12px;
   margin-bottom:48px; z-index:1; align-items:flex-start;
 }
-/* Faint horizontal stratum rule between adjacent generations */
+/* Faint horizontal rule between adjacent generations */
 .full-tree-gen + .full-tree-gen {
   padding-top:22px;
   border-top:1px solid rgba(229,193,88,0.10);
+}
+/* Mythological transition — when the dominant stratum shifts (Primordials
+   → Elder powers, Major divinities → Heroes, etc.), the rule above the
+   generation is slightly stronger. The eye perceives an ontological
+   boundary rather than just another numbered step. */
+.full-tree-gen.stratum-transition {
+  padding-top:28px;
+  border-top:1px solid rgba(229,193,88,0.28);
 }
 .full-tree-gen-label {
   flex:0 0 auto; align-self:stretch;
@@ -872,6 +880,17 @@ main p { line-height:1.7; }
   background:linear-gradient(90deg, rgba(229,193,88,0.07) 0%, transparent 100%);
   white-space:nowrap;
   text-shadow:0 1px 0 rgba(0,0,0,0.55);
+}
+/* The stratum suffix sits beside the depth count — quieter than the
+   "Gen N" stamp, and slightly less stretched so the comparative label
+   reads as scholarly subtitle rather than a peer of the generation
+   index. */
+.full-tree-gen-label .gen-stratum {
+  margin-left:6px;
+  color:var(--gold-deep);
+  font-weight:normal;
+  letter-spacing:1.2px;
+  text-shadow:none;
 }
 .full-tree-node {
   background:var(--panel); border:1px solid var(--line); border-radius:6px;
@@ -2972,6 +2991,38 @@ function renderFullTree(pantheonId) {
   renderFullTreeFromState(state);
 }
 
+// Map a god's category to a stratum label — generic comparative vocabulary
+// that respects the data's own category tagging without imposing tradition-
+// specific schemas. Returns null when the category has no stratum mapping.
+function stratumLabelFor(category) {
+  switch (category) {
+    case 'primordial':    return 'Primordials';
+    case 'titan':         return 'Elder powers';
+    case 'major':         return 'Major divinities';
+    case 'minor':         return 'Minor divinities';
+    case 'hero':          return 'Heroes';
+    case 'monster':       return 'Chthonic figures';
+    case 'deified-human': return 'Deified mortals';
+    case 'abrahamic':     return 'Abrahamic figures';
+    default:              return null;
+  }
+}
+
+// Returns the stratum label for a generation if at least 55% of figures
+// at that depth share one category — otherwise null (mixed gens stay
+// plain "Gen N", honoring traditions that aren't strongly stratified).
+function dominantStratumLabel(nuclei, byId) {
+  const gods = nuclei.flatMap(n => n.partner ? [byId[n.primary], byId[n.partner]] : [byId[n.primary]]).filter(Boolean);
+  if (!gods.length) return null;
+  const counts = {};
+  gods.forEach(g => { counts[g.category] = (counts[g.category] || 0) + 1; });
+  let bestCat = null, bestN = 0;
+  for (const [cat, n] of Object.entries(counts)) {
+    if (n > bestN) { bestCat = cat; bestN = n; }
+  }
+  return (bestN / gods.length) >= 0.55 ? stratumLabelFor(bestCat) : null;
+}
+
 function renderFullTreeFromState(state) {
   const { p, pgods, byId, generations, nucleiByGen, godToNucleus } = state;
 
@@ -2999,12 +3050,24 @@ function renderFullTreeFromState(state) {
     return `<div class="family-block" data-primary="${n.primary}">${nodeHtml(g1)}</div>`;
   };
 
-  const html = generations.map(gn => `
-    <div class="full-tree-gen" data-gen="${gn}">
-      <div class="full-tree-gen-label">Gen ${gn + 1}</div>
-      ${nucleiByGen[gn].map(nucleusHtml).join('')}
-    </div>
-  `).join('');
+  // Compute stratum per generation. Where a clear ontology exists (≥55%
+  // of figures share a category), surface the comparative label alongside
+  // the depth count. When the stratum changes from one gen to the next,
+  // the row gains a slightly stronger top rule — a mythological boundary,
+  // not just another numerical step.
+  let prevStratum = null;
+  const html = generations.map(gn => {
+    const stratum = dominantStratumLabel(nucleiByGen[gn], byId);
+    const isTransition = stratum && stratum !== prevStratum && prevStratum !== null;
+    if (stratum) prevStratum = stratum;
+    const labelText = stratum ? `Gen ${gn + 1} <span class="gen-stratum">· ${stratum}</span>` : `Gen ${gn + 1}`;
+    return `
+      <div class="full-tree-gen${isTransition ? ' stratum-transition' : ''}" data-gen="${gn}">
+        <div class="full-tree-gen-label">${labelText}</div>
+        ${nucleiByGen[gn].map(nucleusHtml).join('')}
+      </div>
+    `;
+  }).join('');
 
   const inner = document.getElementById('fullTreeInner');
   inner.innerHTML = html + '<svg class="full-tree-svg" id="fullTreeSvg"></svg>';
