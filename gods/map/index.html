@@ -21,6 +21,18 @@
 }
 * { box-sizing:border-box; }
 html, body { margin:0; padding:0; }
+
+/* Atmospheric continuity: selection + scrollbar in the archive's own palette */
+::selection { background:rgba(229,193,88,0.30); color:var(--ink); }
+::-moz-selection { background:rgba(229,193,88,0.30); color:var(--ink); }
+* { scrollbar-color: var(--line) transparent; scrollbar-width: thin; }
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-track { background:transparent; }
+::-webkit-scrollbar-thumb {
+  background:var(--line); border-radius:5px;
+  border:2px solid transparent; background-clip:padding-box;
+}
+::-webkit-scrollbar-thumb:hover { background:rgba(229,193,88,0.30); background-clip:padding-box; }
 body {
   font-family: 'Iowan Old Style', Georgia, 'Hoefler Text', serif;
   background:var(--bg);
@@ -433,7 +445,7 @@ main p { line-height:1.7; }
 .pantheon-card .desc {
   color:var(--ink); font-size:12px; line-height:1.45;
   display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
-  overflow:hidden; opacity:0.82;
+  overflow:hidden; opacity:0.85;
 }
 .pantheon-card .figures {
   margin-top:9px; padding-top:8px;
@@ -904,7 +916,9 @@ main p { line-height:1.7; }
   .focus-controls { padding:12px 14px; gap:8px; }
   .focus-controls label { font-size:10px; }
   .focus-controls select { min-width:160px; font-size:12px; padding:7px 10px; }
+  .focus-controls button { padding:7px 12px; font-size:11.5px; letter-spacing:1px; }
   .focus-controls .count { font-size:11px; }
+  .tree-view-toggle button { padding:7px 12px; font-size:11.5px; letter-spacing:1.2px; }
   nav button { padding:8px 14px; letter-spacing:1.5px; }
   .modal { padding:22px 22px; }
   .modal-head .god-image, .modal-head .god-glyph { width:100px; height:100px; }
@@ -1079,7 +1093,17 @@ main p { line-height:1.7; }
 .modal .pantheon-label { color:var(--gold-deep); font-size:12px; font-variant:small-caps; letter-spacing:2px; margin-bottom:4px; }
 .modal .epithets { color:var(--cyan); font-size:13px; font-style:italic; margin-top:4px; margin-bottom:14px; }
 .modal .desc { line-height:1.7; margin:14px 0; font-size:15px; }
-.modal .section-label { color:var(--gold-deep); font-size:11px; text-transform:uppercase; letter-spacing:1.8px; margin:18px 0 6px; font-weight:bold; }
+.modal .section-label {
+  text-align:center; font-variant:small-caps; letter-spacing:3px;
+  color:var(--gold-deep); font-size:11px; font-weight:bold;
+  margin:20px 0 12px; position:relative;
+  text-transform:none;
+}
+.modal .section-label::before, .modal .section-label::after {
+  content:''; position:absolute; top:50%; width:30%; height:1px;
+}
+.modal .section-label::before { left:0; background:linear-gradient(90deg, transparent, var(--line)); }
+.modal .section-label::after  { right:0; background:linear-gradient(90deg, var(--line), transparent); }
 .modal .domains { display:flex; flex-wrap:wrap; gap:6px; }
 .modal .domain-tag { background:var(--panel2); border:1px solid var(--line); color:var(--ink); padding:3px 10px; border-radius:11px; font-size:12px; }
 .modal .rel-row { margin:4px 0; font-size:14px; }
