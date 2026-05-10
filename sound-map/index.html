@@ -321,6 +321,24 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   filter: drop-shadow(0 0 3px rgba(232, 200, 64, 0.30));
   transition: opacity .45s ease-out, filter .45s ease-out;
 }
+/* Articulation anticipation: the NEXT phoneme's region holds a very faint
+   glow so the eye senses where the mouth is heading before it gets there.
+   Quieter than .trailing — preview should hint, not compete. */
+#sm-vtract-svg .vt-part.preview, #sm-vtract-svg .vt-vowel.preview,
+#sm-tl-tract svg .vt-part.preview, #sm-tl-tract svg .vt-vowel.preview {
+  opacity: 0.16;
+  filter: drop-shadow(0 0 3px rgba(232, 200, 64, 0.18));
+  transition: opacity .38s ease-out, filter .38s ease-out;
+}
+/* Imminent: the upcoming gesture is *about* to fire — preview brightens
+   in proportion to how close we are to the boundary, so the eye reads
+   "preparing" instead of "static hint." Toggled per frame by the
+   anticipation logic in smTlUpdateFrame. */
+#sm-vtract-svg .vt-part.preview.imminent, #sm-vtract-svg .vt-vowel.preview.imminent,
+#sm-tl-tract svg .vt-part.preview.imminent, #sm-tl-tract svg .vt-vowel.preview.imminent {
+  opacity: 0.34;
+  filter: drop-shadow(0 0 5px rgba(232, 200, 64, 0.36));
+}
 /* Focus enter pulse: every new active region briefly flashes brighter so
    the eye is guided to the new articulation point — independent of stress. */
 #sm-vtract-svg .vt-part.focus-entered, #sm-vtract-svg .vt-vowel.focus-entered,
@@ -358,16 +376,52 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .vt-nasal, .vt-mouth-cav, .vt-pharynx { transition: filter .25s; }
 .vt-hard-palate, .vt-larynx { transition: opacity .25s, filter .25s; }
 
-/* Tongue is the visual hero. Smooth posture transitions, integrated glow.
-   Slightly longer ease so the body feels like it's gliding through positions
-   rather than snapping between them — even when interrupted by short
-   consonants, the partial movement reads as natural articulatory undershoot. */
+/* Tongue BODY (dorsum) — the resonant articulator. Slower, sustained
+   transitions so vowel postures glide; the body is free to anticipate
+   upcoming vowels even while the tip performs a local consonant. */
 .vt-tongue {
   transition: transform .34s cubic-bezier(.32, 0, .2, 1), filter .35s, stroke .25s;
   transform-box: fill-box;
   transform-origin: center;
 }
 .vt-tongue.stressed { animation: vt-tongue-stress .55s ease-out; }
+/* Tongue TIP / blade — fast, local articulator. Independent from the body
+   so /t/ in /ta/ can flick to alveolar contact while the body has
+   already settled toward the upcoming vowel. Faster transition + a
+   pivot transform-origin near the body-tip junction so rotations read
+   as the tip lifting, not the whole shape sliding. */
+.vt-tongue-tip {
+  transition: transform .18s cubic-bezier(.25, 0, .25, 1), filter .25s, stroke .2s;
+  transform-box: fill-box;
+  transform-origin: 5% 90%;
+}
+.vt-tongue-tip.stressed { animation: vt-tongue-stress .55s ease-out; }
+.vt-tongue-tip.vt-tip-rest             { transform: none; }
+.vt-tongue-tip.vt-tip-alveolar         { transform: rotate(-22deg) translate(0, -2px); }
+.vt-tongue-tip.vt-tip-dental           { transform: rotate(-14deg) translate(2px, -2px); }
+.vt-tongue-tip.vt-tip-retroflex        { transform: rotate(-32deg) translate(-3px, -3px); }
+.vt-tongue-tip.vt-tip-blade            { transform: rotate(-18deg) translate(0, -1px); }
+/* Affricate phases — closure rotates a touch tighter than vt-tip-blade,
+   release relaxes back. The two-phase swap mid-phoneme reads as the
+   stop→fricative internal motion of /tʃ/ and /dʒ/. */
+.vt-tongue-tip.vt-tip-blade-closed     { transform: rotate(-24deg) translate(0, -2px); }
+.vt-tongue-tip.vt-tip-blade-released   { transform: rotate(-13deg) translate(0,  0px); }
+
+/* Tongue BACK / dorsum — third independent articulator. Invisible at rest
+   so it doesn't clutter the diagram, blooms in + lifts on velar/uvular
+   gestures. Its own pace: faster than the body (which is sustained
+   resonance) but slower than the tip (which is a quick local flick). */
+.vt-tongue-back {
+  opacity: 0;
+  transition: transform .26s cubic-bezier(.32, 0, .25, 1),
+              opacity .28s ease, filter .25s ease;
+  transform-box: fill-box;
+  transform-origin: 50% 95%;
+}
+.vt-tongue-back.vt-back-rest    { opacity: 0;    transform: none; }
+.vt-tongue-back.vt-back-velar   { opacity: 0.82; transform: translate(-1px, -8px); }
+.vt-tongue-back.vt-back-uvular  { opacity: 0.82; transform: translate(-4px, -6px); }
+.vt-tongue-back.stressed { animation: vt-tongue-stress .55s ease-out; }
 
 /* Tongue postures — applied per active phoneme. Subtle (≤6px / ≤6%) shifts
    so the body morphs instead of "scaling." Coarticulation feels continuous
@@ -377,7 +431,14 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .vt-tongue.vt-pos-high-front  { transform: translate(3px, -4px) scale(1, 0.94); }
 .vt-tongue.vt-pos-mid         { transform: translate(0, -1px) scale(1, 0.97); }
 .vt-tongue.vt-pos-high-back   { transform: translate(-4px, -4px) scale(1, 0.94); }
+/* Generic low (kept for fallback). The phoneme-specific low-front /
+   low-central / low-back postures below are what /æ/, /ʌ/, /ɑ/ actually
+   land in — same vertical drop but with a left/right body bias so the
+   resonance cavity differs visibly between them. */
 .vt-tongue.vt-pos-low         { transform: translate(0, 4px) scale(1, 1.06); }
+.vt-tongue.vt-pos-low-front   { transform: translate(3px, 5px) scale(1, 1.05); }
+.vt-tongue.vt-pos-low-central { transform: translate(0, 5px) scale(1, 1.07); }
+.vt-tongue.vt-pos-low-back    { transform: translate(-4px, 5px) scale(1, 1.05); }
 .vt-tongue.vt-pos-tip-up      { transform: rotate(-2deg) translate(2px, -2px); }
 .vt-tongue.vt-pos-blade-up    { transform: rotate(-1.5deg) translate(0, -2px); }
 .vt-tongue.vt-pos-back-up     { transform: translate(-5px, -4px); }
@@ -388,9 +449,15 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   transform-box: fill-box;
   transform-origin: center;
 }
-.vt-lip-upper.vt-lips-closed { transform: translate(0, 5px); }
-.vt-lip-lower.vt-lips-closed { transform: translate(0, -5px); }
-.vt-lip-lower.vt-lips-bite   { transform: translate(0, -4px); }
+.vt-lip-upper.vt-lips-closed  { transform: translate(0, 5px); }
+.vt-lip-lower.vt-lips-closed  { transform: translate(0, -5px); }
+.vt-lip-lower.vt-lips-bite    { transform: translate(0, -4px); }
+/* Rounding: a gentle inward pucker + slight protrusion (translate +x in
+   the right-facing tract). Subtle — the resonance change should be felt,
+   not caricatured. Used by /u, ʊ, o, ɔ/ and by /w/ in place of full
+   bilabial closure. */
+.vt-lip-upper.vt-lips-rounded { transform: translate(2px, 2px) scale(0.94, 0.96); }
+.vt-lip-lower.vt-lips-rounded { transform: translate(2px, -2px) scale(0.94, 0.96); }
 
 /* Velum lifts to open the nasal pathway during nasals. */
 .vt-velum {
@@ -431,6 +498,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   filter: drop-shadow(0 0 10px rgba(232, 200, 64, 0.7));
   animation: vt-airflow-burst .26s ease-out;
 }
+/* Aspirated release (/pʰ, tʰ, kʰ/) — voiceless stops keep airflow streaming
+   through the VOT gap and into the early voicing of the following vowel,
+   then fade. The longer animation lets the aspiration breath visibly bleed
+   into the buzz onset rather than ending before voicing begins. */
+.vt-airflow.release-burst.aspirated {
+  animation: vt-airflow-aspirated .42s cubic-bezier(.25, 0, .35, 1);
+}
 @keyframes vt-airflow-stream {
   0%   { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: -28; }
@@ -438,6 +512,12 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 @keyframes vt-airflow-burst {
   0%   { stroke-dashoffset: 0;   opacity: 1; }
   100% { stroke-dashoffset: -22; opacity: 0; }
+}
+@keyframes vt-airflow-aspirated {
+  0%   { stroke-dashoffset: 0;   opacity: 1;    }
+  30%  { stroke-dashoffset: -16; opacity: 0.78; }
+  60%  { stroke-dashoffset: -36; opacity: 0.45; }
+  100% { stroke-dashoffset: -64; opacity: 0;    }
 }
 
 /* Subtle anatomy labels — small enough to read only if you're looking. Cool slate to match the schematic palette. */
@@ -452,7 +532,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   font-weight: 600;
 }
 
-/* Voicing — concentric ring expanding from the larynx. */
+/* Voicing — concentric ring expanding from the larynx. The element-level
+   transition smooths onset and offset between class flips so voicing
+   feels like energy emerging rather than a switch. The cyclical ring
+   animation runs on top once .buzzing is on. */
+#vt-buzz, .vt-buzz {
+  transition: opacity .12s ease-out;
+}
 #vt-buzz.buzzing, .vt-buzz.buzzing {
   opacity: 1;
   animation: vt-buzz-ring 1.1s ease-in-out infinite;
@@ -481,9 +567,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   45%      { stroke: #e8c840; filter: brightness(1.35); }
 }
 @keyframes vt-buzz-ring {
-  0%   { stroke-width: 1.2; opacity: 0.0; }
-  50%  { stroke-width: 3.2; opacity: 0.85; }
-  100% { stroke-width: 0.8; opacity: 0.0; }
+  /* Opacity is now driven by smTlPlanVoicing from the voicing gesture's
+     envelope strength — onset blooms continuously, offset fades. The
+     keyframe only oscillates stroke-width to keep the cyclical ring
+     character without competing with the envelope's intensity. */
+  0%   { stroke-width: 1.2; }
+  50%  { stroke-width: 3.2; }
+  100% { stroke-width: 0.8; }
 }
 @media (max-width:720px){
   #sm-vtract{float:none;width:100%;margin:0 0 14px 0;position:static}
@@ -606,6 +696,10 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 #sm-tl-traj .sm-tl-traj-playhead{stroke:var(--gold);stroke-width:1.4;opacity:.9;pointer-events:none}
 #sm-tl-traj .sm-tl-traj-word-tick{stroke:#32445c;stroke-width:0.6;stroke-dasharray:2 2;opacity:.5}
 #sm-tl-traj .sm-tl-traj-word-label{font-family:"Segoe UI",Arial,sans-serif;font-size:8px;fill:#8fa3ba;text-anchor:middle;pointer-events:none}
+/* Gesture mini-bars below the trajectory — first foundation of the
+   visual gestural timeline. One row per articulator (lips / velum /
+   dorsum), each bar = one gesture in the precomputed score. */
+#sm-tl-traj .sm-tl-gesture-bar { pointer-events: none; rx: 0.6; ry: 0.6; }
 #sm-tl-strip-title{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
 #sm-tl-strip{display:flex;gap:2px;align-items:flex-end;min-width:max-content}
 .sm-tl-word{display:flex;flex-direction:column;align-items:flex-start;padding:4px 6px;border-radius:4px;border:1px solid transparent;transition:border-color .15s,background .15s}
@@ -1800,9 +1894,19 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
         <path class="vt-velum" d="M 100 60 Q 115 62 130 65 L 130 76 Q 115 79 102 76 Q 92 70 100 60 Z"
               fill="rgba(180,153,217,0.25)" stroke="#b499d9" stroke-width="0.8"/>
         <text class="vt-anatomy-label" x="115" y="90" text-anchor="middle">velum</text>
-        <!-- TONGUE (the visual hero — brighter stroke, deeper fill) -->
-        <path class="vt-tongue vt-pos-rest" d="M 100 158 Q 110 130 130 110 Q 175 90 235 105 Q 252 112 248 132 Q 230 152 195 156 Q 145 158 110 158 Z"
+        <!-- TONGUE BODY (dorsum) — slow, resonant, drives vowel postures. -->
+        <path class="vt-tongue vt-pos-rest"
+              d="M 100 158 Q 108 132 128 112 Q 168 92 218 102 Q 224 115 222 132 Q 218 148 196 152 Q 145 158 100 158 Z"
               fill="url(#vt-tongue-grad)" stroke="#b8c4d6" stroke-width="1.4" stroke-linejoin="round"/>
+        <!-- TONGUE BACK / dorsum — third articulator, invisible at rest;
+             lifts toward the velum on /k g ŋ/ and uvulars. -->
+        <path class="vt-tongue-back vt-back-rest"
+              d="M 122 116 Q 145 102 168 108 Q 174 118 170 128 Q 150 132 128 132 Q 118 124 122 116 Z"
+              fill="url(#vt-tongue-grad)" stroke="#b8c4d6" stroke-width="0.9" stroke-linejoin="round"/>
+        <!-- TONGUE TIP — fast, local, drives alveolar/dental/postalveolar/retroflex. -->
+        <path class="vt-tongue-tip vt-tip-rest"
+              d="M 218 102 Q 234 99 246 106 Q 252 112 248 132 Q 240 145 220 144 Q 215 130 218 102 Z"
+              fill="url(#vt-tongue-grad)" stroke="#b8c4d6" stroke-width="1.2" stroke-linejoin="round"/>
         <text class="vt-anatomy-label" x="180" y="138" text-anchor="middle">tongue</text>
         <!-- UPPER TEETH -->
         <g class="vt-teeth-upper">
@@ -2479,8 +2583,15 @@ function smTlBuildTractSVG() {
       <path class="vt-velum" d="M 100 60 Q 115 62 130 65 L 130 76 Q 115 79 102 76 Q 92 70 100 60 Z"
             fill="rgba(180,153,217,0.25)" stroke="#b499d9" stroke-width="0.8"/>
       <text class="vt-anatomy-label" x="115" y="90" text-anchor="middle">velum</text>
-      <path class="vt-tongue vt-pos-rest" d="M 100 158 Q 110 130 130 110 Q 175 90 235 105 Q 252 112 248 132 Q 230 152 195 156 Q 145 158 110 158 Z"
+      <path class="vt-tongue vt-pos-rest"
+            d="M 100 158 Q 108 132 128 112 Q 168 92 218 102 Q 224 115 222 132 Q 218 148 196 152 Q 145 158 100 158 Z"
             fill="url(#vt-tongue-grad-tl)" stroke="#b8c4d6" stroke-width="1.4" stroke-linejoin="round"/>
+      <path class="vt-tongue-back vt-back-rest"
+            d="M 122 116 Q 145 102 168 108 Q 174 118 170 128 Q 150 132 128 132 Q 118 124 122 116 Z"
+            fill="url(#vt-tongue-grad-tl)" stroke="#b8c4d6" stroke-width="0.9" stroke-linejoin="round"/>
+      <path class="vt-tongue-tip vt-tip-rest"
+            d="M 218 102 Q 234 99 246 106 Q 252 112 248 132 Q 240 145 220 144 Q 215 130 218 102 Z"
+            fill="url(#vt-tongue-grad-tl)" stroke="#b8c4d6" stroke-width="1.2" stroke-linejoin="round"/>
       <text class="vt-anatomy-label" x="180" y="138" text-anchor="middle">tongue</text>
       <g class="vt-teeth-upper">
         <rect x="246" y="76" width="4" height="7" rx="0.5" fill="rgba(232,232,232,0.75)" stroke="rgba(232,232,232,0.4)" stroke-width="0.4"/>
@@ -2650,8 +2761,49 @@ function smTlBuildTrajectory(seq, starts, totalMs, processed) {
     parts.push(`<circle class="sm-tl-traj-dot upcoming" data-seq-idx="${i}" cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${r}" fill="${fill}"><title>${smTlEscape(ev.phoneme)} · ${smTlEscape(ev.feat.place || "")}</title></circle>`);
   });
 
-  // Playhead.
-  parts.push(`<line id="sm-tl-traj-playhead" class="sm-tl-traj-playhead" x1="${xLeft}" y1="${yTop-4}" x2="${xLeft}" y2="${yBot+4}"/>`);
+  // Gesture mini-bars: tiny stacked timelines below the trajectory
+  // showing each articulator's gesture envelopes across the utterance.
+  // Read from the precomputed score; static (don't update with playback,
+  // since they show the *plan*). Three rows: lips (gold), velum (violet),
+  // dorsum (teal). Each gesture is one rect; opacity scales with peak
+  // strength, so reduced gestures appear faint and emphasized ones
+  // appear bold. This is the first foundation of the visual gestural
+  // timeline — additional rows + active highlight come later.
+  const score = smTl._gestureScore || [];
+  if (score.length) {
+    // Six articulators × thin rows; voicing sits below dorsum, body below
+    // velum. Color matches the articulator's identity in the legend
+    // (gold = lips, violet = velum, teal = dorsum, blue = body, green =
+    // tip, gold-light = voicing). data-score-idx lets the per-frame
+    // highlight loop find each bar by its source gesture.
+    const ARTROW = { lips: 99, body: 102, velum: 105, back: 108, tip: 96, voicing: 111 };
+    // Note: timeline mini-bars only show planner-driven articulators at
+    // this scope; we render lips/velum/back here to stay readable. Body,
+    // tip, voicing exist in the score but are omitted from the bars to
+    // keep the visualization lightweight (next pass can add them).
+    const SHOW = { lips: true, velum: true, back: true };
+    const ARTCOLOR = {
+      lips:    "#d4a24c",
+      velum:   "#b499d9",
+      back:    "#7cd0ce"
+    };
+    for (let i = 0; i < score.length; i++) {
+      const g = score[i];
+      if (!SHOW[g.articulator]) continue;
+      const yPos = ARTROW[g.articulator];
+      const color = ARTCOLOR[g.articulator];
+      if (yPos == null || !color) continue;
+      const x1 = smTlTimeX(Math.max(0, g.onset), totalMs);
+      const x2 = smTlTimeX(Math.min(totalMs, g.end), totalMs);
+      const w = Math.max(1, x2 - x1);
+      const op = Math.min(0.7, g.peakStrength * 0.55).toFixed(2);
+      parts.push(`<rect class="sm-tl-gesture-bar" data-score-idx="${i}" x="${x1.toFixed(1)}" y="${yPos}" width="${w.toFixed(1)}" height="2" fill="${color}" opacity="${op}"/>`);
+    }
+  }
+
+  // Playhead — extended past the gesture rows so it visibly cuts through
+  // them, tying the live moment to the articulator timeline below.
+  parts.push(`<line id="sm-tl-traj-playhead" class="sm-tl-traj-playhead" x1="${xLeft}" y1="${yTop-4}" x2="${xLeft}" y2="110"/>`);
 
   return `<svg id="sm-tl-traj" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-label="Articulation trajectory over time">${parts.join("")}</svg>`;
 }
@@ -2710,6 +2862,19 @@ function smRenderTimeline(processed, byLine) {
   smTl.totalMs = t;
   smTl.baseElapsedMs = 0;
   smTl.curIdx = -1;
+  smTl.anticipated = -1;
+  smTl._bodyState = null;
+  smTl._lipRoundedStrength = 0;
+  smTl._lipRoundedSmooth = 0;
+  smTl._smoothedSources = {};
+  smTl._bodyCouplingTx = 0;
+  smTl._bodyCouplingTy = 0;
+  smTl._lastSmoothTime = null;
+  smTl._lastFlowState = {};
+  // Precompute the gestural score from the sequence we just built. The
+  // planner reads it each frame for lips, velum, dorsum, body, tip,
+  // voicing, and airflow — every articulator is now score-driven.
+  smTl._gestureScore = smTlBuildGestureScore(seq, starts);
 
   // Stage (tract + label)
   const stage = document.createElement("div");
@@ -2990,28 +3155,169 @@ function smTlFindIndex(timeMs) {
 // stays the same; these helpers just toggle posture classes and CSS handles
 // the transitions.
 
-const SM_TL_TONGUE_POSTURE = {
+// BODY postures only. Tip-driven places (alveolar, postalveolar, retroflex,
+// dental) are absent — they command the .vt-tongue-tip element and the body
+// inherits from neighboring vowels. Velar/uvular are ALSO absent now:
+// they're handled by the third articulator (.vt-tongue-back) so the body
+// can independently follow the surrounding vowel. /j/ (palatal approximant)
+// keeps a body command since it's a body-raising gesture.
+const SM_TL_BODY_POSTURE = {
   "front-vowel":   "vt-pos-high-front",
   "central-vowel": "vt-pos-mid",
   "back-vowel":    "vt-pos-high-back",
   "diphthong":     "vt-pos-mid",
-  "alveolar":      "vt-pos-tip-up",
-  "postalveolar":  "vt-pos-blade-up",
-  "retroflex":     "vt-pos-tip-up",
-  "palatal":       "vt-pos-blade-up",
-  "velar":         "vt-pos-back-up",
-  "uvular":        "vt-pos-back-up"
+  "palatal":       "vt-pos-high-front"
 };
 const SM_TL_TONGUE_CLASSES = [
   "vt-pos-rest","vt-pos-high-front","vt-pos-mid","vt-pos-high-back","vt-pos-low",
-  "vt-pos-tip-up","vt-pos-blade-up","vt-pos-back-up"
+  "vt-pos-low-front","vt-pos-low-central","vt-pos-low-back",
+  "vt-pos-back-up"
 ];
 
-// Vowel height by phoneme symbol — overrides the place-derived posture for
-// low vowels so /æ/ and /ɑ/ visibly drop the tongue body instead of riding
-// up with the rest of their place class.
-const SM_TL_VOWEL_HEIGHT = {
-  "æ": "low", "ʌ": "low", "ɑ": "low", "ɒ": "low", "a": "low"
+// TIP gestures by place. The tip layer flicks fast and locally — alveolar
+// closure for /t,d,n,s,z,l,r/, dental for /θ,ð/, blade-up for /ʃ,ʒ/, curl
+// for retroflex. The body remains free during all of these to anticipate
+// the upcoming vowel.
+const SM_TL_TIP_GESTURE = {
+  "alveolar":     "vt-tip-alveolar",
+  "postalveolar": "vt-tip-blade",
+  "retroflex":    "vt-tip-retroflex",
+  "dental":       "vt-tip-dental"
+};
+const SM_TL_TIP_CLASSES = [
+  "vt-tip-rest", "vt-tip-alveolar", "vt-tip-dental",
+  "vt-tip-retroflex", "vt-tip-blade",
+  "vt-tip-blade-closed", "vt-tip-blade-released"
+];
+
+// BACK / dorsum gestures by place. The dorsum lifts toward the velum for
+// /k g ŋ/ and uvulars; everything else leaves it at rest (invisible).
+// This is what releases the body from velar duty so /ki/ can have body =
+// high-front (from /i/) while the dorsum independently raises.
+const SM_TL_BACK_GESTURE = {
+  "velar":  "vt-back-velar",
+  "uvular": "vt-back-uvular"
+};
+const SM_TL_BACK_CLASSES = [
+  "vt-back-rest", "vt-back-velar", "vt-back-uvular"
+];
+
+// Affricate two-phase model: each affricate fires a closure phase at the
+// start of the phoneme (tip in tighter contact, no airflow yet) and
+// switches to a release phase at the pivot (tip lifts, fricative airflow
+// turns on). Mirrors the diphthong glide infrastructure conceptually.
+const SM_TL_AFFRICATE_PHASE = {
+  "tʃ": {
+    closure: { tip: "vt-tip-blade-closed",   flow: null            },
+    release: { tip: "vt-tip-blade-released", flow: "postalv-fric"  }
+  },
+  "dʒ": {
+    closure: { tip: "vt-tip-blade-closed",   flow: null            },
+    release: { tip: "vt-tip-blade-released", flow: "postalv-fric"  }
+  }
+};
+// Adaptive pivot for affricates — short ones release earlier so the
+// frication has audible time, long ones hold the closure longer.
+function smTlAffricatePivot(durMs) {
+  if (durMs < 80)  return 0.30;
+  if (durMs < 140) return 0.40;
+  return 0.45;
+}
+// Adaptive pivot for diphthongs — stressed diphthongs hold their start
+// vowel longer (later pivot); short unstressed ones glide earlier so the
+// motion through articulation space is visible.
+function smTlDiphthongPivot(durMs, stress) {
+  if (stress === 1) {
+    if (durMs > 250) return 0.50;
+    return 0.45;
+  }
+  if (durMs < 130) return 0.30;
+  if (durMs < 200) return 0.38;
+  return 0.42;
+}
+
+// Lightweight gestural-score. Each articulator carries planning-window
+// timing (`lead` ms ahead of target, `release` ms after target end,
+// `depth` lookahead segments) AND `baseStrength` — the canonical
+// magnitude of the gesture before stress weighting. Stressed phonemes
+// scale strength up; unstressed scale it down (smTlGestureStrength).
+// All articulators are now represented in the spec for consistency,
+// even those whose planning is handled by paths other than the
+// per-frame planner (body uses adaptive threshold; tip is boundary-
+// local; voicing has its own VOT machinery).
+const SM_TL_GESTURE_SPEC = {
+  lips_rounded: { lead: 120, release: 80, depth: 3, baseStrength: 1.00 },
+  lips_closed:  { lead:   0, release:  0, depth: 0, baseStrength: 1.05 },
+  lips_bite:    { lead:   0, release:  0, depth: 0, baseStrength: 1.00 },
+  velum_open:   { lead:  70, release: 90, depth: 2, baseStrength: 1.00 },
+  back_raised:  { lead:  60, release: 70, depth: 2, baseStrength: 1.00 },
+  body_posture: { lead:   0, release:  0, depth: 4, baseStrength: 1.00 },
+  tip_local:    { lead:   0, release:  0, depth: 1, baseStrength: 1.00 },
+  voicing:      { lead:   0, release:  0, depth: 0, baseStrength: 1.00 }
+};
+
+// Base transforms per posture / gesture class. JS scales these by
+// strength (and applies optional cross-articulator coupling) and writes
+// the result as inline `style.transform`. The transition rules in CSS
+// still smooth the morph; the CSS class itself becomes a *marker* (used
+// by .stressed animations and CSS selector-based effects), not the
+// transform source.
+//   tx, ty:  translation in px  (scaled linearly by strength)
+//   sxd:     scale-X delta from 1  (scale = 1 + sxd*strength)
+//   syd:     scale-Y delta from 1
+//   rot:     rotation in deg     (scaled linearly by strength)
+//   opacity: optional element opacity (scaled linearly by strength)
+const SM_TL_POSTURE_BASE = {
+  // ── tongue body
+  "vt-pos-rest":         {},
+  "vt-pos-high-front":   { tx:  3, ty: -4, syd: -0.06 },
+  "vt-pos-mid":          {            ty: -1, syd: -0.03 },
+  "vt-pos-high-back":    { tx: -4, ty: -4, syd: -0.06 },
+  "vt-pos-low":          {            ty:  4, syd:  0.06 },
+  "vt-pos-low-front":    { tx:  3, ty:  5, syd:  0.05 },
+  "vt-pos-low-central":  {            ty:  5, syd:  0.07 },
+  "vt-pos-low-back":     { tx: -4, ty:  5, syd:  0.05 },
+  "vt-pos-back-up":      { tx: -5, ty: -4 },
+  // ── tongue tip
+  "vt-tip-rest":             {},
+  "vt-tip-alveolar":         { ty: -2, rot: -22 },
+  "vt-tip-dental":           { tx:  2, ty: -2, rot: -14 },
+  "vt-tip-retroflex":        { tx: -3, ty: -3, rot: -32 },
+  "vt-tip-blade":            { ty: -1, rot: -18 },
+  "vt-tip-blade-closed":     { ty: -2, rot: -24 },
+  "vt-tip-blade-released":   {         rot: -13 },
+  // ── tongue back / dorsum (carries opacity; rest is invisible)
+  "vt-back-rest":     { opacity: 0 },
+  "vt-back-velar":    { tx: -1, ty: -8, opacity: 0.82 },
+  "vt-back-uvular":   { tx: -4, ty: -6, opacity: 0.82 }
+};
+
+// Lip transforms — separate per upper/lower because the two lips move
+// toward each other for closure / rounding. Closures don't scale below
+// strength=1 (you can't half-close a stop).
+const SM_TL_LIP_BASE = {
+  upper: {
+    "vt-lips-closed":  { ty:  5 },
+    "vt-lips-bite":    {},
+    "vt-lips-rounded": { tx: 2, ty:  2, sxd: -0.06, syd: -0.04 }
+  },
+  lower: {
+    "vt-lips-closed":  { ty: -5 },
+    "vt-lips-bite":    { ty: -4 },
+    "vt-lips-rounded": { tx: 2, ty: -2, sxd: -0.06, syd: -0.04 }
+  }
+};
+
+// Low-vowel direction by phoneme symbol — picks among
+// vt-pos-low-front / vt-pos-low-central / vt-pos-low-back so /æ/, /ʌ/, /ɑ/
+// land in distinct resonance shapes rather than collapsing to a single
+// generic low posture.
+const SM_TL_VOWEL_LOW = {
+  "æ": "front",
+  "a": "front",
+  "ʌ": "central",
+  "ɑ": "back",
+  "ɒ": "back"
 };
 
 // Stop release: when the previous phoneme was a stop, the moment we leave
@@ -3023,33 +3329,899 @@ const SM_TL_STOP_RELEASE = {
   "velar":    "velar-fric"
 };
 
-function smTlSetTonguePosture(svg, posture) {
-  const tongue = svg.querySelector(".vt-tongue");
-  if (!tongue) return;
-  SM_TL_TONGUE_CLASSES.forEach(c => tongue.classList.remove(c));
-  tongue.classList.add(posture || "vt-pos-rest");
+// Voice Onset Time. After a voiceless stop (/p, t, k/) the next voiced
+// segment's voicing is delayed by ~50–80ms in real speech — that gap
+// is what makes /pa/ audibly different from /ba/. We model this as a
+// short setTimeout before the buzz turns on. Voiced stops (/b, d, g/)
+// have negligible/negative VOT and buzz immediately, matching their
+// voice=1 classification in SM_FEATS.
+const SM_TL_VOT_VOICELESS_MS = 60;
+
+// Resolve gesture strength for a given phoneme. Stressed segments scale
+// up (more excursion, tighter constriction, fuller rounding); unstressed
+// scale down (undershoot, schwa-like reduction). Clamped to a sane range
+// so even strong stress doesn't break the schematic look.
+function smTlGestureStrength(ev, baseStrength) {
+  const base = (baseStrength == null) ? 1.0 : baseStrength;
+  if (!ev || !ev.feat) return base;
+  let mod = 0;
+  if      (ev.stress === 1) mod =  0.18;  // primary stress: emphasized
+  else if (ev.stress === 2) mod =  0.04;  // secondary: near-canonical
+  else                      mod = -0.20;  // unstressed: undershoot
+  const s = base + mod;
+  return s < 0.55 ? 0.55 : (s > 1.30 ? 1.30 : s);
 }
 
-function smTlSetLipState(svg, state) {
+// Convert a wall-clock-canonical lead/release ms into the speed-warped
+// timeMs that the planner compares against `smTl.starts[i]`. At 2× speed
+// the planner's timeMs runs twice as fast, so a 120ms wall-clock lead
+// becomes a 240ms timeMs window — preserving the wall-clock anticipation
+// the user actually perceives.
+function smTlScaleSpec(ms) { return ms * (smTl.speed || 1); }
+
+// Build an SVG transform string from a base spec scaled by strength,
+// optionally summed with a cross-articulator coupling offset.
+function smTlBuildTransform(base, strength, coupling) {
+  if (!base) return "";
+  const s = (strength == null) ? 1 : strength;
+  const cx = (coupling && coupling.tx) || 0;
+  const cy = (coupling && coupling.ty) || 0;
+  const tx = (base.tx || 0) * s + cx;
+  const ty = (base.ty || 0) * s + cy;
+  const sxd = base.sxd || 0;
+  const syd = base.syd || 0;
+  const sx = 1 + sxd * s;
+  const sy = 1 + syd * s;
+  const rot = (base.rot || 0) * s;
+  const parts = [];
+  if (rot)            parts.push(`rotate(${rot.toFixed(2)}deg)`);
+  if (tx || ty)       parts.push(`translate(${tx.toFixed(2)}px, ${ty.toFixed(2)}px)`);
+  if (sx !== 1 || sy !== 1) parts.push(`scale(${sx.toFixed(3)}, ${sy.toFixed(3)})`);
+  return parts.join(" ");
+}
+
+// ── Articulator setters (now strength-aware + JS-driven transforms) ──
+//
+// The class is still applied (CSS rules still react to it for transitions
+// and animations like .stressed), but transform values are computed in JS
+// from SM_TL_POSTURE_BASE × strength × coupling and written inline so the
+// CSS class transforms are dead. This is the unification work — every
+// articulator's gesture is now data: a base spec scaled by stress.
+
+function smTlSetTonguePosture(svg, posture, strength) {
+  const tongue = svg.querySelector(".vt-tongue");
+  if (!tongue) return;
+  const p = posture || "vt-pos-rest";
+  const s = (strength == null) ? 1 : strength;
+  // Cache state so coupling updates can re-render this transform without
+  // having to know the current posture/strength from outside.
+  smTl._bodyState = { posture: p, strength: s };
+  SM_TL_TONGUE_CLASSES.forEach(c => tongue.classList.remove(c));
+  tongue.classList.add(p);
+  smTlApplyBodyTransform(svg);
+}
+
+// Re-applies the body transform from cached state. Called by lip planner
+// when the rounded-strength changes, so coupling stays in sync without
+// the body's posture having to change.
+function smTlApplyBodyTransform(svg) {
+  const tongue = svg && svg.querySelector(".vt-tongue");
+  if (!tongue) return;
+  const state = smTl._bodyState || { posture: "vt-pos-rest", strength: 1 };
+  const base = SM_TL_POSTURE_BASE[state.posture] || {};
+  // Coupling: read the summed cross-articulator bias from
+  // smTlSmoothCouplings. Each contributing source (lip rounding, velar
+  // dorsum, retroflex tip) is independently smoothed with its own τ.
+  const coupling = {
+    tx: smTl._bodyCouplingTx || 0,
+    ty: smTl._bodyCouplingTy || 0
+  };
+  tongue.style.transform = smTlBuildTransform(base, state.strength, coupling);
+}
+
+// Tip layer: independent local articulator.
+function smTlSetTongueTip(svg, gesture, strength) {
+  const tip = svg.querySelector(".vt-tongue-tip");
+  if (!tip) return;
+  const g = gesture || "vt-tip-rest";
+  SM_TL_TIP_CLASSES.forEach(c => tip.classList.remove(c));
+  tip.classList.add(g);
+  const base = SM_TL_POSTURE_BASE[g] || {};
+  tip.style.transform = smTlBuildTransform(base, (strength == null) ? 1 : strength);
+}
+
+// Back / dorsum layer.
+function smTlSetTongueBack(svg, gesture, strength) {
+  const back = svg.querySelector(".vt-tongue-back");
+  if (!back) return;
+  const g = gesture || "vt-back-rest";
+  const s = (strength == null) ? 1 : strength;
+  SM_TL_BACK_CLASSES.forEach(c => back.classList.remove(c));
+  back.classList.add(g);
+  const base = SM_TL_POSTURE_BASE[g] || {};
+  back.style.transform = smTlBuildTransform(base, s);
+  // Dorsum opacity is part of its gesture: rest is invisible, velar/
+  // uvular bloom in. Scale opacity by strength so reduced velars are
+  // less prominent than emphasized ones.
+  if (base.opacity != null) back.style.opacity = String((base.opacity * s).toFixed(3));
+  else                      back.style.opacity = "";
+}
+
+function smTlBackGestureFor(ev) {
+  if (!ev || !ev.feat) return "vt-back-rest";
+  return SM_TL_BACK_GESTURE[ev.feat.place] || "vt-back-rest";
+}
+
+// Whether a phoneme rounds the lips. Used by anticipation + carry-over so
+// rounding can lead/lag the phoneme boundary the way real speech does.
+function smTlIsRoundingPhoneme(ev) {
+  if (!ev || !ev.feat) return false;
+  if (ev.feat.type === "V" && SM_TL_VOWEL_ROUNDED[ev.phoneme]) return true;
+  if (ev.feat.place === "bilabial" && ev.feat.manner === "approximant") return true; // /w/
+  return false;
+}
+
+// ── Precomputed gestural score ─────────────────────────────────────────
+// At render time we walk the phoneme sequence once and produce a flat
+// array of GESTURES. Each gesture is an envelope through time:
+//
+//   { articulator, channel, target, ownerIdx,
+//     onset, peak, fade, end, peakStrength }
+//
+//   onset → peak : ramp-in (anticipation / lead)
+//   peak  → fade : sustain at full strength
+//   fade  → end  : ramp-out (release / carry-over)
+//
+// Envelope shape is a smoothstep so transitions feel motoric rather than
+// linear. Multiple gestures of the same articulator+channel can overlap
+// (e.g. /u/'s carry-over while /u/'s next lead begins); the per-frame
+// evaluator picks the dominant contribution (env × peakStrength) so
+// strength itself is continuously modulated across the boundary.
+//
+// Replaces the per-frame "scan lookahead window" approach with a
+// precomputed, inspectable timeline. The visual gestural-timeline bars
+// in the trajectory ribbon read directly from this score.
+
+function smTlSmoothstep(x) {
+  if (x <= 0) return 0;
+  if (x >= 1) return 1;
+  return x * x * (3 - 2 * x);
+}
+
+// Envelope evaluators by shape. Default is smoothstep (smooth attack +
+// sustain + smooth release). Other shapes allow articulators to express
+// motoric character without a DSP framework:
+//   • smoothstep — generic eased ASR; what most gestures use
+//   • asr        — linear attack/sustain/release; affricates use this
+//                  for crisp closure→release internal motion
+//   • gaussian   — bell curve centered on `peak`; reserved for tap/flap
+//   • linear     — straight ramp; debug or technical use
+function smTlEnvelope(t, g) {
+  if (t < g.onset || t >= g.end) return 0;
+  const type = g.envelope || "smoothstep";
+  if (type === "gaussian") {
+    const sigma = (g.peak - g.onset) || 1;
+    const dx = (t - g.peak) / sigma;
+    return Math.exp(-dx * dx);
+  }
+  if (type === "asr" || type === "linear") {
+    if (t < g.peak) {
+      const dur = g.peak - g.onset;
+      return dur > 0 ? (t - g.onset) / dur : 1;
+    }
+    if (t < g.fade) return 1;
+    const dur = g.end - g.fade;
+    return dur > 0 ? 1 - (t - g.fade) / dur : 0;
+  }
+  // smoothstep (default)
+  if (t < g.peak) {
+    const dur = g.peak - g.onset;
+    return dur > 0 ? smTlSmoothstep((t - g.onset) / dur) : 1;
+  }
+  if (t < g.fade) return 1;
+  const dur = g.end - g.fade;
+  return dur > 0 ? (1 - smTlSmoothstep((t - g.fade) / dur)) : 0;
+}
+
+// Walk backward from idx to find the most-recent boundary that should
+// clip a gesture's onset. For lip rounding, that's any lip-committed
+// phoneme (bilabial closure / labiodental); for everything else it's
+// just the most-recent pause (don't bleed across word boundaries).
+function smTlGestureOnsetClip(seq, starts, idx, isBlocker) {
+  for (let j = idx - 1; j >= 0; j--) {
+    const e = seq[j];
+    if (e.isPause)             return starts[j] + e.durMs;
+    if (isBlocker && isBlocker(e)) return starts[j] + e.durMs;
+  }
+  return 0;
+}
+
+// Compute the body's adaptive onset for a vowel/palatal at index i.
+// The lead extends backward through tip-driven consonants (which don't
+// command the body) and consumes the post-threshold portion of the most
+// recent body-commanding phoneme. Capped at 350ms so very long runs of
+// tip-driven consonants don't bleed body anticipation absurdly far back.
+function smTlBodyOnsetForIdx(seq, starts, i) {
+  const phStart = starts[i];
+  let onset = phStart;
+  for (let j = i - 1; j >= 0; j--) {
+    const e = seq[j];
+    if (e.isPause)              { onset = starts[j] + e.durMs; break; }
+    if (!e.feat)                  continue;
+    if (smTlPostureFor(e) !== null) {
+      // Previous body-commanding phoneme — lead extends into its tail.
+      const t = smTlAnticipationThreshold(e);
+      onset = starts[j] + t * e.durMs;
+      break;
+    }
+    // Tip-driven (no body command) — full duration is part of the lead.
+    onset = starts[j];
+  }
+  return Math.max(onset, phStart - 350);
+}
+
+// Build the gestural score. Now covers ALL six planner-driven
+// articulators: lips, velum, dorsum, body, tip, voicing. Each phoneme
+// emits zero or more gestures depending on what it commands. Diphthongs
+// emit two body gestures (start → end); affricates emit two tip gestures
+// (closure → release); voicing onset is shifted by VOT for vowels
+// following voiceless stops.
+function smTlBuildGestureScore(seq, starts) {
+  const score = [];
+  const SPEC = SM_TL_GESTURE_SPEC;
+
+  for (let i = 0; i < seq.length; i++) {
+    const ev = seq[i];
+    if (ev.isPause || !ev.feat) continue;
+    const phStart = starts[i];
+    const phEnd   = phStart + ev.durMs;
+    const phStress = ev.stress;
+
+    // ── LIPS rounded
+    if (smTlIsRoundingPhoneme(ev)) {
+      const sp = SPEC.lips_rounded;
+      const onsetClip = smTlGestureOnsetClip(seq, starts, i, smTlIsLipBlocker);
+      score.push({
+        articulator: "lips", channel: "rounded", target: "vt-lips-rounded",
+        ownerIdx: i,
+        onset: Math.max(onsetClip, phStart - sp.lead),
+        peak: phStart, fade: phEnd, end: phEnd + sp.release,
+        peakStrength: smTlGestureStrength(ev, sp.baseStrength),
+        envelope: "smoothstep"
+      });
+    }
+
+    // ── VELUM open (nasals)
+    if (ev.feat.manner === "nasal") {
+      const sp = SPEC.velum_open;
+      const onsetClip = smTlGestureOnsetClip(seq, starts, i, null);
+      score.push({
+        articulator: "velum", channel: "open", target: "open",
+        ownerIdx: i,
+        onset: Math.max(onsetClip, phStart - sp.lead),
+        peak: phStart, fade: phEnd, end: phEnd + sp.release,
+        peakStrength: smTlGestureStrength(ev, sp.baseStrength),
+        envelope: "smoothstep"
+      });
+    }
+
+    // ── BACK / dorsum (velar, uvular)
+    const backTarget = SM_TL_BACK_GESTURE[ev.feat.place];
+    if (backTarget) {
+      const sp = SPEC.back_raised;
+      const onsetClip = smTlGestureOnsetClip(seq, starts, i, null);
+      score.push({
+        articulator: "back", channel: "raised", target: backTarget,
+        ownerIdx: i,
+        onset: Math.max(onsetClip, phStart - sp.lead),
+        peak: phStart, fade: phEnd, end: phEnd + sp.release,
+        peakStrength: smTlGestureStrength(ev, sp.baseStrength),
+        envelope: "smoothstep"
+      });
+    }
+
+    // ── BODY (vowels + palatal). Adaptive onset; diphthongs emit two.
+    const bodyPosture = smTlPostureFor(ev);
+    if (bodyPosture !== null) {
+      const sp = SPEC.body_posture;
+      const peakStrength = smTlGestureStrength(ev, sp.baseStrength);
+      const onset = smTlBodyOnsetForIdx(seq, starts, i);
+      const release = sp.release + (phStress === 1 ? 20 : 0);
+
+      if (ev.feat.type === "V" && ev.feat.place === "diphthong" &&
+          SM_TL_DIPHTHONG_GLIDE[ev.phoneme]) {
+        const glide = SM_TL_DIPHTHONG_GLIDE[ev.phoneme];
+        const pivot = smTlDiphthongPivot(ev.durMs, phStress);
+        const pivotT = phStart + pivot * ev.durMs;
+        // Start half — peaks at phoneme onset, fades through to pivot
+        score.push({
+          articulator: "body", channel: "posture", target: glide.start,
+          ownerIdx: i,
+          onset: onset,
+          peak: phStart, fade: pivotT, end: pivotT + 25,
+          peakStrength,
+          envelope: "asr"
+        });
+        // End half — peaks at pivot, sustains to phoneme end
+        score.push({
+          articulator: "body", channel: "posture", target: glide.end,
+          ownerIdx: i,
+          onset: pivotT - 25, peak: pivotT,
+          fade: phEnd, end: phEnd + release,
+          peakStrength,
+          envelope: "asr"
+        });
+      } else {
+        score.push({
+          articulator: "body", channel: "posture", target: bodyPosture,
+          ownerIdx: i,
+          onset: onset,
+          peak: phStart, fade: phEnd, end: phEnd + release,
+          peakStrength,
+          envelope: "smoothstep"
+        });
+      }
+    }
+
+    // ── TIP (alveolar/dental/postalveolar/retroflex). Affricates emit two.
+    const tipGesture = SM_TL_TIP_GESTURE[ev.feat.place];
+    const isAffricate = ev.feat.manner === "affricate" && SM_TL_AFFRICATE_PHASE[ev.phoneme];
+    if (isAffricate) {
+      const sp = SPEC.tip_local;
+      const peakStrength = smTlGestureStrength(ev, sp.baseStrength);
+      const def = SM_TL_AFFRICATE_PHASE[ev.phoneme];
+      const pivot = smTlAffricatePivot(ev.durMs);
+      const pivotT = phStart + pivot * ev.durMs;
+      score.push({
+        articulator: "tip", channel: "gesture", target: def.closure.tip,
+        ownerIdx: i,
+        onset: phStart - sp.lead, peak: phStart,
+        fade: pivotT, end: pivotT + 12,
+        peakStrength, envelope: "asr"
+      });
+      score.push({
+        articulator: "tip", channel: "gesture", target: def.release.tip,
+        ownerIdx: i,
+        onset: pivotT - 12, peak: pivotT,
+        fade: phEnd, end: phEnd + sp.release,
+        peakStrength, envelope: "asr"
+      });
+    } else if (tipGesture) {
+      const sp = SPEC.tip_local;
+      const peakStrength = smTlGestureStrength(ev, sp.baseStrength);
+      // Retroflex curls persist a little longer than other tip gestures.
+      const release = ev.feat.place === "retroflex" ? sp.release + 10 : sp.release;
+      score.push({
+        articulator: "tip", channel: "gesture", target: tipGesture,
+        ownerIdx: i,
+        onset: phStart - sp.lead, peak: phStart,
+        fade: phEnd, end: phEnd + release,
+        peakStrength, envelope: "smoothstep"
+      });
+    }
+
+    // ── AIRFLOW. Last procedural articulator to be unified. Each
+    // phoneme contributes one or more airflow gestures with channel ∈
+    // {stream, burst, aspirated}, where the channel maps to the CSS
+    // class applied on the airflow path:
+    //   stream    → .flowing             (continuous breath)
+    //   burst     → .release-burst       (voiced stop release)
+    //   aspirated → .release-burst.aspirated  (voiceless stop release)
+    // Gesture durations are tuned to sit close to the matching CSS
+    // animation duration so the class stays applied for the full visual
+    // sweep.
+    const flowKey = smTlAirflowKey(ev.feat.place, ev.feat.manner);
+    if (ev.feat.manner === "fricative" && flowKey) {
+      score.push({
+        articulator: "airflow", channel: "stream", target: flowKey,
+        ownerIdx: i,
+        onset: phStart - 15, peak: phStart, fade: phEnd, end: phEnd + 35,
+        peakStrength: 1.0, envelope: "smoothstep"
+      });
+    } else if (ev.feat.manner === "nasal") {
+      score.push({
+        articulator: "airflow", channel: "stream", target: "nasal",
+        ownerIdx: i,
+        onset: phStart - 30, peak: phStart, fade: phEnd, end: phEnd + 60,
+        peakStrength: 1.0, envelope: "smoothstep"
+      });
+    } else if (ev.feat.manner === "stop") {
+      const burstPath = SM_TL_STOP_RELEASE[ev.feat.place];
+      if (burstPath) {
+        const isVoiceless = ev.feat.voice === 0;
+        score.push({
+          articulator: "airflow",
+          channel: isVoiceless ? "aspirated" : "burst",
+          target: burstPath,
+          ownerIdx: i,
+          onset: phEnd - 5,
+          peak:  phEnd + 5,
+          fade:  phEnd + (isVoiceless ? 380 : 220),
+          end:   phEnd + (isVoiceless ? 440 : 280),
+          peakStrength: 1.0,
+          envelope: "asr"
+        });
+      }
+    } else if (ev.feat.manner === "affricate" && SM_TL_AFFRICATE_PHASE[ev.phoneme]) {
+      const def = SM_TL_AFFRICATE_PHASE[ev.phoneme];
+      if (def.release.flow) {
+        const pivot = smTlAffricatePivot(ev.durMs);
+        const pivotT = phStart + pivot * ev.durMs;
+        score.push({
+          articulator: "airflow", channel: "stream", target: def.release.flow,
+          ownerIdx: i,
+          onset: pivotT - 10, peak: pivotT, fade: phEnd, end: phEnd + 35,
+          peakStrength: 1.0, envelope: "smoothstep"
+        });
+      }
+    }
+
+    // ── VOICING (buzz). VOT emerges from gesture timing instead of a
+    // setTimeout: vowels following a voiceless stop have their peak
+    // shifted forward by SM_TL_VOT_VOICELESS_MS, so the buzz envelope
+    // naturally rises late after release of /p t k/.
+    if (ev.feat.voice === 1) {
+      const sp = SPEC.voicing;
+      const peakStrength = smTlGestureStrength(ev, sp.baseStrength);
+      let prevWasVoicelessStop = false;
+      for (let j = i - 1; j >= 0; j--) {
+        const pe = seq[j];
+        if (pe.isPause) break;
+        if (!pe.feat) continue;
+        prevWasVoicelessStop = (pe.feat.manner === "stop" && pe.feat.voice === 0);
+        break;
+      }
+      const votShift = prevWasVoicelessStop ? SM_TL_VOT_VOICELESS_MS : 0;
+      score.push({
+        articulator: "voicing", channel: "buzz", target: "buzz",
+        ownerIdx: i,
+        onset: phStart + votShift - sp.lead,
+        peak:  phStart + votShift + 5,
+        fade:  phEnd,
+        end:   phEnd + sp.release,
+        peakStrength,
+        envelope: "asr"  // soft linear attack reads as "energy emerging"
+      });
+    }
+  }
+  return score;
+}
+
+// Find the dominant gesture for an articulator/channel at time t. Returns
+// { target, strength, ownerIdx } or null. Strength is env × peakStrength,
+// so it varies continuously across the gesture's envelope rather than
+// stepping at boundaries — that's the "continuous strength interpolation."
+function smTlEvaluateScore(t, articulator, channel) {
+  const score = smTl._gestureScore;
+  if (!score || !score.length) return null;
+  let bestStrength = 0;
+  let bestGesture = null;
+  for (let i = 0; i < score.length; i++) {
+    const g = score[i];
+    if (g.articulator !== articulator) continue;
+    if (channel != null && g.channel !== channel) continue;
+    if (t < g.onset || t >= g.end) continue;
+    const env = smTlEnvelope(t, g);
+    if (env <= 0) continue;
+    const s = env * g.peakStrength;
+    if (s > bestStrength) {
+      bestStrength = s;
+      bestGesture = g;
+    }
+  }
+  return bestGesture
+    ? { target: bestGesture.target, strength: bestStrength, ownerIdx: bestGesture.ownerIdx }
+    : null;
+}
+
+// ── Gestural-score planner ─────────────────────────────────────────────
+// Per-frame, per-articulator planning. Now reads from the precomputed
+// score above instead of scanning the phoneme sequence directly. Each
+// articulator's strength varies continuously through its envelope —
+// gentle ramp-in during anticipation, peak through the phoneme, gentle
+// release into the carry-over window.
+
+function smTlPlanLips(svg, timeMs, idx) {
+  const upper = svg.querySelector(".vt-lip-upper");
+  if (!upper) return;
+  // If the current phoneme has already committed the lips to a closure
+  // or bite, planning yields — those gestures are precise at boundaries.
+  if (upper.classList.contains("vt-lips-closed") ||
+      upper.classList.contains("vt-lips-bite")) return;
+
+  const ev = smTlEvaluateScore(timeMs, "lips", "rounded");
+  const isRounded = upper.classList.contains("vt-lips-rounded");
+
+  // Threshold of ~0.05 keeps very faint envelope edges from triggering
+  // a class swap that wouldn't be visible anyway.
+  if (ev && ev.strength > 0.05) {
+    if (!isRounded ||
+        Math.abs((smTl._lipRoundedStrength || 0) - ev.strength) > 0.03) {
+      smTlSetLipState(svg, "vt-lips-rounded", ev.strength);
+    }
+  } else if (isRounded) {
+    smTlSetLipState(svg, null);
+  }
+}
+
+function smTlPlanVelum(svg, timeMs, idx) {
+  // Continuous-strength velum: env value drives how far the velum lifts
+  // (via opacity of its drop-shadow + transform magnitude indirectly).
+  // For simplicity here we still treat the class as binary open/closed,
+  // but threshold on the envelope strength so velum stays open across
+  // the full carry-over rather than snapping.
+  const ev = smTlEvaluateScore(timeMs, "velum", "open");
+  smTlSetVelumOpen(svg, !!(ev && ev.strength > 0.10));
+}
+
+function smTlPlanBack(svg, timeMs, idx) {
+  // Read the dorsum directly from the score. Envelope strength feeds
+  // both the transform magnitude and the opacity of the bloom — so
+  // anticipation reads as the dorsum gradually rising into view, and
+  // carry-over as it gradually settling rather than blinking off.
+  const ev = smTlEvaluateScore(timeMs, "back", "raised");
+  if (ev && ev.strength > 0.05) {
+    smTlSetTongueBack(svg, ev.target, ev.strength);
+  } else {
+    smTlSetTongueBack(svg, "vt-back-rest", 1);
+  }
+}
+
+// ── BODY planner (score-driven). Body posture is now read from the
+// gestural score per frame; activation no longer sets posture directly.
+// Through-tip-driven inheritance is automatic because vowel body
+// gestures' adaptive onset extends backward through any preceding
+// tip-driven consonants.
+function smTlPlanBody(svg, timeMs) {
+  const ev = smTlEvaluateScore(timeMs, "body", "posture");
+  if (ev && ev.strength > 0.05) {
+    smTlSetTonguePosture(svg, ev.target, ev.strength);
+  }
+  // No active body gesture — leave the body where it last was. Avoids
+  // snapping the body to rest during pauses or unknown phonemes.
+}
+
+// ── TIP planner (score-driven). Replaces the per-frame affricate phase
+// block: affricate closure→release happens automatically because two
+// gestures with crossing envelopes are emitted at score-build time.
+function smTlPlanTip(svg, timeMs) {
+  const ev = smTlEvaluateScore(timeMs, "tip", "gesture");
+  if (ev && ev.strength > 0.05) {
+    smTlSetTongueTip(svg, ev.target, ev.strength);
+  } else {
+    smTlSetTongueTip(svg, "vt-tip-rest", 1);
+  }
+}
+
+// ── VOICING planner (score-driven). Replaces the VOT setTimeout. The
+// .buzzing class still gates the cyclical ring animation, but the
+// buzz's element opacity is now driven CONTINUOUSLY from the voicing
+// gesture's envelope strength — so onset blooms, offset fades, and
+// VOT emerges as the soft attack of a delayed-onset gesture.
+function smTlPlanVoicing(svg, timeMs) {
+  const buzz = svg.querySelector(".vt-buzz");
+  if (!buzz) return;
+  const ev = smTlEvaluateScore(timeMs, "voicing", "buzz");
+  const strength = ev ? ev.strength : 0;
+  if (strength > 0.04) {
+    if (!buzz.classList.contains("buzzing")) buzz.classList.add("buzzing");
+    buzz.style.opacity = strength.toFixed(3);
+  } else {
+    if (buzz.classList.contains("buzzing")) buzz.classList.remove("buzzing");
+    buzz.style.opacity = "";
+  }
+}
+
+// ── AIRFLOW planner (score-driven). Determines the desired class for
+// each airflow path from the dominant gesture targeting it, and only
+// flips classes when the desired channel changes — so CSS animations
+// (which run per class addition) don't restart frame-by-frame.
+function smTlPlanAirflow(svg, timeMs) {
+  const score = smTl._gestureScore || [];
+  // path → channel name (or null)
+  const want = {};
+  for (let i = 0; i < score.length; i++) {
+    const g = score[i];
+    if (g.articulator !== "airflow") continue;
+    if (timeMs < g.onset || timeMs >= g.end) continue;
+    const env = smTlEnvelope(timeMs, g);
+    const s = env * g.peakStrength;
+    if (s < 0.10) continue;
+    const prev = want[g.target];
+    // Stream beats burst when both target the same path; otherwise
+    // higher-strength gesture wins.
+    if (!prev || prev.s < s) want[g.target] = { ch: g.channel, s };
+  }
+  const last = smTl._lastFlowState || {};
+  const next = {};
+  const paths = svg.querySelectorAll(".vt-airflow");
+  for (let i = 0; i < paths.length; i++) {
+    const path = paths[i];
+    const flowName = path.getAttribute("data-flow");
+    const w = want[flowName];
+    const prevCh = last[flowName] || null;
+    const nextCh = w ? w.ch : null;
+    if (nextCh === prevCh) {
+      if (nextCh) next[flowName] = nextCh;
+      continue;
+    }
+    path.classList.remove("flowing", "release-burst", "aspirated");
+    if (nextCh === "stream")    path.classList.add("flowing");
+    else if (nextCh === "burst") path.classList.add("release-burst");
+    else if (nextCh === "aspirated") {
+      path.classList.add("release-burst");
+      path.classList.add("aspirated");
+    }
+    if (nextCh) next[flowName] = nextCh;
+  }
+  smTl._lastFlowState = next;
+}
+
+// ── Active-gesture highlighting on the mini-bars. Per frame, set inline
+// opacity on every gesture rect from the current envelope value: the
+// dominant gesture brightens as the playhead crosses through it, and
+// returns to the static peak-strength baseline elsewhere. Synchronizes
+// the gestural-score visualization with the live tract.
+function smTlHighlightActiveGestures(timeMs) {
+  const traj = document.getElementById("sm-tl-traj");
+  if (!traj) return;
+  const score = smTl._gestureScore || [];
+  const bars = traj.querySelectorAll(".sm-tl-gesture-bar");
+  for (let i = 0; i < bars.length; i++) {
+    const bar = bars[i];
+    const idx = +bar.dataset.scoreIdx; // dataset auto-camelCases data-score-idx
+    if (!Number.isFinite(idx)) continue;
+    const g = score[idx];
+    if (!g) continue;
+    const baseOp = Math.min(0.7, g.peakStrength * 0.55);
+    if (timeMs < g.onset || timeMs >= g.end) {
+      bar.style.opacity = baseOp.toFixed(2);
+      continue;
+    }
+    const env = smTlEnvelope(timeMs, g);
+    const totalOp = Math.min(1.0, baseOp + env * 0.42);
+    bar.style.opacity = totalOp.toFixed(2);
+  }
+}
+
+function smTlPlanGestures(timeMs) {
+  const svg = smTl.tractSvg;
+  if (!svg || smTl.curIdx < 0 || smTl.curIdx >= smTl.seq.length) return;
+  // Order matters: body coupling (smTlSmoothCouplings) reads the lip
+  // strength set by smTlPlanLips, so lips run before body. Voicing,
+  // dorsum, velum, and airflow are independent of each other.
+  smTlPlanLips   (svg, timeMs, smTl.curIdx);
+  smTlPlanVelum  (svg, timeMs, smTl.curIdx);
+  smTlPlanBack   (svg, timeMs, smTl.curIdx);
+  smTlPlanBody   (svg, timeMs);
+  smTlPlanTip    (svg, timeMs);
+  smTlPlanVoicing(svg, timeMs);
+  smTlPlanAirflow(svg, timeMs);
+  smTlHighlightActiveGestures(timeMs);
+}
+
+function smTlSetLipState(svg, state, strength) {
   const upper = svg.querySelector(".vt-lip-upper");
   const lower = svg.querySelector(".vt-lip-lower");
-  if (upper) upper.classList.remove("vt-lips-closed", "vt-lips-bite");
-  if (lower) lower.classList.remove("vt-lips-closed", "vt-lips-bite");
-  if (!state) return;
-  if (upper) upper.classList.add(state);
-  if (lower) lower.classList.add(state);
+  const s = (strength == null) ? 1 : strength;
+  if (upper) {
+    upper.classList.remove("vt-lips-closed", "vt-lips-bite", "vt-lips-rounded");
+    if (state) upper.classList.add(state);
+    const base = state ? SM_TL_LIP_BASE.upper[state] : null;
+    upper.style.transform = base ? smTlBuildTransform(base, s) : "";
+  }
+  if (lower) {
+    lower.classList.remove("vt-lips-closed", "vt-lips-bite", "vt-lips-rounded");
+    if (state) lower.classList.add(state);
+    const base = state ? SM_TL_LIP_BASE.lower[state] : null;
+    lower.style.transform = base ? smTlBuildTransform(base, s) : "";
+  }
+  // Update coupling with body. If rounded strength changed materially,
+  // re-apply the body transform so its retraction stays in sync.
+  const newRounded = (state === "vt-lips-rounded") ? s : 0;
+  const oldRounded = smTl._lipRoundedStrength || 0;
+  if (Math.abs(newRounded - oldRounded) > 0.02) {
+    smTl._lipRoundedStrength = newRounded;
+    smTlApplyBodyTransform(svg);
+  }
 }
+
+// Diphthong glides — each phoneme actually moves through articulation
+// space rather than holding a single posture. Phonemes are split into a
+// "start" target (held for the first portion of duration) and an "end"
+// target (held into the back portion). Optional `endLips` lets the lip
+// gesture evolve mid-glide so /aʊ/ rounds late and /ɔɪ/ unrounds late;
+// when omitted the lip state set at activation is preserved.
+const SM_TL_DIPHTHONG_GLIDE = {
+  "aɪ": { start: "vt-pos-low-front",  end: "vt-pos-high-front" },
+  "aʊ": { start: "vt-pos-low-front",  end: "vt-pos-high-back",  endLips: "vt-lips-rounded" },
+  "oʊ": { start: "vt-pos-high-back",  end: "vt-pos-high-back" },
+  "eɪ": { start: "vt-pos-high-front", end: "vt-pos-high-front" },
+  "ɔɪ": { start: "vt-pos-high-back",  end: "vt-pos-high-front", endLips: null },
+  // R-colored diphthongs glide toward the rhotic-mid posture.
+  "ɑr": { start: "vt-pos-low-back",   end: "vt-pos-mid" },
+  "ɪr": { start: "vt-pos-high-front", end: "vt-pos-mid" },
+  "ɛr": { start: "vt-pos-high-front", end: "vt-pos-mid" },
+  "ɔr": { start: "vt-pos-high-back",  end: "vt-pos-mid",       endLips: null },
+  "ʊr": { start: "vt-pos-high-back",  end: "vt-pos-mid",       endLips: null }
+};
+// Glide pivot — fraction of phoneme duration before switching to the end
+// target. 0.40 gives both halves enough time to read; the remaining ~0.4
+// (before adaptive anticipation kicks in) holds the second target.
+const SM_TL_DIPHTHONG_PIVOT = 0.40;
+
+// Vowels (and diphthongs starting on a rounded vowel) that round the lips.
+// Back rounded vowels in English are /u, ʊ, o, ɔ/; /oʊ/ glides from a
+// rounded onset. /aʊ/ ends rounded but starts unrounded — leaving it
+// unrounded keeps the visualization honest at the syllable nucleus.
+const SM_TL_VOWEL_ROUNDED = {
+  "u": true, "ʊ": true, "o": true, "ɔ": true,
+  "oʊ": true, "ɔɪ": true, "ʊr": true, "ɔr": true
+};
 
 function smTlSetVelumOpen(svg, open) {
   const velum = svg.querySelector(".vt-velum");
   if (velum) velum.classList.toggle("vt-velum-open", !!open);
 }
 
-function smTlSetAirflow(svg, key) {
-  svg.querySelectorAll(".vt-airflow.flowing").forEach(el => el.classList.remove("flowing"));
-  if (!key) return;
-  const el = svg.querySelector(`.vt-airflow[data-flow="${key}"]`);
-  if (el) el.classList.add("flowing");
+// (smTlSetAirflow retired — airflow paths are now driven by
+// smTlPlanAirflow reading the gestural score every frame.)
+
+// Walk forward from an index to the next non-pause, feature-bearing event.
+// Used by anticipation + preview-glow to look one phoneme ahead.
+function smTlFindNextNonPauseIdx(fromIdx) {
+  for (let i = fromIdx + 1; i < smTl.seq.length; i++) {
+    const e = smTl.seq[i];
+    if (!e.isPause && e.feat) return i;
+  }
+  return -1;
+}
+
+// Walk backward to the most recent non-pause, feature-bearing event. Used
+// by gestural carry-over (lookback for "was the previous phoneme a target,
+// and are we still within its release window").
+function smTlFindPrevNonPauseIdx(fromIdx) {
+  for (let i = fromIdx - 1; i >= 0; i--) {
+    const e = smTl.seq[i];
+    if (e.isPause) return -1; // don't bleed across word boundaries
+    if (e.feat) return i;
+  }
+  return -1;
+}
+
+// Walk forward up to `depth` feature-bearing events, returning the first
+// that satisfies `predicate`. If `blockerPredicate` matches first the
+// search aborts (returns -1). Pauses always abort. This is the primitive
+// each articulator's planning uses to scan its lookahead window.
+function smTlFindNextWithin(fromIdx, depth, predicate, blockerPredicate) {
+  let count = 0;
+  for (let i = fromIdx + 1; i < smTl.seq.length && count < depth; i++) {
+    const e = smTl.seq[i];
+    if (e.isPause) return -1;
+    if (!e.feat) continue;
+    if (blockerPredicate && blockerPredicate(e)) return -1;
+    if (predicate(e)) return i;
+    count++;
+  }
+  return -1;
+}
+
+// Lip-committed phonemes — bilabial closures / labiodental bites — break
+// rounding planning because the lip articulator is already taken.
+function smTlIsLipBlocker(e) {
+  if (!e || !e.feat) return false;
+  const m = e.feat.manner, p = e.feat.place;
+  if (p === "bilabial" && (m === "stop" || m === "nasal")) return true;
+  if (p === "labiodental") return true;
+  return false;
+}
+
+// Resolve which BODY posture class a phoneme commands. Returns null when
+// the phoneme is tip-driven (alveolar/dental/postalveolar/retroflex) or
+// has no tongue-body command at all (bilabial, labiodental, glottal).
+// Callers must inherit body posture from neighbors when this returns null.
+function smTlPostureFor(ev) {
+  if (!ev || !ev.feat) return null;
+  const place = ev.feat.place;
+  // Tip-driven consonants don't move the body — they only flick the tip.
+  if (SM_TL_TIP_GESTURE[place]) return null;
+  let posture = SM_TL_BODY_POSTURE[place];
+  if (!posture) return null;
+  if (ev.feat.type === "V" && SM_TL_VOWEL_LOW[ev.phoneme]) {
+    posture = "vt-pos-low-" + SM_TL_VOWEL_LOW[ev.phoneme];
+  }
+  // Diphthongs activate on their glide's start target so the per-frame
+  // glide block can hand off cleanly into the end target at the pivot.
+  if (ev.feat.type === "V" && place === "diphthong" && SM_TL_DIPHTHONG_GLIDE[ev.phoneme]) {
+    posture = SM_TL_DIPHTHONG_GLIDE[ev.phoneme].start;
+  }
+  return posture;
+}
+
+// Effective body posture at a given seq index: the posture this phoneme
+// commands, OR (if it's tip-driven and silent on the body) the posture
+// of the next phoneme in the same word that DOES command the body.
+// Returns null if no command is in sight before a pause — caller should
+// leave the body unchanged in that case so it inherits from history.
+function smTlEffectiveBodyPosture(seqIdx) {
+  if (seqIdx < 0 || seqIdx >= smTl.seq.length) return null;
+  for (let i = seqIdx; i < smTl.seq.length; i++) {
+    const e = smTl.seq[i];
+    if (e.isPause || !e.feat) return null; // don't look across word boundaries
+    const p = smTlPostureFor(e);
+    if (p !== null) return p;
+  }
+  return null;
+}
+// (smTlEffectiveBodyOwner retired — strength now flows through the
+// gesture's own peakStrength field, computed at score-build time.)
+
+// Tip gesture for a phoneme; returns the rest gesture if the phoneme
+// doesn't engage the tip (vowels, bilabials, velars, etc.).
+function smTlTipGestureFor(ev) {
+  if (!ev || !ev.feat) return "vt-tip-rest";
+  return SM_TL_TIP_GESTURE[ev.feat.place] || "vt-tip-rest";
+}
+
+// Continuous-readiness ramp on the preview element. Computed per frame
+// from (progress - threshold) / (1 - threshold), clamped to [0..1]. This
+// replaces the prior binary .imminent toggle: the upcoming gesture's
+// preview now swells smoothly toward the boundary so the eye reads
+// "preparing" as a continuous attentional gradient.
+function smTlSetPreviewReadiness(svg, readiness) {
+  if (!svg) return;
+  // Clamp defensively even though the caller already does — guards against
+  // any future caller passing raw progress.
+  const r = readiness < 0 ? 0 : (readiness > 1 ? 1 : readiness);
+  const baseOp    = 0.16, peakOp    = 0.42;
+  const baseAlpha = 0.18, peakAlpha = 0.42;
+  const baseBlur  = 3,    peakBlur  = 6;
+  const op    = (baseOp    + r * (peakOp    - baseOp   )).toFixed(3);
+  const alpha = (baseAlpha + r * (peakAlpha - baseAlpha)).toFixed(3);
+  const blur  = (baseBlur  + r * (peakBlur  - baseBlur )).toFixed(2);
+  const filter = `drop-shadow(0 0 ${blur}px rgba(232,200,64,${alpha}))`;
+  svg.querySelectorAll(".vt-part.preview, .vt-vowel.preview").forEach(p => {
+    p.style.opacity = op;
+    p.style.filter  = filter;
+  });
+}
+
+// Adaptive anticipation threshold per phoneme. Returns the fractional
+// progress (0..1) at which the *next* phoneme's tongue posture should
+// start being applied. Borrowed conceptually from articulatory phonology:
+// each gesture has its own onset window, and stops in particular must
+// preserve closure until release while vowels can hold their canonical
+// position longer the more time they have.
+function smTlAnticipationThreshold(ev) {
+  // No anticipation during pauses or unknown events.
+  if (!ev || ev.isPause || !ev.feat) return 1.5;
+  const dur = ev.durMs;
+  const manner = ev.feat.manner;
+  // Stops: closure is the gesture. Anticipate the tongue only at the very
+  // end so we don't visually "open" the stop early.
+  if (manner === "stop") return 0.82;
+  // Affricates behave like stops at onset, fricatives at release —
+  // treat similarly to stops here.
+  if (manner === "affricate") return 0.78;
+  // Continuants (fricatives, nasals, approximants): anticipate earlier
+  // when short, a touch later when longer.
+  if (manner === "fricative" || manner === "approximant" || manner === "nasal") {
+    if (dur < 100) return 0.42;
+    if (dur < 160) return 0.50;
+    return 0.58;
+  }
+  // Vowels: anticipation proportional to how much canonical "hold" time
+  // we can afford. Long stressed vowels stay at peak longer. Diphthongs
+  // get pushed later so the glide's second target has time to register
+  // before we start retargeting toward the next phoneme.
+  if (ev.feat.type === "V") {
+    if (ev.feat.place === "diphthong") return 0.78;
+    if (dur > 280) return 0.68;
+    if (dur > 200) return 0.60;
+    if (dur > 130) return 0.52;
+    return 0.45;
+  }
+  return 0.55;
 }
 
 function smTlAirflowKey(place, manner) {
@@ -3087,9 +4259,54 @@ function smTlUpdateFrame(timeMs) {
     ph.setAttribute("x1", x);
     ph.setAttribute("x2", x);
   }
-  if (idx === smTl.curIdx) return;
-  smTl.curIdx = idx;
-  // Trajectory dot played/current/upcoming state — only flip on index change.
+
+  // Anticipatory coarticulation, gesture-style. Each phoneme is treated
+  // as a bundle of independent gestures (tongue / lip / velum / airflow /
+  // voicing) with their own onset windows. While stably inside the current
+  // phoneme, once we cross its adaptive anticipation threshold (computed
+  // per-phoneme by smTlAnticipationThreshold), we begin overlapping the
+  // upcoming gestures into the tail of the current phoneme:
+  //
+  //   • TONGUE: retargets toward the next phoneme's posture so vowel-vowel
+  //     and consonant-vowel transitions glide instead of snapping.
+  //   • VELUM:  if the upcoming phoneme is a nasal, the velum lifts ahead
+  //     of time. Phonetically this is what speakers do — nasalization
+  //     bleeds back into the preceding vowel.
+  //   • PREVIEW: the next-phoneme highlight zone gains an .imminent class
+  //     so the eye reads "preparing" instead of a static hint.
+  //
+  // Lips and airflow are NOT anticipated — opening lips early would break
+  // a stop, and airflow leakage before its phoneme would muddy the
+  // articulator timing. Fires at most once per phoneme via smTl.anticipated.
+  if (smTl.tractSvg && smTl.curIdx >= 0 && smTl.curIdx < smTl.seq.length &&
+      smTl.curIdx === idx /* only anticipate within the current phoneme */) {
+    const curEv = smTl.seq[smTl.curIdx];
+    if (curEv && !curEv.isPause && curEv.feat) {
+      const start = smTl.starts[smTl.curIdx];
+      const progress = curEv.durMs > 0 ? (timeMs - start) / curEv.durMs : 1;
+      const threshold = smTlAnticipationThreshold(curEv);
+      // Continuous readiness ramp on the preview element — fires every
+      // frame, climbs from 0 at threshold to 1 at the boundary.
+      const readiness = (progress - threshold) / (1 - threshold);
+      smTlSetPreviewReadiness(smTl.tractSvg, readiness);
+      // The previous per-frame affricate phase block, diphthong glide
+      // block, and one-shot body anticipation block all became redundant
+      // when body and tip were folded into the gestural score:
+      //   • Affricate phasing → score emits two tip gestures (closure +
+      //     release) whose envelopes cross at the adaptive pivot.
+      //   • Diphthong glide → score emits two body gestures (start + end)
+      //     with the same adaptive pivot.
+      //   • Body anticipation → body gestures' adaptive onset extends
+      //     backward through tip-driven consonants and into the prior
+      //     vowel's tail, so the planner naturally retargets early.
+      // Airflow (including affricate closure→release transitions) is now
+      // score-driven via smTlPlanAirflow.
+    }
+  }
+
+  if (idx !== smTl.curIdx) {
+    smTl.curIdx = idx;
+    // Trajectory dot played/current/upcoming state — only flip on index change.
   const traj = document.getElementById("sm-tl-traj");
   if (traj) {
     traj.querySelectorAll(".sm-tl-traj-dot").forEach(el => {
@@ -3101,11 +4318,12 @@ function smTlUpdateFrame(timeMs) {
     });
   }
 
-  // Highlight tract for current phoneme + drive the embodiment system
-  // (tongue posture, lip closure, velum opening, airflow stream + temporal
-  // guidance via .trailing afterglow and .focus-entered entry pulse).
+  // Highlight tract for current phoneme. Body, tip, lips (rounding),
+  // velum, dorsum, voicing, and airflow are all driven by the gestural-
+  // score planner every frame; activation only handles things that need
+  // crisp idx-change behavior — the activator-region highlight, the
+  // .stressed pulse, lip closure/bite, and trailing/preview state.
   const ev = smTl.seq[idx];
-  const prevEv = smTl.lastFrameEv || null;
   const svg = smTl.tractSvg;
   if (svg) {
     // Drop active off any previously-active region, but mark it .trailing so
@@ -3119,48 +4337,45 @@ function smTlUpdateFrame(timeMs) {
       if (el._trailTimer) clearTimeout(el._trailTimer);
       el._trailTimer = setTimeout(cleanup, 450);
     });
-    const buzz = svg.querySelector(".vt-buzz");
-    if (buzz) { buzz.classList.remove("buzzing"); buzz.style.opacity = "0"; }
+    // The buzz, airflow, and stop release burst are all score-driven
+    // now (smTlPlanVoicing + smTlPlanAirflow). Activation only handles
+    // the .stressed flash on the tongue elements — everything else
+    // flows through the gestural-score planner each frame.
     const tongue = svg.querySelector(".vt-tongue");
+    const tongueTip = svg.querySelector(".vt-tongue-tip");
+    const tongueBack = svg.querySelector(".vt-tongue-back");
     if (tongue) tongue.classList.remove("stressed");
-    smTlSetAirflow(svg, null);
+    if (tongueTip) tongueTip.classList.remove("stressed");
+    if (tongueBack) tongueBack.classList.remove("stressed");
 
-    // Stop release burst: if the previous phoneme was a stop, the moment
-    // we move off it is the moment of release — fire a brief outflow at
-    // its place so /p,b,t,d,k,g/ feel physically released.
-    if (prevEv && !prevEv.isPause && prevEv.feat &&
-        prevEv.feat.manner === "stop" &&
-        SM_TL_STOP_RELEASE[prevEv.feat.place] &&
-        // Don't double-fire if the new phoneme owns the same flow path
-        // (e.g. /t/ → /s/ both use the alveolar stream — let the fricative
-        // stream take over instead of stomping it with a one-shot burst).
-        smTlAirflowKey(ev.feat ? ev.feat.place : null, ev.feat ? ev.feat.manner : null)
-          !== SM_TL_STOP_RELEASE[prevEv.feat.place]) {
-      const burstEl = svg.querySelector(`.vt-airflow[data-flow="${SM_TL_STOP_RELEASE[prevEv.feat.place]}"]`);
-      if (burstEl) {
-        burstEl.classList.remove("flowing", "release-burst");
-        burstEl.getBoundingClientRect();
-        burstEl.classList.add("release-burst");
-        if (burstEl._burstTimer) clearTimeout(burstEl._burstTimer);
-        burstEl._burstTimer = setTimeout(() => burstEl.classList.remove("release-burst"), 280);
-      }
-    }
+    // Always start from a clean "preview" state — the next-phoneme glow
+    // is recomputed per phoneme transition. Trailing is cleared per-element
+    // above so it can fade out independently. Inline opacity/filter from
+    // the readiness ramp must be cleared here so they don't leak into the
+    // .active or .trailing rules that follow.
+    svg.querySelectorAll(".vt-part.preview, .vt-vowel.preview").forEach(p => {
+      p.classList.remove("preview", "imminent");
+      p.style.opacity = "";
+      p.style.filter  = "";
+    });
 
+    let el = null; // the active region for the *current* phoneme; needed below
     if (ev.isPause || !ev.feat) {
       // Pause / unknown → return to neutral posture.
       smTlSetTonguePosture(svg, "vt-pos-rest");
       smTlSetLipState(svg, null);
       smTlSetVelumOpen(svg, false);
     } else {
-      let el = null;
       if (ev.feat.type === "C") {
         el = svg.querySelector(`.vt-part[data-place="${ev.feat.place}"]`);
       } else {
         el = svg.querySelector(`.vt-vowel[data-vkey="${ev.feat.place}"]`);
       }
       if (el) {
-        // The new region is no longer "trailing" if it was — clear that.
-        el.classList.remove("trailing", "focus-entered");
+        // The new region inherits no stale gesture state from prior frames.
+        el.classList.remove("trailing", "focus-entered", "preview", "imminent");
+        el.style.opacity = "";
+        el.style.filter  = "";
         if (el._trailTimer) { clearTimeout(el._trailTimer); el._trailTimer = null; }
         el.classList.add("active");
         if (ev.stress === 1) el.classList.add("stress-1");
@@ -3171,40 +4386,67 @@ function smTlUpdateFrame(timeMs) {
         el.getBoundingClientRect();
         el.classList.add("focus-entered");
       }
-      // Stress pulse on the tongue itself: brief stroke-flash + brightness.
-      if (ev.stress === 1 && tongue) {
-        tongue.getBoundingClientRect();
-        tongue.classList.add("stressed");
+      // Stress pulse on the tongue: flash body, tip, and dorsum so the
+      // whole articulator system reads as the stressed beat. Dorsum may
+      // be invisible (vt-back-rest) — the flash is a no-op there.
+      if (ev.stress === 1) {
+        if (tongue)     { tongue.getBoundingClientRect();     tongue.classList.add("stressed"); }
+        if (tongueTip)  { tongueTip.getBoundingClientRect();  tongueTip.classList.add("stressed"); }
+        if (tongueBack) { tongueBack.getBoundingClientRect(); tongueBack.classList.add("stressed"); }
       }
-      if (ev.feat.voice && buzz) { buzz.classList.add("buzzing"); buzz.style.opacity = "1"; }
+      // Body, tip, dorsum, velum, lip rounding, voicing, and airflow are
+      // now ALL score-driven via smTlPlanGestures. The activation block
+      // here is responsible only for lip closure / bite — those are
+      // boundary-precise and don't yet flatten cleanly into envelopes.
 
-      // Embodiment: morph the tract geometry to match what the mouth is
-      // actually doing for this phoneme. CSS transitions smooth the morph
-      // so coarticulation between adjacent phonemes feels continuous.
       const place = ev.feat.place;
       const manner = ev.feat.manner;
-      // Tongue posture: place-driven by default, but low vowels (/æ/, /ɑ/,
-      // /ʌ/, /ɒ/, /a/) override to the low posture so vowel height reads
-      // correctly — without this every front vowel pulls the tongue up.
-      let posture = SM_TL_TONGUE_POSTURE[place] || "vt-pos-rest";
-      if (ev.feat.type === "V" && SM_TL_VOWEL_HEIGHT[ev.phoneme] === "low") {
-        posture = "vt-pos-low";
-      }
-      smTlSetTonguePosture(svg, posture);
+
       let lipState = null;
-      if (place === "bilabial" && (manner === "stop" || manner === "nasal" || manner === "approximant")) {
+      let lipStrengthBase = 1.0;
+      if (place === "bilabial" && (manner === "stop" || manner === "nasal")) {
         lipState = "vt-lips-closed";
+        lipStrengthBase = SM_TL_GESTURE_SPEC.lips_closed.baseStrength;
+      } else if (place === "bilabial" && manner === "approximant") {
+        lipState = "vt-lips-rounded";
+        lipStrengthBase = SM_TL_GESTURE_SPEC.lips_rounded.baseStrength;
       } else if (place === "labiodental") {
         lipState = "vt-lips-bite";
+        lipStrengthBase = SM_TL_GESTURE_SPEC.lips_bite.baseStrength;
+      } else if (ev.feat.type === "V" && SM_TL_VOWEL_ROUNDED[ev.phoneme]) {
+        lipState = "vt-lips-rounded";
+        lipStrengthBase = SM_TL_GESTURE_SPEC.lips_rounded.baseStrength;
       }
-      smTlSetLipState(svg, lipState);
-      // Nasals route airflow through the nose — the velum lifts.
-      smTlSetVelumOpen(svg, manner === "nasal");
-      // Airflow indicator (fricatives, nasals, plosive bursts).
-      smTlSetAirflow(svg, smTlAirflowKey(place, manner));
+      const lipStrength = smTlGestureStrength(ev, lipStrengthBase);
+      smTlSetLipState(svg, lipState, lipStrength);
     }
+
+    // Anticipation glow: hint at where the mouth is heading next so the
+    // viewer feels the trajectory before it arrives. Skipped if the next
+    // phoneme would land on the same articulator zone we're already on
+    // (would compete with .active).
+    const nextIdxPrev = smTlFindNextNonPauseIdx(idx);
+    if (nextIdxPrev !== -1) {
+      const nextEv = smTl.seq[nextIdxPrev];
+      let nextEl = null;
+      if (nextEv.feat.type === "C") {
+        nextEl = svg.querySelector(`.vt-part[data-place="${nextEv.feat.place}"]`);
+      } else {
+        nextEl = svg.querySelector(`.vt-vowel[data-vkey="${nextEv.feat.place}"]`);
+      }
+      if (nextEl && nextEl !== el) {
+        // Don't let stale gesture classes visually compete with the soft
+        // preview state. .imminent is reset so the preview begins quiet
+        // and brightens only when the adaptive threshold is crossed.
+        nextEl.classList.remove("trailing", "focus-entered", "imminent");
+        if (nextEl._trailTimer) { clearTimeout(nextEl._trailTimer); nextEl._trailTimer = null; }
+        nextEl.classList.add("preview");
+      }
+    }
+    // Reset the per-frame anticipation flag so the new phoneme can fire
+    // its own anticipation handoff later (after ≥60% progress).
+    smTl.anticipated = -1;
   }
-  smTl.lastFrameEv = ev;
   if (smTl.phonLabel) smTl.phonLabel.textContent = ev.isPause ? "·" : ev.phoneme;
   if (smTl.readout) {
     if (ev.isPause) smTl.readout.textContent = "— pause —";
@@ -3239,6 +4481,96 @@ function smTlUpdateFrame(timeMs) {
     const wEl = strip.querySelector(`.sm-tl-word[data-word-idx="${wIdx}"]`);
     if (wEl) wEl.classList.add("current");
   }
+  } // close: if (idx !== smTl.curIdx)
+
+  // Per-frame gestural-score planner — runs every frame, after any
+  // idx-change activation has settled. Lips/velum/dorsum each evaluate
+  // their own lookahead/lookback windows with ms-based lead/release
+  // timing, replacing the prior one-shot anticipation + setTimeout
+  // carry-over with a unified, distributed planning pass.
+  smTlPlanGestures(timeMs);
+  // Coupling decay: smooth each source articulator's strength via a
+  // per-source single-pole filter, sum couplings into the body's
+  // transform offset, and re-render only when motion is material.
+  smTlSmoothCouplings(timeMs);
+}
+
+// ── Coupling matrix ────────────────────────────────────────────────────
+// Generalizes the previous single lip→body coupling. Each entry says:
+// "when source articulator is active at strength s, bias target's
+// transform by (ax·s, ay·s), smoothed with time-constant τ."
+//
+// Subtle on purpose. The target for now is always the body, but the
+// shape is general enough to add jaw, dorsum, lip biases later.
+const SM_TL_COUPLINGS = [
+  // Rounded lips lengthen the front cavity → body sits a hair further back.
+  { source: "lip_rounded",   target: "body", ax: -1.4, ay: 0, tau: 60 },
+  // Velar dorsum raise → body biased slightly back to make room.
+  { source: "back_velar",    target: "body", ax: -0.8, ay: 0, tau: 80 },
+  // Retroflex tip curl → body retracts subtly with the tip.
+  { source: "tip_retroflex", target: "body", ax: -0.6, ay: 0, tau: 80 }
+];
+
+function smTlSmoothCouplings(timeMs) {
+  const last = smTl._lastSmoothTime;
+  smTl._lastSmoothTime = timeMs;
+  const sources = smTl._smoothedSources || (smTl._smoothedSources = {});
+
+  // Collect current target values from articulator state.
+  const targetVals = { lip_rounded: smTl._lipRoundedStrength || 0,
+                       back_velar: 0, tip_retroflex: 0 };
+  const backEv = smTlEvaluateScore(timeMs, "back", "raised");
+  if (backEv && backEv.target === "vt-back-velar") targetVals.back_velar = backEv.strength;
+  const tipEv = smTlEvaluateScore(timeMs, "tip", "gesture");
+  if (tipEv && tipEv.target === "vt-tip-retroflex") targetVals.tip_retroflex = tipEv.strength;
+
+  if (last == null) {
+    // First frame — snap.
+    sources.lip_rounded   = targetVals.lip_rounded;
+    sources.back_velar    = targetVals.back_velar;
+    sources.tip_retroflex = targetVals.tip_retroflex;
+  } else {
+    const dt = timeMs - last;
+    if (dt <= 0 || dt > 500) {
+      // Big jump (scrub or resume) — snap rather than smooth.
+      sources.lip_rounded   = targetVals.lip_rounded;
+      sources.back_velar    = targetVals.back_velar;
+      sources.tip_retroflex = targetVals.tip_retroflex;
+    } else {
+      // Per-source single-pole smoothing with the source's τ.
+      for (let i = 0; i < SM_TL_COUPLINGS.length; i++) {
+        const c = SM_TL_COUPLINGS[i];
+        const alpha = 1 - Math.exp(-dt / (c.tau || 60));
+        const cur = sources[c.source] || 0;
+        const tgt = targetVals[c.source] || 0;
+        sources[c.source] = cur + (tgt - cur) * alpha;
+      }
+    }
+  }
+
+  // Sum coupling deltas per target. Currently only "body" is a target.
+  let bodyTx = 0, bodyTy = 0;
+  for (let i = 0; i < SM_TL_COUPLINGS.length; i++) {
+    const c = SM_TL_COUPLINGS[i];
+    if (c.target !== "body") continue;
+    const v = sources[c.source] || 0;
+    bodyTx += v * (c.ax || 0);
+    bodyTy += v * (c.ay || 0);
+  }
+
+  // Re-render body transform if the coupling moved materially. Threshold
+  // avoids per-frame DOM dirtying for sub-pixel changes.
+  const oldTx = smTl._bodyCouplingTx || 0;
+  const oldTy = smTl._bodyCouplingTy || 0;
+  if (Math.abs(bodyTx - oldTx) > 0.04 || Math.abs(bodyTy - oldTy) > 0.04) {
+    smTl._bodyCouplingTx = bodyTx;
+    smTl._bodyCouplingTy = bodyTy;
+    smTlApplyBodyTransform(smTl.tractSvg);
+  }
+
+  // Maintain legacy field for any code still reading the smoothed lip
+  // value directly (e.g. tooltip diagnostics). Optional.
+  smTl._lipRoundedSmooth = sources.lip_rounded || 0;
 }
 
 // ══════════════════════════════════
