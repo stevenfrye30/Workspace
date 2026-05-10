@@ -589,6 +589,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-tl-phon[data-place="central-vowel"]{background:#d2c0a5}
 .sm-tl-phon[data-place="back-vowel"]{background:#b499d9}
 .sm-tl-phon[data-place="diphthong"]{background:linear-gradient(90deg,#f7cf74,#b499d9)}
+/* Duration-scaled blocks: width is set inline (style.minWidth + flexBasis).
+   Stress emphasis: a thin gold tap-mark above the tile (no scale, no
+   glow noise — reads like an accent dot above a beat). */
+.sm-tl-phon[data-stress="primary"]   { box-shadow: inset 0 3px 0 var(--gold); padding-top:7px }
+.sm-tl-phon[data-stress="secondary"] { box-shadow: inset 0 2px 0 rgba(232,200,64,0.45); padding-top:6px }
+.sm-tl-phon[data-stress="primary"].current,
+.sm-tl-phon[data-stress="secondary"].current { box-shadow: inset 0 3px 0 var(--gold), 0 0 0 2px var(--gold) }
 
 /* ── Stats view ── */
 .sm-stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
@@ -2591,8 +2598,7 @@ function smTlBuildTrajectory(seq, starts, totalMs, processed) {
   if (run.length) polylineRuns.push(run);
   polylineRuns.forEach(r => {
     if (r.length < 2) return;
-    const pts = r.map(p => `${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(" ");
-    parts.push(`<polyline class="sm-tl-traj-line" points="${pts}"/>`);
+    parts.push(`<path class="sm-tl-traj-line" d="${smTlSmoothPath(r)}"/>`);
   });
 
   // Phoneme dots.
@@ -2613,6 +2619,35 @@ function smTlBuildTrajectory(seq, starts, totalMs, processed) {
 
 function smTlEscape(s) {
   return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+}
+
+// Catmull-Rom → Bezier conversion. Returns an SVG path `d` string that passes
+// smoothly through every input point. Used for the articulation trajectory:
+// straight polyline segments made the path read as discrete jumps; smooth
+// curves communicate that the mouth is gliding continuously between
+// articulation places. Pauses still break the curve — each "run" of
+// non-pause phonemes is converted independently.
+function smTlSmoothPath(points) {
+  if (!points || points.length === 0) return "";
+  if (points.length === 1) return `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+  if (points.length === 2) {
+    return `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)} L ${points[1].x.toFixed(1)} ${points[1].y.toFixed(1)}`;
+  }
+  let d = `M ${points[0].x.toFixed(1)} ${points[0].y.toFixed(1)}`;
+  // Tension factor: 6 = standard Catmull-Rom; higher = tighter (less swing).
+  const T = 6.5;
+  for (let i = 0; i < points.length - 1; i++) {
+    const p0 = points[i - 1] || points[i];
+    const p1 = points[i];
+    const p2 = points[i + 1];
+    const p3 = points[i + 2] || p2;
+    const c1x = p1.x + (p2.x - p0.x) / T;
+    const c1y = p1.y + (p2.y - p0.y) / T;
+    const c2x = p2.x - (p3.x - p1.x) / T;
+    const c2y = p2.y - (p3.y - p1.y) / T;
+    d += ` C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${p2.x.toFixed(1)} ${p2.y.toFixed(1)}`;
+  }
+  return d;
 }
 
 function smRenderTimeline(processed, byLine) {
@@ -2780,6 +2815,17 @@ function smRenderTimeline(processed, byLine) {
       b.textContent = ev.phoneme;
       b.dataset.seqIdx = String(i);
       if (ev.feat) b.dataset.place = ev.feat.place;
+      // Width proportional to duration. Floor of 24px keeps short consonants
+      // readable and clickable; cap at 96px so a single long vowel doesn't
+      // dominate the strip. Same px/ms scale (0.15) used across the strip
+      // so blocks remain visually comparable.
+      const w = Math.max(24, Math.min(96, Math.round(ev.durMs * 0.15)));
+      b.style.minWidth = w + "px";
+      b.style.flexBasis = w + "px";
+      // Stress emphasis — gold tap-mark above stressed phonemes (no scale,
+      // no glow noise; reads like an accent dot in a music staff).
+      if (ev.stress === 1) b.dataset.stress = "primary";
+      else if (ev.stress === 2) b.dataset.stress = "secondary";
       b.title = smDescribe(ev.phoneme, ev.feat);
       b.addEventListener("click", () => smTlSeekToIndex(i));
       phons.appendChild(b);
