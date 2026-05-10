@@ -707,6 +707,52 @@ main p { line-height:1.7; }
   text-align:center; font-style:italic; opacity:0; transition:opacity .2s;
 }
 .god-image:hover .god-image-caption { opacity:1; }
+
+/* Multi-image carousel — restrained museum chrome, only when 2+ images.
+   Hover-revealed arrows on left/right edges; always-faintly-visible dots
+   at bottom; caption stays visible to show current plate. */
+.god-image[data-multi] .god-image-caption {
+  opacity:0.85; padding-bottom:14px;
+}
+.god-image[data-multi]:hover .god-image-caption,
+.god-image[data-multi]:focus-within .god-image-caption { opacity:1; }
+.god-image-prev, .god-image-next {
+  position:absolute; top:50%; transform:translateY(-50%);
+  background:rgba(0,0,0,0.55);
+  border:1px solid rgba(229,193,88,0.30);
+  color:var(--gold); font-size:18px; line-height:1;
+  width:22px; height:30px; cursor:pointer;
+  opacity:0; transition:opacity .15s;
+  z-index:3; padding:0; font-family:inherit;
+  display:flex; align-items:center; justify-content:center;
+}
+.god-image-prev { left:0; border-left:none; border-radius:0 3px 3px 0; }
+.god-image-next { right:0; border-right:none; border-radius:3px 0 0 3px; }
+.god-image[data-multi]:hover .god-image-prev,
+.god-image[data-multi]:hover .god-image-next,
+.god-image[data-multi]:focus-within .god-image-prev,
+.god-image[data-multi]:focus-within .god-image-next { opacity:0.85; }
+.god-image-prev:hover, .god-image-next:hover { opacity:1; }
+.god-image-prev:focus-visible, .god-image-next:focus-visible {
+  opacity:1; outline:2px solid var(--gold); outline-offset:1px;
+}
+.god-image-dots {
+  position:absolute; bottom:4px; left:0; right:0;
+  display:flex; justify-content:center; gap:5px;
+  z-index:3; padding:0;
+  pointer-events:auto;
+}
+.god-image-dot {
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(229,193,88,0.35);
+  border:1px solid rgba(0,0,0,0.45);
+  cursor:pointer; padding:0;
+  transition:background .15s, transform .15s;
+}
+.god-image-dot.active { background:var(--gold); }
+.god-image-dot:hover { transform:scale(1.3); }
+.god-image-dot:focus-visible { outline:1px solid var(--gold); outline-offset:1px; }
+.god-image[data-multi]:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
 .focus-center-card .fpantheon {
   color:var(--gold-deep); font-size:12.5px; font-variant:small-caps; letter-spacing:2.4px; font-weight:bold;
   margin-bottom:8px;
@@ -1636,23 +1682,84 @@ function glyphForGod(g) {
 
 // Build the <div> for a god's image slot. If cached, render immediately;
 // otherwise show glyph + fire async fetch that will replace when ready.
-function godImageHtml(g, size = 'focus') {
+// Resolve a god's images. Curator-provided g.images takes priority — when
+// present, we never queue a Wikipedia fetch. Otherwise fall through to the
+// existing single-image Wikipedia cache. Returns null when nothing is
+// available yet (glyph fallback / pending state).
+function godImagesFor(g) {
+  if (Array.isArray(g.images) && g.images.length) {
+    return g.images
+      .filter(im => im && im.src)
+      .map(im => ({ src: im.src, caption: im.caption || 'Wikipedia' }));
+  }
   const cached = WIKI_IMAGE_CACHE.get(g.id);
+  if (cached && cached.url) return [{ src: cached.url, caption: 'Wikipedia' }];
+  return null;
+}
+
+function godImageHtml(g, size = 'focus') {
+  const images = godImagesFor(g);
+  const sizeClass = size === 'tiny' ? ' tiny' : '';
   const altText = (g.domains && g.domains.length)
     ? `${g.name} — depiction from Wikipedia`
     : `${g.name} — depiction`;
-  const sizeClass = size === 'tiny' ? ' tiny' : '';
-  if (cached && cached.url) {
-    return `<div class="god-image${sizeClass}" data-gid="${g.id}">
-      <img src="${cached.url}" alt="${escapeAttr(altText)}" onerror="this.parentElement.outerHTML = godGlyphHtml(GODS_BY_ID['${g.id}'], false, '${size}')">
-      <div class="god-image-caption" aria-hidden="true">Wikipedia</div>
+
+  if (!images) {
+    const cached = WIKI_IMAGE_CACHE.get(g.id);
+    if (cached && cached.url === null) return godGlyphHtml(g, false, size);
+    scheduleImageFetch(g);
+    return godGlyphHtml(g, true, size);
+  }
+
+  // Tiny cards always show only the first image — no carousel chrome.
+  if (size === 'tiny') {
+    const first = images[0];
+    return `<div class="god-image tiny" data-gid="${g.id}">
+      <img src="${first.src}" alt="${escapeAttr(altText)}" onerror="this.parentElement.outerHTML = godGlyphHtml(GODS_BY_ID['${g.id}'], false, '${size}')">
+      <div class="god-image-caption" aria-hidden="true">${escapeAttr(first.caption)}</div>
     </div>`;
   }
-  if (cached && cached.url === null) {
-    return godGlyphHtml(g, false, size);
-  }
-  scheduleImageFetch(g);
-  return godGlyphHtml(g, true, size);
+
+  const initial = images[0];
+  const isMulti = images.length > 1;
+  const multiAttr = isMulti ? ' data-multi="1" tabindex="0"' : '';
+  const arrowsHtml = isMulti
+    ? `<button class="god-image-prev" type="button" aria-label="Previous image">‹</button>
+       <button class="god-image-next" type="button" aria-label="Next image">›</button>`
+    : '';
+  const dotsHtml = isMulti
+    ? `<div class="god-image-dots" role="tablist" aria-label="Cycle images">${
+        images.map((_, i) => `<button class="god-image-dot${i === 0 ? ' active' : ''}" data-i="${i}" type="button" aria-label="Image ${i+1} of ${images.length}"></button>`).join('')
+      }</div>`
+    : '';
+  return `<div class="god-image${sizeClass}" data-gid="${g.id}" data-idx="0"${multiAttr}>
+    <img src="${initial.src}" alt="${escapeAttr(altText)}" onerror="this.parentElement.outerHTML = godGlyphHtml(GODS_BY_ID['${g.id}'], false, '${size}')">
+    <div class="god-image-caption" aria-hidden="true">${escapeAttr(initial.caption)}</div>
+    ${arrowsHtml}
+    ${dotsHtml}
+  </div>`;
+}
+
+function cycleGodImage(godImageEl, delta) {
+  if (!godImageEl) return;
+  const gid = godImageEl.dataset.gid;
+  const g = gid ? GODS_BY_ID[gid] : null;
+  if (!g) return;
+  const images = godImagesFor(g);
+  if (!images || images.length < 2) return;
+  let idx = parseInt(godImageEl.dataset.idx || '0', 10);
+  idx = (idx + delta + images.length) % images.length;
+  godImageEl.dataset.idx = idx;
+  const img = godImageEl.querySelector('img');
+  const cap = godImageEl.querySelector('.god-image-caption');
+  if (img) img.src = images[idx].src;
+  if (cap) cap.textContent = images[idx].caption;
+  godImageEl.querySelectorAll('.god-image-dot').forEach((d, i) => d.classList.toggle('active', i === idx));
+}
+function setGodImageIndex(godImageEl, idx) {
+  if (!godImageEl) return;
+  const cur = parseInt(godImageEl.dataset.idx || '0', 10);
+  cycleGodImage(godImageEl, idx - cur);
 }
 
 function godGlyphHtml(g, pending = false, size = 'focus') {
@@ -1896,9 +2003,21 @@ function wireModal() {
     if (!e.target.closest('#imgLightbox')) closeImgLightbox();
   });
 
+  // Multi-image carousel controls (delegate; runs before lightbox handler).
+  document.addEventListener('click', e => {
+    const prev = e.target.closest('.god-image-prev');
+    if (prev) { e.stopPropagation(); cycleGodImage(prev.closest('.god-image'), -1); return; }
+    const next = e.target.closest('.god-image-next');
+    if (next) { e.stopPropagation(); cycleGodImage(next.closest('.god-image'), 1); return; }
+    const dot = e.target.closest('.god-image-dot');
+    if (dot) { e.stopPropagation(); setGodImageIndex(dot.closest('.god-image'), parseInt(dot.dataset.i, 10)); return; }
+  });
+
   // Open lightbox on any god image click (use delegation so newly-rendered images work).
   // Skip tiny images — they're inside cards that already navigate on click.
+  // Skip carousel control clicks — they handle themselves above.
   document.addEventListener('click', e => {
+    if (e.target.closest('.god-image-prev, .god-image-next, .god-image-dot')) return;
     const godImg = e.target.closest('.god-image');
     if (!godImg || godImg.classList.contains('tiny')) return;
     const img = godImg.querySelector('img');
@@ -1906,6 +2025,15 @@ function wireModal() {
     const gid = godImg.dataset.gid;
     const g = gid ? GODS_BY_ID[gid] : null;
     openImgLightbox(img.src, img.alt || (g && g.name) || '', g);
+  });
+
+  // Keyboard: ←/→ cycle images when a multi-image carousel has focus.
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+    const t = document.activeElement;
+    if (!t || !t.classList || !t.classList.contains('god-image') || !t.dataset.multi) return;
+    e.preventDefault();
+    cycleGodImage(t, e.key === 'ArrowLeft' ? -1 : 1);
   });
 
   // Esc closes lightbox first, then modal
