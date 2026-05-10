@@ -1361,76 +1361,109 @@ select:focus:not(:focus-visible),
 }
 .img-lightbox-close:hover { opacity:1; transform:rotate(90deg); }
 
-/* Tree inspector — appears when a node is clicked in Full Tree mode.
-   Persistent counterpart to the ephemeral hover preview. Floating
-   bottom-anchored panel; doesn't push tree layout. Closes on ✕ / Esc /
-   re-clicking the same node. "Focus this figure" is the explicit
-   gesture for switching into Focus view. */
-.tree-inspector {
-  position:fixed;
-  bottom:18px; left:50%; transform:translateX(-50%);
+/* Embedded shrine — local revelation INSIDE the cosmology, not a detached
+   panel. When a node is selected, a small popover-style shrine is injected
+   directly into the node, anchored beneath it with an upward-pointing gold
+   notch. The figure is examined in place; the cosmology stays continuous
+   around it. Esc / × / re-clicking the node clears it. */
+.full-tree-node.selected { z-index:8; }
+.tn-shrine {
+  position:absolute;
+  top:calc(100% + 8px); left:50%;
+  transform:translateX(-50%);
+  width:max(220px, 100%);
+  max-width:min(280px, calc(100vw - 32px));
   background:linear-gradient(180deg, var(--panel), var(--panel2));
   border:1px solid var(--gold-soft);
-  border-radius:12px;
-  padding:14px 18px 14px 22px;
-  z-index:80;
-  box-shadow:0 14px 36px rgba(0,0,0,0.55), 0 0 0 1px var(--gold-faint);
-  display:none;
-  max-width:min(720px, 92vw);
-  align-items:center;
-  gap:18px;
+  border-radius:6px;
+  padding:12px 14px 11px;
+  z-index:9;
+  box-shadow:
+    0 10px 28px rgba(0,0,0,0.55),
+    0 0 0 1px var(--gold-faint);
+  text-align:left;
+  cursor:default;
 }
-.tree-inspector.open { display:flex; }
-.tree-inspector-info { flex:1; min-width:0; }
-.tree-inspector .ti-name {
-  font-size:16px; color:var(--gold); font-weight:bold;
-  letter-spacing:0.3px; line-height:1.2;
+/* Notch pointing up at the parent node — gives the shrine the feel of
+   physically emerging from the figure, not floating beside it. */
+.tn-shrine::before,
+.tn-shrine::after {
+  content:''; position:absolute; left:50%; transform:translateX(-50%);
+  width:0; height:0;
+  border-left:7px solid transparent;
+  border-right:7px solid transparent;
 }
-.tree-inspector .ti-meta {
-  font-size:11px; color:var(--muted); font-style:italic;
-  margin-top:4px; letter-spacing:0.2px;
+.tn-shrine::before {
+  bottom:100%;
+  border-bottom:7px solid var(--gold-soft);
 }
-.tree-inspector .ti-meta .ti-sep { opacity:0.5; }
-.tree-inspector .ti-arch {
-  font-size:12px; color:var(--gold-deep); font-style:italic;
-  margin-top:4px; font-variant:small-caps; letter-spacing:1.2px;
+.tn-shrine::after {
+  bottom:calc(100% - 1px);
+  border-bottom:7px solid var(--panel);
 }
-.tree-inspector .ti-domains {
-  font-size:11.5px; color:var(--cyan); margin-top:3px;
+.tn-shrine .ts-name {
+  font-size:14.5px; color:var(--gold); font-weight:bold;
+  letter-spacing:0.3px; line-height:1.25; margin-bottom:3px;
+}
+.tn-shrine .ts-meta {
+  font-size:10.5px; color:var(--muted); font-style:italic;
+  letter-spacing:0.2px;
+}
+.tn-shrine .ts-meta .ts-sep { opacity:0.5; margin:0 0.1em; }
+.tn-shrine .ts-arch {
+  font-size:11px; color:var(--gold-deep); font-style:italic;
+  font-variant:small-caps; letter-spacing:1.4px; margin-top:6px;
+}
+.tn-shrine .ts-domains {
+  font-size:11px; color:var(--cyan); margin-top:5px;
   font-style:italic; opacity:0.85;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
-.tree-inspector .ti-desc {
-  font-size:12.5px; color:var(--ink); margin-top:6px;
-  opacity:0.82; line-height:1.45;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+.tn-shrine .ts-desc {
+  font-size:11.5px; color:var(--ink); margin-top:7px;
+  opacity:0.85; line-height:1.5;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
   overflow:hidden;
+  text-align:left;
 }
-.tree-inspector-actions {
-  display:flex; gap:6px; flex-shrink:0; align-items:center;
+.tn-shrine .ts-actions {
+  display:flex; gap:5px; margin-top:9px; padding-top:9px;
+  border-top:1px solid var(--gold-faint);
+  align-items:center;
 }
-.tree-inspector .ti-btn {
+.tn-shrine .ts-btn {
   background:var(--panel2); border:1px solid var(--line); color:var(--ink);
-  padding:8px 14px; border-radius:6px;
-  font-family:inherit; font-size:11.5px; letter-spacing:1.2px;
+  padding:6px 12px; border-radius:5px;
+  font-family:inherit; font-size:10.5px; letter-spacing:1.1px;
   font-variant:small-caps; font-weight:bold;
   cursor:pointer; transition:all .15s;
 }
-.tree-inspector .ti-btn:hover {
+.tn-shrine .ts-btn:hover {
   border-color:var(--gold-soft); color:var(--gold);
-  background:rgba(229,193,88,0.05);
+  background:rgba(229,193,88,0.06);
 }
-.tree-inspector .ti-btn-close {
-  width:32px; padding:8px 0;
-  font-size:18px; letter-spacing:0;
+.tn-shrine .ts-btn-close {
+  margin-left:auto;
+  width:26px; padding:6px 0;
+  font-size:15px; letter-spacing:0;
   font-variant:normal; font-weight:normal;
 }
-@media (max-width: 700px) {
-  .tree-inspector { left:8px; right:8px; transform:none; bottom:10px; max-width:none; padding:12px 14px; gap:12px; }
-  .tree-inspector.open { flex-wrap:wrap; }
-  .tree-inspector-info { flex:1 1 100%; min-width:0; }
-  .tree-inspector-actions { flex:1 1 100%; justify-content:flex-end; }
-  .tree-inspector .ti-name { font-size:14.5px; }
+
+/* Mixed-gen placeholder — when no dominant ontological category exists for
+   a generation, drop the named-stratum label entirely and show a faint
+   middle dot. Maintains spatial rhythm without claiming a stratum that
+   isn't there. */
+.full-tree-gen-label.gen-label-mixed {
+  color:var(--muted);
+  opacity:0.35;
+  font-size:18px;
+  letter-spacing:0;
+  font-style:normal;
+  font-variant:normal;
+  font-weight:normal;
+  text-shadow:none;
+  background:transparent;
+  border-right:1px solid rgba(229,193,88,0.10);
 }
 
 /* Initial loading state */
@@ -1716,23 +1749,6 @@ select:focus:not(:focus-visible),
 </section>
 
 </main>
-
-<div class="tree-inspector" id="treeInspector" role="region" aria-label="Selected figure inspector">
-  <div class="tree-inspector-info">
-    <div class="ti-name"></div>
-    <div class="ti-meta">
-      <span class="ti-pantheon"></span><span class="ti-sep"> · </span><span class="ti-era"></span><span class="ti-sep"> · </span><span class="ti-cat"></span>
-    </div>
-    <div class="ti-arch"></div>
-    <div class="ti-domains"></div>
-    <div class="ti-desc"></div>
-  </div>
-  <div class="tree-inspector-actions">
-    <button class="ti-btn" data-action="focus" type="button">Focus</button>
-    <button class="ti-btn" data-action="details" type="button">Details</button>
-    <button class="ti-btn ti-btn-close" data-action="close" type="button" aria-label="Close inspector">×</button>
-  </div>
-</div>
 
 <div class="img-lightbox-bg" id="imgLightboxBg" role="dialog" aria-modal="true" aria-label="Enlarged image">
   <button class="img-lightbox-close" id="imgLightboxClose" aria-label="Close enlarged image">×</button>
@@ -2195,26 +2211,6 @@ function wireModal() {
     }
   });
 
-  // Tree inspector button actions
-  const treeInspector = document.getElementById('treeInspector');
-  if (treeInspector) {
-    treeInspector.addEventListener('click', e => {
-      const btn = e.target.closest('.ti-btn');
-      if (!btn) return;
-      const gid = treeInspector.dataset.gid;
-      const action = btn.dataset.action;
-      if (action === 'focus' && gid) {
-        // Capture the gid before clearing selection — clearTreeSelection
-        // resets currentSelectedId, which we don't want to read after.
-        clearTreeSelection();
-        setFocus(gid); // setFocus's existing logic flips Full Tree → Focus mode
-      } else if (action === 'details' && gid) {
-        openGod(gid);
-      } else if (action === 'close') {
-        clearTreeSelection();
-      }
-    });
-  }
 }
 
 function openImgLightbox(url, alt, g) {
@@ -3426,20 +3422,25 @@ function renderFullTreeFromState(state) {
     return `<div class="family-block" data-primary="${n.primary}">${nodeHtml(g1)}</div>`;
   };
 
-  // Compute stratum per generation. Where a clear ontology exists (≥55%
-  // of figures share a category), surface the comparative label alongside
-  // the depth count. When the stratum changes from one gen to the next,
-  // the row gains a slightly stronger top rule — a mythological boundary,
-  // not just another numerical step.
+  // Stratum labels read as mythic orders, not generation indices. When a
+  // clear ontology exists (≥55% of figures share a category), the row gets
+  // the order's name alone — "Primordials", "Elder Powers", "Major
+  // Divinities", "Heroes", "Deified Mortals". When the gen is mixed (no
+  // dominant category), a faint placeholder dot maintains spatial rhythm
+  // without claiming a stratum that isn't there. When the dominant
+  // stratum changes between adjacent gens, the row carries a stronger
+  // top rule + ❋ ornament (existing transition treatment).
   let prevStratum = null;
   const html = generations.map(gn => {
     const stratum = dominantStratumLabel(nucleiByGen[gn], byId);
     const isTransition = stratum && stratum !== prevStratum && prevStratum !== null;
     if (stratum) prevStratum = stratum;
-    const labelText = stratum ? `Gen ${gn + 1} <span class="gen-stratum">· ${stratum}</span>` : `Gen ${gn + 1}`;
+    const labelHtml = stratum
+      ? `<div class="full-tree-gen-label">${stratum}</div>`
+      : `<div class="full-tree-gen-label gen-label-mixed" aria-hidden="true">·</div>`;
     return `
       <div class="full-tree-gen${isTransition ? ' stratum-transition' : ''}" data-gen="${gn}">
-        <div class="full-tree-gen-label">${labelText}</div>
+        ${labelHtml}
         ${nucleiByGen[gn].map(nucleusHtml).join('')}
       </div>
     `;
@@ -3450,10 +3451,27 @@ function renderFullTreeFromState(state) {
 
   // Event delegation (single listener on the container) — cheaper than per-node
   if (!inner.dataset.wired) {
-    // Click in Full Tree = SELECT (open inspector + persistent lineage trace)
+    // Click in Full Tree = SELECT (open shrine + persistent lineage trace)
     // — not Focus. The user stays on the page; "Focus this figure" in the
-    // inspector is the explicit gesture for switching to Focus view.
+    // shrine is the explicit gesture for switching to Focus view.
     inner.addEventListener('click', e => {
+      // Shrine buttons handle themselves
+      const tsBtn = e.target.closest('.ts-btn');
+      if (tsBtn) {
+        const action = tsBtn.dataset.action;
+        const gid = currentSelectedId;
+        if (action === 'focus' && gid) {
+          clearTreeSelection();
+          setFocus(gid); // existing setFocus flips Full Tree → Focus
+        } else if (action === 'details' && gid) {
+          openGod(gid);
+        } else if (action === 'close') {
+          clearTreeSelection();
+        }
+        return;
+      }
+      // Don't toggle node selection for clicks inside the shrine body
+      if (e.target.closest('.tn-shrine')) return;
       const node = e.target.closest('.full-tree-node');
       if (!node || !inner.contains(node)) return;
       const gid = node.dataset.gid;
@@ -3463,6 +3481,7 @@ function renderFullTreeFromState(state) {
     // Hover preview is ephemeral — disabled while a selection is locked.
     inner.addEventListener('mouseover', e => {
       if (currentSelectedId) return;
+      if (e.target.closest('.tn-shrine')) return;
       const node = e.target.closest('.full-tree-node');
       if (node && inner.contains(node)) highlightLineage(node.dataset.gid);
     });
@@ -3546,8 +3565,12 @@ function drawFullTreeConnectors(state) {
       const dataAttrs = `data-parent-primary="${nucleus.primary}"${nucleus.partner ? ` data-parent-partner="${nucleus.partner}"` : ''} data-child="${child.id}"`;
       if (by > ay) {
         const dy = by - ay;
-        const cy1 = ay + dy * 0.5;
-        const cy2 = ay + dy * 0.5;
+        // Asymmetric control points: pull both toward their endpoints so
+        // children of one parent visibly share a near-vertical exit trunk
+        // before fanning out, and arrival at each child reads as a clean
+        // vertical descent. Implicit bundling without a bundling pass.
+        const cy1 = ay + dy * 0.30;
+        const cy2 = by - dy * 0.30;
         lines.push(`<path d="M ${ax} ${ay} C ${ax} ${cy1}, ${bx} ${cy2}, ${bx} ${by}" stroke="#b8901f" stroke-width="1.2" fill="none" opacity="0.62" class="tree-line parent-line" ${dataAttrs}/>`);
       } else {
         lines.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#b8901f" stroke-width="1" opacity="0.34" stroke-dasharray="3,3" class="tree-line parent-line" ${dataAttrs}/>`);
@@ -3587,59 +3610,73 @@ let currentSelectedId = null;
 
 function selectTreeNode(godId) {
   if (!fullTreeState || !fullTreeState.byId[godId]) return;
+  // Clear any prior shrine first
+  removeShrineFromAllNodes();
   currentSelectedId = godId;
   const inner = document.getElementById('fullTreeInner');
-  if (inner) {
-    inner.querySelectorAll('.full-tree-node').forEach(el => {
-      el.classList.toggle('selected', el.dataset.gid === godId);
-    });
-  }
-  highlightLineage(godId);  // persistent — won't be cleared by mouseleave
-  showTreeInspector(godId);
+  if (!inner) return;
+  inner.querySelectorAll('.full-tree-node').forEach(el => {
+    el.classList.toggle('selected', el.dataset.gid === godId);
+  });
+  // Inject the shrine directly into the selected node — local revelation
+  // inside the cosmology, not a detached overlay panel.
+  const sel = inner.querySelector(`.full-tree-node[data-gid="${cssEscape(godId)}"]`);
+  if (sel) sel.appendChild(buildShrineEl(godId));
+  highlightLineage(godId);
 }
 
 function clearTreeSelection() {
   if (currentSelectedId === null) return;
   currentSelectedId = null;
+  removeShrineFromAllNodes();
   const inner = document.getElementById('fullTreeInner');
   if (inner) {
     inner.querySelectorAll('.full-tree-node.selected').forEach(el => el.classList.remove('selected'));
   }
   clearLineageHighlight();
-  hideTreeInspector();
 }
 
-function showTreeInspector(godId) {
-  const inspector = document.getElementById('treeInspector');
+function removeShrineFromAllNodes() {
+  document.querySelectorAll('.tn-shrine').forEach(el => el.remove());
+}
+
+// Minimal CSS.escape fallback for older browsers — only escapes the chars we
+// expect in a god id (already lowercase / digits / hyphens), but defensive.
+function cssEscape(s) {
+  if (window.CSS && window.CSS.escape) return CSS.escape(s);
+  return String(s).replace(/[^a-zA-Z0-9_-]/g, c => '\\' + c);
+}
+
+function buildShrineEl(godId) {
   const g = GODS_BY_ID[godId];
-  if (!inspector || !g) return;
+  const shrine = document.createElement('div');
+  shrine.className = 'tn-shrine';
+  shrine.setAttribute('role', 'region');
+  shrine.setAttribute('aria-label', g.name + ' inspector');
+  if (!g) { shrine.textContent = 'Unknown figure'; return shrine; }
   const p = PANTHEONS_BY_ID[g.pantheon];
   const archObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
   const eraText = (p && Number.isFinite(p.active_from) && Number.isFinite(p.active_to))
     ? fmtYears(p.active_from, p.active_to) : '';
   const catText = (g.category || '').replace(/-/g, ' ');
   const domains = (g.domains || []).slice(0, 4).map(d => d.replace(/-/g,' ')).join(' · ');
-  inspector.querySelector('.ti-name').textContent = g.name;
-  inspector.querySelector('.ti-pantheon').textContent = p ? p.name : g.pantheon;
-  inspector.querySelector('.ti-era').textContent = eraText;
-  inspector.querySelector('.ti-cat').textContent = catText;
-  const archEl = inspector.querySelector('.ti-arch');
-  archEl.textContent = archObj ? archObj.name : '';
-  archEl.style.display = archObj ? '' : 'none';
-  const domEl = inspector.querySelector('.ti-domains');
-  domEl.textContent = domains;
-  domEl.style.display = domains ? '' : 'none';
-  inspector.querySelector('.ti-desc').textContent = g.description || '';
-  inspector.dataset.gid = godId;
-  inspector.classList.add('open');
-}
-
-function hideTreeInspector() {
-  const inspector = document.getElementById('treeInspector');
-  if (inspector) {
-    inspector.classList.remove('open');
-    inspector.dataset.gid = '';
-  }
+  const archHtml = archObj
+    ? `<div class="ts-arch">A figure of the ${escapeAttr(archObj.name)} archetype</div>` : '';
+  const domHtml = domains ? `<div class="ts-domains">${domains}</div>` : '';
+  const descHtml = g.description ? `<div class="ts-desc">${escapeAttr(g.description)}</div>` : '';
+  shrine.innerHTML = `
+    <div class="ts-name">${escapeAttr(g.name)}</div>
+    <div class="ts-meta">${escapeAttr(p ? p.name : g.pantheon)}${eraText ? ` <span class="ts-sep">·</span> ${eraText}` : ''}${catText ? ` <span class="ts-sep">·</span> ${catText}` : ''}</div>
+    ${archHtml}
+    ${domHtml}
+    ${descHtml}
+    <div class="ts-actions">
+      <button class="ts-btn" data-action="focus" type="button">Focus</button>
+      <button class="ts-btn" data-action="details" type="button">Details</button>
+      <button class="ts-btn ts-btn-close" data-action="close" type="button" aria-label="Close inspector">×</button>
+    </div>
+  `;
+  return shrine;
 }
 
 function highlightLineage(godId) {
