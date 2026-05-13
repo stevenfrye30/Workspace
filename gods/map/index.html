@@ -900,52 +900,70 @@ main p { line-height:1.7; }
 
 .full-tree-container {
   overflow:visible; padding:24px 20px 30px; position:relative;
-  background:#0d0f22; border-radius:0 0 10px 10px;
+  background:
+    radial-gradient(ellipse 70% 320px at 50% 0%, rgba(229,193,88,0.030) 0%, transparent 70%),
+    #0d0f22;
+  border-radius:0 0 10px 10px;
 }
 .full-tree-inner { position:relative; min-height:400px; }
 .full-tree-svg { position:absolute; inset:0; pointer-events:none; z-index:0; }
 .full-tree-gen {
-  position:relative; display:flex; flex-wrap:wrap; gap:14px;
-  row-gap:12px;
-  margin-bottom:48px; z-index:1; align-items:flex-start;
+  position:relative; display:block;
+  margin-bottom:46px; z-index:1;
+}
+/* The row of figures inside a generation. Wrapped flex; horizontal density
+   is the same as before — only the label has lifted out into a banner. */
+.full-tree-gen-row {
+  display:flex; flex-wrap:wrap;
+  gap:14px; row-gap:12px;
+  align-items:flex-start;
+  z-index:1;
 }
 /* Faint horizontal rule between adjacent generations */
 .full-tree-gen + .full-tree-gen {
   padding-top:22px;
   border-top:1px solid rgba(229,193,88,0.10);
 }
-/* Mythological transition — when the dominant stratum shifts (Primordials
-   → Elder powers, Major divinities → Heroes, etc.), the rule above the
-   generation is slightly stronger AND the gen-label gains a small inscribed
-   ornament. Two layered cues at a single threshold: the rule felt, the
-   ornament read. */
+/* Mythological transition — stronger top rule between strata. */
 .full-tree-gen.stratum-transition {
-  padding-top:28px;
+  padding-top:30px;
   border-top:1px solid rgba(229,193,88,0.28);
 }
-.full-tree-gen.stratum-transition .full-tree-gen-label::before {
+/* Stratum lintel — centered banner above the figures, flanked by faint
+   gradient lines like a museum hall sign. At strata transitions, the
+   gradient lines become small ❋ ornaments. */
+.full-tree-gen-label {
+  display:flex; align-items:center; justify-content:center;
+  gap:18px;
+  margin:6px auto 18px;
+  padding:0 12px;
+  color:var(--gold);
+  font-size:13.5px;
+  font-variant:small-caps;
+  letter-spacing:3.6px;
+  font-weight:600;
+  text-shadow:0 1px 0 rgba(0,0,0,0.55);
+  white-space:nowrap;
+}
+.full-tree-gen-label::before,
+.full-tree-gen-label::after {
+  content:'';
+  flex:1 1 0;
+  max-width:120px;
+  height:1px;
+  background:linear-gradient(90deg, transparent, rgba(229,193,88,0.20) 50%, transparent 100%);
+}
+.full-tree-gen.stratum-transition .full-tree-gen-label::before,
+.full-tree-gen.stratum-transition .full-tree-gen-label::after {
   content:'❋';
+  flex:0 0 auto;
+  background:none;
+  height:auto;
   color:var(--gold-deep);
-  margin-right:8px;
-  font-size:0.7em;
+  font-size:0.78em;
+  opacity:0.7;
   font-weight:normal;
   letter-spacing:0;
-  font-style:normal;
-  opacity:0.6;
-  vertical-align:middle;
-  text-shadow:none;
-}
-.full-tree-gen-label {
-  flex:0 0 auto; align-self:stretch;
-  display:flex; align-items:center;
-  color:var(--gold); font-size:13px; font-variant:small-caps; letter-spacing:2.5px;
-  font-weight:bold;
-  padding:8px 18px 8px 12px;
-  margin-right:10px;
-  border-right:2px solid rgba(229,193,88,0.30);
-  background:linear-gradient(90deg, rgba(229,193,88,0.07) 0%, transparent 100%);
-  white-space:nowrap;
-  text-shadow:0 1px 0 rgba(0,0,0,0.55);
 }
 /* The stratum suffix sits beside the depth count — quieter than the
    "Gen N" stamp, and slightly less stretched so the comparative label
@@ -1373,13 +1391,21 @@ select:focus:not(:focus-visible),
   transform:translateX(-50%);
   width:max(220px, 100%);
   max-width:min(280px, calc(100vw - 32px));
-  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  /* Subtle gold wash at top → panel2 below. Reads as illuminated from
+     above, not a uniform card. */
+  background:linear-gradient(180deg,
+    color-mix(in srgb, var(--gold) 5%, var(--panel)) 0%,
+    var(--panel) 35%,
+    var(--panel2) 100%);
   border:1px solid var(--gold-soft);
   border-radius:6px;
   padding:12px 14px 11px;
   z-index:9;
+  /* Layered umbra rather than a single hard drop — feels set into the
+     cosmology, not popped over it. */
   box-shadow:
-    0 10px 28px rgba(0,0,0,0.55),
+    0 6px 18px rgba(0,0,0,0.45),
+    0 14px 44px rgba(0,0,0,0.30),
     0 0 0 1px var(--gold-faint);
   text-align:left;
   cursor:default;
@@ -1449,22 +1475,10 @@ select:focus:not(:focus-visible),
   font-variant:normal; font-weight:normal;
 }
 
-/* Mixed-gen placeholder — when no dominant ontological category exists for
-   a generation, drop the named-stratum label entirely and show a faint
-   middle dot. Maintains spatial rhythm without claiming a stratum that
-   isn't there. */
-.full-tree-gen-label.gen-label-mixed {
-  color:var(--muted);
-  opacity:0.35;
-  font-size:18px;
-  letter-spacing:0;
-  font-style:normal;
-  font-variant:normal;
-  font-weight:normal;
-  text-shadow:none;
-  background:transparent;
-  border-right:1px solid rgba(229,193,88,0.10);
-}
+/* Mixed gens (no clear ontological stratum) drop the lintel entirely;
+   the inter-gen rule still marks the row boundary. The visual rhythm
+   becomes: named order → continues → named order → continues, where
+   the lintel marks ontological orders rather than every numbered row. */
 
 /* Initial loading state */
 #loading {
@@ -1630,7 +1644,7 @@ select:focus:not(:focus-visible),
       <button id="focusBack" disabled>← Back</button>
       <div class="tree-view-toggle">
         <button id="viewFocusBtn" class="active">Focus</button>
-        <button id="viewFullBtn">Full tree</button>
+        <button id="viewFullBtn">Full descent</button>
       </div>
       <span class="count" id="treeCount"></span>
     </div>
@@ -3422,14 +3436,11 @@ function renderFullTreeFromState(state) {
     return `<div class="family-block" data-primary="${n.primary}">${nodeHtml(g1)}</div>`;
   };
 
-  // Stratum labels read as mythic orders, not generation indices. When a
-  // clear ontology exists (≥55% of figures share a category), the row gets
-  // the order's name alone — "Primordials", "Elder Powers", "Major
-  // Divinities", "Heroes", "Deified Mortals". When the gen is mixed (no
-  // dominant category), a faint placeholder dot maintains spatial rhythm
-  // without claiming a stratum that isn't there. When the dominant
-  // stratum changes between adjacent gens, the row carries a stronger
-  // top rule + ❋ ornament (existing transition treatment).
+  // Stratum labels are architectural lintels above each gen row — centered
+  // banners flanked by faint gradient lines (or ❋ ornaments at strata
+  // transitions). The figures sit below in a single flex-wrap row, like
+  // artifacts displayed under a hall sign. Mixed/transitional gens drop
+  // the lintel entirely; the existing inter-gen rule marks the boundary.
   let prevStratum = null;
   const html = generations.map(gn => {
     const stratum = dominantStratumLabel(nucleiByGen[gn], byId);
@@ -3437,11 +3448,11 @@ function renderFullTreeFromState(state) {
     if (stratum) prevStratum = stratum;
     const labelHtml = stratum
       ? `<div class="full-tree-gen-label">${stratum}</div>`
-      : `<div class="full-tree-gen-label gen-label-mixed" aria-hidden="true">·</div>`;
+      : '';
     return `
       <div class="full-tree-gen${isTransition ? ' stratum-transition' : ''}" data-gen="${gn}">
         ${labelHtml}
-        ${nucleiByGen[gn].map(nucleusHtml).join('')}
+        <div class="full-tree-gen-row">${nucleiByGen[gn].map(nucleusHtml).join('')}</div>
       </div>
     `;
   }).join('');
@@ -3571,9 +3582,9 @@ function drawFullTreeConnectors(state) {
         // vertical descent. Implicit bundling without a bundling pass.
         const cy1 = ay + dy * 0.30;
         const cy2 = by - dy * 0.30;
-        lines.push(`<path d="M ${ax} ${ay} C ${ax} ${cy1}, ${bx} ${cy2}, ${bx} ${by}" stroke="#b8901f" stroke-width="1.2" fill="none" opacity="0.62" class="tree-line parent-line" ${dataAttrs}/>`);
+        lines.push(`<path d="M ${ax} ${ay} C ${ax} ${cy1}, ${bx} ${cy2}, ${bx} ${by}" stroke="#b8901f" stroke-width="1.2" fill="none" opacity="0.62" stroke-linecap="round" stroke-linejoin="round" class="tree-line parent-line" ${dataAttrs}/>`);
       } else {
-        lines.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#b8901f" stroke-width="1" opacity="0.34" stroke-dasharray="3,3" class="tree-line parent-line" ${dataAttrs}/>`);
+        lines.push(`<line x1="${ax}" y1="${ay}" x2="${bx}" y2="${by}" stroke="#b8901f" stroke-width="1" opacity="0.34" stroke-dasharray="3,3" stroke-linecap="round" class="tree-line parent-line" ${dataAttrs}/>`);
       }
     });
   });
@@ -3593,7 +3604,7 @@ function drawFullTreeConnectors(state) {
       if (Math.abs(a.cy - b.cy) < 90) {
         const left = a.cx < b.cx ? a : b;
         const right = a.cx < b.cx ? b : a;
-        lines.push(`<line x1="${left.right}" y1="${left.cy}" x2="${right.left}" y2="${right.cy}" stroke="#a03040" stroke-width="1" opacity="0.5" stroke-dasharray="4,3" class="tree-line consort-line" data-a="${g.id}" data-b="${sid}"/>`);
+        lines.push(`<line x1="${left.right}" y1="${left.cy}" x2="${right.left}" y2="${right.cy}" stroke="#a03040" stroke-width="1" opacity="0.5" stroke-dasharray="4,3" stroke-linecap="round" class="tree-line consort-line" data-a="${g.id}" data-b="${sid}"/>`);
       }
     });
   });
