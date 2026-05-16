@@ -198,33 +198,40 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .legend-item{display:flex;align-items:center;gap:6px}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 
-/* ════════════════════ ENDINGS ════════════════════ */
-#fl-panel-endings .panel-scroll{padding:14px 20px 24px}
-.endings-filter{display:flex;align-items:center;gap:6px;margin-bottom:14px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 10px;z-index:2;border-bottom:1px solid var(--bdr)}
-.endings-filter::before{content:"Vowel family";font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
-.fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:18px;color:var(--muted);cursor:pointer;font-size:12px;font-family:var(--mono);padding:4px 11px;transition:all .15s}
+/* ════════════════════ ENDINGS — atlas layout ════════════════════ */
+#fl-panel-endings .panel-scroll{padding:10px 18px 28px}
+.endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:10px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 8px;z-index:3;border-bottom:1px solid var(--bdr)}
+.endings-filter::before{content:"Vowel family";font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
+.fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
-#endings-content{display:flex;flex-direction:column;gap:12px;padding-bottom:24px}
-.family-block{display:flex;flex-direction:column;gap:8px;padding:11px 14px 12px;background:linear-gradient(180deg,rgba(64,176,232,.035),transparent 60%),var(--surf);border:1px solid var(--bdr);border-radius:8px}
+/* Flat atlas: no boxed family containers, just a thin rule between groups. */
+#endings-content{display:flex;flex-direction:column;gap:0;padding-bottom:24px}
+.family-block{display:flex;flex-direction:column;gap:5px;padding:10px 0 0;border-top:1px solid var(--bdr);margin-top:10px}
+.family-block:first-child{padding-top:0;border-top:none;margin-top:0}
 .family-block.hidden{display:none}
-.family-title{display:flex;align-items:baseline;gap:10px;padding-bottom:7px;border-bottom:1px solid var(--bdr)}
-.family-title .fam-label{color:var(--gold);font-size:9px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-.family-title .ipa-key{font-family:var(--mono);font-size:16px;color:var(--blue);font-weight:700;line-height:1}
-.family-title .fam-count{margin-left:auto;font-size:10px;color:var(--muted);font-style:italic}
-.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:5px}
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:6px;padding:6px 9px 6px 10px;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;display:flex;flex-direction:column;gap:1px;min-height:52px;text-align:left;font:inherit;color:inherit;position:relative;overflow:hidden}
-.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background .15s}
-.ending-card[data-tier="2"]::before{background:rgba(232,200,64,.4)}
-.ending-card[data-tier="3"]::before{background:var(--gold)}
-.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.32);outline:none}
-.ending-card:hover::before,.ending-card:focus-visible::before{background:var(--gold)}
-.ending-card-empty{opacity:.3;cursor:not-allowed;min-height:0;padding:5px 9px 5px 10px}
+
+/* Inline family header — small label-row, no border or eyebrow. */
+.family-title{display:flex;align-items:baseline;gap:10px;padding:0 2px 2px;border-bottom:none}
+.family-title .fam-label{display:none}
+.family-title .ipa-key{font-family:var(--mono);font-size:14.5px;font-weight:700;line-height:1;color:var(--family-hue,var(--blue));letter-spacing:0}
+.family-title .fam-count{margin-left:auto;font-size:9.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-style:normal}
+
+/* One dense responsive grid — same minmax across all families for unified feel. */
+.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:4px}
+
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:5px;padding:5px 8px 5px 10px;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;display:flex;flex-direction:column;gap:1px;min-height:46px;text-align:left;font:inherit;color:inherit;position:relative;overflow:hidden}
+.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.55;transition:opacity .15s}
+.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32);outline:none}
+.ending-card:hover::before,.ending-card:focus-visible::before{opacity:1}
+.ending-card-empty{opacity:.28;cursor:not-allowed;min-height:0;padding:4px 8px 4px 10px}
+.ending-card-empty::before{opacity:.18}
 .ending-card-empty:hover{border-color:var(--bdr);background:var(--surf2);transform:none;box-shadow:none}
-.ending-card-empty:hover::before{background:transparent}
-.ec-sym{font-size:13.5px;font-family:var(--mono);color:var(--blue);font-weight:700;line-height:1.15}
-.ec-ex{font-size:10.5px;color:var(--muted);line-height:1.3;font-style:italic;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-.ec-count{font-size:9px;color:var(--muted);margin-top:auto;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.ending-card-empty:hover::before{opacity:.18}
+
+.ec-sym{font-size:12.5px;font-family:var(--mono);color:var(--blue);font-weight:700;line-height:1.1}
+.ec-ex{font-size:10px;color:var(--muted);line-height:1.25;font-style:italic;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ec-count{font-size:8.5px;color:var(--muted);margin-top:auto;letter-spacing:.04em;text-transform:uppercase;font-weight:600}
 .ending-card[data-tier="2"] .ec-count{color:#c9a93a}
 .ending-card[data-tier="3"] .ec-count{color:var(--gold)}
 
@@ -7157,6 +7164,15 @@ function doSearch(word) {
     return 0;
   }
 
+  // Deterministic per-family hue palette — applied as --family-hue to each
+  // family-block. Card left-stripes + family IPA glyph pick it up via CSS.
+  // Tuned to stay legible on the dark surf2 background.
+  const FAMILY_HUES = [
+    "#7fb3e0", "#86c46c", "#c585d6", "#e0a570",
+    "#e07070", "#e8c840", "#5fd6c1", "#a39ad6",
+    "#d6c95f", "#9fd65f", "#d6709a", "#a0d6e0"
+  ];
+
   // "Common-ish" word heuristic — no frequency data, so we use spelling
   // length + plain-alpha as a proxy. Short, plain words tend to be the
   // ones a writer actually wants to grab while freestyling.
@@ -7323,7 +7339,7 @@ function doSearch(word) {
   };
   filterEl.appendChild(allBtn);
 
-  families.forEach(fname => {
+  families.forEach((fname, fi) => {
     const btn = document.createElement("button");
     btn.className = "fam-btn";
     btn.textContent = fname;
@@ -7344,12 +7360,12 @@ function doSearch(word) {
     const block = document.createElement("div");
     block.className = "family-block";
     block.dataset.family = fname;
+    block.style.setProperty("--family-hue", FAMILY_HUES[fi % FAMILY_HUES.length]);
 
     const sumWords = items.reduce((s, x) => s + x.total, 0);
     const title = document.createElement("div");
     title.className = "family-title";
     title.innerHTML =
-      `<span class="fam-label">Family</span>` +
       `<span class="ipa-key">${fname}</span>` +
       `<span class="fam-count">${items.length} ending${items.length === 1 ? "" : "s"} · ${sumWords.toLocaleString()} words</span>`;
     block.appendChild(title);
