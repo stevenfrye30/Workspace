@@ -198,42 +198,40 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .legend-item{display:flex;align-items:center;gap:6px}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 
-/* ════════════════════ ENDINGS — matrix layout ════════════════════ */
+/* ════════════════════ ENDINGS — vertical phonetic columns ════════════════════ */
 #fl-panel-endings .panel-scroll{padding:8px 16px 24px}
-.endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 8px;z-index:3;border-bottom:1px solid var(--bdr)}
+.endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:10px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 8px;z-index:3;border-bottom:1px solid var(--bdr)}
 .endings-filter::before{content:"Vowel family";font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
-/* Flat matrix: families separated only by a hairline rule. */
-#endings-content{display:flex;flex-direction:column;gap:0;padding-bottom:24px}
-.family-block{display:flex;flex-direction:column;gap:3px;padding-top:5px;border-top:1px solid var(--bdr);margin-top:5px}
-.family-block:first-child{padding-top:0;border-top:none;margin-top:0}
+/* Phonetic-wall layout: families flow as masonry-style vertical columns. */
+#endings-content{column-width:188px;column-gap:20px;padding-bottom:24px}
+.family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 18px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
-/* Tiny inline family header. */
-.family-title{display:flex;align-items:baseline;gap:8px;padding:0 2px 2px}
+/* Large family header — parent vowel as visual anchor for its column. */
+.family-title{display:flex;flex-direction:column;align-items:flex-start;gap:0;position:relative;padding:0 0 7px;margin-bottom:7px;border-bottom:2px solid var(--family-hue,var(--bdr))}
 .family-title .fam-label{display:none}
-.family-title .ipa-key{font-family:var(--mono);font-size:13px;font-weight:700;line-height:1;color:var(--family-hue,var(--blue));letter-spacing:0}
-.family-title .fam-count{margin-left:auto;font-size:9px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-style:normal}
+.family-title .ipa-key{font-family:var(--mono);font-size:24px;color:var(--family-hue,var(--blue));font-weight:700;line-height:1.05;letter-spacing:0}
+.family-title .fam-ex{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--muted);line-height:1.2;margin-top:2px;letter-spacing:.01em}
+.family-title .fam-count{position:absolute;top:2px;right:0;font-size:9px;font-family:var(--mono);color:var(--muted);letter-spacing:0;text-transform:none;font-style:normal;margin-left:0}
 
-/* Dense button matrix — small tiles, periodic-table feel. */
-.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:3px}
+/* Keyboard-key tiles: two columns inside each family by default. */
+.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:2px}
 
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:4px 7px 4px 8px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;flex-direction:column;align-items:stretch;justify-content:center;gap:0;min-height:34px;text-align:left;font:inherit;color:inherit;position:relative;overflow:hidden}
-.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.55;transition:opacity .12s}
-.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32);outline:none;z-index:1}
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 6px 3px 8px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:24px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.5;transition:opacity .12s}
+.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);outline:none;z-index:1}
 .ending-card:hover::before,.ending-card:focus-visible::before{opacity:1}
-.ending-card-empty{opacity:.26;cursor:not-allowed}
-.ending-card-empty::before{opacity:.16}
-.ending-card-empty:hover{border-color:var(--bdr);background:var(--surf2);transform:none;box-shadow:none}
-.ending-card-empty:hover::before{opacity:.16}
+.ending-card-empty{opacity:.22;cursor:not-allowed}
+.ending-card-empty::before{opacity:.12}
+.ending-card-empty:hover{border-color:var(--bdr);background:var(--surf2);transform:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.ending-card-empty:hover::before{opacity:.12}
 
-.ec-sym{font-size:11.5px;font-family:var(--mono);color:var(--blue);font-weight:700;line-height:1.1;word-break:break-word}
+.ec-sym{font-size:11.5px;font-family:var(--mono);color:var(--blue);font-weight:700;line-height:1;letter-spacing:0;word-break:break-all}
 .ec-ex{display:none}
-.ec-count{font-size:9px;color:var(--muted);line-height:1;letter-spacing:.02em;font-variant-numeric:tabular-nums;align-self:flex-end;margin-top:1px}
-.ending-card[data-tier="2"] .ec-count{color:#c9a93a}
-.ending-card[data-tier="3"] .ec-count{color:var(--gold);font-weight:700}
+.ec-count{display:none}
 
 /* Ending detail modal */
 .em-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;animation:em-fade .15s ease-out}
@@ -7362,11 +7360,17 @@ function doSearch(word) {
     block.dataset.family = fname;
     block.style.setProperty("--family-hue", FAMILY_HUES[fi % FAMILY_HUES.length]);
 
+    // Derive a single representative example word for the family from its
+    // first item's example phrase (which may be a comma list like "rain, lane, feign").
+    const famExRaw = (ENDINGS[fname][0] && ENDINGS[fname][0].ex) || "";
+    const famEx = famExRaw.split(",")[0].trim();
+
     const title = document.createElement("div");
     title.className = "family-title";
     title.innerHTML =
       `<span class="ipa-key">${fname}</span>` +
-      `<span class="fam-count">${items.length} ending${items.length === 1 ? "" : "s"}</span>`;
+      (famEx ? `<span class="fam-ex">“${famEx}”</span>` : "") +
+      `<span class="fam-count">${items.length}</span>`;
     block.appendChild(title);
 
     const grid = document.createElement("div");
@@ -7379,12 +7383,8 @@ function doSearch(word) {
       card.className = "ending-card" + (total ? "" : " ending-card-empty");
       card.dataset.tier = String(tier);
       card.disabled = !total;
-      const countText = total ? total.toLocaleString() : "—";
-      card.innerHTML =
-        `<div class="ec-sym">/${item.end}/</div>` +
-        `<div class="ec-count">${countText}</div>`;
-      // Native browser tooltip carries the example + word count + hint, since
-      // the matrix tile itself only shows pattern + number.
+      // Tile shows only the IPA pattern — detail lives in tooltip + modal.
+      card.innerHTML = `<div class="ec-sym">/${item.end}/</div>`;
       card.title = total
         ? `/${item.end}/${item.ex ? "  ·  " + item.ex : ""}\n${total.toLocaleString()} word${total === 1 ? "" : "s"} — click to open`
         : `/${item.end}/ — no matches`;
