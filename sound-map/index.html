@@ -198,27 +198,78 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .legend-item{display:flex;align-items:center;gap:6px}
 .legend-dot{width:10px;height:10px;border-radius:50%}
 
-/* ════════════════════ RAP ENDINGS ════════════════════ */
-#fl-panel-endings .panel-scroll{padding:18px 20px}
-.endings-filter{display:flex;align-items:center;gap:10px;margin-bottom:18px;flex-wrap:wrap}
+/* ════════════════════ ENDINGS ════════════════════ */
+#fl-panel-endings .panel-scroll{padding:22px 28px 36px}
+.endings-filter{display:flex;align-items:center;gap:8px;margin-bottom:22px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:8px 0 14px;z-index:2;border-bottom:1px solid var(--bdr)}
+.endings-filter::before{content:"Vowel family";font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:20px;color:var(--muted);cursor:pointer;font-size:13px;font-family:var(--mono);padding:6px 14px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
-#endings-content{display:flex;gap:4px;align-items:flex-start;overflow-x:auto;flex:1;padding-bottom:12px}
-.family-block{min-width:160px;flex-shrink:0;display:flex;flex-direction:column}
+#endings-content{display:flex;flex-direction:column;gap:22px;padding-bottom:32px}
+.family-block{display:flex;flex-direction:column;gap:14px;padding:20px 22px 22px;background:linear-gradient(180deg,rgba(64,176,232,.04),transparent 60%),var(--surf);border:1px solid var(--bdr);border-radius:10px}
 .family-block.hidden{display:none}
-.family-title{font-size:14px;font-weight:700;color:#111;letter-spacing:.06em;text-align:center;padding:8px 6px;background:var(--gold);border-radius:var(--radius) var(--radius) 0 0;white-space:nowrap}
-.family-title .ipa-key{font-family:var(--mono);font-size:18px}
-.family-title .fam-count{font-size:11px;font-weight:400;opacity:.7;margin-left:4px}
-.endings-grid{display:flex;flex-direction:column;gap:0}
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);padding:8px 12px;cursor:pointer;transition:all .15s}
-.ending-card:hover{border-color:var(--gold);background:var(--surf)}
-.ending-card:first-child{border-radius:0}
-.ending-card:last-child{border-radius:0 0 var(--radius) var(--radius)}
-.ending-card-empty{opacity:.35;cursor:not-allowed}
-.ending-card-empty:hover{border-color:var(--bdr);background:var(--surf2)}
-.ec-sym{font-size:18px;font-family:var(--mono);color:var(--blue)}
-.ec-ex{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.family-title{display:flex;align-items:baseline;gap:14px;padding-bottom:12px;border-bottom:1px solid var(--bdr)}
+.family-title .fam-label{color:var(--gold);font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+.family-title .ipa-key{font-family:var(--mono);font-size:22px;color:var(--blue);font-weight:700;line-height:1}
+.family-title .fam-count{margin-left:auto;font-size:11px;color:var(--muted);font-style:italic}
+.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:8px;padding:12px 14px 11px;cursor:pointer;transition:transform .15s,border-color .15s,background .15s,box-shadow .15s;display:flex;flex-direction:column;gap:4px;min-height:80px;text-align:left;font:inherit;color:inherit;position:relative;overflow:hidden}
+.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:transparent;transition:background .15s}
+.ending-card[data-tier="2"]::before{background:rgba(232,200,64,.4)}
+.ending-card[data-tier="3"]::before{background:var(--gold)}
+.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.35);outline:none}
+.ending-card:hover::before,.ending-card:focus-visible::before{background:var(--gold)}
+.ending-card-empty{opacity:.32;cursor:not-allowed}
+.ending-card-empty:hover{border-color:var(--bdr);background:var(--surf2);transform:none;box-shadow:none}
+.ending-card-empty:hover::before{background:transparent}
+.ec-sym{font-size:17px;font-family:var(--mono);color:var(--blue);font-weight:700;line-height:1.15}
+.ec-ex{font-size:11.5px;color:var(--muted);line-height:1.4;font-style:italic;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.ec-count{font-size:10px;color:var(--muted);margin-top:auto;letter-spacing:.05em;text-transform:uppercase;font-weight:600}
+.ending-card[data-tier="2"] .ec-count{color:#c9a93a}
+.ending-card[data-tier="3"] .ec-count{color:var(--gold)}
+
+/* Ending detail modal */
+.em-modal{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:24px;animation:em-fade .15s ease-out}
+.em-modal.hidden{display:none}
+@keyframes em-fade{from{opacity:0}to{opacity:1}}
+.em-backdrop{position:absolute;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.em-dialog{position:relative;background:var(--surf);border:1px solid var(--bdr);border-radius:12px;max-width:780px;width:100%;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 18px 48px rgba(0,0,0,.6);animation:em-pop .18s cubic-bezier(.16,.85,.4,1.05)}
+@keyframes em-pop{from{transform:translateY(8px) scale(.985);opacity:0}to{transform:none;opacity:1}}
+.em-close{position:absolute;top:12px;right:14px;background:none;border:none;color:var(--muted);font-size:22px;line-height:1;cursor:pointer;padding:4px 10px;border-radius:4px;transition:color .15s,background .15s;z-index:1}
+.em-close:hover{color:var(--gold);background:var(--surf2)}
+.em-header{padding:24px 32px 20px;border-bottom:1px solid var(--bdr);flex-shrink:0;background:linear-gradient(180deg,rgba(64,176,232,.05),transparent)}
+.em-eyebrow{color:var(--gold);font-size:10px;letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:8px}
+.em-pattern{font-family:var(--mono);color:var(--blue);font-size:30px;font-weight:700;line-height:1.05;letter-spacing:0}
+.em-meta{display:flex;gap:18px;margin-top:12px;color:var(--muted);font-size:13px;flex-wrap:wrap;align-items:baseline}
+.em-meta-example{font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--text);opacity:.78}
+.em-meta-totals{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
+.em-meta-totals strong{color:var(--gold);font-weight:700}
+.em-body{padding:22px 32px 28px;overflow-y:auto;flex:1;display:flex;flex-direction:column;gap:24px}
+.em-section{display:flex;flex-direction:column;gap:12px}
+.em-section-h-row{display:flex;align-items:baseline;gap:10px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.05)}
+.em-section-h{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin:0}
+.em-section-sub{font-size:11px;color:var(--muted);font-style:italic;margin-left:auto}
+
+/* Featured top-10 two-syllable list */
+.em-feat-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:4px 14px}
+.em-feat-item{display:flex;align-items:baseline;gap:10px;padding:7px 12px 7px 10px;background:linear-gradient(90deg,rgba(232,200,64,.07),transparent 70%);border-left:2px solid rgba(232,200,64,.35);border-radius:3px;transition:background .15s,border-color .15s,transform .12s}
+.em-feat-item:hover{background:linear-gradient(90deg,rgba(232,200,64,.14),transparent 80%);border-left-color:var(--gold);transform:translateX(1px)}
+.em-feat-rank{font-family:var(--mono);font-size:10.5px;color:var(--muted);min-width:16px;text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.em-feat-word{font-size:14.5px;color:var(--text);font-weight:500;letter-spacing:.01em}
+
+/* One-syllable chip grid (with optional alphabet groups) */
+.em-chip-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:5px 6px}
+.em-chip{display:inline-flex;align-items:center;justify-content:center;padding:5px 11px;font-size:12.5px;font-family:var(--mono);color:var(--text);background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;transition:border-color .12s,background .12s,color .12s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.em-chip:hover{border-color:var(--gold);color:var(--gold)}
+.em-chip-common{background:rgba(232,200,64,.07);border-color:rgba(232,200,64,.32);color:#e8c840}
+.em-chip-common:hover{background:rgba(232,200,64,.15);color:var(--gold);border-color:var(--gold)}
+.em-letter-row{display:grid;grid-template-columns:22px 1fr;gap:14px;align-items:start;margin-bottom:6px}
+.em-letter-label{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--gold);padding-top:5px;text-align:center;border-right:1px solid rgba(232,200,64,.18);padding-right:8px;line-height:1;letter-spacing:0}
+.em-legend{display:flex;gap:14px;font-size:10.5px;color:var(--muted);letter-spacing:.04em;padding-top:4px;flex-wrap:wrap}
+.em-legend-item{display:inline-flex;align-items:center;gap:6px}
+.em-legend-swatch{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--surf2);border:1px solid var(--bdr)}
+.em-legend-swatch.common{background:rgba(232,200,64,.4);border-color:var(--gold)}
+.em-empty{color:var(--muted);font-size:12px;font-style:italic;padding:8px 0}
 
 /* ════════════════════ BAR SHEET ════════════════════ */
 #fl-panel-bars .panel-scroll{padding:18px 24px}
@@ -2023,7 +2074,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <div id="panel-flow" role="tabpanel">
   <nav id="fl-tab-nav" role="tablist" aria-label="Flow Lab sections">
     <button class="fl-tab-btn active" role="tab" aria-selected="true" aria-controls="fl-panel-rhyme" data-fl-tab="rhyme" onclick="flSwitchTab('rhyme',this)">Rhyme Finder</button>
-    <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-endings" data-fl-tab="endings" onclick="flSwitchTab('endings',this)">Rap Endings</button>
+    <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-endings" data-fl-tab="endings" onclick="flSwitchTab('endings',this)">Endings</button>
     <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bar-builder" data-fl-tab="bar-builder" onclick="flSwitchTab('bar-builder',this)">Bar Builder</button>
     <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bars" data-fl-tab="bars" onclick="flSwitchTab('bars',this)">Vault</button>
   </nav>
@@ -2059,11 +2110,44 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     </template>
   </div>
 
-  <!-- ── Rap Endings ── -->
-  <div id="fl-panel-endings" class="fl-tab-panel" role="tabpanel" aria-label="Rap Endings">
+  <!-- ── Endings ── -->
+  <div id="fl-panel-endings" class="fl-tab-panel" role="tabpanel" aria-label="Endings">
     <div class="panel-scroll">
       <div class="endings-filter" id="fam-filters"></div>
       <div id="endings-content"></div>
+    </div>
+    <div id="ending-modal" class="em-modal hidden" role="dialog" aria-modal="true" aria-labelledby="em-title" aria-hidden="true">
+      <div class="em-backdrop" data-em-close></div>
+      <div class="em-dialog" role="document">
+        <button class="em-close" type="button" data-em-close aria-label="Close">×</button>
+        <div class="em-header">
+          <div class="em-eyebrow">Ending</div>
+          <div class="em-pattern" id="em-title">/eɪ/</div>
+          <div class="em-meta">
+            <span class="em-meta-example" id="em-example"></span>
+            <span class="em-meta-totals" id="em-totals"></span>
+          </div>
+        </div>
+        <div class="em-body">
+          <section class="em-section">
+            <div class="em-section-h-row">
+              <h4 class="em-section-h">Top two-syllable</h4>
+              <span class="em-section-sub" id="em-2syl-sub"></span>
+            </div>
+            <ol class="em-feat-list" id="em-2syl"></ol>
+          </section>
+          <section class="em-section">
+            <div class="em-section-h-row">
+              <h4 class="em-section-h">One-syllable words</h4>
+              <span class="em-section-sub" id="em-1syl-sub"></span>
+            </div>
+            <div id="em-1syl"></div>
+            <div class="em-legend" id="em-1syl-legend" hidden>
+              <span class="em-legend-item"><span class="em-legend-swatch common"></span>shorter / likely common</span>
+            </div>
+          </section>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -7039,14 +7123,196 @@ function doSearch(word) {
 }
 
 // ══════════════════════════════════
-//  RAP ENDINGS
+//  ENDINGS
 // ══════════════════════════════════
 (function buildEndings() {
-  const filterEl   = document.getElementById("fam-filters");
-  const contentEl  = document.getElementById("endings-content");
-  const families   = Object.keys(ENDINGS);
+  const filterEl  = document.getElementById("fam-filters");
+  const contentEl = document.getElementById("endings-content");
+  const families  = Object.keys(ENDINGS);
 
-  // "All" button
+  // Normalize an IPA ending for comparison: drop stress marks and long-mark.
+  // The CMU-derived dictionary stores keys without ː, while ENDINGS uses iː/uː.
+  const norm = s => s.replace(/[ˈˌː]/g, "");
+
+  // Inverted index: normalized rhyme-key → array of {word, syls}.
+  const endingIndex = Object.create(null);
+  for (const w in D) {
+    const entry = D[w];
+    const keys = entry[1];
+    const syls = entry[2];
+    for (let i = 0; i < keys.length; i++) {
+      const nk = norm(keys[i]);
+      let arr = endingIndex[nk];
+      if (!arr) endingIndex[nk] = arr = [];
+      arr.push({ word: w, syls: syls });
+    }
+  }
+  const wordsFor = ep => endingIndex[norm(ep)] || [];
+
+  // Tier: visual hint of how many words an ending unlocks.
+  function tierOf(n) {
+    if (n >= 50) return 3;
+    if (n >= 12) return 2;
+    if (n >= 1)  return 1;
+    return 0;
+  }
+
+  // "Common-ish" word heuristic — no frequency data, so we use spelling
+  // length + plain-alpha as a proxy. Short, plain words tend to be the
+  // ones a writer actually wants to grab while freestyling.
+  const isCommonWord = w => w.length <= 5 && /^[a-z]+$/.test(w);
+
+  // ── Modal wiring ─────────────────────────────────────────────────────────
+  const modal      = document.getElementById("ending-modal");
+  const titleEl    = document.getElementById("em-title");
+  const exampleEl  = document.getElementById("em-example");
+  const totalsEl   = document.getElementById("em-totals");
+  const oneEl      = document.getElementById("em-1syl");
+  const twoEl      = document.getElementById("em-2syl");
+  const oneSubEl   = document.getElementById("em-1syl-sub");
+  const twoSubEl   = document.getElementById("em-2syl-sub");
+  const oneLegend  = document.getElementById("em-1syl-legend");
+  let lastFocus = null;
+
+  function makeChip(word) {
+    const c = document.createElement("span");
+    c.className = "em-chip" + (isCommonWord(word) ? " em-chip-common" : "");
+    c.textContent = word;
+    return c;
+  }
+
+  // Render 1-syllable words: if many, group alphabetically; else flat grid.
+  function renderOneSyl(host, words) {
+    host.innerHTML = "";
+    if (!words.length) {
+      const e = document.createElement("div");
+      e.className = "em-empty";
+      e.textContent = "No one-syllable words for this ending.";
+      host.appendChild(e);
+      return false;
+    }
+    const ALPHA_THRESHOLD = 28;
+    if (words.length < ALPHA_THRESHOLD) {
+      const grid = document.createElement("div");
+      grid.className = "em-chip-grid";
+      words.forEach(w => grid.appendChild(makeChip(w)));
+      host.appendChild(grid);
+      return true;
+    }
+    // Group by first letter
+    const byLetter = Object.create(null);
+    words.forEach(w => {
+      const L = (w[0] || "·").toUpperCase();
+      (byLetter[L] = byLetter[L] || []).push(w);
+    });
+    Object.keys(byLetter).sort().forEach(L => {
+      const row = document.createElement("div");
+      row.className = "em-letter-row";
+      const lbl = document.createElement("div");
+      lbl.className = "em-letter-label";
+      lbl.textContent = L;
+      row.appendChild(lbl);
+      const grid = document.createElement("div");
+      grid.className = "em-chip-grid";
+      byLetter[L].forEach(w => grid.appendChild(makeChip(w)));
+      row.appendChild(grid);
+      host.appendChild(row);
+    });
+    return true;
+  }
+
+  function renderTwoSyl(host, words) {
+    host.innerHTML = "";
+    if (!words.length) {
+      const e = document.createElement("li");
+      e.className = "em-empty";
+      e.textContent = "No two-syllable words for this ending.";
+      host.appendChild(e);
+      return;
+    }
+    words.forEach((w, i) => {
+      const li = document.createElement("li");
+      li.className = "em-feat-item";
+      const r = document.createElement("span");
+      r.className = "em-feat-rank";
+      r.textContent = String(i + 1).padStart(2, "0");
+      const wd = document.createElement("span");
+      wd.className = "em-feat-word";
+      wd.textContent = w;
+      li.appendChild(r);
+      li.appendChild(wd);
+      host.appendChild(li);
+    });
+  }
+
+  function openModal(item, cardEl) {
+    const matches = wordsFor(item.end);
+    const oneSyl = matches.filter(m => m.syls === 1)
+      .map(m => m.word)
+      .sort((a, b) => a.localeCompare(b));
+    const twoSylAll = matches.filter(m => m.syls === 2)
+      .sort((a, b) => {
+        // Shorter spellings → more likely common; tiebreak alphabetically.
+        if (a.word.length !== b.word.length) return a.word.length - b.word.length;
+        return a.word.localeCompare(b.word);
+      })
+      .map(m => m.word);
+    const twoTop = twoSylAll.slice(0, 10);
+
+    titleEl.textContent = `/${item.end}/`;
+    if (item.ex) {
+      exampleEl.textContent = item.ex;
+      exampleEl.hidden = false;
+    } else {
+      exampleEl.textContent = "";
+      exampleEl.hidden = true;
+    }
+
+    const totalAll = matches.length;
+    totalsEl.innerHTML =
+      `<strong>${totalAll}</strong> word${totalAll === 1 ? "" : "s"}` +
+      ` · <strong>${oneSyl.length}</strong> 1-syl` +
+      ` · <strong>${twoSylAll.length}</strong> 2-syl`;
+
+    oneSubEl.textContent = oneSyl.length
+      ? (oneSyl.length === 1 ? "1 word" : `${oneSyl.length} words, A→Z`)
+      : "";
+    twoSubEl.textContent = twoSylAll.length
+      ? (twoSylAll.length > twoTop.length
+          ? `top ${twoTop.length} of ${twoSylAll.length}`
+          : `${twoSylAll.length} word${twoSylAll.length === 1 ? "" : "s"}`)
+      : "";
+
+    const hasOne = renderOneSyl(oneEl, oneSyl);
+    renderTwoSyl(twoEl, twoTop);
+    oneLegend.hidden = !(hasOne && oneSyl.some(isCommonWord));
+
+    lastFocus = cardEl || document.activeElement;
+    modal.classList.remove("hidden");
+    modal.setAttribute("aria-hidden", "false");
+    // Scroll body to top in case it was scrolled from a previous open
+    modal.querySelector(".em-body").scrollTop = 0;
+    modal.querySelector(".em-close").focus();
+  }
+
+  function closeModal() {
+    if (modal.classList.contains("hidden")) return;
+    modal.classList.add("hidden");
+    modal.setAttribute("aria-hidden", "true");
+    if (lastFocus && typeof lastFocus.focus === "function") lastFocus.focus();
+  }
+  modal.addEventListener("click", e => {
+    if (e.target.hasAttribute && e.target.hasAttribute("data-em-close")) closeModal();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && !modal.classList.contains("hidden")) closeModal();
+  });
+  // Close the modal if the user navigates away from the Endings tab.
+  document.querySelectorAll(".tab-btn, .fl-tab-btn").forEach(b => {
+    b.addEventListener("click", closeModal);
+  });
+
+  // ── Filter bar ───────────────────────────────────────────────────────────
   const allBtn = document.createElement("button");
   allBtn.className = "fam-btn active";
   allBtn.textContent = "All";
@@ -7058,61 +7324,57 @@ function doSearch(word) {
   filterEl.appendChild(allBtn);
 
   families.forEach(fname => {
-    // Filter button
     const btn = document.createElement("button");
     btn.className = "fam-btn";
     btn.textContent = fname;
     btn.onclick = () => {
       document.querySelectorAll(".family-block").forEach(b => {
-        b.classList.toggle("hidden", b.dataset.family!==fname);
+        b.classList.toggle("hidden", b.dataset.family !== fname);
       });
       document.querySelectorAll(".fam-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
     };
     filterEl.appendChild(btn);
 
-    // Column block
+    // Pre-count + sort so richer endings surface first (more useful for writing).
+    const items = ENDINGS[fname]
+      .map(item => ({ item, total: wordsFor(item.end).length }))
+      .sort((a, b) => b.total - a.total || a.item.end.localeCompare(b.item.end));
+
     const block = document.createElement("div");
     block.className = "family-block";
     block.dataset.family = fname;
 
+    const sumWords = items.reduce((s, x) => s + x.total, 0);
     const title = document.createElement("div");
     title.className = "family-title";
-    title.innerHTML = `<span class="ipa-key">${fname}</span><span class="fam-count">${ENDINGS[fname].length}</span>`;
+    title.innerHTML =
+      `<span class="fam-label">Family</span>` +
+      `<span class="ipa-key">${fname}</span>` +
+      `<span class="fam-count">${items.length} ending${items.length === 1 ? "" : "s"} · ${sumWords.toLocaleString()} words</span>`;
     block.appendChild(title);
 
     const grid = document.createElement("div");
     grid.className = "endings-grid";
-    const stripStress = s => s.replace(/[ˈˌ]/g, "");
-    ENDINGS[fname].forEach(item => {
-      const cleanEnd = stripStress(item.end);
-      let matchWord = null, matchDepth = 0;
-      for (const [w, e] of Object.entries(D)) {
-        const rks = e[1];
-        for (let i = 0; i < rks.length; i++) {
-          if (stripStress(rks[i]) === cleanEnd) {
-            matchWord = w;
-            matchDepth = i + 1;
-            break;
-          }
-        }
-        if (matchWord) break;
-      }
+    items.forEach(({ item, total }) => {
+      const tier = tierOf(total);
 
-      const card = document.createElement("div");
-      card.className = "ending-card" + (matchWord ? "" : " ending-card-empty");
-      card.innerHTML = `<div class="ec-sym">${item.end}</div>${item.ex ? `<div class="ec-ex">${item.ex}</div>` : ""}`;
-      card.title = matchWord
-        ? `Search rhymes for /${item.end}/ (depth ${matchDepth})`
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = "ending-card" + (total ? "" : " ending-card-empty");
+      card.dataset.tier = String(tier);
+      card.disabled = !total;
+      const exHtml = item.ex ? `<div class="ec-ex">${item.ex}</div>` : "";
+      const countLabel = total
+        ? `${total.toLocaleString()} word${total === 1 ? "" : "s"}`
+        : "no matches";
+      card.innerHTML =
+        `<div class="ec-sym">/${item.end}/</div>${exHtml}<div class="ec-count">${countLabel}</div>`;
+      card.title = total
+        ? `Open /${item.end}/ — ${total.toLocaleString()} words`
         : `No words found ending in /${item.end}/`;
-      if (matchWord) {
-        card.onclick = () => {
-          flSwitchTabDirect("rhyme");
-          const pane = document.querySelector("#rf-panes .rf-pane") || createPane();
-          const depSel = pane.querySelector(".rhyme-depth");
-          depSel.value = String(matchDepth);
-          runSearch(pane, matchWord);
-        };
+      if (total) {
+        card.addEventListener("click", () => openModal(item, card));
       }
       grid.appendChild(card);
     });
