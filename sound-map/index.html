@@ -199,28 +199,28 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .legend-dot{width:10px;height:10px;border-radius:50%}
 
 /* ════════════════════ ENDINGS — vertical phonetic columns ════════════════════ */
-#fl-panel-endings .panel-scroll{padding:8px 16px 24px}
-.endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:10px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 8px;z-index:3;border-bottom:1px solid var(--bdr)}
+#fl-panel-endings .panel-scroll{padding:8px 14px 20px}
+.endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 8px;z-index:3;border-bottom:1px solid var(--bdr)}
 .endings-filter::before{content:"Vowel family";font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
 /* Phonetic-wall layout: families flow as masonry-style vertical columns. */
-#endings-content{column-width:188px;column-gap:20px;padding-bottom:24px}
-.family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 18px;padding:0;border:none;background:none;display:block}
+#endings-content{column-width:170px;column-gap:16px;padding-bottom:20px}
+.family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 14px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
-/* Large family header — parent vowel as visual anchor for its column. */
-.family-title{display:flex;flex-direction:column;align-items:flex-start;gap:0;position:relative;padding:0 0 7px;margin-bottom:7px;border-bottom:2px solid var(--family-hue,var(--bdr))}
+/* Centered family header — parent vowel as visual anchor for its column. */
+.family-title{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding:0 0 6px;margin-bottom:5px;border-bottom:2px solid var(--family-hue,var(--bdr))}
 .family-title .fam-label{display:none}
+.family-title .fam-count{display:none}
 .family-title .ipa-key{font-family:var(--mono);font-size:24px;color:var(--family-hue,var(--blue));font-weight:700;line-height:1.05;letter-spacing:0}
 .family-title .fam-ex{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--muted);line-height:1.2;margin-top:2px;letter-spacing:.01em}
-.family-title .fam-count{position:absolute;top:2px;right:0;font-size:9px;font-family:var(--mono);color:var(--muted);letter-spacing:0;text-transform:none;font-style:normal;margin-left:0}
 
-/* Keyboard-key tiles: two columns inside each family by default. */
-.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(78px,1fr));gap:2px}
+/* Thinner key-cap tiles. */
+.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:2px}
 
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 6px 3px 8px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:24px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 5px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:22px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
 .ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.5;transition:opacity .12s}
 .ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);outline:none;z-index:1}
 .ending-card:hover::before,.ending-card:focus-visible::before{opacity:1}
@@ -7369,8 +7369,7 @@ function doSearch(word) {
     title.className = "family-title";
     title.innerHTML =
       `<span class="ipa-key">${fname}</span>` +
-      (famEx ? `<span class="fam-ex">“${famEx}”</span>` : "") +
-      `<span class="fam-count">${items.length}</span>`;
+      (famEx ? `<span class="fam-ex">“${famEx}”</span>` : "");
     block.appendChild(title);
 
     const grid = document.createElement("div");
