@@ -206,7 +206,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
 /* Phonetic-wall layout: families flow as masonry-style vertical columns. */
-#endings-content{column-width:170px;column-gap:16px;padding-bottom:20px}
+#endings-content{column-width:152px;column-gap:14px;padding-bottom:20px}
 .family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 14px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
@@ -218,7 +218,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .family-title .fam-ex{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--muted);line-height:1.2;margin-top:2px;letter-spacing:.01em}
 
 /* Thinner key-cap tiles. */
-.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(64px,1fr));gap:2px}
+.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:2px}
 
 .ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 5px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:22px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
 .ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.5;transition:opacity .12s}
@@ -7338,6 +7338,19 @@ function doSearch(word) {
   filterEl.appendChild(allBtn);
 
   families.forEach((fname, fi) => {
+    // Drop endings that have no dictionary matches (composite patterns like
+    // "eɪr ɛə", or any that fail to resolve). The overview is a reference chart
+    // — only live endings belong on it. Then sort A→Z by IPA ending string so
+    // the order is predictable rather than richness-ranked.
+    const items = ENDINGS[fname]
+      .map(item => ({ item, total: wordsFor(item.end).length }))
+      .filter(({ total }) => total > 0)
+      .sort((a, b) => a.item.end.localeCompare(b.item.end));
+
+    // Skip the family entirely if everything was filtered out — no header,
+    // no filter pill, no empty column.
+    if (items.length === 0) return;
+
     const btn = document.createElement("button");
     btn.className = "fam-btn";
     btn.textContent = fname;
@@ -7349,11 +7362,6 @@ function doSearch(word) {
       btn.classList.add("active");
     };
     filterEl.appendChild(btn);
-
-    // Pre-count + sort so richer endings surface first (more useful for writing).
-    const items = ENDINGS[fname]
-      .map(item => ({ item, total: wordsFor(item.end).length }))
-      .sort((a, b) => b.total - a.total || a.item.end.localeCompare(b.item.end));
 
     const block = document.createElement("div");
     block.className = "family-block";
