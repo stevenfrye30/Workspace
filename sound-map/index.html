@@ -7139,9 +7139,90 @@ function doSearch(word) {
   // The CMU-derived dictionary stores keys without ː, while ENDINGS uses iː/uː.
   const norm = s => s.replace(/[ˈˌː]/g, "");
 
+  // ── Quality filter ───────────────────────────────────────────────────────
+  // The CMU dictionary is exhaustive — it includes names, transliterations,
+  // archaic abbreviations, and Scrabble-only fragments ("ae", "dae", "bey",
+  // "khey", …) that read as noise in a lyrical word bank. Filter aggressively
+  // at the short end (1-3 chars) where most of the junk lives, via curated
+  // whitelists of words a songwriter would actually reach for. Accept 4+ char
+  // words by default; the worst-known short-junk entries go in FOUR_BAD.
+  const ONE_OK = new Set(["a", "i"]);
+  const TWO_OK = new Set([
+    "am","an","as","at","ax","be","by","do","go","ha","he","hi","ho",
+    "if","in","is","it","me","my","no","of","oh","on","or","ow","ox",
+    "so","to","uh","um","up","us","we","ya","yo"
+  ]);
+  const THREE_OK = new Set([
+    "ace","act","add","age","ago","aha","aid","aim","air","ale","all",
+    "and","ant","any","app","arc","arm","art","ash","ask","ate","awe","axe",
+    "bad","bag","ban","bar","bat","bay","bed","bee","beg","bet","bid",
+    "big","bin","bio","bit","bob","bog","boo","bop","bow","box","boy",
+    "bra","bro","bud","bug","bum","bun","bus","but","buy","bye",
+    "cab","cam","can","cap","car","cat","cob","cod","cog","con","cop",
+    "cot","cow","cry","cub","cue","cup","cut",
+    "dab","dad","dam","day","den","dew","did","die","dig","dim","dip",
+    "doe","dog","don","dot","dry","dub","dud","due","dug","duh","duo","dye",
+    "ear","eat","ebb","eel","egg","ego","elf","elk","elm","emu","end",
+    "era","ere","err","eve","eye",
+    "fad","fan","far","fat","fax","fed","fee","few","fib","fig","fin",
+    "fir","fit","fix","flu","fly","foe","fog","for","fox","fry","fun","fur",
+    "gab","gag","gal","gap","gas","gel","gem","get","gig","gin","god",
+    "goo","got","gum","gun","gut","guy","gym",
+    "had","hag","ham","has","hat","hay","hem","hen","her","hex","hey",
+    "hid","him","hip","his","hit","hog","hop","hot","how","hub","hue",
+    "hug","hum","hut",
+    "ice","icy","ill","imp","ink","inn","ion","ire","irk","its","ivy",
+    "jab","jag","jam","jar","jaw","jay","jet","jib","jig","job","jog",
+    "jot","joy","jug","jut",
+    "keg","key","kid","kin","kit",
+    "lab","lad","lag","lap","law","lax","lay","led","leg","let","lid",
+    "lie","lip","lit","lob","log","lop","lot","low",
+    "mad","man","map","mar","mat","may","men","met","mid","mix","mob",
+    "mom","mop","mud","mug","mum",
+    "nab","nag","nap","nay","net","new","nil","nip","nob","nod","nor",
+    "not","now","nub","nun","nut",
+    "oak","oar","oat","odd","off","oil","old","one","ooh","opt","orb",
+    "ore","our","out","owe","owl","own",
+    "pad","pal","pan","par","pat","paw","pay","pea","pee","peg","pen",
+    "pep","per","pet","pew","pie","pig","pin","pit","ply","pod","pop",
+    "pot","pow","pox","pre","pro","pry","pub","pug","pun","pup","put",
+    "rad","rag","ram","ran","rap","rat","raw","ray","red","ref","rep",
+    "rev","rib","rid","rig","rim","rip","rob","rod","roe","rot","row",
+    "rub","rug","rum","run","rut","rye",
+    "sac","sad","sag","sap","sat","saw","say","sea","sec","see","set",
+    "sew","sex","she","shy","sin","sip","sir","sis","sit","six","ska",
+    "ski","sky","sly","sob","son","sop","sow","soy","spa","spy","sub",
+    "sue","sum","sun","sup",
+    "tab","tag","tan","tap","tar","tax","tea","ten","the","thy","tic",
+    "tie","tin","tip","tit","toe","ton","too","top","tot","tow","toy",
+    "try","tub","tug","two",
+    "ugh","ump","urn","use",
+    "van","vat","vet","vex","via","vie","vim","vow",
+    "wad","wag","wan","war","was","wax","way","web","wed","wee","wet",
+    "who","why","wig","win","wit","woe","won","woo","wow","wry",
+    "yak","yam","yap","yaw","yea","yen","yep","yes","yet","yew","yin",
+    "yip","you","yum",
+    "zag","zap","zen","zig","zip","zit","zoo"
+  ]);
+  // Specific 4-char offenders the user has called out or that we recognize
+  // as junk. Expand from real-world feedback.
+  const FOUR_BAD = new Set(["khey","jhay","jhey","ahey","ehey","ohey"]);
+  function isUseful(w) {
+    if (!/^[a-z]+$/.test(w)) return false;
+    const n = w.length;
+    if (n === 1) return ONE_OK.has(w);
+    if (n === 2) return TWO_OK.has(w);
+    if (n === 3) return THREE_OK.has(w);
+    if (n === 4 && FOUR_BAD.has(w)) return false;
+    return true;
+  }
+
   // Inverted index: normalized rhyme-key → array of {word, syls}.
+  // Filter at index-build time so every downstream consumer (overview tile
+  // counts, modal lists, etc.) sees the same clean word set.
   const endingIndex = Object.create(null);
   for (const w in D) {
+    if (!isUseful(w)) continue;
     const entry = D[w];
     const keys = entry[1];
     const syls = entry[2];
@@ -7171,10 +7252,10 @@ function doSearch(word) {
     "#d6c95f", "#9fd65f", "#d6709a", "#a0d6e0"
   ];
 
-  // "Common-ish" word heuristic — no frequency data, so we use spelling
-  // length + plain-alpha as a proxy. Short, plain words tend to be the
-  // ones a writer actually wants to grab while freestyling.
-  const isCommonWord = w => w.length <= 5 && /^[a-z]+$/.test(w);
+  // "Extra-common" tint heuristic — gold-highlight the shortest chips so the
+  // really frequent words pop. The base list is already quality-filtered, so
+  // ≤4 chars is a sharper "lyrically reachable" signal than the old ≤5.
+  const isCommonWord = w => w.length <= 4 && /^[a-z]+$/.test(w);
 
   // ── Modal wiring ─────────────────────────────────────────────────────────
   const modal      = document.getElementById("ending-modal");
