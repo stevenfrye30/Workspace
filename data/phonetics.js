@@ -5,7 +5,7 @@
 const SM_PHONEMES = [
   "tʃ","dʒ","eɪ","aɪ","aʊ","oʊ","ɔɪ","ɑr","ɪr","ɛr","ɔr","ʊr",
   "p","b","t","d","k","g","m","n","ŋ","f","v","θ","ð","s","z","ʃ","ʒ","h",
-  "w","j","l","r","ɹ",
+  "w","j","l","ɫ","r","ɹ",
   "i","ɪ","e","ɛ","æ","ə","ɜ","ʌ","ɑ","ɔ","ɒ","o","ʊ","u","ɝ","ɚ"
 ].sort((a,b)=>b.length-a.length);
 
@@ -33,6 +33,7 @@ const SM_FEATS = {
   "w":{type:"C",place:"bilabial",manner:"approximant",voice:1},
   "j":{type:"C",place:"palatal",manner:"approximant",voice:1},
   "l":{type:"C",place:"alveolar",manner:"approximant",voice:1},
+  "ɫ":{type:"C",place:"alveolar",manner:"approximant",voice:1,velarized:true},
   "r":{type:"C",place:"alveolar",manner:"approximant",voice:1},
   "ɹ":{type:"C",place:"alveolar",manner:"approximant",voice:1},
   "i":{type:"V",place:"front-vowel",voice:1},
@@ -162,7 +163,7 @@ const SM_PHON_EXAMPLE = {
   "f":"fan","v":"van","θ":"thin","ð":"this","s":"sun","z":"zoo",
   "ʃ":"ship","ʒ":"measure","h":"hat",
   "tʃ":"chip","dʒ":"jam",
-  "w":"we","j":"yes","l":"let","r":"run","ɹ":"run",
+  "w":"we","j":"yes","l":"let","ɫ":"feel","r":"run","ɹ":"run",
   "i":"see","ɪ":"sit","e":"bay","ɛ":"bed","æ":"cat",
   "ə":"sofa","ɜ":"bird","ʌ":"cup","ɝ":"bird","ɚ":"butter",
   "ɑ":"father","ɔ":"thought","ɒ":"hot","o":"go","ʊ":"book","u":"food",
