@@ -11,8 +11,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 #sm-header .sub { font-size: 12px; color: var(--muted); font-style: italic; flex: 1; }
 #sm-header a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 5px 12px; border: 1px solid var(--bdr); border-radius: var(--radius); }
 #sm-header a:hover { color: var(--gold); border-color: var(--gold); }
-#panel-sound, #panel-coverage, #panel-flow { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-#panel-sound.active, #panel-coverage.active, #panel-flow.active { display: flex; }
+#panel-sound, #panel-coverage, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+#panel-sound.active, #panel-coverage.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
 
 /* ════════════════════ FLOW LAB (nested sub-tabs) ════════════════════ */
 #fl-tab-nav{display:flex;background:var(--surf2);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 14px;gap:2px;align-items:flex-end}
@@ -199,7 +199,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .legend-dot{width:10px;height:10px;border-radius:50%}
 
 /* ════════════════════ ENDINGS — vertical phonetic columns ════════════════════ */
-#fl-panel-endings .panel-scroll{padding:8px 14px 20px}
+#panel-endings .panel-scroll{padding:8px 14px 20px}
 .endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:8px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:6px 0 8px;z-index:3;border-bottom:1px solid var(--bdr)}
 .endings-filter::before{content:"Vowel family";font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
@@ -1846,8 +1846,10 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 
 <nav id="tab-nav" role="tablist">
   <button class="tab-btn active" type="button" data-tab="sound" role="tab" aria-selected="true">Sound Map</button>
-  <button class="tab-btn" type="button" data-tab="flow" role="tab" aria-selected="false">Flow Lab</button>
   <button class="tab-btn" type="button" data-tab="coverage" role="tab" aria-selected="false">Coverage</button>
+  <button class="tab-btn" type="button" data-tab="endings" role="tab" aria-selected="false">Endings</button>
+  <button class="tab-btn" type="button" data-tab="rhyme" role="tab" aria-selected="false">Rhyme Finder</button>
+  <button class="tab-btn" type="button" data-tab="rap" role="tab" aria-selected="false">Rap</button>
 </nav>
 
 <div id="panel-sound" class="active" role="tabpanel">
@@ -2080,13 +2082,13 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 </div>
 
 <!-- ══════════════════════════════════════════════════════════
-     FLOW LAB  (nested sub-tabs)
+     RAP  (Bar Builder + Vault — Endings & Rhyme Finder moved to
+     top-level at runtime; see the migration block in the inline
+     <script> below.)
      ══════════════════════════════════════════════════════════ -->
-<div id="panel-flow" role="tabpanel">
-  <nav id="fl-tab-nav" role="tablist" aria-label="Flow Lab sections">
-    <button class="fl-tab-btn active" role="tab" aria-selected="true" aria-controls="fl-panel-rhyme" data-fl-tab="rhyme" onclick="flSwitchTab('rhyme',this)">Rhyme Finder</button>
-    <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-endings" data-fl-tab="endings" onclick="flSwitchTab('endings',this)">Endings</button>
-    <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bar-builder" data-fl-tab="bar-builder" onclick="flSwitchTab('bar-builder',this)">Bar Builder</button>
+<div id="panel-rap" role="tabpanel">
+  <nav id="fl-tab-nav" role="tablist" aria-label="Rap sections">
+    <button class="fl-tab-btn active" role="tab" aria-selected="true" aria-controls="fl-panel-bar-builder" data-fl-tab="bar-builder" onclick="flSwitchTab('bar-builder',this)">Bar Builder</button>
     <button class="fl-tab-btn" role="tab" aria-selected="false" aria-controls="fl-panel-bars" data-fl-tab="bars" onclick="flSwitchTab('bars',this)">Vault</button>
   </nav>
 
@@ -2330,6 +2332,31 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <script src="./js/ui_performance.js"></script>
 <script src="./js/ui_compact.js"></script>
 <script>
+// ══════════════════════════════════
+//  NAVIGATION MIGRATION
+// ══════════════════════════════════
+// Promote the Endings and Rhyme Finder panels out of the (now-renamed) Rap
+// container so they become first-class top-level tabs. The HTML keeps them
+// declared inside #panel-rap for readability; this runs once on script load
+// to rewire the DOM into the new shape before anything else paints.
+(function promotePanels() {
+  const rap = document.getElementById("panel-rap");
+  if (!rap) return;
+  const root = rap.parentNode;
+  ["fl-panel-endings:panel-endings:Endings",
+   "fl-panel-rhyme:panel-rhyme:Rhyme Finder"].forEach(spec => {
+    const [oldId, newId, label] = spec.split(":");
+    const el = document.getElementById(oldId);
+    if (!el) return;
+    el.id = newId;
+    el.classList.remove("fl-tab-panel");
+    el.classList.remove("active"); // top-level .active drives visibility now
+    el.setAttribute("role", "tabpanel");
+    el.setAttribute("aria-label", label);
+    root.insertBefore(el, rap); // move out, place before #panel-rap
+  });
+})();
+
 // ══════════════════════════════════
 //  SOUND MAP
 // ══════════════════════════════════
@@ -6829,16 +6856,16 @@ document.getElementById("pc-show-notes").addEventListener("change", pcRender);
 pcRender();
 
 // ══════════════════════════════════════════════════════════════════════════
-//  FLOW LAB  (nested inside #panel-flow)
-//  Ported from the former ipa/ app. Sub-tabs use .fl-tab-btn / .fl-tab-panel
-//  and switchTab → flSwitchTab (scoped to #panel-flow) so nothing collides
-//  with the top-level Sound Map tab system.
+//  RAP SUB-TABS  (nested inside #panel-rap — Bar Builder + Vault only)
+//  Endings and Rhyme Finder used to live here but are now top-level tabs;
+//  these helpers route those names through to setTab() for backwards compat
+//  with old fltab=… hash links and any leftover programmatic calls.
 // ══════════════════════════════════════════════════════════════════════════
 
-// ── Sub-tab switching (scoped to #panel-flow) ──────────────────────────────
 function flSwitchTab(name, btn) {
-  document.querySelectorAll("#panel-flow .fl-tab-panel").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll("#panel-flow .fl-tab-btn").forEach(b => { b.classList.remove("active"); b.setAttribute("aria-selected","false"); });
+  if (name === "endings" || name === "rhyme") { setTab(name); return; }
+  document.querySelectorAll("#panel-rap .fl-tab-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll("#panel-rap .fl-tab-btn").forEach(b => { b.classList.remove("active"); b.setAttribute("aria-selected","false"); });
   const panel = document.getElementById("fl-panel-"+name);
   if (panel) panel.classList.add("active");
   if (btn) { btn.classList.add("active"); btn.setAttribute("aria-selected","true"); }
@@ -6846,11 +6873,12 @@ function flSwitchTab(name, btn) {
 }
 
 function flSwitchTabDirect(name) {
-  document.querySelectorAll("#panel-flow .fl-tab-panel").forEach(p => p.classList.remove("active"));
-  document.querySelectorAll("#panel-flow .fl-tab-btn").forEach(b => { b.classList.remove("active"); b.setAttribute("aria-selected","false"); });
+  if (name === "endings" || name === "rhyme") { setTab(name); return; }
+  document.querySelectorAll("#panel-rap .fl-tab-panel").forEach(p => p.classList.remove("active"));
+  document.querySelectorAll("#panel-rap .fl-tab-btn").forEach(b => { b.classList.remove("active"); b.setAttribute("aria-selected","false"); });
   const panel = document.getElementById("fl-panel-"+name);
   if (panel) panel.classList.add("active");
-  const btn = document.querySelector(`#panel-flow .fl-tab-btn[data-fl-tab="${name}"]`);
+  const btn = document.querySelector(`#panel-rap .fl-tab-btn[data-fl-tab="${name}"]`);
   if (btn) { btn.classList.add("active"); btn.setAttribute("aria-selected","true"); }
 }
 
@@ -7066,8 +7094,8 @@ document.getElementById("add-pane-btn").addEventListener("click", () => {
 
 // ── URL-hash state (shareable links) ────────────────────────────────────
 function rfSaveToHash() {
-  const activeBtn = document.querySelector("#panel-flow .fl-tab-btn.active");
-  const activeTab = activeBtn ? activeBtn.dataset.flTab : "rhyme";
+  const activeBtn = document.querySelector("#panel-rap .fl-tab-btn.active");
+  const activeTab = activeBtn ? activeBtn.dataset.flTab : "bar-builder";
   const panes = Array.from(document.querySelectorAll("#rf-panes .rf-pane"));
   const words = panes
     .map(p => p.querySelector(".word-input").value.trim())
@@ -7118,8 +7146,15 @@ function rfLoadFromHash() {
   }
   const tab = p.get("fltab");
   if (tab) {
-    const btn = document.querySelector(`#panel-flow .fl-tab-btn[data-fl-tab="${tab}"]`);
-    if (btn) btn.click();
+    // Endings + Rhyme Finder are now top-level tabs; route legacy fltab=endings
+    // and fltab=rhyme links through setTab. Bar Builder and Vault still live
+    // inside Rap and are reachable via the inner sub-tab buttons.
+    if (tab === "endings" || tab === "rhyme") {
+      setTab(tab);
+    } else {
+      const btn = document.querySelector(`#panel-rap .fl-tab-btn[data-fl-tab="${tab}"]`);
+      if (btn) btn.click();
+    }
   }
 }
 
@@ -8703,19 +8738,28 @@ document.getElementById("bb-input").addEventListener("keydown", e => {
 //  TAB SWITCHING
 // ══════════════════════════════════
 function setTab(name) {
-  // Backwards-compat: legacy "chart" routes map to the new combined "coverage" tab.
+  // Backwards-compat: remap legacy tab ids.
+  //   "chart"       → "coverage"      (older bookmarks from before tabs merged)
+  //   "flow"        → "rap"           (Flow Lab container renamed)
+  //   "bar-builder" → "rap" (+ sub)   (was a Flow Lab sub-tab; now lives inside Rap)
+  //   "bars"        → "rap" (+ sub)   (same — Vault sub-tab)
   if (name === "chart") name = "coverage";
+  let rapSub = null;
+  if (name === "flow") name = "rap";
+  if (name === "bar-builder" || name === "bars") { rapSub = name; name = "rap"; }
   document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
     const on = b.dataset.tab === name;
     b.classList.toggle("active", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
   });
-  document.getElementById("panel-sound").classList.toggle("active", name === "sound");
-  document.getElementById("panel-coverage").classList.toggle("active", name === "coverage");
-  document.getElementById("panel-flow").classList.toggle("active", name === "flow");
+  ["panel-sound","panel-coverage","panel-endings","panel-rhyme","panel-rap"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("active", id === "panel-" + name);
+  });
   if (name === "coverage" && typeof smCovRender === "function" && !smCovRendered) {
     try { smCovRender(); } catch(_) {}
   }
+  if (rapSub && typeof flSwitchTabDirect === "function") flSwitchTabDirect(rapSub);
   try { localStorage.setItem("sm-tab", name); } catch(_) {}
 }
 document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
@@ -8726,8 +8770,8 @@ document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
   const fromUrl = params.get("tab");
   let saved = null;
   try { saved = localStorage.getItem("sm-tab"); } catch(_) {}
-  // "chart" still accepted (legacy bookmarks) — setTab() will remap it.
-  const VALID = new Set(["sound", "flow", "coverage", "chart"]);
+  // "chart" + "flow" still accepted (legacy bookmarks / saved sessions); setTab() remaps them.
+  const VALID = new Set(["sound", "coverage", "endings", "rhyme", "rap", "chart", "flow"]);
   const validUrl = VALID.has(fromUrl) ? fromUrl : null;
   const validSaved = VALID.has(saved) ? saved : null;
   const initial = validUrl || validSaved || "sound";
