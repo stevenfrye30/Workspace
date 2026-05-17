@@ -211,7 +211,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    take 1 column and read as slim vertical lists. dense flow lets the
    browser backfill compact families into the empty space alongside
    wider standards instead of leaving column-stack voids. */
-#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));grid-auto-flow:dense;gap:14px 12px;align-items:start;padding-bottom:18px}
+#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));grid-auto-flow:dense;gap:12px 12px;align-items:start;padding-bottom:18px}
 .family-block{margin:0;padding:0;border:none;background:none;display:block;min-width:0}
 .family-block.fam-standard{grid-column:span 2}
 .family-block.hidden{display:none}
@@ -7557,7 +7557,25 @@ function doSearch(word) {
   // choreography here.
   const STANDARD_FAMS = new Set(["/æ/", "/ɛ/", "/ɪ/", "/ʌ/", "/ɑu/"]);
 
-  families.forEach((fname, fi) => {
+  // Render sequence. Influences nothing but the dense-flow placement
+  // order, but that one influence is the difference between /ɔː/, /ɝ/,
+  // /ɔr/, /ɑr/ stranded together in a stunted final row and them rising
+  // into row 1 next to the tall standards. Pattern: interleave each
+  // tall standard with one short compact so row 1 packs to width with
+  // the shortest compacts; the tallest compacts (/aɪ/, /oʊ/, /uː/, /ɑ/)
+  // then anchor the bottom row at a height comparable to row 2 instead
+  // of leaving a thin tail. Family-hue colors stay pinned to original
+  // ENDINGS index so adjacent siblings don't share a hue.
+  const RENDER_ORDER = [
+    "/æ/",  "/ɔː/", "/ɛ/",  "/ɝ/",  "/ɪ/",  "/ɔr/",
+    "/ʌ/",  "/ɑr/", "/ɔɪ/", "/ʊ/",  "/ɑu/", "/eɪ/", "/iː/",
+    "/aɪ/", "/oʊ/", "/uː/", "/ɑ/"
+  ];
+  const familyIdx = new Map(families.map((f, i) => [f, i]));
+
+  RENDER_ORDER.forEach(fname => {
+    if (!ENDINGS[fname]) return;
+    const fi = familyIdx.get(fname);
     // Drop endings whose modal would render no 1-syl or 2-syl chips: composite
     // patterns ("eɪr ɛə"), pseudo-IPA fragments ("ahf", "sofa"), and endings
     // whose only matches sit at 3+ syllables. Every visible button must open
