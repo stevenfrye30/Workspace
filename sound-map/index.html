@@ -206,9 +206,10 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
 /* Phonetic-wall layout: families flow as masonry-style vertical columns.
-   Aim for ~8 comfortable columns: column-width sets the minimum each
-   browser column occupies before another is added. */
-#endings-content{column-width:112px;column-gap:11px;padding-bottom:20px}
+   column-width is adaptive — the browser packs as many columns as fit at
+   ≥ this minimum. Sized for ~7–8 comfortable columns on a wide desktop;
+   pulling lower over-packs the wall on big monitors. */
+#endings-content{column-width:148px;column-gap:13px;padding-bottom:20px}
 .family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 14px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
