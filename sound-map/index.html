@@ -205,6 +205,12 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
+.sort-group{display:inline-flex;align-items:center;gap:4px;margin-left:auto;padding-left:12px;border-left:1px solid var(--bdr)}
+.sort-group-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
+.sort-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
+.sort-btn:hover{color:var(--text);border-color:var(--muted)}
+.sort-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+
 /* Phonetic-wall layout: families flow as masonry-style vertical columns. */
 #endings-content{column-width:152px;column-gap:14px;padding-bottom:20px}
 .family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 14px;padding:0;border:none;background:none;display:block}
@@ -7407,6 +7413,30 @@ function doSearch(word) {
     b.addEventListener("click", closeModal);
   });
 
+  // ── Sort mode (A→Z vs Richness) ─────────────────────────────────────────
+  // Reorders the child ending tiles inside every family column. Does not
+  // affect parent-vowel column order, modal ordering, or filtering.
+  const SORT_MODES = {
+    alpha: { label: "A→Z",      cmp: (a, b) => a.item.end.localeCompare(b.item.end) },
+    rich:  { label: "Richness", cmp: (a, b) => b.total - a.total || a.item.end.localeCompare(b.item.end) }
+  };
+  let sortMode = "alpha";
+  try {
+    const stored = localStorage.getItem("sm-endings-sort");
+    if (stored === "alpha" || stored === "rich") sortMode = stored;
+  } catch (_) {}
+
+  // Each family registers a renderer here so the toggle can repaint all tile
+  // grids cheaply without rebuilding the rest of the overview.
+  const familyRenders = new Map();
+  function applySort() {
+    familyRenders.forEach(r => {
+      const sorted = r.items.slice().sort(SORT_MODES[sortMode].cmp);
+      r.gridEl.textContent = "";
+      sorted.forEach(({ item, total }) => r.gridEl.appendChild(r.makeTile(item, total)));
+    });
+  }
+
   // ── Filter bar ───────────────────────────────────────────────────────────
   const allBtn = document.createElement("button");
   allBtn.className = "fam-btn active";
@@ -7421,12 +7451,10 @@ function doSearch(word) {
   families.forEach((fname, fi) => {
     // Drop endings that have no dictionary matches (composite patterns like
     // "eɪr ɛə", or any that fail to resolve). The overview is a reference chart
-    // — only live endings belong on it. Then sort A→Z by IPA ending string so
-    // the order is predictable rather than richness-ranked.
+    // — only live endings belong on it.
     const items = ENDINGS[fname]
       .map(item => ({ item, total: wordsFor(item.end).length }))
-      .filter(({ total }) => total > 0)
-      .sort((a, b) => a.item.end.localeCompare(b.item.end));
+      .filter(({ total }) => total > 0);
 
     // Skip the family entirely if everything was filtered out — no header,
     // no filter pill, no empty column.
@@ -7463,27 +7491,51 @@ function doSearch(word) {
 
     const grid = document.createElement("div");
     grid.className = "endings-grid";
-    items.forEach(({ item, total }) => {
-      const tier = tierOf(total);
+    block.appendChild(grid);
+    contentEl.appendChild(block);
 
+    // Tile factory — captured by the renderer so we can rebuild tiles when
+    // the user toggles sort mode. (Listeners are reattached fresh per tile.)
+    const makeTile = (item, total) => {
+      const tier = tierOf(total);
       const card = document.createElement("button");
       card.type = "button";
       card.className = "ending-card" + (total ? "" : " ending-card-empty");
       card.dataset.tier = String(tier);
       card.disabled = !total;
-      // Tile shows only the IPA pattern — detail lives in tooltip + modal.
       card.innerHTML = `<div class="ec-sym">/${item.end}/</div>`;
       card.title = total
         ? `/${item.end}/${item.ex ? "  ·  " + item.ex : ""}\n${total.toLocaleString()} word${total === 1 ? "" : "s"} — click to open`
         : `/${item.end}/ — no matches`;
-      if (total) {
-        card.addEventListener("click", () => openModal(item, card));
-      }
-      grid.appendChild(card);
-    });
-    block.appendChild(grid);
-    contentEl.appendChild(block);
+      if (total) card.addEventListener("click", () => openModal(item, card));
+      return card;
+    };
+
+    familyRenders.set(fname, { gridEl: grid, items, makeTile });
   });
+
+  // Inject the sort toggle at the end of the filter row.
+  const sortGroup = document.createElement("div");
+  sortGroup.className = "sort-group";
+  sortGroup.innerHTML =
+    `<span class="sort-group-label">Sort</span>` +
+    Object.keys(SORT_MODES)
+      .map(k => `<button class="sort-btn${k === sortMode ? " active" : ""}" data-sort="${k}">${SORT_MODES[k].label}</button>`)
+      .join("");
+  sortGroup.querySelectorAll(".sort-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const m = btn.dataset.sort;
+      if (m === sortMode) return;
+      sortMode = m;
+      try { localStorage.setItem("sm-endings-sort", sortMode); } catch (_) {}
+      sortGroup.querySelectorAll(".sort-btn").forEach(b => b.classList.toggle("active", b === btn));
+      applySort();
+    });
+  });
+  filterEl.appendChild(sortGroup);
+
+  // Initial paint, in whichever mode the user last used.
+  applySort();
 })();
 
 // ══════════════════════════════════
