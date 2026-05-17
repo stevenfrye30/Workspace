@@ -213,8 +213,12 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    desktop wall instead of letting CSS columns balance unpredictably. */
 #endings-content{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;padding-bottom:20px}
 .lane{display:flex;flex-direction:column;gap:11px;min-width:0}
-.lane-wide{flex:1.35 1 130px}
-.lane-narrow{flex:1 1 100px}
+/* Three lane widths — wide for complex families with 3-tile groups
+   (/æ/, /ɛ/, /ɪ/, /ʌ/, /ɑu/); narrow for linear families with 2-tile
+   groups and singletons; ultra for singleton-only short families. */
+.lane-wide{flex:1.5 1 130px}
+.lane-narrow{flex:1 1 95px}
+.lane-ultra{flex:0.65 1 65px}
 .family-block{margin:0;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
@@ -7544,26 +7548,28 @@ function doSearch(word) {
   };
   filterEl.appendChild(allBtn);
 
-  // Hand-mapped 8-lane composition. Wide lanes host families whose stem
-  // groups have 3 tiles per row (need width). Narrow lanes host families
-  // that are mostly singleton rows; two short narrow families pair into
-  // one lane to save horizontal space. Heights are roughly balanced so
-  // the wall fits within ~one desktop screen.
+  // Hand-mapped 8-lane composition with three lane widths so each family
+  // gets the horizontal room its content actually needs:
+  //   wide   — families with 3-tile stem groups (need room to breathe).
+  //   narrow — linear families with 2-tile pairs and singletons.
+  //   ultra  — singleton-only short families that read as elegant lists.
+  // Narrow and ultra lanes stack multiple families to reclaim the
+  // horizontal space the previous uniform-column layout was wasting.
   const LANE_CONFIG = [
-    { width: "wide",   families: ["/æ/",  "/ɔɪ/"] },
-    { width: "wide",   families: ["/ɛ/",  "/ɑr/"] },
-    { width: "wide",   families: ["/ɪ/",  "/ɔr/"] },
-    { width: "wide",   families: ["/ʌ/",  "/ʊ/"]  },
-    { width: "wide",   families: ["/ɑu/", "/ɑ/", "/ɝ/"] },
-    { width: "narrow", families: ["/iː/", "/eɪ/"] },
-    { width: "narrow", families: ["/aɪ/", "/oʊ/"] },
-    { width: "narrow", families: ["/uː/", "/ɔː/"] }
+    { width: "wide",   families: ["/æ/"] },
+    { width: "wide",   families: ["/ɛ/"] },
+    { width: "wide",   families: ["/ɪ/"] },
+    { width: "wide",   families: ["/ʌ/",  "/ɑu/"] },
+    { width: "narrow", families: ["/eɪ/", "/aɪ/", "/ɝ/"] },
+    { width: "narrow", families: ["/iː/", "/ɔː/", "/ɑ/"] },
+    { width: "narrow", families: ["/uː/", "/ʊ/",  "/oʊ/"] },
+    { width: "ultra",  families: ["/ɑr/", "/ɔɪ/", "/ɔr/"] }
   ];
   const familyIdx = new Map(families.map((f, i) => [f, i]));
   const laneEls = new Map();
   LANE_CONFIG.forEach(cfg => {
     const laneEl = document.createElement("div");
-    laneEl.className = "lane " + (cfg.width === "wide" ? "lane-wide" : "lane-narrow");
+    laneEl.className = "lane lane-" + cfg.width;
     contentEl.appendChild(laneEl);
     cfg.families.forEach(f => laneEls.set(f, laneEl));
   });
