@@ -205,11 +205,14 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
-/* Phonetic-wall layout: families flow as masonry-style vertical columns.
-   Each family stacks rows of related endings (one row per stem-group);
-   parent column is wide enough that a 3-tile group reads cleanly. */
-#endings-content{column-width:156px;column-gap:13px;padding-bottom:20px}
-.family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 16px;padding:0;border:none;background:none;display:block}
+/* Phonetic-wall layout: explicit grid with per-family row spans computed
+   in JS. Each family gets one column-width cell, height set by
+   grid-row:span N (N = ceil(measured-height / row-unit)).
+   grid-auto-flow:dense lets a short family slot into the empty space
+   beside a taller neighbor, so the wall packs tightly instead of
+   leaving CSS-columns-style gaps. */
+#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(156px,1fr));grid-auto-rows:4px;grid-auto-flow:dense;column-gap:13px;row-gap:0;padding-bottom:20px}
+.family-block{margin:0;padding:0 0 14px;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
 /* Inline family header — parent vowel + example word on one line. */
@@ -7525,7 +7528,38 @@ function doSearch(word) {
         r.gridEl.appendChild(rowEl);
       }
     });
+    applyMasonryLayout();
   }
+
+  // Compute grid-row:span N for each visible family-block based on its
+  // measured height, so the dense grid can pack short families into the
+  // empty space alongside tall ones. Run after every paint, after the
+  // panel becomes visible, on filter changes, and on window resize.
+  // Heights are 0 while the panel is hidden; that case is detected via
+  // offsetParent === null and skipped (we'll re-run when shown).
+  function applyMasonryLayout() {
+    if (!contentEl) return;
+    const cs = getComputedStyle(contentEl);
+    const unit = parseFloat(cs.gridAutoRows) || 4;
+    const rg = parseFloat(cs.rowGap) || 0;
+    contentEl.querySelectorAll(".family-block").forEach(b => {
+      b.style.gridRowEnd = "";
+      if (b.offsetParent === null) return;
+      const h = b.getBoundingClientRect().height;
+      if (!h) return;
+      const span = Math.max(1, Math.ceil((h + rg) / (unit + rg)));
+      b.style.gridRowEnd = "span " + span;
+    });
+  }
+  // Exposed so the tab switcher can re-measure once the panel becomes
+  // visible (block heights are 0 while it's display:none).
+  window.__endingsRelayout = applyMasonryLayout;
+
+  let resizeT;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(applyMasonryLayout, 120);
+  });
 
   // ── Filter bar ───────────────────────────────────────────────────────────
   const allBtn = document.createElement("button");
@@ -7535,6 +7569,7 @@ function doSearch(word) {
     document.querySelectorAll(".family-block").forEach(b => b.classList.remove("hidden"));
     document.querySelectorAll(".fam-btn").forEach(b => b.classList.remove("active"));
     allBtn.classList.add("active");
+    applyMasonryLayout();
   };
   filterEl.appendChild(allBtn);
 
@@ -7568,6 +7603,7 @@ function doSearch(word) {
       });
       document.querySelectorAll(".fam-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
+      applyMasonryLayout();
     };
     filterEl.appendChild(btn);
 
@@ -8797,6 +8833,13 @@ function setTab(name) {
   });
   if (name === "coverage" && typeof smCovRender === "function" && !smCovRendered) {
     try { smCovRender(); } catch(_) {}
+  }
+  // Endings uses a JS-driven masonry grid; family-blocks have 0 height
+  // while the panel is display:none, so the row-spans must be (re)computed
+  // once the panel becomes visible. requestAnimationFrame ensures the
+  // browser has applied the .active class and laid out the panel.
+  if (name === "endings" && typeof window.__endingsRelayout === "function") {
+    requestAnimationFrame(() => window.__endingsRelayout());
   }
   if (rapSub && typeof flSwitchTabDirect === "function") flSwitchTabDirect(rapSub);
   try { localStorage.setItem("sm-tab", name); } catch(_) {}
