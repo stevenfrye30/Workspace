@@ -206,11 +206,9 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
 /* Phonetic-wall layout: families flow as masonry-style vertical columns.
-   Each family is a single stacked list of endings; narrower parent
-   columns let many families sit side-by-side and balance the taller
-   stacks. column-width is adaptive — the browser packs as many columns
-   as fit at ≥ this minimum. */
-#endings-content{column-width:92px;column-gap:12px;padding-bottom:20px}
+   Each family stacks rows of related endings (one row per stem-group);
+   parent column is wide enough that a 3-tile group reads cleanly. */
+#endings-content{column-width:156px;column-gap:13px;padding-bottom:20px}
 .family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 16px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
@@ -224,9 +222,12 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .family-title .ipa-key{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:26px;color:var(--family-hue,var(--blue));font-weight:700;line-height:1;letter-spacing:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .family-title .fam-ex{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--muted);line-height:1.2;letter-spacing:.01em}
 
-/* One vertical column of ending tiles per family — simpler scan rhythm
-   than a 2-per-row mini-grid. Each tile spans the parent column. */
+/* Stack of stem-group rows per family. Each row is a flex strip of 1–3
+   tiles that share a base ending (e.g. /æk/ /æks/ /ækt/). Singleton
+   rows are just one full-width tile. */
 .endings-grid{display:flex;flex-direction:column;gap:3px}
+.ending-row{display:flex;gap:3px}
+.ending-row > .ending-card{flex:1 1 0;min-width:0}
 
 .ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 5px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:24px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
 .ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.65;transition:opacity .12s}
@@ -7449,12 +7450,80 @@ function doSearch(word) {
   // Endings inside each family are rendered alphabetically by IPA ending.
   // Overview is a reference chart — predictable order beats "most words first".
   const alphaCmp = (a, b) => a.item.end.localeCompare(b.item.end);
+
+  // Stem grouping. Consecutive alpha-sorted endings collapse onto one row
+  // when they share a base that ends with a consonant and the siblings add
+  // only 1–2 consonant chars (e.g. /æk/ /æks/ /ækt/, /aɪn/ /aɪnd/). Vowel-
+  // ended bases like /aɪ/ never anchor a group — they'd swallow the whole
+  // family. r-colored family roots like /ɔr/ /ɑɹ/ are also blocked from
+  // anchoring; the parent header already establishes that all siblings
+  // share that root, so chaining them into one row defeats the purpose.
+  // Cap at 3 tiles so a single row always fits a parent column.
+  const VOWEL_CHARS = new Set([
+    "a","e","i","o","u","æ","ɑ","ɔ","ə","ɛ","ɪ","ʊ","ʌ","ɝ","ɚ","ɐ","ː"
+  ]);
+  const isCons = ch => !VOWEL_CHARS.has(ch);
+  const endsCons = s => s.length > 0 && isCons(s[s.length - 1]);
+  // Bare-vowel form: optional final r/ɹ, everything before is a vowel.
+  function isBareVowelStem(s) {
+    const core = s.replace(/[rɹ]$/, "");
+    if (!core) return false;
+    for (const ch of core) { if (!VOWEL_CHARS.has(ch)) return false; }
+    return true;
+  }
+  function groupByStem(items) {
+    const rows = [];
+    let i = 0;
+    while (i < items.length) {
+      const base = items[i].item.end;
+      if (!endsCons(base) || isBareVowelStem(base)) {
+        rows.push([items[i]]);
+        i++;
+        continue;
+      }
+      const group = [items[i]];
+      let j = i + 1;
+      while (j < items.length) {
+        const nxt = items[j].item.end;
+        if (!nxt.startsWith(base)) break;
+        const ext = nxt.slice(base.length);
+        if (ext.length < 1 || ext.length > 2) break;
+        let allCons = true;
+        for (const ch of ext) { if (!isCons(ch)) { allCons = false; break; } }
+        if (!allCons) break;
+        group.push(items[j]);
+        j++;
+      }
+      // Pack into rows so a single row never holds more than 3 tiles. A
+      // 4-member stem (rare — e.g. /æn/ /ænd/ /æns/ /ænt/) splits 2+2 so
+      // both rows feel balanced rather than 3+1.
+      if (group.length === 4) {
+        rows.push(group.slice(0, 2));
+        rows.push(group.slice(2));
+      } else {
+        for (let k = 0; k < group.length; k += 3) {
+          rows.push(group.slice(k, k + 3));
+        }
+      }
+      i = j;
+    }
+    return rows;
+  }
+
   const familyRenders = new Map();
   function paintAll() {
     familyRenders.forEach(r => {
       const sorted = r.items.slice().sort(alphaCmp);
+      const rows = groupByStem(sorted);
       r.gridEl.textContent = "";
-      sorted.forEach(({ item, total }) => r.gridEl.appendChild(r.makeTile(item, total)));
+      for (const row of rows) {
+        const rowEl = document.createElement("div");
+        rowEl.className = "ending-row";
+        for (const { item, total } of row) {
+          rowEl.appendChild(r.makeTile(item, total));
+        }
+        r.gridEl.appendChild(rowEl);
+      }
     });
   }
 
