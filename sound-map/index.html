@@ -205,11 +205,17 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
-/* Phonetic-wall layout: families flow as masonry-style vertical columns.
-   Each family stacks rows of related endings (one row per stem-group);
-   parent column is wide enough that a 3-tile group reads cleanly. */
-#endings-content{column-width:156px;column-gap:13px;padding-bottom:20px}
-.family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 11px;padding:0;border:none;background:none;display:block}
+/* Phonetic-wall layout: deterministic flex lanes. Each lane is a vertical
+   stack of one or more parent-phoneme families. Wide lanes host families
+   whose stem groups have 3 tiles per row (need horizontal room); narrow
+   lanes host families that are mostly singleton rows and can pair up.
+   Lane assignments are hand-mapped in JS to compose a stable 8-lane
+   desktop wall instead of letting CSS columns balance unpredictably. */
+#endings-content{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;padding-bottom:20px}
+.lane{display:flex;flex-direction:column;gap:11px;min-width:0}
+.lane-wide{flex:1.35 1 130px}
+.lane-narrow{flex:1 1 100px}
+.family-block{margin:0;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
 /* Inline family header — parent vowel + example word on one line. */
@@ -7538,7 +7544,37 @@ function doSearch(word) {
   };
   filterEl.appendChild(allBtn);
 
-  families.forEach((fname, fi) => {
+  // Hand-mapped 8-lane composition. Wide lanes host families whose stem
+  // groups have 3 tiles per row (need width). Narrow lanes host families
+  // that are mostly singleton rows; two short narrow families pair into
+  // one lane to save horizontal space. Heights are roughly balanced so
+  // the wall fits within ~one desktop screen.
+  const LANE_CONFIG = [
+    { width: "wide",   families: ["/æ/",  "/ɔɪ/"] },
+    { width: "wide",   families: ["/ɛ/",  "/ɑr/"] },
+    { width: "wide",   families: ["/ɪ/",  "/ɔr/"] },
+    { width: "wide",   families: ["/ʌ/",  "/ʊ/"]  },
+    { width: "wide",   families: ["/ɑu/", "/ɑ/", "/ɝ/"] },
+    { width: "narrow", families: ["/iː/", "/eɪ/"] },
+    { width: "narrow", families: ["/aɪ/", "/oʊ/"] },
+    { width: "narrow", families: ["/uː/", "/ɔː/"] }
+  ];
+  const familyIdx = new Map(families.map((f, i) => [f, i]));
+  const laneEls = new Map();
+  LANE_CONFIG.forEach(cfg => {
+    const laneEl = document.createElement("div");
+    laneEl.className = "lane " + (cfg.width === "wide" ? "lane-wide" : "lane-narrow");
+    contentEl.appendChild(laneEl);
+    cfg.families.forEach(f => laneEls.set(f, laneEl));
+  });
+  // Iterate in lane-composition order so the filter-pill bar mirrors the
+  // visual board left-to-right, top-to-bottom.
+  const orderedFams = LANE_CONFIG.flatMap(cfg => cfg.families);
+
+  orderedFams.forEach(fname => {
+    if (!ENDINGS[fname]) return;
+    const fi = familyIdx.get(fname);
+
     // Drop endings whose modal would render no 1-syl or 2-syl chips: composite
     // patterns ("eɪr ɛə"), pseudo-IPA fragments ("ahf", "sofa"), and endings
     // whose only matches sit at 3+ syllables. Every visible button must open
@@ -7591,7 +7627,7 @@ function doSearch(word) {
     const grid = document.createElement("div");
     grid.className = "endings-grid";
     block.appendChild(grid);
-    contentEl.appendChild(block);
+    (laneEls.get(fname) || contentEl).appendChild(block);
 
     // Tile factory. Every item that reaches here has at least one 1-syl or
     // 2-syl match, so every card is clickable and opens a non-empty modal.
