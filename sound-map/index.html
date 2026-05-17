@@ -205,37 +205,27 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
 .fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
 
-.sort-group{display:inline-flex;align-items:center;gap:4px;margin-left:auto;padding-left:12px;border-left:1px solid var(--bdr)}
-.sort-group-label{font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:2px}
-.sort-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
-.sort-btn:hover{color:var(--text);border-color:var(--muted)}
-.sort-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
-
 /* Phonetic-wall layout: families flow as masonry-style vertical columns. */
-#endings-content{column-width:152px;column-gap:12px;padding-bottom:20px}
+#endings-content{column-width:128px;column-gap:9px;padding-bottom:20px}
 .family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 12px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
 /* Inline family header — parent vowel + example word on one line. */
-.family-title{display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:10px;text-align:center;padding:0 0 6px;margin-bottom:5px;border-bottom:2px solid var(--family-hue,var(--bdr))}
+.family-title{display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:8px;text-align:center;padding:0 0 6px;margin-bottom:5px;border-bottom:2px solid var(--family-hue,var(--bdr))}
 .family-title .fam-label{display:none}
 .family-title .fam-count{display:none}
-.family-title .ipa-key{font-family:var(--mono);font-size:28px;color:var(--family-hue,var(--blue));font-weight:700;line-height:1;letter-spacing:0}
-.family-title .fam-ex{font-family:Georgia,serif;font-style:italic;font-size:13px;color:var(--muted);line-height:1.2;letter-spacing:.01em}
+.family-title .ipa-key{font-family:var(--mono);font-size:26px;color:var(--family-hue,var(--blue));font-weight:700;line-height:1;letter-spacing:0}
+.family-title .fam-ex{font-family:Georgia,serif;font-style:italic;font-size:12px;color:var(--muted);line-height:1.2;letter-spacing:.01em}
 
 /* Thinner key-cap tiles. */
-.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(60px,1fr));gap:2px}
+.endings-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(50px,1fr));gap:2px}
 
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:3px 6px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:26px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:2px 4px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:22px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
 .ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.65;transition:opacity .12s}
 .ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);outline:none;z-index:1}
 .ending-card:hover::before,.ending-card:focus-visible::before{opacity:1}
-.ending-card-empty{opacity:.22;cursor:not-allowed}
-.ending-card-empty::before{opacity:.12}
-.ending-card-empty:hover{border-color:var(--bdr);background:var(--surf2);transform:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
-.ending-card-empty:hover::before{opacity:.12}
 
-.ec-sym{font-size:14px;font-family:var(--mono);color:#a8c4dc;font-weight:600;line-height:1;letter-spacing:0;word-break:break-all}
+.ec-sym{font-size:13px;font-family:var(--mono);color:#a8c4dc;font-weight:600;line-height:1;letter-spacing:0;word-break:break-all}
 .ec-ex{display:none}
 .ec-count{display:none}
 
@@ -7448,25 +7438,13 @@ function doSearch(word) {
     b.addEventListener("click", closeModal);
   });
 
-  // ── Sort mode (A→Z vs Richness) ─────────────────────────────────────────
-  // Reorders the child ending tiles inside every family column. Does not
-  // affect parent-vowel column order, modal ordering, or filtering.
-  const SORT_MODES = {
-    alpha: { label: "A→Z",      cmp: (a, b) => a.item.end.localeCompare(b.item.end) },
-    rich:  { label: "Richness", cmp: (a, b) => b.total - a.total || a.item.end.localeCompare(b.item.end) }
-  };
-  let sortMode = "alpha";
-  try {
-    const stored = localStorage.getItem("sm-endings-sort");
-    if (stored === "alpha" || stored === "rich") sortMode = stored;
-  } catch (_) {}
-
-  // Each family registers a renderer here so the toggle can repaint all tile
-  // grids cheaply without rebuilding the rest of the overview.
+  // Endings inside each family are rendered alphabetically by IPA ending.
+  // Overview is a reference chart — predictable order beats "most words first".
+  const alphaCmp = (a, b) => a.item.end.localeCompare(b.item.end);
   const familyRenders = new Map();
-  function applySort() {
+  function paintAll() {
     familyRenders.forEach(r => {
-      const sorted = r.items.slice().sort(SORT_MODES[sortMode].cmp);
+      const sorted = r.items.slice().sort(alphaCmp);
       r.gridEl.textContent = "";
       sorted.forEach(({ item, total }) => r.gridEl.appendChild(r.makeTile(item, total)));
     });
@@ -7484,12 +7462,21 @@ function doSearch(word) {
   filterEl.appendChild(allBtn);
 
   families.forEach((fname, fi) => {
-    // Drop endings that have no dictionary matches (composite patterns like
-    // "eɪr ɛə", or any that fail to resolve). The overview is a reference chart
-    // — only live endings belong on it.
+    // Drop endings whose modal would render no 1-syl or 2-syl chips: composite
+    // patterns ("eɪr ɛə"), pseudo-IPA fragments ("ahf", "sofa"), and endings
+    // whose only matches sit at 3+ syllables. Every visible button must open
+    // a modal with real content.
     const items = ENDINGS[fname]
-      .map(item => ({ item, total: wordsFor(item.end).length }))
-      .filter(({ total }) => total > 0);
+      .map(item => {
+        const matches = wordsFor(item.end);
+        let usable = 0;
+        for (let i = 0; i < matches.length; i++) {
+          const s = matches[i].syls;
+          if (s === 1 || s === 2) usable++;
+        }
+        return { item, total: matches.length, usable };
+      })
+      .filter(({ usable }) => usable > 0);
 
     // Skip the family entirely if everything was filtered out — no header,
     // no filter pill, no empty column.
@@ -7529,48 +7516,23 @@ function doSearch(word) {
     block.appendChild(grid);
     contentEl.appendChild(block);
 
-    // Tile factory — captured by the renderer so we can rebuild tiles when
-    // the user toggles sort mode. (Listeners are reattached fresh per tile.)
+    // Tile factory. Every item that reaches here has at least one 1-syl or
+    // 2-syl match, so every card is clickable and opens a non-empty modal.
     const makeTile = (item, total) => {
-      const tier = tierOf(total);
       const card = document.createElement("button");
       card.type = "button";
-      card.className = "ending-card" + (total ? "" : " ending-card-empty");
-      card.dataset.tier = String(tier);
-      card.disabled = !total;
+      card.className = "ending-card";
+      card.dataset.tier = String(tierOf(total));
       card.innerHTML = `<div class="ec-sym">/${item.end}/</div>`;
-      card.title = total
-        ? `/${item.end}/${item.ex ? "  ·  " + item.ex : ""}\n${total.toLocaleString()} word${total === 1 ? "" : "s"} — click to open`
-        : `/${item.end}/ — no matches`;
-      if (total) card.addEventListener("click", () => openModal(item, card));
+      card.title = `/${item.end}/${item.ex ? "  ·  " + item.ex : ""}\n${total.toLocaleString()} word${total === 1 ? "" : "s"} — click to open`;
+      card.addEventListener("click", () => openModal(item, card));
       return card;
     };
 
     familyRenders.set(fname, { gridEl: grid, items, makeTile });
   });
 
-  // Inject the sort toggle at the end of the filter row.
-  const sortGroup = document.createElement("div");
-  sortGroup.className = "sort-group";
-  sortGroup.innerHTML =
-    `<span class="sort-group-label">Sort</span>` +
-    Object.keys(SORT_MODES)
-      .map(k => `<button class="sort-btn${k === sortMode ? " active" : ""}" data-sort="${k}">${SORT_MODES[k].label}</button>`)
-      .join("");
-  sortGroup.querySelectorAll(".sort-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      const m = btn.dataset.sort;
-      if (m === sortMode) return;
-      sortMode = m;
-      try { localStorage.setItem("sm-endings-sort", sortMode); } catch (_) {}
-      sortGroup.querySelectorAll(".sort-btn").forEach(b => b.classList.toggle("active", b === btn));
-      applySort();
-    });
-  });
-  filterEl.appendChild(sortGroup);
-
-  // Initial paint, in whichever mode the user last used.
-  applySort();
+  paintAll();
 })();
 
 // ══════════════════════════════════
