@@ -211,15 +211,16 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    lanes host families that are mostly singleton rows and can pair up.
    Lane assignments are hand-mapped in JS to compose a stable 8-lane
    desktop wall instead of letting CSS columns balance unpredictably. */
-#endings-content{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start;padding-bottom:20px}
-.lane{display:flex;flex-direction:column;gap:11px;min-width:0}
-/* Three lane widths — wide for complex families with 3-tile groups
-   (/æ/, /ɛ/, /ɪ/, /ʌ/, /ɑu/); narrow for linear families with 2-tile
-   groups and singletons; ultra for singleton-only short families. */
-.lane-wide{flex:1.5 1 130px}
-.lane-narrow{flex:1 1 95px}
-.lane-ultra{flex:0.65 1 65px}
-.family-block{margin:0;padding:0;border:none;background:none;display:block}
+/* Two CSS-columns sections side-by-side: the layout engine handles all
+   family placement and height balancing inside each section, so we
+   don't choreograph lanes by hand. Standard section uses a wider
+   column so families with 3-tile stem groups (/æ/, /ɛ/, /ɪ/, /ʌ/,
+   /ɑu/) breathe; compact section uses a slim column so families that
+   are mostly singleton rows read as elegant vertical lists. */
+#endings-content{display:flex;gap:18px;align-items:flex-start;padding-bottom:20px}
+#endings-standard{flex:1 1 0;column-width:168px;column-gap:14px;min-width:0}
+#endings-compact{flex:1 1 0;column-width:92px;column-gap:12px;min-width:0}
+.family-block{break-inside:avoid;-webkit-column-break-inside:avoid;page-break-inside:avoid;margin:0 0 14px;padding:0;border:none;background:none;display:block}
 .family-block.hidden{display:none}
 
 /* Inline family header — parent vowel + example word on one line. */
@@ -7548,39 +7549,21 @@ function doSearch(word) {
   };
   filterEl.appendChild(allBtn);
 
-  // Hand-mapped 8-lane composition with three lane widths so each family
-  // gets the horizontal room its content actually needs:
-  //   wide   — families with 3-tile stem groups (need room to breathe).
-  //   narrow — linear families with 2-tile pairs and singletons.
-  //   ultra  — singleton-only short families that read as elegant lists.
-  // Narrow and ultra lanes stack multiple families to reclaim the
-  // horizontal space the previous uniform-column layout was wasting.
-  const LANE_CONFIG = [
-    { width: "wide",   families: ["/æ/"] },
-    { width: "wide",   families: ["/ɛ/"] },
-    { width: "wide",   families: ["/ɪ/"] },
-    { width: "wide",   families: ["/ʌ/",  "/ɑu/"] },
-    { width: "narrow", families: ["/eɪ/", "/aɪ/", "/ɝ/"] },
-    { width: "narrow", families: ["/iː/", "/ɔː/", "/ɑ/"] },
-    { width: "narrow", families: ["/uː/", "/ʊ/",  "/oʊ/"] },
-    { width: "ultra",  families: ["/ɑr/", "/ɔɪ/", "/ɔr/"] }
-  ];
-  const familyIdx = new Map(families.map((f, i) => [f, i]));
-  const laneEls = new Map();
-  LANE_CONFIG.forEach(cfg => {
-    const laneEl = document.createElement("div");
-    laneEl.className = "lane lane-" + cfg.width;
-    contentEl.appendChild(laneEl);
-    cfg.families.forEach(f => laneEls.set(f, laneEl));
-  });
-  // Iterate in lane-composition order so the filter-pill bar mirrors the
-  // visual board left-to-right, top-to-bottom.
-  const orderedFams = LANE_CONFIG.flatMap(cfg => cfg.families);
+  // Two width classes — that's all the structure the wall needs. Families
+  // listed here get a wider CSS-columns section because their stem
+  // groups (e.g. /æk/ /æks/ /ækt/, /ʌn/ /ʌnk/ /ʌnt/) need horizontal
+  // room. Everything else flows in the slim section as a vertical list.
+  // CSS columns handles per-family placement and height balancing inside
+  // each section — no lane choreography here.
+  const STANDARD_FAMS = new Set(["/æ/", "/ɛ/", "/ɪ/", "/ʌ/", "/ɑu/"]);
+  const standardEl = document.createElement("div");
+  standardEl.id = "endings-standard";
+  const compactEl = document.createElement("div");
+  compactEl.id = "endings-compact";
+  contentEl.appendChild(standardEl);
+  contentEl.appendChild(compactEl);
 
-  orderedFams.forEach(fname => {
-    if (!ENDINGS[fname]) return;
-    const fi = familyIdx.get(fname);
-
+  families.forEach((fname, fi) => {
     // Drop endings whose modal would render no 1-syl or 2-syl chips: composite
     // patterns ("eɪr ɛə"), pseudo-IPA fragments ("ahf", "sofa"), and endings
     // whose only matches sit at 3+ syllables. Every visible button must open
@@ -7633,7 +7616,7 @@ function doSearch(word) {
     const grid = document.createElement("div");
     grid.className = "endings-grid";
     block.appendChild(grid);
-    (laneEls.get(fname) || contentEl).appendChild(block);
+    (STANDARD_FAMS.has(fname) ? standardEl : compactEl).appendChild(block);
 
     // Tile factory. Every item that reaches here has at least one 1-syl or
     // 2-syl match, so every card is clickable and opens a non-empty modal.
