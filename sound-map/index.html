@@ -69,10 +69,19 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-search:focus{border-color:var(--gold)}
 .pc-toggle{color:var(--muted);font-size:12px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
 .pc-toggle input{cursor:pointer;accent-color:var(--gold)}
+/* Compact column selector — picks which script columns appear in the
+   table. IPA + Description always stay; this only toggles the third+
+   columns. Designed to sit inline with the search/notes toggle. */
+.pc-cols{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:auto}
+.pc-cols-label{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-right:2px}
+.pc-col-toggle{background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;color:var(--muted);cursor:pointer;font-size:10.5px;font-family:inherit;padding:3px 9px;transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .18s ease;user-select:none}
+.pc-col-toggle:hover{color:var(--text);border-color:var(--muted);background:var(--surf)}
+.pc-col-toggle.active{background:rgba(232,200,64,.14);border-color:var(--gold);color:var(--gold);font-weight:600;box-shadow:0 0 0 1px rgba(232,200,64,.10)}
+.pc-col-toggle.active:hover{background:rgba(232,200,64,.20);color:var(--gold)}
 /* Section header — denser; gold-tinted underline; sticky so the C/V
    label stays in view while scrolling the long table. */
-.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(232,200,64,.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1}
-.pc-h2::after{content:"IPA → Latin · Arabic · Telugu";color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none}
+.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(232,200,64,.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px}
+.pc-h2-caption{color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none}
 
 .pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
 .pc-table thead th{text-align:left;padding:5px 10px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surf2);position:sticky;top:0;z-index:2}
@@ -2127,23 +2136,12 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     <div class="pc-toolbar">
       <input class="pc-search" id="pc-search" placeholder="Search by sound, description (e.g. nasal, fricative)…" />
       <label class="pc-toggle"><input type="checkbox" id="pc-show-notes" checked /> Show notes</label>
+      <div class="pc-cols" id="pc-cols" aria-label="Script columns"></div>
     </div>
-    <div class="pc-h2">Consonants</div>
-    <table class="pc-table"><thead><tr>
-      <th class="pc-col-ipa">IPA</th>
-      <th class="pc-col-desc">Description</th>
-      <th>Latin</th>
-      <th>Arabic</th>
-      <th>Telugu</th>
-    </tr></thead><tbody id="pc-consonants-body"></tbody></table>
-    <div class="pc-h2">Vowels</div>
-    <table class="pc-table"><thead><tr>
-      <th class="pc-col-ipa">IPA</th>
-      <th class="pc-col-desc">Description</th>
-      <th>Latin</th>
-      <th>Arabic</th>
-      <th>Telugu</th>
-    </tr></thead><tbody id="pc-vowels-body"></tbody></table>
+    <div class="pc-h2">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
+    <table class="pc-table"><thead><tr id="pc-consonants-head"></tr></thead><tbody id="pc-consonants-body"></tbody></table>
+    <div class="pc-h2">Vowels <span class="pc-h2-caption" id="pc-cap-v"></span></div>
+    <table class="pc-table"><thead><tr id="pc-vowels-head"></tr></thead><tbody id="pc-vowels-body"></tbody></table>
     <div class="pc-legend">
       <strong>How to read this chart.</strong> Latin values reflect English orthography where consistent, and use digraphs (<code>sh</code>, <code>th</code>) where a single letter doesn't suffice. Arabic shows isolated letter forms; vowel diacritics use <code>ـ</code> as a placeholder. Telugu consonants are shown with the inherent /a/; pure consonants require a virama (<code>్</code>). Retroflex, emphatic, and aspirated distinctions are preserved where the target script encodes them.
     </div>
@@ -6955,13 +6953,93 @@ const PC_PHONEMES = [
   { ipa: "oː", g: "v", desc: "long close-mid back vowel",         latin: "ō",  arabic: "—", telugu: "ఓ" },
 ];
 
+// Script-column registry. IPA + Description are fixed; everything in
+// this list is a togglable script column. Adding a new writing system
+// only requires adding an entry here and a field on each PC_PHONEMES
+// row — the toolbar pills, headers, and cells all populate from this.
+const PC_COLUMNS = [
+  { key: "latin",  label: "Latin"  },
+  { key: "arabic", label: "Arabic" },
+  { key: "telugu", label: "Telugu" }
+];
+const PC_COL_KEYS = new Set(PC_COLUMNS.map(c => c.key));
+let pcSelectedCols = new Set(PC_COLUMNS.map(c => c.key));
+try {
+  const stored = localStorage.getItem("pc-cols");
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    if (Array.isArray(parsed)) {
+      const filtered = parsed.filter(k => PC_COL_KEYS.has(k));
+      if (filtered.length > 0) pcSelectedCols = new Set(filtered);
+    }
+  }
+} catch(_) {}
+
+function pcBuildColumnSelector() {
+  const wrap = document.getElementById("pc-cols");
+  if (!wrap) return;
+  wrap.innerHTML = "";
+  const label = document.createElement("span");
+  label.className = "pc-cols-label";
+  label.textContent = "Columns";
+  wrap.appendChild(label);
+  PC_COLUMNS.forEach(c => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "pc-col-toggle" + (pcSelectedCols.has(c.key) ? " active" : "");
+    btn.textContent = c.label;
+    btn.dataset.col = c.key;
+    btn.setAttribute("aria-pressed", pcSelectedCols.has(c.key) ? "true" : "false");
+    btn.addEventListener("click", () => pcToggleCol(c.key));
+    wrap.appendChild(btn);
+  });
+}
+
+function pcToggleCol(key) {
+  if (!PC_COL_KEYS.has(key)) return;
+  if (pcSelectedCols.has(key)) {
+    if (pcSelectedCols.size === 1) return;  // keep at least one script visible
+    pcSelectedCols.delete(key);
+  } else {
+    pcSelectedCols.add(key);
+  }
+  try { localStorage.setItem("pc-cols", JSON.stringify(Array.from(pcSelectedCols))); } catch(_) {}
+  pcBuildColumnSelector();
+  pcBuildHeaders();
+  pcUpdateCaption();
+  pcRender();
+}
+
+function pcBuildHeaders() {
+  const headHtml =
+    '<th class="pc-col-ipa">IPA</th><th class="pc-col-desc">Description</th>' +
+    PC_COLUMNS
+      .filter(c => pcSelectedCols.has(c.key))
+      .map(c => `<th class="pc-col-script-h">${c.label}</th>`)
+      .join("");
+  ["pc-consonants-head","pc-vowels-head"].forEach(id => {
+    const tr = document.getElementById(id);
+    if (tr) tr.innerHTML = headHtml;
+  });
+}
+
+function pcUpdateCaption() {
+  const active = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key)).map(c => c.label).join(" · ");
+  document.querySelectorAll(".pc-h2-caption").forEach(el => {
+    el.textContent = "IPA → " + active;
+  });
+}
+
 function pcRender() {
   const q = document.getElementById("pc-search").value.trim().toLowerCase();
   const showNotes = document.getElementById("pc-show-notes").checked;
   const cBody = document.getElementById("pc-consonants-body");
   const vBody = document.getElementById("pc-vowels-body");
   cBody.innerHTML = ""; vBody.innerHTML = "";
-  const COLS = ["latin","arabic","telugu"];
+  const activeCols = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key));
+  // Search still matches against ALL script fields and the note even
+  // when their columns are hidden — keeps "find by Arabic letter" or
+  // "find by note text" useful regardless of what's currently shown.
   const match = (p) => !q || [p.ipa,p.desc,p.latin,p.arabic,p.telugu,p.note||""].join(" ").toLowerCase().includes(q);
   // One row per phoneme. The note (when present + toggle on) is folded
   // into the description cell as an italic annotation line, not a
@@ -6969,8 +7047,8 @@ function pcRender() {
   // line and roughly halves vertical density.
   PC_PHONEMES.filter(match).forEach(p => {
     const tr = document.createElement("tr");
-    const cells = COLS.map(c => {
-      const v = p[c];
+    const cells = activeCols.map(c => {
+      const v = p[c.key];
       const isEmpty = v === "—";
       return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}">${v}</td>`;
     }).join("");
@@ -7000,6 +7078,9 @@ document.getElementById("panel-coverage").addEventListener("click", (e) => {
 });
 document.getElementById("pc-search").addEventListener("input", pcRender);
 document.getElementById("pc-show-notes").addEventListener("change", pcRender);
+pcBuildColumnSelector();
+pcBuildHeaders();
+pcUpdateCaption();
 pcRender();
 
 // ══════════════════════════════════════════════════════════════════════════
