@@ -57,34 +57,41 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 
 /* ════════════════════ PHONETIC CHART ════════════════════ */
 #panel-coverage .pc-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
-/* Section divider between Coverage and Chart inside the Coverage panel */
-#panel-coverage .pc-section-divider{margin:8px 0 18px;padding:14px 0 0;border-top:1px solid var(--bdr)}
-#panel-coverage .pc-section-divider .pc-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:4px}
-#panel-coverage .pc-section-divider .pc-section-sub{color:var(--muted);font-size:11px;font-style:italic}
-.pc-intro{color:var(--muted);font-size:12px;max-width:780px;margin-bottom:10px;line-height:1.55}
+/* Major section transition — the "scripts comparison" entrance. A
+   thin top rule across the column with a heavier gold tab on the
+   left marks this as a distinct subsystem of the Coverage tab. */
+#panel-coverage .pc-section-divider{margin:24px 0 14px;padding:16px 0 0;border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);position:relative;transition:border-color .8s ease}
+#panel-coverage .pc-section-divider::before{content:"";position:absolute;top:-1px;left:0;width:72px;height:2px;background:rgb(var(--pc-tint-rgb,232,200,64));border-radius:1px;transition:background .8s ease}
+#panel-coverage .pc-section-divider .pc-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin-bottom:3px;transition:color .8s ease}
+#panel-coverage .pc-section-divider .pc-section-sub{color:var(--muted);font-size:10.5px;font-style:italic}
+.pc-intro{color:var(--muted);font-size:11px;max-width:780px;margin-bottom:10px;line-height:1.55;padding:2px 0 2px 11px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.30);transition:border-color .8s ease}
 .pc-intro strong{color:var(--text)}
-.pc-intro code{font-family:var(--mono);background:var(--surf2);color:var(--gold);padding:1px 6px;border-radius:3px;font-size:11px}
-.pc-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
-.pc-search{flex:1;min-width:240px;max-width:420px;background:var(--surf2);border:1px solid var(--bdr);color:var(--text);padding:7px 12px;border-radius:var(--radius);font-family:inherit;font-size:13px;outline:none}
-.pc-search:focus{border-color:var(--gold)}
-.pc-toggle{color:var(--muted);font-size:12px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
-.pc-toggle input{cursor:pointer;accent-color:var(--gold)}
+.pc-intro code{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;background:var(--surf2);color:rgb(var(--pc-tint-rgb,232,200,64));padding:1px 6px;border-radius:3px;font-size:11px}
+/* Control deck — search + notes toggle + column toggles sit inside a
+   single surface that reads as one command surface, not three loose
+   widgets. Top edge takes the active atmosphere tint. */
+.pc-toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:7px 12px 7px 14px;background:linear-gradient(180deg,rgba(var(--pc-tint-rgb,232,200,64),.04),var(--surf) 75%);border:1px solid var(--bdr);border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.45);border-radius:var(--radius);transition:border-color .8s ease,background .8s ease;position:relative}
+.pc-toolbar::before{content:"Reference";font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.78);padding-right:10px;border-right:1px solid var(--bdr);align-self:center;transition:color .8s ease,border-color .8s ease}
+.pc-search{flex:1;min-width:200px;max-width:380px;background:var(--surf2);border:1px solid var(--bdr);color:var(--text);padding:5px 10px;border-radius:var(--radius);font-family:inherit;font-size:12.5px;outline:none;transition:border-color .15s ease,box-shadow .18s ease}
+.pc-search:focus{border-color:rgb(var(--pc-tint-rgb,232,200,64));box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.18)}
+.pc-toggle{color:var(--muted);font-size:11px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
+.pc-toggle input{cursor:pointer;accent-color:rgb(var(--pc-tint-rgb,232,200,64))}
 /* Compact column selector — picks which script columns appear in the
    table. IPA + Description always stay; this only toggles the third+
    columns. Designed to sit inline with the search/notes toggle. */
 .pc-cols{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:auto}
 .pc-cols-label{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-right:2px}
 .pc-col-toggle{background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;color:var(--muted);cursor:pointer;font-size:10.5px;font-family:inherit;padding:3px 9px;transition:background .8s ease,border-color .8s ease,color .8s ease,box-shadow .8s ease;user-select:none}
-.pc-col-toggle:hover{color:var(--text);border-color:var(--muted);background:var(--surf)}
+.pc-col-toggle:hover{color:var(--text);border-color:rgba(var(--pc-tint-rgb,232,200,64),.40);background:rgba(var(--pc-tint-rgb,232,200,64),.05)}
 .pc-col-toggle.active{background:rgba(var(--pc-tint-rgb,232,200,64),.14);border-color:rgb(var(--pc-tint-rgb,232,200,64));color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:600;box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.10)}
 .pc-col-toggle.active:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.22)}
 /* Section header — denser; gold-tinted underline; sticky so the C/V
    label stays in view while scrolling the long table. */
 .pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px;transition:color .8s ease,border-color .8s ease}
-.pc-h2-caption{color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none}
+.pc-h2-caption{color:rgba(var(--pc-tint-rgb,232,200,64),.55);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none;transition:color .8s ease}
 
 .pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
-.pc-table thead th{text-align:left;padding:5px 10px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surf2);position:sticky;top:0;z-index:2}
+.pc-table thead th{text-align:left;padding:5px 10px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:rgba(var(--pc-tint-rgb,232,200,64),.72);background:linear-gradient(180deg,var(--surf2),var(--surf));position:sticky;top:0;z-index:2;transition:color .8s ease,border-color .8s ease}
 .pc-table thead th:nth-child(n+3){text-align:center}
 .pc-table tbody td{padding:3px 10px;border-bottom:1px solid rgba(58,66,86,.55);vertical-align:middle;transition:background .12s ease;line-height:1.2}
 .pc-table tbody tr:last-child td{border-bottom:none}
@@ -96,9 +103,11 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-table tbody tr.pc-row-flash{animation:pc-flash 1.6s ease-out}
 @keyframes pc-flash{0%,30%{background:rgba(212,162,76,.4)}100%{background:transparent}}
 
-/* IPA = anchor column. Larger glyph, crisp ui-monospace stack, gold. */
-.pc-col-ipa{width:60px;padding-top:4px;padding-bottom:4px}
-.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:22px;color:var(--gold);font-weight:700;display:inline-block;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+/* IPA = anchor column. The phoneme is the identity of its row; cell
+   gets a thin left accent rule, a soft horizontal wash from the
+   active tint, and a slightly bigger glyph with a low-amplitude glow. */
+.pc-col-ipa{width:64px;padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
+.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.5px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 8px rgba(var(--pc-tint-rgb,232,200,64),.18);transition:color .8s ease,text-shadow .8s ease}
 
 /* Description column — secondary, with the optional note folded in
    below as a gold-bar annotation line. No more separate note row. */
@@ -106,11 +115,37 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-desc .pc-desc-text{font-style:italic}
 .pc-col-desc .pc-note-inline{margin-top:2px;padding-left:7px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.45);font-size:10px;font-style:italic;color:#9aa3b0;line-height:1.45;opacity:.95;transition:border-color .8s ease}
 
-/* Script columns — parallel realizations of the same phoneme. */
+/* Script columns — parallel realizations of the same phoneme. A
+   thin inter-column rule turns adjacent scripts from "cells in a row"
+   into "lanes side by side"; a stronger border separates description
+   from the first script lane so the transition reads as deliberate. */
 .pc-col-script{text-align:center;cursor:pointer;font-size:20px;transition:background .12s ease;line-height:1;padding-left:8px;padding-right:8px}
-.pc-col-script:hover{background:var(--surf2)}
+.pc-col-script:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.10)}
 .pc-col-script.copied{background:var(--green);color:#111}
 .pc-col-script.empty{color:#3a4256;font-size:14px;font-style:italic;cursor:default}
+/* Inter-column rules. .pc-col-script-h is the thead variant; the
+   tbody td uses .pc-col-script. Both pick up the same separators. */
+.pc-table thead th.pc-col-script-h+.pc-col-script-h,
+.pc-table tbody td.pc-col-script+.pc-col-script{border-left:1px solid rgba(60,70,90,.32)}
+/* Stronger description→first-script transition. */
+.pc-table thead th.pc-col-script-h:nth-child(3),
+.pc-table tbody td.pc-col-script:nth-child(3){border-left:1px solid rgba(60,70,90,.55)}
+
+/* Row striping — very subtle. Breaks the eye from reading "spreadsheet
+   rows" into perceiving a textured surface of phoneme records. The
+   IPA anchor cell keeps its own gradient and overrides striping below. */
+.pc-table tbody tr:nth-child(odd) td{background:rgba(255,255,255,.014)}
+.pc-table tbody tr:nth-child(odd) td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.12),transparent 88%)}
+/* Re-assert hover + focus over the striping (equal specificity, later
+   cascade wins). Slightly punchier opacity than before so the active
+   row reads cleanly above the textured baseline; IPA cell on a focused
+   row gets a deeper gradient for instant anchor recognition. */
+.pc-table tbody tr:hover td{background:rgba(var(--pc-tint-rgb,232,200,64),.06)}
+.pc-table tbody tr.phoneme-focus td{background:rgba(var(--pc-tint-rgb,232,200,64),.10)}
+.pc-table tbody tr.phoneme-source td{background:rgba(var(--pc-tint-rgb,232,200,64),.135)}
+.pc-table tbody tr:hover td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.22),rgba(var(--pc-tint-rgb,232,200,64),.04) 88%)}
+.pc-table tbody tr.phoneme-focus td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.32),rgba(var(--pc-tint-rgb,232,200,64),.08) 88%)}
+.pc-table tbody tr.phoneme-source td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.40),rgba(var(--pc-tint-rgb,232,200,64),.10) 88%)}
 .pc-legend{margin-top:12px;padding:10px 14px;background:var(--surf2);border-left:3px solid rgb(var(--pc-tint-rgb,232,200,64));font-size:11px;color:var(--muted);line-height:1.55;transition:border-color .8s ease}
 .pc-legend strong{color:var(--text)}
 .pc-legend code{font-family:var(--mono);color:var(--gold)}
