@@ -202,8 +202,9 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 #panel-endings .panel-scroll{padding:4px 14px 8px}
 .endings-filter{display:flex;align-items:center;gap:5px;margin-bottom:4px;flex-wrap:wrap;position:sticky;top:0;background:var(--bg);padding:4px 0;z-index:3;border-bottom:1px solid var(--bdr)}
 .endings-filter::before{content:"Vowel family";font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-right:4px}
-.fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:all .15s}
-.fam-btn:hover,.fam-btn.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700}
+.fam-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:14px;color:var(--muted);cursor:pointer;font-size:11.5px;font-family:var(--mono);padding:3px 10px;transition:background .15s ease,color .15s ease,border-color .15s ease,box-shadow .18s ease,font-weight .15s ease}
+.fam-btn:hover{color:var(--text);border-color:var(--muted);background:var(--surf)}
+.fam-btn.active,.fam-btn.active:hover{background:var(--gold);color:#111;border-color:var(--gold);font-weight:700;box-shadow:0 1px 6px rgba(232,200,64,.28)}
 
 /* Single responsive grid — every family is a grid item participating in
    the same row rhythm. Standard families (the ones with 3-tile stem
@@ -228,6 +229,11 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    spacing (grid gap, row gap, horizontal padding) is now unified at
    the standard values below. */
 .family-block.fam-compact .ending-card{min-height:18px}
+/* Subtle hierarchy: compact families read as supporting columns —
+   thinner underline and a hair more transparency on the IPA glyph;
+   standards stay full-weight as the foundational anchors. */
+.family-block.fam-compact .family-title{border-bottom-width:1px}
+.family-block.fam-compact .family-title .ipa-key{opacity:.88}
 
 /* Inline family header — parent vowel + example word on one line. */
 .family-title{display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:6px;text-align:center;padding:0 0 1px;margin-bottom:1px;border-bottom:2px solid var(--family-hue,var(--bdr));flex-wrap:wrap}
@@ -246,9 +252,9 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .ending-row{display:flex;gap:1px}
 .ending-row > .ending-card{flex:1 1 0;min-width:0}
 
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:1px 4px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:20px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
-.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.65;transition:opacity .12s}
-.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);outline:none;z-index:1}
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:1px 4px;cursor:pointer;transition:transform .18s cubic-bezier(.2,.8,.2,1),border-color .15s ease,background .15s ease,box-shadow .18s ease;display:flex;align-items:center;justify-content:center;min-height:20px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.6;transition:opacity .18s ease}
+.ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 3px 10px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);outline:none;z-index:1}
 .ending-card:hover::before,.ending-card:focus-visible::before{opacity:1}
 
 /* IPA must always be one centered line — no wrap, no spill into the
@@ -277,7 +283,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .em-close:hover{color:var(--gold);background:var(--surf2)}
 .em-header{padding:24px 32px 20px;border-bottom:1px solid var(--bdr);flex-shrink:0;background:linear-gradient(180deg,rgba(64,176,232,.05),transparent)}
 .em-eyebrow{color:var(--gold);font-size:10px;letter-spacing:.18em;font-weight:700;text-transform:uppercase;margin-bottom:8px}
-.em-pattern{font-family:var(--mono);color:var(--blue);font-size:30px;font-weight:700;line-height:1.05;letter-spacing:0}
+.em-pattern{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;color:var(--blue);font-size:34px;font-weight:700;line-height:1.05;letter-spacing:0;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .em-meta{display:flex;gap:18px;margin-top:12px;color:var(--muted);font-size:13px;flex-wrap:wrap;align-items:baseline}
 .em-meta-example{font-family:Georgia,serif;font-style:italic;font-size:14px;color:var(--text);opacity:.78}
 .em-meta-totals{margin-left:auto;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap}
