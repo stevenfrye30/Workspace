@@ -211,7 +211,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    take 1 column and read as slim vertical lists. dense flow lets the
    browser backfill compact families into the empty space alongside
    wider standards instead of leaving column-stack voids. */
-#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));grid-auto-flow:dense;gap:10px 12px;align-items:start;padding-bottom:16px}
+/* minmax 96 is sized so an 11-col grid fits on a ≥1200px viewport
+   (1200-10·12 = 1080; 1080/11 ≈ 98px per col). 11 cols collapses the
+   22 col-units (5 standards × 2 + 12 compacts × 1) from a 3-row wall
+   into a 2-row wall, which is the only way the page fits in a typical
+   desktop viewport without dropping tile size on standards or hiding
+   endings. The IPA-font safeguard for compact 2-tile rows is below. */
+#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));grid-auto-flow:dense;gap:10px 12px;align-items:start;padding-bottom:16px}
 .family-block{margin:0;padding:0;border:none;background:none;display:block;min-width:0}
 .family-block.fam-standard{grid-column:span 2}
 .family-block.hidden{display:none}
@@ -252,9 +258,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    but every group sizing below is tuned so the text actually fits. */
 .ec-sym{font-size:13px;font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;color:#c8d4e2;font-weight:600;line-height:1;letter-spacing:0;white-space:nowrap;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 /* In a 2- or 3-tile stem-group row the per-tile width is much smaller,
-   so step IPA down a notch — keeps /iːst/-style 6-glyph endings on one
-   line without wrapping. Singletons stay at 13px. */
-.ending-row > .ending-card:not(:only-child) .ec-sym{font-size:12px}
+   so step IPA down a notch. Standards span 2 grid cols so they keep
+   12px in their 3-tile rows; compacts span 1 col (~98px), and their
+   2-tile rows only have ~37px of inner content area — 12px would clip
+   /iːst/-shaped 6-glyph endings, so drop to 10px there. Singletons
+   keep 13px everywhere. */
+.fam-standard .ending-row > .ending-card:not(:only-child) .ec-sym{font-size:12px}
+.fam-compact  .ending-row > .ending-card:not(:only-child) .ec-sym{font-size:10px}
 .ec-ex{display:none}
 .ec-count{display:none}
 
