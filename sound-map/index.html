@@ -74,13 +74,13 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    columns. Designed to sit inline with the search/notes toggle. */
 .pc-cols{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:auto}
 .pc-cols-label{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-right:2px}
-.pc-col-toggle{background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;color:var(--muted);cursor:pointer;font-size:10.5px;font-family:inherit;padding:3px 9px;transition:background .15s ease,border-color .15s ease,color .15s ease,box-shadow .18s ease;user-select:none}
+.pc-col-toggle{background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;color:var(--muted);cursor:pointer;font-size:10.5px;font-family:inherit;padding:3px 9px;transition:background .8s ease,border-color .8s ease,color .8s ease,box-shadow .8s ease;user-select:none}
 .pc-col-toggle:hover{color:var(--text);border-color:var(--muted);background:var(--surf)}
-.pc-col-toggle.active{background:rgba(232,200,64,.14);border-color:var(--gold);color:var(--gold);font-weight:600;box-shadow:0 0 0 1px rgba(232,200,64,.10)}
-.pc-col-toggle.active:hover{background:rgba(232,200,64,.20);color:var(--gold)}
+.pc-col-toggle.active{background:rgba(var(--pc-tint-rgb,232,200,64),.14);border-color:rgb(var(--pc-tint-rgb,232,200,64));color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:600;box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.10)}
+.pc-col-toggle.active:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.22)}
 /* Section header — denser; gold-tinted underline; sticky so the C/V
    label stays in view while scrolling the long table. */
-.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(232,200,64,.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px}
+.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px;transition:color .8s ease,border-color .8s ease}
 .pc-h2-caption{color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none}
 
 .pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
@@ -89,9 +89,10 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-table tbody td{padding:3px 10px;border-bottom:1px solid rgba(58,66,86,.55);vertical-align:middle;transition:background .12s ease;line-height:1.2}
 .pc-table tbody tr:last-child td{border-bottom:none}
 .pc-table tbody tr{transition:background .12s ease}
-.pc-table tbody tr:hover td{background:rgba(232,200,64,.04)}
-.pc-table tbody tr.phoneme-focus td{background:rgba(232,200,64,.085)}
-.pc-table tbody tr.phoneme-focus td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
+.pc-table tbody tr:hover td{background:rgba(var(--pc-tint-rgb,232,200,64),.04)}
+.pc-table tbody tr.phoneme-focus td{background:rgba(var(--pc-tint-rgb,232,200,64),.085)}
+.pc-table tbody tr.phoneme-focus td:first-child{box-shadow:inset 3px 0 0 rgb(var(--pc-tint-rgb,232,200,64));transition:box-shadow .6s ease}
+.pc-table tbody tr.phoneme-source td{background:rgba(var(--pc-tint-rgb,232,200,64),.115)}
 .pc-table tbody tr.pc-row-flash{animation:pc-flash 1.6s ease-out}
 @keyframes pc-flash{0%,30%{background:rgba(212,162,76,.4)}100%{background:transparent}}
 
@@ -103,14 +104,14 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    below as a gold-bar annotation line. No more separate note row. */
 .pc-col-desc{color:var(--muted);font-size:10.5px;width:230px;line-height:1.4;font-style:normal}
 .pc-col-desc .pc-desc-text{font-style:italic}
-.pc-col-desc .pc-note-inline{margin-top:2px;padding-left:7px;border-left:2px solid rgba(232,200,64,.45);font-size:10px;font-style:italic;color:#9aa3b0;line-height:1.45;opacity:.95}
+.pc-col-desc .pc-note-inline{margin-top:2px;padding-left:7px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.45);font-size:10px;font-style:italic;color:#9aa3b0;line-height:1.45;opacity:.95;transition:border-color .8s ease}
 
 /* Script columns — parallel realizations of the same phoneme. */
 .pc-col-script{text-align:center;cursor:pointer;font-size:20px;transition:background .12s ease;line-height:1;padding-left:8px;padding-right:8px}
 .pc-col-script:hover{background:var(--surf2)}
 .pc-col-script.copied{background:var(--green);color:#111}
 .pc-col-script.empty{color:#3a4256;font-size:14px;font-style:italic;cursor:default}
-.pc-legend{margin-top:12px;padding:10px 14px;background:var(--surf2);border-left:3px solid var(--gold);font-size:11px;color:var(--muted);line-height:1.55}
+.pc-legend{margin-top:12px;padding:10px 14px;background:var(--surf2);border-left:3px solid rgb(var(--pc-tint-rgb,232,200,64));font-size:11px;color:var(--muted);line-height:1.55;transition:border-color .8s ease}
 .pc-legend strong{color:var(--text)}
 .pc-legend code{font-family:var(--mono);color:var(--gold)}
 .pc-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surf);border:1px solid var(--gold);color:var(--text);padding:10px 16px;border-radius:var(--radius);font-size:13px;opacity:0;transition:opacity .15s;pointer-events:none;z-index:50}
@@ -1019,6 +1020,19 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-grid td.cell-axis.empty{color:var(--gold);opacity:.55}
 .sm-cov-grid th.axis-active{color:var(--gold)}
 .sm-cov-grid th.sm-cov-manner-th.axis-active{color:var(--gold)}
+/* Cross-direction sync: a cell can also gain phoneme-focus when its
+   IPA was hovered from somewhere else (a pc-table row, a sig chip).
+   Strong inset gold ring + lift so the user can find the matching
+   slot on the grid even though they're not hovering it directly. */
+.sm-cov-grid td.phoneme-focus.filled{box-shadow:0 0 0 2px rgba(232,200,64,.55),0 4px 10px rgba(0,0,0,.4),inset 0 0 0 1px rgba(255,255,255,.15);transform:translateY(-1px);z-index:2}
+.sm-cov-grid td.phoneme-source.filled{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,255,255,.22);z-index:3}
+/* Vowel trapezoid + diphthong chips also participate in IPA sync. */
+.sm-cov-trap-pt{transition:transform .15s cubic-bezier(.2,.8,.2,1),filter .18s ease,fill-opacity .15s ease}
+.sm-cov-trap-pt.phoneme-focus{filter:drop-shadow(0 0 4px rgba(232,200,64,.7));fill-opacity:1}
+.sm-cov-trap-pt.phoneme-source{filter:drop-shadow(0 0 6px rgba(232,200,64,.85))}
+.sm-cov-diph{transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .18s ease}
+.sm-cov-diph.phoneme-focus{box-shadow:0 0 0 1px rgba(232,200,64,.6),0 2px 8px rgba(232,200,64,.18)}
+.sm-cov-diph.phoneme-source{box-shadow:0 0 0 1px rgba(232,200,64,.8),0 3px 10px rgba(232,200,64,.28);transform:translateY(-1px)}
 .sm-cov-grid td.you{box-shadow:inset 0 0 0 2px var(--gold);position:relative}
 .sm-cov-grid td.you::after{content:"";position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 1px #111}
 .sm-cov-grid td.you.empty::after{background:var(--gold)}
@@ -1101,6 +1115,7 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-sig-chip.tier-distinctive{border-color:rgba(212,162,76,.35)}
 .sm-cov-sig-chip.tier-common{border-color:var(--bdr);opacity:.78}
 .sm-cov-sig-chip.phoneme-focus{outline:1px solid rgba(232,200,64,.6);outline-offset:2px}
+.sm-cov-sig-chip.phoneme-source{outline:2px solid rgba(232,200,64,.8);outline-offset:2px;transform:translateY(-2px);box-shadow:0 4px 14px rgba(232,200,64,.22)}
 .sm-cov-sig-sym{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:22px;font-weight:700;color:var(--gold);line-height:1;letter-spacing:-.5px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .sm-cov-sig-chip.tier-common .sm-cov-sig-sym{color:var(--text)}
 .sm-cov-sig-chip.tier-unique .sm-cov-sig-sym{text-shadow:0 0 10px rgba(232,200,64,.25)}
@@ -6028,29 +6043,33 @@ function smCovBuildConsTable() {
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
-
-  // Cross-component hover wiring. Hovering a cell here lights up:
-  //  · sibling cells in the same manner-row + place-column (so the
-  //    eye can trace the axis intersection without losing context)
-  //  · the matching place region in the vocal-tract heat map
-  //  · the corresponding tract-stat row
-  //  · signature-sound chips for any phoneme that lives in this cell
-  //  · the matching script-comparison row in the lower IPA table
-  // All highlights are restrained — opacity/outline only, never motion.
-  table.addEventListener("mouseover", e => {
-    const td = e.target.closest("td");
-    if (!td || !table.contains(td) || !td.dataset.place) return;
-    smCovHighlight(td);
-  });
-  table.addEventListener("mouseleave", smCovHighlightClear);
+  // Hover wiring is centralised on #panel-coverage (see smCovSync); no
+  // per-table listener here so reverse-direction hover (from sig chip,
+  // pc-table row, tract zone, etc.) goes through the same dispatcher.
   return table;
 }
 
+// ── Cross-component phoneme/place sync ─────────────────────────────
+// Three entry points; the panel-coverage delegated mouseover handler
+// (installed once at script load) routes to whichever matches:
+//
+//   smCovHighlight(cell)        — consonant-grid cell (axis + place
+//                                  + IPA-driven sibling highlight)
+//   smCovSetActivePhoneme(ipa)  — any source carrying a single IPA
+//                                  (sig chip, pc-table row, vowel
+//                                  trapezoid point, diphthong chip)
+//   smCovSetActivePlace(place)  — vocal-tract zone or tract-stat
+//
+// All converge on the same CSS classes (phoneme-focus, cell-axis,
+// zone-focus, stat-focus, axis-active) so highlights read the same
+// regardless of which surface initiated the hover.
+
 function smCovHighlight(td) {
-  smCovHighlightClear();
+  smCovClearActive();
   const place  = td.dataset.place;
   const manner = td.dataset.manner;
   const ipas   = (td.dataset.ipas || "").split(",").filter(Boolean);
+  td.classList.add("phoneme-source");
   const table  = td.closest("table");
   if (table) {
     table.querySelectorAll(`td[data-place="${place}"], td[data-manner="${manner}"]`).forEach(c => {
@@ -6062,29 +6081,109 @@ function smCovHighlight(td) {
     const rowHeader = td.parentNode.querySelector("th.sm-cov-manner-th");
     if (rowHeader) rowHeader.classList.add("axis-active");
   }
-  // Articulation zone + stat row (querySelector is fine: place is a
-  // safe ASCII slug like "alveolar"; ipas may contain non-ASCII so we
-  // filter manually below).
-  document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${place}"]`).forEach(el => el.classList.add("zone-focus"));
-  document.querySelectorAll(`.sm-cov-tract-stat[data-place="${place}"]`).forEach(el => el.classList.add("stat-focus"));
-  if (ipas.length) {
-    const set = new Set(ipas);
-    document.querySelectorAll(".sm-cov-sig-chip").forEach(el => {
-      if (set.has(el.dataset.ipa)) el.classList.add("phoneme-focus");
-    });
-    document.querySelectorAll("#panel-coverage .pc-table tbody tr").forEach(tr => {
-      if (set.has(tr.dataset.ipa)) tr.classList.add("phoneme-focus");
-    });
+  if (place) {
+    document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${place}"]`).forEach(el => el.classList.add("zone-focus"));
+    document.querySelectorAll(`.sm-cov-tract-stat[data-place="${place}"]`).forEach(el => el.classList.add("stat-focus"));
+  }
+  if (ipas.length) smCovSpreadIpaFocus(new Set(ipas), td);
+}
+
+function smCovSetActivePhoneme(ipa, source) {
+  smCovClearActive();
+  if (!ipa) return;
+  if (source) source.classList.add("phoneme-source");
+  const set = new Set([ipa]);
+  smCovSpreadIpaFocus(set, source);
+  // Surface the corresponding consonant cell's place on the heat map.
+  let firstPlace = null;
+  document.querySelectorAll(".sm-cov-grid td[data-ipas]").forEach(td => {
+    if (td.dataset.ipas && td.dataset.ipas.split(",").includes(ipa)) {
+      td.classList.add("phoneme-focus");
+      if (!firstPlace) firstPlace = td.dataset.place;
+    }
+  });
+  if (firstPlace) {
+    document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${firstPlace}"]`).forEach(el => el.classList.add("zone-focus"));
+    document.querySelectorAll(`.sm-cov-tract-stat[data-place="${firstPlace}"]`).forEach(el => el.classList.add("stat-focus"));
   }
 }
 
-function smCovHighlightClear() {
-  document.querySelectorAll(".sm-cov-grid td.cell-axis").forEach(el => el.classList.remove("cell-axis"));
+function smCovSetActivePlace(place, source) {
+  smCovClearActive();
+  if (!place) return;
+  if (source) source.classList.add("phoneme-source");
+  document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${place}"]`).forEach(el => el.classList.add("zone-focus"));
+  document.querySelectorAll(`.sm-cov-tract-stat[data-place="${place}"]`).forEach(el => el.classList.add("stat-focus"));
+  document.querySelectorAll(`.sm-cov-grid td[data-place="${place}"]`).forEach(el => {
+    if (el.classList.contains("filled")) el.classList.add("cell-axis");
+  });
+}
+
+// Apply phoneme-focus to every sig chip + pc-table row + vowel-trap pt
+// + diphthong chip whose IPA is in the active set. The source element
+// (when known) is skipped so it keeps its native :hover styling cleanly.
+function smCovSpreadIpaFocus(set, source) {
+  document.querySelectorAll(".sm-cov-sig-chip").forEach(el => {
+    if (el !== source && set.has(el.dataset.ipa)) el.classList.add("phoneme-focus");
+  });
+  document.querySelectorAll("#panel-coverage .pc-table tbody tr").forEach(tr => {
+    if (tr !== source && set.has(tr.dataset.ipa)) tr.classList.add("phoneme-focus");
+  });
+  document.querySelectorAll(".sm-cov-trap-pt").forEach(pt => {
+    const ipas = (pt.dataset.ipas || "").split(",").filter(Boolean);
+    if (pt !== source && ipas.some(i => set.has(i))) pt.classList.add("phoneme-focus");
+  });
+  document.querySelectorAll(".sm-cov-diph").forEach(el => {
+    if (el !== source && set.has(el.dataset.ipa)) el.classList.add("phoneme-focus");
+  });
+}
+
+function smCovClearActive() {
+  document.querySelectorAll(".sm-cov-grid td.cell-axis,.sm-cov-grid td.phoneme-focus,.sm-cov-grid td.phoneme-source").forEach(el => {
+    el.classList.remove("cell-axis","phoneme-focus","phoneme-source");
+  });
   document.querySelectorAll(".sm-cov-grid th.axis-active").forEach(el => el.classList.remove("axis-active"));
   document.querySelectorAll(".sm-cov-tract-svg .vt-part.zone-focus").forEach(el => el.classList.remove("zone-focus"));
   document.querySelectorAll(".sm-cov-tract-stat.stat-focus").forEach(el => el.classList.remove("stat-focus"));
-  document.querySelectorAll(".sm-cov-sig-chip.phoneme-focus").forEach(el => el.classList.remove("phoneme-focus"));
-  document.querySelectorAll("#panel-coverage .pc-table tbody tr.phoneme-focus").forEach(el => el.classList.remove("phoneme-focus"));
+  document.querySelectorAll(".sm-cov-sig-chip.phoneme-focus,.sm-cov-sig-chip.phoneme-source").forEach(el => {
+    el.classList.remove("phoneme-focus","phoneme-source");
+  });
+  document.querySelectorAll("#panel-coverage .pc-table tbody tr.phoneme-focus,#panel-coverage .pc-table tbody tr.phoneme-source").forEach(el => {
+    el.classList.remove("phoneme-focus","phoneme-source");
+  });
+  document.querySelectorAll(".sm-cov-trap-pt.phoneme-focus,.sm-cov-trap-pt.phoneme-source").forEach(el => {
+    el.classList.remove("phoneme-focus","phoneme-source");
+  });
+  document.querySelectorAll(".sm-cov-diph.phoneme-focus,.sm-cov-diph.phoneme-source").forEach(el => {
+    el.classList.remove("phoneme-focus","phoneme-source");
+  });
+}
+
+// Backwards-compat shim for any old callsite.
+function smCovHighlightClear() { smCovClearActive(); }
+
+// Decide what kind of hover this is and route to the right activator.
+// Single source of truth so cells, chips, rows, zones all stay in sync.
+function smCovSyncFromEvent(e) {
+  const cell = e.target.closest(".sm-cov-grid td.filled");
+  if (cell && cell.dataset.place) { smCovHighlight(cell); return; }
+  const pcRow = e.target.closest("#panel-coverage .pc-table tbody tr");
+  if (pcRow && pcRow.dataset.ipa) { smCovSetActivePhoneme(pcRow.dataset.ipa, pcRow); return; }
+  const sigChip = e.target.closest(".sm-cov-sig-chip");
+  if (sigChip && sigChip.dataset.ipa) { smCovSetActivePhoneme(sigChip.dataset.ipa, sigChip); return; }
+  const trapPt = e.target.closest(".sm-cov-trap-pt");
+  if (trapPt && trapPt.dataset.ipas) {
+    const ipas = trapPt.dataset.ipas.split(",").filter(Boolean);
+    if (ipas[0]) { smCovSetActivePhoneme(ipas[0], trapPt); return; }
+  }
+  const diph = e.target.closest(".sm-cov-diph");
+  if (diph && diph.dataset.ipa) { smCovSetActivePhoneme(diph.dataset.ipa, diph); return; }
+  const zone = e.target.closest(".sm-cov-tract-svg .vt-part");
+  if (zone && zone.dataset.place) { smCovSetActivePlace(zone.dataset.place, zone); return; }
+  const stat = e.target.closest(".sm-cov-tract-stat");
+  if (stat && stat.dataset.place) { smCovSetActivePlace(stat.dataset.place, stat); return; }
+  // Hovering whitespace inside the panel: dismiss active highlights.
+  smCovClearActive();
 }
 
 // ── Vowel trapezoid ────────────────────────────────────────────────
@@ -6227,6 +6326,7 @@ function smCovBuildTrap() {
       c.setAttribute("stroke", color);
       c.setAttribute("stroke-width", "1.4");
       c.setAttribute("class", "sm-cov-trap-pt");
+      c.dataset.ipas = langItems.map(it => it.ipa).join(",");
       const names = langItems.map(it => it.ipa).join(" ");
       c.setAttribute("title", `${LANG_INVENTORIES[smCovSelected[ci]].name}: ${names}`);
       // Tooltip via <title> child
@@ -6591,6 +6691,7 @@ function smCovBuildDiphsSection() {
       diphs.forEach(d => {
         const chip = document.createElement("span");
         chip.className = "sm-cov-diph";
+        chip.dataset.ipa = d;
         chip.textContent = d;
         strip.appendChild(chip);
       });
@@ -6957,10 +7058,12 @@ const PC_PHONEMES = [
 // this list is a togglable script column. Adding a new writing system
 // only requires adding an entry here and a field on each PC_PHONEMES
 // row — the toolbar pills, headers, and cells all populate from this.
+// `tint` is the per-column accent RGB used by pcUpdateAtmosphere to
+// blend a subtle environmental color that drifts with the active set.
 const PC_COLUMNS = [
-  { key: "latin",  label: "Latin"  },
-  { key: "arabic", label: "Arabic" },
-  { key: "telugu", label: "Telugu" }
+  { key: "latin",  label: "Latin",  tint: [232, 200, 64] },  // baseline gold
+  { key: "arabic", label: "Arabic", tint: [212, 164, 84] },  // warmer amber / bronze
+  { key: "telugu", label: "Telugu", tint: [218, 152, 92] }   // gold-red warmth
 ];
 const PC_COL_KEYS = new Set(PC_COLUMNS.map(c => c.key));
 let pcSelectedCols = new Set(PC_COLUMNS.map(c => c.key));
@@ -7007,7 +7110,24 @@ function pcToggleCol(key) {
   pcBuildColumnSelector();
   pcBuildHeaders();
   pcUpdateCaption();
+  pcUpdateAtmosphere();
   pcRender();
+}
+
+// Blend the per-column tints into a single RGB accent. Sets it as a
+// CSS custom property on #panel-coverage; the gold-tinted accents in
+// the script-comparison area pick it up via rgb(var(--pc-tint-rgb)).
+// Subtle by design — never dramatic enough to read as a theme switch.
+function pcUpdateAtmosphere() {
+  const active = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key));
+  const panel = document.getElementById("panel-coverage");
+  if (!panel || active.length === 0) return;
+  let r = 0, g = 0, b = 0;
+  active.forEach(c => { r += c.tint[0]; g += c.tint[1]; b += c.tint[2]; });
+  r = Math.round(r / active.length);
+  g = Math.round(g / active.length);
+  b = Math.round(b / active.length);
+  panel.style.setProperty("--pc-tint-rgb", `${r},${g},${b}`);
 }
 
 function pcBuildHeaders() {
@@ -7081,7 +7201,21 @@ document.getElementById("pc-show-notes").addEventListener("change", pcRender);
 pcBuildColumnSelector();
 pcBuildHeaders();
 pcUpdateCaption();
+pcUpdateAtmosphere();
 pcRender();
+
+// One delegated hover dispatcher for the entire Coverage tab. Every
+// phoneme-bearing surface routes through smCovSyncFromEvent — that's
+// what makes hover synchronized across the grid, heat map, trapezoid,
+// signature cards, and the script table.
+(function attachCoveragesync() {
+  const panel = document.getElementById("panel-coverage");
+  if (!panel) return;
+  // mouseover (not mouseenter) bubbles, so a single panel-level listener
+  // captures hover across every child surface as they get rebuilt.
+  panel.addEventListener("mouseover", smCovSyncFromEvent);
+  panel.addEventListener("mouseleave", smCovClearActive);
+})();
 
 // ══════════════════════════════════════════════════════════════════════════
 //  RAP SUB-TABS  (nested inside #panel-rap — Bar Builder + Vault only)
