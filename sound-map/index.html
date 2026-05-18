@@ -217,22 +217,19 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    into a 2-row wall, which is the only way the page fits in a typical
    desktop viewport without dropping tile size on standards or hiding
    endings. The IPA-font safeguard for compact 2-tile rows is below. */
-#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));grid-auto-flow:dense;gap:10px 12px;align-items:start;padding-bottom:16px}
+#endings-content{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));grid-auto-flow:dense;gap:4px 12px;align-items:start;padding-bottom:12px}
 .family-block{margin:0;padding:0;border:none;background:none;display:block;min-width:0}
 .family-block.fam-standard{grid-column:span 2}
 .family-block.hidden{display:none}
 
-/* Compact-only tightening — pulls every row inside a 1-col family
-   ~3px shorter so the void below a short compact (within a row whose
-   height is set by a tall neighbor) doesn't grow as fast. Standards
-   keep the looser rhythm because their 3-tile stem groups need more
-   internal breathing room. */
-.family-block.fam-compact .endings-grid{gap:1px}
-.family-block.fam-compact .ending-row{gap:1px}
-.family-block.fam-compact .ending-card{padding:1px 4px;min-height:20px}
+/* Compact-only floor — compact tiles sit 2px shorter than standards
+   to take a little more height off short-compact rows; all other
+   spacing (grid gap, row gap, horizontal padding) is now unified at
+   the standard values below. */
+.family-block.fam-compact .ending-card{min-height:18px}
 
 /* Inline family header — parent vowel + example word on one line. */
-.family-title{display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:6px;text-align:center;padding:0 0 3px;margin-bottom:2px;border-bottom:2px solid var(--family-hue,var(--bdr));flex-wrap:wrap}
+.family-title{display:flex;flex-direction:row;align-items:baseline;justify-content:center;gap:6px;text-align:center;padding:0 0 2px;margin-bottom:1px;border-bottom:2px solid var(--family-hue,var(--bdr));flex-wrap:wrap}
 .family-title .fam-label{display:none}
 .family-title .fam-count{display:none}
 /* Crisp render stack — Courier New softens at small sizes. Modern system
@@ -244,11 +241,11 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 /* Stack of stem-group rows per family. Each row is a flex strip of 1–3
    tiles that share a base ending (e.g. /æk/ /æks/ /ækt/). Singleton
    rows are just one full-width tile. */
-.endings-grid{display:flex;flex-direction:column;gap:2px}
-.ending-row{display:flex;gap:2px}
+.endings-grid{display:flex;flex-direction:column;gap:1px}
+.ending-row{display:flex;gap:1px}
 .ending-row > .ending-card{flex:1 1 0;min-width:0}
 
-.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:2px 4px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:22px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+.ending-card{background:var(--surf2);border:1px solid var(--bdr);border-radius:4px;padding:1px 4px;cursor:pointer;transition:transform .12s,border-color .12s,background .12s,box-shadow .12s;display:flex;align-items:center;justify-content:center;min-height:20px;text-align:center;font:inherit;color:inherit;position:relative;overflow:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
 .ending-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--family-hue,transparent);opacity:.65;transition:opacity .12s}
 .ending-card:hover,.ending-card:focus-visible{border-color:var(--gold);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.05);outline:none;z-index:1}
 .ending-card:hover::before,.ending-card:focus-visible::before{opacity:1}
