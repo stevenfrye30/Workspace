@@ -7566,6 +7566,33 @@ function doSearch(word) {
   };
   filterEl.appendChild(allBtn);
 
+  // Broad vowel-category filters. Replace the 17 per-family pills with
+  // three groupings of the families:
+  //   Long Vowels  — long monophthongs + r-colored (which carry a long
+  //                  duration in the rhotic dialect this dictionary is
+  //                  built on)
+  //   Short Vowels — lax monophthongs
+  //   Diphthongs   — vowel-glide families
+  const FAMILY_GROUPS = [
+    { label: "Long Vowels",  fams: ["/iː/", "/uː/", "/ɔː/", "/ɝ/", "/ɔr/", "/ɑr/"] },
+    { label: "Short Vowels", fams: ["/æ/",  "/ɛ/",  "/ɪ/",  "/ɑ/", "/ʌ/",  "/ʊ/"]  },
+    { label: "Diphthongs",   fams: ["/eɪ/", "/aɪ/", "/oʊ/", "/ɑu/", "/ɔɪ/"]         }
+  ];
+  FAMILY_GROUPS.forEach(grp => {
+    const inGroup = new Set(grp.fams);
+    const grpBtn = document.createElement("button");
+    grpBtn.className = "fam-btn";
+    grpBtn.textContent = grp.label;
+    grpBtn.onclick = () => {
+      document.querySelectorAll(".family-block").forEach(b => {
+        b.classList.toggle("hidden", !inGroup.has(b.dataset.family));
+      });
+      document.querySelectorAll(".fam-btn").forEach(b => b.classList.remove("active"));
+      grpBtn.classList.add("active");
+    };
+    filterEl.appendChild(grpBtn);
+  });
+
   // Two width classes — that's all the structure the wall needs.
   // Families listed here get .fam-standard, which spans 2 grid columns
   // for breathing room; everything else takes the default 1-column
@@ -7592,20 +7619,8 @@ function doSearch(word) {
       .filter(({ usable }) => usable > 0);
 
     // Skip the family entirely if everything was filtered out — no header,
-    // no filter pill, no empty column.
+    // no empty column.
     if (items.length === 0) return;
-
-    const btn = document.createElement("button");
-    btn.className = "fam-btn";
-    btn.textContent = fname;
-    btn.onclick = () => {
-      document.querySelectorAll(".family-block").forEach(b => {
-        b.classList.toggle("hidden", b.dataset.family !== fname);
-      });
-      document.querySelectorAll(".fam-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-    };
-    filterEl.appendChild(btn);
 
     const block = document.createElement("div");
     block.className = "family-block " + (STANDARD_FAMS.has(fname) ? "fam-standard" : "fam-compact");
