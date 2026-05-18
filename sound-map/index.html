@@ -69,12 +69,16 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-search:focus{border-color:var(--gold)}
 .pc-toggle{color:var(--muted);font-size:12px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
 .pc-toggle input{cursor:pointer;accent-color:var(--gold)}
-.pc-h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:22px 0 10px}
+.pc-h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bdr);display:flex;align-items:baseline;justify-content:space-between}
+.pc-h2::after{content:"IPA → Latin · Arabic · Telugu";color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none}
 .pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px}
-.pc-table thead th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--surf2)}
-.pc-table tbody td{padding:9px 12px;border-bottom:1px solid var(--bdr);vertical-align:top}
+.pc-table thead th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--surf2);position:sticky;top:0;z-index:2}
+.pc-table tbody td{padding:9px 12px;border-bottom:1px solid var(--bdr);vertical-align:top;transition:background .12s ease}
 .pc-table tbody tr:last-child td{border-bottom:none}
-.pc-table tbody tr:hover{background:var(--surf2)}
+.pc-table tbody tr{transition:background .12s ease}
+.pc-table tbody tr:hover{background:rgba(232,200,64,.045)}
+.pc-table tbody tr.phoneme-focus td{background:rgba(232,200,64,.08)}
+.pc-table tbody tr.phoneme-focus td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
 .pc-table tbody tr.pc-row-flash{animation:pc-flash 1.6s ease-out}
 @keyframes pc-flash{0%,30%{background:rgba(212,162,76,.4)}100%{background:transparent}}
 .pc-col-ipa{width:80px}
@@ -964,11 +968,13 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-intro strong{color:var(--text)}
 .sm-cov-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
 .sm-cov-picker-title{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;flex-basis:100%;margin-bottom:4px}
-.sm-cov-chip{background:var(--surf2);border:1px solid var(--bdr);border-radius:20px;color:var(--muted);cursor:pointer;font-size:11px;padding:5px 12px;transition:all .12s;user-select:none;display:inline-flex;align-items:center;gap:6px}
-.sm-cov-chip:hover{color:var(--text);border-color:var(--muted)}
-.sm-cov-chip.active{color:#111;font-weight:700;border-width:2px;padding:4px 11px}
+.sm-cov-chip{background:var(--surf2);border:1px solid var(--bdr);border-radius:20px;color:var(--muted);cursor:pointer;font-size:11px;padding:5px 13px;transition:transform .15s cubic-bezier(.2,.8,.2,1),background .15s ease,border-color .15s ease,color .15s ease,box-shadow .18s ease,opacity .15s ease;user-select:none;display:inline-flex;align-items:baseline;gap:6px;opacity:.78}
+.sm-cov-chip:hover{opacity:1;color:var(--text);border-color:var(--muted);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,.28)}
+.sm-cov-chip.active{opacity:1;color:#111;font-weight:700;border-width:2px;padding:4px 12px;transform:translateY(-1px);box-shadow:0 2px 10px rgba(0,0,0,.32),0 0 0 1px rgba(232,200,64,.22)}
 .sm-cov-chip.active .sm-cov-chip-dot{box-shadow:0 0 0 2px rgba(0,0,0,.25)}
-.sm-cov-chip-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.sm-cov-chip-dot{width:8px;height:8px;border-radius:50%;display:inline-block;align-self:center}
+.sm-cov-chip-meta{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:9.5px;letter-spacing:.04em;opacity:.72;margin-left:2px;font-weight:400}
+.sm-cov-chip.active .sm-cov-chip-meta{color:#111;opacity:.7;font-weight:600}
 .sm-cov-panels{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px}
 .sm-cov-section{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--radius);padding:14px 16px}
 .sm-cov-section-title{color:var(--gold);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bdr);display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
@@ -979,10 +985,20 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-grid{border-collapse:collapse;font-family:var(--mono);font-size:13px;width:100%;table-layout:fixed}
 .sm-cov-grid th{background:var(--surf2);color:var(--muted);font-family:"Segoe UI",Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 2px;border:1px solid var(--bdr);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:64px;vertical-align:bottom;white-space:nowrap}
 .sm-cov-grid th.sm-cov-manner-th{writing-mode:horizontal-tb;transform:none;text-align:right;width:74px;padding:4px 8px;font-size:10px;height:auto;vertical-align:middle}
-.sm-cov-grid td{border:1px solid var(--bdr);padding:3px 2px;text-align:center;vertical-align:middle;background:var(--surf2);color:var(--muted);min-height:28px;height:28px;position:relative}
-.sm-cov-grid td.filled{background:var(--cov-cell-bg,#444);color:#111;font-weight:700}
+.sm-cov-grid td{border:1px solid var(--bdr);padding:3px 2px;text-align:center;vertical-align:middle;background:var(--surf2);color:var(--muted);min-height:28px;height:28px;position:relative;transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .18s ease,background .15s ease,border-color .15s ease}
+.sm-cov-grid td.filled{background:var(--cov-cell-bg,#444);color:#111;font-weight:700;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .sm-cov-grid td.filled.multi{background:linear-gradient(90deg,var(--cov-cell-bg) 50%,var(--cov-cell-bg2) 50%)}
 .sm-cov-grid td.filled.multi3{background:linear-gradient(90deg,var(--cov-cell-bg) 33%,var(--cov-cell-bg2) 33% 66%,var(--cov-cell-bg3) 66%)}
+/* Row/column relationship lighting — set by JS on hovered cell's
+   manner-row siblings and place-column siblings. The hovered cell
+   itself lifts; its row and column glow faintly so the eye can
+   trace what manner × place it sits at. */
+.sm-cov-grid td.filled:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);z-index:3}
+.sm-cov-grid td.cell-axis{background:rgba(232,200,64,.06)}
+.sm-cov-grid td.cell-axis.filled{box-shadow:inset 0 0 0 1px rgba(232,200,64,.45)}
+.sm-cov-grid td.cell-axis.empty{color:var(--gold);opacity:.55}
+.sm-cov-grid th.axis-active{color:var(--gold)}
+.sm-cov-grid th.sm-cov-manner-th.axis-active{color:var(--gold)}
 .sm-cov-grid td.you{box-shadow:inset 0 0 0 2px var(--gold);position:relative}
 .sm-cov-grid td.you::after{content:"";position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 1px #111}
 .sm-cov-grid td.you.empty::after{background:var(--gold)}
@@ -1014,13 +1030,18 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-trap-legend-item{display:inline-flex;align-items:center;gap:6px}
 .sm-cov-trap-legend-swatch{width:10px;height:10px;border-radius:50%;flex-shrink:0}
 
-/* Heat-shaded vocal tract */
-.sm-cov-tract-wrap{display:flex;flex-direction:column;gap:8px;align-items:center}
+/* Heat-shaded vocal tract — recedes against the consonant grid so the
+   grid stays the centerpiece. Inactive zones dim a touch, borders
+   thin out, and the .zone-focus class lights up the place a hovered
+   consonant cell articulates at. */
+.sm-cov-tract-wrap{display:flex;flex-direction:column;gap:8px;align-items:center;opacity:.94}
 .sm-cov-tract-svg{width:100%;max-width:340px;height:auto;display:block}
-.sm-cov-tract-svg .vt-part{fill:#263447;stroke:#32445c;stroke-width:0.6;transition:fill .25s}
+.sm-cov-tract-svg .vt-part{fill:#263447;stroke:#2a3a4f;stroke-width:0.4;transition:fill .25s ease,fill-opacity .25s ease,stroke .25s ease,stroke-width .25s ease}
+.sm-cov-tract-svg .vt-part.zone-focus{fill-opacity:1;stroke:var(--gold);stroke-width:1.4}
 .sm-cov-tract-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:10px;color:var(--muted);width:100%;max-width:340px;font-family:var(--mono)}
-.sm-cov-tract-stat{display:flex;justify-content:space-between;padding:2px 6px;border-radius:2px}
+.sm-cov-tract-stat{display:flex;justify-content:space-between;padding:2px 6px;border-radius:2px;transition:background .15s ease}
 .sm-cov-tract-stat.hot{background:rgba(212,162,76,.12);color:var(--text)}
+.sm-cov-tract-stat.stat-focus{background:rgba(232,200,64,.20);color:var(--text)}
 .sm-cov-tract-stat .pct{color:var(--gold);font-weight:700}
 
 /* Diphthong strip */
@@ -1044,22 +1065,27 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-formant-legend-item{display:inline-flex;align-items:center;gap:5px}
 .sm-cov-formant-legend-swatch{width:10px;height:10px;border-radius:50%}
 
-/* Signature sounds */
+/* Signature sounds — specimen cards. Phoneme owns the card; rarity
+   tier is communicated through subtle background gradient + border
+   intensity + a single typographic tag for the unique tier. */
 .sm-cov-sig-group{margin-bottom:14px}
 .sm-cov-sig-group:last-child{margin-bottom:0}
 .sm-cov-sig-heading{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:baseline;gap:8px}
 .sm-cov-sig-heading .sm-cov-sig-sub{color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:0;text-transform:none}
-.sm-cov-sig-strip{display:flex;flex-wrap:wrap;gap:8px}
-.sm-cov-sig-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:52px;padding:7px 10px;border-radius:var(--radius);background:var(--surf2);border:1px solid var(--bdr);cursor:help;transition:transform .12s}
-.sm-cov-sig-chip:hover{transform:translateY(-1px)}
-.sm-cov-sig-chip.tier-unique{background:linear-gradient(135deg,rgba(232,200,64,.18),rgba(232,200,64,.05));border-color:var(--gold);box-shadow:0 0 0 1px rgba(212,162,76,.4) inset}
-.sm-cov-sig-chip.tier-rare{background:linear-gradient(135deg,rgba(232,200,64,.1),rgba(0,0,0,0));border-color:rgba(212,162,76,.7)}
+.sm-cov-sig-strip{display:flex;flex-wrap:wrap;gap:10px}
+.sm-cov-sig-chip{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:64px;padding:9px 12px 8px;border-radius:var(--radius);background:var(--surf2);border:1px solid var(--bdr);cursor:help;transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .18s ease,border-color .15s ease;position:relative}
+.sm-cov-sig-chip:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(0,0,0,.42)}
+.sm-cov-sig-chip.tier-unique{background:linear-gradient(135deg,rgba(232,200,64,.20),rgba(232,200,64,.04));border-color:var(--gold);box-shadow:0 0 0 1px rgba(232,200,64,.45) inset,0 2px 8px rgba(232,200,64,.10)}
+.sm-cov-sig-chip.tier-unique:hover{box-shadow:0 0 0 1px rgba(232,200,64,.55) inset,0 4px 14px rgba(232,200,64,.18)}
+.sm-cov-sig-chip.tier-rare{background:linear-gradient(135deg,rgba(232,200,64,.10),rgba(0,0,0,0));border-color:rgba(212,162,76,.7)}
 .sm-cov-sig-chip.tier-distinctive{border-color:rgba(212,162,76,.35)}
-.sm-cov-sig-chip.tier-common{border-color:var(--bdr);opacity:.85}
-.sm-cov-sig-sym{font-family:var(--mono);font-size:18px;font-weight:700;color:var(--gold);line-height:1}
+.sm-cov-sig-chip.tier-common{border-color:var(--bdr);opacity:.78}
+.sm-cov-sig-chip.phoneme-focus{outline:1px solid rgba(232,200,64,.6);outline-offset:2px}
+.sm-cov-sig-sym{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:22px;font-weight:700;color:var(--gold);line-height:1;letter-spacing:-.5px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 .sm-cov-sig-chip.tier-common .sm-cov-sig-sym{color:var(--text)}
-.sm-cov-sig-count{font-family:var(--mono);font-size:9px;color:var(--muted);margin-top:3px;letter-spacing:.02em}
-.sm-cov-sig-tag{font-size:8px;font-weight:700;color:#111;background:var(--gold);padding:1px 5px;border-radius:3px;margin-top:3px;letter-spacing:.06em;text-transform:uppercase}
+.sm-cov-sig-chip.tier-unique .sm-cov-sig-sym{text-shadow:0 0 10px rgba(232,200,64,.25)}
+.sm-cov-sig-count{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;color:var(--muted);margin-top:4px;letter-spacing:.08em;text-transform:uppercase;opacity:.75}
+.sm-cov-sig-tag{font-size:7.5px;font-weight:700;color:#111;background:var(--gold);padding:1px 5px;border-radius:2px;margin-top:4px;letter-spacing:.08em;text-transform:uppercase}
 .sm-cov-sig-chip:not(.tier-unique) .sm-cov-sig-tag{display:none}
 .sm-cov-sig-empty{color:var(--muted);font-size:11px;font-style:italic;padding:4px 0}
 
@@ -5757,6 +5783,19 @@ function smCovBuildChip(code) {
   const label = document.createElement("span");
   label.textContent = lang.name;
   chip.appendChild(label);
+  // Inline inventory metadata — the chip stops feeling like a generic
+  // filter and starts hinting at the phonological system it loads.
+  const data = (typeof LANG_PHONEMES !== "undefined") ? LANG_PHONEMES[code] : null;
+  if (data) {
+    const nC = (data.cons || []).length;
+    const nV = (data.vowels || []).length + ((data.diphs || []).length);
+    if (nC || nV) {
+      const meta = document.createElement("span");
+      meta.className = "sm-cov-chip-meta";
+      meta.textContent = `· ${nC}C·${nV}V`;
+      chip.appendChild(meta);
+    }
+  }
   chip.addEventListener("click", () => smCovToggle(code));
   return chip;
 }
@@ -5911,6 +5950,8 @@ function smCovBuildConsTable() {
     tr.appendChild(rowTh);
     SM_COV_PLACES_CONS.forEach(place => {
       const td = document.createElement("td");
+      td.dataset.place = place;
+      td.dataset.manner = manner;
       const key = manner + "|" + place;
       const entry = cellMap.get(key);
       const userHit = userSlots && userSlots.consSlots.has(key);
@@ -5924,6 +5965,7 @@ function smCovBuildConsTable() {
         }
       } else {
         td.classList.add("filled");
+        td.dataset.ipas = entry.flatMap(le => le.phonemes.map(p => p.ipa)).join(",");
         // Color the cell: if compare mode, split by language
         if (smCovSelected.length > 1 && entry.length > 1) {
           const sorted = entry.sort((a, b) => a.colorIdx - b.colorIdx);
@@ -5977,7 +6019,63 @@ function smCovBuildConsTable() {
     tbody.appendChild(tr);
   });
   table.appendChild(tbody);
+
+  // Cross-component hover wiring. Hovering a cell here lights up:
+  //  · sibling cells in the same manner-row + place-column (so the
+  //    eye can trace the axis intersection without losing context)
+  //  · the matching place region in the vocal-tract heat map
+  //  · the corresponding tract-stat row
+  //  · signature-sound chips for any phoneme that lives in this cell
+  //  · the matching script-comparison row in the lower IPA table
+  // All highlights are restrained — opacity/outline only, never motion.
+  table.addEventListener("mouseover", e => {
+    const td = e.target.closest("td");
+    if (!td || !table.contains(td) || !td.dataset.place) return;
+    smCovHighlight(td);
+  });
+  table.addEventListener("mouseleave", smCovHighlightClear);
   return table;
+}
+
+function smCovHighlight(td) {
+  smCovHighlightClear();
+  const place  = td.dataset.place;
+  const manner = td.dataset.manner;
+  const ipas   = (td.dataset.ipas || "").split(",").filter(Boolean);
+  const table  = td.closest("table");
+  if (table) {
+    table.querySelectorAll(`td[data-place="${place}"], td[data-manner="${manner}"]`).forEach(c => {
+      if (c !== td) c.classList.add("cell-axis");
+    });
+    const colIdx = Array.from(td.parentNode.children).indexOf(td);
+    const headers = table.querySelectorAll("thead th");
+    if (headers[colIdx]) headers[colIdx].classList.add("axis-active");
+    const rowHeader = td.parentNode.querySelector("th.sm-cov-manner-th");
+    if (rowHeader) rowHeader.classList.add("axis-active");
+  }
+  // Articulation zone + stat row (querySelector is fine: place is a
+  // safe ASCII slug like "alveolar"; ipas may contain non-ASCII so we
+  // filter manually below).
+  document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${place}"]`).forEach(el => el.classList.add("zone-focus"));
+  document.querySelectorAll(`.sm-cov-tract-stat[data-place="${place}"]`).forEach(el => el.classList.add("stat-focus"));
+  if (ipas.length) {
+    const set = new Set(ipas);
+    document.querySelectorAll(".sm-cov-sig-chip").forEach(el => {
+      if (set.has(el.dataset.ipa)) el.classList.add("phoneme-focus");
+    });
+    document.querySelectorAll("#panel-coverage .pc-table tbody tr").forEach(tr => {
+      if (set.has(tr.dataset.ipa)) tr.classList.add("phoneme-focus");
+    });
+  }
+}
+
+function smCovHighlightClear() {
+  document.querySelectorAll(".sm-cov-grid td.cell-axis").forEach(el => el.classList.remove("cell-axis"));
+  document.querySelectorAll(".sm-cov-grid th.axis-active").forEach(el => el.classList.remove("axis-active"));
+  document.querySelectorAll(".sm-cov-tract-svg .vt-part.zone-focus").forEach(el => el.classList.remove("zone-focus"));
+  document.querySelectorAll(".sm-cov-tract-stat.stat-focus").forEach(el => el.classList.remove("stat-focus"));
+  document.querySelectorAll(".sm-cov-sig-chip.phoneme-focus").forEach(el => el.classList.remove("phoneme-focus"));
+  document.querySelectorAll("#panel-coverage .pc-table tbody tr.phoneme-focus").forEach(el => el.classList.remove("phoneme-focus"));
 }
 
 // ── Vowel trapezoid ────────────────────────────────────────────────
@@ -6442,6 +6540,7 @@ function smCovBuildTractStats(code) {
   rows.slice(0, 6).forEach((r, i) => {
     const div = document.createElement("div");
     div.className = "sm-cov-tract-stat" + (i === 0 && r.pct > 0 ? " hot" : "");
+    div.dataset.place = r.place;
     div.innerHTML = `<span>${LANG_PLACE_LABELS[r.place] || r.place}</span><span class="pct">${(r.pct*100).toFixed(0)}%</span>`;
     stats.appendChild(div);
   });
@@ -6575,6 +6674,7 @@ function smCovBuildSignatureSection() {
       const tier = smCovSigTier(sig.langCount);
       const chip = document.createElement("div");
       chip.className = `sm-cov-sig-chip tier-${tier}`;
+      chip.dataset.ipa = sig.ipa;
       const sym = document.createElement("div");
       sym.className = "sm-cov-sig-sym";
       sym.textContent = sig.ipa;
