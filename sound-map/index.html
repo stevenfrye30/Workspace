@@ -61,36 +61,47 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 #panel-coverage .pc-section-divider{margin:8px 0 18px;padding:14px 0 0;border-top:1px solid var(--bdr)}
 #panel-coverage .pc-section-divider .pc-section-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:4px}
 #panel-coverage .pc-section-divider .pc-section-sub{color:var(--muted);font-size:11px;font-style:italic}
-.pc-intro{color:var(--muted);font-size:13px;max-width:780px;margin-bottom:18px;line-height:1.65}
+.pc-intro{color:var(--muted);font-size:12px;max-width:780px;margin-bottom:10px;line-height:1.55}
 .pc-intro strong{color:var(--text)}
-.pc-intro code{font-family:var(--mono);background:var(--surf2);color:var(--gold);padding:1px 6px;border-radius:3px;font-size:12px}
-.pc-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.pc-intro code{font-family:var(--mono);background:var(--surf2);color:var(--gold);padding:1px 6px;border-radius:3px;font-size:11px}
+.pc-toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
 .pc-search{flex:1;min-width:240px;max-width:420px;background:var(--surf2);border:1px solid var(--bdr);color:var(--text);padding:7px 12px;border-radius:var(--radius);font-family:inherit;font-size:13px;outline:none}
 .pc-search:focus{border-color:var(--gold)}
 .pc-toggle{color:var(--muted);font-size:12px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
 .pc-toggle input{cursor:pointer;accent-color:var(--gold)}
-.pc-h2{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin:22px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--bdr);display:flex;align-items:baseline;justify-content:space-between}
+/* Section header — denser; gold-tinted underline; sticky so the C/V
+   label stays in view while scrolling the long table. */
+.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(232,200,64,.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1}
 .pc-h2::after{content:"IPA → Latin · Arabic · Telugu";color:var(--muted);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none}
-.pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px}
-.pc-table thead th{text-align:left;padding:9px 12px;border-bottom:1px solid var(--bdr);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);background:var(--surf2);position:sticky;top:0;z-index:2}
-.pc-table tbody td{padding:9px 12px;border-bottom:1px solid var(--bdr);vertical-align:top;transition:background .12s ease}
+
+.pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
+.pc-table thead th{text-align:left;padding:5px 10px;border-bottom:1px solid var(--bdr);font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surf2);position:sticky;top:0;z-index:2}
+.pc-table thead th:nth-child(n+3){text-align:center}
+.pc-table tbody td{padding:3px 10px;border-bottom:1px solid rgba(58,66,86,.55);vertical-align:middle;transition:background .12s ease;line-height:1.2}
 .pc-table tbody tr:last-child td{border-bottom:none}
 .pc-table tbody tr{transition:background .12s ease}
-.pc-table tbody tr:hover{background:rgba(232,200,64,.045)}
-.pc-table tbody tr.phoneme-focus td{background:rgba(232,200,64,.08)}
+.pc-table tbody tr:hover td{background:rgba(232,200,64,.04)}
+.pc-table tbody tr.phoneme-focus td{background:rgba(232,200,64,.085)}
 .pc-table tbody tr.phoneme-focus td:first-child{box-shadow:inset 3px 0 0 var(--gold)}
 .pc-table tbody tr.pc-row-flash{animation:pc-flash 1.6s ease-out}
 @keyframes pc-flash{0%,30%{background:rgba(212,162,76,.4)}100%{background:transparent}}
-.pc-col-ipa{width:80px}
-.pc-col-ipa span{font-family:var(--mono);font-size:18px;color:var(--gold);font-weight:700;display:inline-block}
-.pc-col-desc{color:var(--muted);font-size:12px;font-style:italic;width:210px}
-.pc-col-script{text-align:center;cursor:pointer;font-size:20px;transition:background .12s}
+
+/* IPA = anchor column. Larger glyph, crisp ui-monospace stack, gold. */
+.pc-col-ipa{width:60px;padding-top:4px;padding-bottom:4px}
+.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:22px;color:var(--gold);font-weight:700;display:inline-block;line-height:1;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+
+/* Description column — secondary, with the optional note folded in
+   below as a gold-bar annotation line. No more separate note row. */
+.pc-col-desc{color:var(--muted);font-size:10.5px;width:230px;line-height:1.4;font-style:normal}
+.pc-col-desc .pc-desc-text{font-style:italic}
+.pc-col-desc .pc-note-inline{margin-top:2px;padding-left:7px;border-left:2px solid rgba(232,200,64,.45);font-size:10px;font-style:italic;color:#9aa3b0;line-height:1.45;opacity:.95}
+
+/* Script columns — parallel realizations of the same phoneme. */
+.pc-col-script{text-align:center;cursor:pointer;font-size:20px;transition:background .12s ease;line-height:1;padding-left:8px;padding-right:8px}
 .pc-col-script:hover{background:var(--surf2)}
 .pc-col-script.copied{background:var(--green);color:#111}
 .pc-col-script.empty{color:#3a4256;font-size:14px;font-style:italic;cursor:default}
-.pc-note-row td{padding:0 12px 10px;background:var(--bg);border-bottom:1px solid var(--bdr)}
-.pc-note{color:var(--muted);font-size:12px;font-style:italic;border-left:2px solid var(--gold);padding-left:10px}
-.pc-legend{margin-top:20px;padding:14px 18px;background:var(--surf2);border-left:3px solid var(--gold);font-size:12px;color:var(--muted);line-height:1.75}
+.pc-legend{margin-top:12px;padding:10px 14px;background:var(--surf2);border-left:3px solid var(--gold);font-size:11px;color:var(--muted);line-height:1.55}
 .pc-legend strong{color:var(--text)}
 .pc-legend code{font-family:var(--mono);color:var(--gold)}
 .pc-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--surf);border:1px solid var(--gold);color:var(--text);padding:10px 16px;border-radius:var(--radius);font-size:13px;opacity:0;transition:opacity .15s;pointer-events:none;z-index:50}
@@ -98,8 +109,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 @media(max-width:720px){
   .pc-col-desc{display:none}
   .pc-col-script{font-size:17px}
-  .pc-col-ipa span{font-size:16px}
-  .pc-table tbody td{padding:7px 6px}
+  .pc-col-ipa span{font-size:18px}
+  .pc-table tbody td{padding:3px 6px}
 }
 
 :root{
@@ -6952,6 +6963,10 @@ function pcRender() {
   cBody.innerHTML = ""; vBody.innerHTML = "";
   const COLS = ["latin","arabic","telugu"];
   const match = (p) => !q || [p.ipa,p.desc,p.latin,p.arabic,p.telugu,p.note||""].join(" ").toLowerCase().includes(q);
+  // One row per phoneme. The note (when present + toggle on) is folded
+  // into the description cell as an italic annotation line, not a
+  // separate full-width row — keeps every phoneme to a single tabular
+  // line and roughly halves vertical density.
   PC_PHONEMES.filter(match).forEach(p => {
     const tr = document.createElement("tr");
     const cells = COLS.map(c => {
@@ -6960,14 +6975,13 @@ function pcRender() {
       return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}">${v}</td>`;
     }).join("");
     tr.dataset.ipa = p.ipa;
-    tr.innerHTML = `<td class="pc-col-ipa"><span>${p.ipa}</span></td><td class="pc-col-desc">${p.desc}</td>${cells}`;
+    const noteHtml = (showNotes && p.note)
+      ? `<div class="pc-note-inline">${p.note}</div>` : "";
+    tr.innerHTML =
+      `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
+      `<td class="pc-col-desc"><div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
+      cells;
     (p.g === "c" ? cBody : vBody).appendChild(tr);
-    if (showNotes && p.note) {
-      const nr = document.createElement("tr");
-      nr.className = "pc-note-row";
-      nr.innerHTML = `<td colspan="5"><div class="pc-note">${p.note}</div></td>`;
-      (p.g === "c" ? cBody : vBody).appendChild(nr);
-    }
   });
 }
 function pcToast(msg) {
