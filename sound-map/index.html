@@ -11,8 +11,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 #sm-header .sub { font-size: 12px; color: var(--muted); font-style: italic; flex: 1; }
 #sm-header a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 5px 12px; border: 1px solid var(--bdr); border-radius: var(--radius); }
 #sm-header a:hover { color: var(--gold); border-color: var(--gold); }
-#panel-sound, #panel-coverage, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-#panel-sound.active, #panel-coverage.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
+#panel-sound, #panel-coverage, #panel-comparison, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+#panel-sound.active, #panel-coverage.active, #panel-comparison.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
 
 /* ════════════════════ FLOW LAB (nested sub-tabs) ════════════════════ */
 #fl-tab-nav{display:flex;background:var(--surf2);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 14px;gap:2px;align-items:flex-end}
@@ -56,14 +56,18 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 }
 
 /* ════════════════════ PHONETIC CHART ════════════════════ */
-#panel-coverage .pc-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
-/* Major section transition — the "scripts comparison" entrance. A
-   thin top rule across the column with a heavier gold tab on the
-   left marks this as a distinct subsystem of the Coverage tab. */
-#panel-coverage .pc-section-divider{margin:24px 0 14px;padding:16px 0 0;border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);position:relative;transition:border-color .8s ease}
-#panel-coverage .pc-section-divider::before{content:"";position:absolute;top:-1px;left:0;width:72px;height:2px;background:rgb(var(--pc-tint-rgb,232,200,64));border-radius:1px;transition:background .8s ease}
-#panel-coverage .pc-section-divider .pc-section-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin-bottom:3px;transition:color .8s ease}
-#panel-coverage .pc-section-divider .pc-section-sub{color:var(--muted);font-size:10.5px;font-style:italic}
+#panel-coverage .pc-scroll,
+#panel-comparison .pc-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
+
+/* Comparison hero. Sits at the top of the new tab; reads as the
+   entrance to a distinct phonological codex rather than a section
+   header. Eyebrow ties the deck back to the larger Sound Lab; the
+   title sets scope; the sub-line tells the reader what they can do. */
+.comp-hero{margin:0 0 18px;padding:18px 0 16px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);position:relative;transition:border-color .8s ease}
+.comp-hero::before{content:"";position:absolute;bottom:-1px;left:0;width:120px;height:2px;background:rgb(var(--pc-tint-rgb,232,200,64));border-radius:1px;transition:background .8s ease}
+.comp-hero-eyebrow{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:9px;letter-spacing:.20em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.72);font-weight:700;margin-bottom:6px;transition:color .8s ease}
+.comp-hero-title{font-size:18px;font-weight:700;letter-spacing:.04em;color:var(--text);margin:0 0 6px;line-height:1.15}
+.comp-hero-sub{color:var(--muted);font-size:12px;line-height:1.55;max-width:760px;margin:0;font-style:italic}
 .pc-intro{color:var(--muted);font-size:11px;max-width:780px;margin-bottom:10px;line-height:1.55;padding:2px 0 2px 11px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.30);transition:border-color .8s ease}
 .pc-intro strong{color:var(--text)}
 .pc-intro code{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;background:var(--surf2);color:rgb(var(--pc-tint-rgb,232,200,64));padding:1px 6px;border-radius:3px;font-size:11px}
@@ -1976,6 +1980,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <nav id="tab-nav" role="tablist">
   <button class="tab-btn active" type="button" data-tab="sound" role="tab" aria-selected="true">Sound Map</button>
   <button class="tab-btn" type="button" data-tab="coverage" role="tab" aria-selected="false">Coverage</button>
+  <button class="tab-btn" type="button" data-tab="comparison" role="tab" aria-selected="false">Comparison</button>
   <button class="tab-btn" type="button" data-tab="endings" role="tab" aria-selected="false">Endings</button>
   <button class="tab-btn" type="button" data-tab="rhyme" role="tab" aria-selected="false">Rhyme Finder</button>
   <button class="tab-btn" type="button" data-tab="rap" role="tab" aria-selected="false">Rap</button>
@@ -2171,16 +2176,25 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 
 <div id="panel-coverage" role="tabpanel">
   <div class="pc-scroll">
-    <!-- Phonetic coverage section (formerly nested under Sound Map) -->
     <div id="sm-view-coverage"></div>
-    <!-- IPA chart comparison section (formerly the top-level Chart tab) -->
-    <div class="pc-section-divider">
-      <div class="pc-section-title">IPA Chart · Scripts Comparison</div>
-      <div class="pc-section-sub">How each phoneme is written across Latin, Arabic, and Telugu.</div>
-    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     COMPARISON  (formerly nested under Coverage as
+     "IPA Chart · Scripts Comparison" — promoted to its own
+     top-level tab so each subsystem reads with a single voice.)
+     ══════════════════════════════════════════════════════════ -->
+<div id="panel-comparison" role="tabpanel">
+  <div class="pc-scroll">
+    <header class="comp-hero">
+      <div class="comp-hero-eyebrow">Sound Lab · Reference</div>
+      <h2 class="comp-hero-title">Phoneme · Script Comparison</h2>
+      <p class="comp-hero-sub">This reference system maps phonemes across writing systems and orthographic traditions. Search for a sound or feature, toggle script columns, and click any cell to copy its glyph.</p>
+    </header>
     <div class="pc-intro">
       Rows are phonemes in the <strong>International Phonetic Alphabet</strong> (IPA).
-      Columns show the typical grapheme in each script. Click any cell to copy.
+      Columns show the typical grapheme in each script.
       An em-dash (—) means the script lacks a native equivalent for that sound.
     </div>
     <div class="pc-toolbar">
@@ -6161,7 +6175,7 @@ function smCovSpreadIpaFocus(set, source) {
   document.querySelectorAll(".sm-cov-sig-chip").forEach(el => {
     if (el !== source && set.has(el.dataset.ipa)) el.classList.add("phoneme-focus");
   });
-  document.querySelectorAll("#panel-coverage .pc-table tbody tr").forEach(tr => {
+  document.querySelectorAll(".pc-table tbody tr").forEach(tr => {
     if (tr !== source && set.has(tr.dataset.ipa)) tr.classList.add("phoneme-focus");
   });
   document.querySelectorAll(".sm-cov-trap-pt").forEach(pt => {
@@ -6183,7 +6197,7 @@ function smCovClearActive() {
   document.querySelectorAll(".sm-cov-sig-chip.phoneme-focus,.sm-cov-sig-chip.phoneme-source").forEach(el => {
     el.classList.remove("phoneme-focus","phoneme-source");
   });
-  document.querySelectorAll("#panel-coverage .pc-table tbody tr.phoneme-focus,#panel-coverage .pc-table tbody tr.phoneme-source").forEach(el => {
+  document.querySelectorAll(".pc-table tbody tr.phoneme-focus,.pc-table tbody tr.phoneme-source").forEach(el => {
     el.classList.remove("phoneme-focus","phoneme-source");
   });
   document.querySelectorAll(".sm-cov-trap-pt.phoneme-focus,.sm-cov-trap-pt.phoneme-source").forEach(el => {
@@ -6202,7 +6216,7 @@ function smCovHighlightClear() { smCovClearActive(); }
 function smCovSyncFromEvent(e) {
   const cell = e.target.closest(".sm-cov-grid td.filled");
   if (cell && cell.dataset.place) { smCovHighlight(cell); return; }
-  const pcRow = e.target.closest("#panel-coverage .pc-table tbody tr");
+  const pcRow = e.target.closest(".pc-table tbody tr");
   if (pcRow && pcRow.dataset.ipa) { smCovSetActivePhoneme(pcRow.dataset.ipa, pcRow); return; }
   const sigChip = e.target.closest(".sm-cov-sig-chip");
   if (sigChip && sigChip.dataset.ipa) { smCovSetActivePhoneme(sigChip.dataset.ipa, sigChip); return; }
@@ -7150,12 +7164,13 @@ function pcToggleCol(key) {
 }
 
 // Blend the per-column tints into a single RGB accent. Sets it as a
-// CSS custom property on #panel-coverage; the gold-tinted accents in
-// the script-comparison area pick it up via rgb(var(--pc-tint-rgb)).
-// Subtle by design — never dramatic enough to read as a theme switch.
+// CSS custom property on #panel-comparison; the gold-tinted accents
+// inside the pc-* surfaces (and the comp-hero entrance) pick it up
+// via rgb(var(--pc-tint-rgb)). Subtle by design — never dramatic
+// enough to read as a theme switch.
 function pcUpdateAtmosphere() {
   const active = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key));
-  const panel = document.getElementById("panel-coverage");
+  const panel = document.getElementById("panel-comparison");
   if (!panel || active.length === 0) return;
   let r = 0, g = 0, b = 0;
   active.forEach(c => { r += c.tint[0]; g += c.tint[1]; b += c.tint[2]; });
@@ -7223,7 +7238,9 @@ function pcToast(msg) {
   clearTimeout(pcToast._t);
   pcToast._t = setTimeout(() => t.classList.remove("show"), 900);
 }
-document.getElementById("panel-coverage").addEventListener("click", (e) => {
+// Copy-to-clipboard delegation lives on the Comparison panel now —
+// the pc-* tables moved there when the tabs were split.
+document.getElementById("panel-comparison").addEventListener("click", (e) => {
   const cell = e.target.closest(".pc-col-script");
   if (!cell || cell.classList.contains("empty")) return;
   const v = cell.dataset.copy;
@@ -7239,15 +7256,21 @@ pcUpdateCaption();
 pcUpdateAtmosphere();
 pcRender();
 
-// One delegated hover dispatcher for the entire Coverage tab. Every
-// phoneme-bearing surface routes through smCovSyncFromEvent — that's
-// what makes hover synchronized across the grid, heat map, trapezoid,
-// signature cards, and the script table.
-(function attachCoveragesync() {
+// Hover dispatchers — one per panel that contains phoneme-bearing
+// surfaces. Coverage routes its grid / chips / trap / tract through
+// smCovSyncFromEvent; Comparison routes its pc-table rows the same
+// way so hovering a row still cross-lights any sig chip / cell that
+// happens to live elsewhere (silent no-op when the other tab isn't
+// visible — but if both surfaces ever share a panel again it works).
+(function attachCoverageSync() {
   const panel = document.getElementById("panel-coverage");
   if (!panel) return;
-  // mouseover (not mouseenter) bubbles, so a single panel-level listener
-  // captures hover across every child surface as they get rebuilt.
+  panel.addEventListener("mouseover", smCovSyncFromEvent);
+  panel.addEventListener("mouseleave", smCovClearActive);
+})();
+(function attachComparisonSync() {
+  const panel = document.getElementById("panel-comparison");
+  if (!panel) return;
   panel.addEventListener("mouseover", smCovSyncFromEvent);
   panel.addEventListener("mouseleave", smCovClearActive);
 })();
@@ -9212,7 +9235,7 @@ function setTab(name) {
     b.classList.toggle("active", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
   });
-  ["panel-sound","panel-coverage","panel-endings","panel-rhyme","panel-rap"].forEach(id => {
+  ["panel-sound","panel-coverage","panel-comparison","panel-endings","panel-rhyme","panel-rap"].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.classList.toggle("active", id === "panel-" + name);
   });
@@ -9231,7 +9254,7 @@ document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
   let saved = null;
   try { saved = localStorage.getItem("sm-tab"); } catch(_) {}
   // "chart" + "flow" still accepted (legacy bookmarks / saved sessions); setTab() remaps them.
-  const VALID = new Set(["sound", "coverage", "endings", "rhyme", "rap", "chart", "flow"]);
+  const VALID = new Set(["sound", "coverage", "comparison", "endings", "rhyme", "rap", "chart", "flow"]);
   const validUrl = VALID.has(fromUrl) ? fromUrl : null;
   const validSaved = VALID.has(saved) ? saved : null;
   const initial = validUrl || validSaved || "sound";
@@ -9261,11 +9284,13 @@ function smHandleHash() {
     // smUpdateVocalTract may be called before the tract section is interactive,
     // but the SVG is in the DOM at parse time, so this is safe.
     if (typeof smUpdateVocalTract === "function") smUpdateVocalTract(val);
-  } else if (key === "chart") {
-    setTab("coverage");
-    // Wait one frame so the coverage panel's display:flex has applied before scroll.
+  } else if (key === "chart" || key === "comparison") {
+    // Legacy "chart" hash still resolves to the Comparison tab where
+    // the pc-table now lives.
+    setTab("comparison");
+    // Wait one frame so the comparison panel's display:flex has applied before scroll.
     requestAnimationFrame(() => {
-      const row = document.querySelector(`#panel-coverage tr[data-ipa="${CSS.escape(val)}"]`);
+      const row = document.querySelector(`#panel-comparison tr[data-ipa="${CSS.escape(val)}"]`);
       if (!row) return;
       row.scrollIntoView({ behavior: "smooth", block: "center" });
       row.classList.remove("pc-row-flash");
