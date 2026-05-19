@@ -63,18 +63,18 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    entrance to a distinct phonological codex rather than a section
    header. Eyebrow ties the deck back to the larger Sound Lab; the
    title sets scope; the sub-line tells the reader what they can do. */
-.comp-hero{margin:0 0 18px;padding:18px 0 16px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);position:relative;transition:border-color .8s ease}
+.comp-hero{margin:0 0 12px;padding:12px 0 10px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);position:relative;transition:border-color .8s ease}
 .comp-hero::before{content:"";position:absolute;bottom:-1px;left:0;width:120px;height:2px;background:rgb(var(--pc-tint-rgb,232,200,64));border-radius:1px;transition:background .8s ease}
-.comp-hero-eyebrow{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:9px;letter-spacing:.20em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.72);font-weight:700;margin-bottom:6px;transition:color .8s ease}
-.comp-hero-title{font-size:18px;font-weight:700;letter-spacing:.04em;color:var(--text);margin:0 0 6px;line-height:1.15}
-.comp-hero-sub{color:var(--muted);font-size:12px;line-height:1.55;max-width:760px;margin:0;font-style:italic}
-.pc-intro{color:var(--muted);font-size:11px;max-width:780px;margin-bottom:10px;line-height:1.55;padding:2px 0 2px 11px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.30);transition:border-color .8s ease}
+.comp-hero-eyebrow{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:9px;letter-spacing:.20em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.72);font-weight:700;margin-bottom:4px;transition:color .8s ease}
+.comp-hero-title{font-size:17px;font-weight:700;letter-spacing:.04em;color:var(--text);margin:0 0 4px;line-height:1.15}
+.comp-hero-sub{color:var(--muted);font-size:11.5px;line-height:1.5;max-width:760px;margin:0;font-style:italic}
+.pc-intro{color:var(--muted);font-size:11px;max-width:780px;margin-bottom:6px;line-height:1.5;padding:2px 0 2px 10px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.30);transition:border-color .8s ease}
 .pc-intro strong{color:var(--text)}
 .pc-intro code{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;background:var(--surf2);color:rgb(var(--pc-tint-rgb,232,200,64));padding:1px 6px;border-radius:3px;font-size:11px}
 /* Control deck — search + notes toggle + column toggles sit inside a
    single surface that reads as one command surface, not three loose
    widgets. Top edge takes the active atmosphere tint. */
-.pc-toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:10px;padding:7px 12px 7px 14px;background:linear-gradient(180deg,rgba(var(--pc-tint-rgb,232,200,64),.04),var(--surf) 75%);border:1px solid var(--bdr);border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.45);border-radius:var(--radius);transition:border-color .8s ease,background .8s ease;position:relative}
+.pc-toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:0;padding:6px 12px 6px 14px;background:linear-gradient(180deg,rgba(var(--pc-tint-rgb,232,200,64),.04),var(--surf) 75%);border:1px solid var(--bdr);border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.45);border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.20);border-radius:var(--radius) var(--radius) 0 0;transition:border-color .8s ease,background .8s ease;position:relative}
 .pc-toolbar::before{content:"Reference";font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.78);padding-right:10px;border-right:1px solid var(--bdr);align-self:center;transition:color .8s ease,border-color .8s ease}
 .pc-search{flex:1;min-width:200px;max-width:380px;background:var(--surf2);border:1px solid var(--bdr);color:var(--text);padding:5px 10px;border-radius:var(--radius);font-family:inherit;font-size:12.5px;outline:none;transition:border-color .15s ease,box-shadow .18s ease}
 .pc-search:focus{border-color:rgb(var(--pc-tint-rgb,232,200,64));box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.18)}
@@ -89,9 +89,15 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-toggle:hover{color:var(--text);border-color:rgba(var(--pc-tint-rgb,232,200,64),.40);background:rgba(var(--pc-tint-rgb,232,200,64),.05)}
 .pc-col-toggle.active{background:rgba(var(--pc-tint-rgb,232,200,64),.14);border-color:rgb(var(--pc-tint-rgb,232,200,64));color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:600;box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.10)}
 .pc-col-toggle.active:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.22)}
-/* Section header — denser; gold-tinted underline; sticky so the C/V
-   label stays in view while scrolling the long table. */
-.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin:18px 0 4px;padding:6px 10px 4px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px;transition:color .8s ease,border-color .8s ease}
+/* Chapter header — pc-h2 reads as a codex chapter title. § ornament
+   marks the start; sticky so the chapter label persists while you
+   scroll its rows. The Vowels chapter (i.e. the second pc-h2) gets
+   a breathier top margin via the adjacent-sibling rule below — a
+   proper chapter break — while the first chapter sits tight under
+   the toolbar (docked into the deck). */
+.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin:6px 0 3px;padding:6px 10px 4px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px;transition:color .8s ease,border-color .8s ease}
+.pc-h2::before{content:"§";font-family:Georgia,serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(var(--pc-tint-rgb,232,200,64),.6);margin-right:8px;letter-spacing:0;text-transform:none;line-height:1;transition:color .8s ease}
+.pc-h2 + .pc-table + .pc-h2{margin-top:18px}
 .pc-h2-caption{color:rgba(var(--pc-tint-rgb,232,200,64),.55);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none;transition:color .8s ease}
 
 .pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
@@ -111,7 +117,7 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    gets a thin left accent rule, a soft horizontal wash from the
    active tint, and a slightly bigger glyph with a low-amplitude glow. */
 .pc-col-ipa{width:64px;padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
-.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.5px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 8px rgba(var(--pc-tint-rgb,232,200,64),.18);transition:color .8s ease,text-shadow .8s ease}
+.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.25px;font-variant-ligatures:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 6px rgba(var(--pc-tint-rgb,232,200,64),.16),0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.25);transition:color .8s ease,text-shadow .8s ease}
 
 /* Description column — secondary, with the optional note folded in
    below as a gold-bar annotation line. No more separate note row. */
@@ -134,6 +140,20 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 /* Stronger description→first-script transition. */
 .pc-table thead th.pc-col-script-h:nth-child(3),
 .pc-table tbody td.pc-col-script:nth-child(3){border-left:1px solid rgba(60,70,90,.55)}
+/* Per-script atmosphere — each script column carries its own underline
+   colour on the th, so Latin / Arabic / Telugu read as parallel writing
+   traditions sharing the page, not generic numbered columns. */
+.pc-table thead th[data-script="latin"]{border-bottom-color:rgba(232,200,64,.35)}
+.pc-table thead th[data-script="arabic"]{border-bottom-color:rgba(212,164,84,.45);color:rgba(212,164,84,.78)}
+.pc-table thead th[data-script="telugu"]{border-bottom-color:rgba(218,152,92,.45);color:rgba(218,152,92,.78)}
+
+/* Articulation grouping — subtle separator between manner-classes in
+   the consonant chapter. JS adds .manner-shift to the first row of a
+   new manner (plosive → nasal → fricative → …). Gives the chapter
+   an interior rhythm beyond simple alternation, without inserting
+   any extra row or header. */
+.pc-table tbody tr.manner-shift td{border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.16)}
+.pc-table tbody tr.manner-shift td.pc-col-ipa{box-shadow:inset 2px 0 0 rgb(var(--pc-tint-rgb,232,200,64))}
 
 /* Row striping — very subtle. Breaks the eye from reading "spreadsheet
    rows" into perceiving a textured surface of phoneme records. The
@@ -7185,12 +7205,23 @@ function pcBuildHeaders() {
     '<th class="pc-col-ipa">IPA</th><th class="pc-col-desc">Description</th>' +
     PC_COLUMNS
       .filter(c => pcSelectedCols.has(c.key))
-      .map(c => `<th class="pc-col-script-h">${c.label}</th>`)
+      .map(c => `<th class="pc-col-script-h" data-script="${c.key}">${c.label}</th>`)
       .join("");
   ["pc-consonants-head","pc-vowels-head"].forEach(id => {
     const tr = document.getElementById(id);
     if (tr) tr.innerHTML = headHtml;
   });
+}
+
+// Manner detector — walks the description for the first matching
+// keyword. Returns "other" if nothing matches (rare in this dataset).
+// Used only to draw a quiet separator between manner-groups in the
+// consonants chapter; it doesn't relabel the row.
+const PC_MANNER_KEYWORDS = ["plosive","nasal","fricative","affricate","trill","tap","flap","approximant","lateral"];
+function pcMannerOf(desc) {
+  const d = (desc || "").toLowerCase();
+  for (const m of PC_MANNER_KEYWORDS) if (d.indexOf(m) >= 0) return m;
+  return "other";
 }
 
 function pcUpdateCaption() {
@@ -7215,14 +7246,21 @@ function pcRender() {
   // into the description cell as an italic annotation line, not a
   // separate full-width row — keeps every phoneme to a single tabular
   // line and roughly halves vertical density.
+  let prevConsManner = null;
   PC_PHONEMES.filter(match).forEach(p => {
     const tr = document.createElement("tr");
     const cells = activeCols.map(c => {
       const v = p[c.key];
       const isEmpty = v === "—";
-      return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}">${v}</td>`;
+      return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}" data-script="${c.key}">${v}</td>`;
     }).join("");
     tr.dataset.ipa = p.ipa;
+    if (p.g === "c") {
+      const m = pcMannerOf(p.desc);
+      tr.dataset.manner = m;
+      if (prevConsManner !== null && m !== prevConsManner) tr.classList.add("manner-shift");
+      prevConsManner = m;
+    }
     const noteHtml = (showNotes && p.note)
       ? `<div class="pc-note-inline">${p.note}</div>` : "";
     tr.innerHTML =
