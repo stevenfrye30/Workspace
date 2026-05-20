@@ -7099,23 +7099,23 @@ const PC_PHONEMES = [
   { ipa: "k",  g: "c", desc: "voiceless velar plosive",           latin: "k",  arabic: "ك", telugu: "క" },
   { ipa: "ɡ",  g: "c", desc: "voiced velar plosive",              latin: "g",  arabic: "غ", telugu: "గ", note: "Arabic غ is /ɣ/ (a fricative, close to French R); ج is used for /g/ in Egyptian dialect." },
   { ipa: "q",  g: "c", desc: "voiceless uvular plosive",          latin: "—",  arabic: "ق", telugu: "—", note: "Deep back-of-throat /k/. Distinctive to Arabic and some other Semitic languages." },
-  { ipa: "ʔ",  g: "c", desc: "glottal stop",                      latin: "—",  arabic: "ء", telugu: "—", note: "The catch in 'uh-oh'. Arabic ء (hamza) writes it explicitly." },
+  { ipa: "ʔ",  g: "c", desc: "glottal stop",                      latin: "—",  arabic: "ء", telugu: "—", haw: "ʻ", note: "The catch in 'uh-oh'. Arabic ء (hamza) writes it explicitly; Hawaiian ʻokina." },
   { ipa: "m",  g: "c", desc: "bilabial nasal",                    latin: "m",  arabic: "م", telugu: "మ" },
   { ipa: "n",  g: "c", desc: "alveolar nasal",                    latin: "n",  arabic: "ن", telugu: "న" },
   { ipa: "ɳ",  g: "c", desc: "retroflex nasal",                   latin: "—",  arabic: "—", telugu: "ణ" },
-  { ipa: "ɲ",  g: "c", desc: "palatal nasal",                     latin: "ny", arabic: "—", telugu: "ఞ", note: "Spanish ñ; Italian gn; French gn." },
+  { ipa: "ɲ",  g: "c", desc: "palatal nasal",                     latin: "ny", arabic: "—", telugu: "ఞ", es: "ñ", fr: "gn", pt: "nh", note: "Spanish ñ; Italian gn; French gn; Portuguese nh." },
   { ipa: "ŋ",  g: "c", desc: "velar nasal",                       latin: "ng", arabic: "—", telugu: "ఙ", note: "The 'ng' in English 'sing'." },
   { ipa: "f",  g: "c", desc: "voiceless labiodental fricative",   latin: "f",  arabic: "ف", telugu: "ఫ", note: "Telugu ఫ was originally /pʰ/; now used for /f/ in loanwords." },
   { ipa: "v",  g: "c", desc: "voiced labiodental fricative",      latin: "v",  arabic: "—", telugu: "వ", note: "Arabic has no /v/; ف or foreign ڤ used in loanwords. Telugu వ covers both /v/ and /w/." },
-  { ipa: "θ",  g: "c", desc: "voiceless dental fricative",        latin: "th", arabic: "ث", telugu: "—", note: "'th' in 'thin'." },
-  { ipa: "ð",  g: "c", desc: "voiced dental fricative",           latin: "th", arabic: "ذ", telugu: "—", note: "'th' in 'this'." },
+  { ipa: "θ",  g: "c", desc: "voiceless dental fricative",        latin: "th", arabic: "ث", telugu: "—", es: "z/c", note: "'th' in 'thin'. Castilian Spanish ⟨z⟩ or ⟨c⟩ before i/e." },
+  { ipa: "ð",  g: "c", desc: "voiced dental fricative",           latin: "th", arabic: "ذ", telugu: "—", es: "d", note: "'th' in 'this'. Spanish intervocalic ⟨d⟩ ([ð])." },
   { ipa: "s",  g: "c", desc: "voiceless alveolar fricative",      latin: "s",  arabic: "س", telugu: "స" },
   { ipa: "z",  g: "c", desc: "voiced alveolar fricative",         latin: "z",  arabic: "ز", telugu: "—", note: "No native /z/ in Telugu; transliterated with జ or స + diacritic in loanwords." },
   { ipa: "ʃ",  g: "c", desc: "voiceless postalveolar fricative",  latin: "sh", arabic: "ش", telugu: "శ", note: "'sh' in 'ship'." },
   { ipa: "ʒ",  g: "c", desc: "voiced postalveolar fricative",     latin: "zh", arabic: "—", telugu: "—", note: "'s' in 'measure'; French j." },
   { ipa: "ʂ",  g: "c", desc: "voiceless retroflex fricative",     latin: "—",  arabic: "—", telugu: "ష" },
-  { ipa: "x",  g: "c", desc: "voiceless velar fricative",         latin: "kh", arabic: "خ", telugu: "—", note: "German 'ach'; Scottish 'loch'." },
-  { ipa: "ɣ",  g: "c", desc: "voiced velar fricative",            latin: "gh", arabic: "غ", telugu: "—" },
+  { ipa: "x",  g: "c", desc: "voiceless velar fricative",         latin: "kh", arabic: "خ", telugu: "—", es: "j/g", de: "ch", note: "German 'ach'; Scottish 'loch'; Spanish ⟨j⟩." },
+  { ipa: "ɣ",  g: "c", desc: "voiced velar fricative",            latin: "gh", arabic: "غ", telugu: "—", es: "g" },
   { ipa: "ħ",  g: "c", desc: "voiceless pharyngeal fricative",    latin: "—",  arabic: "ح", telugu: "—", note: "Constricted 'h' deep in the throat. Distinctive to Arabic." },
   { ipa: "ʕ",  g: "c", desc: "voiced pharyngeal fricative",       latin: "—",  arabic: "ع", telugu: "—", note: "The famous 'ayn' of Arabic — no close equivalent in English or Telugu." },
   { ipa: "h",  g: "c", desc: "voiceless glottal fricative",       latin: "h",  arabic: "ه", telugu: "హ" },
@@ -7132,11 +7132,11 @@ const PC_PHONEMES = [
   { ipa: "o",  g: "v", desc: "close-mid back rounded vowel",      latin: "o",  arabic: "—", telugu: "ఒ", note: "Standard Arabic has no /o/; dialects use damma or a w-glide." },
   { ipa: "u",  g: "v", desc: "close back rounded vowel",          latin: "u",  arabic: "ـُ", telugu: "ఉ", note: "Arabic diacritic damma, written above the consonant." },
   { ipa: "ə",  g: "v", desc: "mid central vowel (schwa)",         latin: "e",  arabic: "—", telugu: "—", note: "The 'uh' sound in 'sofa'. Unwritten in most scripts; emerges from reduction." },
-  { ipa: "aː", g: "v", desc: "long open vowel",                   latin: "aa", arabic: "ا", telugu: "ఆ" },
-  { ipa: "iː", g: "v", desc: "long close front vowel",            latin: "ee", arabic: "ي", telugu: "ఈ" },
-  { ipa: "uː", g: "v", desc: "long close back rounded vowel",     latin: "oo", arabic: "و", telugu: "ఊ" },
-  { ipa: "eː", g: "v", desc: "long close-mid front vowel",        latin: "ē",  arabic: "—", telugu: "ఏ" },
-  { ipa: "oː", g: "v", desc: "long close-mid back vowel",         latin: "ō",  arabic: "—", telugu: "ఓ" },
+  { ipa: "aː", g: "v", desc: "long open vowel",                   latin: "aa", arabic: "ا", telugu: "ఆ", haw: "ā", note: "Hawaiian kahakō (macron) ⟨ā⟩ marks length." },
+  { ipa: "iː", g: "v", desc: "long close front vowel",            latin: "ee", arabic: "ي", telugu: "ఈ", haw: "ī" },
+  { ipa: "uː", g: "v", desc: "long close back rounded vowel",     latin: "oo", arabic: "و", telugu: "ఊ", haw: "ū" },
+  { ipa: "eː", g: "v", desc: "long close-mid front vowel",        latin: "ē",  arabic: "—", telugu: "ఏ", haw: "ē" },
+  { ipa: "oː", g: "v", desc: "long close-mid back vowel",         latin: "ō",  arabic: "—", telugu: "ఓ", haw: "ō" },
 
   // ── Diphthongs ───────────────────────────────────────────────────────
   // Phonemic gliding vowels. Curated set covers the diphthongs that
@@ -7158,16 +7158,53 @@ const PC_PHONEMES = [
   { ipa: "ou", g: "d", desc: "close-mid back → close back",       latin: "ou", arabic: "—", telugu: "—", note: "Portuguese 'pouco'; some English dialects." },
 ];
 
-// Script-column registry. IPA + Description are fixed; everything in
-// this list is a togglable script column. Adding a new writing system
-// only requires adding an entry here and a field on each PC_PHONEMES
-// row — the toolbar pills, headers, and cells all populate from this.
-// `tint` is the per-column accent RGB used by pcUpdateAtmosphere to
-// blend a subtle environmental color that drifts with the active set.
-const PC_COLUMNS = [
-  { key: "latin",  label: "Latin",  tint: [232, 200, 64] },  // baseline gold
-  { key: "arabic", label: "Arabic", tint: [212, 164, 84] },  // warmer amber / bronze
-  { key: "telugu", label: "Telugu", tint: [218, 152, 92] }   // gold-red warmth
+// Language-column registry. IPA + Description are fixed; every entry
+// here is a togglable language column. Each entry binds a language
+// (key + label) to the writing-system field on PC_PHONEMES it falls
+// back to (`script`). Per-row, per-language overrides live as named
+// fields on PC_PHONEMES rows (e.g. `haw: "ʻ"` on the /ʔ/ row). Tint
+// is the language's accent colour for atmosphere blending.
+//
+// Real data caveat: the `script` field of a PC_PHONEMES row is shared
+// across every language that uses that script (Latin is shared by
+// en/es/fr/de/pt/tr/sw/vi/haw, etc.). When two languages share a
+// script and we have no language-specific override on the row, both
+// columns will show the same Latin grapheme — accurate as a coarse
+// "this is how the script writes this sound" but missing the per-
+// language orthographic conventions ("sh" vs "ch", "ll" vs "y", …).
+// pcGetGrapheme also applies an inventory honesty check: cells show
+// "—" when the column-language doesn't have the row's phoneme at all
+// (so /θ/'s Spanish column reads "—", not the Latin fallback "th").
+//
+// Scaffolded vs real:
+//   real    — every language→script binding below maps to a PC_PHONEMES
+//             field that exists (latin, arabic, telugu). Adding a new
+//             script field (devanagari, hangul, …) only needs a new
+//             named field on PC_PHONEMES rows.
+//   scaffold— hi/ru/ja/zh/ko point at script keys (devanagari, cyrillic,
+//             kana, hanzi, hangul) that don't yet exist on PC_PHONEMES,
+//             so their columns render "—" everywhere until those
+//             script fields are populated. The registry entry is real;
+//             the cell data is the missing piece. The inventory check
+//             still applies — adding script data will make rows light
+//             up immediately.
+const PC_LANGUAGES = [
+  { key: "en",  label: "English",    script: "latin",      tint: [232, 200, 64] },
+  { key: "es",  label: "Spanish",    script: "latin",      tint: [222, 184, 80] },
+  { key: "fr",  label: "French",     script: "latin",      tint: [184, 192, 224] },
+  { key: "de",  label: "German",     script: "latin",      tint: [200, 196, 188] },
+  { key: "pt",  label: "Portuguese", script: "latin",      tint: [196, 216, 168] },
+  { key: "tr",  label: "Turkish",    script: "latin",      tint: [220, 132, 108] },
+  { key: "sw",  label: "Swahili",    script: "latin",      tint: [184, 208, 132] },
+  { key: "vi",  label: "Vietnamese", script: "latin",      tint: [152, 200, 208] },
+  { key: "haw", label: "Hawaiian",   script: "latin",      tint: [124, 184, 200] },
+  { key: "ar",  label: "Arabic",     script: "arabic",     tint: [212, 164, 84] },
+  { key: "te",  label: "Telugu",     script: "telugu",     tint: [218, 152, 92] },
+  { key: "hi",  label: "Hindi",      script: "devanagari", tint: [196, 116, 88] },
+  { key: "ru",  label: "Russian",    script: "cyrillic",   tint: [188, 168, 208] },
+  { key: "ja",  label: "Japanese",   script: "kana",       tint: [220, 184, 220] },
+  { key: "zh",  label: "Mandarin",   script: "hanzi",      tint: [232, 132, 108] },
+  { key: "ko",  label: "Korean",     script: "hangul",     tint: [188, 200, 232] }
 ];
 
 // Language-context registry. "reference" shows every PC_PHONEMES row
@@ -7266,66 +7303,93 @@ function pcBuildLanguageSelector() {
     pcRender();
   });
 }
-const PC_COL_KEYS = new Set(PC_COLUMNS.map(c => c.key));
-let pcSelectedCols = new Set(PC_COLUMNS.map(c => c.key));
+const PC_LANG_KEYS = new Set(PC_LANGUAGES.map(l => l.key));
+let pcSelectedLangCols = new Set(["en", "ar", "te"]);
 try {
-  const stored = localStorage.getItem("pc-cols");
+  const stored = localStorage.getItem("pc-lang-cols");
   if (stored) {
     const parsed = JSON.parse(stored);
     if (Array.isArray(parsed)) {
-      const filtered = parsed.filter(k => PC_COL_KEYS.has(k));
-      if (filtered.length > 0) pcSelectedCols = new Set(filtered);
+      const filtered = parsed.filter(k => PC_LANG_KEYS.has(k));
+      if (filtered.length > 0) pcSelectedLangCols = new Set(filtered);
     }
   }
 } catch(_) {}
 
-function pcBuildColumnSelector() {
+function pcBuildLangColumnSelector() {
   const wrap = document.getElementById("pc-cols");
   if (!wrap) return;
   wrap.innerHTML = "";
   const label = document.createElement("span");
   label.className = "pc-cols-label";
-  label.textContent = "Columns";
+  label.textContent = "Compare";
   wrap.appendChild(label);
-  PC_COLUMNS.forEach(c => {
+  PC_LANGUAGES.forEach(l => {
     const btn = document.createElement("button");
     btn.type = "button";
-    btn.className = "pc-col-toggle" + (pcSelectedCols.has(c.key) ? " active" : "");
-    btn.textContent = c.label;
-    btn.dataset.col = c.key;
-    btn.setAttribute("aria-pressed", pcSelectedCols.has(c.key) ? "true" : "false");
-    btn.addEventListener("click", () => pcToggleCol(c.key));
+    btn.className = "pc-col-toggle" + (pcSelectedLangCols.has(l.key) ? " active" : "");
+    btn.textContent = l.label;
+    btn.dataset.col = l.key;
+    btn.setAttribute("aria-pressed", pcSelectedLangCols.has(l.key) ? "true" : "false");
+    btn.addEventListener("click", () => pcToggleLangCol(l.key));
     wrap.appendChild(btn);
   });
 }
 
-function pcToggleCol(key) {
-  if (!PC_COL_KEYS.has(key)) return;
-  if (pcSelectedCols.has(key)) {
-    if (pcSelectedCols.size === 1) return;  // keep at least one script visible
-    pcSelectedCols.delete(key);
+function pcToggleLangCol(key) {
+  if (!PC_LANG_KEYS.has(key)) return;
+  if (pcSelectedLangCols.has(key)) {
+    if (pcSelectedLangCols.size === 1) return;  // keep at least one column
+    pcSelectedLangCols.delete(key);
   } else {
-    pcSelectedCols.add(key);
+    pcSelectedLangCols.add(key);
   }
-  try { localStorage.setItem("pc-cols", JSON.stringify(Array.from(pcSelectedCols))); } catch(_) {}
-  pcBuildColumnSelector();
+  try { localStorage.setItem("pc-lang-cols", JSON.stringify(Array.from(pcSelectedLangCols))); } catch(_) {}
+  pcBuildLangColumnSelector();
   pcBuildHeaders();
   pcUpdateCaption();
   pcUpdateAtmosphere();
   pcRender();
 }
 
-// Blend the per-column tints into a single RGB accent. Sets it as a
+// Honest grapheme lookup for a phoneme × column-language pair.
+//   1. If LANG_PHONEMES has inventory data for the column language and
+//      the phoneme isn't in that inventory → "—". This is the "don't
+//      pretend Spanish has /θ/ when Castilian merges with Latin
+//      American" rule.
+//   2. Else, prefer a per-row, per-language override (e.g. `haw: "ʻ"`
+//      on the /ʔ/ row maps Hawaiian-specific orthography).
+//   3. Else, fall back to the shared script field (e.g. Spanish reads
+//      the `latin` field).
+//   4. Else "—" if no field exists for that script.
+// For "Reference" focus mode the row set is the universal PC_PHONEMES
+// list, so the inventory check on column languages is still meaningful:
+// /ɲ/ in Reference + English column → "—", because English doesn't have
+// phonemic /ɲ/ — keeps the table honest about gaps.
+function pcGetGrapheme(phoneme, lang) {
+  if (typeof LANG_PHONEMES !== "undefined" && LANG_PHONEMES[lang.key]) {
+    const inv = LANG_PHONEMES[lang.key];
+    const has = (inv.cons   || []).some(c => c[0] === phoneme.ipa)
+             || (inv.vowels || []).some(v => v[0] === phoneme.ipa)
+             || (inv.diphs  || []).includes(phoneme.ipa);
+    if (!has) return "—";
+  }
+  if (phoneme[lang.key] !== undefined && phoneme[lang.key] !== null) return phoneme[lang.key];
+  if (lang.script && phoneme[lang.script] !== undefined && phoneme[lang.script] !== null) return phoneme[lang.script];
+  return "—";
+}
+
+// Blend the per-language tints into a single RGB accent. Sets it as a
 // CSS custom property on #panel-comparison; the gold-tinted accents
 // inside the pc-* surfaces (and the comp-hero entrance) pick it up
 // via rgb(var(--pc-tint-rgb)). Subtle by design — never dramatic
 // enough to read as a theme switch.
 function pcUpdateAtmosphere() {
-  const active = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key));
+  const active = PC_LANGUAGES.filter(l => pcSelectedLangCols.has(l.key));
   const panel = document.getElementById("panel-comparison");
   if (!panel || active.length === 0) return;
   let r = 0, g = 0, b = 0;
-  active.forEach(c => { r += c.tint[0]; g += c.tint[1]; b += c.tint[2]; });
+  active.forEach(l => { r += l.tint[0]; g += l.tint[1]; b += l.tint[2]; });
   r = Math.round(r / active.length);
   g = Math.round(g / active.length);
   b = Math.round(b / active.length);
@@ -7335,9 +7399,9 @@ function pcUpdateAtmosphere() {
 function pcBuildHeaders() {
   const headHtml =
     '<th class="pc-col-ipa">IPA</th><th class="pc-col-desc">Description</th>' +
-    PC_COLUMNS
-      .filter(c => pcSelectedCols.has(c.key))
-      .map(c => `<th class="pc-col-script-h" data-script="${c.key}">${c.label}</th>`)
+    PC_LANGUAGES
+      .filter(l => pcSelectedLangCols.has(l.key))
+      .map(l => `<th class="pc-col-script-h" data-script="${l.script}" data-lang="${l.key}">${l.label}</th>`)
       .join("");
   ["pc-consonants-head","pc-vowels-head","pc-diphthongs-head"].forEach(id => {
     const tr = document.getElementById(id);
@@ -7357,7 +7421,7 @@ function pcMannerOf(desc) {
 }
 
 function pcUpdateCaption() {
-  const active = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key)).map(c => c.label).join(" · ");
+  const active = PC_LANGUAGES.filter(l => pcSelectedLangCols.has(l.key)).map(l => l.label).join(" · ");
   document.querySelectorAll(".pc-h2-caption").forEach(el => {
     el.textContent = "IPA → " + active;
   });
@@ -7370,24 +7434,25 @@ function pcRender() {
   const vBody = document.getElementById("pc-vowels-body");
   const dBody = document.getElementById("pc-diphthongs-body");
   cBody.innerHTML = ""; vBody.innerHTML = ""; if (dBody) dBody.innerHTML = "";
-  const activeCols = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key));
-  // Search still matches against ALL script fields and the note even
-  // when their columns are hidden — keeps "find by Arabic letter" or
-  // "find by note text" useful regardless of what's currently shown.
+  const activeLangs = PC_LANGUAGES.filter(l => pcSelectedLangCols.has(l.key));
+  // Search indexes every script field on the row (regardless of which
+  // language columns are currently visible) plus the note, so "find
+  // by Arabic letter" or "find by note keyword" still works even when
+  // the Arabic column is toggled off.
   const match = (p) => !q || [p.ipa,p.desc,p.latin,p.arabic,p.telugu,p.note||""].join(" ").toLowerCase().includes(q);
   // One row per phoneme. The note (when present + toggle on) is folded
   // into the description cell as an italic annotation line, not a
   // separate full-width row — keeps every phoneme to a single tabular
   // line and roughly halves vertical density. Row set is filtered by
-  // the active language context — see pcGetVisibleRows.
+  // the active focus language — see pcGetVisibleRows.
   const rows = pcGetVisibleRows();
   let prevConsManner = null;
   rows.filter(match).forEach(p => {
     const tr = document.createElement("tr");
-    const cells = activeCols.map(c => {
-      const v = p[c.key];
+    const cells = activeLangs.map(l => {
+      const v = pcGetGrapheme(p, l);
       const isEmpty = v === "—";
-      return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}" data-script="${c.key}">${v}</td>`;
+      return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}" data-script="${l.script}" data-lang="${l.key}">${v}</td>`;
     }).join("");
     tr.dataset.ipa = p.ipa;
     if (p.g === "c") {
@@ -7425,7 +7490,7 @@ document.getElementById("panel-comparison").addEventListener("click", (e) => {
 document.getElementById("pc-search").addEventListener("input", pcRender);
 document.getElementById("pc-show-notes").addEventListener("change", pcRender);
 pcBuildLanguageSelector();
-pcBuildColumnSelector();
+pcBuildLangColumnSelector();
 pcBuildHeaders();
 pcUpdateCaption();
 pcUpdateAtmosphere();
