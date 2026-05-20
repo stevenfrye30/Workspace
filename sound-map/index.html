@@ -76,6 +76,16 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    widgets. Top edge takes the active atmosphere tint. */
 .pc-toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:0;padding:6px 12px 6px 14px;background:linear-gradient(180deg,rgba(var(--pc-tint-rgb,232,200,64),.04),var(--surf) 75%);border:1px solid var(--bdr);border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.45);border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.20);border-radius:var(--radius) var(--radius) 0 0;transition:border-color .8s ease,background .8s ease;position:relative}
 .pc-toolbar::before{content:"Reference";font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.78);padding-right:10px;border-right:1px solid var(--bdr);align-self:center;transition:color .8s ease,border-color .8s ease}
+/* Language context — picks which language's inventory drives the
+   visible rows. "Reference" reverts to the universal IPA set. Sits
+   inline with the rest of the deck so it reads as part of the control
+   surface, not as a separate widget. */
+.pc-lang{display:inline-flex;align-items:center;gap:6px}
+.pc-lang-label{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.pc-lang-select{background:var(--surf2);border:1px solid var(--bdr);color:var(--text);font-family:inherit;font-size:11.5px;padding:3px 24px 3px 10px;border-radius:var(--radius);cursor:pointer;outline:none;transition:border-color .15s ease,box-shadow .18s ease;-webkit-appearance:none;-moz-appearance:none;appearance:none;background-image:linear-gradient(45deg,transparent 50%,rgba(var(--pc-tint-rgb,232,200,64),.6) 50%),linear-gradient(135deg,rgba(var(--pc-tint-rgb,232,200,64),.6) 50%,transparent 50%);background-position:calc(100% - 12px) calc(50% - 2px),calc(100% - 8px) calc(50% - 2px);background-size:4px 4px,4px 4px;background-repeat:no-repeat}
+.pc-lang-select:hover{border-color:rgba(var(--pc-tint-rgb,232,200,64),.40);background-color:var(--surf)}
+.pc-lang-select:focus{border-color:rgb(var(--pc-tint-rgb,232,200,64));box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.18)}
+.pc-lang-select option{background:var(--surf2);color:var(--text)}
 .pc-search{flex:1;min-width:200px;max-width:380px;background:var(--surf2);border:1px solid var(--bdr);color:var(--text);padding:5px 10px;border-radius:var(--radius);font-family:inherit;font-size:12.5px;outline:none;transition:border-color .15s ease,box-shadow .18s ease}
 .pc-search:focus{border-color:rgb(var(--pc-tint-rgb,232,200,64));box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.18)}
 .pc-toggle{color:var(--muted);font-size:11px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
@@ -2218,6 +2228,10 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
       An em-dash (—) means the script lacks a native equivalent for that sound.
     </div>
     <div class="pc-toolbar">
+      <div class="pc-lang" aria-label="Language context">
+        <span class="pc-lang-label">Language</span>
+        <select class="pc-lang-select" id="pc-lang-select"></select>
+      </div>
       <input class="pc-search" id="pc-search" placeholder="Search by sound, description (e.g. nasal, fricative)…" />
       <label class="pc-toggle"><input type="checkbox" id="pc-show-notes" checked /> Show notes</label>
       <div class="pc-cols" id="pc-cols" aria-label="Script columns"></div>
@@ -2226,6 +2240,8 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     <table class="pc-table"><thead><tr id="pc-consonants-head"></tr></thead><tbody id="pc-consonants-body"></tbody></table>
     <div class="pc-h2">Vowels <span class="pc-h2-caption" id="pc-cap-v"></span></div>
     <table class="pc-table"><thead><tr id="pc-vowels-head"></tr></thead><tbody id="pc-vowels-body"></tbody></table>
+    <div class="pc-h2">Diphthongs <span class="pc-h2-caption" id="pc-cap-d"></span></div>
+    <table class="pc-table"><thead><tr id="pc-diphthongs-head"></tr></thead><tbody id="pc-diphthongs-body"></tbody></table>
     <div class="pc-legend">
       <strong>How to read this chart.</strong> Latin values reflect English orthography where consistent, and use digraphs (<code>sh</code>, <code>th</code>) where a single letter doesn't suffice. Arabic shows isolated letter forms; vowel diacritics use <code>ـ</code> as a placeholder. Telugu consonants are shown with the inherent /a/; pure consonants require a virama (<code>్</code>). Retroflex, emphatic, and aspirated distinctions are preserved where the target script encodes them.
     </div>
@@ -7121,6 +7137,25 @@ const PC_PHONEMES = [
   { ipa: "uː", g: "v", desc: "long close back rounded vowel",     latin: "oo", arabic: "و", telugu: "ఊ" },
   { ipa: "eː", g: "v", desc: "long close-mid front vowel",        latin: "ē",  arabic: "—", telugu: "ఏ" },
   { ipa: "oː", g: "v", desc: "long close-mid back vowel",         latin: "ō",  arabic: "—", telugu: "ఓ" },
+
+  // ── Diphthongs ───────────────────────────────────────────────────────
+  // Phonemic gliding vowels. Curated set covers the diphthongs that
+  // appear in the languages currently represented in LANG_PHONEMES;
+  // PC_PHONEMES rows here carry the script-mapping data, while which
+  // ones surface for a given language comes from LANG_PHONEMES[code].diphs.
+  // Rows for diphthongs not in PC_PHONEMES are stub-filled at render
+  // time from the language inventory (see pcGetVisibleRows).
+  { ipa: "eɪ", g: "d", desc: "close-mid front → close front",     latin: "ay", arabic: "—", telugu: "—", note: "English 'day', 'rain'; the GOAT-cousin glide on the front axis." },
+  { ipa: "aɪ", g: "d", desc: "open front → close front",          latin: "i",  arabic: "—", telugu: "—", note: "English 'time', 'fly'." },
+  { ipa: "oʊ", g: "d", desc: "close-mid back → close back",       latin: "o",  arabic: "—", telugu: "—", note: "English 'low', 'go'. Often /əʊ/ in RP." },
+  { ipa: "aʊ", g: "d", desc: "open front → close back",           latin: "ow", arabic: "—", telugu: "—", note: "English 'now', 'house'." },
+  { ipa: "ɔɪ", g: "d", desc: "open-mid back → close front",       latin: "oy", arabic: "—", telugu: "—", note: "English 'boy', 'voice'." },
+  { ipa: "ai", g: "d", desc: "open central → close front",        latin: "ai", arabic: "ـَي", telugu: "ై", note: "Spanish 'aire'; Hindi/Telugu vowel sign ై." },
+  { ipa: "au", g: "d", desc: "open central → close back",         latin: "au", arabic: "ـَو", telugu: "ౌ", note: "Spanish 'aula'; Telugu vowel sign ౌ." },
+  { ipa: "ei", g: "d", desc: "close-mid front → close front",     latin: "ei", arabic: "—", telugu: "—", note: "Spanish 'rey', 'peine'." },
+  { ipa: "oi", g: "d", desc: "close-mid back → close front",      latin: "oi", arabic: "—", telugu: "—", note: "Spanish 'hoy', 'soy'." },
+  { ipa: "eu", g: "d", desc: "close-mid front → close back",      latin: "eu", arabic: "—", telugu: "—", note: "Spanish 'neutro', 'Europa'." },
+  { ipa: "ou", g: "d", desc: "close-mid back → close back",       latin: "ou", arabic: "—", telugu: "—", note: "Portuguese 'pouco'; some English dialects." },
 ];
 
 // Script-column registry. IPA + Description are fixed; everything in
@@ -7134,6 +7169,103 @@ const PC_COLUMNS = [
   { key: "arabic", label: "Arabic", tint: [212, 164, 84] },  // warmer amber / bronze
   { key: "telugu", label: "Telugu", tint: [218, 152, 92] }   // gold-red warmth
 ];
+
+// Language-context registry. "reference" shows every PC_PHONEMES row
+// (universal IPA); a specific code filters to that language's inventory
+// taken from LANG_PHONEMES (Coverage data). The chart's row set is then
+// the language's phoneme inventory rendered through the script-column
+// mapping defined on PC_PHONEMES. Diphthongs follow the same path: the
+// language picks which diphthongs surface, and PC_PHONEMES carries the
+// script-to-IPA reference data for the curated set; anything the
+// language uses that we don't have in PC_PHONEMES is stub-rendered at
+// display time with a derived description and em-dashes everywhere.
+let pcSelectedLang = "en";
+try {
+  const stored = localStorage.getItem("pc-lang");
+  if (stored) pcSelectedLang = stored;
+} catch(_) {}
+
+// Place / manner / vowel labels for composing a description from
+// LANG_PHONEMES inventory data when an entry isn't in PC_PHONEMES.
+const PC_HEIGHT_LABELS = ["close","close-mid","open-mid","open"];
+const PC_BACKNESS_LABELS = ["front","central","back"];
+function pcComposeConsDesc(c) {
+  const [_ipa, place, manner, voice] = c;
+  return `${voice ? "voiced" : "voiceless"} ${place || ""} ${manner || ""}`.trim().replace(/\s+/g," ");
+}
+function pcComposeVowelDesc(v) {
+  const [_ipa, h, b, rounded] = v;
+  const ht = PC_HEIGHT_LABELS[h] || "";
+  const bk = PC_BACKNESS_LABELS[b] || "";
+  return [ht, bk, rounded ? "rounded" : "unrounded", "vowel"].filter(Boolean).join(" ");
+}
+
+// Build the row set for the current language context. Returns an
+// array of phoneme objects in canonical shape (ipa/g/desc/latin/…).
+// Real data comes from PC_PHONEMES; entries present in the language
+// inventory but missing from PC_PHONEMES get a scaffolded row with
+// a composed description and "—" for every script column. The `_stub`
+// flag isn't used by render but is helpful in debugging.
+function pcGetVisibleRows() {
+  if (pcSelectedLang === "reference" || typeof LANG_PHONEMES === "undefined" || !LANG_PHONEMES[pcSelectedLang]) {
+    return PC_PHONEMES.slice();
+  }
+  const lang = LANG_PHONEMES[pcSelectedLang];
+  const consMap = new Map(lang.cons.map(c => [c[0], c]));
+  const vowelMap = new Map(lang.vowels.map(v => [v[0], v]));
+  const diphSet = new Set(lang.diphs || []);
+  // PC_PHONEMES rows that the language actually has.
+  const visible = PC_PHONEMES.filter(p => (
+    (p.g === "c" && consMap.has(p.ipa)) ||
+    (p.g === "v" && vowelMap.has(p.ipa)) ||
+    (p.g === "d" && diphSet.has(p.ipa))
+  ));
+  const havePc = new Set(visible.map(p => p.ipa + "|" + p.g));
+  // Stub-fill for inventory phonemes not yet curated in PC_PHONEMES.
+  consMap.forEach((c, ipa) => {
+    if (!havePc.has(ipa + "|c")) {
+      visible.push({ ipa, g: "c", desc: pcComposeConsDesc(c), latin: "—", arabic: "—", telugu: "—", _stub: true });
+    }
+  });
+  vowelMap.forEach((v, ipa) => {
+    if (!havePc.has(ipa + "|v")) {
+      visible.push({ ipa, g: "v", desc: pcComposeVowelDesc(v), latin: "—", arabic: "—", telugu: "—", _stub: true });
+    }
+  });
+  diphSet.forEach(ipa => {
+    if (!havePc.has(ipa + "|d")) {
+      visible.push({ ipa, g: "d", desc: "phonemic diphthong", latin: "—", arabic: "—", telugu: "—", _stub: true });
+    }
+  });
+  return visible;
+}
+
+function pcBuildLanguageSelector() {
+  const sel = document.getElementById("pc-lang-select");
+  if (!sel) return;
+  sel.innerHTML = "";
+  const refOpt = document.createElement("option");
+  refOpt.value = "reference";
+  refOpt.textContent = "Reference (universal IPA)";
+  sel.appendChild(refOpt);
+  if (typeof LANG_INVENTORIES !== "undefined") {
+    const codes = Object.keys(LANG_INVENTORIES).sort((a, b) =>
+      LANG_INVENTORIES[a].name.localeCompare(LANG_INVENTORIES[b].name)
+    );
+    codes.forEach(code => {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = LANG_INVENTORIES[code].name;
+      sel.appendChild(opt);
+    });
+  }
+  sel.value = pcSelectedLang;
+  sel.addEventListener("change", () => {
+    pcSelectedLang = sel.value;
+    try { localStorage.setItem("pc-lang", pcSelectedLang); } catch(_) {}
+    pcRender();
+  });
+}
 const PC_COL_KEYS = new Set(PC_COLUMNS.map(c => c.key));
 let pcSelectedCols = new Set(PC_COLUMNS.map(c => c.key));
 try {
@@ -7207,7 +7339,7 @@ function pcBuildHeaders() {
       .filter(c => pcSelectedCols.has(c.key))
       .map(c => `<th class="pc-col-script-h" data-script="${c.key}">${c.label}</th>`)
       .join("");
-  ["pc-consonants-head","pc-vowels-head"].forEach(id => {
+  ["pc-consonants-head","pc-vowels-head","pc-diphthongs-head"].forEach(id => {
     const tr = document.getElementById(id);
     if (tr) tr.innerHTML = headHtml;
   });
@@ -7236,7 +7368,8 @@ function pcRender() {
   const showNotes = document.getElementById("pc-show-notes").checked;
   const cBody = document.getElementById("pc-consonants-body");
   const vBody = document.getElementById("pc-vowels-body");
-  cBody.innerHTML = ""; vBody.innerHTML = "";
+  const dBody = document.getElementById("pc-diphthongs-body");
+  cBody.innerHTML = ""; vBody.innerHTML = ""; if (dBody) dBody.innerHTML = "";
   const activeCols = PC_COLUMNS.filter(c => pcSelectedCols.has(c.key));
   // Search still matches against ALL script fields and the note even
   // when their columns are hidden — keeps "find by Arabic letter" or
@@ -7245,9 +7378,11 @@ function pcRender() {
   // One row per phoneme. The note (when present + toggle on) is folded
   // into the description cell as an italic annotation line, not a
   // separate full-width row — keeps every phoneme to a single tabular
-  // line and roughly halves vertical density.
+  // line and roughly halves vertical density. Row set is filtered by
+  // the active language context — see pcGetVisibleRows.
+  const rows = pcGetVisibleRows();
   let prevConsManner = null;
-  PC_PHONEMES.filter(match).forEach(p => {
+  rows.filter(match).forEach(p => {
     const tr = document.createElement("tr");
     const cells = activeCols.map(c => {
       const v = p[c.key];
@@ -7267,7 +7402,8 @@ function pcRender() {
       `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
       `<td class="pc-col-desc"><div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
       cells;
-    (p.g === "c" ? cBody : vBody).appendChild(tr);
+    const targetBody = p.g === "c" ? cBody : (p.g === "d" ? dBody : vBody);
+    if (targetBody) targetBody.appendChild(tr);
   });
 }
 function pcToast(msg) {
@@ -7288,6 +7424,7 @@ document.getElementById("panel-comparison").addEventListener("click", (e) => {
 });
 document.getElementById("pc-search").addEventListener("input", pcRender);
 document.getElementById("pc-show-notes").addEventListener("change", pcRender);
+pcBuildLanguageSelector();
 pcBuildColumnSelector();
 pcBuildHeaders();
 pcUpdateCaption();
