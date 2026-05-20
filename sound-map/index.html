@@ -90,15 +90,25 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-search:focus{border-color:rgb(var(--pc-tint-rgb,232,200,64));box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.18)}
 .pc-toggle{color:var(--muted);font-size:11px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
 .pc-toggle input{cursor:pointer;accent-color:rgb(var(--pc-tint-rgb,232,200,64))}
-/* Compact column selector — picks which script columns appear in the
-   table. IPA + Description always stay; this only toggles the third+
-   columns. Designed to sit inline with the search/notes toggle. */
+/* Compact column selector — picks which LANGUAGE columns appear in
+   the table. IPA + Description always stay; this only toggles the
+   third+ columns. Designed to sit inline with the search/notes
+   toggle. Planned/scaffolded languages render in a separate
+   subgroup and aren't toggleable. */
 .pc-cols{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap;margin-left:auto}
 .pc-cols-label{font-size:9.5px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;font-weight:600;margin-right:2px}
 .pc-col-toggle{background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;color:var(--muted);cursor:pointer;font-size:10.5px;font-family:inherit;padding:3px 9px;transition:background .8s ease,border-color .8s ease,color .8s ease,box-shadow .8s ease;user-select:none}
 .pc-col-toggle:hover{color:var(--text);border-color:rgba(var(--pc-tint-rgb,232,200,64),.40);background:rgba(var(--pc-tint-rgb,232,200,64),.05)}
 .pc-col-toggle.active{background:rgba(var(--pc-tint-rgb,232,200,64),.14);border-color:rgb(var(--pc-tint-rgb,232,200,64));color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:600;box-shadow:0 0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.10)}
 .pc-col-toggle.active:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.22)}
+/* Planned languages — visible but dormant. Dashed border + italic +
+   .55 opacity signals "scaffolded; not toggleable" without making it
+   feel broken. cursor:not-allowed and aria-disabled keep the affordance
+   honest. Hover lifts opacity slightly so it still feels alive — the
+   codex acknowledges these are future systems, not dead ones. */
+.pc-col-toggle.scaffold{border-style:dashed;font-style:italic;opacity:.55;cursor:not-allowed}
+.pc-col-toggle.scaffold:hover{opacity:.78;border-color:rgba(var(--pc-tint-rgb,232,200,64),.30);background:var(--surf)}
+.pc-cols-sublabel{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-left:6px;padding-left:8px;border-left:1px solid var(--bdr);align-self:center}
 /* Chapter header — pc-h2 reads as a codex chapter title. § ornament
    marks the start; sticky so the chapter label persists while you
    scroll its rows. The Vowels chapter (i.e. the second pc-h2) gets
@@ -2212,20 +2222,21 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 
 <!-- ══════════════════════════════════════════════════════════
      COMPARISON  (formerly nested under Coverage as
-     "IPA Chart · Scripts Comparison" — promoted to its own
-     top-level tab so each subsystem reads with a single voice.)
+     "IPA Chart · Scripts Comparison"; promoted to its own
+     top-level tab and reframed around language columns rather
+     than fixed Latin/Arabic/Telugu script columns.)
      ══════════════════════════════════════════════════════════ -->
 <div id="panel-comparison" role="tabpanel">
   <div class="pc-scroll">
     <header class="comp-hero">
       <div class="comp-hero-eyebrow">Sound Lab · Reference</div>
-      <h2 class="comp-hero-title">Phoneme · Script Comparison</h2>
-      <p class="comp-hero-sub">This reference system maps phonemes across writing systems and orthographic traditions. Search for a sound or feature, toggle script columns, and click any cell to copy its glyph.</p>
+      <h2 class="comp-hero-title">Phoneme · Language Comparison</h2>
+      <p class="comp-hero-sub">A comparative reference for how each language writes the phonemes in its inventory. Pick a focus language to filter the row set; toggle additional languages to add comparison columns; click any cell to copy its grapheme.</p>
     </header>
     <div class="pc-intro">
       Rows are phonemes in the <strong>International Phonetic Alphabet</strong> (IPA).
-      Columns show the typical grapheme in each script.
-      An em-dash (—) means the script lacks a native equivalent for that sound.
+      Columns are <strong>languages</strong>; each cell shows how that language writes the row's phoneme.
+      An em-dash (—) means the language doesn't have that phoneme — or its orthography hasn't been mapped in this codex yet.
     </div>
     <div class="pc-toolbar">
       <div class="pc-lang" aria-label="Language context">
@@ -2234,7 +2245,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
       </div>
       <input class="pc-search" id="pc-search" placeholder="Search by sound, description (e.g. nasal, fricative)…" />
       <label class="pc-toggle"><input type="checkbox" id="pc-show-notes" checked /> Show notes</label>
-      <div class="pc-cols" id="pc-cols" aria-label="Script columns"></div>
+      <div class="pc-cols" id="pc-cols" aria-label="Comparison languages"></div>
     </div>
     <div class="pc-h2">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
     <table class="pc-table"><thead><tr id="pc-consonants-head"></tr></thead><tbody id="pc-consonants-body"></tbody></table>
@@ -2243,7 +2254,11 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     <div class="pc-h2">Diphthongs <span class="pc-h2-caption" id="pc-cap-d"></span></div>
     <table class="pc-table"><thead><tr id="pc-diphthongs-head"></tr></thead><tbody id="pc-diphthongs-body"></tbody></table>
     <div class="pc-legend">
-      <strong>How to read this chart.</strong> Latin values reflect English orthography where consistent, and use digraphs (<code>sh</code>, <code>th</code>) where a single letter doesn't suffice. Arabic shows isolated letter forms; vowel diacritics use <code>ـ</code> as a placeholder. Telugu consonants are shown with the inherent /a/; pure consonants require a virama (<code>్</code>). Retroflex, emphatic, and aspirated distinctions are preserved where the target script encodes them.
+      <strong>How to read this chart.</strong>
+      A cell shows the column-language's typical grapheme for the row's phoneme; an em-dash (—) means the language doesn't have that phoneme in its inventory.
+      Latin-script languages that share a writing system fall back to a common reference orthography where no language-specific grapheme is curated — Spanish ⟨ñ⟩, French ⟨gn⟩, Portuguese ⟨nh⟩, Hawaiian ⟨ʻokina⟩, and other distinctive conventions appear where they've been mapped.
+      Arabic shows isolated letter forms; vowel diacritics use <code>ـ</code> as a placeholder. Telugu consonants carry the inherent /a/; pure consonants require a virama (<code>్</code>).
+      Languages tagged <em>Planned</em> appear in the picker but cannot yet be added as comparison columns — their script layer is part of the next expansion of the codex.
     </div>
   </div>
   <div class="pc-toast" id="pc-toast"></div>
@@ -7188,6 +7203,12 @@ const PC_PHONEMES = [
 //             the cell data is the missing piece. The inventory check
 //             still applies — adding script data will make rows light
 //             up immediately.
+// `scaffolded: true` marks languages whose script-field data on
+// PC_PHONEMES doesn't exist yet (Devanagari, Cyrillic, Kana, Hanzi,
+// Hangul). They appear in the Compare row as planned/dormant pills
+// — not toggleable into the table, but visible so the user can see
+// what's coming. Adding the underlying script-field data later (e.g.
+// devanagari: "क" on each row) and flipping the flag turns them on.
 const PC_LANGUAGES = [
   { key: "en",  label: "English",    script: "latin",      tint: [232, 200, 64] },
   { key: "es",  label: "Spanish",    script: "latin",      tint: [222, 184, 80] },
@@ -7200,11 +7221,11 @@ const PC_LANGUAGES = [
   { key: "haw", label: "Hawaiian",   script: "latin",      tint: [124, 184, 200] },
   { key: "ar",  label: "Arabic",     script: "arabic",     tint: [212, 164, 84] },
   { key: "te",  label: "Telugu",     script: "telugu",     tint: [218, 152, 92] },
-  { key: "hi",  label: "Hindi",      script: "devanagari", tint: [196, 116, 88] },
-  { key: "ru",  label: "Russian",    script: "cyrillic",   tint: [188, 168, 208] },
-  { key: "ja",  label: "Japanese",   script: "kana",       tint: [220, 184, 220] },
-  { key: "zh",  label: "Mandarin",   script: "hanzi",      tint: [232, 132, 108] },
-  { key: "ko",  label: "Korean",     script: "hangul",     tint: [188, 200, 232] }
+  { key: "hi",  label: "Hindi",      script: "devanagari", tint: [196, 116, 88], scaffolded: true },
+  { key: "ru",  label: "Russian",    script: "cyrillic",   tint: [188, 168, 208], scaffolded: true },
+  { key: "ja",  label: "Japanese",   script: "kana",       tint: [220, 184, 220], scaffolded: true },
+  { key: "zh",  label: "Mandarin",   script: "hanzi",      tint: [232, 132, 108], scaffolded: true },
+  { key: "ko",  label: "Korean",     script: "hangul",     tint: [188, 200, 232], scaffolded: true }
 ];
 
 // Language-context registry. "reference" shows every PC_PHONEMES row
@@ -7303,14 +7324,18 @@ function pcBuildLanguageSelector() {
     pcRender();
   });
 }
-const PC_LANG_KEYS = new Set(PC_LANGUAGES.map(l => l.key));
+// Only NON-scaffolded keys can land in pcSelectedLangCols. The
+// scaffolded list is decorative — the language exists in the registry
+// (so a pill renders for it) but it can't be toggled into the table
+// until its script-field data is curated on PC_PHONEMES.
+const PC_LANG_KEYS_LIVE = new Set(PC_LANGUAGES.filter(l => !l.scaffolded).map(l => l.key));
 let pcSelectedLangCols = new Set(["en", "ar", "te"]);
 try {
   const stored = localStorage.getItem("pc-lang-cols");
   if (stored) {
     const parsed = JSON.parse(stored);
     if (Array.isArray(parsed)) {
-      const filtered = parsed.filter(k => PC_LANG_KEYS.has(k));
+      const filtered = parsed.filter(k => PC_LANG_KEYS_LIVE.has(k));
       if (filtered.length > 0) pcSelectedLangCols = new Set(filtered);
     }
   }
@@ -7324,7 +7349,8 @@ function pcBuildLangColumnSelector() {
   label.className = "pc-cols-label";
   label.textContent = "Compare";
   wrap.appendChild(label);
-  PC_LANGUAGES.forEach(l => {
+  // Live, toggleable pills first.
+  PC_LANGUAGES.filter(l => !l.scaffolded).forEach(l => {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "pc-col-toggle" + (pcSelectedLangCols.has(l.key) ? " active" : "");
@@ -7334,10 +7360,33 @@ function pcBuildLangColumnSelector() {
     btn.addEventListener("click", () => pcToggleLangCol(l.key));
     wrap.appendChild(btn);
   });
+  // Then the "Planned" subgroup — visible so the codex feels evolving,
+  // but visually distinct and not toggleable into the live table.
+  const planned = PC_LANGUAGES.filter(l => l.scaffolded);
+  if (planned.length) {
+    const sub = document.createElement("span");
+    sub.className = "pc-cols-sublabel";
+    sub.textContent = "Planned";
+    wrap.appendChild(sub);
+    planned.forEach(l => {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "pc-col-toggle scaffold";
+      btn.textContent = l.label;
+      btn.dataset.col = l.key;
+      btn.disabled = true;
+      btn.setAttribute("aria-disabled", "true");
+      btn.title = `${l.label} — script layer (${l.script}) not yet mapped`;
+      wrap.appendChild(btn);
+    });
+  }
 }
 
 function pcToggleLangCol(key) {
-  if (!PC_LANG_KEYS.has(key)) return;
+  // Hard gate on scaffolded keys: prevents accidental promotion via
+  // a stale stored selection or any future code path. Live keys go
+  // through as before.
+  if (!PC_LANG_KEYS_LIVE.has(key)) return;
   if (pcSelectedLangCols.has(key)) {
     if (pcSelectedLangCols.size === 1) return;  // keep at least one column
     pcSelectedLangCols.delete(key);
