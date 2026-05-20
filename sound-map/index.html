@@ -132,7 +132,12 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    chapter mark above. */
 .pc-chapter-subtitle{font-size:10px;font-style:italic;color:var(--muted);letter-spacing:.02em;margin:0 10px 6px 10px;padding-left:8px;border-left:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);opacity:.82;line-height:1.45;transition:border-color .8s ease}
 
-.pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
+/* Table sizes to its column-width sum, not the panel width. With few
+   comparison languages active the table stays compact instead of
+   stretching cells into spreadsheet emptiness. --pc-script-col-w is
+   set from JS based on active-column count so 1–2 columns get wider
+   cells (200/160px) and 3+ get the standard codex width (130px). */
+.pc-table{width:auto;max-width:100%;table-layout:fixed;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin:0 0 6px;font-variant-numeric:tabular-nums}
 .pc-table thead th{text-align:left;padding:5px 10px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:rgba(var(--pc-tint-rgb,232,200,64),.72);background:linear-gradient(180deg,var(--surf2),var(--surf));position:sticky;top:0;z-index:2;transition:color .8s ease,border-color .8s ease}
 .pc-table thead th:nth-child(n+3){text-align:center}
 .pc-table tbody td{padding:3px 10px;border-bottom:1px solid rgba(58,66,86,.55);vertical-align:middle;transition:background .12s ease;line-height:1.2}
@@ -148,24 +153,33 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 /* IPA = anchor column. The phoneme is the identity of its row; cell
    gets a thin left accent rule, a soft horizontal wash from the
    active tint, and a slightly bigger glyph with a low-amplitude glow. */
-.pc-col-ipa{width:64px;padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
+.pc-col-ipa, .pc-table thead th.pc-col-ipa{width:62px}
+.pc-col-ipa{padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
 .pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.25px;font-variant-ligatures:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 6px rgba(var(--pc-tint-rgb,232,200,64),.16),0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.25);transition:color .8s ease,text-shadow .8s ease}
 
-/* Description column — secondary, with the optional note folded in
-   below as a gold-bar annotation line. No more separate note row.
-   On manner-shift rows in the consonants chapter, a tiny marginal
-   tag ("PLOSIVE", "FRICATIVE", …) sits above the desc text — quiet
-   scholarly chapter mark for each manner group. */
-.pc-col-desc{color:var(--muted);font-size:10.5px;width:230px;line-height:1.4;font-style:normal}
-.pc-col-desc .pc-desc-text{font-style:italic}
-.pc-col-desc .pc-note-inline{margin-top:2px;padding-left:7px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.45);font-size:10px;font-style:italic;color:#9aa3b0;line-height:1.45;opacity:.95;transition:border-color .8s ease}
+/* Description column — example word is now the primary content;
+   the technical phonological description sits beneath as small
+   italic subtext. Order inside the cell:
+     manner-tag (only on group-boundary rows)
+     example word          ← primary anchor (12px, plain)
+     technical description ← secondary (9.5px italic muted)
+     note (gold-bar)       ← tertiary, when toggle on */
+.pc-col-desc, .pc-table thead th.pc-col-desc{width:138px}
+.pc-col-desc{color:var(--muted);line-height:1.35;font-style:normal}
+.pc-col-desc .pc-example{font-size:12px;color:var(--text);font-weight:500;line-height:1.2;letter-spacing:.01em;margin:0 0 1px}
+.pc-col-desc .pc-desc-text{font-size:9.5px;font-style:italic;color:#7d8390;line-height:1.35;letter-spacing:.01em;opacity:.85}
+.pc-col-desc .pc-note-inline{margin-top:3px;padding-left:7px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.45);font-size:9.5px;font-style:italic;color:#9aa3b0;line-height:1.4;opacity:.92;transition:border-color .8s ease}
 .pc-col-desc .pc-manner-tag{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:7.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.65);margin:0 0 2px;line-height:1;font-style:normal;transition:color .8s ease}
 
 /* Script columns — parallel realizations of the same phoneme. A
    thin inter-column rule turns adjacent scripts from "cells in a row"
    into "lanes side by side"; a stronger border separates description
-   from the first script lane so the transition reads as deliberate. */
-.pc-col-script{text-align:center;cursor:pointer;font-size:20px;transition:background .12s ease;line-height:1;padding-left:8px;padding-right:8px}
+   from the first script lane so the transition reads as deliberate.
+   Column width is driven by --pc-script-col-w, set from JS based on
+   how many comparison languages are active — fewer columns get wider
+   cells so the comparison still feels substantial. */
+.pc-col-script, .pc-table thead th.pc-col-script-h{width:var(--pc-script-col-w,130px)}
+.pc-col-script{text-align:center;cursor:pointer;font-size:20px;transition:background .12s ease,width .25s ease;line-height:1;padding-left:8px;padding-right:8px}
 .pc-col-script:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.10)}
 .pc-col-script.copied{background:var(--green);color:#111}
 .pc-col-script.empty{color:#3a4256;font-size:14px;font-style:italic;cursor:default}
@@ -7192,6 +7206,58 @@ const PC_PHONEMES = [
   { ipa: "ou", g: "d", desc: "close-mid back → close back",       latin: "ou", arabic: "—", telugu: "—", note: "Portuguese 'pouco'; some English dialects." },
 ];
 
+// Example-word lookup. Keyed by IPA; the value is a tiny anchor word
+// (or short phrase) that makes the phoneme audible at a glance. This
+// is the primary content of the desc column now — the technical
+// description ("voiceless bilabial plosive") still appears below it
+// as small italic subtext, but the eye lands on the example first.
+// Examples lean English where available; for sounds English doesn't
+// have, we use the language that most commonly anchors that phoneme
+// in linguistic literature (Spanish for /ɲ/, Hindi for retroflexes,
+// Arabic for pharyngeals, etc.).
+const PC_EXAMPLES = {
+  // Plosives
+  "p":  "pin",       "b":  "bin",
+  "t":  "ten",       "d":  "den",
+  "ʈ":  "Hindi ṭ",   "ɖ":  "Hindi ḍ",
+  "k":  "key",       "ɡ":  "go",
+  "q":  "Arabic ق",  "ʔ":  "uh-oh",
+  // Nasals
+  "m":  "me",        "n":  "no",
+  "ɳ":  "Telugu ణ",  "ɲ":  "Spanish ñ", "ŋ":  "sing",
+  // Fricatives
+  "f":  "fish",      "v":  "vat",
+  "θ":  "thin",      "ð":  "this",
+  "s":  "sun",       "z":  "zoo",
+  "ʃ":  "ship",      "ʒ":  "measure",
+  "ʂ":  "Hindi ष",   "x":  "loch",      "ɣ":  "Spanish g",
+  "ħ":  "Arabic ح",  "ʕ":  "Arabic ع",  "h":  "hat",
+  // Affricates
+  "tʃ": "church",    "dʒ": "judge",
+  // Approximants + liquids
+  "l":  "lip",       "ɭ":  "Tamil ḷ",
+  "r":  "trill r",   "j":  "yes",       "w":  "win",
+  // Monophthongs (short)
+  "i":  "see",       "ɪ":  "sit",
+  "e":  "Spanish é", "ɛ":  "bed",
+  "æ":  "cat",       "a":  "Spanish a",
+  "ɑ":  "father",    "ʌ":  "cup",
+  "ə":  "sofa",
+  "o":  "Spanish o", "ʊ":  "put",
+  "u":  "boot",
+  // Long monophthongs
+  "aː": "calm",      "iː": "see (long)",
+  "uː": "boot (long)","eː": "Spanish é",
+  "oː": "Spanish ó",
+  // Diphthongs
+  "eɪ": "day",       "aɪ": "fly",
+  "oʊ": "low",       "aʊ": "now",
+  "ɔɪ": "boy",
+  "ai": "Spanish aire", "au": "Spanish aula",
+  "ei": "Spanish rey",  "oi": "Spanish hoy",
+  "eu": "Spanish neutro","ou": "Portuguese pouco"
+};
+
 // Language-column registry. IPA + Description are fixed; every entry
 // here is a togglable language column. Each entry binds a language
 // (key + label) to the writing-system field on PC_PHONEMES it falls
@@ -7462,6 +7528,13 @@ function pcUpdateAtmosphere() {
   g = Math.round(g / active.length);
   b = Math.round(b / active.length);
   panel.style.setProperty("--pc-tint-rgb", `${r},${g},${b}`);
+  // Adaptive script-column width — fewer columns get more breathing
+  // room per cell so the comparison still feels substantial. With
+  // table-layout:fixed and width:auto, the table sums all column
+  // widths, so this directly shrinks/grows the whole table.
+  const n = active.length;
+  const colW = n <= 1 ? 200 : n === 2 ? 168 : n === 3 ? 144 : n === 4 ? 128 : 116;
+  panel.style.setProperty("--pc-script-col-w", colW + "px");
 }
 
 function pcBuildHeaders() {
@@ -7539,9 +7612,12 @@ function pcRender() {
     }
     const noteHtml = (showNotes && p.note)
       ? `<div class="pc-note-inline">${p.note}</div>` : "";
+    const example = PC_EXAMPLES[p.ipa];
+    const exampleHtml = example
+      ? `<div class="pc-example">${example}</div>` : "";
     tr.innerHTML =
       `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
-      `<td class="pc-col-desc">${mannerTagHtml}<div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
+      `<td class="pc-col-desc">${mannerTagHtml}${exampleHtml}<div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
       cells;
     const targetBody = p.g === "c" ? cBody : (p.g === "d" ? dBody : vBody);
     if (targetBody) targetBody.appendChild(tr);
