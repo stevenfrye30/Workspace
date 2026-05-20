@@ -109,16 +109,28 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-toggle.scaffold{border-style:dashed;font-style:italic;opacity:.55;cursor:not-allowed}
 .pc-col-toggle.scaffold:hover{opacity:.78;border-color:rgba(var(--pc-tint-rgb,232,200,64),.30);background:var(--surf)}
 .pc-cols-sublabel{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-left:6px;padding-left:8px;border-left:1px solid var(--bdr);align-self:center}
-/* Chapter header — pc-h2 reads as a codex chapter title. § ornament
-   marks the start; sticky so the chapter label persists while you
-   scroll its rows. The Vowels chapter (i.e. the second pc-h2) gets
-   a breathier top margin via the adjacent-sibling rule below — a
-   proper chapter break — while the first chapter sits tight under
-   the toolbar (docked into the deck). */
-.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin:6px 0 3px;padding:6px 10px 4px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.32);display:flex;align-items:baseline;justify-content:space-between;background:var(--bg);position:sticky;top:0;z-index:1;gap:10px;transition:color .8s ease,border-color .8s ease}
+/* Chapter header — pc-h2 reads as a codex chapter title. Per-chapter
+   ornaments below distinguish the three phonological sections; sticky
+   so the chapter label persists while you scroll the rows beneath it.
+   A semi-transparent background + backdrop-filter gives the sticky
+   header a faint frosted feel as content scrolls past — scholarly
+   depth without ornament. */
+.pc-h2{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:rgb(var(--pc-tint-rgb,232,200,64));margin:6px 0 3px;padding:6px 10px 4px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.32);display:flex;align-items:baseline;justify-content:space-between;background:rgba(13,13,13,.86);backdrop-filter:blur(8px) saturate(125%);-webkit-backdrop-filter:blur(8px) saturate(125%);position:sticky;top:0;z-index:1;gap:10px;transition:color .8s ease,border-color .8s ease}
 .pc-h2::before{content:"§";font-family:Georgia,serif;font-size:13px;font-weight:400;font-style:italic;color:rgba(var(--pc-tint-rgb,232,200,64),.6);margin-right:8px;letter-spacing:0;text-transform:none;line-height:1;transition:color .8s ease}
-.pc-h2 + .pc-table + .pc-h2{margin-top:18px}
+/* Editorial ornaments — three traditional marks for three chapters.
+   §  pilcrow-cousin for prose sections (consonants)
+   ¶  paragraph-mark (vowels)
+   ※  reference / asterism (diphthongs) */
+.pc-h2-cons::before{content:"§"}
+.pc-h2-vowels::before{content:"¶"}
+.pc-h2-diphs::before{content:"※"}
+.pc-h2 + .pc-chapter-subtitle + .pc-table + .pc-h2{margin-top:18px}
 .pc-h2-caption{color:rgba(var(--pc-tint-rgb,232,200,64),.55);font-size:9px;font-weight:400;font-style:italic;letter-spacing:.04em;text-transform:none;transition:color .8s ease}
+/* Chapter subtitle — a small marginal annotation under each h2
+   describing what the chapter contains. Reads as an editor's note
+   in a scholarly volume; tiny gold tick on the left ties it to the
+   chapter mark above. */
+.pc-chapter-subtitle{font-size:10px;font-style:italic;color:var(--muted);letter-spacing:.02em;margin:0 10px 6px 10px;padding-left:8px;border-left:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);opacity:.82;line-height:1.45;transition:border-color .8s ease}
 
 .pc-table{width:100%;border-collapse:collapse;background:var(--surf);border:1px solid var(--bdr);margin-bottom:6px;font-variant-numeric:tabular-nums}
 .pc-table thead th{text-align:left;padding:5px 10px;border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.22);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.10em;color:rgba(var(--pc-tint-rgb,232,200,64),.72);background:linear-gradient(180deg,var(--surf2),var(--surf));position:sticky;top:0;z-index:2;transition:color .8s ease,border-color .8s ease}
@@ -140,10 +152,14 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.25px;font-variant-ligatures:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 6px rgba(var(--pc-tint-rgb,232,200,64),.16),0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.25);transition:color .8s ease,text-shadow .8s ease}
 
 /* Description column — secondary, with the optional note folded in
-   below as a gold-bar annotation line. No more separate note row. */
+   below as a gold-bar annotation line. No more separate note row.
+   On manner-shift rows in the consonants chapter, a tiny marginal
+   tag ("PLOSIVE", "FRICATIVE", …) sits above the desc text — quiet
+   scholarly chapter mark for each manner group. */
 .pc-col-desc{color:var(--muted);font-size:10.5px;width:230px;line-height:1.4;font-style:normal}
 .pc-col-desc .pc-desc-text{font-style:italic}
 .pc-col-desc .pc-note-inline{margin-top:2px;padding-left:7px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.45);font-size:10px;font-style:italic;color:#9aa3b0;line-height:1.45;opacity:.95;transition:border-color .8s ease}
+.pc-col-desc .pc-manner-tag{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:7.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.65);margin:0 0 2px;line-height:1;font-style:normal;transition:color .8s ease}
 
 /* Script columns — parallel realizations of the same phoneme. A
    thin inter-column rule turns adjacent scripts from "cells in a row"
@@ -2247,11 +2263,14 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
       <label class="pc-toggle"><input type="checkbox" id="pc-show-notes" checked /> Show notes</label>
       <div class="pc-cols" id="pc-cols" aria-label="Comparison languages"></div>
     </div>
-    <div class="pc-h2">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
+    <div class="pc-h2 pc-h2-cons">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
+    <div class="pc-chapter-subtitle">Stops, nasals, fricatives, and continuants — ordered roughly by place of articulation within each manner.</div>
     <table class="pc-table"><thead><tr id="pc-consonants-head"></tr></thead><tbody id="pc-consonants-body"></tbody></table>
-    <div class="pc-h2">Vowels <span class="pc-h2-caption" id="pc-cap-v"></span></div>
+    <div class="pc-h2 pc-h2-vowels">Vowels <span class="pc-h2-caption" id="pc-cap-v"></span></div>
+    <div class="pc-chapter-subtitle">Monophthongs — vowel qualities by height, backness, and rounding.</div>
     <table class="pc-table"><thead><tr id="pc-vowels-head"></tr></thead><tbody id="pc-vowels-body"></tbody></table>
-    <div class="pc-h2">Diphthongs <span class="pc-h2-caption" id="pc-cap-d"></span></div>
+    <div class="pc-h2 pc-h2-diphs">Diphthongs <span class="pc-h2-caption" id="pc-cap-d"></span></div>
+    <div class="pc-chapter-subtitle">Gliding vowels — two vowel qualities pronounced as a single phoneme.</div>
     <table class="pc-table"><thead><tr id="pc-diphthongs-head"></tr></thead><tbody id="pc-diphthongs-body"></tbody></table>
     <div class="pc-legend">
       <strong>How to read this chart.</strong>
@@ -7504,17 +7523,25 @@ function pcRender() {
       return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}" data-script="${l.script}" data-lang="${l.key}">${v}</td>`;
     }).join("");
     tr.dataset.ipa = p.ipa;
+    let mannerTagHtml = "";
     if (p.g === "c") {
       const m = pcMannerOf(p.desc);
       tr.dataset.manner = m;
-      if (prevConsManner !== null && m !== prevConsManner) tr.classList.add("manner-shift");
+      // First consonant row gets a tag (chapter mark for the first
+      // manner group); subsequent boundary rows also get one PLUS the
+      // .manner-shift separator border above. Same-manner consecutive
+      // rows get neither — keeps the rhythm calm.
+      if (prevConsManner === null || m !== prevConsManner) {
+        if (prevConsManner !== null) tr.classList.add("manner-shift");
+        mannerTagHtml = `<div class="pc-manner-tag">${m}</div>`;
+      }
       prevConsManner = m;
     }
     const noteHtml = (showNotes && p.note)
       ? `<div class="pc-note-inline">${p.note}</div>` : "";
     tr.innerHTML =
       `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
-      `<td class="pc-col-desc"><div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
+      `<td class="pc-col-desc">${mannerTagHtml}<div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
       cells;
     const targetBody = p.g === "c" ? cBody : (p.g === "d" ? dBody : vBody);
     if (targetBody) targetBody.appendChild(tr);
