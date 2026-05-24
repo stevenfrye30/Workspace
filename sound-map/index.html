@@ -157,19 +157,48 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-ipa{padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
 .pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.25px;font-variant-ligatures:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 6px rgba(var(--pc-tint-rgb,232,200,64),.16),0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.25);transition:color .8s ease,text-shadow .8s ease}
 
-/* Description column — example word is now the primary content;
-   the technical phonological description sits beneath as small
-   italic subtext. Order inside the cell:
-     manner-tag (only on group-boundary rows)
+/* Description column — at rest the cell carries only the manner-tag
+   (boundary rows only) and a single anchor example word. The deeper
+   reference layer (articulation, scholarly note, eventually dialect /
+   orthographic annotation) is folded into a per-row detail row that
+   unfurls beneath when the row is opened — see .pc-detail-row below.
+     manner-tag (group-boundary rows only)
      example word          ← primary anchor (12px, plain)
-     technical description ← secondary (9.5px italic muted)
-     note (gold-bar)       ← tertiary, when toggle on */
+     ⁝ mark on right edge  ← marginal affordance for the reference layer */
 .pc-col-desc, .pc-table thead th.pc-col-desc{width:138px}
-.pc-col-desc{color:var(--muted);line-height:1.35;font-style:normal}
+.pc-col-desc{color:var(--muted);line-height:1.35;font-style:normal;position:relative;padding-right:18px}
 .pc-col-desc .pc-example{font-size:12px;color:var(--text);font-weight:500;line-height:1.2;letter-spacing:.01em;margin:0 0 1px}
-.pc-col-desc .pc-desc-text{font-size:9.5px;font-style:italic;color:#7d8390;line-height:1.35;letter-spacing:.01em;opacity:.85}
-.pc-col-desc .pc-note-inline{margin-top:3px;padding-left:7px;border-left:2px solid rgba(var(--pc-tint-rgb,232,200,64),.45);font-size:9.5px;font-style:italic;color:#9aa3b0;line-height:1.4;opacity:.92;transition:border-color .8s ease}
 .pc-col-desc .pc-manner-tag{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:7.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.65);margin:0 0 2px;line-height:1;font-style:normal;transition:color .8s ease}
+
+/* Marginal mark — quiet typographic affordance on the right edge of
+   the description cell. ⁝ (vertical four-dot punctuation) is an old
+   manuscript mark, chosen to read as scholarly punctuation rather
+   than UI chrome. Three states: rest → hover → expanded fade from
+   muted into the active tint. The whole desc cell is the click
+   target; the mark is the visual anchor, not a button-sized hit area. */
+.pc-data-row .pc-col-desc{cursor:pointer}
+.pc-desc-mark{position:absolute;right:7px;top:50%;transform:translateY(-50%);font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:11px;line-height:1;color:var(--muted);opacity:.32;transition:opacity .18s ease,color .35s ease;pointer-events:none;user-select:none}
+.pc-data-row:hover .pc-desc-mark{opacity:.78;color:rgba(var(--pc-tint-rgb,232,200,64),.85)}
+.pc-data-row.pc-expanded .pc-desc-mark{opacity:1;color:rgb(var(--pc-tint-rgb,232,200,64))}
+.pc-show-all-details .pc-desc-mark{opacity:.55;color:rgba(var(--pc-tint-rgb,232,200,64),.55)}
+
+/* Detail row — the reference layer for a single phoneme. Spans the
+   full table; reads as a marginal annotation rather than a second
+   tabular row. Indented to align under the description column; thin
+   left tint rule mirrors the chapter-subtitle treatment so the codex
+   shares one annotation vocabulary. Hidden by default; revealed when
+   its data row is .pc-expanded, or while the table is in
+   .pc-show-all-details mode. Faint background tint lets the open
+   row read as a single thicker stratum without a hard divider. */
+.pc-detail-row{display:none}
+.pc-detail-row.pc-detail-open,
+.pc-show-all-details .pc-detail-row{display:table-row}
+.pc-detail-cell{padding:5px 14px 9px 80px;border-bottom:1px solid rgba(58,66,86,.55);background:rgba(var(--pc-tint-rgb,232,200,64),.025);transition:background .8s ease}
+.pc-detail-block{font-size:11px;font-style:italic;color:#9aa3b0;line-height:1.5;letter-spacing:.01em;padding-left:10px;border-left:1px solid rgba(var(--pc-tint-rgb,232,200,64),.30);max-width:780px;transition:border-color .8s ease}
+.pc-detail-block + .pc-detail-block{margin-top:4px}
+.pc-detail-block.pc-detail-note{color:#aab2bf;border-left-color:rgba(var(--pc-tint-rgb,232,200,64),.55)}
+.pc-data-row.pc-expanded td{background:rgba(var(--pc-tint-rgb,232,200,64),.05)}
+.pc-data-row.pc-expanded td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.20),rgba(var(--pc-tint-rgb,232,200,64),.04) 88%)}
 
 /* Script columns — parallel realizations of the same phoneme. A
    thin inter-column rule turns adjacent scripts from "cells in a row"
@@ -206,10 +235,12 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-table tbody tr.manner-shift td.pc-col-ipa{box-shadow:inset 2px 0 0 rgb(var(--pc-tint-rgb,232,200,64))}
 
 /* Row striping — very subtle. Breaks the eye from reading "spreadsheet
-   rows" into perceiving a textured surface of phoneme records. The
-   IPA anchor cell keeps its own gradient and overrides striping below. */
-.pc-table tbody tr:nth-child(odd) td{background:rgba(255,255,255,.014)}
-.pc-table tbody tr:nth-child(odd) td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.12),transparent 88%)}
+   rows" into perceiving a textured surface of phoneme records. Class
+   set in JS on every other data row (nth-child can't be used since
+   detail rows are interleaved siblings). The IPA anchor cell keeps
+   its own gradient and overrides striping below. */
+.pc-table tbody tr.pc-data-row.pc-row-stripe td{background:rgba(255,255,255,.014)}
+.pc-table tbody tr.pc-data-row.pc-row-stripe td.pc-col-ipa{background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.12),transparent 88%)}
 /* Re-assert hover + focus over the striping (equal specificity, later
    cascade wins). Slightly punchier opacity than before so the active
    row reads cleanly above the textured baseline; IPA cell on a focused
@@ -230,6 +261,10 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
   .pc-col-script{font-size:17px}
   .pc-col-ipa span{font-size:18px}
   .pc-table tbody td{padding:3px 6px}
+  /* Detail row's trigger lives in the desc cell — hide both together
+     on narrow viewports so the marginal layer can't strand itself. */
+  .pc-detail-row,
+  .pc-show-all-details .pc-detail-row{display:none}
 }
 
 :root{
@@ -2274,7 +2309,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
         <select class="pc-lang-select" id="pc-lang-select"></select>
       </div>
       <input class="pc-search" id="pc-search" placeholder="Search by sound, description (e.g. nasal, fricative)…" />
-      <label class="pc-toggle"><input type="checkbox" id="pc-show-notes" checked /> Show notes</label>
+      <label class="pc-toggle" title="Open every row's reference layer"><input type="checkbox" id="pc-expand-all" /> Expand all</label>
       <div class="pc-cols" id="pc-cols" aria-label="Comparison languages"></div>
     </div>
     <div class="pc-h2 pc-h2-cons">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
@@ -7568,9 +7603,39 @@ function pcUpdateCaption() {
   });
 }
 
+// Tracks which row's reference layer is currently open in single-
+// expansion mode (i.e. when the Expand-all toggle is off). Survives
+// re-renders so toggling a language column or typing in search doesn't
+// silently close the row the reader was reading.
+let pcOpenIpa = null;
+function pcSetExpanded(dataRow, open) {
+  if (!dataRow) return;
+  const ipa = dataRow.dataset.ipa;
+  if (open) {
+    // Close any other single expansion — only one row open at a time.
+    document.querySelectorAll("#panel-comparison tr.pc-data-row.pc-expanded").forEach(r => {
+      if (r === dataRow) return;
+      r.classList.remove("pc-expanded");
+      const sib = document.querySelector(
+        `#panel-comparison tr.pc-detail-row[data-detail-for="${CSS.escape(r.dataset.ipa)}"]`);
+      if (sib) sib.classList.remove("pc-detail-open");
+    });
+    dataRow.classList.add("pc-expanded");
+    const detail = document.querySelector(
+      `#panel-comparison tr.pc-detail-row[data-detail-for="${CSS.escape(ipa)}"]`);
+    if (detail) detail.classList.add("pc-detail-open");
+    pcOpenIpa = ipa;
+  } else {
+    dataRow.classList.remove("pc-expanded");
+    const detail = document.querySelector(
+      `#panel-comparison tr.pc-detail-row[data-detail-for="${CSS.escape(ipa)}"]`);
+    if (detail) detail.classList.remove("pc-detail-open");
+    if (pcOpenIpa === ipa) pcOpenIpa = null;
+  }
+}
+
 function pcRender() {
   const q = document.getElementById("pc-search").value.trim().toLowerCase();
-  const showNotes = document.getElementById("pc-show-notes").checked;
   const cBody = document.getElementById("pc-consonants-body");
   const vBody = document.getElementById("pc-vowels-body");
   const dBody = document.getElementById("pc-diphthongs-body");
@@ -7581,21 +7646,31 @@ function pcRender() {
   // by Arabic letter" or "find by note keyword" still works even when
   // the Arabic column is toggled off.
   const match = (p) => !q || [p.ipa,p.desc,p.latin,p.arabic,p.telugu,p.note||""].join(" ").toLowerCase().includes(q);
-  // One row per phoneme. The note (when present + toggle on) is folded
-  // into the description cell as an italic annotation line, not a
-  // separate full-width row — keeps every phoneme to a single tabular
-  // line and roughly halves vertical density. Row set is filtered by
-  // the active focus language — see pcGetVisibleRows.
+  // Two rows per phoneme: a compact data row (IPA + manner-tag on
+  // boundary rows + example word + script cells) and a hidden detail
+  // row carrying the reference layer (articulation, note, future
+  // dialect / orthographic blocks). The detail row reveals when its
+  // data row is .pc-expanded, or whenever the table is in
+  // .pc-show-all-details mode. Row set is filtered by the active
+  // focus language — see pcGetVisibleRows.
   const rows = pcGetVisibleRows();
+  const colspan = 2 + activeLangs.length;
+  // Search hits auto-open the detail layer so the matched note /
+  // description text isn't hidden behind a click. Clearing the
+  // search returns the table to single-expansion mode.
+  const autoOpenAll = !!q;
   let prevConsManner = null;
+  let stripeIdx = 0;
   rows.filter(match).forEach(p => {
     const tr = document.createElement("tr");
+    tr.classList.add("pc-data-row");
+    if (stripeIdx++ % 2 === 1) tr.classList.add("pc-row-stripe");
+    tr.dataset.ipa = p.ipa;
     const cells = activeLangs.map(l => {
       const v = pcGetGrapheme(p, l);
       const isEmpty = v === "—";
       return `<td class="pc-col-script${isEmpty ? " empty" : ""}" data-copy="${v.replace(/"/g,"&quot;")}" data-script="${l.script}" data-lang="${l.key}">${v}</td>`;
     }).join("");
-    tr.dataset.ipa = p.ipa;
     let mannerTagHtml = "";
     if (p.g === "c") {
       const m = pcMannerOf(p.desc);
@@ -7610,18 +7685,40 @@ function pcRender() {
       }
       prevConsManner = m;
     }
-    const noteHtml = (showNotes && p.note)
-      ? `<div class="pc-note-inline">${p.note}</div>` : "";
     const example = PC_EXAMPLES[p.ipa];
-    const exampleHtml = example
-      ? `<div class="pc-example">${example}</div>` : "";
+    const exampleHtml = example ? `<div class="pc-example">${example}</div>` : "";
     tr.innerHTML =
       `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
-      `<td class="pc-col-desc">${mannerTagHtml}${exampleHtml}<div class="pc-desc-text">${p.desc}</div>${noteHtml}</td>` +
+      `<td class="pc-col-desc">${mannerTagHtml}${exampleHtml}` +
+        `<span class="pc-desc-mark" aria-hidden="true">⁝</span></td>` +
       cells;
+    // Detail row — articulation desc, then optional scholarly note.
+    // Both render as marginal annotation blocks; future per-row data
+    // (dialect notes, orthographic caveats, language-specific gloss)
+    // can be appended here without changing the call site.
+    const detail = document.createElement("tr");
+    detail.classList.add("pc-detail-row");
+    detail.dataset.detailFor = p.ipa;
+    const detailBlocks = [
+      `<div class="pc-detail-block">${p.desc}</div>`,
+      p.note ? `<div class="pc-detail-block pc-detail-note">${p.note}</div>` : ""
+    ].filter(Boolean).join("");
+    detail.innerHTML = `<td class="pc-detail-cell" colspan="${colspan}">${detailBlocks}</td>`;
+    if (autoOpenAll) {
+      tr.classList.add("pc-expanded");
+      detail.classList.add("pc-detail-open");
+    }
     const targetBody = p.g === "c" ? cBody : (p.g === "d" ? dBody : vBody);
-    if (targetBody) targetBody.appendChild(tr);
+    if (targetBody) { targetBody.appendChild(tr); targetBody.appendChild(detail); }
   });
+  // Re-apply any single-row expansion that survived this render
+  // (language column toggle, atmosphere change, etc.).
+  if (!autoOpenAll && pcOpenIpa) {
+    const target = document.querySelector(
+      `#panel-comparison tr.pc-data-row[data-ipa="${CSS.escape(pcOpenIpa)}"]`);
+    if (target) pcSetExpanded(target, true);
+    else pcOpenIpa = null;
+  }
 }
 function pcToast(msg) {
   const t = document.getElementById("pc-toast");
@@ -7629,18 +7726,44 @@ function pcToast(msg) {
   clearTimeout(pcToast._t);
   pcToast._t = setTimeout(() => t.classList.remove("show"), 900);
 }
-// Copy-to-clipboard delegation lives on the Comparison panel now —
-// the pc-* tables moved there when the tabs were split.
+// Delegated click handler for the Comparison panel. Script cells copy
+// to clipboard; description cells toggle the row's reference layer.
+// Expand-all mode short-circuits the per-row toggle since every row
+// is already open.
 document.getElementById("panel-comparison").addEventListener("click", (e) => {
-  const cell = e.target.closest(".pc-col-script");
-  if (!cell || cell.classList.contains("empty")) return;
-  const v = cell.dataset.copy;
-  const done = () => { cell.classList.add("copied"); setTimeout(() => cell.classList.remove("copied"), 400); pcToast(`Copied ${v}`); };
-  if (navigator.clipboard) navigator.clipboard.writeText(v).then(done).catch(() => done());
-  else done();
+  const scriptCell = e.target.closest(".pc-col-script");
+  if (scriptCell) {
+    if (scriptCell.classList.contains("empty")) return;
+    const v = scriptCell.dataset.copy;
+    const done = () => { scriptCell.classList.add("copied"); setTimeout(() => scriptCell.classList.remove("copied"), 400); pcToast(`Copied ${v}`); };
+    if (navigator.clipboard) navigator.clipboard.writeText(v).then(done).catch(() => done());
+    else done();
+    return;
+  }
+  const descCell = e.target.closest(".pc-col-desc");
+  if (descCell) {
+    const row = descCell.closest("tr.pc-data-row");
+    if (!row) return;
+    if (document.getElementById("panel-comparison").classList.contains("pc-show-all-details")) return;
+    pcSetExpanded(row, !row.classList.contains("pc-expanded"));
+  }
 });
 document.getElementById("pc-search").addEventListener("input", pcRender);
-document.getElementById("pc-show-notes").addEventListener("change", pcRender);
+document.getElementById("pc-expand-all").addEventListener("change", (e) => {
+  const panel = document.getElementById("panel-comparison");
+  if (e.target.checked) {
+    panel.classList.add("pc-show-all-details");
+    // Folded into the wholesale view — drop the per-row expansion so
+    // unchecking returns to a clean compact state.
+    if (pcOpenIpa) {
+      const r = document.querySelector(
+        `#panel-comparison tr.pc-data-row[data-ipa="${CSS.escape(pcOpenIpa)}"]`);
+      if (r) pcSetExpanded(r, false);
+    }
+  } else {
+    panel.classList.remove("pc-show-all-details");
+  }
+});
 pcBuildLanguageSelector();
 pcBuildLangColumnSelector();
 pcBuildHeaders();
