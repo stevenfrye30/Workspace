@@ -305,10 +305,30 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-serif;font-size:14px;height:100vh;display:flex;flex-direction:column;overflow:hidden}
 
 /* ── Tab Nav ── */
-#tab-nav{display:flex;background:var(--surf);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 16px;gap:2px;align-items:flex-end}
-.tab-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:13px;font-weight:600;letter-spacing:.05em;padding:12px 18px 10px;text-transform:uppercase;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+#tab-nav{display:flex;background:var(--surf);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 18px;gap:4px;align-items:flex-end}
+/* Top-level tabs read in mixed case so "Sound Map · Phonology · Rhyme"
+   feels like section titles in a single instrument rather than the
+   uppercase-letterspaced labels of separate utilities. */
+.tab-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;font-weight:600;letter-spacing:.01em;padding:13px 18px 10px;text-transform:none;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;font-family:inherit}
 .tab-btn:hover{color:var(--text)}
 .tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* Sub-nav — quieter than the top-level. Surfaces only when its parent
+   top-tab is active (toggled via .active class from JS). Modeled on the
+   #fl-tab-nav strip that used to live inside the Rap container; same
+   visual rhythm, now at the workspace level. */
+.sub-nav{display:none;background:var(--surf2);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 22px;gap:2px;align-items:flex-end}
+.sub-nav.active{display:flex}
+.sub-tab-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:11px;font-weight:600;letter-spacing:.04em;padding:8px 14px 6px;border-bottom:2px solid transparent;transition:color .15s,border-color .15s;font-family:inherit}
+.sub-tab-btn:hover{color:var(--text)}
+.sub-tab-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+/* The original #fl-tab-nav (inside #panel-rap) is now superseded by the
+   Rhyme sub-nav above — the Bars/Vault choice happens at the workspace
+   level, not inside the panel. Hide the internal strip so the two-level
+   navigation doesn't duplicate itself. flSwitchTabDirect() still routes
+   the underlying fl-panel visibility. */
+#panel-rap > #fl-tab-nav{display:none}
 #app-title{color:var(--gold);font-size:16px;font-weight:800;letter-spacing:.12em;padding:0 16px 12px 0;text-transform:uppercase;margin-right:auto}
 
 /* ── Panels ── */
@@ -2111,11 +2131,23 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 
 <nav id="tab-nav" role="tablist">
   <button class="tab-btn active" type="button" data-tab="sound" role="tab" aria-selected="true">Sound Map</button>
-  <button class="tab-btn" type="button" data-tab="coverage" role="tab" aria-selected="false">Coverage</button>
-  <button class="tab-btn" type="button" data-tab="comparison" role="tab" aria-selected="false">Comparison</button>
-  <button class="tab-btn" type="button" data-tab="endings" role="tab" aria-selected="false">Endings</button>
-  <button class="tab-btn" type="button" data-tab="rhyme" role="tab" aria-selected="false">Rhyme Finder</button>
-  <button class="tab-btn" type="button" data-tab="rap" role="tab" aria-selected="false">Rap</button>
+  <button class="tab-btn" type="button" data-tab="phonology" role="tab" aria-selected="false">Phonology</button>
+  <button class="tab-btn" type="button" data-tab="rhyme" role="tab" aria-selected="false">Rhyme</button>
+</nav>
+
+<!-- Sub-navs surface only while their parent top-tab is active. Phonology is
+     the comparative-codex workspace (Comparison table + Coverage inventory);
+     Rhyme is the composition pipeline (Endings → Finder → Bars → Vault).
+     Sound Map has no sub-nav — it stays a standalone experiential mode. -->
+<nav id="sub-nav-phonology" class="sub-nav" role="tablist" aria-label="Phonology modes">
+  <button class="sub-tab-btn active" type="button" data-sub-tab="comparison" role="tab" aria-selected="true">Comparison</button>
+  <button class="sub-tab-btn" type="button" data-sub-tab="coverage" role="tab" aria-selected="false">Coverage</button>
+</nav>
+<nav id="sub-nav-rhyme" class="sub-nav" role="tablist" aria-label="Rhyme modes">
+  <button class="sub-tab-btn active" type="button" data-sub-tab="endings" role="tab" aria-selected="true">Endings</button>
+  <button class="sub-tab-btn" type="button" data-sub-tab="finder" role="tab" aria-selected="false">Finder</button>
+  <button class="sub-tab-btn" type="button" data-sub-tab="bars" role="tab" aria-selected="false">Bars</button>
+  <button class="sub-tab-btn" type="button" data-sub-tab="vault" role="tab" aria-selected="false">Vault</button>
 </nav>
 
 <div id="panel-sound" class="active" role="tabpanel">
@@ -2634,6 +2666,26 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     root.insertBefore(el, rap); // move out, place before #panel-rap
   });
 })();
+
+// ══════════════════════════════════
+//  WORKSPACE STATE (declared early so setTab() can be called from anywhere
+//  later in the script — e.g. rfLoadFromHash() runs partway through the
+//  file and may invoke setTab() before the tab-switching block executes.
+//  Keeping these constants/lets here avoids a TDZ error in that path.)
+// ══════════════════════════════════
+const PHONOLOGY_SUBS = ["comparison", "coverage"];
+const RHYME_SUBS = ["endings", "finder", "bars", "vault"];
+const PHONOLOGY_DEFAULT = "comparison";  // the codex centerpiece
+const RHYME_DEFAULT = "endings";          // start of the composition pipeline
+
+let lastPhonologySub = PHONOLOGY_DEFAULT;
+let lastRhymeSub = RHYME_DEFAULT;
+try {
+  const ps = localStorage.getItem("sm-phonology-sub");
+  if (PHONOLOGY_SUBS.includes(ps)) lastPhonologySub = ps;
+  const rs = localStorage.getItem("sm-rhyme-sub");
+  if (RHYME_SUBS.includes(rs)) lastRhymeSub = rs;
+} catch(_) {}
 
 // ══════════════════════════════════
 //  SOUND MAP
@@ -8145,12 +8197,19 @@ function rfLoadFromHash() {
   }
   const tab = p.get("fltab");
   if (tab) {
-    // Endings + Rhyme Finder are now top-level tabs; route legacy fltab=endings
-    // and fltab=rhyme links through setTab. Bar Builder and Vault still live
-    // inside Rap and are reachable via the inner sub-tab buttons.
-    if (tab === "endings" || tab === "rhyme") {
-      setTab(tab);
-    } else {
+    // All former Flow Lab / Rap sub-tabs are now Rhyme sub-modes at the
+    // workspace level. Route every legacy fltab value through setTab so the
+    // top-tab + sub-nav state stays consistent (a stale hash that only
+    // activates an inner fl-panel would otherwise leave Rhyme invisible).
+    // fltab=endings / fltab=rhyme — were promoted out of Rap to top-level
+    //   already; in the new shape they're the Endings / Finder sub-modes.
+    // fltab=bar-builder — composition workspace → Rhyme · Bars
+    // fltab=bars — was the Vault sub-tab inside Rap → Rhyme · Vault
+    if (tab === "endings") setTab("endings");
+    else if (tab === "rhyme") setTab("finder");
+    else if (tab === "bar-builder") setTab("bars");
+    else if (tab === "bars") setTab("vault");
+    else {
       const btn = document.querySelector(`#panel-rap .fl-tab-btn[data-fl-tab="${tab}"]`);
       if (btn) btn.click();
     }
@@ -9797,47 +9856,156 @@ document.getElementById("bb-input").addEventListener("keydown", e => {
 });
 
 // ══════════════════════════════════
-//  TAB SWITCHING
+//  TAB SWITCHING — three top-level workspaces with sub-modes
 // ══════════════════════════════════
-function setTab(name) {
-  // Backwards-compat: remap legacy tab ids.
-  //   "chart"       → "coverage"      (older bookmarks from before tabs merged)
-  //   "flow"        → "rap"           (Flow Lab container renamed)
-  //   "bar-builder" → "rap" (+ sub)   (was a Flow Lab sub-tab; now lives inside Rap)
-  //   "bars"        → "rap" (+ sub)   (same — Vault sub-tab)
-  if (name === "chart") name = "coverage";
-  let rapSub = null;
-  if (name === "flow") name = "rap";
-  if (name === "bar-builder" || name === "bars") { rapSub = name; name = "rap"; }
-  document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
-    const on = b.dataset.tab === name;
+// Sound Lab presents three modes:
+//   sound      → Sound Map (live experiential visualization, no sub-modes)
+//   phonology  → comparative codex; sub-modes: comparison · coverage
+//   rhyme      → composition pipeline; sub-modes: endings · finder · bars · vault
+//
+// setTab() accepts EITHER a top-tab name ("sound" / "phonology" / "rhyme") OR
+// any sub-mode name ("comparison", "coverage", "endings", "finder", "bars",
+// "vault") and routes accordingly. Legacy tab ids ("chart", "flow", "rap",
+// "bar-builder", "comparison"…) still work — they map onto the new (top, sub)
+// shape so old bookmarks land where the reader expects.
+// (PHONOLOGY_SUBS / RHYME_SUBS / PHONOLOGY_DEFAULT / RHYME_DEFAULT and the
+// lastPhonologySub / lastRhymeSub state are declared earlier in the script,
+// right after the panel-promotion migration — see the WORKSPACE STATE block.)
+
+function activatePanel(id) {
+  ["panel-sound","panel-coverage","panel-comparison","panel-endings","panel-rhyme","panel-rap"].forEach(pid => {
+    const el = document.getElementById(pid);
+    if (el) el.classList.toggle("active", pid === id);
+  });
+}
+
+function applyPhonologySub(sub) {
+  if (!PHONOLOGY_SUBS.includes(sub)) sub = PHONOLOGY_DEFAULT;
+  lastPhonologySub = sub;
+  try { localStorage.setItem("sm-phonology-sub", sub); } catch(_) {}
+  document.querySelectorAll("#sub-nav-phonology .sub-tab-btn").forEach(b => {
+    const on = b.dataset.subTab === sub;
     b.classList.toggle("active", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
   });
-  ["panel-sound","panel-coverage","panel-comparison","panel-endings","panel-rhyme","panel-rap"].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.classList.toggle("active", id === "panel-" + name);
-  });
-  if (name === "coverage" && typeof smCovRender === "function" && !smCovRendered) {
-    try { smCovRender(); } catch(_) {}
+  if (sub === "comparison") {
+    activatePanel("panel-comparison");
+  } else if (sub === "coverage") {
+    activatePanel("panel-coverage");
+    if (typeof smCovRender === "function" && !smCovRendered) {
+      try { smCovRender(); } catch(_) {}
+    }
   }
-  if (rapSub && typeof flSwitchTabDirect === "function") flSwitchTabDirect(rapSub);
-  try { localStorage.setItem("sm-tab", name); } catch(_) {}
 }
+
+function applyRhymeSub(sub) {
+  if (!RHYME_SUBS.includes(sub)) sub = RHYME_DEFAULT;
+  lastRhymeSub = sub;
+  try { localStorage.setItem("sm-rhyme-sub", sub); } catch(_) {}
+  document.querySelectorAll("#sub-nav-rhyme .sub-tab-btn").forEach(b => {
+    const on = b.dataset.subTab === sub;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+  });
+  if (sub === "endings") {
+    activatePanel("panel-endings");
+  } else if (sub === "finder") {
+    activatePanel("panel-rhyme");
+  } else if (sub === "bars") {
+    activatePanel("panel-rap");
+    if (typeof flSwitchTabDirect === "function") flSwitchTabDirect("bar-builder");
+  } else if (sub === "vault") {
+    activatePanel("panel-rap");
+    // fl-panel id for the Vault view is "fl-panel-bars" (data-fl-tab="bars")
+    // — the inner naming predates the workspace-level rename and is left
+    // alone to avoid touching unrelated UI plumbing.
+    if (typeof flSwitchTabDirect === "function") flSwitchTabDirect("bars");
+  }
+}
+
+function setTab(name) {
+  // Legacy tab-id remap. Old bookmarks resolve to a canonical sub-mode name
+  // (or "sound") which then routes through the new (top, sub) machinery.
+  if (name === "chart") name = "coverage";                    // pre-merge bookmark
+  if (name === "flow") name = "bars";                          // Flow Lab container → composition
+  if (name === "rap") name = "bars";                           // Rap → composition (Bar Builder was default)
+  if (name === "bar-builder") name = "bars";                   // sub-tab → composition
+  // Note: legacy "bars" used to mean the Vault sub-tab inside Rap. In the
+  // new system "bars" means composition. The semantics shift; a stale
+  // ?tab=bars bookmark lands on composition rather than Vault — acceptable
+  // since the user can click Vault to navigate, and the previous meaning
+  // was an internal sub-tab that few bookmarks would point at directly.
+
+  let topTab, subMode = null;
+  if (name === "sound" || name === "sound-map") {
+    topTab = "sound";
+  } else if (name === "phonology") {
+    topTab = "phonology";
+    subMode = lastPhonologySub;
+  } else if (PHONOLOGY_SUBS.includes(name)) {
+    topTab = "phonology";
+    subMode = name;
+  } else if (name === "rhyme") {
+    // Bare "rhyme" — the new top-tab name. Resolves to the user's last
+    // Rhyme sub-mode, defaulting to Endings (the start of the pipeline).
+    // Pre-refactor ?tab=rhyme bookmarks meant the Rhyme Finder specifically;
+    // those users now land on Endings instead — one click away from Finder.
+    topTab = "rhyme";
+    subMode = lastRhymeSub;
+  } else if (RHYME_SUBS.includes(name)) {
+    topTab = "rhyme";
+    subMode = name;
+  } else {
+    topTab = "sound";   // unknown → fall back to Sound Map
+  }
+
+  // Top-tab button state
+  document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
+    const on = b.dataset.tab === topTab;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+  });
+
+  // Sub-nav visibility — only one surfaces at a time
+  const phNav = document.getElementById("sub-nav-phonology");
+  const rhNav = document.getElementById("sub-nav-rhyme");
+  if (phNav) phNav.classList.toggle("active", topTab === "phonology");
+  if (rhNav) rhNav.classList.toggle("active", topTab === "rhyme");
+
+  // Panel + sub-mode routing
+  if (topTab === "sound") {
+    activatePanel("panel-sound");
+  } else if (topTab === "phonology") {
+    applyPhonologySub(subMode || lastPhonologySub);
+  } else if (topTab === "rhyme") {
+    applyRhymeSub(subMode || lastRhymeSub);
+  }
+
+  try { localStorage.setItem("sm-tab", topTab); } catch(_) {}
+}
+
 document.querySelectorAll("#tab-nav .tab-btn").forEach(b => {
   b.addEventListener("click", () => setTab(b.dataset.tab));
 });
+document.querySelectorAll("#sub-nav-phonology .sub-tab-btn, #sub-nav-rhyme .sub-tab-btn").forEach(b => {
+  b.addEventListener("click", () => setTab(b.dataset.subTab));
+});
+
 (function initTab() {
   const params = new URLSearchParams(window.location.search);
   const fromUrl = params.get("tab");
   let saved = null;
   try { saved = localStorage.getItem("sm-tab"); } catch(_) {}
-  // "chart" + "flow" still accepted (legacy bookmarks / saved sessions); setTab() remaps them.
-  const VALID = new Set(["sound", "coverage", "comparison", "endings", "rhyme", "rap", "chart", "flow"]);
+  // VALID accepts new canonical names + every legacy id setTab() can remap.
+  const VALID = new Set([
+    "sound", "sound-map", "phonology", "rhyme",
+    "comparison", "coverage", "endings", "finder", "bars", "vault",
+    "chart", "flow", "rap", "bar-builder"
+  ]);
   const validUrl = VALID.has(fromUrl) ? fromUrl : null;
   const validSaved = VALID.has(saved) ? saved : null;
   const initial = validUrl || validSaved || "sound";
-  if (initial !== "sound") setTab(initial);
+  setTab(initial);
 })();
 
 // ══════════════════════════════════
