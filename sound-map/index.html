@@ -6206,7 +6206,21 @@ function smCovSetGridMode(mode) {
     b.classList.toggle("active", on);
     b.setAttribute("aria-pressed", on ? "true" : "false");
   });
+  smCovApplyTitles();
   if (mode === "minimal") smCovHideTooltip();
+}
+
+// Native title attribute is only useful in Minimal mode — in Study /
+// Annotated the rich .sm-cov-tooltip carries the same information and a
+// stale browser tooltip racing the custom one is the duplicate the user
+// reported. The descriptive text stays in data-tip so we can restore it
+// when the reader returns to Minimal.
+function smCovApplyTitles() {
+  const useNative = smCovGridMode === "minimal";
+  document.querySelectorAll(".sm-cov-grid td[data-tip]").forEach(el => {
+    if (useNative) el.title = el.dataset.tip;
+    else el.removeAttribute("title");
+  });
 }
 
 // Single tooltip element, lazily created. Lives on <body> so absolute
@@ -6422,10 +6436,10 @@ function smCovBuildConsTable() {
       if (!entry || entry.length === 0) {
         td.className = "empty";
         td.textContent = "·";
-        td.title = `no ${manner} at ${place}`;
+        td.dataset.tip = `no ${manner} at ${place}`;
         if (userHit) {
           td.classList.add("you");
-          td.title = `no ${manner} at ${place} in this language — but your text uses this slot`;
+          td.dataset.tip = `no ${manner} at ${place} in this language — but your text uses this slot`;
         }
       } else {
         td.classList.add("filled");
@@ -6482,16 +6496,18 @@ function smCovBuildConsTable() {
             td.appendChild(inline);
           }
         }
-        // Title fallback (browser tooltip for Minimal mode; superseded by
-        // the rich .sm-cov-tooltip in Study/Annotated). Lists each
-        // language's phonemes in that cell.
+        // Native-title fallback for Minimal mode; the rich .sm-cov-tooltip
+        // replaces it in Study/Annotated. Stored in data-tip so
+        // smCovApplyTitles() can write or clear the live title attribute
+        // based on the active mode — that's what prevents the duplicate
+        // browser tooltip from racing the custom one.
         const lines = entry.map(le => {
           const name = LANG_INVENTORIES[le.code].name;
           const syms = le.phonemes.map(p => p.ipa).join(" ");
           return `${name}: ${syms}`;
         });
         if (userHit) lines.push("Your text uses this slot");
-        td.title = `${manner} · ${place}\n${lines.join("\n")}`;
+        td.dataset.tip = `${manner} · ${place}\n${lines.join("\n")}`;
       }
       tr.appendChild(td);
     });
@@ -6501,6 +6517,14 @@ function smCovBuildConsTable() {
   // Hover wiring is centralised on #panel-coverage (see smCovSync); no
   // per-table listener here so reverse-direction hover (from sig chip,
   // pc-table row, tract zone, etc.) goes through the same dispatcher.
+  // Title policy — Minimal mode wants the native browser tooltip; in
+  // Study/Annotated the rich .sm-cov-tooltip is the single source, so
+  // we leave title unset (it was never assigned at build time; the
+  // descriptive text lives in data-tip and is restored by
+  // smCovApplyTitles() when the reader switches back to Minimal).
+  if (smCovGridMode === "minimal") {
+    table.querySelectorAll("td[data-tip]").forEach(el => { el.title = el.dataset.tip; });
+  }
   return table;
 }
 
