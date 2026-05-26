@@ -1324,6 +1324,49 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-compare-legend{display:inline-flex;flex-wrap:wrap;gap:8px;font-size:10px}
 .sm-cov-compare-legend .sm-cov-compare-swatch{width:10px;height:10px;border-radius:2px;display:inline-block;vertical-align:middle;margin-right:4px}
 
+/* ── Layered viewing modes for the consonant grid ──────────────────────
+   The IPA grid supports three reveal modes:
+     Minimal    — atmospheric overview (default; current behavior)
+     Study      — hover-triggered rich tooltip with phoneme name + example
+     Annotated  — Study + persistent inline example word under each symbol
+   Each mode is a class on .sm-cov-section that opts in to its extras.
+   Mode toggle bar sits below the section title, codex-restrained. */
+.sm-cov-mode-bar{display:flex;align-items:center;gap:6px;margin-bottom:10px;padding-top:2px}
+.sm-cov-mode-label{color:var(--muted);font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin-right:6px;padding-right:8px;border-right:1px solid var(--bdr)}
+.sm-cov-mode-btn{background:var(--surf2);border:1px solid var(--bdr);border-radius:12px;color:var(--muted);cursor:pointer;font-size:10.5px;font-family:inherit;padding:3px 11px;transition:color .15s ease,border-color .15s ease,background .15s ease}
+.sm-cov-mode-btn:hover{color:var(--text);background:var(--surf)}
+.sm-cov-mode-btn.active{color:var(--gold);border-color:var(--gold);background:rgba(232,200,64,.06)}
+
+/* Axis labels become interactive entry points in every mode (the user
+   can hover a column header to illuminate a place, or a row label to
+   illuminate a manner). Cursor + colour-shift signals interactivity
+   without adding any chrome. */
+.sm-cov-grid th[data-place], .sm-cov-grid th[data-manner]{cursor:pointer}
+.sm-cov-grid th[data-place]:hover, .sm-cov-grid th[data-manner]:hover{color:var(--gold)}
+
+/* Annotated mode: inline example word under each filled cell's symbols.
+   Hidden by default; surfaces only when the section carries the
+   .sm-cov-mode-annotated class. Small, italic, single-line — reads as
+   marginal annotation rather than table content. */
+.sm-cov-example-inline{display:none;font-family:Georgia,"Times New Roman",serif;font-size:9px;font-style:italic;font-weight:500;line-height:1.05;color:rgba(0,0,0,.55);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;pointer-events:none}
+.sm-cov-mode-annotated .sm-cov-grid td.filled .sm-cov-example-inline{display:block}
+.sm-cov-mode-annotated .sm-cov-grid td.filled{padding-top:4px;padding-bottom:4px}
+
+/* Rich tooltip surfaces in Study + Annotated modes. Single shared
+   element appended to <body> so positioning isn't clipped by parent
+   overflow. Reads as a marginal scholar's gloss — dark surface, gold
+   IPA glyph, italic anchor word. Stays absolutely placed (does not
+   follow the cursor) so the reader can scan it. */
+.sm-cov-tooltip{position:absolute;z-index:80;background:var(--surf);border:1px solid rgba(232,200,64,.55);border-radius:var(--radius);padding:8px 12px;min-width:170px;max-width:320px;font-family:"Segoe UI",Arial,sans-serif;color:var(--text);box-shadow:0 6px 20px rgba(0,0,0,.55),inset 0 0 0 1px rgba(232,200,64,.06);opacity:0;visibility:hidden;transition:opacity .12s ease;pointer-events:none}
+.sm-cov-tooltip.show{opacity:1;visibility:visible}
+.sm-cov-tooltip .tt-row{display:flex;align-items:baseline;gap:8px;line-height:1.25;padding:2px 0}
+.sm-cov-tooltip .tt-row + .tt-row{border-top:1px solid rgba(232,200,64,.18);margin-top:4px;padding-top:6px}
+.sm-cov-tooltip .tt-ipa{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:18px;font-weight:700;color:var(--gold);min-width:22px;text-align:center;letter-spacing:-.4px;line-height:1}
+.sm-cov-tooltip .tt-name{flex:1;font-size:10.5px;color:var(--muted);line-height:1.3;letter-spacing:.01em}
+.sm-cov-tooltip .tt-example{font-family:Georgia,"Times New Roman",serif;font-size:11.5px;font-style:italic;color:rgba(232,200,64,.85);white-space:nowrap}
+.sm-cov-tooltip .tt-meta{margin-top:6px;padding-top:6px;border-top:1px solid var(--bdr);font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:flex;gap:10px}
+.sm-cov-tooltip .tt-meta .tt-meta-place{color:rgba(232,200,64,.78)}
+
 @media(max-width:900px){
   .sm-cov-panels{grid-template-columns:1fr}
 }
@@ -6136,10 +6179,135 @@ function smCovRefreshPanels() {
   panels.appendChild(right);
 }
 
+// ── Consonant grid: layered viewing modes ──────────────────────────
+// The grid supports three modes — Minimal (default, atmospheric overview),
+// Study (hover-triggered phoneme tooltip), Annotated (Study + inline
+// example word under every symbol). Mode is persisted in localStorage
+// and applied as a class on the consonant section so all extras gate on
+// pure CSS; smCovShowTooltip() also reads the mode to decide whether to
+// surface the rich tooltip.
+const SM_COV_MODES = ["minimal", "study", "annotated"];
+let smCovGridMode = "minimal";
+try {
+  const m = localStorage.getItem("sm-cov-mode");
+  if (SM_COV_MODES.includes(m)) smCovGridMode = m;
+} catch(_) {}
+
+function smCovSetGridMode(mode) {
+  if (!SM_COV_MODES.includes(mode)) mode = "minimal";
+  smCovGridMode = mode;
+  try { localStorage.setItem("sm-cov-mode", mode); } catch(_) {}
+  document.querySelectorAll(".sm-cov-section").forEach(s => {
+    SM_COV_MODES.forEach(m => s.classList.remove("sm-cov-mode-" + m));
+    s.classList.add("sm-cov-mode-" + mode);
+  });
+  document.querySelectorAll(".sm-cov-mode-btn").forEach(b => {
+    const on = b.dataset.mode === mode;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-pressed", on ? "true" : "false");
+  });
+  if (mode === "minimal") smCovHideTooltip();
+}
+
+// Single tooltip element, lazily created. Lives on <body> so absolute
+// positioning isn't clipped by any pc-scroll / panel-coverage overflow.
+function smCovTooltipEl() {
+  let tip = document.getElementById("sm-cov-tooltip");
+  if (tip) return tip;
+  tip = document.createElement("div");
+  tip.id = "sm-cov-tooltip";
+  tip.className = "sm-cov-tooltip";
+  document.body.appendChild(tip);
+  return tip;
+}
+
+function smCovShowTooltip(td) {
+  if (smCovGridMode === "minimal") return;
+  if (!td || !td.classList.contains("filled")) return smCovHideTooltip();
+  const ipas = (td.dataset.ipas || "").split(",").filter(Boolean);
+  if (!ipas.length) return smCovHideTooltip();
+  const place = td.dataset.place, manner = td.dataset.manner;
+
+  const tip = smCovTooltipEl();
+  const escape = s => String(s).replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
+  // One row per phoneme in the cell. Description falls back to a
+  // composed "voiceless bilabial stop"-style label when the IPA isn't
+  // curated in PC_PHONEMES (typical for aspirated / palatalized symbols
+  // that only appear in LANG_PHONEMES). Example anchor surfaces only
+  // when PC_EXAMPLES has one — no invented words.
+  const rows = ipas.map(ipa => {
+    const pc = (typeof PC_PHONEMES !== "undefined")
+      ? PC_PHONEMES.find(p => p.ipa === ipa) : null;
+    let name = pc ? pc.desc : "";
+    if (!name && typeof LANG_PHONEMES !== "undefined") {
+      for (const code in LANG_PHONEMES) {
+        const found = (LANG_PHONEMES[code].cons || []).find(c => c[0] === ipa);
+        if (found && typeof pcComposeConsDesc === "function") {
+          name = pcComposeConsDesc(found);
+          break;
+        }
+      }
+    }
+    if (!name) name = `${manner || ""} · ${place || ""}`.trim();
+    const example = (typeof PC_EXAMPLES !== "undefined") ? PC_EXAMPLES[ipa] : "";
+    return `<div class="tt-row">
+      <span class="tt-ipa">${escape(ipa)}</span>
+      <span class="tt-name">${escape(name)}</span>
+      ${example ? `<span class="tt-example">${escape(example)}</span>` : ""}
+    </div>`;
+  }).join("");
+  const metaParts = [];
+  if (place) metaParts.push(`<span class="tt-meta-place">${escape(place)}</span>`);
+  if (manner) metaParts.push(`<span>${escape(manner)}</span>`);
+  const meta = metaParts.length ? `<div class="tt-meta">${metaParts.join("")}</div>` : "";
+  tip.innerHTML = rows + meta;
+
+  // Position: prefer below the cell, flip above if it'd overflow viewport.
+  // Read dimensions after innerHTML is set so layout reflects content.
+  tip.classList.add("show");
+  const rect = td.getBoundingClientRect();
+  const tipRect = tip.getBoundingClientRect();
+  let top = rect.bottom + window.scrollY + 8;
+  if (rect.bottom + tipRect.height + 16 > window.innerHeight) {
+    top = rect.top + window.scrollY - tipRect.height - 8;
+  }
+  let left = rect.left + window.scrollX + (rect.width / 2) - (tipRect.width / 2);
+  const pad = 10;
+  if (left < pad + window.scrollX) left = pad + window.scrollX;
+  const maxLeft = window.scrollX + window.innerWidth - tipRect.width - pad;
+  if (left > maxLeft) left = maxLeft;
+  tip.style.top = top + "px";
+  tip.style.left = left + "px";
+}
+
+function smCovHideTooltip() {
+  const tip = document.getElementById("sm-cov-tooltip");
+  if (tip) tip.classList.remove("show");
+}
+
+// Axis-label hover. Mouseover on a column header (place) or row header
+// (manner) lights up every matching cell + the vocal-tract zone for the
+// place. Uses the same CSS classes as cell-hover so the highlight reads
+// identically regardless of which surface initiated it.
+function smCovHighlightAxis(th) {
+  smCovClearActive();
+  th.classList.add("axis-active");
+  const place = th.dataset.place, manner = th.dataset.manner;
+  if (place) {
+    document.querySelectorAll(`.sm-cov-grid td[data-place="${place}"]`).forEach(c => c.classList.add("cell-axis"));
+    document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${place}"]`).forEach(el => el.classList.add("zone-focus"));
+    document.querySelectorAll(`.sm-cov-tract-stat[data-place="${place}"]`).forEach(el => el.classList.add("stat-focus"));
+  }
+  if (manner) {
+    document.querySelectorAll(`.sm-cov-grid td[data-manner="${manner}"]`).forEach(c => c.classList.add("cell-axis"));
+  }
+}
+
 // ── Consonant grid ──────────────────────────────────────────────────
 function smCovBuildConsSection() {
   const section = document.createElement("div");
-  section.className = "sm-cov-section";
+  section.className = "sm-cov-section sm-cov-mode-" + smCovGridMode;
 
   const title = document.createElement("div");
   title.className = "sm-cov-section-title";
@@ -6162,6 +6330,27 @@ function smCovBuildConsSection() {
     title.appendChild(sub);
   }
   section.appendChild(title);
+
+  // Mode bar — progressive disclosure for the grid below. Minimal is
+  // the default atmospheric overview; Study adds the hover tooltip;
+  // Annotated adds inline example anchors under each symbol.
+  const modeBar = document.createElement("div");
+  modeBar.className = "sm-cov-mode-bar";
+  const modeLabel = document.createElement("span");
+  modeLabel.className = "sm-cov-mode-label";
+  modeLabel.textContent = "View";
+  modeBar.appendChild(modeLabel);
+  SM_COV_MODES.forEach(m => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "sm-cov-mode-btn" + (m === smCovGridMode ? " active" : "");
+    btn.dataset.mode = m;
+    btn.setAttribute("aria-pressed", m === smCovGridMode ? "true" : "false");
+    btn.textContent = m.charAt(0).toUpperCase() + m.slice(1);
+    btn.addEventListener("click", () => smCovSetGridMode(m));
+    modeBar.appendChild(btn);
+  });
+  section.appendChild(modeBar);
 
   const wrap = document.createElement("div");
   wrap.className = "sm-cov-grid-wrap";
@@ -6207,6 +6396,8 @@ function smCovBuildConsTable() {
     const th = document.createElement("th");
     th.textContent = LANG_PLACE_LABELS[place] || place;
     th.style.color = SM_COV_PLACE_PALETTE[place] || "var(--muted)";
+    th.dataset.place = place;        // axis-label hover entry point
+    th.title = `${place} — click any cell in this column to focus, or hover the label to highlight the place`;
     headerRow.appendChild(th);
   });
   thead.appendChild(headerRow);
@@ -6218,6 +6409,8 @@ function smCovBuildConsTable() {
     const rowTh = document.createElement("th");
     rowTh.className = "sm-cov-manner-th";
     rowTh.textContent = manner;
+    rowTh.dataset.manner = manner;   // axis-label hover entry point
+    rowTh.title = `${manner} — hover to highlight this manner across the grid`;
     tr.appendChild(rowTh);
     SM_COV_PLACES_CONS.forEach(place => {
       const td = document.createElement("td");
@@ -6276,7 +6469,22 @@ function smCovBuildConsTable() {
         }
         td.appendChild(pair);
         if (userHit) td.classList.add("you");
-        // Tooltip: list each language's phonemes in that cell
+        // Annotated-mode marginalia: one short anchor word per cell.
+        // Multiple phonemes (voiceless+voiced pair) join with " · ".
+        // Only emitted in single-language view since compare uses dots.
+        if (smCovSelected.length === 1 && typeof PC_EXAMPLES !== "undefined") {
+          const phs = entry[0].phonemes.slice().sort((a, b) => a.voice - b.voice);
+          const anchors = phs.map(ph => PC_EXAMPLES[ph.ipa]).filter(Boolean);
+          if (anchors.length) {
+            const inline = document.createElement("span");
+            inline.className = "sm-cov-example-inline";
+            inline.textContent = anchors.join(" · ");
+            td.appendChild(inline);
+          }
+        }
+        // Title fallback (browser tooltip for Minimal mode; superseded by
+        // the rich .sm-cov-tooltip in Study/Annotated). Lists each
+        // language's phonemes in that cell.
         const lines = entry.map(le => {
           const name = LANG_INVENTORIES[le.code].name;
           const syms = le.phonemes.map(p => p.ipa).join(" ");
@@ -6333,6 +6541,9 @@ function smCovHighlight(td) {
     document.querySelectorAll(`.sm-cov-tract-stat[data-place="${place}"]`).forEach(el => el.classList.add("stat-focus"));
   }
   if (ipas.length) smCovSpreadIpaFocus(new Set(ipas), td);
+  // Rich tooltip — only surfaces in Study / Annotated modes; no-op in
+  // Minimal so the atmospheric overview stays uncluttered.
+  smCovShowTooltip(td);
 }
 
 function smCovSetActivePhoneme(ipa, source) {
@@ -6404,6 +6615,7 @@ function smCovClearActive() {
   document.querySelectorAll(".sm-cov-diph.phoneme-focus,.sm-cov-diph.phoneme-source").forEach(el => {
     el.classList.remove("phoneme-focus","phoneme-source");
   });
+  smCovHideTooltip();
 }
 
 // Backwards-compat shim for any old callsite.
@@ -6412,6 +6624,10 @@ function smCovHighlightClear() { smCovClearActive(); }
 // Decide what kind of hover this is and route to the right activator.
 // Single source of truth so cells, chips, rows, zones all stay in sync.
 function smCovSyncFromEvent(e) {
+  // Row / column header hover — illuminate the axis without picking any
+  // particular cell. Empty-cell hovers also pass through here implicitly.
+  const axis = e.target.closest(".sm-cov-grid th[data-place], .sm-cov-grid th[data-manner]");
+  if (axis) { smCovHighlightAxis(axis); return; }
   const cell = e.target.closest(".sm-cov-grid td.filled");
   if (cell && cell.dataset.place) { smCovHighlight(cell); return; }
   const pcRow = e.target.closest(".pc-table tbody tr");
