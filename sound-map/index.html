@@ -91,7 +91,7 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-toggle{color:var(--muted);font-size:11px;display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none}
 .pc-toggle input{cursor:pointer;accent-color:rgb(var(--pc-tint-rgb,232,200,64))}
 /* Compact column selector — picks which LANGUAGE columns appear in
-   the table. IPA + Description always stay; this only toggles the
+   the table. Sound + IPA always stay; this only toggles the
    third+ columns. Designed to sit inline with the search/notes
    toggle. Planned/scaffolded languages render in a separate
    subgroup and aren't toggleable. */
@@ -150,23 +150,29 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-table tbody tr.pc-row-flash{animation:pc-flash 1.6s ease-out}
 @keyframes pc-flash{0%,30%{background:rgba(212,162,76,.4)}100%{background:transparent}}
 
-/* IPA = anchor column. The phoneme is the identity of its row; cell
-   gets a thin left accent rule, a soft horizontal wash from the
-   active tint, and a slightly bigger glyph with a low-amplitude glow. */
-.pc-col-ipa, .pc-table thead th.pc-col-ipa{width:62px}
-.pc-col-ipa{padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
-.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.25px;font-variant-ligatures:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 6px rgba(var(--pc-tint-rgb,232,200,64),.16),0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.25);transition:color .8s ease,text-shadow .8s ease}
-
-/* Description column — at rest the cell carries only the manner-tag
-   (boundary rows only) and a single anchor example word. The deeper
-   reference layer (articulation, scholarly note, eventually dialect /
-   orthographic annotation) is folded into a per-row detail row that
-   unfurls beneath when the row is opened — see .pc-detail-row below.
+/* Sound column = the human-facing entry point (now leftmost). At rest
+   the cell carries only the manner-tag (boundary rows only) and a
+   single anchor example word; the eye lands on a recognizable sound
+   before reaching the IPA stratum. The deeper reference layer
+   (articulation, scholarly note, eventually dialect / orthographic
+   annotation) is folded into a per-row detail row that unfurls
+   beneath when the row is opened — see .pc-detail-row below. Entry
+   styling is intentionally quiet (no gold left bar) so that the IPA
+   column, not the example, still reads as the formal axis.
      manner-tag (group-boundary rows only)
      example word          ← primary anchor (12px, plain)
      ⁝ mark on right edge  ← marginal affordance for the reference layer */
 .pc-col-desc, .pc-table thead th.pc-col-desc{width:138px}
-.pc-col-desc{color:var(--muted);line-height:1.35;font-style:normal;position:relative;padding-right:18px}
+.pc-col-desc{color:var(--muted);line-height:1.35;font-style:normal;position:relative;padding-left:14px;padding-right:18px}
+
+/* IPA = the formal phonological axis (now mid-table). Cell retains a
+   thin left accent rule, a soft horizontal wash from the active tint,
+   and a slightly bigger glyph with a low-amplitude glow — the gold
+   spine reads as a stratum boundary between the human anchor on the
+   left and the parallel script realizations on the right. */
+.pc-col-ipa, .pc-table thead th.pc-col-ipa{width:62px}
+.pc-col-ipa{padding:5px 10px 5px 14px;background:linear-gradient(90deg,rgba(var(--pc-tint-rgb,232,200,64),.10),transparent 88%);box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.55);transition:box-shadow .8s ease,background .8s ease}
+.pc-col-ipa span{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas","Liberation Mono","Courier New",monospace;font-size:24px;color:rgb(var(--pc-tint-rgb,232,200,64));font-weight:700;display:inline-block;line-height:1;letter-spacing:-.25px;font-variant-ligatures:none;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-shadow:0 0 6px rgba(var(--pc-tint-rgb,232,200,64),.16),0 0 1px rgba(var(--pc-tint-rgb,232,200,64),.25);transition:color .8s ease,text-shadow .8s ease}
 .pc-col-desc .pc-example{font-size:12px;color:var(--text);font-weight:500;line-height:1.2;letter-spacing:.01em;margin:0 0 1px}
 .pc-col-desc .pc-manner-tag{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:7.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.65);margin:0 0 2px;line-height:1;font-style:normal;transition:color .8s ease}
 
@@ -201,7 +207,7 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-detail-row{display:none}
 .pc-detail-row.pc-detail-open,
 .pc-show-all-details .pc-detail-row{display:table-row}
-.pc-detail-cell{padding:4px 14px 7px 80px;background:rgba(var(--pc-tint-rgb,232,200,64),.022);transition:background .8s ease}
+.pc-detail-cell{padding:4px 14px 7px 24px;background:rgba(var(--pc-tint-rgb,232,200,64),.022);transition:background .8s ease}
 .pc-detail-block{font-size:11px;font-style:italic;color:#93999f;line-height:1.5;letter-spacing:.01em;padding-left:10px;border-left:1px solid rgba(var(--pc-tint-rgb,232,200,64),.26);max-width:780px;transition:border-color .8s ease,color .8s ease}
 .pc-detail-block + .pc-detail-block{margin-top:4px}
 .pc-detail-block.pc-detail-note{color:#a3a8b0;border-left-color:rgba(var(--pc-tint-rgb,232,200,64),.45)}
@@ -252,7 +258,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
    an interior rhythm beyond simple alternation, without inserting
    any extra row or header. */
 .pc-table tbody tr.manner-shift td{border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.16)}
-.pc-table tbody tr.manner-shift td.pc-col-ipa{box-shadow:inset 2px 0 0 rgb(var(--pc-tint-rgb,232,200,64))}
+.pc-table tbody tr.manner-shift td:first-child{box-shadow:inset 2px 0 0 rgb(var(--pc-tint-rgb,232,200,64))}
+.pc-table tbody tr.manner-shift td.pc-col-ipa{box-shadow:inset 2px 0 0 rgba(var(--pc-tint-rgb,232,200,64),.80)}
 
 /* Row striping — very subtle. Breaks the eye from reading "spreadsheet
    rows" into perceiving a textured surface of phoneme records. Class
@@ -2319,7 +2326,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
       <p class="comp-hero-sub">A comparative reference for how each language writes the phonemes in its inventory. Pick a focus language to filter the row set; toggle additional languages to add comparison columns; click any cell to copy its grapheme.</p>
     </header>
     <div class="pc-intro">
-      Rows are phonemes in the <strong>International Phonetic Alphabet</strong> (IPA).
+      Rows are a <strong>curated set of IPA phonemes</strong> — the consonants and vowels active in the languages currently in this codex; the inventory grows in stages, not all at once.
       Columns are <strong>languages</strong>; each cell shows how that language writes the row's phoneme.
       An em-dash (—) means the language doesn't have that phoneme — or its orthography hasn't been mapped in this codex yet.
     </div>
@@ -7217,29 +7224,51 @@ const PC_PHONEMES = [
   { ipa: "ʃ",  g: "c", desc: "voiceless postalveolar fricative",  latin: "sh", arabic: "ش", telugu: "శ", note: "'sh' in 'ship'." },
   { ipa: "ʒ",  g: "c", desc: "voiced postalveolar fricative",     latin: "zh", arabic: "—", telugu: "—", note: "'s' in 'measure'; French j." },
   { ipa: "ʂ",  g: "c", desc: "voiceless retroflex fricative",     latin: "—",  arabic: "—", telugu: "ష" },
+  { ipa: "ç",  g: "c", desc: "voiceless palatal fricative",       latin: "—",  arabic: "—", telugu: "—", de: "ch", note: "German 'ch' after front vowels ('ich'). Japanese ひ realised as [çi]." },
+  { ipa: "ʝ",  g: "c", desc: "voiced palatal fricative",          latin: "—",  arabic: "—", telugu: "—", es: "y/ll", note: "Spanish 'yo', 'llama' in yeísta dialects, where ⟨ll⟩ has merged with ⟨y⟩." },
   { ipa: "x",  g: "c", desc: "voiceless velar fricative",         latin: "kh", arabic: "خ", telugu: "—", es: "j/g", de: "ch", note: "German 'ach'; Scottish 'loch'; Spanish ⟨j⟩." },
   { ipa: "ɣ",  g: "c", desc: "voiced velar fricative",            latin: "gh", arabic: "غ", telugu: "—", es: "g" },
   { ipa: "ħ",  g: "c", desc: "voiceless pharyngeal fricative",    latin: "—",  arabic: "ح", telugu: "—", note: "Constricted 'h' deep in the throat. Distinctive to Arabic." },
   { ipa: "ʕ",  g: "c", desc: "voiced pharyngeal fricative",       latin: "—",  arabic: "ع", telugu: "—", note: "The famous 'ayn' of Arabic — no close equivalent in English or Telugu." },
   { ipa: "h",  g: "c", desc: "voiceless glottal fricative",       latin: "h",  arabic: "ه", telugu: "హ" },
+  { ipa: "ɦ",  g: "c", desc: "voiced glottal fricative",          latin: "h",  arabic: "—", telugu: "—", note: "Hindi/Czech 'h'. English 'h' between vowels often realises as [ɦ] ('ahead', 'behind')." },
   { ipa: "tʃ", g: "c", desc: "voiceless postalveolar affricate",  latin: "ch", arabic: "—", telugu: "చ", note: "'ch' in 'church'. Arabic borrows via چ in Persian/Urdu but not standard." },
   { ipa: "dʒ", g: "c", desc: "voiced postalveolar affricate",     latin: "j",  arabic: "ج", telugu: "జ", note: "'j' in 'judge'." },
   { ipa: "l",  g: "c", desc: "alveolar lateral approximant",      latin: "l",  arabic: "ل", telugu: "ల" },
   { ipa: "ɭ",  g: "c", desc: "retroflex lateral approximant",     latin: "—",  arabic: "—", telugu: "ళ" },
-  { ipa: "r",  g: "c", desc: "alveolar trill / tap",              latin: "r",  arabic: "ر", telugu: "ర", note: "IPA strictly distinguishes trill /r/ from tap /ɾ/; this row covers both informally." },
+  { ipa: "ʎ",  g: "c", desc: "palatal lateral approximant",       latin: "—",  arabic: "—", telugu: "—", pt: "lh", note: "Portuguese 'lh' (filho), Italian 'gl' (figlio), conservative non-yeísta Spanish 'll'." },
+  { ipa: "ɾ",  g: "c", desc: "alveolar tap",                      latin: "r",  arabic: "—", telugu: "—", note: "Spanish single 'r' between vowels (pero), Japanese ら-row, American English 'tt' in 'butter' for many speakers." },
+  { ipa: "r",  g: "c", desc: "alveolar trill",                    latin: "r",  arabic: "ر", telugu: "ర", es: "rr", note: "Spanish 'rr' (perro), Italian, classical Arabic ر. The single-tap variant lives on the ɾ row; the English approximant on ɹ." },
+  { ipa: "ɹ",  g: "c", desc: "alveolar approximant",              latin: "r",  arabic: "—", telugu: "—", note: "English 'r' in 'red'. Distinct from trill /r/ and tap /ɾ/ — no tongue contact, only a narrow channel near the alveolar ridge." },
   { ipa: "j",  g: "c", desc: "palatal approximant",               latin: "y",  arabic: "ي", telugu: "య", note: "'y' in 'yes'." },
   { ipa: "w",  g: "c", desc: "labio-velar approximant",           latin: "w",  arabic: "و", telugu: "వ", note: "'w' in 'water'. Telugu వ serves for both /w/ and /v/." },
-  { ipa: "a",  g: "v", desc: "open front/central vowel",          latin: "a",  arabic: "ـَ", telugu: "అ", note: "Arabic diacritic fatha, written above the consonant. Telugu అ is independent; attached to a consonant, it's the inherent vowel (unwritten)." },
-  { ipa: "e",  g: "v", desc: "close-mid front vowel",             latin: "e",  arabic: "—", telugu: "ఎ", note: "Standard Arabic has no /e/; dialects use fatha or a y-glide." },
-  { ipa: "i",  g: "v", desc: "close front vowel",                 latin: "i",  arabic: "ـِ", telugu: "ఇ", note: "Arabic diacritic kasra, written below the consonant." },
-  { ipa: "o",  g: "v", desc: "close-mid back rounded vowel",      latin: "o",  arabic: "—", telugu: "ఒ", note: "Standard Arabic has no /o/; dialects use damma or a w-glide." },
+  // ── Monophthongs ─────────────────────────────────────────────────────
+  // Ordered cardinal-walk style: close → open within each backness band,
+  // front → central → back within each height. This keeps the column read
+  // phonologically rather than alphabetically, and slots the lax counterparts
+  // (ɪ, ʊ) directly under their tense partners (i, u).
+  { ipa: "i",  g: "v", desc: "close front unrounded vowel",       latin: "i",  arabic: "ـِ", telugu: "ఇ", note: "Arabic diacritic kasra, written below the consonant." },
+  { ipa: "ɪ",  g: "v", desc: "near-close near-front unrounded vowel", latin: "i",  arabic: "—", telugu: "—", note: "English 'i' in 'sit', 'bit'. The lax counterpart of /i/." },
   { ipa: "u",  g: "v", desc: "close back rounded vowel",          latin: "u",  arabic: "ـُ", telugu: "ఉ", note: "Arabic diacritic damma, written above the consonant." },
+  { ipa: "ʊ",  g: "v", desc: "near-close near-back rounded vowel", latin: "u",  arabic: "—", telugu: "—", note: "English 'u' in 'put', 'oo' in 'book'. The lax counterpart of /u/." },
+  { ipa: "e",  g: "v", desc: "close-mid front unrounded vowel",   latin: "e",  arabic: "—", telugu: "ఎ", note: "Standard Arabic has no /e/; dialects use fatha or a y-glide." },
+  { ipa: "o",  g: "v", desc: "close-mid back rounded vowel",      latin: "o",  arabic: "—", telugu: "ఒ", note: "Standard Arabic has no /o/; dialects use damma or a w-glide." },
   { ipa: "ə",  g: "v", desc: "mid central vowel (schwa)",         latin: "e",  arabic: "—", telugu: "—", note: "The 'uh' sound in 'sofa'. Unwritten in most scripts; emerges from reduction." },
-  { ipa: "aː", g: "v", desc: "long open vowel",                   latin: "aa", arabic: "ا", telugu: "ఆ", haw: "ā", note: "Hawaiian kahakō (macron) ⟨ā⟩ marks length." },
+  { ipa: "ɝ",  g: "v", desc: "r-coloured mid central vowel",      latin: "er", arabic: "—", telugu: "—", note: "American English 'bird', 'word', 'her'. Schwa with simultaneous rhotic colouring; non-rhotic dialects substitute /ɜː/." },
+  { ipa: "ɛ",  g: "v", desc: "open-mid front unrounded vowel",    latin: "e",  arabic: "—", telugu: "—", fr: "è", note: "English 'e' in 'bed'; French 'è' in 'mère'. Distinct from close-mid /e/." },
+  { ipa: "ʌ",  g: "v", desc: "open-mid back unrounded vowel",     latin: "u",  arabic: "—", telugu: "—", note: "English 'u' in 'cup', 'love'. The STRUT vowel; also Korean ㅓ." },
+  { ipa: "ɔ",  g: "v", desc: "open-mid back rounded vowel",       latin: "o",  arabic: "—", telugu: "—", en: "aw", pt: "ó", note: "English 'aw' in 'law', 'thought' (in dialects that distinguish it from /ɑ/); German 'o' in 'voll'; Portuguese 'ó' in 'avó'." },
+  { ipa: "æ",  g: "v", desc: "near-open front unrounded vowel",   latin: "a",  arabic: "—", telugu: "—", note: "English 'a' in 'cat', 'apple'. A specifically English vowel; most other Latin scripts use ⟨a⟩ for /a/." },
+  { ipa: "a",  g: "v", desc: "open front/central unrounded vowel", latin: "a",  arabic: "ـَ", telugu: "అ", note: "Arabic diacritic fatha, written above the consonant. Telugu అ is independent; attached to a consonant, it's the inherent vowel (unwritten)." },
+  { ipa: "ɑ",  g: "v", desc: "open back unrounded vowel",         latin: "a",  arabic: "—", telugu: "—", note: "English 'a' in 'father'; British 'o' in 'lot'. Distinct from open central /a/." },
+
+  // Long monophthongs — length variants on the cardinal core. Ordered
+  // close → open to match the short block above.
   { ipa: "iː", g: "v", desc: "long close front vowel",            latin: "ee", arabic: "ي", telugu: "ఈ", haw: "ī" },
   { ipa: "uː", g: "v", desc: "long close back rounded vowel",     latin: "oo", arabic: "و", telugu: "ఊ", haw: "ū" },
   { ipa: "eː", g: "v", desc: "long close-mid front vowel",        latin: "ē",  arabic: "—", telugu: "ఏ", haw: "ē" },
   { ipa: "oː", g: "v", desc: "long close-mid back vowel",         latin: "ō",  arabic: "—", telugu: "ఓ", haw: "ō" },
+  { ipa: "aː", g: "v", desc: "long open vowel",                   latin: "aa", arabic: "ا", telugu: "ఆ", haw: "ā", note: "Hawaiian kahakō (macron) ⟨ā⟩ marks length." },
 
   // ── Diphthongs ───────────────────────────────────────────────────────
   // Phonemic gliding vowels. Curated set covers the diphthongs that
@@ -7275,7 +7304,7 @@ const PC_EXAMPLES = {
   "p":  "pin",       "b":  "bin",
   "t":  "ten",       "d":  "den",
   "ʈ":  "Hindi ṭ",   "ɖ":  "Hindi ḍ",
-  "k":  "key",       "ɡ":  "go",
+  "k":  "key",       "ɡ":  "go",       "g":  "go",
   "q":  "Arabic ق",  "ʔ":  "uh-oh",
   // Nasals
   "m":  "me",        "n":  "no",
@@ -7286,20 +7315,30 @@ const PC_EXAMPLES = {
   "s":  "sun",       "z":  "zoo",
   "ʃ":  "ship",      "ʒ":  "measure",
   "ʂ":  "Hindi ष",   "x":  "loch",      "ɣ":  "Spanish g",
+  "ç":  "German ich","ʁ":  "French rouge",
+  "ʐ":  "Russian ж", "ɕ":  "Mandarin x",
   "ħ":  "Arabic ح",  "ʕ":  "Arabic ع",  "h":  "hat",
   // Affricates
   "tʃ": "church",    "dʒ": "judge",
+  "tɕ": "Mandarin j","dʑ": "Japanese じ",
   // Approximants + liquids
-  "l":  "lip",       "ɭ":  "Tamil ḷ",
-  "r":  "trill r",   "j":  "yes",       "w":  "win",
+  "l":  "lip",       "ɭ":  "Tamil ḷ",   "ʎ":  "Portuguese lh",
+  "r":  "Spanish perro",   "ɾ":  "Spanish caro",
+  "ɹ":  "red",       "ɻ":  "Mandarin r",
+  "ʝ":  "Spanish yo",
+  "j":  "yes",       "w":  "win",       "ɥ":  "French huit",
   // Monophthongs (short)
   "i":  "see",       "ɪ":  "sit",
   "e":  "Spanish é", "ɛ":  "bed",
   "æ":  "cat",       "a":  "Spanish a",
   "ɑ":  "father",    "ʌ":  "cup",
-  "ə":  "sofa",
+  "ə":  "sofa",      "ɝ":  "bird",
   "o":  "Spanish o", "ʊ":  "put",
-  "u":  "boot",
+  "ɔ":  "thought",
+  "u":  "boot",      "ɯ":  "Japanese う",
+  "ɤ":  "Mandarin 喝",
+  "ɨ":  "Russian ы",
+  "y":  "French tu", "ø":  "French peu", "œ":  "French peur",
   // Long monophthongs
   "aː": "calm",      "iː": "see (long)",
   "uː": "boot (long)","eː": "Spanish é",
@@ -7313,7 +7352,7 @@ const PC_EXAMPLES = {
   "eu": "Spanish neutro","ou": "Portuguese pouco"
 };
 
-// Language-column registry. IPA + Description are fixed; every entry
+// Language-column registry. Sound + IPA are fixed; every entry
 // here is a togglable language column. Each entry binds a language
 // (key + label) to the writing-system field on PC_PHONEMES it falls
 // back to (`script`). Per-row, per-language overrides live as named
@@ -7369,7 +7408,7 @@ const PC_LANGUAGES = [
 ];
 
 // Language-context registry. "reference" shows every PC_PHONEMES row
-// (universal IPA); a specific code filters to that language's inventory
+// (the curated IPA set); a specific code filters to that language's inventory
 // taken from LANG_PHONEMES (Coverage data). The chart's row set is then
 // the language's phoneme inventory rendered through the script-column
 // mapping defined on PC_PHONEMES. Diphthongs follow the same path: the
@@ -7444,7 +7483,7 @@ function pcBuildLanguageSelector() {
   sel.innerHTML = "";
   const refOpt = document.createElement("option");
   refOpt.value = "reference";
-  refOpt.textContent = "Reference (universal IPA)";
+  refOpt.textContent = "Reference (curated IPA set)";
   sel.appendChild(refOpt);
   if (typeof LANG_INVENTORIES !== "undefined") {
     const codes = Object.keys(LANG_INVENTORIES).sort((a, b) =>
@@ -7594,7 +7633,7 @@ function pcUpdateAtmosphere() {
 
 function pcBuildHeaders() {
   const headHtml =
-    '<th class="pc-col-ipa">IPA</th><th class="pc-col-desc">Description</th>' +
+    '<th class="pc-col-desc">Sound</th><th class="pc-col-ipa">IPA</th>' +
     PC_LANGUAGES
       .filter(l => pcSelectedLangCols.has(l.key))
       .map(l => `<th class="pc-col-script-h" data-script="${l.script}" data-lang="${l.key}">${l.label}</th>`)
@@ -7609,7 +7648,10 @@ function pcBuildHeaders() {
 // keyword. Returns "other" if nothing matches (rare in this dataset).
 // Used only to draw a quiet separator between manner-groups in the
 // consonants chapter; it doesn't relabel the row.
-const PC_MANNER_KEYWORDS = ["plosive","nasal","fricative","affricate","trill","tap","flap","approximant","lateral"];
+// "lateral" precedes "approximant" so a row described as "alveolar lateral
+// approximant" classifies as a lateral, not an approximant — matches IPA
+// manner conventions and keeps the lateral block visually distinct.
+const PC_MANNER_KEYWORDS = ["plosive","nasal","fricative","affricate","lateral","trill","tap","flap","approximant"];
 function pcMannerOf(desc) {
   const d = (desc || "").toLowerCase();
   for (const m of PC_MANNER_KEYWORDS) if (d.indexOf(m) >= 0) return m;
@@ -7708,9 +7750,9 @@ function pcRender() {
     const example = PC_EXAMPLES[p.ipa];
     const exampleHtml = example ? `<div class="pc-example">${example}</div>` : "";
     tr.innerHTML =
-      `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
       `<td class="pc-col-desc">${mannerTagHtml}${exampleHtml}` +
         `<span class="pc-desc-mark" aria-hidden="true">⁝</span></td>` +
+      `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
       cells;
     // Detail row — articulation desc, then optional scholarly note.
     // Both render as marginal annotation blocks; future per-row data
