@@ -77,7 +77,7 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:0;padding:6px 12px 6px 14px;background:linear-gradient(180deg,rgba(var(--pc-tint-rgb,232,200,64),.04),var(--surf) 75%);border:1px solid var(--bdr);border-top:1px solid rgba(var(--pc-tint-rgb,232,200,64),.45);border-bottom:1px solid rgba(var(--pc-tint-rgb,232,200,64),.20);border-radius:var(--radius) var(--radius) 0 0;transition:border-color .8s ease,background .8s ease;position:relative}
 .pc-toolbar::before{content:"Reference";font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(var(--pc-tint-rgb,232,200,64),.78);padding-right:10px;border-right:1px solid var(--bdr);align-self:center;transition:color .8s ease,border-color .8s ease}
 /* Language context — picks which language's inventory drives the
-   visible rows. "Reference" reverts to the universal IPA set. Sits
+   visible rows. "Reference" reverts to the curated IPA set. Sits
    inline with the rest of the deck so it reads as part of the control
    surface, not as a separate widget. */
 .pc-lang{display:inline-flex;align-items:center;gap:6px}
@@ -7243,21 +7243,23 @@ const PC_PHONEMES = [
   { ipa: "j",  g: "c", desc: "palatal approximant",               latin: "y",  arabic: "ي", telugu: "య", note: "'y' in 'yes'." },
   { ipa: "w",  g: "c", desc: "labio-velar approximant",           latin: "w",  arabic: "و", telugu: "వ", note: "'w' in 'water'. Telugu వ serves for both /w/ and /v/." },
   // ── Monophthongs ─────────────────────────────────────────────────────
-  // Ordered cardinal-walk style: close → open within each backness band,
-  // front → central → back within each height. This keeps the column read
-  // phonologically rather than alphabetically, and slots the lax counterparts
-  // (ɪ, ʊ) directly under their tense partners (i, u).
+  // Ordered to keep tense-lax pairs adjacent and the open block contiguous.
+  // Walks: close pairs (i ɪ · u ʊ) → close-mid/open-mid front pair (e ɛ) →
+  // close-mid/open-mid back pair (o ɔ) → central / mid (ə ʌ ɝ) → opens
+  // (æ a ɑ). Strict-cardinal-by-height would separate e/ɛ and o/ɔ; this
+  // ordering favours phonological pairing because the reader's question is
+  // usually "tense or lax", not "which height band exactly".
   { ipa: "i",  g: "v", desc: "close front unrounded vowel",       latin: "i",  arabic: "ـِ", telugu: "ఇ", note: "Arabic diacritic kasra, written below the consonant." },
   { ipa: "ɪ",  g: "v", desc: "near-close near-front unrounded vowel", latin: "i",  arabic: "—", telugu: "—", note: "English 'i' in 'sit', 'bit'. The lax counterpart of /i/." },
   { ipa: "u",  g: "v", desc: "close back rounded vowel",          latin: "u",  arabic: "ـُ", telugu: "ఉ", note: "Arabic diacritic damma, written above the consonant." },
   { ipa: "ʊ",  g: "v", desc: "near-close near-back rounded vowel", latin: "u",  arabic: "—", telugu: "—", note: "English 'u' in 'put', 'oo' in 'book'. The lax counterpart of /u/." },
   { ipa: "e",  g: "v", desc: "close-mid front unrounded vowel",   latin: "e",  arabic: "—", telugu: "ఎ", note: "Standard Arabic has no /e/; dialects use fatha or a y-glide." },
-  { ipa: "o",  g: "v", desc: "close-mid back rounded vowel",      latin: "o",  arabic: "—", telugu: "ఒ", note: "Standard Arabic has no /o/; dialects use damma or a w-glide." },
-  { ipa: "ə",  g: "v", desc: "mid central vowel (schwa)",         latin: "e",  arabic: "—", telugu: "—", note: "The 'uh' sound in 'sofa'. Unwritten in most scripts; emerges from reduction." },
-  { ipa: "ɝ",  g: "v", desc: "r-coloured mid central vowel",      latin: "er", arabic: "—", telugu: "—", note: "American English 'bird', 'word', 'her'. Schwa with simultaneous rhotic colouring; non-rhotic dialects substitute /ɜː/." },
   { ipa: "ɛ",  g: "v", desc: "open-mid front unrounded vowel",    latin: "e",  arabic: "—", telugu: "—", fr: "è", note: "English 'e' in 'bed'; French 'è' in 'mère'. Distinct from close-mid /e/." },
-  { ipa: "ʌ",  g: "v", desc: "open-mid back unrounded vowel",     latin: "u",  arabic: "—", telugu: "—", note: "English 'u' in 'cup', 'love'. The STRUT vowel; also Korean ㅓ." },
+  { ipa: "o",  g: "v", desc: "close-mid back rounded vowel",      latin: "o",  arabic: "—", telugu: "ఒ", note: "Standard Arabic has no /o/; dialects use damma or a w-glide." },
   { ipa: "ɔ",  g: "v", desc: "open-mid back rounded vowel",       latin: "o",  arabic: "—", telugu: "—", en: "aw", pt: "ó", note: "English 'aw' in 'law', 'thought' (in dialects that distinguish it from /ɑ/); German 'o' in 'voll'; Portuguese 'ó' in 'avó'." },
+  { ipa: "ə",  g: "v", desc: "mid central vowel (schwa)",         latin: "e",  arabic: "—", telugu: "—", note: "The 'uh' sound in 'sofa'. Unwritten in most scripts; emerges from reduction." },
+  { ipa: "ʌ",  g: "v", desc: "open-mid back unrounded vowel",     latin: "u",  arabic: "—", telugu: "—", note: "English 'u' in 'cup', 'love'. The STRUT vowel; also Korean ㅓ. Increasingly central in many American varieties." },
+  { ipa: "ɝ",  g: "v", desc: "r-coloured mid central vowel",      latin: "er", arabic: "—", telugu: "—", note: "American English 'bird', 'word', 'her'. Schwa with simultaneous rhotic colouring; non-rhotic dialects substitute /ɜː/." },
   { ipa: "æ",  g: "v", desc: "near-open front unrounded vowel",   latin: "a",  arabic: "—", telugu: "—", note: "English 'a' in 'cat', 'apple'. A specifically English vowel; most other Latin scripts use ⟨a⟩ for /a/." },
   { ipa: "a",  g: "v", desc: "open front/central unrounded vowel", latin: "a",  arabic: "ـَ", telugu: "అ", note: "Arabic diacritic fatha, written above the consonant. Telugu అ is independent; attached to a consonant, it's the inherent vowel (unwritten)." },
   { ipa: "ɑ",  g: "v", desc: "open back unrounded vowel",         latin: "a",  arabic: "—", telugu: "—", note: "English 'a' in 'father'; British 'o' in 'lot'. Distinct from open central /a/." },
@@ -7317,7 +7319,7 @@ const PC_EXAMPLES = {
   "ʂ":  "Hindi ष",   "x":  "loch",      "ɣ":  "Spanish g",
   "ç":  "German ich","ʁ":  "French rouge",
   "ʐ":  "Russian ж", "ɕ":  "Mandarin x",
-  "ħ":  "Arabic ح",  "ʕ":  "Arabic ع",  "h":  "hat",
+  "ħ":  "Arabic ح",  "ʕ":  "Arabic ع",  "h":  "hat",       "ɦ":  "Hindi ह",
   // Affricates
   "tʃ": "church",    "dʒ": "judge",
   "tɕ": "Mandarin j","dʑ": "Japanese じ",
