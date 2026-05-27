@@ -1178,8 +1178,16 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 #sm-view-coverage{padding:20px 24px;overflow-y:auto}
 .sm-cov-intro{color:var(--muted);font-size:12px;line-height:1.6;margin-bottom:4px;max-width:720px}
 .sm-cov-intro strong{color:var(--text)}
-.sm-cov-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px}
+.sm-cov-picker{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:4px;align-items:center}
 .sm-cov-picker-title{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;flex-basis:100%;margin-bottom:4px}
+/* Thin vertical hairline that separates "Reference" (the codex) from the
+   specific language chips. Reads as a category break, not a section title. */
+.sm-cov-picker-sep{display:inline-block;width:1px;height:18px;background:var(--bdr);margin:0 6px 0 2px;align-self:center}
+/* "IPA Reference" chip gets a subtle gold-edge treatment when at rest so
+   it visually anchors the picker as the default frame, while the active
+   state still uses the same coloured-fill treatment as language chips. */
+.sm-cov-chip[data-code="reference"]{border-color:rgba(232,200,64,.45);color:rgba(232,200,64,.85)}
+.sm-cov-chip[data-code="reference"]:hover{color:var(--gold);border-color:var(--gold)}
 .sm-cov-chip{background:var(--surf2);border:1px solid var(--bdr);border-radius:20px;color:var(--muted);cursor:pointer;font-size:11px;padding:5px 13px;transition:transform .15s cubic-bezier(.2,.8,.2,1),background .15s ease,border-color .15s ease,color .15s ease,box-shadow .18s ease,opacity .15s ease;user-select:none;display:inline-flex;align-items:baseline;gap:6px;opacity:.78}
 .sm-cov-chip:hover{opacity:1;color:var(--text);border-color:var(--muted);background:var(--surf);transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,.28)}
 .sm-cov-chip.active{opacity:1;color:#111;font-weight:700;border-width:2px;padding:4px 12px;transform:translateY(-1px);box-shadow:0 2px 10px rgba(0,0,0,.32),0 0 0 1px rgba(232,200,64,.22)}
@@ -5940,7 +5948,10 @@ function smLangBuildLegendItem(label, color) {
 
 const SM_COV_PALETTE = ["#e8c840", "#40b0e8", "#e85050"]; // gold, blue, red
 const SM_COV_MAX = 3;
-let smCovSelected = ["en"]; // default: English
+// Coverage opens on the curated IPA reference, not English. The user can
+// select any specific language (or combine up to three in any mix) but the
+// default frame is the codex itself, not one language's worldview.
+let smCovSelected = ["reference"];
 let smCovRendered = false;  // lazy first render
 let smCovShowYou = false;   // whether to overlay user's text on the grid
 
@@ -6019,9 +6030,11 @@ function smCovRender() {
   const intro = document.createElement("div");
   intro.className = "sm-cov-intro";
   intro.innerHTML = `
-    <strong>Phonetic coverage.</strong> Each language's inventory plotted on the
-    IPA consonant grid, vowel trapezoid, and vocal tract. Pick one for a detailed
-    view, or select up to three to compare which slots they share.`;
+    <strong>Phonetic coverage.</strong> <em>IPA Reference</em> shows the curated
+    IPA set — every consonant, vowel, and diphthong in the codex, plotted on
+    the IPA consonant grid, vowel trapezoid, and vocal tract. The language
+    buttons show one specific language's inventory; select up to three (in any
+    mix with Reference) to compare which slots they share.`;
   view.appendChild(intro);
 
   // Language chip picker
@@ -6033,8 +6046,20 @@ function smCovRender() {
   const picker = document.createElement("div");
   picker.className = "sm-cov-picker";
   picker.id = "sm-cov-picker";
-  // Build chips in a stable order (same as LANG_INVENTORIES iteration order)
+  // Build chips in a stable order. "reference" pins to the front (it's
+  // the default and the conceptual entry point — the curated IPA chart),
+  // followed by the specific languages in LANG_INVENTORIES iteration
+  // order. A thin separator after Reference signals the category break:
+  // codex vs. specific inventories.
+  if (LANG_INVENTORIES["reference"]) {
+    picker.appendChild(smCovBuildChip("reference"));
+    const sep = document.createElement("span");
+    sep.className = "sm-cov-picker-sep";
+    sep.setAttribute("aria-hidden", "true");
+    picker.appendChild(sep);
+  }
   for (const code in LANG_INVENTORIES) {
+    if (code === "reference") continue;
     picker.appendChild(smCovBuildChip(code));
   }
   view.appendChild(picker);
@@ -7561,7 +7586,7 @@ const PC_PHONEMES = [
   { ipa: "iː", g: "v", desc: "long close front vowel",            latin: "ee", arabic: "ي", telugu: "ఈ", haw: "ī" },
   { ipa: "uː", g: "v", desc: "long close back rounded vowel",     latin: "oo", arabic: "و", telugu: "ఊ", haw: "ū" },
   { ipa: "eː", g: "v", desc: "long close-mid front vowel",        latin: "ē",  arabic: "—", telugu: "ఏ", haw: "ē" },
-  { ipa: "oː", g: "v", desc: "long close-mid back vowel",         latin: "ō",  arabic: "—", telugu: "ఓ", haw: "ō" },
+  { ipa: "oː", g: "v", desc: "long close-mid back rounded vowel", latin: "ō",  arabic: "—", telugu: "ఓ", haw: "ō" },
   { ipa: "aː", g: "v", desc: "long open vowel",                   latin: "aa", arabic: "ا", telugu: "ఆ", haw: "ā", note: "Hawaiian kahakō (macron) ⟨ā⟩ marks length." },
 
   // ── Diphthongs ───────────────────────────────────────────────────────
@@ -7583,6 +7608,138 @@ const PC_PHONEMES = [
   { ipa: "eu", g: "d", desc: "close-mid front → close back",      latin: "eu", arabic: "—", telugu: "—", note: "Spanish 'neutro', 'Europa'." },
   { ipa: "ou", g: "d", desc: "close-mid back → close back",       latin: "ou", arabic: "—", telugu: "—", note: "Portuguese 'pouco'; some English dialects." },
 ];
+
+// ════════════════════════════════════════════════════════════════════════
+//  IPA REFERENCE INVENTORY — synthesized from PC_PHONEMES
+// ════════════════════════════════════════════════════════════════════════
+// The Coverage view used to default to English, which framed the entire
+// Phonology workspace through one specific language's worldview. The
+// curated PC_PHONEMES set is the more honest starting point — it's what
+// the codex actually catalogues.
+//
+// To avoid duplicating data, this parses each PC_PHONEMES row's desc
+// string into the (place, manner, voicing) / (height, backness, rounded)
+// tuples LANG_PHONEMES uses, then registers the result as a virtual
+// "reference" language. The rest of the Coverage rendering pipeline
+// then treats it like any other inventory — no per-renderer special-
+// casing needed.
+//
+// Caveat: this is a parser over English desc strings. If a future
+// PC_PHONEMES row uses an unusual phrasing the parser doesn't recognise,
+// the row will fall back to safe defaults (alveolar / stop / voiced /
+// central / unrounded) rather than throw — the cell may end up in the
+// wrong grid slot but the page won't break.
+(function buildReferenceInventory() {
+  if (typeof LANG_PHONEMES === "undefined" || typeof LANG_INVENTORIES === "undefined") return;
+  if (typeof PC_PHONEMES === "undefined") return;
+
+  // Manner — matches LANG_MANNER_ORDER values. "lateral approximant"
+  // resolves to "lateral" (matches the manner-keyword reorder we did
+  // in the Comparison table). Order matters: more-specific first.
+  const mannerOf = (desc) => {
+    const d = desc.toLowerCase();
+    if (d.includes("lateral")) return "lateral";
+    if (d.includes("trill")) return "trill";
+    if (d.includes("tap") || d.includes("flap")) return "tap";
+    if (d.includes("affricate")) return "affricate";
+    if (d.includes("fricative")) return "fricative";
+    if (d.includes("nasal")) return "nasal";
+    if (d.includes("approximant")) return "approximant";
+    if (d.includes("plosive") || d.includes("stop")) return "stop";
+    return "stop";
+  };
+
+  // Place — must match SM_COV_PLACES_CONS. "dental/alveolar" → alveolar
+  // (English-schema convention for /t d n/). "labio-velar" → bilabial
+  // (matches LANG_PHONEMES.en /w/, which the grid renders at bilabial).
+  const placeOf = (desc) => {
+    const d = desc.toLowerCase();
+    if (d.includes("bilabial") || d.includes("labio-velar") || d.includes("labial-velar")) return "bilabial";
+    if (d.includes("labiodental") || d.includes("labio-dental")) return "labiodental";
+    if (d.includes("postalveolar") || d.includes("post-alveolar")) return "postalveolar";
+    if (d.includes("alveolar")) return "alveolar";
+    if (d.includes("dental")) return "dental";
+    if (d.includes("retroflex")) return "retroflex";
+    if (d.includes("palatal")) return "palatal";
+    if (d.includes("velar")) return "velar";
+    if (d.includes("uvular")) return "uvular";
+    if (d.includes("pharyngeal")) return "pharyngeal";
+    if (d.includes("glottal")) return "glottal";
+    return "alveolar";
+  };
+
+  // Voicing — explicit "voiceless"/"voiced" prefix wins; "glottal stop"
+  // is voiceless by convention; everything else (nasals, taps, trills,
+  // approximants) defaults voiced.
+  const voicingOf = (desc) => {
+    const d = desc.toLowerCase();
+    if (d.startsWith("voiceless")) return 0;
+    if (d.startsWith("voiced")) return 1;
+    if (d === "glottal stop" || d.startsWith("glottal stop")) return 0;
+    return 1;
+  };
+
+  // Vowel height — bins to LANG_PHONEMES integer scale (0=close, 1=mid,
+  // 2=open-mid, 3=open). "near-X" buckets with its parent.
+  const heightOf = (desc) => {
+    const d = desc.toLowerCase();
+    if (d.includes("close-mid")) return 1;
+    if (d.includes("open-mid")) return 2;
+    if (d.includes("near-open")) return 3;
+    if (/\bopen\b/.test(d)) return 3;
+    if (d.includes("near-close")) return 0;
+    if (/\bclose\b/.test(d)) return 0;
+    if (d.includes("schwa") || /\bmid\b/.test(d)) return 1;
+    return 1;
+  };
+
+  // Vowel backness — 0 front, 1 central, 2 back. "front/central" → 1.
+  const backnessOf = (desc) => {
+    const d = desc.toLowerCase();
+    if (d.includes("front/central")) return 1;
+    if (d.includes("near-front") || /\bfront\b/.test(d)) return 0;
+    if (d.includes("near-back") || /\bback\b/.test(d)) return 2;
+    if (d.includes("central")) return 1;
+    return 1;
+  };
+
+  const roundedOf = (desc) => {
+    const d = desc.toLowerCase();
+    return (d.includes("rounded") && !d.includes("unrounded")) ? 1 : 0;
+  };
+
+  const cons = [], vowels = [], diphs = [];
+  for (const p of PC_PHONEMES) {
+    if (p.g === "c") cons.push([p.ipa, placeOf(p.desc), mannerOf(p.desc), voicingOf(p.desc)]);
+    else if (p.g === "v") vowels.push([p.ipa, heightOf(p.desc), backnessOf(p.desc), roundedOf(p.desc)]);
+    else if (p.g === "d") diphs.push(p.ipa);
+  }
+  LANG_PHONEMES["reference"] = { cons, vowels, diphs };
+
+  // Mirror the aggregate-recompute IIFE in language_phonetics.js so the
+  // Stats / Heat-map paths that read counts/total/vector still work.
+  const counts = {};
+  for (const pl of LANG_PLACE_ORDER) counts[pl] = 0;
+  for (const c of cons) counts[c[1]] = (counts[c[1]] || 0) + 1;
+  for (const v of vowels) {
+    const bucket = v[2] === 0 ? "front-vowel" : v[2] === 1 ? "central-vowel" : "back-vowel";
+    counts[bucket]++;
+  }
+  counts["diphthong"] = diphs.length;
+  let total = 0;
+  for (const pl of LANG_PLACE_ORDER) total += counts[pl];
+
+  LANG_INVENTORIES["reference"] = {
+    name: "IPA Reference",
+    variety: "curated set",
+    family: "—",
+    region: "—",
+    note: "Curated IPA reference — every consonant, vowel, and diphthong in the codex plotted at its IPA chart position. Not a language inventory.",
+    counts,
+    total,
+    vector: LANG_PLACE_ORDER.map(pl => total > 0 ? counts[pl]/total : 0)
+  };
+})();
 
 // Example-word lookup. Keyed by IPA; the value is a tiny anchor word
 // (or short phrase) that makes the phoneme audible at a glance. This
