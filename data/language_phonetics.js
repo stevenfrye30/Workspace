@@ -188,7 +188,29 @@ function langCosineSim(a, b) {
 // the base manner and place; they render as separate cells inside the
 // same grid slot.
 
-const LANG_MANNER_ORDER = ["stop","nasal","trill","tap","fricative","affricate","approximant","lateral"];
+// Row order in the consonant grid. Follows the official IPA pulmonic
+// consonant chart: plosive · nasal · trill · tap/flap · fricative ·
+// lateral fricative · approximant · lateral approximant. "affricate" is
+// retained at the end as a local extension — the IPA chart shows
+// affricates as tied symbols rather than a row, but several language
+// inventories in this codex (English /tʃ dʒ/, German /pf ts tʃ/, etc.)
+// store them under that manner so the row stays for compatibility.
+const LANG_MANNER_ORDER = ["stop","nasal","trill","tap","fricative","lateral-fricative","approximant","lateral","affricate"];
+
+// Display labels for manner row headers. Internal keys ("stop", "tap",
+// "lateral") stay the same so LANG_PHONEMES tuples don't need rewiring;
+// only the visible row label changes to match IPA chart terminology.
+const LANG_MANNER_LABELS = {
+  "stop": "plosive",
+  "nasal": "nasal",
+  "trill": "trill",
+  "tap": "tap/flap",
+  "fricative": "fricative",
+  "lateral-fricative": "lateral fricative",
+  "affricate": "affricate",
+  "approximant": "approximant",
+  "lateral": "lateral approximant"
+};
 
 const LANG_PHONEMES = {
   en: {

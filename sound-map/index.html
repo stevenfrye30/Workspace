@@ -6298,7 +6298,10 @@ function smCovShowTooltip(td) {
   }).join("");
   const metaParts = [];
   if (place) metaParts.push(`<span class="tt-meta-place">${escape(place)}</span>`);
-  if (manner) metaParts.push(`<span>${escape(manner)}</span>`);
+  if (manner) {
+    const mannerLabel = (typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[manner]) || manner;
+    metaParts.push(`<span>${escape(mannerLabel)}</span>`);
+  }
   const meta = metaParts.length ? `<div class="tt-meta">${metaParts.join("")}</div>` : "";
   tip.innerHTML = rows + meta;
 
@@ -6443,13 +6446,15 @@ function smCovBuildConsTable() {
   table.appendChild(thead);
 
   const tbody = document.createElement("tbody");
+  const mannerLabel = (m) =>
+    (typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[m]) || m;
   LANG_MANNER_ORDER.forEach(manner => {
     const tr = document.createElement("tr");
     const rowTh = document.createElement("th");
     rowTh.className = "sm-cov-manner-th";
-    rowTh.textContent = manner;
-    rowTh.dataset.manner = manner;   // axis-label hover entry point
-    rowTh.title = `${manner} — hover to highlight this manner across the grid`;
+    rowTh.textContent = mannerLabel(manner);
+    rowTh.dataset.manner = manner;   // axis-label hover entry point; internal key
+    rowTh.title = `${mannerLabel(manner)} — hover to highlight this manner across the grid`;
     tr.appendChild(rowTh);
     SM_COV_PLACES_CONS.forEach(place => {
       const td = document.createElement("td");
@@ -7311,9 +7316,12 @@ function smCovBuildSignatureSection() {
         tag.textContent = "unique";
         chip.appendChild(tag);
       }
-      // Tooltip: describe and list co-owners
+      // Tooltip: describe and list co-owners. Manner uses the IPA-chart
+      // display label ("plosive" rather than the internal "stop" key) so
+      // the chip's tooltip stays consistent with the grid row label.
+      const mannerDisplay = (typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[sig.manner]) || sig.manner;
       const featText = sig.kind === "C"
-        ? `${sig.manner} · ${sig.place} · ${sig.voice ? "voiced" : "voiceless"}`
+        ? `${mannerDisplay} · ${sig.place} · ${sig.voice ? "voiced" : "voiceless"}`
         : sig.kind === "V" ? "vowel" : "diphthong";
       const others = sig.others.length
         ? `also in: ${sig.others.map(c => LANG_INVENTORIES[c].name).sort().join(", ")}`
@@ -7633,11 +7641,12 @@ const PC_PHONEMES = [
   if (typeof LANG_PHONEMES === "undefined" || typeof LANG_INVENTORIES === "undefined") return;
   if (typeof PC_PHONEMES === "undefined") return;
 
-  // Manner — matches LANG_MANNER_ORDER values. "lateral approximant"
-  // resolves to "lateral" (matches the manner-keyword reorder we did
-  // in the Comparison table). Order matters: more-specific first.
+  // Manner — matches LANG_MANNER_ORDER values. Order matters: more
+  // specific first ("lateral fricative" before either "lateral" or
+  // "fricative" alone; "lateral approximant" before plain "lateral").
   const mannerOf = (desc) => {
     const d = desc.toLowerCase();
+    if (d.includes("lateral") && d.includes("fricative")) return "lateral-fricative";
     if (d.includes("lateral")) return "lateral";
     if (d.includes("trill")) return "trill";
     if (d.includes("tap") || d.includes("flap")) return "tap";
@@ -7714,6 +7723,55 @@ const PC_PHONEMES = [
     else if (p.g === "v") vowels.push([p.ipa, heightOf(p.desc), backnessOf(p.desc), roundedOf(p.desc)]);
     else if (p.g === "d") diphs.push(p.ipa);
   }
+
+  // Pulmonic-chart completion. PC_PHONEMES is curated for the Comparison
+  // table and is sized to the languages currently mapped in the codex;
+  // the Reference Coverage view should additionally show the IPA pulmonic
+  // consonants that no current language inventory uses, so the chart
+  // resembles the official chart rather than a language-driven subset.
+  // Each tuple is (ipa, place, manner, voicing) — same shape as
+  // LANG_PHONEMES.<code>.cons. Symbols already present in PC_PHONEMES
+  // (e.g. ç ʝ which were added in Stage 1) are intentionally not
+  // duplicated; the dedupe step below skips any extra whose IPA already
+  // landed in cons[].
+  const PULMONIC_EXTRAS = [
+    // Plosives
+    ["c", "palatal", "stop", 0],
+    ["ɟ", "palatal", "stop", 1],
+    ["ɢ", "uvular", "stop", 1],
+    // Nasals
+    ["ɱ", "labiodental", "nasal", 1],
+    ["ɴ", "uvular", "nasal", 1],
+    // Trills
+    ["ʙ", "bilabial", "trill", 1],
+    ["ʀ", "uvular", "trill", 1],
+    // Tap / Flap
+    ["ⱱ", "labiodental", "tap", 1],
+    ["ɽ", "retroflex", "tap", 1],
+    // Fricatives
+    ["ɸ", "bilabial", "fricative", 0],
+    ["β", "bilabial", "fricative", 1],
+    ["ɕ", "palatal", "fricative", 0],
+    ["ʑ", "palatal", "fricative", 1],
+    ["χ", "uvular", "fricative", 0],
+    ["ʁ", "uvular", "fricative", 1],
+    // Lateral fricatives
+    ["ɬ", "alveolar", "lateral-fricative", 0],
+    ["ɮ", "alveolar", "lateral-fricative", 1],
+    // Approximants
+    ["ʋ", "labiodental", "approximant", 1],
+    ["ɰ", "velar", "approximant", 1],
+    // Lateral approximants
+    ["ʟ", "velar", "lateral", 1]
+  ];
+  const haveIpa = new Set(cons.map(c => c[0]));
+  for (const extra of PULMONIC_EXTRAS) {
+    if (!haveIpa.has(extra[0])) {
+      cons.push(extra);
+      haveIpa.add(extra[0]);
+    }
+  }
+
   LANG_PHONEMES["reference"] = { cons, vowels, diphs };
 
   // Mirror the aggregate-recompute IIFE in language_phonetics.js so the
@@ -7768,7 +7826,15 @@ const PC_EXAMPLES = {
   "ʂ":  "Hindi ष",   "x":  "loch",      "ɣ":  "Spanish g",
   "ç":  "German ich","ʁ":  "French rouge",
   "ʐ":  "Russian ж", "ɕ":  "Mandarin x",
+  "ɸ":  "Japanese ふ", "β":  "Spanish saber",
+  "χ":  "Castilian j",
   "ħ":  "Arabic ح",  "ʕ":  "Arabic ع",  "h":  "hat",       "ɦ":  "Hindi ह",
+  // Pulmonic-chart additions (no PC_PHONEMES rows; surface in Coverage Reference)
+  "ɱ":  "comfort",   "ɴ":  "Japanese ん",
+  "ɽ":  "Hindi ड़",
+  "ɬ":  "Welsh ll",
+  "ʋ":  "Hindi व",
+  "c":  "Hungarian ty", "ɟ":  "Hungarian gy",
   // Affricates
   "tʃ": "church",    "dʒ": "judge",
   "tɕ": "Mandarin j","dʑ": "Japanese じ",
@@ -7879,7 +7945,11 @@ const PC_HEIGHT_LABELS = ["close","close-mid","open-mid","open"];
 const PC_BACKNESS_LABELS = ["front","central","back"];
 function pcComposeConsDesc(c) {
   const [_ipa, place, manner, voice] = c;
-  return `${voice ? "voiced" : "voiceless"} ${place || ""} ${manner || ""}`.trim().replace(/\s+/g," ");
+  // Use the IPA-chart display label ("plosive" instead of the internal
+  // "stop" key, "tap/flap" instead of "tap") so composed descriptions
+  // read the same as the curated PC_PHONEMES desc strings.
+  const mannerLabel = (typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[manner]) || manner;
+  return `${voice ? "voiced" : "voiceless"} ${place || ""} ${mannerLabel || ""}`.trim().replace(/\s+/g," ");
 }
 function pcComposeVowelDesc(v) {
   const [_ipa, h, b, rounded] = v;
