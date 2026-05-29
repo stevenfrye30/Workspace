@@ -11,8 +11,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 #sm-header .sub { font-size: 12px; color: var(--muted); font-style: italic; flex: 1; }
 #sm-header a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 5px 12px; border: 1px solid var(--bdr); border-radius: var(--radius); }
 #sm-header a:hover { color: var(--gold); border-color: var(--gold); }
-#panel-sound, #panel-coverage, #panel-comparison, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-#panel-sound.active, #panel-coverage.active, #panel-comparison.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
+#panel-sound, #panel-coverage, #panel-comparison, #panel-practice, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; display: none; flex-direction: column; overflow: hidden; }
+#panel-sound.active, #panel-coverage.active, #panel-comparison.active, #panel-practice.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
 
 /* ════════════════════ FLOW LAB (nested sub-tabs) ════════════════════ */
 #fl-tab-nav{display:flex;background:var(--surf2);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 14px;gap:2px;align-items:flex-end}
@@ -1466,54 +1466,63 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-mode-annotated .sm-cov-grid td.filled .sm-cov-example-inline{display:block;font-family:Georgia,"Times New Roman",serif;font-size:9px;font-style:italic;color:rgba(0,0,0,.55)}
 .sm-cov-mode-annotated .sm-cov-grid td.filled{padding-top:4px;padding-bottom:4px}
 
-/* ── Phoneme Inspector — persistent right-side panel ─────────────────
-   Reflects the globally-selected phoneme. Hidden on viewports below
-   1100px (no horizontal room for a dedicated reference column). The
-   inspector itself is fixed-position; the body gets right padding so
-   page content doesn't slide underneath. Codex aesthetic: dark
-   surface, gold for the active glyph, italic Georgia for examples,
-   monospace gold for the grid location string. */
-@media (min-width: 1100px){
-  body{padding-right:290px}
+/* ── Phonology · Practice ───────────────────────────────────────────
+   Restrained drill surface. Reuses the dark codex palette, gold focus,
+   and the Coverage place/manner colours. No game chrome. */
+#panel-practice .pc-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
+.prac-shell{max-width:680px;margin:0 auto}
+.prac-controls{display:flex;flex-wrap:wrap;align-items:center;gap:18px;margin-bottom:22px;padding-bottom:14px;border-bottom:1px solid var(--bdr)}
+.prac-ctl-group{display:inline-flex;align-items:center;gap:8px}
+.prac-ctl-label{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+.prac-seg{display:inline-flex;gap:2px;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--radius);padding:2px}
+.prac-seg-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-family:inherit;font-size:11px;padding:4px 11px;border-radius:4px;transition:color .15s ease,background .15s ease}
+.prac-seg-btn:hover{color:var(--text)}
+.prac-seg-btn.active{color:#111;background:var(--gold);font-weight:700}
+.prac-score{margin-left:auto;display:inline-flex;gap:10px;align-items:baseline;font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:11px;color:var(--muted)}
+.prac-score-correct{color:rgba(232,200,64,.85)}
+.prac-score-streak{color:var(--gold);font-weight:700}
+
+.prac-card{background:var(--surf);border:1px solid var(--bdr);border-radius:var(--radius);padding:26px 26px 22px;min-height:280px;display:flex;flex-direction:column;align-items:center}
+.prac-empty{color:var(--muted);font-style:italic;font-size:12px;margin:auto}
+.prac-label{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:8.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:rgba(232,200,64,.7);margin-bottom:18px;align-self:center}
+.prac-prompt{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:24px;width:100%}
+.prac-prompt-ipa{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:64px;font-weight:700;color:var(--gold);line-height:1;letter-spacing:-1px;text-shadow:0 0 16px rgba(232,200,64,.22),0 0 1px rgba(232,200,64,.4)}
+.prac-prompt-text{font-size:16px;color:var(--text);text-align:center;line-height:1.5;max-width:460px}
+
+.prac-answer{width:100%;display:flex;flex-direction:column;align-items:center}
+.prac-choices{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;max-width:520px}
+.prac-choice{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--radius);color:var(--text);cursor:pointer;font-family:inherit;font-size:13px;padding:14px 16px;text-align:center;transition:border-color .15s ease,background .15s ease,color .15s ease,box-shadow .2s ease;line-height:1.35}
+.prac-choice:hover{border-color:rgba(232,200,64,.5);background:var(--surf)}
+.prac-choice-ipa{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:24px;font-weight:700;color:var(--gold);padding:12px 16px}
+.prac-choice.locked{cursor:default;pointer-events:none}
+.prac-choice.correct{border-color:var(--gold);background:rgba(232,200,64,.12);box-shadow:0 0 0 1px var(--gold) inset,0 0 14px rgba(232,200,64,.18);color:var(--gold)}
+.prac-choice.wrong{border-color:rgba(200,90,90,.55);background:rgba(200,90,90,.08);color:rgba(220,150,150,.85)}
+.prac-choice.locked:not(.correct):not(.wrong){opacity:.45}
+
+/* Compact challenge grid — reuses Coverage place/manner labels + palette. */
+.prac-grid{border-collapse:collapse;font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;margin:4px auto 0;table-layout:fixed}
+.prac-grid th{background:var(--surf2);color:var(--muted);font-family:"Segoe UI",Arial,sans-serif;font-size:8px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;border:1px solid rgba(255,255,255,.04);padding:3px 4px;text-align:center}
+.prac-grid th.prac-grid-manner{text-align:right;white-space:nowrap;padding:3px 8px;font-size:9px}
+.prac-grid td{border:1px solid rgba(255,255,255,.05);width:30px;height:26px;text-align:center;vertical-align:middle;background:var(--surf2);color:var(--gold);font-size:14px;font-weight:700;transition:background .2s ease,box-shadow .2s ease,transform .12s ease}
+.prac-grid td.has{background:rgba(232,200,64,.03)}
+.prac-grid td.prac-grid-clickable{cursor:pointer}
+.prac-grid td.prac-grid-clickable:hover{background:rgba(232,200,64,.12);box-shadow:inset 0 0 0 1px rgba(232,200,64,.4)}
+.prac-grid td.prac-grid-target{background:rgba(232,200,64,.14);box-shadow:inset 0 0 0 1px var(--gold);color:var(--gold)}
+.prac-grid td.locked{pointer-events:none}
+.prac-grid td.correct{background:rgba(232,200,64,.18);box-shadow:inset 0 0 0 2px var(--gold);color:var(--gold);text-shadow:0 0 8px rgba(232,200,64,.4)}
+.prac-grid td.wrong{background:rgba(200,90,90,.14);box-shadow:inset 0 0 0 2px rgba(200,90,90,.6);color:rgba(220,150,150,.9)}
+
+.prac-feedback{display:none;align-items:center;gap:12px;width:100%;max-width:520px;margin-top:22px;padding-top:16px;border-top:1px solid var(--bdr);font-size:12px;line-height:1.5}
+.prac-feedback.show{display:flex}
+.prac-feedback .prac-fb-mark{font-size:18px;font-weight:700;flex-shrink:0}
+.prac-feedback.ok .prac-fb-mark{color:var(--gold)}
+.prac-feedback.no .prac-fb-mark{color:rgba(220,150,150,.9)}
+.prac-feedback .prac-fb-text{flex:1;color:var(--muted)}
+.prac-next{flex-shrink:0;background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--radius);color:var(--gold);cursor:pointer;font-family:inherit;font-size:12px;padding:7px 16px;transition:border-color .15s ease,background .15s ease}
+.prac-next:hover{border-color:var(--gold);background:rgba(232,200,64,.08)}
+@media(max-width:640px){
+  .prac-choices{grid-template-columns:1fr}
 }
-#phoneme-inspector{position:fixed;top:0;right:0;bottom:0;width:290px;background:var(--surf);border-left:1px solid rgba(232,200,64,.18);color:var(--text);z-index:40;display:flex;flex-direction:column;font-family:"Segoe UI",Arial,sans-serif;overflow:hidden;box-shadow:-4px 0 18px rgba(0,0,0,.35)}
-@media (max-width: 1099px){
-  #phoneme-inspector{display:none}
-}
-#phoneme-inspector .ph-insp-content{display:none}
-#phoneme-inspector.ph-insp-active .ph-insp-empty{display:none}
-#phoneme-inspector.ph-insp-active .ph-insp-content{display:flex;flex-direction:column;flex:1;overflow-y:auto;animation:ph-insp-fade .25s ease}
-@keyframes ph-insp-fade{from{opacity:0;transform:translateY(2px)} to{opacity:1;transform:none}}
-
-.ph-insp-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;color:var(--muted)}
-.ph-insp-empty-icon{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:48px;color:rgba(232,200,64,.35);line-height:1;margin-bottom:18px}
-.ph-insp-empty-text{font-size:13px;line-height:1.55;color:var(--muted);margin-bottom:14px}
-.ph-insp-empty-hint{font-size:10px;color:rgba(255,255,255,.28);line-height:1.5;font-style:italic;letter-spacing:.02em;max-width:200px}
-
-.ph-insp-header{padding:24px 22px 18px;border-bottom:1px solid rgba(232,200,64,.18);position:relative;background:linear-gradient(180deg,rgba(232,200,64,.04),transparent)}
-.ph-insp-symbol{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:62px;font-weight:700;color:var(--gold);line-height:1;text-shadow:0 0 14px rgba(232,200,64,.22),0 0 1px rgba(232,200,64,.4);margin-bottom:10px;letter-spacing:-1px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
-.ph-insp-name{font-size:11.5px;color:var(--muted);font-style:italic;letter-spacing:.02em;line-height:1.4;padding-right:32px}
-.ph-insp-clear{position:absolute;top:14px;right:14px;background:none;border:1px solid var(--bdr);color:var(--muted);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1;padding:0;transition:color .15s ease,border-color .15s ease;font-family:inherit;display:flex;align-items:center;justify-content:center}
-.ph-insp-clear:hover{color:var(--gold);border-color:var(--gold)}
-
-.ph-insp-section{padding:14px 22px;border-bottom:1px solid var(--bdr)}
-.ph-insp-section:last-child{border-bottom:none}
-.ph-insp-section-title{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(232,200,64,.72);margin-bottom:10px}
-
-.ph-insp-features-grid{display:grid;grid-template-columns:70px 1fr;row-gap:6px;column-gap:10px;font-size:11.5px;margin:0;line-height:1.35}
-.ph-insp-features-grid dt{color:var(--muted);font-weight:500}
-.ph-insp-features-grid dd{margin:0;color:var(--text)}
-
-.ph-insp-articulation{font-size:11.5px;line-height:1.55;color:var(--text);margin:0;font-style:italic;opacity:.9}
-
-.ph-insp-location{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:11px;color:rgba(232,200,64,.85);margin:0;letter-spacing:.02em}
-
-.ph-insp-examples{font-family:Georgia,"Times New Roman",serif;font-size:13px;font-style:italic;color:var(--text);margin:0;line-height:1.5}
-
-.ph-insp-mappings{display:grid;grid-template-columns:82px 1fr;row-gap:5px;column-gap:10px;font-size:11.5px;margin:0;line-height:1.3}
-.ph-insp-mappings dt{color:var(--muted)}
-.ph-insp-mappings dd{margin:0;color:var(--text);font-weight:600;word-break:break-word}
-.ph-insp-mappings .ph-insp-mappings-empty{color:var(--muted);font-style:italic;grid-column:1/-1}
 
 /* ── Persistent selection styling ──────────────────────────────────
    .phoneme-selected fires on click and persists until a new phoneme
@@ -2399,6 +2408,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <nav id="sub-nav-phonology" class="sub-nav" role="tablist" aria-label="Phonology modes">
   <button class="sub-tab-btn active" type="button" data-sub-tab="comparison" role="tab" aria-selected="true">Comparison</button>
   <button class="sub-tab-btn" type="button" data-sub-tab="coverage" role="tab" aria-selected="false">Coverage</button>
+  <button class="sub-tab-btn" type="button" data-sub-tab="practice" role="tab" aria-selected="false">Practice</button>
 </nav>
 <nav id="sub-nav-rhyme" class="sub-nav" role="tablist" aria-label="Rhyme modes">
   <button class="sub-tab-btn active" type="button" data-sub-tab="endings" role="tab" aria-selected="true">Endings</button>
@@ -2598,6 +2608,43 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <div id="panel-coverage" role="tabpanel">
   <div class="pc-scroll">
     <div id="sm-view-coverage"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PRACTICE — restrained phoneme-learning drill. Match the
+     Sound + IPA Grid Challenge. Built from existing phoneme data
+     (LANG_PHONEMES, PC_PHONEMES, PC_EXAMPLES); answers feed the
+     global Phoneme Inspector as the deep-explanation surface.
+     Rendered by the practice* functions in the script block.
+     ══════════════════════════════════════════════════════════ -->
+<div id="panel-practice" role="tabpanel">
+  <div class="pc-scroll">
+    <div class="prac-shell">
+      <header class="prac-controls">
+        <div class="prac-ctl-group" role="group" aria-label="Source set">
+          <span class="prac-ctl-label">Set</span>
+          <div class="prac-seg" id="prac-source">
+            <button class="prac-seg-btn active" type="button" data-source="reference">IPA Reference</button>
+            <button class="prac-seg-btn" type="button" data-source="en">English</button>
+            <button class="prac-seg-btn" type="button" data-source="ar">Arabic</button>
+          </div>
+        </div>
+        <div class="prac-ctl-group" role="group" aria-label="Difficulty level">
+          <span class="prac-ctl-label">Level</span>
+          <div class="prac-seg" id="prac-level">
+            <button class="prac-seg-btn active" type="button" data-level="1" title="Common core sounds">1</button>
+            <button class="prac-seg-btn" type="button" data-level="2" title="Full place × manner chart">2</button>
+            <button class="prac-seg-btn" type="button" data-level="3" title="Contrasts & relationships">3</button>
+            <button class="prac-seg-btn" type="button" data-level="4" title="Full chart mastery">4</button>
+          </div>
+        </div>
+        <div class="prac-score" id="prac-score" aria-live="polite" title="Session score · streak"></div>
+      </header>
+      <div class="prac-card" id="prac-card">
+        <!-- question rendered here -->
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2884,63 +2931,6 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 
 <div class="status-bar" id="status-bar"></div>
 
-<!-- ══════════════════════════════════════════════════════════
-     PHONEME INSPECTOR — persistent right-side panel that
-     reflects the globally-selected phoneme. Reads from
-     PhonemeState (declared in the script block below). All
-     fields are populated by renderInspector(); empty state
-     shows until a phoneme is clicked anywhere in the app.
-     Hidden on viewports < 1100px (no room).
-     ══════════════════════════════════════════════════════════ -->
-<aside id="phoneme-inspector" class="ph-insp" aria-label="Phoneme inspector" aria-live="polite">
-  <div class="ph-insp-empty">
-    <div class="ph-insp-empty-icon" aria-hidden="true">·</div>
-    <div class="ph-insp-empty-text">
-      Click any phoneme<br>to inspect it.
-    </div>
-    <div class="ph-insp-empty-hint">
-      IPA grid · vowel chart · diphthong chips · comparison table
-    </div>
-  </div>
-  <div class="ph-insp-content">
-    <header class="ph-insp-header">
-      <div class="ph-insp-symbol" aria-live="polite"></div>
-      <div class="ph-insp-name"></div>
-      <button class="ph-insp-clear" type="button" title="Clear selection (Esc)" aria-label="Clear selection">×</button>
-    </header>
-
-    <section class="ph-insp-section">
-      <h3 class="ph-insp-section-title">Features</h3>
-      <dl class="ph-insp-features-grid">
-        <dt>Place</dt>    <dd data-field="place">—</dd>
-        <dt>Manner</dt>   <dd data-field="manner">—</dd>
-        <dt>Voicing</dt>  <dd data-field="voicing">—</dd>
-        <dt>Category</dt> <dd data-field="category">—</dd>
-      </dl>
-    </section>
-
-    <section class="ph-insp-section">
-      <h3 class="ph-insp-section-title">Articulation</h3>
-      <p class="ph-insp-articulation" data-field="articulation"></p>
-    </section>
-
-    <section class="ph-insp-section">
-      <h3 class="ph-insp-section-title">Grid location</h3>
-      <p class="ph-insp-location" data-field="location">—</p>
-    </section>
-
-    <section class="ph-insp-section">
-      <h3 class="ph-insp-section-title">Example words</h3>
-      <p class="ph-insp-examples" data-field="examples">—</p>
-    </section>
-
-    <section class="ph-insp-section">
-      <h3 class="ph-insp-section-title">Language mappings</h3>
-      <dl class="ph-insp-mappings" data-field="mappings"></dl>
-    </section>
-  </div>
-</aside>
-
 <script src="../data/cmudict.js"></script>
 <script src="../data/phonetics.js"></script>
 <script src="../data/language_phonetics.js"></script>
@@ -2987,7 +2977,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 //  file and may invoke setTab() before the tab-switching block executes.
 //  Keeping these constants/lets here avoids a TDZ error in that path.)
 // ══════════════════════════════════
-const PHONOLOGY_SUBS = ["comparison", "coverage"];
+const PHONOLOGY_SUBS = ["comparison", "coverage", "practice"];
 const RHYME_SUBS = ["endings", "finder", "bars", "vault"];
 const PHONOLOGY_DEFAULT = "comparison";  // the codex centerpiece
 const RHYME_DEFAULT = "endings";          // start of the composition pipeline
@@ -8928,84 +8918,6 @@ function buildPhonemeProfile(ipa, sourceCtx) {
   return profile;
 }
 
-// ── Inspector renderer ───────────────────────────────────────────────
-function renderInspector(profile) {
-  const insp = document.getElementById("phoneme-inspector");
-  if (!insp) return;
-  if (!profile) {
-    insp.classList.remove("ph-insp-active");
-    return;
-  }
-  insp.classList.add("ph-insp-active");
-
-  const symbolEl = insp.querySelector(".ph-insp-symbol");
-  if (symbolEl) symbolEl.textContent = profile.ipa;
-
-  const nameEl = insp.querySelector(".ph-insp-name");
-  if (nameEl) nameEl.textContent = profile.name || "";
-
-  const setField = (sel, txt) => {
-    const el = insp.querySelector(sel);
-    if (el) el.textContent = txt;
-  };
-  const mLabel = profile.manner
-    ? ((typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[profile.manner]) || profile.manner)
-    : "—";
-  setField('[data-field="place"]', profile.place || "—");
-  setField('[data-field="manner"]', mLabel);
-  setField('[data-field="voicing"]',
-    profile.voice === null || profile.voice === undefined ? "—"
-      : profile.voice ? "voiced" : "voiceless");
-  setField('[data-field="category"]', profile.category || "—");
-
-  setField('[data-field="articulation"]', profile.articulationNote || "—");
-
-  const locEl = insp.querySelector('[data-field="location"]');
-  if (locEl) {
-    if (profile.place && profile.manner) {
-      const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
-      locEl.textContent = `${cap(mLabel)} → ${cap(profile.place)}`;
-    } else if (profile.category === "vowel") {
-      locEl.textContent = "Vowel trapezoid";
-    } else if (profile.category === "diphthong") {
-      locEl.textContent = "Diphthong set";
-    } else {
-      locEl.textContent = "—";
-    }
-  }
-
-  const exEl = insp.querySelector('[data-field="examples"]');
-  if (exEl) {
-    if (profile.example) {
-      exEl.textContent = profile.example;
-    } else if (profile.note) {
-      exEl.textContent = profile.note.split(".")[0] + ".";
-    } else {
-      exEl.textContent = "—";
-    }
-  }
-
-  const mapEl = insp.querySelector('[data-field="mappings"]');
-  if (mapEl) {
-    mapEl.innerHTML = "";
-    if (profile.mappings && profile.mappings.length) {
-      for (const m of profile.mappings) {
-        const dt = document.createElement("dt");
-        dt.textContent = m.label;
-        const dd = document.createElement("dd");
-        dd.textContent = m.value;
-        mapEl.appendChild(dt);
-        mapEl.appendChild(dd);
-      }
-    } else {
-      const note = document.createElement("div");
-      note.className = "ph-insp-mappings-empty";
-      note.textContent = "no curated language mappings yet";
-      mapEl.appendChild(note);
-    }
-  }
-}
-
 // ── Selection styling subscriber ─────────────────────────────────────
 // Clears prior selection classes, then applies them to every surface
 // whose IPA matches the active profile. Two layers:
@@ -9067,7 +8979,6 @@ function applySelectionStyling(profile) {
   }
 }
 
-PhonemeState.subscribe(renderInspector);
 PhonemeState.subscribe(applySelectionStyling);
 
 // ── Click delegation (Phase 1 surfaces) ──────────────────────────────
@@ -9076,11 +8987,6 @@ PhonemeState.subscribe(applySelectionStyling);
 // place/manner from a grid cell). Stops there — does not interfere with
 // existing handlers (script-cell copy, desc-cell expand, fl-tab clicks).
 document.addEventListener("click", e => {
-  // Inspector clear button
-  if (e.target.closest("#phoneme-inspector .ph-insp-clear")) {
-    PhonemeState.clear();
-    return;
-  }
   // IPA grid — per-symbol click. The cell is the source context for
   // place/manner; the symbol element carries the IPA + voicing class.
   const sym = e.target.closest(".sm-cov-symbol[data-ipa]");
@@ -9136,6 +9042,562 @@ document.addEventListener("keydown", e => {
     PhonemeState.clear();
   }
 });
+
+// ══════════════════════════════════════════════════════════════════════════
+//  PHONOLOGY · PRACTICE
+// ══════════════════════════════════════════════════════════════════════════
+// A restrained phoneme-learning drill. Five question types — Name the sound,
+// Find the symbol, Spot the category, Inventory contrast, and IPA Grid
+// Challenge — all generated from existing data (LANG_PHONEMES, PC_PHONEMES,
+// PC_EXAMPLES). No new dataset, no audio. Answering sets the global
+// selectedPhoneme so the Phoneme Inspector becomes the deep-explanation
+// surface — Practice feeds exploration rather than duplicating it.
+
+let practiceSource = "reference";   // reference | en | ar
+let practiceLevel = 1;              // 1..4
+let practiceScore = 0;
+let practiceStreak = 0;
+let practiceAnswered = false;
+let practiceCurrent = null;
+let practiceCurrentPool = [];
+let practiceInited = false;
+
+const PRAC_PLACE_ABBR = {
+  bilabial:"Bilab", labiodental:"Lab-d", dental:"Dent", alveolar:"Alv",
+  postalveolar:"P-alv", retroflex:"Retr", palatal:"Pal", velar:"Vel",
+  uvular:"Uvu", pharyngeal:"Phar", glottal:"Glot"
+};
+function practicePlaceAbbr(pl){ return PRAC_PLACE_ABBR[pl] || pl; }
+function practiceMannerLabel(m){
+  return (typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[m]) || m;
+}
+function practiceEsc(s){
+  return String(s).replace(/[&<>"']/g, c =>
+    ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"})[c]);
+}
+function practiceShuffle(arr){
+  const a = arr.slice();
+  for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+  return a;
+}
+function practicePick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+// Difficulty proxy — how many of the real languages carry this phoneme.
+// Common sounds (high count) appear at low levels; rarer symbols (pulmonic
+// extras, retroflex/uvular detail) only surface higher up. Pure derivation
+// from LANG_PHONEMES, exactly as the brief asked.
+const practiceLangCountCache = {};
+function practiceLangCount(ipa){
+  if (ipa in practiceLangCountCache) return practiceLangCountCache[ipa];
+  let n = 0;
+  if (typeof LANG_PHONEMES !== "undefined") {
+    for (const code in LANG_PHONEMES) {
+      if (code === "reference") continue;
+      const d = LANG_PHONEMES[code]; if (!d) continue;
+      const hit = (d.cons||[]).some(c=>c[0]===ipa)
+               || (d.vowels||[]).some(v=>v[0]===ipa)
+               || (d.diphs||[]).indexOf(ipa) !== -1;
+      if (hit) n++;
+    }
+  }
+  practiceLangCountCache[ipa] = n;
+  return n;
+}
+
+function practiceComposeDesc(ipa, place, manner, voice, category){
+  const pc = (typeof PC_PHONEMES !== "undefined") ? PC_PHONEMES.find(p=>p.ipa===ipa) : null;
+  if (pc && pc.desc) return pc.desc;
+  if (category === "consonant" && typeof pcComposeConsDesc === "function") {
+    return pcComposeConsDesc([ipa, place, manner, voice]);
+  }
+  return category || "phoneme";
+}
+
+// Normalized phoneme records for the active source inventory.
+function practiceBuildPool(source){
+  const out = [];
+  const inv = (typeof LANG_PHONEMES !== "undefined") ? LANG_PHONEMES[source] : null;
+  if (!inv) return out;
+  (inv.cons||[]).forEach(([ipa, place, manner, voice]) => {
+    out.push({ ipa, place, manner, voice, category:"consonant",
+      desc: practiceComposeDesc(ipa, place, manner, voice, "consonant"),
+      example: (typeof PC_EXAMPLES !== "undefined") ? (PC_EXAMPLES[ipa]||"") : "",
+      langCount: practiceLangCount(ipa) });
+  });
+  (inv.vowels||[]).forEach(([ipa]) => {
+    const pc = (typeof PC_PHONEMES !== "undefined") ? PC_PHONEMES.find(p=>p.ipa===ipa) : null;
+    out.push({ ipa, place:null, manner:null, voice:1, category:"vowel",
+      desc: pc && pc.desc ? pc.desc : "vowel",
+      example: (typeof PC_EXAMPLES !== "undefined") ? (PC_EXAMPLES[ipa]||"") : "",
+      langCount: practiceLangCount(ipa) });
+  });
+  return out;
+}
+
+// Level gates the pool by the language-count proxy. L1 = common core,
+// L2 = most of the chart, L3/L4 = anything (relational variants unlock too).
+function practiceFilterByLevel(pool, level){
+  if (level >= 3) return pool.slice();
+  const min = level === 1 ? 8 : 2;
+  let filtered = pool.filter(p => p.langCount >= min);
+  if (filtered.length < 6) filtered = pool.slice();   // never starve the drill
+  return filtered;
+}
+
+// ── Distractor helpers ──
+function practiceDistinctBy(correct, near, all, n, key){
+  const chosen = [], seen = new Set([correct[key]]);
+  for (const src of [practiceShuffle(near), practiceShuffle(all)]) {
+    for (const p of src) {
+      if (chosen.length >= n) break;
+      if (seen.has(p[key])) continue;
+      seen.add(p[key]); chosen.push(p);
+    }
+    if (chosen.length >= n) break;
+  }
+  return chosen;
+}
+
+// ── Question generators (return normalized question objects) ──
+function qNameSound(pool){
+  const correct = practicePick(pool);
+  const others = pool.filter(p => p.ipa !== correct.ipa);
+  const near = others.filter(p => p.manner === correct.manner || p.place === correct.place);
+  const distractors = practiceDistinctBy(correct, near, others, 3, "desc");
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([correct, ...distractors]);
+  return {
+    type:"name-sound", promptLabel:"Name this sound",
+    promptKind:"ipa", promptValue: correct.ipa,
+    answerKind:"choices",
+    choices: opts.map(o => ({ label:o.desc })),
+    correctIndex: opts.indexOf(correct),
+    answerPhoneme: correct.ipa,
+    feedback: `/${correct.ipa}/ — ${correct.desc}${correct.example?` · “${correct.example}”`:""}`
+  };
+}
+function qFindSymbol(pool){
+  const correct = practicePick(pool);
+  const others = pool.filter(p => p.ipa !== correct.ipa);
+  const near = others.filter(p => p.manner === correct.manner || p.place === correct.place);
+  const distractors = practiceDistinctBy(correct, near, others, 3, "ipa");
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([correct, ...distractors]);
+  return {
+    type:"find-symbol", promptLabel:"Find the symbol",
+    promptKind:"text", promptValue: correct.desc,
+    answerKind:"choices",
+    choices: opts.map(o => ({ label:o.ipa, ipa:true })),
+    correctIndex: opts.indexOf(correct),
+    answerPhoneme: correct.ipa,
+    feedback: `/${correct.ipa}/ — ${correct.desc}${correct.example?` · “${correct.example}”`:""}`
+  };
+}
+function qSpotCategory(pool){
+  const cons = pool.filter(p => p.category === "consonant");
+  if (cons.length < 4) return null;
+  // Dimension: manner or voicing (place handled by the grid variants).
+  const dims = [];
+  const manners = [...new Set(cons.map(p=>p.manner))].filter(m =>
+    cons.filter(p=>p.manner===m).length >= 1 && cons.filter(p=>p.manner!==m).length >= 3);
+  if (manners.length) dims.push("manner");
+  if (cons.some(p=>p.voice===1) && cons.filter(p=>p.voice===0).length >= 3) dims.push("voiced");
+  if (cons.some(p=>p.voice===0) && cons.filter(p=>p.voice===1).length >= 3) dims.push("voiceless");
+  if (!dims.length) return null;
+  const dim = practicePick(dims);
+  let label, test;
+  if (dim === "manner") { const m = practicePick(manners); label = practiceMannerLabel(m); test = p=>p.manner===m; }
+  else { const v = dim === "voiced" ? 1 : 0; label = dim; test = p=>p.voice===v; }
+  const correct = practicePick(cons.filter(test));
+  const distractors = practiceShuffle(cons.filter(p=>!test(p) && p.ipa!==correct.ipa)).slice(0,3);
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([correct, ...distractors]);
+  return {
+    type:"spot-category", promptLabel:"Spot the category",
+    promptKind:"text", promptValue:`Which of these is a ${label} sound?`,
+    answerKind:"choices",
+    choices: opts.map(o=>({label:o.ipa, ipa:true})),
+    correctIndex: opts.indexOf(correct),
+    answerPhoneme: correct.ipa,
+    feedback:`/${correct.ipa}/ — ${correct.desc} — is the ${label} one.`
+  };
+}
+function practiceConsSet(code){
+  const inv = (typeof LANG_PHONEMES !== "undefined") ? LANG_PHONEMES[code] : null;
+  return new Set(inv ? (inv.cons||[]).map(c=>c[0]) : []);
+}
+function qInventoryContrast(source){
+  if (source !== "en" && source !== "ar") return null;
+  const A = source, B = source === "en" ? "ar" : "en";
+  const aSet = practiceConsSet(A), bSet = practiceConsSet(B);
+  const onlyA = [...aSet].filter(x => !bSet.has(x));
+  const onlyB = [...bSet].filter(x => !aSet.has(x));
+  if (onlyA.length < 1 || onlyB.length < 3) return null;
+  const correct = practicePick(onlyA);
+  const distractors = practiceShuffle(onlyB).slice(0,3);
+  const opts = practiceShuffle([correct, ...distractors]);
+  const nm = c => (typeof LANG_INVENTORIES !== "undefined" && LANG_INVENTORIES[c]) ? LANG_INVENTORIES[c].name : c;
+  const refCons = LANG_PHONEMES.reference.cons.find(c=>c[0]===correct);
+  const desc = refCons ? practiceComposeDesc(correct, refCons[1], refCons[2], refCons[3], "consonant") : "";
+  return {
+    type:"inventory-contrast", promptLabel:"Inventory contrast",
+    promptKind:"text", promptValue:`Which sound exists in ${nm(A)} but not ${nm(B)}?`,
+    answerKind:"choices",
+    choices: opts.map(ipa=>({label:ipa, ipa:true})),
+    correctIndex: opts.indexOf(correct),
+    answerPhoneme: correct,
+    feedback:`/${correct}/${desc?` — ${desc}`:""} — is in ${nm(A)} but absent from ${nm(B)}.`
+  };
+}
+
+// ── IPA Grid Challenge variants ──
+function qGridLocate(pool, useDesc){
+  const cons = pool.filter(p => p.category==="consonant" && p.place && p.manner);
+  if (!cons.length) return null;
+  const correct = practicePick(cons);
+  return {
+    type: useDesc?"grid-locate-desc":"grid-locate",
+    promptLabel: useDesc?"Locate by description":"Locate the sound",
+    promptKind: useDesc?"text":"ipa",
+    promptValue: useDesc?`Click the cell for a ${correct.desc}.`:correct.ipa,
+    answerKind:"grid-pick",
+    correctCell:{ place:correct.place, manner:correct.manner },
+    answerPhoneme: correct.ipa,
+    feedback:`/${correct.ipa}/ — ${practiceMannerLabel(correct.manner)} × ${correct.place}`
+  };
+}
+function qGridFind(pool){
+  const cons = pool.filter(p => p.category==="consonant" && p.place && p.manner);
+  if (cons.length < 4) return null;
+  const correct = practicePick(cons);
+  const others = cons.filter(p=>p.ipa!==correct.ipa);
+  const near = others.filter(p=>p.manner===correct.manner || p.place===correct.place);
+  const distractors = practiceDistinctBy(correct, near, others, 3, "ipa");
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([correct, ...distractors]);
+  return {
+    type:"grid-find", promptLabel:"Find the phoneme",
+    promptKind:"grid-target", promptValue:{ place:correct.place, manner:correct.manner },
+    answerKind:"choices",
+    choices: opts.map(o=>({label:o.ipa, ipa:true})),
+    correctIndex: opts.indexOf(correct),
+    answerPhoneme: correct.ipa,
+    feedback:`/${correct.ipa}/ sits at ${practiceMannerLabel(correct.manner)} × ${correct.place}`
+  };
+}
+function qGridCategory(pool){
+  const cons = pool.filter(p => p.category==="consonant" && p.place && p.manner);
+  if (cons.length < 4) return null;
+  // manner or place dimension (voicing handled by choices-based qSpotCategory
+  // to avoid cell-level ambiguity in voiced/voiceless pairs).
+  const dims = [];
+  const manners = [...new Set(cons.map(p=>p.manner))];
+  if (manners.length) dims.push("manner");
+  const places = [...new Set(cons.map(p=>p.place))];
+  if (places.length) dims.push("place");
+  const dim = practicePick(dims);
+  let label, test;
+  if (dim === "manner") { const m = practicePick(manners); label = practiceMannerLabel(m); test = p=>p.manner===m; }
+  else { const pl = practicePick(places); label = pl; test = p=>p.place===pl; }
+  if (!cons.some(test)) return null;
+  return {
+    type:"grid-category", promptLabel:"Category hunt",
+    promptKind:"text", promptValue:`Click a ${label} sound.`,
+    answerKind:"grid-category",
+    categoryTest: test,
+    answerPhoneme: practicePick(cons.filter(test)).ipa,
+    feedback:`Any ${label} sound is correct.`
+  };
+}
+function qContrastVoicing(pool){
+  const cons = pool.filter(p => p.category==="consonant" && p.place && p.manner);
+  const pairs = [];
+  cons.forEach(p=>{
+    const cp = cons.find(q=>q.place===p.place && q.manner===p.manner && q.voice===(1-p.voice) && q.ipa!==p.ipa);
+    if (cp) pairs.push([p, cp]);
+  });
+  if (!pairs.length) return null;
+  const [base, answer] = practicePick(pairs);
+  const distractors = practiceShuffle(cons.filter(p=>p.ipa!==answer.ipa && p.ipa!==base.ipa)).slice(0,3);
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([answer, ...distractors]);
+  return {
+    type:"grid-contrast", promptLabel:"Contrast · voicing",
+    promptKind:"text", promptValue:`Which sound differs from /${base.ipa}/ only by voicing?`,
+    answerKind:"choices",
+    choices: opts.map(o=>({label:o.ipa, ipa:true})),
+    correctIndex: opts.indexOf(answer),
+    answerPhoneme: answer.ipa,
+    feedback:`/${answer.ipa}/ is the ${answer.voice?"voiced":"voiceless"} counterpart of /${base.ipa}/ — same place & manner.`
+  };
+}
+function qContrastPlace(pool){
+  const cons = pool.filter(p => p.category==="consonant" && p.place && p.manner);
+  const order = (typeof SM_COV_PLACES_CONS !== "undefined") ? SM_COV_PLACES_CONS : [];
+  const pairs = [];
+  cons.forEach(p=>{
+    const idx = order.indexOf(p.place);
+    if (idx < 0) return;
+    const backPlace = order[idx+1];
+    if (!backPlace) return;
+    const q = cons.find(r=>r.place===backPlace && r.manner===p.manner && r.voice===p.voice && r.ipa!==p.ipa);
+    if (q) pairs.push([p, q]);
+  });
+  if (!pairs.length) return null;
+  const [base, answer] = practicePick(pairs);
+  const distractors = practiceShuffle(cons.filter(p=>p.ipa!==answer.ipa && p.ipa!==base.ipa)).slice(0,3);
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([answer, ...distractors]);
+  return {
+    type:"grid-contrast", promptLabel:"Contrast · place",
+    promptKind:"text", promptValue:`Which sound is one place farther back than /${base.ipa}/ (same manner)?`,
+    answerKind:"choices",
+    choices: opts.map(o=>({label:o.ipa, ipa:true})),
+    correctIndex: opts.indexOf(answer),
+    answerPhoneme: answer.ipa,
+    feedback:`/${answer.ipa}/ — ${answer.place}, one place behind /${base.ipa}/ (${base.place}).`
+  };
+}
+
+function practiceValidate(q){
+  if (!q) return false;
+  if (q.answerKind === "choices")
+    return Array.isArray(q.choices) && q.choices.length === 4 && q.correctIndex >= 0 && q.correctIndex < 4;
+  if (q.answerKind === "grid-pick") return !!(q.correctCell && q.correctCell.place && q.correctCell.manner);
+  if (q.answerKind === "grid-category") return typeof q.categoryTest === "function";
+  return false;
+}
+
+function practiceNextQuestion(pool){
+  if (pool.length < 4) return null;
+  const gens = [
+    ()=>qNameSound(pool), ()=>qFindSymbol(pool), ()=>qSpotCategory(pool),
+    ()=>qGridLocate(pool,false), ()=>qGridFind(pool), ()=>qGridCategory(pool)
+  ];
+  if (practiceLevel >= 2) gens.push(()=>qGridLocate(pool,true));
+  if (practiceLevel >= 3) {
+    gens.push(()=>qContrastVoicing(pool), ()=>qContrastPlace(pool));
+    if (practiceSource === "en" || practiceSource === "ar") gens.push(()=>qInventoryContrast(practiceSource));
+  }
+  for (const g of practiceShuffle(gens)) {
+    let q = null;
+    try { q = g(); } catch(_) { q = null; }
+    if (practiceValidate(q)) return q;
+  }
+  const fallback = qNameSound(pool);
+  return practiceValidate(fallback) ? fallback : null;
+}
+
+// ── Compact interactive grid (reuses Coverage constants/labels/palette) ──
+function practiceGridAxes(pool){
+  const cons = pool.filter(p=>p.category==="consonant" && p.place && p.manner);
+  const placeSet = new Set(cons.map(p=>p.place));
+  const mannerSet = new Set(cons.map(p=>p.manner));
+  const places = (typeof SM_COV_PLACES_CONS !== "undefined" ? SM_COV_PLACES_CONS : [...placeSet]).filter(p=>placeSet.has(p));
+  const manners = (typeof LANG_MANNER_ORDER !== "undefined" ? LANG_MANNER_ORDER : [...mannerSet]).filter(m=>mannerSet.has(m));
+  const cellMap = {};
+  cons.forEach(p=>{ const k=p.manner+"|"+p.place; (cellMap[k]=cellMap[k]||[]).push(p.ipa); });
+  return { places, manners, cellMap };
+}
+function practiceBuildGrid(opts){
+  const { mode, correctCell, pool } = opts;
+  const { places, manners, cellMap } = practiceGridAxes(pool);
+  const table = document.createElement("table");
+  table.className = "prac-grid";
+  const thead = document.createElement("thead");
+  const hr = document.createElement("tr");
+  hr.appendChild(document.createElement("th"));
+  places.forEach(pl=>{
+    const th = document.createElement("th");
+    th.className = "prac-grid-place";
+    th.textContent = practicePlaceAbbr(pl);
+    th.title = (typeof LANG_PLACE_LABELS !== "undefined" && LANG_PLACE_LABELS[pl]) || pl;
+    if (typeof SM_COV_PLACE_PALETTE !== "undefined" && SM_COV_PLACE_PALETTE[pl]) th.style.color = SM_COV_PLACE_PALETTE[pl];
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr); table.appendChild(thead);
+  const tbody = document.createElement("tbody");
+  manners.forEach(m=>{
+    const tr = document.createElement("tr");
+    const rh = document.createElement("th");
+    rh.className = "prac-grid-manner";
+    rh.textContent = practiceMannerLabel(m);
+    tr.appendChild(rh);
+    places.forEach(pl=>{
+      const td = document.createElement("td");
+      td.dataset.place = pl; td.dataset.manner = m;
+      const k = m+"|"+pl;
+      const has = cellMap[k] && cellMap[k].length;
+      if (has) td.classList.add("has");
+      if (mode === "pick-filled" && has) td.textContent = cellMap[k].join(" ");
+      if (mode === "show-target" && correctCell && correctCell.place===pl && correctCell.manner===m) {
+        td.classList.add("prac-grid-target"); td.textContent = "?";
+      }
+      if (mode === "pick-blank" || mode === "pick-filled") td.classList.add("prac-grid-clickable");
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody);
+  return table;
+}
+
+// ── Render / answer / next ──
+function practiceUpdateScore(){
+  const el = document.getElementById("prac-score");
+  if (!el) return;
+  el.innerHTML = `<span class="prac-score-correct">✓ ${practiceScore}</span>` +
+    (practiceStreak > 1 ? `<span class="prac-score-streak">↑ ${practiceStreak}</span>` : "");
+}
+function practiceRender(){
+  const card = document.getElementById("prac-card");
+  if (!card) return;
+  const q = practiceCurrent;
+  if (!q) { card.innerHTML = `<div class="prac-empty">No questions available for this set &amp; level. Try another level.</div>`; return; }
+  card.innerHTML = "";
+
+  const label = document.createElement("div");
+  label.className = "prac-label";
+  label.textContent = q.promptLabel;
+  card.appendChild(label);
+
+  const prompt = document.createElement("div");
+  prompt.className = "prac-prompt";
+  if (q.promptKind === "ipa") {
+    prompt.innerHTML = `<span class="prac-prompt-ipa">${practiceEsc(q.promptValue)}</span>`;
+  } else if (q.promptKind === "text") {
+    prompt.innerHTML = `<span class="prac-prompt-text">${practiceEsc(q.promptValue)}</span>`;
+  } else if (q.promptKind === "grid-target") {
+    const cap = document.createElement("div");
+    cap.className = "prac-prompt-text";
+    cap.textContent = "Which sound belongs in the marked cell?";
+    prompt.appendChild(cap);
+    prompt.appendChild(practiceBuildGrid({ mode:"show-target", correctCell:q.promptValue, pool:practiceCurrentPool }));
+  }
+  card.appendChild(prompt);
+
+  const answer = document.createElement("div");
+  answer.className = "prac-answer";
+  if (q.answerKind === "choices") {
+    answer.classList.add("prac-choices");
+    q.choices.forEach((c,i)=>{
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "prac-choice" + (c.ipa ? " prac-choice-ipa" : "");
+      btn.textContent = c.label;
+      btn.dataset.index = i;
+      btn.addEventListener("click", ()=>practiceAnswerChoice(i));
+      answer.appendChild(btn);
+    });
+  } else if (q.answerKind === "grid-pick" || q.answerKind === "grid-category") {
+    const mode = q.answerKind === "grid-category" ? "pick-filled" : "pick-blank";
+    const grid = practiceBuildGrid({ mode, correctCell:q.correctCell, pool:practiceCurrentPool });
+    grid.addEventListener("click", e=>{
+      const td = e.target.closest("td.prac-grid-clickable");
+      if (td) practiceAnswerCell(td, grid);
+    });
+    answer.appendChild(grid);
+  }
+  card.appendChild(answer);
+
+  const fb = document.createElement("div");
+  fb.className = "prac-feedback"; fb.id = "prac-feedback";
+  card.appendChild(fb);
+
+  practiceUpdateScore();
+}
+function practiceAnswerChoice(index){
+  if (practiceAnswered) return;
+  practiceAnswered = true;
+  const q = practiceCurrent;
+  const correct = index === q.correctIndex;
+  document.querySelectorAll("#prac-card .prac-choice").forEach((b,i)=>{
+    b.classList.add("locked");
+    if (i === q.correctIndex) b.classList.add("correct");
+    else if (i === index) b.classList.add("wrong");
+  });
+  practiceConclude(correct);
+}
+function practiceAnswerCell(td, grid){
+  if (practiceAnswered) return;
+  const q = practiceCurrent;
+  let correct = false;
+  if (q.answerKind === "grid-pick") {
+    correct = td.dataset.place === q.correctCell.place && td.dataset.manner === q.correctCell.manner;
+    const cc = grid.querySelector(`td[data-place="${CSS.escape(q.correctCell.place)}"][data-manner="${CSS.escape(q.correctCell.manner)}"]`);
+    if (cc) { cc.classList.add("correct"); cc.textContent = q.answerPhoneme || "✓"; }
+    if (!correct) td.classList.add("wrong");
+  } else if (q.answerKind === "grid-category") {
+    const inCell = practiceCurrentPool.filter(p =>
+      p.category==="consonant" && p.place===td.dataset.place && p.manner===td.dataset.manner);
+    const match = inCell.find(q.categoryTest);
+    correct = !!match;
+    if (match) q.answerPhoneme = match.ipa;
+    td.classList.add(correct ? "correct" : "wrong");
+  }
+  practiceAnswered = true;
+  grid.querySelectorAll("td.prac-grid-clickable").forEach(c=>c.classList.add("locked"));
+  practiceConclude(correct);
+}
+function practiceConclude(correct){
+  const q = practiceCurrent;
+  if (correct) { practiceScore++; practiceStreak++; } else { practiceStreak = 0; }
+  practiceUpdateScore();
+  const fb = document.getElementById("prac-feedback");
+  if (fb) {
+    fb.classList.add("show", correct ? "ok" : "no");
+    fb.innerHTML =
+      `<span class="prac-fb-mark">${correct?"✓":"✕"}</span>` +
+      `<span class="prac-fb-text">${practiceEsc(q.feedback)}</span>` +
+      `<button type="button" class="prac-next" id="prac-next">Next →</button>`;
+    const nb = document.getElementById("prac-next");
+    if (nb) nb.addEventListener("click", practiceNew);
+  }
+  // Feed the answered phoneme to the shared selection so it highlights on
+  // the IPA grid / vowel chart / vocal tract when the reader switches to
+  // Coverage. (No side panel — that was removed; this only drives the
+  // lightweight highlight + articulation sync.) Guard against the
+  // same-phoneme toggle in PhonemeState.set.
+  if (q.answerPhoneme && window.SoundLab && window.SoundLab.phonemeState && typeof buildPhonemeProfile === "function") {
+    const ps = window.SoundLab.phonemeState;
+    if (!ps.current || ps.current.ipa !== q.answerPhoneme) {
+      try { ps.set(buildPhonemeProfile(q.answerPhoneme, null)); } catch(_) {}
+    }
+  }
+}
+function practiceNew(){
+  practiceAnswered = false;
+  practiceCurrentPool = practiceFilterByLevel(practiceBuildPool(practiceSource), practiceLevel);
+  practiceCurrent = practiceNextQuestion(practiceCurrentPool);
+  practiceRender();
+}
+function practiceSetSeg(seg, active){
+  seg.querySelectorAll(".prac-seg-btn").forEach(b=>{
+    const on = b === active;
+    b.classList.toggle("active", on);
+    b.setAttribute("aria-selected", on ? "true" : "false");
+  });
+}
+function practiceInit(){
+  if (!practiceInited) {
+    practiceInited = true;
+    const srcSeg = document.getElementById("prac-source");
+    if (srcSeg) srcSeg.addEventListener("click", e=>{
+      const b = e.target.closest(".prac-seg-btn"); if (!b) return;
+      practiceSource = b.dataset.source; practiceSetSeg(srcSeg, b); practiceNew();
+    });
+    const lvlSeg = document.getElementById("prac-level");
+    if (lvlSeg) lvlSeg.addEventListener("click", e=>{
+      const b = e.target.closest(".prac-seg-btn"); if (!b) return;
+      practiceLevel = parseInt(b.dataset.level,10) || 1; practiceSetSeg(lvlSeg, b); practiceNew();
+    });
+    practiceNew();
+  } else if (!practiceCurrent) {
+    practiceNew();
+  }
+}
+window.SoundLab = window.SoundLab || {};
+window.SoundLab.practice = { init: practiceInit, next: practiceNew };
 
 // ══════════════════════════════════════════════════════════════════════════
 //  RAP SUB-TABS  (nested inside #panel-rap — Bar Builder + Vault only)
@@ -11104,7 +11566,7 @@ document.getElementById("bb-input").addEventListener("keydown", e => {
 // right after the panel-promotion migration — see the WORKSPACE STATE block.)
 
 function activatePanel(id) {
-  ["panel-sound","panel-coverage","panel-comparison","panel-endings","panel-rhyme","panel-rap"].forEach(pid => {
+  ["panel-sound","panel-coverage","panel-comparison","panel-practice","panel-endings","panel-rhyme","panel-rap"].forEach(pid => {
     const el = document.getElementById(pid);
     if (el) el.classList.toggle("active", pid === id);
   });
@@ -11125,6 +11587,11 @@ function applyPhonologySub(sub) {
     activatePanel("panel-coverage");
     if (typeof smCovRender === "function" && !smCovRendered) {
       try { smCovRender(); } catch(_) {}
+    }
+  } else if (sub === "practice") {
+    activatePanel("panel-practice");
+    if (typeof practiceInit === "function") {
+      try { practiceInit(); } catch(_) {}
     }
   }
 }
