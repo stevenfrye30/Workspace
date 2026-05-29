@@ -1203,22 +1203,47 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 /* IPA consonant grid */
 .sm-cov-grid-wrap{overflow-x:auto}
 .sm-cov-grid{border-collapse:collapse;font-family:var(--mono);font-size:13px;width:100%;table-layout:fixed}
-.sm-cov-grid th{background:var(--surf2);color:var(--muted);font-family:"Segoe UI",Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 2px;border:1px solid var(--bdr);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:64px;vertical-align:bottom;white-space:nowrap}
+.sm-cov-grid th{background:var(--surf2);color:var(--muted);font-family:"Segoe UI",Arial,sans-serif;font-size:9px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:4px 2px;border:1px solid var(--bdr);text-align:center;writing-mode:vertical-rl;transform:rotate(180deg);height:64px;vertical-align:bottom;white-space:nowrap;transition:color .3s ease,background .3s ease,font-weight .3s ease}
 .sm-cov-grid th.sm-cov-manner-th{writing-mode:horizontal-tb;transform:none;text-align:right;width:74px;padding:4px 8px;font-size:10px;height:auto;vertical-align:middle}
-.sm-cov-grid td{border:1px solid var(--bdr);padding:3px 2px;text-align:center;vertical-align:middle;background:var(--surf2);color:var(--muted);min-height:28px;height:28px;position:relative;transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .18s ease,background .15s ease,border-color .15s ease}
+/* Slower background / shadow / color transitions on cells so axis
+   highlighting fades in atmospherically (the official-chart feel),
+   while the lift transform stays snappy for direct feedback. */
+.sm-cov-grid td{border:1px solid rgba(255,255,255,.035);padding:3px 2px;text-align:center;vertical-align:middle;background:var(--surf2);color:var(--muted);min-height:28px;height:28px;position:relative;transition:transform .15s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,background .35s ease,border-color .35s ease,color .35s ease}
 .sm-cov-grid td.filled{background:var(--cov-cell-bg,#444);color:#111;font-weight:700;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .sm-cov-grid td.filled.multi{background:linear-gradient(90deg,var(--cov-cell-bg) 50%,var(--cov-cell-bg2) 50%)}
 .sm-cov-grid td.filled.multi3{background:linear-gradient(90deg,var(--cov-cell-bg) 33%,var(--cov-cell-bg2) 33% 66%,var(--cov-cell-bg3) 66%)}
-/* Row/column relationship lighting — set by JS on hovered cell's
-   manner-row siblings and place-column siblings. The hovered cell
-   itself lifts; its row and column glow faintly so the eye can
-   trace what manner × place it sits at. */
+/* Contextual relationship lighting — set by JS on the active cell's
+   manner-row siblings and place-column siblings. This is deliberately a
+   *whisper*, not a spreadsheet crosshair: the row and column carry only
+   a 3–4% warm tint so the eye can sense the manner × place context, while
+   the selected/hovered phoneme itself stays the unambiguous focal point.
+   No gold borders on axis cells — relationship is conveyed by tint alone. */
 .sm-cov-grid td.filled:hover{transform:translateY(-1px);box-shadow:0 4px 10px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.18);z-index:3}
-.sm-cov-grid td.cell-axis{background:rgba(232,200,64,.06)}
-.sm-cov-grid td.cell-axis.filled{box-shadow:inset 0 0 0 1px rgba(232,200,64,.45)}
-.sm-cov-grid td.cell-axis.empty{color:var(--gold);opacity:.55}
-.sm-cov-grid th.axis-active{color:var(--gold)}
-.sm-cov-grid th.sm-cov-manner-th.axis-active{color:var(--gold)}
+/* Empty axis cells take a faint warm background; filled axis cells keep
+   their place colour and receive only a translucent gold *overlay* (via
+   a full-bleed inset box-shadow) so they stay recognisable instead of
+   flattening to a uniform highlight. This is the key fix for the
+   spreadsheet feel: the row/column reads as warmly lit, not selected. */
+.sm-cov-grid td.cell-axis.empty{background:rgba(232,200,64,.05);color:rgba(232,200,64,.4)}
+.sm-cov-grid td.cell-axis.filled{box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),inset 0 0 0 9999px rgba(232,200,64,.05)}
+/* Persistent selection context — same whisper overlay, but survives
+   mouseleave so a locked phoneme keeps its row/column relationship
+   visible. No border, no darkening of unrelated cells. */
+.sm-cov-grid td.axis-selected.empty{background:rgba(232,200,64,.04);color:rgba(232,200,64,.34)}
+.sm-cov-grid td.axis-selected.filled{box-shadow:inset 0 0 0 1px rgba(0,0,0,.12),inset 0 0 0 9999px rgba(232,200,64,.04)}
+.sm-cov-grid th.axis-active-selected{color:rgba(232,200,64,.7)}
+/* Axis label highlight — fires on cell hover (cross-illumination) AND on
+   direct label hover. The label is allowed slightly more presence than the
+   axis cells since it names the active row/column; still a soft wash, not
+   a shout. */
+.sm-cov-grid th.axis-active{
+  color:var(--gold);
+  background:linear-gradient(180deg,rgba(232,200,64,.07),var(--surf2));
+}
+.sm-cov-grid th.sm-cov-manner-th.axis-active{
+  color:var(--gold);
+  background:linear-gradient(90deg,var(--surf2),rgba(232,200,64,.06));
+}
 /* Cross-direction sync: a cell can also gain phoneme-focus when its
    IPA was hovered from somewhere else (a pc-table row, a sig chip).
    Strong inset gold ring + lift so the user can find the matching
@@ -1245,11 +1270,67 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .sm-cov-toggle input{accent-color:var(--gold);cursor:pointer;margin:0}
 .sm-cov-you-hint{color:var(--muted);font-size:10px;font-style:italic}
 .sm-cov-you-hint .dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);margin-right:4px;vertical-align:middle;box-shadow:0 0 0 1px #111}
-.sm-cov-grid td.empty{color:#3a4256;font-size:11px}
-.sm-cov-grid td .sm-cov-pair{display:inline-flex;gap:5px;align-items:center;justify-content:center;flex-wrap:wrap}
-.sm-cov-grid td .sm-cov-symbol{display:inline-block}
-.sm-cov-grid td .sm-cov-symbol.v0{opacity:.95}
-.sm-cov-grid td .sm-cov-symbol.v1{opacity:1}
+/* Empty (possible-but-unused) cells — quiet negative space. The dot is
+   a faint placeholder, not a feature; softening it lets the filled
+   phonemes carry the visual weight and makes the grid feel less rigid. */
+.sm-cov-grid td.empty{color:rgba(150,165,190,.2);font-size:10px}
+
+/* Micro-legend — museum-plaque caption below the consonant grid. Quiet,
+   right-aligned, monospace keys. Explains the two axes + voicing pairing
+   without reading as onboarding UI. */
+.sm-cov-legend-note{display:flex;flex-wrap:wrap;justify-content:flex-end;align-items:baseline;gap:8px;margin-top:8px;padding-top:7px;border-top:1px solid rgba(255,255,255,.04);font-size:9.5px;color:rgba(255,255,255,.32);letter-spacing:.02em;line-height:1.4}
+.sm-cov-legend-note .lg-item{white-space:nowrap}
+.sm-cov-legend-note .lg-k{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(232,200,64,.55);margin-right:3px}
+.sm-cov-legend-note .lg-dot{color:rgba(255,255,255,.18)}
+.sm-cov-legend-note .lg-vl{color:rgba(255,255,255,.5)}
+.sm-cov-legend-note .lg-vd{color:rgba(232,200,64,.62)}
+/* Impossible cells — the IPA-chart equivalent of the darkened squares.
+   Very dark matte fill with subtle diagonal hatching, no symbol, no
+   hover affordance. The chart should read "this combination cannot
+   exist" without raising voice. Hover state is intentionally identical
+   to resting so the cursor passes through without feedback. */
+.sm-cov-grid td.sm-cov-cell-impossible{
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(255,255,255,.015) 0 1px,
+      transparent 1px 5px),
+    #0b0b0b;
+  color:transparent;
+  border-color:#1d1d1d;
+  cursor:default;
+  pointer-events:none;
+  transition:none;
+}
+.sm-cov-grid td.sm-cov-cell-impossible:hover{
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(255,255,255,.015) 0 1px,
+      transparent 1px 5px),
+    #0b0b0b;
+  transform:none;
+  box-shadow:none;
+}
+.sm-cov-grid td.sm-cov-cell-impossible.cell-axis{
+  /* Even when the row/column is highlighted, impossible cells stay
+     visually inert — they shouldn't pick up the gold tint. */
+  background:
+    repeating-linear-gradient(135deg,
+      rgba(255,255,255,.015) 0 1px,
+      transparent 1px 5px),
+    #0b0b0b;
+  box-shadow:none;
+}
+/* Voiceless / voiced pairing. IPA chart convention: left = voiceless,
+   right = voiced. Slightly increased gap reads as a typographic pair
+   rather than a glyph cluster; baseline alignment keeps symbols
+   sitting on the same imaginary line even when their heights differ
+   (e.g. ɸ β, χ ʁ); the subtle weight asymmetry (voiceless full weight,
+   voiced slightly lighter + microspaced) mirrors the convention in
+   typeset phonetics atlases without resorting to separators or boxes. */
+.sm-cov-grid td .sm-cov-pair{display:inline-flex;gap:8px;align-items:baseline;justify-content:center;flex-wrap:nowrap}
+.sm-cov-grid td .sm-cov-symbol{display:inline-block;min-width:.7em;text-align:center}
+.sm-cov-grid td .sm-cov-symbol.v0{opacity:1;font-weight:700}
+.sm-cov-grid td .sm-cov-symbol.v1{opacity:1;font-weight:600;letter-spacing:.01em}
 
 /* Vowel trapezoid */
 .sm-cov-trap-wrap{display:flex;justify-content:center;padding:6px 0 2px}
@@ -1269,7 +1350,10 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    consonant cell articulates at. */
 .sm-cov-tract-wrap{display:flex;flex-direction:column;gap:8px;align-items:center;opacity:.94}
 .sm-cov-tract-svg{width:100%;max-width:340px;height:auto;display:block}
-.sm-cov-tract-svg .vt-part{fill:#263447;stroke:#2a3a4f;stroke-width:0.4;transition:fill .25s ease,fill-opacity .25s ease,stroke .25s ease,stroke-width .25s ease}
+/* Vocal tract zones — transition timing matches the grid so the
+   cross-panel illumination feels like one motion rather than two
+   surfaces reacting independently. */
+.sm-cov-tract-svg .vt-part{fill:#263447;stroke:#2a3a4f;stroke-width:0.4;transition:fill .4s ease,fill-opacity .4s ease,stroke .4s ease,stroke-width .4s ease}
 .sm-cov-tract-svg .vt-part.zone-focus{fill-opacity:1;stroke:var(--gold);stroke-width:1.4}
 .sm-cov-tract-stats{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:10px;color:var(--muted);width:100%;max-width:340px;font-family:var(--mono)}
 .sm-cov-tract-stat{display:flex;justify-content:space-between;padding:2px 6px;border-radius:2px;transition:background .15s ease}
@@ -1356,9 +1440,131 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
    Hidden by default; surfaces only when the section carries the
    .sm-cov-mode-annotated class. Small, italic, single-line — reads as
    marginal annotation rather than table content. */
-.sm-cov-example-inline{display:none;font-family:Georgia,"Times New Roman",serif;font-size:9px;font-style:italic;font-weight:500;line-height:1.05;color:rgba(0,0,0,.55);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;pointer-events:none}
-.sm-cov-mode-annotated .sm-cov-grid td.filled .sm-cov-example-inline{display:block}
+/* Annotated-mode marginalia. Wraps one or more .sm-cov-anno-* children
+   so future annotation types (dialect notes, rarity badges, orthographic
+   notes) can attach alongside the example anchor without restructuring
+   the cell. Hidden in Minimal and Study; surfaces only in Annotated. */
+.sm-cov-annotations{display:none;pointer-events:none}
+.sm-cov-mode-annotated .sm-cov-grid td.filled .sm-cov-annotations{display:block;margin-top:2px}
+.sm-cov-anno{display:block;line-height:1.05;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* Annotation text is intentionally recessive — the IPA symbol above it
+   must stay the primary anchor. The inline example is a teaser; the full
+   gloss lives in the Study/Annotated hover card. Lower opacity + smaller
+   size keep Annotated mode from feeling overloaded. */
+.sm-cov-anno-example{font-family:Georgia,"Times New Roman",serif;font-size:8.5px;font-style:italic;font-weight:500;color:rgba(0,0,0,.4)}
+/* On hover the example firms up slightly (the cell is the focus now), but
+   the authoritative full text is still the hover card. */
+.sm-cov-mode-annotated .sm-cov-grid td.filled:hover .sm-cov-anno-example{color:rgba(0,0,0,.62)}
+/* Future annotation types — architectural hooks. Style stubs left here
+   as documentation of where dialect/rarity/script annotations would
+   live; JS does not yet emit these classes. */
+.sm-cov-anno-dialect{font-size:8.5px;color:rgba(0,0,0,.5);font-style:italic;margin-top:1px}
+.sm-cov-anno-rarity{font-size:7.5px;font-weight:700;letter-spacing:.10em;text-transform:uppercase;color:rgba(0,0,0,.65);margin-top:1px}
+.sm-cov-anno-script{font-family:Georgia,"Times New Roman",serif;font-size:10px;color:rgba(0,0,0,.6);margin-top:1px}
+/* Backward-compat alias — older code references this name. */
+.sm-cov-example-inline{display:none}
+.sm-cov-mode-annotated .sm-cov-grid td.filled .sm-cov-example-inline{display:block;font-family:Georgia,"Times New Roman",serif;font-size:9px;font-style:italic;color:rgba(0,0,0,.55)}
 .sm-cov-mode-annotated .sm-cov-grid td.filled{padding-top:4px;padding-bottom:4px}
+
+/* ── Phoneme Inspector — persistent right-side panel ─────────────────
+   Reflects the globally-selected phoneme. Hidden on viewports below
+   1100px (no horizontal room for a dedicated reference column). The
+   inspector itself is fixed-position; the body gets right padding so
+   page content doesn't slide underneath. Codex aesthetic: dark
+   surface, gold for the active glyph, italic Georgia for examples,
+   monospace gold for the grid location string. */
+@media (min-width: 1100px){
+  body{padding-right:290px}
+}
+#phoneme-inspector{position:fixed;top:0;right:0;bottom:0;width:290px;background:var(--surf);border-left:1px solid rgba(232,200,64,.18);color:var(--text);z-index:40;display:flex;flex-direction:column;font-family:"Segoe UI",Arial,sans-serif;overflow:hidden;box-shadow:-4px 0 18px rgba(0,0,0,.35)}
+@media (max-width: 1099px){
+  #phoneme-inspector{display:none}
+}
+#phoneme-inspector .ph-insp-content{display:none}
+#phoneme-inspector.ph-insp-active .ph-insp-empty{display:none}
+#phoneme-inspector.ph-insp-active .ph-insp-content{display:flex;flex-direction:column;flex:1;overflow-y:auto;animation:ph-insp-fade .25s ease}
+@keyframes ph-insp-fade{from{opacity:0;transform:translateY(2px)} to{opacity:1;transform:none}}
+
+.ph-insp-empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center;color:var(--muted)}
+.ph-insp-empty-icon{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:48px;color:rgba(232,200,64,.35);line-height:1;margin-bottom:18px}
+.ph-insp-empty-text{font-size:13px;line-height:1.55;color:var(--muted);margin-bottom:14px}
+.ph-insp-empty-hint{font-size:10px;color:rgba(255,255,255,.28);line-height:1.5;font-style:italic;letter-spacing:.02em;max-width:200px}
+
+.ph-insp-header{padding:24px 22px 18px;border-bottom:1px solid rgba(232,200,64,.18);position:relative;background:linear-gradient(180deg,rgba(232,200,64,.04),transparent)}
+.ph-insp-symbol{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:62px;font-weight:700;color:var(--gold);line-height:1;text-shadow:0 0 14px rgba(232,200,64,.22),0 0 1px rgba(232,200,64,.4);margin-bottom:10px;letter-spacing:-1px;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
+.ph-insp-name{font-size:11.5px;color:var(--muted);font-style:italic;letter-spacing:.02em;line-height:1.4;padding-right:32px}
+.ph-insp-clear{position:absolute;top:14px;right:14px;background:none;border:1px solid var(--bdr);color:var(--muted);width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:15px;line-height:1;padding:0;transition:color .15s ease,border-color .15s ease;font-family:inherit;display:flex;align-items:center;justify-content:center}
+.ph-insp-clear:hover{color:var(--gold);border-color:var(--gold)}
+
+.ph-insp-section{padding:14px 22px;border-bottom:1px solid var(--bdr)}
+.ph-insp-section:last-child{border-bottom:none}
+.ph-insp-section-title{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:8.5px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:rgba(232,200,64,.72);margin-bottom:10px}
+
+.ph-insp-features-grid{display:grid;grid-template-columns:70px 1fr;row-gap:6px;column-gap:10px;font-size:11.5px;margin:0;line-height:1.35}
+.ph-insp-features-grid dt{color:var(--muted);font-weight:500}
+.ph-insp-features-grid dd{margin:0;color:var(--text)}
+
+.ph-insp-articulation{font-size:11.5px;line-height:1.55;color:var(--text);margin:0;font-style:italic;opacity:.9}
+
+.ph-insp-location{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:11px;color:rgba(232,200,64,.85);margin:0;letter-spacing:.02em}
+
+.ph-insp-examples{font-family:Georgia,"Times New Roman",serif;font-size:13px;font-style:italic;color:var(--text);margin:0;line-height:1.5}
+
+.ph-insp-mappings{display:grid;grid-template-columns:82px 1fr;row-gap:5px;column-gap:10px;font-size:11.5px;margin:0;line-height:1.3}
+.ph-insp-mappings dt{color:var(--muted)}
+.ph-insp-mappings dd{margin:0;color:var(--text);font-weight:600;word-break:break-word}
+.ph-insp-mappings .ph-insp-mappings-empty{color:var(--muted);font-style:italic;grid-column:1/-1}
+
+/* ── Persistent selection styling ──────────────────────────────────
+   .phoneme-selected fires on click and persists until a new phoneme
+   is selected, the inspector × is clicked, or Esc is pressed. Layers
+   beneath .phoneme-focus (hover) so the lock survives transient
+   highlights of other phonemes during exploration. */
+.sm-cov-grid td.filled.phoneme-selected{
+  box-shadow:0 0 0 2px var(--gold),inset 0 0 0 1px rgba(232,200,64,.55),0 4px 14px rgba(232,200,64,.18);
+  z-index:4;
+  transform:translateY(-1px)
+}
+.sm-cov-grid td.filled.phoneme-selected:hover{
+  /* keep the gold-locked frame even when hovered */
+  box-shadow:0 0 0 2px var(--gold),inset 0 0 0 1px rgba(232,200,64,.55),0 6px 16px rgba(232,200,64,.22)
+}
+.sm-cov-symbol.phoneme-selected{
+  text-shadow:0 0 6px rgba(232,200,64,.4)
+}
+.sm-cov-grid td.filled .sm-cov-symbol{cursor:pointer;transition:text-shadow .25s ease}
+.sm-cov-trap-pt.phoneme-selected{
+  stroke:var(--gold);
+  stroke-width:2;
+  filter:drop-shadow(0 0 6px rgba(232,200,64,.8))
+}
+.sm-cov-trap-pt{cursor:pointer}
+.sm-cov-diph.phoneme-selected{
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+  box-shadow:0 0 0 1px rgba(232,200,64,.6) inset,0 4px 14px rgba(232,200,64,.22)
+}
+.sm-cov-diph{cursor:pointer}
+.sm-cov-sig-chip.phoneme-selected{
+  outline:2px solid var(--gold);
+  outline-offset:3px;
+  transform:translateY(-2px);
+  box-shadow:0 6px 18px rgba(232,200,64,.28)
+}
+.pc-table tbody tr.pc-data-row.phoneme-selected td.pc-col-ipa{
+  background:linear-gradient(90deg,rgba(232,200,64,.30),rgba(232,200,64,.06) 88%);
+  box-shadow:inset 3px 0 0 var(--gold)
+}
+.pc-table tbody tr.pc-data-row.phoneme-selected td{
+  background:rgba(232,200,64,.06)
+}
+.pc-col-ipa{cursor:pointer}
+.sm-cov-tract-svg .vt-part.phoneme-selected{
+  fill-opacity:1;
+  stroke:var(--gold);
+  stroke-width:2;
+  filter:drop-shadow(0 0 4px rgba(232,200,64,.4))
+}
 
 /* Rich tooltip surfaces in Study + Annotated modes. Single shared
    element appended to <body> so positioning isn't clipped by parent
@@ -2677,6 +2883,63 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 </div>
 
 <div class="status-bar" id="status-bar"></div>
+
+<!-- ══════════════════════════════════════════════════════════
+     PHONEME INSPECTOR — persistent right-side panel that
+     reflects the globally-selected phoneme. Reads from
+     PhonemeState (declared in the script block below). All
+     fields are populated by renderInspector(); empty state
+     shows until a phoneme is clicked anywhere in the app.
+     Hidden on viewports < 1100px (no room).
+     ══════════════════════════════════════════════════════════ -->
+<aside id="phoneme-inspector" class="ph-insp" aria-label="Phoneme inspector" aria-live="polite">
+  <div class="ph-insp-empty">
+    <div class="ph-insp-empty-icon" aria-hidden="true">·</div>
+    <div class="ph-insp-empty-text">
+      Click any phoneme<br>to inspect it.
+    </div>
+    <div class="ph-insp-empty-hint">
+      IPA grid · vowel chart · diphthong chips · comparison table
+    </div>
+  </div>
+  <div class="ph-insp-content">
+    <header class="ph-insp-header">
+      <div class="ph-insp-symbol" aria-live="polite"></div>
+      <div class="ph-insp-name"></div>
+      <button class="ph-insp-clear" type="button" title="Clear selection (Esc)" aria-label="Clear selection">×</button>
+    </header>
+
+    <section class="ph-insp-section">
+      <h3 class="ph-insp-section-title">Features</h3>
+      <dl class="ph-insp-features-grid">
+        <dt>Place</dt>    <dd data-field="place">—</dd>
+        <dt>Manner</dt>   <dd data-field="manner">—</dd>
+        <dt>Voicing</dt>  <dd data-field="voicing">—</dd>
+        <dt>Category</dt> <dd data-field="category">—</dd>
+      </dl>
+    </section>
+
+    <section class="ph-insp-section">
+      <h3 class="ph-insp-section-title">Articulation</h3>
+      <p class="ph-insp-articulation" data-field="articulation"></p>
+    </section>
+
+    <section class="ph-insp-section">
+      <h3 class="ph-insp-section-title">Grid location</h3>
+      <p class="ph-insp-location" data-field="location">—</p>
+    </section>
+
+    <section class="ph-insp-section">
+      <h3 class="ph-insp-section-title">Example words</h3>
+      <p class="ph-insp-examples" data-field="examples">—</p>
+    </section>
+
+    <section class="ph-insp-section">
+      <h3 class="ph-insp-section-title">Language mappings</h3>
+      <dl class="ph-insp-mappings" data-field="mappings"></dl>
+    </section>
+  </div>
+</aside>
 
 <script src="../data/cmudict.js"></script>
 <script src="../data/phonetics.js"></script>
@@ -6020,6 +6283,40 @@ const SM_COV_PLACES_CONS = [
   "retroflex","palatal","velar","uvular","pharyngeal","glottal"
 ];
 
+// IPA-chart-style "judged impossible" cells. These are anatomically
+// untenable manner × place combinations — the official IPA chart
+// darkens them. Kept conservative: pharyngeal manners that can't be
+// articulated (everything but fricative), glottal manners that can't
+// be articulated (everything but plosive and fricative), and lateral
+// configurations at the lip places. Cells with no language symbol but
+// viable articulation (e.g. trill|labiodental, tap|bilabial) stay as
+// normal-empty so the chart doesn't read as more restrictive than the
+// IPA actually is. Keyed "manner|place" using the internal manner key.
+const SM_COV_IMPOSSIBLE_CELLS = new Set([
+  // Pharyngeal — only fricative is pulmonically possible
+  "stop|pharyngeal",            // ʡ exists but is non-pulmonic per standard IPA
+  "nasal|pharyngeal",
+  "trill|pharyngeal",
+  "tap|pharyngeal",
+  "lateral-fricative|pharyngeal",
+  "approximant|pharyngeal",
+  "lateral|pharyngeal",
+  "affricate|pharyngeal",
+  // Glottal — only plosive (ʔ) and fricative (h ɦ) are pulmonic
+  "nasal|glottal",
+  "trill|glottal",
+  "tap|glottal",
+  "lateral-fricative|glottal",
+  "approximant|glottal",
+  "lateral|glottal",
+  "affricate|glottal",
+  // Lateral at the lip places — anatomically impossible
+  "lateral-fricative|bilabial",
+  "lateral|bilabial",
+  "lateral-fricative|labiodental",
+  "lateral|labiodental"
+]);
+
 function smCovRender() {
   const view = document.getElementById("sm-view-coverage");
   if (!view) return;
@@ -6202,6 +6499,18 @@ function smCovRefreshPanels() {
   right.appendChild(smCovBuildSignatureSection());
   right.appendChild(smCovBuildSummarySection());
   panels.appendChild(right);
+  // Re-apply the persistent selection to freshly-rendered surfaces so
+  // a phoneme locked from the Inspector survives a language toggle /
+  // mode flip / refresh. No-op if nothing is selected.
+  // Use the window.SoundLab indirection so this guard is safe to call
+  // before the PhonemeState const has initialized (e.g. when pcRender()
+  // fires at script load, just before the global state block runs).
+  // Property access on window doesn't throw the way a TDZ read of a
+  // not-yet-initialized const would.
+  if (window.SoundLab && window.SoundLab.phonemeState && window.SoundLab.phonemeState.current
+      && typeof applySelectionStyling === "function") {
+    applySelectionStyling(window.SoundLab.phonemeState.current);
+  }
 }
 
 // ── Consonant grid: layered viewing modes ──────────────────────────
@@ -6365,12 +6674,10 @@ function smCovBuildConsSection() {
       legend.appendChild(span);
     });
     title.appendChild(legend);
-  } else {
-    const sub = document.createElement("span");
-    sub.className = "sm-cov-section-sub";
-    sub.textContent = "rows · manner  /  cols · place";
-    title.appendChild(sub);
   }
+  // Single-language orientation now lives in the museum-plaque legend
+  // below the grid (see end of this function) rather than a header sub,
+  // so the title row stays uncluttered.
   section.appendChild(title);
 
   // Mode bar — progressive disclosure for the grid below. Minimal is
@@ -6398,6 +6705,26 @@ function smCovBuildConsSection() {
   wrap.className = "sm-cov-grid-wrap";
   wrap.appendChild(smCovBuildConsTable());
   section.appendChild(wrap);
+
+  // Micro-legend — reads like a museum exhibit caption, not onboarding
+  // chrome. Quiet, right-aligned below the grid. Explains the chart's
+  // two axes and the voiceless/voiced pairing convention.
+  const legendNote = document.createElement("div");
+  legendNote.className = "sm-cov-legend-note";
+  let legendHtml =
+    `<span class="lg-item"><span class="lg-k">rows</span> manner</span>` +
+    `<span class="lg-dot">·</span>` +
+    `<span class="lg-item"><span class="lg-k">columns</span> place</span>`;
+  // The voiceless/voiced pairing convention only applies in single-language
+  // view; compare mode renders language-coloured dots instead of symbols.
+  if (smCovSelected.length === 1) {
+    legendHtml +=
+      `<span class="lg-dot">·</span>` +
+      `<span class="lg-item">paired cells: <span class="lg-vl">voiceless</span> left, <span class="lg-vd">voiced</span> right</span>`;
+  }
+  legendNote.innerHTML = legendHtml;
+  section.appendChild(legendNote);
+
   return section;
 }
 
@@ -6463,7 +6790,15 @@ function smCovBuildConsTable() {
       const key = manner + "|" + place;
       const entry = cellMap.get(key);
       const userHit = userSlots && userSlots.consSlots.has(key);
-      if (!entry || entry.length === 0) {
+      const isImpossible = SM_COV_IMPOSSIBLE_CELLS.has(key);
+      if (isImpossible && (!entry || entry.length === 0)) {
+        // Anatomically impossible articulation — render as a dark inert
+        // cell. No symbol, no hover sync, no tooltip, no overlay. The
+        // chart should immediately read as "this combination cannot
+        // exist" the way the official IPA chart shades these cells.
+        td.className = "sm-cov-cell-impossible";
+        td.setAttribute("aria-hidden", "true");
+      } else if (!entry || entry.length === 0) {
         td.className = "empty";
         td.textContent = "·";
         td.dataset.tip = `no ${manner} at ${place}`;
@@ -6495,6 +6830,7 @@ function smCovBuildConsTable() {
             const s = document.createElement("span");
             s.className = "sm-cov-symbol v" + ph.voice;
             s.textContent = ph.ipa;
+            s.dataset.ipa = ph.ipa;  // click target for the global PhonemeState
             pair.appendChild(s);
           });
         } else {
@@ -6513,17 +6849,24 @@ function smCovBuildConsTable() {
         }
         td.appendChild(pair);
         if (userHit) td.classList.add("you");
-        // Annotated-mode marginalia: one short anchor word per cell.
-        // Multiple phonemes (voiceless+voiced pair) join with " · ".
-        // Only emitted in single-language view since compare uses dots.
+        // Annotated-mode marginalia. Wrapped in .sm-cov-annotations so
+        // future annotation children (.sm-cov-anno-dialect, -rarity,
+        // -script, …) can attach alongside the example anchor without
+        // restructuring the cell. Only emitted in single-language view;
+        // compare mode uses coloured dots instead of symbols.
         if (smCovSelected.length === 1 && typeof PC_EXAMPLES !== "undefined") {
           const phs = entry[0].phonemes.slice().sort((a, b) => a.voice - b.voice);
           const anchors = phs.map(ph => PC_EXAMPLES[ph.ipa]).filter(Boolean);
           if (anchors.length) {
-            const inline = document.createElement("span");
-            inline.className = "sm-cov-example-inline";
-            inline.textContent = anchors.join(" · ");
-            td.appendChild(inline);
+            const annos = document.createElement("span");
+            annos.className = "sm-cov-annotations";
+            const example = document.createElement("span");
+            example.className = "sm-cov-anno sm-cov-anno-example";
+            example.textContent = anchors.join(" · ");
+            annos.appendChild(example);
+            // Future: append additional .sm-cov-anno-* children here
+            // (rarity, dialect, alt-script) when the data layer exists.
+            td.appendChild(annos);
           }
         }
         // Native-title fallback for Minimal mode; the rich .sm-cov-tooltip
@@ -8302,6 +8645,16 @@ function pcRender() {
     if (target) pcSetExpanded(target, true);
     else pcOpenIpa = null;
   }
+  // Re-apply persistent phoneme selection on freshly-rendered rows.
+  // Use the window.SoundLab indirection so this guard is safe to call
+  // before the PhonemeState const has initialized (e.g. when pcRender()
+  // fires at script load, just before the global state block runs).
+  // Property access on window doesn't throw the way a TDZ read of a
+  // not-yet-initialized const would.
+  if (window.SoundLab && window.SoundLab.phonemeState && window.SoundLab.phonemeState.current
+      && typeof applySelectionStyling === "function") {
+    applySelectionStyling(window.SoundLab.phonemeState.current);
+  }
 }
 function pcToast(msg) {
   const t = document.getElementById("pc-toast");
@@ -8372,6 +8725,417 @@ pcRender();
   panel.addEventListener("mouseover", smCovSyncFromEvent);
   panel.addEventListener("mouseleave", smCovClearActive);
 })();
+
+// ══════════════════════════════════════════════════════════════════════════
+//  GLOBAL PHONEME STATE + INSPECTOR
+// ══════════════════════════════════════════════════════════════════════════
+// Phase 1 of the unified phoneme-centric model. A single shared state
+// holds the currently-selected phoneme; every phoneme-aware surface
+// subscribes to it. Hover keeps its existing role (ephemeral preview);
+// click sets persistent selection. The Inspector aside renders the
+// active phoneme's profile; selection styling persists across panel
+// switches and survives hover of other phonemes.
+//
+// Click surfaces wired in this phase:
+//   .sm-cov-symbol            (per-symbol within IPA grid cells)
+//   .sm-cov-trap-pt           (vowel trapezoid points)
+//   .sm-cov-diph              (diphthong chips)
+//   .sm-cov-sig-chip          (significance chips)
+//   .pc-table .pc-col-ipa     (Comparison table IPA cell)
+//
+// Future surfaces (Sound Map tokens, rhyme endings) plug in by emitting
+// click events that resolve a phoneme IPA and calling
+// window.SoundLab.phonemeState.set(buildPhonemeProfile(ipa)).
+
+const PhonemeState = (function() {
+  const subscribers = [];
+  let current = null;
+  return {
+    get current() { return current; },
+    subscribe(fn) {
+      subscribers.push(fn);
+      // Fire immediately with whatever's selected (handy for late-mount surfaces)
+      try { fn(current); } catch(e) { console.warn("PhonemeState subscriber error", e); }
+    },
+    set(profile) {
+      // Toggle off when the same phoneme is re-clicked
+      if (current && profile && current.ipa === profile.ipa) {
+        return this.clear();
+      }
+      current = profile || null;
+      this._notify();
+    },
+    clear() {
+      current = null;
+      this._notify();
+    },
+    _notify() {
+      subscribers.forEach(fn => {
+        try { fn(current); } catch(e) { console.warn("PhonemeState subscriber error", e); }
+      });
+    }
+  };
+})();
+window.SoundLab = window.SoundLab || {};
+window.SoundLab.phonemeState = PhonemeState;
+
+// ── Articulation note composition ────────────────────────────────────
+// Concise, codex-toned descriptions assembled from place + manner +
+// voicing. Used by the Inspector's Articulation section when the
+// phoneme doesn't carry a curated `note` on its PC_PHONEMES row.
+const PHONEME_PLACE_NOTES = {
+  bilabial: "Both lips form the closure.",
+  labiodental: "Lower lip against the upper teeth.",
+  dental: "Tongue tip touches the upper teeth.",
+  alveolar: "Tongue tip or blade meets the alveolar ridge.",
+  postalveolar: "Tongue blade just behind the alveolar ridge.",
+  retroflex: "Tongue tip curled back toward the postalveolar region.",
+  palatal: "Tongue body raised toward the hard palate.",
+  velar: "Tongue back meets the soft palate.",
+  uvular: "Tongue back contacts the uvula.",
+  pharyngeal: "Tongue root retracts toward the pharyngeal wall.",
+  glottal: "Constriction occurs at the glottis."
+};
+const PHONEME_MANNER_NOTES = {
+  stop: "Air is fully blocked then released.",
+  nasal: "Oral closure with airflow routed through the nose.",
+  trill: "Rapid vibration of the articulator against its target.",
+  tap: "A single brief contact of the articulator.",
+  fricative: "A narrow channel produces turbulent airflow.",
+  "lateral-fricative": "Lateral channel produces turbulent airflow.",
+  affricate: "Stop closure released as a fricative.",
+  approximant: "Articulators approach without producing turbulence.",
+  lateral: "Air flows around the sides of the tongue."
+};
+
+function composeArticulationNote(profile) {
+  if (profile.category === "vowel") {
+    return "Open vocal tract; voiced resonance shaped by tongue position, lip rounding, and (when relevant) tongue-root advancement.";
+  }
+  if (profile.category === "diphthong") {
+    return "A glide between two vowel qualities, articulated as a single phoneme.";
+  }
+  const parts = [];
+  if (profile.manner && PHONEME_MANNER_NOTES[profile.manner]) {
+    parts.push(PHONEME_MANNER_NOTES[profile.manner]);
+  }
+  if (profile.place && PHONEME_PLACE_NOTES[profile.place]) {
+    parts.push(PHONEME_PLACE_NOTES[profile.place]);
+  }
+  if (profile.voice === 0) parts.push("Vocal folds remain open — no voicing.");
+  else if (profile.voice === 1) parts.push("Vocal folds vibrate throughout.");
+  return parts.join(" ");
+}
+
+// ── Profile builder ──────────────────────────────────────────────────
+// Given an IPA (and optionally a source DOM element for context like a
+// grid cell with data-place/manner), assemble a unified phoneme profile
+// drawing from PC_PHONEMES, LANG_PHONEMES.reference, PC_EXAMPLES, and
+// the articulation note composer.
+const PHONEME_LANG_LABELS = [
+  ["English",    "en", "latin"],
+  ["Spanish",    "es", "latin"],
+  ["French",     "fr", "latin"],
+  ["German",     "de", "latin"],
+  ["Portuguese", "pt", "latin"],
+  ["Turkish",    "tr", "latin"],
+  ["Swahili",    "sw", "latin"],
+  ["Vietnamese", "vi", "latin"],
+  ["Hawaiian",   "haw","latin"],
+  ["Arabic",     "ar", "arabic"],
+  ["Telugu",     "te", "telugu"]
+];
+
+function buildPhonemeProfile(ipa, sourceCtx) {
+  if (!ipa) return null;
+
+  // Curated row if it exists (drives name + language mappings)
+  const pcRow = (typeof PC_PHONEMES !== "undefined")
+    ? PC_PHONEMES.find(p => p.ipa === ipa) : null;
+
+  // Place / manner / voice / category
+  let place, manner, voice, category;
+  if (sourceCtx && sourceCtx.dataset) {
+    if (sourceCtx.dataset.place) place = sourceCtx.dataset.place;
+    if (sourceCtx.dataset.manner) manner = sourceCtx.dataset.manner;
+  }
+  if ((!place || !manner) && typeof LANG_PHONEMES !== "undefined" && LANG_PHONEMES.reference) {
+    const refCons = LANG_PHONEMES.reference.cons.find(c => c[0] === ipa);
+    if (refCons) {
+      place = place || refCons[1];
+      manner = manner || refCons[2];
+      voice = refCons[3];
+      category = "consonant";
+    } else {
+      const refVowel = LANG_PHONEMES.reference.vowels.find(v => v[0] === ipa);
+      if (refVowel) {
+        category = "vowel";
+        voice = 1;
+      } else if (LANG_PHONEMES.reference.diphs.indexOf(ipa) !== -1) {
+        category = "diphthong";
+        voice = 1;
+      }
+    }
+  }
+  if (voice === undefined && category === "consonant") {
+    // Last-resort voicing lookup via LANG_PHONEMES.reference cons
+    const refCons = LANG_PHONEMES.reference && LANG_PHONEMES.reference.cons.find(c => c[0] === ipa);
+    if (refCons) voice = refCons[3];
+  }
+  // Voicing inferred from the symbol class (.v0 / .v1) if source ctx is a sym
+  if (voice === undefined && sourceCtx && sourceCtx.classList) {
+    if (sourceCtx.classList.contains("v0")) voice = 0;
+    else if (sourceCtx.classList.contains("v1")) voice = 1;
+  }
+
+  // Name — prefer the curated desc string; otherwise compose
+  let name = pcRow ? pcRow.desc : "";
+  if (!name && place && manner) {
+    const mLabel = (typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[manner]) || manner;
+    const voicePrefix = voice === 0 ? "voiceless " : voice === 1 ? "voiced " : "";
+    name = `${voicePrefix}${place} ${mLabel}`.trim();
+  } else if (!name && category === "vowel") {
+    name = "vowel";
+  } else if (!name && category === "diphthong") {
+    name = "diphthong";
+  }
+
+  // Example anchor
+  const example = (typeof PC_EXAMPLES !== "undefined") ? (PC_EXAMPLES[ipa] || "") : "";
+
+  // Language mappings (from PC_PHONEMES row's per-language fields)
+  const mappings = [];
+  if (pcRow) {
+    for (const [label, code, script] of PHONEME_LANG_LABELS) {
+      let v = pcRow[code];
+      if (v === undefined || v === null) v = pcRow[script];
+      if (v && v !== "—") mappings.push({ label, value: v });
+    }
+  }
+
+  const profile = {
+    ipa,
+    name: name || ipa,
+    place: place || null,
+    manner: manner || null,
+    voice: voice === undefined ? null : voice,
+    category: category || (pcRow ? (pcRow.g === "v" ? "vowel" : pcRow.g === "d" ? "diphthong" : "consonant") : null),
+    example,
+    mappings,
+    note: pcRow ? (pcRow.note || "") : ""
+  };
+  profile.articulationNote = composeArticulationNote(profile);
+  return profile;
+}
+
+// ── Inspector renderer ───────────────────────────────────────────────
+function renderInspector(profile) {
+  const insp = document.getElementById("phoneme-inspector");
+  if (!insp) return;
+  if (!profile) {
+    insp.classList.remove("ph-insp-active");
+    return;
+  }
+  insp.classList.add("ph-insp-active");
+
+  const symbolEl = insp.querySelector(".ph-insp-symbol");
+  if (symbolEl) symbolEl.textContent = profile.ipa;
+
+  const nameEl = insp.querySelector(".ph-insp-name");
+  if (nameEl) nameEl.textContent = profile.name || "";
+
+  const setField = (sel, txt) => {
+    const el = insp.querySelector(sel);
+    if (el) el.textContent = txt;
+  };
+  const mLabel = profile.manner
+    ? ((typeof LANG_MANNER_LABELS !== "undefined" && LANG_MANNER_LABELS[profile.manner]) || profile.manner)
+    : "—";
+  setField('[data-field="place"]', profile.place || "—");
+  setField('[data-field="manner"]', mLabel);
+  setField('[data-field="voicing"]',
+    profile.voice === null || profile.voice === undefined ? "—"
+      : profile.voice ? "voiced" : "voiceless");
+  setField('[data-field="category"]', profile.category || "—");
+
+  setField('[data-field="articulation"]', profile.articulationNote || "—");
+
+  const locEl = insp.querySelector('[data-field="location"]');
+  if (locEl) {
+    if (profile.place && profile.manner) {
+      const cap = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : "";
+      locEl.textContent = `${cap(mLabel)} → ${cap(profile.place)}`;
+    } else if (profile.category === "vowel") {
+      locEl.textContent = "Vowel trapezoid";
+    } else if (profile.category === "diphthong") {
+      locEl.textContent = "Diphthong set";
+    } else {
+      locEl.textContent = "—";
+    }
+  }
+
+  const exEl = insp.querySelector('[data-field="examples"]');
+  if (exEl) {
+    if (profile.example) {
+      exEl.textContent = profile.example;
+    } else if (profile.note) {
+      exEl.textContent = profile.note.split(".")[0] + ".";
+    } else {
+      exEl.textContent = "—";
+    }
+  }
+
+  const mapEl = insp.querySelector('[data-field="mappings"]');
+  if (mapEl) {
+    mapEl.innerHTML = "";
+    if (profile.mappings && profile.mappings.length) {
+      for (const m of profile.mappings) {
+        const dt = document.createElement("dt");
+        dt.textContent = m.label;
+        const dd = document.createElement("dd");
+        dd.textContent = m.value;
+        mapEl.appendChild(dt);
+        mapEl.appendChild(dd);
+      }
+    } else {
+      const note = document.createElement("div");
+      note.className = "ph-insp-mappings-empty";
+      note.textContent = "no curated language mappings yet";
+      mapEl.appendChild(note);
+    }
+  }
+}
+
+// ── Selection styling subscriber ─────────────────────────────────────
+// Clears prior selection classes, then applies them to every surface
+// whose IPA matches the active profile. Two layers:
+//   .phoneme-selected      — the strong gold focal lock on the cell
+//   .axis-selected         — a *whisper* (3% warm tint) on the selected
+//                            phoneme's manner row + place column, giving
+//                            contextual relationship without a crosshair
+//   .axis-active-selected  — gentle gold on the row/column headers
+// These persist across hover (smCovClearActive only clears hover classes),
+// so a locked phoneme keeps its quiet context even as the user explores.
+function applySelectionStyling(profile) {
+  document.querySelectorAll(".phoneme-selected,.axis-selected,.axis-active-selected").forEach(el =>
+    el.classList.remove("phoneme-selected","axis-selected","axis-active-selected"));
+  if (!profile) return;
+  const ipa = profile.ipa;
+  // Contextual row + column tint for the selected phoneme (consonant grid
+  // only — vowels/diphthongs don't sit on the manner×place grid). Applied
+  // before the focal mark so the selected cell itself can override it.
+  if (profile.place && profile.manner) {
+    const mSel = CSS.escape(profile.manner), pSel = CSS.escape(profile.place);
+    document.querySelectorAll(
+      `.sm-cov-grid td[data-manner="${mSel}"],.sm-cov-grid td[data-place="${pSel}"]`
+    ).forEach(c => c.classList.add("axis-selected"));
+    document.querySelectorAll(
+      `.sm-cov-grid th[data-manner="${mSel}"],.sm-cov-grid th[data-place="${pSel}"]`
+    ).forEach(th => th.classList.add("axis-active-selected"));
+  }
+  // Grid cells (whole cell + the matching symbol child)
+  document.querySelectorAll(".sm-cov-grid td.filled").forEach(td => {
+    const ipas = (td.dataset.ipas || "").split(",");
+    if (ipas.indexOf(ipa) !== -1) {
+      td.classList.add("phoneme-selected");
+      const sym = td.querySelector(`.sm-cov-symbol[data-ipa="${CSS.escape(ipa)}"]`);
+      if (sym) sym.classList.add("phoneme-selected");
+    }
+  });
+  // Vowel trapezoid points
+  document.querySelectorAll(".sm-cov-trap-pt").forEach(pt => {
+    const ipas = (pt.dataset.ipas || "").split(",");
+    if (ipas.indexOf(ipa) !== -1) pt.classList.add("phoneme-selected");
+  });
+  // Diphthong chips
+  document.querySelectorAll(".sm-cov-diph").forEach(d => {
+    if (d.dataset.ipa === ipa) d.classList.add("phoneme-selected");
+  });
+  // Significance chips
+  document.querySelectorAll(".sm-cov-sig-chip").forEach(c => {
+    if (c.dataset.ipa === ipa) c.classList.add("phoneme-selected");
+  });
+  // Comparison table rows
+  document.querySelectorAll(".pc-table tbody tr.pc-data-row").forEach(tr => {
+    if (tr.dataset.ipa === ipa) tr.classList.add("phoneme-selected");
+  });
+  // Vocal tract zone for the selected place
+  if (profile.place) {
+    document.querySelectorAll(`.sm-cov-tract-svg .vt-part[data-place="${profile.place}"]`).forEach(el =>
+      el.classList.add("phoneme-selected")
+    );
+  }
+}
+
+PhonemeState.subscribe(renderInspector);
+PhonemeState.subscribe(applySelectionStyling);
+
+// ── Click delegation (Phase 1 surfaces) ──────────────────────────────
+// Listen once at the document level. Each branch resolves a phoneme IPA
+// and an optional source context (used by the profile builder to pull
+// place/manner from a grid cell). Stops there — does not interfere with
+// existing handlers (script-cell copy, desc-cell expand, fl-tab clicks).
+document.addEventListener("click", e => {
+  // Inspector clear button
+  if (e.target.closest("#phoneme-inspector .ph-insp-clear")) {
+    PhonemeState.clear();
+    return;
+  }
+  // IPA grid — per-symbol click. The cell is the source context for
+  // place/manner; the symbol element carries the IPA + voicing class.
+  const sym = e.target.closest(".sm-cov-symbol[data-ipa]");
+  if (sym) {
+    e.stopPropagation();
+    const cell = sym.closest("td");
+    // Pass the symbol as context so v0/v1 class can disambiguate voicing
+    // when the cell holds a pair; place/manner come from the cell.
+    const profile = buildPhonemeProfile(sym.dataset.ipa, cell);
+    // If sym is .v0 / .v1, override voice from the symbol class.
+    if (profile) {
+      if (sym.classList.contains("v0")) profile.voice = 0;
+      else if (sym.classList.contains("v1")) profile.voice = 1;
+      profile.articulationNote = composeArticulationNote(profile);
+    }
+    PhonemeState.set(profile);
+    return;
+  }
+  // Vowel trapezoid point
+  const pt = e.target.closest(".sm-cov-trap-pt");
+  if (pt && pt.dataset.ipas) {
+    const ipa = pt.dataset.ipas.split(",")[0];
+    PhonemeState.set(buildPhonemeProfile(ipa, null));
+    return;
+  }
+  // Diphthong chip
+  const diph = e.target.closest(".sm-cov-diph");
+  if (diph && diph.dataset.ipa) {
+    PhonemeState.set(buildPhonemeProfile(diph.dataset.ipa, null));
+    return;
+  }
+  // Significance chip
+  const sigChip = e.target.closest(".sm-cov-sig-chip");
+  if (sigChip && sigChip.dataset.ipa) {
+    PhonemeState.set(buildPhonemeProfile(sigChip.dataset.ipa, null));
+    return;
+  }
+  // Comparison table IPA column — select without interfering with the
+  // existing desc-cell expand or script-cell copy handlers.
+  const ipaCell = e.target.closest(".pc-table .pc-col-ipa");
+  if (ipaCell) {
+    const row = ipaCell.closest("tr.pc-data-row");
+    if (row && row.dataset.ipa) {
+      PhonemeState.set(buildPhonemeProfile(row.dataset.ipa, null));
+    }
+    return;
+  }
+});
+
+// Escape clears the lock. Useful as a universal "back to overview" key.
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && PhonemeState.current) {
+    PhonemeState.clear();
+  }
+});
 
 // ══════════════════════════════════════════════════════════════════════════
 //  RAP SUB-TABS  (nested inside #panel-rap — Bar Builder + Vault only)
