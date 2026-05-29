@@ -1524,6 +1524,51 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
   .prac-choices{grid-template-columns:1fr}
 }
 
+/* Mode picker — quiet exercise selector above the controls. */
+.prac-modes{display:flex;flex-wrap:wrap;gap:2px;margin-bottom:16px;border-bottom:1px solid var(--bdr);padding-bottom:0}
+.prac-mode-btn{background:none;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-family:inherit;font-size:12px;padding:8px 14px 9px;transition:color .15s ease,border-color .15s ease}
+.prac-mode-btn:hover{color:var(--text)}
+.prac-mode-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+.prac-stage{min-height:300px}
+.prac-quiz{display:flex;flex-direction:column;align-items:center}
+
+/* Exercise header — title, sub, progress. */
+.prac-ex-head{text-align:center;margin-bottom:18px;width:100%}
+.prac-ex-title{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:9px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:rgba(232,200,64,.7);margin-bottom:6px}
+.prac-ex-sub{font-size:12.5px;color:var(--muted);line-height:1.5;max-width:480px;margin:0 auto 12px}
+.prac-progress{width:100%;max-width:320px;height:4px;background:var(--surf2);border-radius:2px;margin:0 auto 5px;overflow:hidden}
+.prac-progress-bar{height:100%;width:0;background:var(--gold);border-radius:2px;transition:width .3s ease}
+.prac-progress-label{font-family:ui-monospace,"SF Mono",Consolas,monospace;font-size:10px;color:var(--muted);letter-spacing:.04em}
+
+/* Draggable tiles + the floating ghost that follows the pointer. */
+.prac-tile{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--radius);color:var(--gold);cursor:grab;font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-weight:700;touch-action:none;user-select:none;transition:border-color .15s ease,background .15s ease,box-shadow .2s ease}
+.prac-tile.prac-tile-ipa{font-size:22px}
+.prac-tile:hover{border-color:rgba(232,200,64,.5);background:var(--surf)}
+.prac-tile-dragging{opacity:.35}
+.prac-tile-ghost{position:fixed;z-index:90;display:flex;align-items:center;justify-content:center;background:var(--surf);border:1px solid var(--gold);border-radius:var(--radius);color:var(--gold);box-shadow:0 8px 22px rgba(0,0,0,.5),0 0 0 1px rgba(232,200,64,.3);pointer-events:none;font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-weight:700;font-size:22px}
+.prac-tray{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px;padding:14px;background:var(--bg);border:1px dashed var(--bdr);border-radius:var(--radius);min-height:54px}
+.prac-tray .prac-tile{width:42px;height:38px;display:inline-flex;align-items:center;justify-content:center}
+
+/* Drop-zone highlight (shared) + grid-builder cells. */
+.prac-zone.prac-zone-hot{box-shadow:inset 0 0 0 2px var(--gold);background:rgba(232,200,64,.12)!important}
+.prac-grid-builder td.prac-gb-cell{cursor:default}
+.prac-grid-builder td.prac-gb-blank{background:#0d0d0d;border-color:#1a1a1a}
+.prac-grid-builder td.filled{color:var(--gold);text-shadow:0 0 8px rgba(232,200,64,.4)}
+.prac-grid-builder td.correct{background:rgba(232,200,64,.16);box-shadow:inset 0 0 0 2px var(--gold)}
+.flash-wrong{animation:prac-flash-wrong .4s ease}
+@keyframes prac-flash-wrong{0%,100%{box-shadow:none}40%{box-shadow:inset 0 0 0 2px rgba(200,90,90,.7);background:rgba(200,90,90,.12)}}
+
+/* Match board — two columns connected by drawn lines. */
+.prac-matchboard{position:relative;display:flex;justify-content:space-between;gap:90px;max-width:460px;margin:8px auto 0}
+.prac-match-lines{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible;z-index:1}
+.prac-match-line{stroke:var(--gold);stroke-width:2;opacity:.7}
+.prac-match-col{display:flex;flex-direction:column;gap:10px;flex:1;z-index:2}
+.prac-match-item{background:var(--surf2);border:1px solid var(--bdr);border-radius:var(--radius);color:var(--text);font-family:inherit;font-size:14px;padding:12px 14px;text-align:center;min-height:44px;display:flex;align-items:center;justify-content:center}
+.prac-match-item.prac-tile-ipa{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:22px;font-weight:700;color:var(--gold)}
+.prac-match-target{transition:border-color .15s ease,background .15s ease}
+.prac-match-item.matched{border-color:var(--gold);background:rgba(232,200,64,.1);box-shadow:0 0 0 1px rgba(232,200,64,.4) inset;cursor:default}
+.prac-match-item.matched.prac-tile-ipa{opacity:1}
+
 /* ── Persistent selection styling ──────────────────────────────────
    .phoneme-selected fires on click and persists until a new phoneme
    is selected, the inspector × is clicked, or Esc is pressed. Layers
@@ -2621,6 +2666,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <div id="panel-practice" role="tabpanel">
   <div class="pc-scroll">
     <div class="prac-shell">
+      <nav class="prac-modes" id="prac-modes" aria-label="Practice exercises"><!-- mode buttons injected by JS --></nav>
       <header class="prac-controls">
         <div class="prac-ctl-group" role="group" aria-label="Source set">
           <span class="prac-ctl-label">Set</span>
@@ -2630,7 +2676,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
             <button class="prac-seg-btn" type="button" data-source="ar">Arabic</button>
           </div>
         </div>
-        <div class="prac-ctl-group" role="group" aria-label="Difficulty level">
+        <div class="prac-ctl-group" id="prac-level-group" role="group" aria-label="Difficulty level">
           <span class="prac-ctl-label">Level</span>
           <div class="prac-seg" id="prac-level">
             <button class="prac-seg-btn active" type="button" data-level="1" title="Common core sounds">1</button>
@@ -2639,11 +2685,8 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
             <button class="prac-seg-btn" type="button" data-level="4" title="Full chart mastery">4</button>
           </div>
         </div>
-        <div class="prac-score" id="prac-score" aria-live="polite" title="Session score · streak"></div>
       </header>
-      <div class="prac-card" id="prac-card">
-        <!-- question rendered here -->
-      </div>
+      <div class="prac-stage" id="prac-stage"><!-- active exercise renders here --></div>
     </div>
   </div>
 </div>
@@ -9578,26 +9621,358 @@ function practiceSetSeg(seg, active){
     b.setAttribute("aria-selected", on ? "true" : "false");
   });
 }
+// ══════════════════════════════════════════════════════════════════════════
+//  PRACTICE · INTERACTION KIT  (pointer-based drag-and-drop + match board)
+// ══════════════════════════════════════════════════════════════════════════
+// Shared mechanics so no exercise re-implements dragging or matching.
+// Pointer events unify mouse + touch. A draggable tile clones a floating
+// ghost that follows the pointer; drop zones validate via accept() and
+// fire onDrop(); the original tile only moves when the exercise's onDrop
+// chooses to move/remove it (so a wrong drop simply leaves it in the tray).
+let pracDragState = null;
+function pracDndTile(el, data){
+  el.classList.add("prac-tile");
+  el._dndData = data;
+  el.addEventListener("pointerdown", pracDndStart);
+}
+function pracDndZone(el, accept, onDrop){
+  el.classList.add("prac-zone");
+  el._dndAccept = accept;
+  el._dndDrop = onDrop;
+}
+function pracDndStart(e){
+  if (e.button !== undefined && e.button !== 0) return;
+  const tile = e.currentTarget;
+  e.preventDefault();
+  const rect = tile.getBoundingClientRect();
+  const ghost = tile.cloneNode(true);
+  ghost.classList.add("prac-tile-ghost");
+  ghost.style.width = rect.width + "px";
+  ghost.style.height = rect.height + "px";
+  document.body.appendChild(ghost);
+  pracDragState = {
+    tile, ghost, data: tile._dndData,
+    offX: e.clientX - rect.left, offY: e.clientY - rect.top, zone: null
+  };
+  tile.classList.add("prac-tile-dragging");
+  pracDndGhostTo(e.clientX, e.clientY);
+  window.addEventListener("pointermove", pracDndMove);
+  window.addEventListener("pointerup", pracDndEnd);
+}
+function pracDndGhostTo(x, y){
+  const s = pracDragState; if (!s) return;
+  s.ghost.style.left = (x - s.offX) + "px";
+  s.ghost.style.top  = (y - s.offY) + "px";
+}
+function pracDndMove(e){
+  const s = pracDragState; if (!s) return;
+  pracDndGhostTo(e.clientX, e.clientY);
+  s.ghost.style.pointerEvents = "none";
+  const under = document.elementFromPoint(e.clientX, e.clientY);
+  const zone = under ? under.closest(".prac-zone") : null;
+  if (s.zone && s.zone !== zone) s.zone.classList.remove("prac-zone-hot");
+  if (zone && zone._dndAccept && zone._dndAccept(s.data, zone)) {
+    zone.classList.add("prac-zone-hot"); s.zone = zone;
+  } else if (!zone) {
+    s.zone = null;
+  } else {
+    s.zone = null;
+  }
+}
+function pracDndEnd(){
+  const s = pracDragState; if (!s) return;
+  window.removeEventListener("pointermove", pracDndMove);
+  window.removeEventListener("pointerup", pracDndEnd);
+  if (s.zone) s.zone.classList.remove("prac-zone-hot");
+  s.tile.classList.remove("prac-tile-dragging");
+  s.ghost.remove();
+  if (s.zone && s.zone._dndDrop) s.zone._dndDrop(s.data, s.zone, s.tile);
+  pracDragState = null;
+}
+
+// Two-column connect-the-pairs board. left = draggable items, right =
+// drop targets; match(l,r) decides correctness; a line is drawn per match.
+function pracDrawMatchLine(svg, board, a, b){
+  const br = board.getBoundingClientRect();
+  const ar = a.getBoundingClientRect(), brr = b.getBoundingClientRect();
+  const line = document.createElementNS("http://www.w3.org/2000/svg","line");
+  line.setAttribute("x1", ar.right - br.left);
+  line.setAttribute("y1", ar.top + ar.height/2 - br.top);
+  line.setAttribute("x2", brr.left - br.left);
+  line.setAttribute("y2", brr.top + brr.height/2 - br.top);
+  line.setAttribute("class", "prac-match-line");
+  svg.appendChild(line);
+}
+function pracMatchBoard(stage, opts){
+  const { title, sub, left, right, match } = opts;
+  stage.innerHTML = "";
+  const head = document.createElement("div");
+  head.className = "prac-ex-head";
+  head.innerHTML =
+    `<div class="prac-ex-title">${practiceEsc(title)}</div>` +
+    `<div class="prac-ex-sub">${practiceEsc(sub)}</div>` +
+    `<div class="prac-progress-label" id="prac-mb-label">0 / ${left.length}</div>`;
+  stage.appendChild(head);
+
+  let matched = 0;
+  const board = document.createElement("div");
+  board.className = "prac-matchboard";
+  const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+  svg.setAttribute("class", "prac-match-lines");
+  board.appendChild(svg);
+  const colL = document.createElement("div"); colL.className = "prac-match-col";
+  const colR = document.createElement("div"); colR.className = "prac-match-col";
+
+  pracShuffleInPlace(left.slice()).forEach(it => {
+    const el = document.createElement("button");
+    el.type = "button";
+    el.className = "prac-tile prac-match-item" + (it.ipa ? " prac-tile-ipa" : "");
+    el.textContent = it.label;
+    pracDndTile(el, { key: it.key, side: "left", el });
+    colL.appendChild(el);
+  });
+  pracShuffleInPlace(right.slice()).forEach(it => {
+    const el = document.createElement("div");
+    el.className = "prac-match-item prac-match-target" + (it.ipa ? " prac-tile-ipa" : "");
+    el.textContent = it.label;
+    el._key = it.key;
+    pracDndZone(el,
+      (data, zone) => data.side === "left" && !zone.classList.contains("matched"),
+      (data, zone) => {
+        if (match({ key: data.key }, { key: zone._key })) {
+          data.el.classList.add("matched");
+          zone.classList.add("matched");
+          pracDrawMatchLine(svg, board, data.el, zone);
+          matched++;
+          const lbl = document.getElementById("prac-mb-label");
+          if (lbl) lbl.textContent = matched === left.length
+            ? `Complete · ${matched}/${left.length} ✓` : `${matched} / ${left.length}`;
+        } else {
+          zone.classList.add("flash-wrong");
+          setTimeout(() => zone.classList.remove("flash-wrong"), 400);
+        }
+      });
+    colR.appendChild(el);
+  });
+  board.appendChild(colL); board.appendChild(colR);
+  stage.appendChild(board);
+}
+function pracShuffleInPlace(arr){ return practiceShuffle(arr); }
+
+// ══════════════════════════════════════════════════════════════════════════
+//  PRACTICE · DATA ADAPTERS  (curated, derived from existing datasets)
+// ══════════════════════════════════════════════════════════════════════════
+// Curated distinctive grapheme ↔ phoneme pairs (no auto-reversal — that
+// would be ambiguous). Drawn from the Comparison DB / language orthographies.
+const PRAC_GRAPHEMES = {
+  en: [["sh","ʃ"],["ch","tʃ"],["ng","ŋ"],["th","θ"],["zh","ʒ"],["y","j"]],
+  ar: [["ش","ʃ"],["خ","x"],["ق","q"],["ع","ʕ"],["ث","θ"],["ح","ħ"],["غ","ɣ"]],
+  reference: [["sh (en)","ʃ"],["ñ (es)","ɲ"],["lh (pt)","ʎ"],["ق (ar)","q"],
+              ["خ (ar)","x"],["th (en)","θ"],["ع (ar)","ʕ"]]
+};
+function pracGraphemePairs(source){
+  const raw = PRAC_GRAPHEMES[source] || PRAC_GRAPHEMES.reference;
+  // Ensure unique IPA targets so the match board stays strictly 1:1.
+  const seen = new Set(); const out = [];
+  for (const [g, ipa] of practiceShuffle(raw)) {
+    if (seen.has(ipa)) continue;
+    seen.add(ipa); out.push([g, ipa]);
+  }
+  return out;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  PRACTICE · EXERCISES
+// ══════════════════════════════════════════════════════════════════════════
+
+// Basic Drill — the original multiple-choice quiz, now a registry entry.
+function exerciseBasicDrill(stage, ctx){
+  practiceSource = ctx.source; practiceLevel = ctx.level;
+  const wrap = document.createElement("div");
+  wrap.className = "prac-quiz";
+  wrap.innerHTML = `<div class="prac-score" id="prac-score" aria-live="polite"></div><div class="prac-card" id="prac-card"></div>`;
+  stage.appendChild(wrap);
+  practiceNew();   // renders into #prac-card, updates #prac-score
+}
+
+// IPA Grid Builder — flagship. Drag phoneme tiles into their place×manner cell.
+function exerciseGridBuilder(stage, ctx){
+  const raw = practiceFilterByLevel(practiceBuildPool(ctx.source), ctx.level)
+    .filter(p => p.category === "consonant" && p.place && p.manner);
+  const seen = new Set(); const tiles = [];
+  raw.forEach(p => { if (!seen.has(p.ipa)) { seen.add(p.ipa); tiles.push(p); } });
+  if (tiles.length < 2) { stage.innerHTML = `<div class="prac-empty">Not enough phonemes for this set &amp; level.</div>`; return; }
+
+  const axes = practiceGridAxes(tiles);
+  const places = axes.places, manners = axes.manners;
+  const total = tiles.length;
+  let placed = 0;
+
+  const head = document.createElement("div");
+  head.className = "prac-ex-head";
+  head.innerHTML =
+    `<div class="prac-ex-title">IPA Grid Builder</div>` +
+    `<div class="prac-ex-sub">Drag each phoneme to its place × manner cell.</div>` +
+    `<div class="prac-progress"><div class="prac-progress-bar" id="prac-gb-bar"></div></div>` +
+    `<div class="prac-progress-label" id="prac-gb-label">0 / ${total}</div>`;
+  stage.appendChild(head);
+
+  const gridWrap = document.createElement("div");
+  gridWrap.className = "prac-grid-wrap";
+  const table = document.createElement("table");
+  table.className = "prac-grid prac-grid-builder";
+  const thead = document.createElement("thead");
+  const hr = document.createElement("tr");
+  hr.appendChild(document.createElement("th"));
+  places.forEach(pl => {
+    const th = document.createElement("th");
+    th.className = "prac-grid-place";
+    th.textContent = practicePlaceAbbr(pl);
+    th.title = (typeof LANG_PLACE_LABELS !== "undefined" && LANG_PLACE_LABELS[pl]) || pl;
+    if (typeof SM_COV_PLACE_PALETTE !== "undefined" && SM_COV_PLACE_PALETTE[pl]) th.style.color = SM_COV_PLACE_PALETTE[pl];
+    hr.appendChild(th);
+  });
+  thead.appendChild(hr); table.appendChild(thead);
+  const tbody = document.createElement("tbody");
+  manners.forEach(m => {
+    const tr = document.createElement("tr");
+    const rh = document.createElement("th");
+    rh.className = "prac-grid-manner";
+    rh.textContent = practiceMannerLabel(m);
+    tr.appendChild(rh);
+    places.forEach(pl => {
+      const td = document.createElement("td");
+      td.dataset.place = pl; td.dataset.manner = m;
+      const hasPhon = tiles.some(t => t.place === pl && t.manner === m);
+      if (hasPhon) {
+        td.classList.add("prac-gb-cell");
+        pracDndZone(td,
+          (data, zone) => !zone.classList.contains("filled"),
+          (data, zone, tile) => {
+            if (data.place === zone.dataset.place && data.manner === zone.dataset.manner) {
+              zone.classList.add("filled", "correct");
+              zone.textContent = data.ipa;
+              tile.remove();
+              placed++;
+              const bar = document.getElementById("prac-gb-bar");
+              if (bar) bar.style.width = Math.round(placed / total * 100) + "%";
+              const lbl = document.getElementById("prac-gb-label");
+              if (lbl) lbl.textContent = placed === total ? `Complete · ${total}/${total} ✓` : `${placed} / ${total}`;
+            } else {
+              zone.classList.add("flash-wrong");
+              setTimeout(() => zone.classList.remove("flash-wrong"), 400);
+            }
+          });
+      } else {
+        td.classList.add("prac-gb-blank");
+      }
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+  table.appendChild(tbody); gridWrap.appendChild(table); stage.appendChild(gridWrap);
+
+  const tray = document.createElement("div");
+  tray.className = "prac-tray";
+  practiceShuffle(tiles).forEach(t => {
+    const tile = document.createElement("button");
+    tile.type = "button";
+    tile.className = "prac-tile prac-tile-ipa";
+    tile.textContent = t.ipa;
+    pracDndTile(tile, { ipa: t.ipa, place: t.place, manner: t.manner });
+    tray.appendChild(tile);
+  });
+  stage.appendChild(tray);
+}
+
+// Sound ↔ Word — match each IPA symbol to the example word it appears in.
+function exerciseSoundWord(stage, ctx){
+  const pool = practiceFilterByLevel(practiceBuildPool(ctx.source), ctx.level).filter(p => p.example);
+  const seen = new Set(); const items = [];
+  practiceShuffle(pool).forEach(p => { if (!seen.has(p.ipa) && items.length < 6) { seen.add(p.ipa); items.push(p); } });
+  if (items.length < 3) { stage.innerHTML = `<div class="prac-empty">Not enough example words for this set &amp; level.</div>`; return; }
+  pracMatchBoard(stage, {
+    title: "Sound ↔ Word",
+    sub: "Drag each IPA symbol onto the word that carries it.",
+    left: items.map(p => ({ key: p.ipa, label: p.ipa, ipa: true })),
+    right: items.map(p => ({ key: p.ipa, label: p.example })),
+    match: (l, r) => l.key === r.key
+  });
+}
+
+// Grapheme ↔ Phoneme — curated distinctive spellings ↔ IPA.
+function exerciseGrapheme(stage, ctx){
+  let pairs = pracGraphemePairs(ctx.source).slice(0, 6);
+  if (pairs.length < 3) { stage.innerHTML = `<div class="prac-empty">No grapheme set available for this source.</div>`; return; }
+  pracMatchBoard(stage, {
+    title: "Grapheme ↔ Phoneme",
+    sub: "Drag each spelling onto the IPA sound it represents.",
+    left: pairs.map(([g, ipa]) => ({ key: ipa, label: g })),
+    right: pairs.map(([g, ipa]) => ({ key: ipa, label: ipa, ipa: true })),
+    match: (l, r) => l.key === r.key
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  PRACTICE · REGISTRY + SHELL
+// ══════════════════════════════════════════════════════════════════════════
+const PRAC_EXERCISES = [
+  { id:"basic",      title:"Basic Drill",        usesLevel:true,  build: exerciseBasicDrill },
+  { id:"grid",       title:"IPA Grid Builder",   usesLevel:true,  build: exerciseGridBuilder },
+  { id:"sound-word", title:"Sound ↔ Word",       usesLevel:true,  build: exerciseSoundWord },
+  { id:"grapheme",   title:"Grapheme ↔ Phoneme", usesLevel:false, build: exerciseGrapheme }
+];
+let pracMode = "basic";
+
+function pracBuildModes(){
+  const nav = document.getElementById("prac-modes");
+  if (!nav) return;
+  nav.innerHTML = "";
+  PRAC_EXERCISES.forEach(ex => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "prac-mode-btn" + (ex.id === pracMode ? " active" : "");
+    btn.dataset.mode = ex.id;
+    btn.textContent = ex.title;
+    btn.addEventListener("click", () => { pracMode = ex.id; pracSyncModes(); pracRenderActive(); });
+    nav.appendChild(btn);
+  });
+}
+function pracSyncModes(){
+  document.querySelectorAll("#prac-modes .prac-mode-btn").forEach(b =>
+    b.classList.toggle("active", b.dataset.mode === pracMode));
+}
+function pracActiveExercise(){ return PRAC_EXERCISES.find(e => e.id === pracMode) || PRAC_EXERCISES[0]; }
+function pracRenderActive(){
+  const stage = document.getElementById("prac-stage");
+  if (!stage) return;
+  stage.innerHTML = "";
+  const ex = pracActiveExercise();
+  const lvlGroup = document.getElementById("prac-level-group");
+  if (lvlGroup) lvlGroup.style.display = ex.usesLevel ? "" : "none";
+  const ctx = { source: practiceSource, level: practiceLevel, stage };
+  try { ex.build(stage, ctx); }
+  catch (err) { stage.innerHTML = `<div class="prac-empty">This exercise could not load.</div>`; console.warn("Practice exercise error", err); }
+}
 function practiceInit(){
   if (!practiceInited) {
     practiceInited = true;
+    pracBuildModes();
     const srcSeg = document.getElementById("prac-source");
-    if (srcSeg) srcSeg.addEventListener("click", e=>{
+    if (srcSeg) srcSeg.addEventListener("click", e => {
       const b = e.target.closest(".prac-seg-btn"); if (!b) return;
-      practiceSource = b.dataset.source; practiceSetSeg(srcSeg, b); practiceNew();
+      practiceSource = b.dataset.source; practiceSetSeg(srcSeg, b); pracRenderActive();
     });
     const lvlSeg = document.getElementById("prac-level");
-    if (lvlSeg) lvlSeg.addEventListener("click", e=>{
+    if (lvlSeg) lvlSeg.addEventListener("click", e => {
       const b = e.target.closest(".prac-seg-btn"); if (!b) return;
-      practiceLevel = parseInt(b.dataset.level,10) || 1; practiceSetSeg(lvlSeg, b); practiceNew();
+      practiceLevel = parseInt(b.dataset.level, 10) || 1; practiceSetSeg(lvlSeg, b); pracRenderActive();
     });
-    practiceNew();
-  } else if (!practiceCurrent) {
-    practiceNew();
+    pracRenderActive();
   }
 }
 window.SoundLab = window.SoundLab || {};
-window.SoundLab.practice = { init: practiceInit, next: practiceNew };
+window.SoundLab.practice = { init: practiceInit, render: pracRenderActive };
 
 // ══════════════════════════════════════════════════════════════════════════
 //  RAP SUB-TABS  (nested inside #panel-rap — Bar Builder + Vault only)
