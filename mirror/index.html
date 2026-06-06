@@ -237,6 +237,52 @@
   footer.foot { text-align: center; color: var(--dim); font-size: 0.78rem; padding: 20px;
                 border-top: 1px solid var(--line); margin-top: 40px; }
   footer.foot a { color: var(--accent); }
+
+  /* Backup / safety banner */
+  .banner { display: none; align-items: center; gap: 12px; flex-wrap: wrap;
+            background: var(--panel2); border-bottom: 1px solid var(--line);
+            padding: 9px 18px; font-size: 0.85rem; color: var(--ink); }
+  .banner.show { display: flex; }
+  .banner.warn { background: rgba(168,90,58,.12); }
+  .banner .msg { flex: 1; min-width: 200px; }
+  .banner .msg strong { color: var(--warn); }
+
+  /* Modal (edit + backups) */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200;
+                   display: none; align-items: center; justify-content: center; padding: 18px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+           padding: 22px; width: 100%; max-width: 460px; max-height: 86vh; overflow-y: auto;
+           box-shadow: 0 10px 40px rgba(0,0,0,.28); }
+  .modal h3 { font-size: 1.1rem; color: var(--accent); margin-bottom: 4px; }
+  .modal .sub { font-size: 0.8rem; color: var(--dim); margin-bottom: 16px; font-style: italic; }
+  .modal .field { display: flex; flex-direction: column; gap: 4px; margin-bottom: 14px; }
+  .modal .field > label { font-size: 0.74rem; color: var(--dim); text-transform: uppercase;
+                          letter-spacing: 0.08em; }
+  .modal .field input, .modal .field select, .modal .field textarea { width: 100%; }
+  .modal .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 6px; }
+  .modal .snap { display: flex; justify-content: space-between; align-items: center; gap: 10px;
+                 padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 0.86rem; }
+  .modal .snap .when { color: var(--dim); font-size: 0.78rem; }
+  .edit-btn { background: transparent; border: 0; color: var(--dim); cursor: pointer;
+              font-size: 0.78rem; padding: 2px 6px; font-family: inherit; }
+  .edit-btn:hover { color: var(--accent); }
+
+  /* Phone-readable */
+  @media (max-width: 620px) {
+    .view { padding: 20px 14px 100px; }
+    .view h1 { font-size: 1.4rem; }
+    .topnav { padding: 8px 12px; gap: 8px; }
+    .topnav .brand { width: 100%; margin: 0; }
+    .form { flex-direction: column; align-items: stretch; }
+    .form label { width: 100%; }
+    .form input, .form select, .form textarea, .form input.grow,
+    .form input[type="number"], .form input[type="date"] { width: 100%; }
+    .form button.primary { width: 100%; }
+    .two-col { grid-template-columns: 1fr; }
+    table.log { display: block; overflow-x: auto; white-space: nowrap; }
+    .insight-grid, .today-grid, .nutrient-grid { grid-template-columns: 1fr; }
+  }
 </style>
 <link rel="stylesheet" href="../_shared/hub-nav.css">
 </head>
@@ -257,11 +303,22 @@
   </div>
   <span class="spacer"></span>
   <button class="mini-btn" id="themeBtn" title="Toggle theme">☾</button>
-  <button class="mini-btn" id="exportBtn" title="Export data as JSON">Export</button>
-  <button class="mini-btn" id="importBtn" title="Import data from JSON">Import</button>
+  <button class="mini-btn" id="exportBtn" title="Download a backup of all your data as JSON">Back up</button>
+  <button class="mini-btn" id="importBtn" title="Restore data from a backup file">Import</button>
   <input type="file" id="importFile" accept="application/json" style="display:none">
+  <button class="mini-btn" id="snapsBtn" title="Restore an automatic in-browser snapshot">Snapshots</button>
   <button class="mini-btn danger" id="resetBtn" title="Erase all data">Reset</button>
 </nav>
+
+<div class="banner" id="backupBanner">
+  <span class="msg" id="backupMsg"></span>
+  <button class="mini-btn" id="backupNow">Back up now</button>
+  <button class="mini-btn" id="backupDismiss" title="Hide until next week">Later</button>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal" id="modalBox"></div>
+</div>
 
 <!-- ============== IDENTITY ============== -->
 <section class="view active" id="view-identity">
@@ -636,7 +693,7 @@
   </div>
 
   <div class="section">
-    <div class="section-head"><h2>Patterns</h2><span class="act tiny">Last 30 days — how parts of you connect.</span></div>
+    <div class="section-head"><h2>Patterns</h2><span class="act tiny">Last 30 days — associations from small samples. Hints to notice, not proof.</span></div>
     <div id="reflectPatterns" class="insight-grid"></div>
   </div>
 
@@ -668,6 +725,10 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
+const BACKUP_KEY = 'mirror_backups';
+const LAST_EXPORT_KEY = 'mirror_last_export';
+const SCHEMA_VERSION = 2;
+const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
@@ -683,17 +744,68 @@ function getTargets() { return Object.assign({}, DEFAULT_TARGETS, state.body.tar
 let state = loadState();
 let foodsIndex = null; // { byId: Map, list: [] }
 
+// Bring an older saved blob up to the current schema. Add a case per version bump.
+function migrate(s) {
+  let v = s.__v || 1;
+  // v1 -> v2: stamp version only; shallow-merge already backfills new fields.
+  if (v < 2) { v = 2; }
+  s.__v = SCHEMA_VERSION;
+  return s;
+}
 function loadState() {
   try {
-    const s = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    let s = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (!s) return defaultState();
     const d = defaultState();
-    // shallow merge to handle schema growth
+    // shallow merge to handle schema growth (backfills any new top-level fields)
     for (const k of Object.keys(d)) s[k] = Object.assign(d[k], s[k] || {});
+    s = migrate(s);
     return s;
   } catch { return defaultState(); }
 }
-function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+function saveState() {
+  state.__v = SCHEMA_VERSION;
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch (err) {
+    // Quota exceeded or storage blocked — make the failure loud, not silent.
+    showBanner(`<strong>Could not save.</strong> Your browser storage may be full or blocked. Back up now before you lose anything.`, true);
+    console.error('Mirror saveState failed:', err);
+  }
+}
+
+/* ----- Automatic in-browser snapshots (undo safety for import/reset/edits) ----- */
+function isEmptyState(s) {
+  return !s || (!s.identity?.values?.length && !s.identity?.pulse?.length &&
+    !s.body?.food?.length && !s.money?.expenses?.length &&
+    !s.relationships?.people?.length && !s.mind?.books?.length &&
+    !s.identity?.reflections?.length);
+}
+function loadSnaps() {
+  try { return JSON.parse(localStorage.getItem(BACKUP_KEY)) || []; } catch { return []; }
+}
+function takeSnapshot(reason) {
+  if (isEmptyState(state)) return; // nothing worth keeping
+  const snaps = loadSnaps();
+  const data = JSON.stringify(state);
+  if (snaps.length && snaps[snaps.length - 1].data === data) return; // no change since last
+  snaps.push({ ts: Date.now(), reason, data });
+  while (snaps.length > MAX_SNAPS) snaps.shift();
+  try { localStorage.setItem(BACKUP_KEY, JSON.stringify(snaps)); } catch (e) { /* snapshots are best-effort */ }
+}
+function restoreSnapshot(ts) {
+  const snap = loadSnaps().find(s => s.ts === ts);
+  if (!snap) return;
+  if (!confirm('Restore this snapshot? Your current data will be snapshotted first, then replaced.')) return;
+  takeSnapshot('before restore');
+  try {
+    state = migrate(JSON.parse(snap.data));
+    const d = defaultState();
+    for (const k of Object.keys(d)) state[k] = Object.assign(d[k], state[k] || {});
+    saveState(); renderAll(); closeModal();
+    showBanner('Snapshot restored.', false);
+  } catch { alert('That snapshot could not be restored.'); }
+}
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
 const todayStr = () => new Date().toISOString().slice(0,10);
 function fmt$(n){ return (n<0?'-':'') + '$' + Math.abs(Number(n||0)).toFixed(2); }
@@ -718,15 +830,43 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   };
 });
 
+/* ----- Banner (backup reminder + status messages) ----- */
+function showBanner(html, isWarn) {
+  const b = document.getElementById('backupBanner');
+  document.getElementById('backupMsg').innerHTML = html;
+  b.classList.toggle('warn', !!isWarn);
+  b.classList.add('show');
+}
+function hideBanner() { document.getElementById('backupBanner').classList.remove('show'); }
+function checkBackupReminder() {
+  if (isEmptyState(state)) return;
+  const last = Number(localStorage.getItem(LAST_EXPORT_KEY) || 0);
+  const days = last ? Math.floor((Date.now() - last) / 86400000) : 999;
+  if (days >= 7) {
+    showBanner(last
+      ? `It's been <strong>${days} days</strong> since your last backup. Your data lives only in this browser — download a copy to be safe.`
+      : `Your data lives only in this browser. Download a backup so a cleared cache or new laptop can't wipe it.`, false);
+  }
+}
+document.getElementById('backupNow').onclick = () => document.getElementById('exportBtn').click();
+document.getElementById('backupDismiss').onclick = () => {
+  // snooze a week without actually backing up
+  localStorage.setItem(LAST_EXPORT_KEY, String(Date.now() - 0));
+  hideBanner();
+};
+
 /* ----- Export / Import / Reset ----- */
-document.getElementById('exportBtn').onclick = () => {
+function doExport() {
   const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url; a.download = `mirror-${todayStr()}.json`;
   document.body.appendChild(a); a.click(); a.remove();
   URL.revokeObjectURL(url);
-};
+  localStorage.setItem(LAST_EXPORT_KEY, String(Date.now()));
+  hideBanner();
+}
+document.getElementById('exportBtn').onclick = doExport;
 document.getElementById('importBtn').onclick = () => document.getElementById('importFile').click();
 document.getElementById('importFile').onchange = (e) => {
   const f = e.target.files[0]; if (!f) return;
@@ -734,18 +874,84 @@ document.getElementById('importFile').onchange = (e) => {
   reader.onload = () => {
     try {
       const obj = JSON.parse(reader.result);
-      if (!obj.identity || !obj.body) throw new Error('Not a Mirror export');
-      if (!confirm('Replace current data with imported file? This overwrites everything.')) return;
-      state = obj; saveState(); renderAll();
+      if (!obj.identity || !obj.body) throw new Error('Not a Mirror backup file');
+      if (!confirm('Replace current data with this backup? Your current data is snapshotted first, so you can undo via Snapshots.')) return;
+      takeSnapshot('before import');
+      state = migrate(obj);
+      const d = defaultState();
+      for (const k of Object.keys(d)) state[k] = Object.assign(d[k], state[k] || {});
+      saveState(); renderAll();
+      showBanner('Backup imported.', false);
     } catch (err) { alert('Import failed: ' + err.message); }
+    e.target.value = '';
   };
   reader.readAsText(f);
 };
 document.getElementById('resetBtn').onclick = () => {
-  if (!confirm('Erase ALL Mirror data in this browser? This cannot be undone (unless you exported).')) return;
+  if (!confirm('Erase ALL Mirror data in this browser? A snapshot is kept so you can undo via Snapshots.')) return;
   if (!confirm('Really sure? Everything goes.')) return;
+  takeSnapshot('before reset');
   state = defaultState(); saveState(); renderAll();
 };
+document.getElementById('snapsBtn').onclick = openSnapshotsModal;
+
+/* ----- Modal infrastructure (edit forms + snapshot list) ----- */
+const overlay = document.getElementById('modalOverlay');
+const modalBox = document.getElementById('modalBox');
+function closeModal() { overlay.classList.remove('open'); modalBox.innerHTML = ''; }
+overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+
+// Generic edit form. fields: [{key,label,type,options?,min?,step?}]. onSave(values) returns nothing.
+function openEditModal(title, sub, fields, values, onSave) {
+  modalBox.innerHTML =
+    `<h3>${escapeHtml(title)}</h3>${sub ? `<div class="sub">${escapeHtml(sub)}</div>` : ''}` +
+    fields.map(f => {
+      const v = values[f.key] ?? '';
+      if (f.type === 'select') {
+        return `<div class="field"><label>${escapeHtml(f.label)}</label>
+          <select data-k="${f.key}">${f.options.map(o =>
+            `<option value="${escapeHtml(o.value)}"${String(o.value)===String(v)?' selected':''}>${escapeHtml(o.label)}</option>`).join('')}</select></div>`;
+      }
+      if (f.type === 'textarea') {
+        return `<div class="field"><label>${escapeHtml(f.label)}</label>
+          <textarea data-k="${f.key}">${escapeHtml(String(v))}</textarea></div>`;
+      }
+      const attrs = [`type="${f.type}"`, `data-k="${f.key}"`, `value="${escapeHtml(String(v))}"`];
+      if (f.min !== undefined) attrs.push(`min="${f.min}"`);
+      if (f.step !== undefined) attrs.push(`step="${f.step}"`);
+      return `<div class="field"><label>${escapeHtml(f.label)}</label><input ${attrs.join(' ')}></div>`;
+    }).join('') +
+    `<div class="actions"><button class="ghost" id="mCancel">Cancel</button>
+      <button class="primary" id="mSave">Save</button></div>`;
+  overlay.classList.add('open');
+  const first = modalBox.querySelector('[data-k]'); if (first) first.focus();
+  document.getElementById('mCancel').onclick = closeModal;
+  document.getElementById('mSave').onclick = () => {
+    const out = {};
+    modalBox.querySelectorAll('[data-k]').forEach(el => {
+      const f = fields.find(x => x.key === el.dataset.k);
+      out[el.dataset.k] = f.type === 'number' ? (el.value === '' ? '' : Number(el.value)) : el.value;
+    });
+    onSave(out);
+    closeModal();
+  };
+}
+
+function openSnapshotsModal() {
+  const snaps = loadSnaps().slice().reverse();
+  modalBox.innerHTML = `<h3>Snapshots</h3>
+    <div class="sub">Automatic in-browser backups, kept for undo. These live in this browser only — use “Back up” to save a file you can keep.</div>` +
+    (snaps.length ? snaps.map(s =>
+      `<div class="snap"><span><strong>${escapeHtml(s.reason || 'auto')}</strong>
+        <div class="when">${new Date(s.ts).toLocaleString()}</div></span>
+        <button class="ghost" data-restore="${s.ts}">Restore</button></div>`).join('')
+      : `<div class="empty">No snapshots yet. They're created automatically as you use Mirror.</div>`) +
+    `<div class="actions" style="margin-top:14px"><button class="ghost" id="mClose">Close</button></div>`;
+  overlay.classList.add('open');
+  document.getElementById('mClose').onclick = closeModal;
+  modalBox.querySelectorAll('[data-restore]').forEach(b => b.onclick = () => restoreSnapshot(Number(b.dataset.restore)));
+}
 
 /* =============================================================
    IDENTITY
@@ -809,8 +1015,23 @@ function renderPulse() {
   if (!hist.length) { el.innerHTML = ''; return; }
   el.innerHTML = '<div class="section-head" style="margin-top:18px"><h2>Recent</h2></div>' +
     hist.map(p => `<div class="card mini"><div class="row"><span>${fmtDate(p.date)}</span>
-      <span class="tiny">mood ${p.mood} · energy ${p.energy}</span></div>
+      <span class="tiny" style="white-space:nowrap">mood ${p.mood} · energy ${p.energy}
+        <button class="edit-btn" data-pedit="${p.date}">edit</button>
+        <button class="x" data-pdel="${p.date}">×</button></span></div>
       ${p.note ? `<div class="tiny" style="margin-top:4px">${escapeHtml(p.note)}</div>`:''}</div>`).join('');
+  el.querySelectorAll('[data-pedit]').forEach(b => b.onclick = () => {
+    const p = state.identity.pulse.find(x => x.date === b.dataset.pedit);
+    openEditModal('Edit pulse', fmtDate(p.date), [
+      {key:'mood',label:'Mood (1–5)',type:'number',min:1,step:1},
+      {key:'energy',label:'Energy (1–5)',type:'number',min:1,step:1},
+      {key:'note',label:'Note',type:'text'},
+    ], p, vals => { Object.assign(p, vals); saveState(); renderPulse(); });
+  });
+  el.querySelectorAll('[data-pdel]').forEach(b => b.onclick = () => {
+    if (!confirm('Delete this day\'s pulse?')) return;
+    state.identity.pulse = state.identity.pulse.filter(x => x.date !== b.dataset.pdel);
+    saveState(); renderPulse();
+  });
 }
 document.getElementById('pulseSave').onclick = () => {
   if (!pulseDraft.mood || !pulseDraft.energy) { alert('Pick a mood and energy level.'); return; }
@@ -860,12 +1081,19 @@ function renderReflections() {
     `<div class="card"><div class="meta">${r.period} · ${fmtDate(r.date)}</div>
       <div class="tiny" style="font-style:italic;margin-bottom:6px">${escapeHtml(r.prompt)}</div>
       <div class="body">${escapeHtml(r.answer).replace(/\n/g,'<br>')}</div>
-      <div style="margin-top:6px"><button class="ghost" data-id="${r.id}">delete</button></div></div>`
+      <div style="margin-top:6px"><button class="edit-btn" data-refedit="${r.id}">edit</button>
+        <button class="ghost" data-id="${r.id}">delete</button></div></div>`
   ).join('') : '<div class="empty">No reflections yet.</div>';
   document.getElementById('refList').querySelectorAll('button.ghost').forEach(b => b.onclick = () => {
     if (!confirm('Delete this reflection?')) return;
     state.identity.reflections = state.identity.reflections.filter(x => x.id !== b.dataset.id);
     saveState(); renderReflections();
+  });
+  document.getElementById('refList').querySelectorAll('[data-refedit]').forEach(b => b.onclick = () => {
+    const r = state.identity.reflections.find(x => x.id === b.dataset.refedit);
+    openEditModal('Edit reflection', r.prompt, [
+      {key:'answer',label:'Your reflection',type:'textarea'},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderReflections(); });
   });
 }
 document.getElementById('refPeriod').onchange = renderReflections;
@@ -1025,14 +1253,22 @@ function renderFoodLog() {
       <td class="num">${r.grams}</td><td class="num">${kcal}</td>
       <td style="white-space:nowrap">
         <button class="pin-btn${pinned ? ' on' : ''}" data-pin="${r.foodId}" title="${pinned ? 'Unpin' : 'Pin this food'}">${pinned ? '★' : '☆'}</button>
+        <button class="edit-btn" data-edit="${r.id}">edit</button>
         <button class="x" data-id="${r.id}">×</button>
       </td></tr>`;
   }).join('');
+  const refreshFood = () => { saveState(); renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods(); };
   tbody.querySelectorAll('button.x').forEach(b => b.onclick = () => {
-    state.body.food = state.body.food.filter(x => x.id !== b.dataset.id);
-    saveState(); renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods();
+    state.body.food = state.body.food.filter(x => x.id !== b.dataset.id); refreshFood();
   });
   tbody.querySelectorAll('button.pin-btn').forEach(b => b.onclick = () => togglePin(Number(b.dataset.pin)));
+  tbody.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = state.body.food.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit food entry', r.foodName, [
+      {key:'date',label:'Date',type:'date'},
+      {key:'grams',label:'Grams',type:'number',min:1,step:1},
+    ], r, vals => { Object.assign(r, vals); refreshFood(); });
+  });
 }
 
 function renderToday() {
@@ -1240,17 +1476,28 @@ function renderNutrients() {
 }
 
 /* Water, sleep, exercise, symptoms — simple lists */
+const SIMPLE_EDIT = {
+  water:    { title: 'Edit water',    fields: [ {key:'date',label:'Date',type:'date'}, {key:'oz',label:'Ounces',type:'number',min:1,step:1} ] },
+  sleep:    { title: 'Edit sleep',    fields: [ {key:'date',label:'Date',type:'date'}, {key:'hours',label:'Hours',type:'number',min:0,step:0.25}, {key:'quality',label:'Quality (1–5)',type:'number',min:1,step:1} ] },
+  exercise: { title: 'Edit exercise', fields: [ {key:'date',label:'Date',type:'date'}, {key:'type',label:'Type',type:'text'}, {key:'minutes',label:'Minutes',type:'number',min:1,step:1} ] },
+  symptoms: { title: 'Edit note',     fields: [ {key:'date',label:'Date',type:'date'}, {key:'note',label:'Note',type:'text'} ] },
+};
 function simpleLog(key, containerId, renderRow) {
   const el = document.getElementById(containerId);
   const rows = state.body[key].slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0, 20);
   if (!rows.length) { el.innerHTML = '<div class="empty">Nothing logged yet.</div>'; return; }
   el.innerHTML = rows.map(r => `<div class="card mini"><div class="row">
     <span>${fmtDate(r.date)} — ${renderRow(r)}</span>
-    <button class="x" data-id="${r.id}">×</button></div></div>`).join('');
+    <span style="white-space:nowrap"><button class="edit-btn" data-edit="${r.id}">edit</button>
+    <button class="x" data-id="${r.id}">×</button></span></div></div>`).join('');
+  const after = () => { saveState(); simpleLog(key, containerId, renderRow); if (key === 'water') renderToday(); };
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
-    state.body[key] = state.body[key].filter(x => x.id !== b.dataset.id);
-    saveState(); simpleLog(key, containerId, renderRow);
-    if (key === 'water') renderToday();
+    state.body[key] = state.body[key].filter(x => x.id !== b.dataset.id); after();
+  });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = state.body[key].find(x => x.id === b.dataset.edit);
+    const cfg = SIMPLE_EDIT[key];
+    openEditModal(cfg.title, '', cfg.fields, r, vals => { Object.assign(r, vals); after(); });
   });
 }
 document.getElementById('waterAdd').onclick = () => {
@@ -1385,11 +1632,22 @@ function renderExpenses() {
     return `<tr><td>${fmtDate(r.date)}</td><td>${c?escapeHtml(c.name):'<em>gone</em>'}</td>
       <td>${escapeHtml(r.note||'')}</td>
       <td class="num">${fmt$(r.amount)}</td>
-      <td><button class="x" data-id="${r.id}">×</button></td></tr>`;
+      <td style="white-space:nowrap"><button class="edit-btn" data-edit="${r.id}">edit</button>
+        <button class="x" data-id="${r.id}">×</button></td></tr>`;
   }).join('');
   tbody.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.money.expenses = state.money.expenses.filter(x => x.id !== b.dataset.id);
     saveState(); renderExpenses(); renderBudget();
+  });
+  tbody.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = state.money.expenses.find(x => x.id === b.dataset.edit);
+    const catOpts = state.money.categories.map(c => ({ value: c.id, label: c.name }));
+    openEditModal('Edit expense', '', [
+      {key:'date',label:'Date',type:'date'},
+      {key:'amount',label:'Amount',type:'number',min:0,step:0.01},
+      {key:'categoryId',label:'Category',type:'select',options:catOpts},
+      {key:'note',label:'Note',type:'text'},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderExpenses(); renderBudget(); });
   });
 }
 
@@ -1413,11 +1671,21 @@ function renderSubs() {
   el.innerHTML = state.money.subscriptions.map(s =>
     `<div class="card mini"><div class="row">
       <span><strong>${escapeHtml(s.name)}</strong> <span class="tiny">${s.cadence}</span></span>
-      <span>${fmt$(s.amount)} <button class="x" data-id="${s.id}">×</button></span>
+      <span style="white-space:nowrap">${fmt$(s.amount)}
+        <button class="edit-btn" data-edit="${s.id}">edit</button>
+        <button class="x" data-id="${s.id}">×</button></span>
     </div></div>`).join('');
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.money.subscriptions = state.money.subscriptions.filter(x => x.id !== b.dataset.id);
     saveState(); renderSubs();
+  });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const s = state.money.subscriptions.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit subscription', '', [
+      {key:'name',label:'Name',type:'text'},
+      {key:'amount',label:'Amount',type:'number',min:0,step:0.01},
+      {key:'cadence',label:'Cadence',type:'select',options:[{value:'monthly',label:'Monthly'},{value:'yearly',label:'Yearly'}]},
+    ], s, vals => { Object.assign(s, vals); saveState(); renderSubs(); });
   });
 }
 
@@ -1439,12 +1707,21 @@ function renderNetWorth() {
     const net = (r.assets||0) - (r.liabilities||0);
     return `<div class="card mini"><div class="row">
       <span>${fmtDate(r.date)}</span>
-      <span>${fmt$(net)} <span class="tiny">(${fmt$(r.assets)} − ${fmt$(r.liabilities)})</span>
+      <span style="white-space:nowrap">${fmt$(net)} <span class="tiny">(${fmt$(r.assets)} − ${fmt$(r.liabilities)})</span>
+      <button class="edit-btn" data-edit="${r.id}">edit</button>
       <button class="x" data-id="${r.id}">×</button></span></div></div>`;
   }).join('');
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.money.netWorth = state.money.netWorth.filter(x => x.id !== b.dataset.id);
     saveState(); renderNetWorth();
+  });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = state.money.netWorth.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit net-worth snapshot', '', [
+      {key:'date',label:'Date',type:'date'},
+      {key:'assets',label:'Assets',type:'number',min:0,step:1},
+      {key:'liabilities',label:'Liabilities',type:'number',min:0,step:1},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderNetWorth(); });
   });
 }
 
@@ -1470,7 +1747,8 @@ function renderGoals() {
         <span class="tiny">${fmt$(g.saved||0)} / ${fmt$(g.target)} ${g.by ? `· by ${fmtDate(g.by)} (${dd>=0? dd+' days' : 'past'})` : ''}</span></div>
       <div class="bar"><div class="fill" style="width:${pct}%"></div></div>
       <div class="row" style="margin-top:6px">
-        <button class="ghost" data-save="${g.id}">add progress</button>
+        <span><button class="ghost" data-save="${g.id}">add progress</button>
+        <button class="edit-btn" data-edit="${g.id}">edit</button></span>
         <button class="x" data-del="${g.id}">×</button>
       </div></div>`;
   }).join('');
@@ -1480,6 +1758,15 @@ function renderGoals() {
     if (v===null) return;
     g.saved = (g.saved||0) + (Number(v)||0);
     saveState(); renderGoals();
+  });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const g = state.money.goals.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit goal', '', [
+      {key:'name',label:'Name',type:'text'},
+      {key:'target',label:'Target $',type:'number',min:0,step:1},
+      {key:'saved',label:'Saved so far $',type:'number',min:0,step:1},
+      {key:'by',label:'By (deadline)',type:'date'},
+    ], g, vals => { Object.assign(g, vals); saveState(); renderGoals(); });
   });
   el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
     if (!confirm('Delete this goal?')) return;
@@ -1539,7 +1826,7 @@ function renderPeople() {
       <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
         <button class="ghost" data-contact="${p.id}">mark contacted today</button>
         <button class="ghost" data-notes="${p.id}">edit notes</button>
-        <button class="ghost" data-tier="${p.id}">change tier</button>
+        <button class="ghost" data-edit="${p.id}">edit</button>
         <button class="x" data-del="${p.id}">×</button>
       </div>
     </div>`;
@@ -1554,11 +1841,16 @@ function renderPeople() {
     const v = prompt(`Notes for ${p.name}:`, p.notes || '');
     if (v===null) return; p.notes = v; saveState(); renderPeople();
   });
-  el.querySelectorAll('[data-tier]').forEach(b => b.onclick = () => {
-    const p = state.relationships.people.find(x => x.id === b.dataset.tier);
-    const v = prompt(`Tier (1 core, 2 close, 3 warm) for ${p.name}:`, p.tier);
-    if (v===null) return; const n = Number(v); if (n>=1 && n<=3) p.tier = n;
-    saveState(); renderPeople();
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const p = state.relationships.people.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit person', '', [
+      {key:'name',label:'Name',type:'text'},
+      {key:'relation',label:'Relation',type:'text'},
+      {key:'birthday',label:'Birthday',type:'date'},
+      {key:'tier',label:'Tier',type:'select',options:[
+        {value:1,label:'Tier 1 — core'},{value:2,label:'Tier 2 — close'},{value:3,label:'Tier 3 — warm'}]},
+      {key:'lastContact',label:'Last contact',type:'date'},
+    ], p, vals => { vals.tier = Number(vals.tier); Object.assign(p, vals); saveState(); renderPeople(); });
   });
   el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
     const p = state.relationships.people.find(x => x.id === b.dataset.del);
@@ -1597,8 +1889,9 @@ function renderFollowUps() {
           <strong>${p?escapeHtml(p.name):'(gone)'}</strong> — ${escapeHtml(r.what)}
           ${r.due?`<span class="tiny ${overdue?'overdue':''}" style="${overdue?'color:var(--warn)':''}"> · due ${fmtDate(r.due)}</span>`:''}
         </span>
-        <span>
+        <span style="white-space:nowrap">
           <button class="ghost" data-done="${r.id}">${r.done?'undo':'done'}</button>
+          <button class="edit-btn" data-edit="${r.id}">edit</button>
           <button class="x" data-del="${r.id}">×</button>
         </span>
       </div></div>`;
@@ -1606,6 +1899,13 @@ function renderFollowUps() {
   el.querySelectorAll('[data-done]').forEach(b => b.onclick = () => {
     const r = state.relationships.followUps.find(x => x.id === b.dataset.done);
     r.done = !r.done; saveState(); renderFollowUps();
+  });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = state.relationships.followUps.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit follow-up', '', [
+      {key:'what',label:'What you promised',type:'text'},
+      {key:'due',label:'Due',type:'date'},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderFollowUps(); });
   });
   el.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
     state.relationships.followUps = state.relationships.followUps.filter(x => x.id !== b.dataset.del);
@@ -1631,11 +1931,19 @@ function renderGiftIdeas() {
     return `<div class="card mini"><div class="row">
       <span><strong>${p?escapeHtml(p.name):'(gone)'}</strong> — ${escapeHtml(r.idea)}
         ${r.occasion?`<span class="tiny"> · ${escapeHtml(r.occasion)}</span>`:''}</span>
-      <button class="x" data-id="${r.id}">×</button></div></div>`;
+      <span style="white-space:nowrap"><button class="edit-btn" data-edit="${r.id}">edit</button>
+        <button class="x" data-id="${r.id}">×</button></span></div></div>`;
   }).join('');
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.relationships.giftIdeas = state.relationships.giftIdeas.filter(x => x.id !== b.dataset.id);
     saveState(); renderGiftIdeas();
+  });
+  el.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
+    const r = state.relationships.giftIdeas.find(x => x.id === b.dataset.edit);
+    openEditModal('Edit gift idea', '', [
+      {key:'idea',label:'Idea',type:'text'},
+      {key:'occasion',label:'Occasion',type:'text'},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderGiftIdeas(); });
   });
 }
 
@@ -1692,6 +2000,7 @@ function renderBooks() {
         <button class="ghost" data-bkstatus="${b.id}">change status</button>
         <button class="ghost" data-bkrate="${b.id}">rate</button>
         <button class="ghost" data-bkwrite="${b.id}">takeaways</button>
+        <button class="ghost" data-bkedit="${b.id}">edit</button>
         <button class="x" data-bkdel="${b.id}">×</button>
       </div></div>`;
   }).join('');
@@ -1715,6 +2024,16 @@ function renderBooks() {
     const b = state.mind.books.find(x => x.id === btn.dataset.bkwrite);
     const v = prompt(`Takeaways for "${b.title}" — what would you tell a friend?`, b.takeaways || '');
     if (v === null) return; b.takeaways = v; saveState(); renderBooks();
+  });
+  el.querySelectorAll('[data-bkedit]').forEach(btn => btn.onclick = () => {
+    const b = state.mind.books.find(x => x.id === btn.dataset.bkedit);
+    openEditModal('Edit book', '', [
+      {key:'title',label:'Title',type:'text'},
+      {key:'author',label:'Author',type:'text'},
+      {key:'started',label:'Started',type:'date'},
+      {key:'finished',label:'Finished',type:'date'},
+      {key:'takeaways',label:'Takeaways',type:'textarea'},
+    ], b, vals => { Object.assign(b, vals); saveState(); renderBooks(); });
   });
   el.querySelectorAll('[data-bkdel]').forEach(btn => btn.onclick = () => {
     const b = state.mind.books.find(x => x.id === btn.dataset.bkdel);
@@ -1742,10 +2061,19 @@ function renderIdeas() {
   el.innerHTML = rows.map(r => `<div class="card mini">
     <div class="meta">${fmtDate(r.date)}${r.source?` · ${escapeHtml(r.source)}`:''}</div>
     <div class="body">${escapeHtml(r.text)}</div>
-    <div style="margin-top:4px"><button class="x" data-ididel="${r.id}">×</button></div></div>`).join('');
+    <div style="margin-top:4px"><button class="edit-btn" data-idiedit="${r.id}">edit</button>
+      <button class="x" data-ididel="${r.id}">×</button></div></div>`).join('');
   el.querySelectorAll('[data-ididel]').forEach(b => b.onclick = () => {
     state.mind.ideas = state.mind.ideas.filter(x => x.id !== b.dataset.ididel);
     saveState(); renderIdeas();
+  });
+  el.querySelectorAll('[data-idiedit]').forEach(b => b.onclick = () => {
+    const r = state.mind.ideas.find(x => x.id === b.dataset.idiedit);
+    openEditModal('Edit idea', '', [
+      {key:'date',label:'Date',type:'date'},
+      {key:'text',label:'Idea',type:'textarea'},
+      {key:'source',label:'Source',type:'text'},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderIdeas(); });
   });
 }
 
@@ -1813,10 +2141,19 @@ function renderQuotes() {
     <div class="prompt" style="margin:0 0 6px 0">${escapeHtml(r.text).replace(/\n/g,'<br>')}</div>
     <div class="tiny">— ${r.source?escapeHtml(r.source):'unknown'} · ${fmtDate(r.date)}</div>
     ${r.why?`<div class="tiny" style="margin-top:4px;font-style:italic">${escapeHtml(r.why)}</div>`:''}
-    <div style="margin-top:6px"><button class="x" data-qudel="${r.id}">×</button></div></div>`).join('');
+    <div style="margin-top:6px"><button class="edit-btn" data-quedit="${r.id}">edit</button>
+      <button class="x" data-qudel="${r.id}">×</button></div></div>`).join('');
   el.querySelectorAll('[data-qudel]').forEach(b => b.onclick = () => {
     state.mind.quotes = state.mind.quotes.filter(x => x.id !== b.dataset.qudel);
     saveState(); renderQuotes();
+  });
+  el.querySelectorAll('[data-quedit]').forEach(b => b.onclick = () => {
+    const r = state.mind.quotes.find(x => x.id === b.dataset.quedit);
+    openEditModal('Edit quote', '', [
+      {key:'text',label:'Quote',type:'textarea'},
+      {key:'source',label:'Source',type:'text'},
+      {key:'why',label:'Why it stuck',type:'text'},
+    ], r, vals => { Object.assign(r, vals); saveState(); renderQuotes(); });
   });
 }
 
@@ -1940,6 +2277,18 @@ function renderReflectToday() {
       ${reading.length>3?`<div class="p">+${reading.length-3} more</div>`:''}</div>`);
   }
 
+  // Pulse streak (consecutive days logged, ending today or yesterday)
+  const pulseDates = new Set(state.identity.pulse.map(p => p.date));
+  if (pulseDates.size) {
+    let streak = 0, cursor = pulseDates.has(today) ? today : shiftDate(today, -1);
+    while (pulseDates.has(cursor)) { streak++; cursor = shiftDate(cursor, -1); }
+    if (streak >= 2) {
+      cards.push(`<div class="insight good"><div class="k">Pulse streak</div>
+        <div class="v accent">${streak}<span class="u">days</span></div>
+        <div class="p">${pulseDates.has(today) ? 'Logged today. Keep it going.' : 'Log today to extend it.'}</div></div>`);
+    }
+  }
+
   el.innerHTML = cards.join('') || '<div class="reflect-empty">Log something in the other rooms and it will start showing up here.</div>';
 }
 
@@ -1966,6 +2315,22 @@ function renderReflectPatterns() {
     cards.push(`<div class="insight ${cls}"><div class="k">Sleep → energy</div>
       <div class="v">${hi.toFixed(1)} <span class="u">vs</span> ${lo.toFixed(1)}</div>
       <div class="p">Energy on nights ≥7h vs. &lt;7h. ${sleepSplit.high.length}/${sleepSplit.low.length} days sampled.</div></div>`);
+  }
+
+  // Sleep quality ↔ mood
+  const qSplit = { high: [], low: [] };
+  for (const d of range) {
+    const p = pulseByDate.get(d); const s = sleepByDate.get(d);
+    if (!p || !s || !s.quality) continue;
+    (s.quality >= 4 ? qSplit.high : qSplit.low).push(p.mood);
+  }
+  if (qSplit.high.length >= 3 && qSplit.low.length >= 3) {
+    const hi = avg(qSplit.high), lo = avg(qSplit.low);
+    const diff = hi - lo;
+    const cls = diff >= 0.3 ? 'good' : diff <= -0.3 ? 'warn' : 'muted';
+    cards.push(`<div class="insight ${cls}"><div class="k">Sleep quality → mood</div>
+      <div class="v">${hi.toFixed(1)} <span class="u">vs</span> ${lo.toFixed(1)}</div>
+      <div class="p">Mood after quality ≥4 nights vs. below. ${qSplit.high.length}/${qSplit.low.length} days sampled.</div></div>`);
   }
 
   // Exercise ↔ mood
@@ -2108,6 +2473,18 @@ function renderReflectAlignment() {
     cards.push(`<div class="insight muted"><div class="k">Open questions</div>
       <div class="v">${openQ.length}</div>
       <div class="p">You're holding <strong>${openQ.length}</strong> unresolved question${openQ.length>1?'s':''}. Oldest: <em>${escapeHtml(openQ.sort((a,b)=>a.date.localeCompare(b.date))[0].q.slice(0,60))}</em></div></div>`);
+  }
+
+  // Net worth trend (first vs latest snapshot)
+  const nw = state.money.netWorth.slice().sort((a,b) => a.date.localeCompare(b.date));
+  if (nw.length >= 2) {
+    const net = r => (r.assets||0) - (r.liabilities||0);
+    const first = nw[0], last = nw[nw.length-1];
+    const delta = net(last) - net(first);
+    const cls = delta > 0 ? 'good' : delta < 0 ? 'warn' : 'muted';
+    cards.push(`<div class="insight ${cls}"><div class="k">Net worth trend</div>
+      <div class="v ${delta<0?'warn':'accent'}">${delta>=0?'+':''}${fmt$(delta)}</div>
+      <div class="p">${fmt$(net(last))} now · since ${fmtDate(first.date)} (${nw.length} snapshots)</div></div>`);
   }
 
   if (!cards.length) {
@@ -2284,6 +2661,8 @@ function renderAll() {
 loadFoods().then(() => { renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods(); });
 renderToday();
 renderAll();
+takeSnapshot('app open');     // automatic undo point each session
+checkBackupReminder();        // nudge to download a file backup if it's been a week
 </script>
 </body>
 </html>
