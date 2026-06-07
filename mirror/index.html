@@ -338,7 +338,7 @@
     <div class="section-head"><h2>Current season</h2></div>
     <div class="card">
       <div class="meta">What is this chapter of life about?</div>
-      <textarea id="seasonText" placeholder="e.g. Moving to Milwaukee. Learning to slow down. Building Mirror."></textarea>
+      <textarea id="seasonText" placeholder=""></textarea>
       <div style="margin-top:8px"><button class="ghost" id="seasonSave">Save</button>
         <span class="tiny" id="seasonSaved"></span></div>
     </div>
@@ -807,7 +807,10 @@ function restoreSnapshot(ts) {
   } catch { alert('That snapshot could not be restored.'); }
 }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,7); }
-const todayStr = () => new Date().toISOString().slice(0,10);
+function toLocalISO(d){ // local-time YYYY-MM-DD — avoids UTC date-rollover (evening entries landing on tomorrow)
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+const todayStr = () => toLocalISO(new Date());
 function fmt$(n){ return (n<0?'-':'') + '$' + Math.abs(Number(n||0)).toFixed(2); }
 function fmtDate(s){ if(!s) return ''; const d = new Date(s+'T00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); }
 function daysBetween(a,b){ return Math.round((new Date(b)-new Date(a))/86400000); }
@@ -1364,7 +1367,7 @@ function renderTrend() {
   const days = [];
   for (let i = trendDays - 1; i >= 0; i--) {
     const d = new Date(today); d.setDate(d.getDate() - i);
-    days.push(d.toISOString().slice(0,10));
+    days.push(toLocalISO(d));
   }
   const totals = Object.fromEntries(days.map(d => [d, { kcal: 0, protein: 0 }]));
   for (const e of state.body.food) {
@@ -1450,7 +1453,7 @@ function rangeCutoff(range) {
   if (range==='week') d.setDate(d.getDate()-6);
   if (range==='month') d.setMonth(d.getMonth()-1);
   if (range==='year') d.setFullYear(d.getFullYear()-1);
-  return d.toISOString().slice(0,10);
+  return toLocalISO(d);
 }
 function renderNutrients() {
   const el = document.getElementById('nutrientSummary');
@@ -1796,8 +1799,8 @@ document.getElementById('pAdd').onclick = () => {
 };
 function daysUntilBirthday(b) {
   if (!b) return null;
-  const today = new Date(todayStr());
-  const bd = new Date(b);
+  const today = new Date(todayStr() + 'T00:00');
+  const bd = new Date(b + 'T00:00');
   const this_year = new Date(today.getFullYear(), bd.getMonth(), bd.getDate());
   const next = this_year < today ? new Date(today.getFullYear()+1, bd.getMonth(), bd.getDate()) : this_year;
   return Math.round((next - today) / 86400000);
@@ -2163,7 +2166,7 @@ function renderQuotes() {
 
 function shiftDate(d, days) {
   const nd = new Date(d + 'T00:00'); nd.setDate(nd.getDate() + days);
-  return nd.toISOString().slice(0,10);
+  return toLocalISO(nd);
 }
 function daysInRange(nDays) {
   const out = []; let d = todayStr();
