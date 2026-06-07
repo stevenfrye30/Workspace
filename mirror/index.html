@@ -471,6 +471,30 @@
     <div id="customFoodList"></div>
   </div>
 
+  <div class="section">
+    <div class="section-head"><h2>Meals</h2><span class="act tiny">Bundle foods you eat together and log them in one click.</span></div>
+    <div class="form">
+      <label style="flex:1;min-width:200px">Add food
+        <input type="text" id="mealSearch" placeholder="Search NutriLens or your custom foods" class="grow" autocomplete="off">
+      </label>
+      <label>Grams<input type="number" id="mealGrams" min="1" step="1" placeholder="100"></label>
+      <button class="primary" id="mealItemAdd" disabled>Add to meal</button>
+    </div>
+    <div id="mealResults" class="search-results" style="display:none"></div>
+    <div id="mealSelected" class="tiny" style="color:var(--dim);margin:4px 0 8px"></div>
+    <div id="mealDraft"></div>
+    <div class="form" id="mealSaveRow" style="display:none">
+      <input type="text" id="mealName" class="grow" placeholder="Meal name (e.g. My breakfast bowl)">
+      <button class="primary" id="mealSave">Save meal</button>
+      <button class="ghost" id="mealClear">Clear</button>
+    </div>
+    <div class="section-head" style="margin-top:20px">
+      <h2>Saved meals</h2>
+      <label class="act tiny" style="color:var(--dim)">Log on <input type="date" id="mealLogDate" style="width:130px"></label>
+    </div>
+    <div id="mealList"></div>
+  </div>
+
   <div class="two-col">
     <div class="section">
       <div class="section-head"><h2>Water</h2></div>
@@ -753,7 +777,7 @@ const FOODS_URL = '../nutrilens/foods.json';
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [] },
-  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [] },
+  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [] }
@@ -1166,6 +1190,8 @@ function snapshotNutrients(f) {
   for (const [k] of NUTRIENT_FIELDS) o[k] = (f.n && f.n[k]) || 0;
   return o;
 }
+// Combined searchable pool: your custom foods first, then the NutriLens library.
+function foodPool() { return (state.body.customFoods || []).concat(foodsIndex ? foodsIndex.list : []); }
 
 let selectedFood = null;
 function selectFood(f) {
@@ -1181,8 +1207,7 @@ function renderFoodResults(q) {
   const box = document.getElementById('foodResults');
   if (!foodsIndex || !q || q.length < 2) { box.style.display='none'; return; }
   const Q = q.toLowerCase();
-  const pool = (state.body.customFoods || []).concat(foodsIndex.list); // your foods first
-  const results = pool.filter(f => f.name.toLowerCase().includes(Q)).slice(0, 40);
+  const results = foodPool().filter(f => f.name.toLowerCase().includes(Q)).slice(0, 40);
   if (!results.length) { box.innerHTML = '<div class="r tiny">no matches</div>'; box.style.display='block'; return; }
   box.innerHTML = results.map(f =>
     `<div class="r" data-id="${f.id}">${escapeHtml(f.name)}<div class="c">${escapeHtml(f.category)}</div></div>`
@@ -1348,6 +1373,130 @@ function renderCustomFoods() {
       saveState(); indexCustomFoods(); renderCustomFoods();
     });
   });
+}
+
+/* ----- Meals (saved combos) ----- */
+let mealDraft = [];          // [{foodId, foodName, category, grams, n}]
+let selectedMealFood = null;
+let editingMealId = null;
+
+function renderMealResults(q) {
+  const box = document.getElementById('mealResults');
+  if (!foodsIndex || !q || q.length < 2) { box.style.display='none'; return; }
+  const Q = q.toLowerCase();
+  const results = foodPool().filter(f => f.name.toLowerCase().includes(Q)).slice(0, 40);
+  if (!results.length) { box.innerHTML = '<div class="r tiny">no matches</div>'; box.style.display='block'; return; }
+  box.innerHTML = results.map(f => `<div class="r" data-id="${f.id}">${escapeHtml(f.name)}<div class="c">${escapeHtml(f.category)}</div></div>`).join('');
+  box.style.display='block';
+  box.querySelectorAll('.r').forEach(r => r.onclick = () => {
+    selectedMealFood = foodsIndex.byId.get(Number(r.dataset.id));
+    document.getElementById('mealSearch').value = selectedMealFood.name;
+    document.getElementById('mealSelected').textContent = `${selectedMealFood.name} — ${selectedMealFood.category}`;
+    box.style.display = 'none';
+    document.getElementById('mealItemAdd').disabled = false;
+    const g = selectedMealFood.portions?.[0]?.grams;
+    if (g && !document.getElementById('mealGrams').value) document.getElementById('mealGrams').value = g;
+    document.getElementById('mealGrams').focus();
+  });
+}
+document.getElementById('mealSearch').addEventListener('input', e => {
+  selectedMealFood = null;
+  document.getElementById('mealSelected').textContent = '';
+  document.getElementById('mealItemAdd').disabled = true;
+  renderMealResults(e.target.value);
+});
+document.getElementById('mealItemAdd').onclick = () => {
+  const grams = Number(document.getElementById('mealGrams').value);
+  if (!selectedMealFood || !grams) return;
+  mealDraft.push({ foodId: selectedMealFood.id, foodName: selectedMealFood.name,
+    category: selectedMealFood.category, grams, n: snapshotNutrients(selectedMealFood) });
+  selectedMealFood = null;
+  document.getElementById('mealSearch').value = '';
+  document.getElementById('mealGrams').value = '';
+  document.getElementById('mealSelected').textContent = '';
+  document.getElementById('mealItemAdd').disabled = true;
+  renderMealDraft();
+};
+function mealKcal(items) { return items.reduce((s,it) => s + (it.n?.kcal||0) * it.grams/100, 0); }
+function renderMealDraft() {
+  const el = document.getElementById('mealDraft');
+  const saveRow = document.getElementById('mealSaveRow');
+  if (!mealDraft.length) { el.innerHTML = ''; saveRow.style.display = 'none'; return; }
+  saveRow.style.display = 'flex';
+  el.innerHTML = `<div class="tiny" style="color:var(--dim);margin:4px 0">Building meal · ${Math.round(mealKcal(mealDraft))} kcal</div>` +
+    mealDraft.map((it,i) => `<div class="card mini"><div class="row">
+      <span>${escapeHtml(it.foodName)} <span class="tiny">· ${it.grams}g · ${Math.round((it.n?.kcal||0)*it.grams/100)} kcal</span></span>
+      <button class="x" data-mdi="${i}">×</button></div></div>`).join('');
+  el.querySelectorAll('[data-mdi]').forEach(b => b.onclick = () => { mealDraft.splice(Number(b.dataset.mdi), 1); renderMealDraft(); });
+}
+document.getElementById('mealClear').onclick = () => {
+  mealDraft = []; editingMealId = null;
+  document.getElementById('mealName').value = '';
+  renderMealDraft();
+};
+document.getElementById('mealSave').onclick = () => {
+  const name = document.getElementById('mealName').value.trim();
+  if (!name) { alert('Give the meal a name.'); return; }
+  if (!mealDraft.length) { alert('Add at least one food.'); return; }
+  state.body.meals = state.body.meals || [];
+  const items = mealDraft.map(it => ({ ...it }));
+  if (editingMealId) {
+    const m = state.body.meals.find(x => x.id === editingMealId);
+    if (m) { m.name = name; m.items = items; }
+  } else {
+    state.body.meals.push({ id: Date.now(), name, items });
+  }
+  saveState();
+  mealDraft = []; editingMealId = null;
+  document.getElementById('mealName').value = '';
+  renderMealDraft(); renderMeals();
+};
+function renderMeals() {
+  const el = document.getElementById('mealList');
+  if (!el) return;
+  const meals = state.body.meals || [];
+  if (!meals.length) { el.innerHTML = '<div class="empty">No saved meals yet. Build one above.</div>'; return; }
+  el.innerHTML = meals.slice().reverse().map(m => `<div class="card mini">
+    <div class="row"><strong>${escapeHtml(m.name)}</strong>
+      <span class="tiny">${m.items.length} items · ${Math.round(mealKcal(m.items))} kcal</span></div>
+    <div class="tiny" style="color:var(--dim);margin:4px 0">${m.items.map(it => escapeHtml(it.foodName)+' ('+it.grams+'g)').join(' · ')}</div>
+    <div class="row" style="margin-top:6px">
+      <button class="primary" data-mlog="${m.id}" style="padding:5px 12px;font-size:0.82rem">Log meal</button>
+      <span><button class="edit-btn" data-medit="${m.id}">edit</button>
+        <button class="x" data-mdel="${m.id}">×</button></span>
+    </div></div>`).join('');
+  el.querySelectorAll('[data-mlog]').forEach(b => b.onclick = () => logMeal(Number(b.dataset.mlog)));
+  el.querySelectorAll('[data-medit]').forEach(b => b.onclick = () => editMeal(Number(b.dataset.medit)));
+  el.querySelectorAll('[data-mdel]').forEach(b => b.onclick = () => {
+    const id = Number(b.dataset.mdel);
+    const m = state.body.meals.find(x => x.id === id);
+    if (!confirm(`Delete saved meal "${m.name}"? Past logged entries stay.`)) return;
+    state.body.meals = state.body.meals.filter(x => x.id !== id);
+    saveState(); renderMeals();
+  });
+}
+function logMeal(id) {
+  const m = (state.body.meals || []).find(x => x.id === id);
+  if (!m) return;
+  const date = document.getElementById('mealLogDate').value || todayStr();
+  m.items.forEach(it => {
+    const snap = it.n ? { ...it.n } : snapshotNutrients(foodsIndex?.byId.get(it.foodId) || { n: {} });
+    state.body.food.push({ id: uid(), date, foodId: it.foodId, foodName: it.foodName,
+      category: it.category || '', grams: it.grams, n: snap, mealName: m.name });
+  });
+  saveState();
+  renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods();
+  const st = document.getElementById('foodLoadStatus');
+  if (st) { const prev = st.textContent; st.textContent = `logged "${m.name}" on ${fmtDate(date)}`; setTimeout(() => { st.textContent = prev; }, 2500); }
+}
+function editMeal(id) {
+  const m = (state.body.meals || []).find(x => x.id === id);
+  if (!m) return;
+  mealDraft = m.items.map(it => ({ ...it }));
+  editingMealId = id;
+  document.getElementById('mealName').value = m.name;
+  renderMealDraft();
+  document.getElementById('mealSearch').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
 function renderFoodLog() {
@@ -2753,7 +2902,7 @@ function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&am
 function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections();
   renderFoodLog(); renderNutrients(); renderToday(); renderTrend();
-  renderRecentFoods(); renderPinnedFoods(); renderCustomFoods();
+  renderRecentFoods(); renderPinnedFoods(); renderCustomFoods(); renderMeals();
   simpleLog('water','waterLog', r => `${r.oz} oz`);
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
   simpleLog('exercise','exLog', r => `${r.type} · ${r.minutes} min`);
@@ -2765,7 +2914,7 @@ function renderAll() {
 }
 
 /* Default date fields to today */
-['foodDate','waterDate','sleepDate','exDate','symDate','expDate','nwDate','refDate','idDate'].forEach(id => {
+['foodDate','waterDate','sleepDate','exDate','symDate','expDate','nwDate','refDate','idDate','mealLogDate'].forEach(id => {
   const el = document.getElementById(id); if (el) el.value = todayStr();
 });
 
