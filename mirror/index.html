@@ -300,6 +300,7 @@
     <button class="tab-btn" data-tab="money">Money</button>
     <button class="tab-btn" data-tab="relationships">Relationships</button>
     <button class="tab-btn" data-tab="reflect">Reflect</button>
+    <button class="tab-btn" data-tab="timeline">Timeline</button>
   </div>
   <span class="spacer"></span>
   <button class="mini-btn" id="themeBtn" title="Toggle theme">☾</button>
@@ -770,6 +771,33 @@
   <div class="section" id="reflectCloser"></div>
 </section>
 
+<!-- ============== TIMELINE ============== -->
+<section class="view" id="view-timeline">
+  <h1>Timeline</h1>
+  <div class="lede">Your journey, newest first — everything you've logged, in one stream.</div>
+  <div class="section">
+    <div class="form">
+      <label>Type<select id="tlType">
+        <option value="all">All</option>
+        <option value="journal">Journal</option>
+        <option value="pulse">Pulse</option>
+        <option value="reflection">Reflections</option>
+        <option value="food">Food</option>
+        <option value="sleep">Sleep</option>
+        <option value="exercise">Exercise</option>
+        <option value="symptom">Symptoms</option>
+        <option value="expense">Expenses</option>
+        <option value="relationship">Relationships</option>
+      </select></label>
+      <label>From<input type="date" id="tlFrom"></label>
+      <label>To<input type="date" id="tlTo"></label>
+      <button class="ghost" id="tlClear">Clear</button>
+      <span class="tiny" id="tlCount" style="color:var(--dim);align-self:center"></span>
+    </div>
+    <div id="timelineFeed"></div>
+  </div>
+</section>
+
 <footer class="foot">
   Mirror · local-first · your data lives only in this browser unless you export it · <a href="../">back to workspace</a>
 </footer>
@@ -885,6 +913,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + btn.dataset.tab).classList.add('active');
     if (btn.dataset.tab === 'reflect') renderReflect();
+    if (btn.dataset.tab === 'timeline') renderTimeline();
   };
 });
 
@@ -2958,6 +2987,91 @@ function renderReflect() {
 }
 
 /* =============================================================
+   TIMELINE — chronological cross-room history
+   ============================================================= */
+function buildTimelineEvents() {
+  const ev = [];
+  const push = (date, ord, type, label, title, detail) => { if (date) ev.push({ date, ord: ord||0, type, label, title, detail: detail||'' }); };
+
+  (state.identity.journal || []).forEach(j =>
+    push(j.date, j.createdAt, 'journal', 'Journal', j.title || 'Journal entry', j.text));
+  (state.identity.pulse || []).forEach(p =>
+    push(p.date, 0, 'pulse', 'Pulse', `Mood ${p.mood} · Energy ${p.energy}`, p.note));
+  (state.identity.reflections || []).forEach(r =>
+    push(r.date, r.createdAt, 'reflection', 'Reflection', `${r.period} reflection`, r.answer));
+
+  // Food: one summary per day (kcal + item count + any meals logged)
+  const byDay = {};
+  (state.body.food || []).forEach(f => {
+    const d = byDay[f.date] = byDay[f.date] || { kcal: 0, count: 0, meals: new Set() };
+    d.kcal += (entryN(f)?.kcal || 0) * f.grams / 100;
+    d.count++;
+    if (f.mealName) d.meals.add(f.mealName);
+  });
+  Object.entries(byDay).forEach(([date, d]) =>
+    push(date, 1, 'food', 'Food', `${Math.round(d.kcal)} kcal · ${d.count} item${d.count !== 1 ? 's' : ''}`,
+      d.meals.size ? 'Meals: ' + [...d.meals].join(', ') : ''));
+
+  (state.body.sleep || []).forEach(s =>
+    push(s.date, 0, 'sleep', 'Sleep', `Slept ${s.hours}h`, s.quality ? `quality ${s.quality}/5` : ''));
+  (state.body.exercise || []).forEach(x =>
+    push(x.date, 0, 'exercise', 'Exercise', `${x.type} · ${x.minutes} min`));
+  (state.body.symptoms || []).forEach(s =>
+    push(s.date, 0, 'symptom', 'Note', s.note));
+
+  (state.money.expenses || []).forEach(e => {
+    const c = (state.money.categories || []).find(x => x.id === e.categoryId);
+    push(e.date, 0, 'expense', 'Expense', `${fmt$(e.amount)}${c ? ' · ' + c.name : ''}`, e.note);
+  });
+
+  // Relationships: follow-ups (dated commitments) — the dated relationship data we have
+  (state.relationships.followUps || []).forEach(f => {
+    const p = (state.relationships.people || []).find(x => x.id === f.personId);
+    push(f.due, 0, 'relationship', 'Follow-up', `${p ? p.name : '?'}: ${f.what}`, f.done ? 'done' : 'pending');
+  });
+
+  return ev;
+}
+function renderTimeline() {
+  const el = document.getElementById('timelineFeed');
+  if (!el) return;
+  const countEl = document.getElementById('tlCount');
+  const all = buildTimelineEvents();
+  let events = all.slice();
+  const type = document.getElementById('tlType').value;
+  const from = document.getElementById('tlFrom').value;
+  const to = document.getElementById('tlTo').value;
+  if (type && type !== 'all') events = events.filter(e => e.type === type);
+  if (from) events = events.filter(e => e.date >= from);
+  if (to) events = events.filter(e => e.date <= to);
+  events.sort((a, b) => b.date.localeCompare(a.date) || (b.ord - a.ord));
+
+  if (!events.length) {
+    el.innerHTML = `<div class="reflect-empty">${all.length ? 'No entries match these filters.' : 'Nothing logged yet — your timeline fills as you use Mirror.'}</div>`;
+    if (countEl) countEl.textContent = '';
+    return;
+  }
+  const cap = 250;
+  const shown = events.slice(0, cap);
+  if (countEl) countEl.textContent = `${events.length} entr${events.length === 1 ? 'y' : 'ies'}${events.length > cap ? ` · showing newest ${cap}` : ''}`;
+  el.innerHTML = shown.map(e => `<div class="card">
+    <div class="meta">${fmtDate(e.date)} · ${escapeHtml(e.label)}</div>
+    <div class="body" style="white-space:pre-wrap">${escapeHtml(e.title)}</div>
+    ${e.detail ? `<div class="tiny" style="margin-top:4px;color:var(--dim);white-space:pre-wrap">${escapeHtml(e.detail)}</div>` : ''}
+  </div>`).join('');
+}
+['tlType', 'tlFrom', 'tlTo'].forEach(id => {
+  const elx = document.getElementById(id);
+  if (elx) elx.onchange = renderTimeline;
+});
+document.getElementById('tlClear').onclick = () => {
+  document.getElementById('tlType').value = 'all';
+  document.getElementById('tlFrom').value = '';
+  document.getElementById('tlTo').value = '';
+  renderTimeline();
+};
+
+/* =============================================================
    UTIL
    ============================================================= */
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
@@ -2974,6 +3088,7 @@ function renderAll() {
   renderPeople(); refreshPersonSelects(); renderFollowUps(); renderGiftIdeas();
   renderBooks(); renderIdeas(); renderQuestions(); renderQuotes();
   renderReflect();   // keep Body/Today, Trend, chips and Reflect fresh after import/restore/reset
+  renderTimeline();
 }
 
 /* Default date fields to today */
