@@ -452,6 +452,25 @@
     <table class="log" id="foodLog"><thead><tr><th>Date</th><th>Food</th><th class="num">Grams</th><th class="num">kcal</th><th></th></tr></thead><tbody></tbody></table>
   </div>
 
+  <div class="section">
+    <div class="section-head"><h2>Your foods</h2><span class="act tiny">Custom foods & recipes — searchable like any food.</span></div>
+    <div class="form">
+      <input type="text" id="cfName" class="grow" placeholder="Name (e.g. My protein shake)">
+      <label>Serving<input type="text" id="cfServLabel" placeholder="1 shake"></label>
+      <label>Serving grams<input type="number" id="cfServGrams" min="1" step="1" placeholder="300"></label>
+    </div>
+    <div class="form">
+      <label>kcal<input type="number" id="cfKcal" min="0" step="1"></label>
+      <label>protein g<input type="number" id="cfProtein" min="0" step="0.1"></label>
+      <label>fat g<input type="number" id="cfFat" min="0" step="0.1"></label>
+      <label>carbs g<input type="number" id="cfCarbs" min="0" step="0.1"></label>
+      <label>fiber g<input type="number" id="cfFiber" min="0" step="0.1"></label>
+      <button class="primary" id="cfAdd">Save food</button>
+    </div>
+    <div class="tiny" style="color:var(--dim);margin:-6px 0 12px">Enter the numbers for one serving. Mirror stores them per 100 g so logging any amount works. Macros only — micronutrients show as 0 for custom foods.</div>
+    <div id="customFoodList"></div>
+  </div>
+
   <div class="two-col">
     <div class="section">
       <div class="section-head"><h2>Water</h2></div>
@@ -734,7 +753,7 @@ const FOODS_URL = '../nutrilens/foods.json';
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [] },
-  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [] },
+  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [] }
@@ -1126,10 +1145,26 @@ async function loadFoods() {
       id: f.id, name: f.name, category: f.category, portions: f.portions || [], n: f
     }));
     foodsIndex = { list, byId: new Map(list.map(f => [f.id, f])) };
+    indexCustomFoods();
     document.getElementById('foodLoadStatus').textContent = `${list.length} foods loaded`;
   } catch (e) {
-    document.getElementById('foodLoadStatus').textContent = 'could not load foods.json (works only when served — use a local server or GitHub Pages)';
+    // NutriLens unavailable — still let custom foods work and keep history readable via snapshots.
+    foodsIndex = foodsIndex || { list: [], byId: new Map() };
+    indexCustomFoods();
+    document.getElementById('foodLoadStatus').textContent = 'NutriLens library unavailable — your custom foods still work';
   }
+}
+// Make custom foods resolvable everywhere the NutriLens index is used (same numeric-id shape).
+function indexCustomFoods() {
+  if (!foodsIndex) foodsIndex = { list: [], byId: new Map() };
+  for (const f of (state.body.customFoods || [])) foodsIndex.byId.set(f.id, f);
+}
+// Per-100g nutrients for a logged entry: the snapshot taken at log time, else the live library.
+function entryN(e) { return (e && e.n) || foodsIndex?.byId.get(e.foodId)?.n || null; }
+function snapshotNutrients(f) {
+  const o = {};
+  for (const [k] of NUTRIENT_FIELDS) o[k] = (f.n && f.n[k]) || 0;
+  return o;
 }
 
 let selectedFood = null;
@@ -1146,7 +1181,8 @@ function renderFoodResults(q) {
   const box = document.getElementById('foodResults');
   if (!foodsIndex || !q || q.length < 2) { box.style.display='none'; return; }
   const Q = q.toLowerCase();
-  const results = foodsIndex.list.filter(f => f.name.toLowerCase().includes(Q)).slice(0, 40);
+  const pool = (state.body.customFoods || []).concat(foodsIndex.list); // your foods first
+  const results = pool.filter(f => f.name.toLowerCase().includes(Q)).slice(0, 40);
   if (!results.length) { box.innerHTML = '<div class="r tiny">no matches</div>'; box.style.display='block'; return; }
   box.innerHTML = results.map(f =>
     `<div class="r" data-id="${f.id}">${escapeHtml(f.name)}<div class="c">${escapeHtml(f.category)}</div></div>`
@@ -1232,7 +1268,7 @@ document.getElementById('foodAdd').onclick = () => {
   if (!selectedFood || !grams) return;
   state.body.food.push({
     id: uid(), date, foodId: selectedFood.id, foodName: selectedFood.name,
-    category: selectedFood.category, grams
+    category: selectedFood.category, grams, n: snapshotNutrients(selectedFood)
   });
   saveState();
   document.getElementById('foodSearch').value='';
@@ -1244,13 +1280,83 @@ document.getElementById('foodAdd').onclick = () => {
   renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods();
 };
 
+/* ----- Custom foods (create + reuse) ----- */
+document.getElementById('cfAdd').onclick = () => {
+  const name = document.getElementById('cfName').value.trim();
+  const servGrams = Number(document.getElementById('cfServGrams').value);
+  if (!name || !servGrams) { alert('Name and serving grams are required.'); return; }
+  const per100 = id => (Number(document.getElementById(id).value) || 0) * 100 / servGrams;
+  const n = {
+    kcal: per100('cfKcal'), protein_g: per100('cfProtein'), fat_g: per100('cfFat'),
+    carbs_g: per100('cfCarbs'), fiber_g: per100('cfFiber')
+  };
+  const servLabel = document.getElementById('cfServLabel').value.trim() || '1 serving';
+  state.body.customFoods = state.body.customFoods || [];
+  state.body.customFoods.push({ id: Date.now(), name, category: 'your foods',
+    portions: [{ label: servLabel, grams: servGrams }], n });
+  saveState(); indexCustomFoods();
+  ['cfName','cfServLabel','cfServGrams','cfKcal','cfProtein','cfFat','cfCarbs','cfFiber']
+    .forEach(id => document.getElementById(id).value = '');
+  renderCustomFoods();
+};
+function renderCustomFoods() {
+  const el = document.getElementById('customFoodList');
+  if (!el) return;
+  const list = state.body.customFoods || [];
+  if (!list.length) { el.innerHTML = '<div class="empty">No custom foods yet. Add one above and it will appear in food search.</div>'; return; }
+  el.innerHTML = list.slice().reverse().map(f => {
+    const g = f.portions?.[0]?.grams || 100;
+    const per = k => Math.round((f.n[k]||0) * g / 100);
+    return `<div class="card mini"><div class="row">
+      <span><strong>${escapeHtml(f.name)}</strong>
+        <span class="tiny"> · ${escapeHtml(f.portions?.[0]?.label||'serving')} (${g}g): ${per('kcal')} kcal · ${per('protein_g')}g protein</span></span>
+      <span style="white-space:nowrap"><button class="edit-btn" data-cfedit="${f.id}">edit</button>
+        <button class="x" data-cfdel="${f.id}">×</button></span>
+    </div></div>`;
+  }).join('');
+  el.querySelectorAll('[data-cfdel]').forEach(b => b.onclick = () => {
+    const id = Number(b.dataset.cfdel);
+    if (!confirm('Delete this custom food? Past entries that used it keep their logged nutrition.')) return;
+    state.body.customFoods = (state.body.customFoods||[]).filter(x => x.id !== id);
+    foodsIndex?.byId.delete(id);
+    saveState(); renderCustomFoods();
+  });
+  el.querySelectorAll('[data-cfedit]').forEach(b => b.onclick = () => {
+    const id = Number(b.dataset.cfedit);
+    const f = state.body.customFoods.find(x => x.id === id);
+    const g = f.portions?.[0]?.grams || 100;
+    const perServ = k => +(((f.n[k]||0) * g / 100).toFixed(2));
+    openEditModal('Edit custom food', 'Values are per serving.', [
+      {key:'name',label:'Name',type:'text'},
+      {key:'servLabel',label:'Serving',type:'text'},
+      {key:'servGrams',label:'Serving grams',type:'number',min:1,step:1},
+      {key:'kcal',label:'kcal',type:'number',min:0,step:1},
+      {key:'protein_g',label:'protein g',type:'number',min:0,step:0.1},
+      {key:'fat_g',label:'fat g',type:'number',min:0,step:0.1},
+      {key:'carbs_g',label:'carbs g',type:'number',min:0,step:0.1},
+      {key:'fiber_g',label:'fiber g',type:'number',min:0,step:0.1},
+    ], { name: f.name, servLabel: f.portions?.[0]?.label||'', servGrams: g,
+      kcal: perServ('kcal'), protein_g: perServ('protein_g'), fat_g: perServ('fat_g'),
+      carbs_g: perServ('carbs_g'), fiber_g: perServ('fiber_g') },
+    vals => {
+      const sg = Number(vals.servGrams) || g;
+      f.name = (vals.name||'').trim() || f.name;
+      f.portions = [{ label: (vals.servLabel||'').trim() || '1 serving', grams: sg }];
+      f.n = { kcal:(Number(vals.kcal)||0)*100/sg, protein_g:(Number(vals.protein_g)||0)*100/sg,
+        fat_g:(Number(vals.fat_g)||0)*100/sg, carbs_g:(Number(vals.carbs_g)||0)*100/sg,
+        fiber_g:(Number(vals.fiber_g)||0)*100/sg };
+      saveState(); indexCustomFoods(); renderCustomFoods();
+    });
+  });
+}
+
 function renderFoodLog() {
   const tbody = document.querySelector('#foodLog tbody');
   const rows = state.body.food.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0, 50);
   if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No food logged yet.</td></tr>'; return; }
   tbody.innerHTML = rows.map(r => {
-    const f = foodsIndex?.byId.get(r.foodId);
-    const kcal = f ? ((f.n.kcal || 0) * r.grams / 100).toFixed(0) : '—';
+    const nn = entryN(r);
+    const kcal = nn ? ((nn.kcal || 0) * r.grams / 100).toFixed(0) : '—';
     const pinned = isPinned(r.foodId);
     return `<tr><td>${fmtDate(r.date)}</td><td>${escapeHtml(r.foodName)}</td>
       <td class="num">${r.grams}</td><td class="num">${kcal}</td>
@@ -1282,11 +1388,11 @@ function renderToday() {
   for (const e of state.body.food) {
     if (e.date !== today) continue;
     entries++;
-    const f = foodsIndex?.byId.get(e.foodId);
-    if (!f) continue;
+    const nn = entryN(e);
+    if (!nn) continue;
     const factor = e.grams / 100;
-    kcal += (f.n.kcal || 0) * factor;
-    protein += (f.n.protein_g || 0) * factor;
+    kcal += (nn.kcal || 0) * factor;
+    protein += (nn.protein_g || 0) * factor;
   }
   const water = state.body.water.filter(w => w.date === today).reduce((s,w) => s + Number(w.oz||0), 0);
   const T = getTargets();
@@ -1335,9 +1441,9 @@ document.getElementById('foodExportBtn').onclick = () => {
     return /[",\n]/.test(s) ? `"${s.replace(/"/g,'""')}"` : s;
   };
   const body = rows.map(r => {
-    const f = foodsIndex?.byId.get(r.foodId);
+    const nn = entryN(r);
     const factor = r.grams / 100;
-    const nut = k => f ? ((f.n[k] || 0) * factor).toFixed(1) : '';
+    const nut = k => nn ? ((nn[k] || 0) * factor).toFixed(1) : '';
     return [r.date, r.foodName, r.category || '', r.grams, nut('kcal'), nut('protein_g'), nut('fat_g'), nut('carbs_g'), nut('fiber_g')]
       .map(csvCell).join(',');
   });
@@ -1372,11 +1478,11 @@ function renderTrend() {
   const totals = Object.fromEntries(days.map(d => [d, { kcal: 0, protein: 0 }]));
   for (const e of state.body.food) {
     if (!(e.date in totals)) continue;
-    const f = foodsIndex.byId.get(e.foodId);
-    if (!f) continue;
+    const nn = entryN(e);
+    if (!nn) continue;
     const factor = e.grams / 100;
-    totals[e.date].kcal += (f.n.kcal || 0) * factor;
-    totals[e.date].protein += (f.n.protein_g || 0) * factor;
+    totals[e.date].kcal += (nn.kcal || 0) * factor;
+    totals[e.date].protein += (nn.protein_g || 0) * factor;
   }
 
   const hasAny = days.some(d => totals[d].kcal > 0 || totals[d].protein > 0);
@@ -1464,10 +1570,10 @@ function renderNutrients() {
     document.getElementById('nutrientNote').textContent=''; return; }
   const tot = {};
   for (const e of entries) {
-    const f = foodsIndex.byId.get(e.foodId);
-    if (!f) continue;
+    const nn = entryN(e);
+    if (!nn) continue;
     const factor = e.grams / 100;
-    for (const [k] of NUTRIENT_FIELDS) tot[k] = (tot[k]||0) + (f.n[k]||0) * factor;
+    for (const [k] of NUTRIENT_FIELDS) tot[k] = (tot[k]||0) + (nn[k]||0) * factor;
   }
   el.innerHTML = NUTRIENT_FIELDS.map(([k,label,unit]) => {
     const v = tot[k] || 0;
@@ -2178,8 +2284,8 @@ function sumKcalForDate(dateStr) {
   let k = 0;
   for (const e of state.body.food) {
     if (e.date !== dateStr) continue;
-    const f = foodsIndex.byId.get(e.foodId);
-    if (f) k += (f.n.kcal || 0) * e.grams / 100;
+    const nn = entryN(e);
+    if (nn) k += (nn.kcal || 0) * e.grams / 100;
   }
   return k;
 }
@@ -2188,8 +2294,8 @@ function sumNutrientForDate(dateStr, key) {
   let v = 0;
   for (const e of state.body.food) {
     if (e.date !== dateStr) continue;
-    const f = foodsIndex.byId.get(e.foodId);
-    if (f) v += (f.n[key] || 0) * e.grams / 100;
+    const nn = entryN(e);
+    if (nn) v += (nn[key] || 0) * e.grams / 100;
   }
   return v;
 }
@@ -2647,7 +2753,7 @@ function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&am
 function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections();
   renderFoodLog(); renderNutrients(); renderToday(); renderTrend();
-  renderRecentFoods(); renderPinnedFoods();
+  renderRecentFoods(); renderPinnedFoods(); renderCustomFoods();
   simpleLog('water','waterLog', r => `${r.oz} oz`);
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
   simpleLog('exercise','exLog', r => `${r.type} · ${r.minutes} min`);
