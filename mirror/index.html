@@ -2643,7 +2643,8 @@ function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&am
 
 function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections();
-  renderFoodLog(); renderNutrients();
+  renderFoodLog(); renderNutrients(); renderToday(); renderTrend();
+  renderRecentFoods(); renderPinnedFoods();
   simpleLog('water','waterLog', r => `${r.oz} oz`);
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
   simpleLog('exercise','exLog', r => `${r.type} · ${r.minutes} min`);
@@ -2651,6 +2652,7 @@ function renderAll() {
   renderBudget(); renderExpenses(); renderSubs(); renderNetWorth(); renderGoals();
   renderPeople(); refreshPersonSelects(); renderFollowUps(); renderGiftIdeas();
   renderBooks(); renderIdeas(); renderQuestions(); renderQuotes();
+  renderReflect();   // keep Body/Today, Trend, chips and Reflect fresh after import/restore/reset
 }
 
 /* Default date fields to today */
