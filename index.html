@@ -7,9 +7,8 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — directory entries refined as archival drawer plates.
-       Triad unchanged. Directory entries gain stronger surface pigment,
-       full subtle borders, larger stamped seals, and hover lift. */
+    /* Workspace — nine large archival drawer plates in a 3×3 grid,
+       with smaller tools collected beneath. Warm paper triad unchanged. */
 
     :root {
       --accent-warm:   #7a4e26;
@@ -51,27 +50,25 @@
 
     .atlas-main { padding-top: 0.75rem; padding-bottom: 0.5rem; }
 
-    /* ── Institutional triad ────────────────────────────────────── */
+    /* ── The nine main cards — 3×3 grid ─────────────────────────── */
 
     .doorways {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      column-gap: 1.5rem;
-      row-gap: 1.5rem;
-      margin: 0 0 1rem 0;
+      column-gap: 1.25rem;
+      row-gap: 1.25rem;
+      margin: 0 0 1.5rem 0;
       padding: 0.85rem 0 0.7rem 0;
       border-top: 1px solid var(--accent-deep);
       border-bottom: 1px solid var(--accent-deep);
     }
 
-    .doorway:nth-child(1) { --w: var(--w-archive); }
-    .doorway:nth-child(2) { --w: var(--w-atlas); }
-    .doorway:nth-child(3) { --w: var(--w-glyphs); }
-
     .doorway {
       position: relative;
-      display: block;
-      padding: 0.7rem 1.1rem 0.8rem 1.1rem;
+      display: flex;
+      flex-direction: column;
+      min-height: 8.5rem;
+      padding: 0.85rem 1.1rem 0.95rem 1.1rem;
       background:
         linear-gradient(
           155deg,
@@ -81,8 +78,6 @@
         );
       border: 1px solid color-mix(in srgb, var(--w) 22%, transparent);
       border-radius: 2px;
-      text-decoration: none;
-      color: var(--ink);
       box-shadow:
         inset 0 1px 0 rgba(255, 252, 240, 0.6),
         inset 0 -8px 20px -10px color-mix(in srgb, var(--w) 12%, transparent);
@@ -93,7 +88,6 @@
         transform 0.15s ease;
     }
     .doorway:hover {
-      text-decoration: none;
       background:
         linear-gradient(
           155deg,
@@ -116,10 +110,26 @@
         inset 0 1px 0 rgba(255, 252, 240, 0.4);
     }
 
+    /* Primary link fills the card — stretched ::after keeps the whole
+       plate clickable while sub-links sit above it. */
+    .doorway-primary {
+      display: block;
+      flex: 1 1 auto;
+      text-decoration: none;
+      color: var(--ink);
+    }
+    .doorway-primary::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      border-radius: 2px;
+    }
+
     .doorway-icon-wrap {
       position: absolute;
-      top: 0.6rem;
-      right: 0.85rem;
+      top: 0.7rem;
+      right: 0.9rem;
       width: 34px;
       height: 34px;
       display: flex;
@@ -165,7 +175,7 @@
     .doorway-name {
       display: inline-block;
       font-family: var(--serif);
-      font-size: 1.55rem;
+      font-size: 1.5rem;
       font-weight: 700;
       letter-spacing: -0.01em;
       line-height: 1.05;
@@ -184,41 +194,66 @@
       font-size: 0.8rem;
       color: var(--ink-soft);
       line-height: 1.32;
-      max-width: 78%;
+      max-width: 86%;
     }
 
-    /* ── Within-Workspace directory — archival drawer plates ────── */
+    /* Sub-links inside a card — small pigmented chips, above ::after */
+    .doorway-subs {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.7rem;
+      padding-top: 0.55rem;
+      border-top: 1px dashed color-mix(in srgb, var(--w) 28%, transparent);
+    }
+    .doorway-sub {
+      position: relative;
+      z-index: 2;
+      font-family: var(--sans);
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: var(--w);
+      text-decoration: none;
+      padding: 0.2rem 0.55rem;
+      background: color-mix(in srgb, var(--w) 10%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--w) 32%, transparent);
+      border-radius: 999px;
+      transition: background 0.18s, border-color 0.18s, transform 0.12s ease;
+    }
+    .doorway-sub:hover {
+      background: color-mix(in srgb, var(--w) 22%, var(--bg));
+      border-color: color-mix(in srgb, var(--w) 55%, transparent);
+      transform: translateY(-1px);
+    }
 
-    .within { max-width: 60rem; }
-    .within-label {
+    /* ── Smaller tools & other spaces — compact chip row ────────── */
+
+    .extras { max-width: 60rem; }
+    .extras-label {
       font-family: var(--sans);
       font-size: 0.66rem;
       letter-spacing: 0.16em;
       text-transform: uppercase;
       color: var(--accent-warm);
-      margin: 0 0 0.45rem 0;
+      margin: 0 0 0.55rem 0;
       font-weight: 600;
     }
-    .within-list {
+    .extras-list {
       list-style: none;
       padding: 0;
       margin: 0;
-      column-count: 3;
-      column-gap: 1.25rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
     }
-    .within-list li {
-      break-inside: avoid;
-      margin-bottom: 0.3rem;
-    }
-
-    /* Each entry — soft archival tile, slightly raised, world-pigmented */
-    .within-list a {
-      display: grid;
-      grid-template:
-        "icon name" auto
-        "icon desc" auto / auto 1fr;
-      column-gap: 0.7rem;
-      padding: 0.4rem 0.55rem 0.45rem 0.6rem;
+    .extras-list a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.35rem 0.7rem 0.35rem 0.5rem;
       background:
         linear-gradient(
           150deg,
@@ -233,13 +268,16 @@
         inset 0 -6px 14px -10px color-mix(in srgb, var(--w) 18%, transparent);
       color: var(--ink);
       text-decoration: none;
+      font-family: var(--serif);
+      font-size: 0.9rem;
+      font-weight: 600;
       transition:
         background 0.2s,
         border-color 0.2s,
         box-shadow 0.25s ease,
         transform 0.15s ease;
     }
-    .within-list a:hover {
+    .extras-list a:hover {
       background:
         linear-gradient(
           150deg,
@@ -247,27 +285,16 @@
           color-mix(in srgb, var(--w) 13%, var(--bg)) 100%
         );
       border-color: color-mix(in srgb, var(--w) 50%, transparent);
-      border-left-color: var(--w);
       box-shadow:
         0 4px 12px -5px color-mix(in srgb, var(--w) 32%, transparent),
-        0 1px 3px -1px color-mix(in srgb, var(--w) 22%, transparent),
-        inset 0 1px 0 rgba(255, 252, 240, 0.65),
-        inset 0 -6px 14px -10px color-mix(in srgb, var(--w) 22%, transparent);
+        inset 0 1px 0 rgba(255, 252, 240, 0.65);
+      color: var(--w);
       transform: translateY(-1px);
     }
-    .within-list a:active {
-      transform: translateY(0);
-      box-shadow:
-        0 1px 4px -2px color-mix(in srgb, var(--w) 22%, transparent),
-        inset 0 1px 0 rgba(255, 252, 240, 0.4);
-    }
-
-    /* Stamped seal behind directory icon — larger, more pigmented */
-    .within-icon-wrap {
-      grid-area: icon;
-      align-self: center;
-      width: 28px;
-      height: 28px;
+    .extras-icon-wrap {
+      width: 26px;
+      height: 26px;
+      flex: 0 0 auto;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -278,48 +305,20 @@
         transparent 90%
       );
       border-radius: 50%;
-      transition: background 0.2s;
     }
-    .within-list a:hover .within-icon-wrap {
-      background: radial-gradient(
-        circle at 35% 30%,
-        color-mix(in srgb, var(--w) 48%, transparent) 0%,
-        color-mix(in srgb, var(--w) 22%, transparent) 60%,
-        transparent 90%
-      );
-    }
-    .within-icon {
-      width: 17px;
-      height: 17px;
+    .extras-icon {
+      width: 16px;
+      height: 16px;
       color: var(--w);
       opacity: 0.85;
       filter: drop-shadow(0 1px 0 rgba(255, 252, 240, 0.5));
-      transition: opacity 0.2s;
     }
-    .within-list a:hover .within-icon { opacity: 1; }
-
-    .within-name {
-      grid-area: name;
-      font-family: var(--serif);
-      font-size: 0.95rem;
-      font-weight: 600;
-      line-height: 1.2;
-      transition: color 0.15s;
-    }
-    .within-list a:hover .within-name { color: var(--w); }
-    .within-desc {
-      grid-area: desc;
-      font-family: var(--sans);
-      font-size: 0.71rem;
-      color: var(--muted);
-      line-height: 1.25;
-      margin-top: 0;
-    }
+    .extras-list a:hover .extras-icon { opacity: 1; }
 
     /* ── Footer ─────────────────────────────────────────────────── */
 
     .atlas-footer {
-      margin-top: 0.75rem;
+      margin-top: 0.9rem;
       padding: 0.7rem var(--pad-x);
       border-top: 1px solid var(--rule-warm);
       position: relative;
@@ -343,24 +342,25 @@
     /* ── Responsive ─────────────────────────────────────────────── */
 
     @media (max-width: 900px) {
-      .doorway-name { font-size: 1.45rem; }
-      .doorway-desc { font-size: 0.8rem; }
-      .doorway { padding: 0.95rem 1rem 1.05rem 1rem; }
-      .doorway-icon-wrap { width: 32px; height: 32px; top: 0.7rem; right: 0.8rem; }
+      .doorways {
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 1rem;
+        row-gap: 1rem;
+      }
+      .doorway-name { font-size: 1.4rem; }
+      .doorway-icon-wrap { width: 32px; height: 32px; }
       .doorway-icon { width: 20px; height: 20px; }
-      .doorways { column-gap: 1rem; padding: 1.5rem 0 1.25rem 0; }
-      .within-list { column-count: 2; column-gap: 1.25rem; }
     }
 
     @media (max-width: 600px) {
       .atlas-main { padding-top: 1.25rem; }
       .doorways {
         grid-template-columns: 1fr;
-        row-gap: 1rem;
-        padding: 1.5rem 0;
+        row-gap: 0.85rem;
       }
+      .doorway { min-height: 0; }
       .doorway-name { font-size: 1.4rem; }
-      .within-list { column-count: 1; }
+      .extras-list a { font-size: 0.85rem; }
     }
   </style>
 </head>
@@ -374,198 +374,213 @@
   <main class="atlas-main">
 
     <nav class="doorways" aria-label="Primary destinations">
-      <a class="doorway" href="https://stevenfrye30.github.io/Digital-Archive/">
-        <span class="doorway-icon-wrap">
-          <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 5.5 v13 a1 1 0 0 0 1 1 h7.5 v-14 a1 1 0 0 0 -1 -1 h-6.5 a1 1 0 0 0 -1 1z"/>
-            <path d="M21 5.5 v13 a1 1 0 0 1 -1 1 h-7.5 v-14 a1 1 0 0 1 1 -1 h6.5 a1 1 0 0 1 1 1z"/>
-            <path d="M6 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
-            <path d="M14.5 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
-          </svg>
+
+      <!-- 1 · Digital Archive -->
+      <div class="doorway" style="--w: var(--w-archive);">
+        <a class="doorway-primary" href="https://stevenfrye30.github.io/Digital-Archive/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 5.5 v13 a1 1 0 0 0 1 1 h7.5 v-14 a1 1 0 0 0 -1 -1 h-6.5 a1 1 0 0 0 -1 1z"/>
+              <path d="M21 5.5 v13 a1 1 0 0 1 -1 1 h-7.5 v-14 a1 1 0 0 1 1 -1 h6.5 a1 1 0 0 1 1 1z"/>
+              <path d="M6 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
+              <path d="M14.5 8.5 h3.5 m-3.5 3 h3.5 m-3.5 3 h3.5"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Reading</span>
+          <span class="doorway-name">Digital Archive</span>
+          <span class="doorway-desc">Historical and sacred texts, sources, and archive notes.</span>
+        </a>
+        <span class="doorway-subs">
+          <a class="doorway-sub" href="archive/">Archive Shelf</a>
         </span>
-        <span class="doorway-kind">Reading</span>
-        <span class="doorway-name">Digital-Archive</span>
-        <span class="doorway-desc">Historical and sacred texts. Apparatus visible; stewardship recorded.</span>
-      </a>
-      <a class="doorway" href="https://stevenfrye30.github.io/Atlas/">
-        <span class="doorway-icon-wrap">
-          <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="6" cy="6" r="1.8"/>
-            <circle cx="18" cy="6" r="1.8"/>
-            <circle cx="6" cy="18" r="1.8"/>
-            <circle cx="18" cy="18" r="1.8"/>
-            <circle cx="12" cy="12" r="1.8"/>
-            <line x1="7.3" y1="7.3" x2="10.7" y2="10.7"/>
-            <line x1="16.7" y1="7.3" x2="13.3" y2="10.7"/>
-            <line x1="7.3" y1="16.7" x2="10.7" y2="13.3"/>
-            <line x1="16.7" y1="16.7" x2="13.3" y2="13.3"/>
-          </svg>
+      </div>
+
+      <!-- 2 · Mirror -->
+      <div class="doorway" style="--w: var(--w-mirror);">
+        <a class="doorway-primary" href="mirror/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <ellipse cx="12" cy="9" rx="6" ry="6"/>
+              <path d="M12 15 v6 m-3 0 h6"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Self</span>
+          <span class="doorway-name">Mirror</span>
+          <span class="doorway-desc">Personal reflection, tracking, and daily patterns.</span>
+        </a>
+      </div>
+
+      <!-- 3 · Philosophy -->
+      <div class="doorway" style="--w: var(--w-philosophy);">
+        <a class="doorway-primary" href="philosophy/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 4 C 13 6 8 10 6 16 L4 20 L8 18 C 14 16 18 11 19 4 z"/>
+              <path d="M11 14 L17 8"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Thought</span>
+          <span class="doorway-name">Philosophy</span>
+          <span class="doorway-desc">Reading notes, short essays, and ideas.</span>
+        </a>
+      </div>
+
+      <!-- 4 · Pantheons -->
+      <div class="doorway" style="--w: var(--w-pantheons);">
+        <a class="doorway-primary" href="gods/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 8 L12 3 L21 8 H3z"/>
+              <path d="M5 8 v10 m4 -10 v10 m6 -10 v10 m4 -10 v10"/>
+              <path d="M3 19 H21"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Myth</span>
+          <span class="doorway-name">Pantheons</span>
+          <span class="doorway-desc">Cross-cultural maps of deities and mythic systems.</span>
+        </a>
+      </div>
+
+      <!-- 5 · Sound (home for Sound Map, Language, Glyphs) -->
+      <div class="doorway" style="--w: var(--w-soundmap);">
+        <a class="doorway-primary" href="sound-map/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M2 12 q3 -7 6 0 t6 0 t6 0"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Language</span>
+          <span class="doorway-name">Sound</span>
+          <span class="doorway-desc">Phonetics, languages, scripts, and glyphs.</span>
+        </a>
+        <span class="doorway-subs">
+          <a class="doorway-sub" href="sound-map/">Sound Map</a>
+          <a class="doorway-sub" href="language/">Language</a>
+          <a class="doorway-sub" href="https://stevenfrye30.github.io/Glyphs/">Glyphs</a>
         </span>
-        <span class="doorway-kind">Engine</span>
-        <span class="doorway-name">Atlas</span>
-        <span class="doorway-desc">Structural map of the archive — a typed semantic graph over the texts.</span>
-      </a>
-      <a class="doorway" href="https://stevenfrye30.github.io/Glyphs/">
-        <span class="doorway-icon-wrap">
-          <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 19 L12 4 L19 19"/>
-            <path d="M8 14 H16"/>
-          </svg>
+      </div>
+
+      <!-- 6 · Math (home for Math, Graph) -->
+      <div class="doorway" style="--w: var(--w-math);">
+        <a class="doorway-primary" href="math/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 5 H6 L13 12 L6 19 H19"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Symbol</span>
+          <span class="doorway-name">Math</span>
+          <span class="doorway-desc">Graphs, symbols, equations, and notes.</span>
+        </a>
+        <span class="doorway-subs">
+          <a class="doorway-sub" href="graph/">Graph</a>
         </span>
-        <span class="doorway-kind">Script</span>
-        <span class="doorway-name">Glyphs</span>
-        <span class="doorway-desc">Early alphabet forms and symbolic descent.</span>
-      </a>
+      </div>
+
+      <!-- 7 · Science -->
+      <div class="doorway" style="--w: var(--w-science);">
+        <a class="doorway-primary" href="science/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+              <ellipse cx="12" cy="12" rx="9" ry="3.5"/>
+              <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/>
+              <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(-60 12 12)"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Inquiry</span>
+          <span class="doorway-name">Science</span>
+          <span class="doorway-desc">Topic clusters, glossary, and lab-related notes.</span>
+        </a>
+      </div>
+
+      <!-- 8 · Atlas -->
+      <div class="doorway" style="--w: var(--w-atlas);">
+        <a class="doorway-primary" href="https://stevenfrye30.github.io/Atlas/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="6" cy="6" r="1.8"/>
+              <circle cx="18" cy="6" r="1.8"/>
+              <circle cx="6" cy="18" r="1.8"/>
+              <circle cx="18" cy="18" r="1.8"/>
+              <circle cx="12" cy="12" r="1.8"/>
+              <line x1="7.3" y1="7.3" x2="10.7" y2="10.7"/>
+              <line x1="16.7" y1="7.3" x2="13.3" y2="10.7"/>
+              <line x1="7.3" y1="16.7" x2="10.7" y2="13.3"/>
+              <line x1="16.7" y1="16.7" x2="13.3" y2="13.3"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Engine</span>
+          <span class="doorway-name">Atlas</span>
+          <span class="doorway-desc">Structural map of the archive and its relationships.</span>
+        </a>
+      </div>
+
+      <!-- 9 · Milwaukee -->
+      <div class="doorway" style="--w: var(--w-milwaukee);">
+        <a class="doorway-primary" href="milwaukee/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 20 H21"/>
+              <path d="M5 20 v-7 h3 v7"/>
+              <path d="M10 20 v-12 h3 v12"/>
+              <path d="M15 20 v-5 h3 v5"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Place</span>
+          <span class="doorway-name">Milwaukee</span>
+          <span class="doorway-desc">Local guide, places, and practical notes.</span>
+        </a>
+      </div>
+
     </nav>
 
-    <section class="within" aria-labelledby="within-label">
-      <h2 id="within-label" class="within-label">Within Workspace</h2>
-      <ul class="within-list">
-
-        <li><a href="gods/" style="--w: var(--w-pantheons);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 8 L12 3 L21 8 H3z"/>
-            <path d="M5 8 v10 m4 -10 v10 m6 -10 v10 m4 -10 v10"/>
-            <path d="M3 19 H21"/>
-          </svg></span>
-          <span class="within-name">Pantheons</span>
-          <span class="within-desc">Cross-cultural map of deities.</span>
-        </a></li>
-
-        <li><a href="sound-map/" style="--w: var(--w-soundmap);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M2 12 q3 -7 6 0 t6 0 t6 0"/>
-          </svg></span>
-          <span class="within-name">Sound Map</span>
-          <span class="within-desc">Phonetic correspondences.</span>
-        </a></li>
+    <section class="extras" aria-labelledby="extras-label">
+      <h2 id="extras-label" class="extras-label">Smaller Tools &amp; Other Spaces</h2>
+      <ul class="extras-list">
 
         <li><a href="images/" style="--w: var(--w-images);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <rect x="3" y="5" width="18" height="14" rx="1"/>
             <path d="M3 16 L8 11 L13 15 L17 12 L21 16"/>
             <circle cx="16" cy="9" r="1.3"/>
           </svg></span>
-          <span class="within-name">Images</span>
-          <span class="within-desc">Art and visual reference.</span>
+          Images
+        </a></li>
+
+        <li><a href="flags/" style="--w: var(--w-flags);">
+          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M5 4 v16"/>
+            <path d="M5 5 q5 -1 10 1 q4 1.5 7 -0.5 v6 q-3 2 -7 0.5 q-5 -2 -10 -1 z"/>
+          </svg></span>
+          Flags
+        </a></li>
+
+        <li><a href="nutrilens/" style="--w: var(--w-nutrilens);">
+          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 20 q-1 -11 8 -16 q9 5 8 16 q-8 -2 -16 0 z"/>
+            <path d="M12 4 v16"/>
+          </svg></span>
+          NutriLens
+        </a></li>
+
+        <li><a href="emoji-games/" style="--w: var(--w-emoji);">
+          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="3" y="8" width="18" height="10" rx="3"/>
+            <circle cx="8" cy="13" r="1.3"/>
+            <circle cx="16" cy="13" r="1.3"/>
+          </svg></span>
+          Emoji Games
         </a></li>
 
         <li><a href="cosmos/" style="--w: var(--w-cosmos);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
             <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/>
             <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(120 12 12)"/>
           </svg></span>
-          <span class="within-name">Cosmos</span>
-          <span class="within-desc">Solar system, galaxy, universe.</span>
-        </a></li>
-
-        <li><a href="language/" style="--w: var(--w-language);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 19 v-9 m4 9 v-13 m4 13 v-7 m4 13 v-11 m4 5 v-7"/>
-          </svg></span>
-          <span class="within-name">Language</span>
-          <span class="within-desc">Phonos — sounds and scripts.</span>
-        </a></li>
-
-        <li><a href="philosophy/" style="--w: var(--w-philosophy);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M19 4 C 13 6 8 10 6 16 L4 20 L8 18 C 14 16 18 11 19 4 z"/>
-            <path d="M11 14 L17 8"/>
-          </svg></span>
-          <span class="within-name">Philosophy</span>
-          <span class="within-desc">Reading notes and short essays.</span>
-        </a></li>
-
-        <li><a href="flags/" style="--w: var(--w-flags);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 4 v16"/>
-            <path d="M5 5 q5 -1 10 1 q4 1.5 7 -0.5 v6 q-3 2 -7 0.5 q-5 -2 -10 -1 z"/>
-          </svg></span>
-          <span class="within-name">Flags</span>
-          <span class="within-desc">Countries and geography.</span>
-        </a></li>
-
-        <li><a href="nutrilens/" style="--w: var(--w-nutrilens);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 20 q-1 -11 8 -16 q9 5 8 16 q-8 -2 -16 0 z"/>
-            <path d="M12 4 v16"/>
-          </svg></span>
-          <span class="within-name">NutriLens</span>
-          <span class="within-desc">Offline nutrient explorer.</span>
-        </a></li>
-
-        <li><a href="math/" style="--w: var(--w-math);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M19 5 H6 L13 12 L6 19 H19"/>
-          </svg></span>
-          <span class="within-name">Math</span>
-          <span class="within-desc">Graphs, symbols, notes.</span>
-        </a></li>
-
-        <li><a href="milwaukee/" style="--w: var(--w-milwaukee);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 20 H21"/>
-            <path d="M5 20 v-7 h3 v7"/>
-            <path d="M10 20 v-12 h3 v12"/>
-            <path d="M15 20 v-5 h3 v5"/>
-          </svg></span>
-          <span class="within-name">Milwaukee</span>
-          <span class="within-desc">Local guide.</span>
-        </a></li>
-
-        <li><a href="mirror/" style="--w: var(--w-mirror);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <ellipse cx="12" cy="9" rx="6" ry="6"/>
-            <path d="M12 15 v6 m-3 0 h6"/>
-          </svg></span>
-          <span class="within-name">Mirror</span>
-          <span class="within-desc">Personal self-tracking.</span>
-        </a></li>
-
-        <li><a href="science/" style="--w: var(--w-science);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-            <ellipse cx="12" cy="12" rx="9" ry="3.5"/>
-            <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/>
-            <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(-60 12 12)"/>
-          </svg></span>
-          <span class="within-name">Science</span>
-          <span class="within-desc">Topic clusters and glossary.</span>
-        </a></li>
-
-        <li><a href="emoji-games/" style="--w: var(--w-emoji);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="8" width="18" height="10" rx="3"/>
-            <circle cx="8" cy="13" r="1.3"/>
-            <circle cx="16" cy="13" r="1.3"/>
-          </svg></span>
-          <span class="within-name">Emoji Games</span>
-          <span class="within-desc">Casual games.</span>
-        </a></li>
-
-        <li><a href="graph/" style="--w: var(--w-graph);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="5" cy="6" r="1.7"/>
-            <circle cx="19" cy="6" r="1.7"/>
-            <circle cx="12" cy="18" r="1.7"/>
-            <line x1="6.5" y1="7" x2="11" y2="16.5"/>
-            <line x1="17.5" y1="7" x2="13" y2="16.5"/>
-            <line x1="6.5" y1="6" x2="17.5" y2="6"/>
-          </svg></span>
-          <span class="within-name">Graph</span>
-          <span class="within-desc">Structural map of archive texts.</span>
-        </a></li>
-
-        <li><a href="archive/" style="--w: var(--w-archive-shelf);">
-          <span class="within-icon-wrap"><svg class="within-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M3 5 v14 m18 -14 v14"/>
-            <path d="M3 5 H21 M3 12 H21 M3 19 H21"/>
-            <path d="M6 7 v3 m3 -3 v3 m4 6 v3"/>
-          </svg></span>
-          <span class="within-name">Archive Shelf</span>
-          <span class="within-desc">Curated doorway into selected texts.</span>
+          Cosmos
         </a></li>
 
       </ul>
