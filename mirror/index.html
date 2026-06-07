@@ -374,6 +374,18 @@
       <div id="refList" style="margin-top:16px"></div>
     </div>
   </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Journal</h2><span class="act tiny">Dated entries — what happened, in your words.</span></div>
+    <div class="form">
+      <label>Date<input type="date" id="jrDate"></label>
+      <input type="text" id="jrTitle" class="grow" placeholder="Title (optional)">
+      <input type="text" id="jrTags" placeholder="tags (comma-separated, optional)">
+    </div>
+    <textarea id="jrText" placeholder="Write freely."></textarea>
+    <div style="margin-top:8px"><button class="primary" id="jrAdd">Add entry</button></div>
+    <div id="journalList" style="margin-top:16px"></div>
+  </div>
 </section>
 
 <!-- ============== BODY ============== -->
@@ -776,7 +788,7 @@ const FOODS_URL = '../nutrilens/foods.json';
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
-  identity: { values: [], season: '', reflections: [], pulse: [] },
+  identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
   body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
@@ -1156,6 +1168,57 @@ document.getElementById('refSave').onclick = () => {
   document.getElementById('refAnswer').value = '';
   renderReflections();
 };
+
+/* ----- Journal ----- */
+function parseTags(s){ return (s||'').split(',').map(t => t.trim()).filter(Boolean); }
+document.getElementById('jrAdd').onclick = () => {
+  const text = document.getElementById('jrText').value.trim();
+  if (!text) { alert('Write something first.'); return; }
+  const date = document.getElementById('jrDate').value || todayStr();
+  const title = document.getElementById('jrTitle').value.trim();
+  const tags = parseTags(document.getElementById('jrTags').value);
+  state.identity.journal = state.identity.journal || [];
+  state.identity.journal.push({ id: uid(), date, title, text, tags, createdAt: Date.now() });
+  saveState();
+  document.getElementById('jrTitle').value = '';
+  document.getElementById('jrTags').value = '';
+  document.getElementById('jrText').value = '';
+  renderJournal();
+};
+function renderJournal() {
+  const el = document.getElementById('journalList');
+  if (!el) return;
+  const rows = (state.identity.journal || []).slice().sort((a,b) =>
+    b.date.localeCompare(a.date) || (b.createdAt||0) - (a.createdAt||0)).slice(0, 30);
+  if (!rows.length) { el.innerHTML = '<div class="empty">No journal entries yet.</div>'; return; }
+  el.innerHTML = rows.map(r => `<div class="card">
+    <div class="meta">${fmtDate(r.date)}${r.title ? ' · ' + escapeHtml(r.title) : ''}</div>
+    <div class="body" style="white-space:pre-wrap">${escapeHtml(r.text)}</div>
+    ${r.tags && r.tags.length ? `<div style="margin-top:6px">${r.tags.map(t => `<span class="chip">${escapeHtml(t)}</span>`).join('')}</div>` : ''}
+    <div style="margin-top:6px"><button class="edit-btn" data-jredit="${r.id}">edit</button>
+      <button class="x" data-jrdel="${r.id}">×</button></div></div>`).join('');
+  el.querySelectorAll('[data-jrdel]').forEach(b => b.onclick = () => {
+    if (!confirm('Delete this journal entry?')) return;
+    state.identity.journal = state.identity.journal.filter(x => x.id !== b.dataset.jrdel);
+    saveState(); renderJournal();
+  });
+  el.querySelectorAll('[data-jredit]').forEach(b => b.onclick = () => {
+    const r = state.identity.journal.find(x => x.id === b.dataset.jredit);
+    openEditModal('Edit journal entry', '', [
+      {key:'date',label:'Date',type:'date'},
+      {key:'title',label:'Title',type:'text'},
+      {key:'tags',label:'Tags (comma-separated)',type:'text'},
+      {key:'text',label:'Entry',type:'textarea'},
+    ], { date: r.date, title: r.title||'', tags: (r.tags||[]).join(', '), text: r.text },
+    vals => {
+      r.date = vals.date || r.date;
+      r.title = (vals.title||'').trim();
+      r.tags = parseTags(vals.tags);
+      r.text = (vals.text||'').trim() || r.text;
+      saveState(); renderJournal();
+    });
+  });
+}
 
 /* =============================================================
    BODY
@@ -2900,7 +2963,7 @@ function renderReflect() {
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
 function renderAll() {
-  renderValues(); renderSeason(); renderPulse(); renderReflections();
+  renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal();
   renderFoodLog(); renderNutrients(); renderToday(); renderTrend();
   renderRecentFoods(); renderPinnedFoods(); renderCustomFoods(); renderMeals();
   simpleLog('water','waterLog', r => `${r.oz} oz`);
@@ -2914,7 +2977,7 @@ function renderAll() {
 }
 
 /* Default date fields to today */
-['foodDate','waterDate','sleepDate','exDate','symDate','expDate','nwDate','refDate','idDate','mealLogDate'].forEach(id => {
+['foodDate','waterDate','sleepDate','exDate','symDate','expDate','nwDate','refDate','idDate','mealLogDate','jrDate'].forEach(id => {
   const el = document.getElementById(id); if (el) el.value = todayStr();
 });
 
