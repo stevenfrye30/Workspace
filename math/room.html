@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Math Room</title>
+  <meta name="description" content="A room inside the Mathematics lab.">
+  <link rel="stylesheet" href="../atlas/atlas.css">
+  <link rel="stylesheet" href="../_shared/hub-nav.css">
+  <style>
+    :root {
+      --accent-warm: #7a4e26;
+      --accent-deep: #5e2828;
+      --rule-warm:   #c8b88f;
+    }
+    body {
+      background:
+        radial-gradient(ellipse 80% 40% at 50% -5%, rgba(255, 250, 238, 0.55), transparent 70%),
+        radial-gradient(ellipse 70% 50% at 22% 28%, rgba(140, 100, 50, 0.07), transparent 65%),
+        var(--bg);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+    .room-main { max-width: var(--shell-max); margin: 0 auto; padding: 1.4rem var(--pad-x) 2.5rem; }
+
+    .crumb {
+      font-family: var(--sans); font-size: 0.78rem; font-weight: 600;
+      margin-bottom: 1rem;
+    }
+    .crumb a { color: var(--m); text-decoration: none; }
+    .crumb a:hover { text-decoration: underline; }
+    .crumb .sep { color: var(--ink-soft); margin: 0 0.4rem; }
+    .crumb .here { color: var(--ink-soft); }
+
+    .room-head {
+      position: relative;
+      border-bottom: 1px solid var(--m);
+      padding-bottom: 1rem;
+      margin-bottom: 1.4rem;
+    }
+    .room-glyph-lg {
+      position: absolute; top: -0.2rem; right: 0;
+      font-family: var(--serif); font-size: 3.2rem; line-height: 1;
+      color: var(--m); opacity: 0.28;
+    }
+    .room-kicker {
+      font-family: var(--sans); font-size: 0.68rem; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--m); font-weight: 600; margin-bottom: 0.3rem;
+    }
+    .room-title {
+      font-family: var(--serif); font-size: 2.3rem; font-weight: 700;
+      letter-spacing: -0.015em; line-height: 1.02; margin: 0; color: var(--ink);
+    }
+    .room-blurb {
+      font-family: var(--sans); font-size: 0.92rem; color: var(--ink-soft);
+      margin-top: 0.5rem; max-width: 46rem; line-height: 1.45;
+    }
+    .room-status {
+      display: inline-flex; align-items: center; gap: 0.4rem;
+      font-family: var(--sans); font-size: 0.7rem; font-weight: 600;
+      color: var(--m); background: color-mix(in srgb, var(--m) 10%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--m) 30%, transparent);
+      border-radius: 999px; padding: 0.22rem 0.7rem; margin-top: 0.85rem;
+    }
+    .room-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--m); }
+
+    .callout {
+      font-family: var(--sans); font-size: 0.85rem; line-height: 1.5;
+      color: var(--ink); background: color-mix(in srgb, var(--m) 8%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--m) 26%, transparent);
+      border-left: 3px solid var(--m);
+      border-radius: 3px; padding: 0.7rem 0.9rem; margin: 0 0 1.4rem 0;
+    }
+    .callout b { color: var(--m); }
+
+    .sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+      gap: 1rem;
+    }
+    .section-card {
+      background:
+        linear-gradient(155deg,
+          color-mix(in srgb, var(--m) 9%, var(--bg)) 0%,
+          color-mix(in srgb, var(--m) 5%, var(--bg)) 100%);
+      border: 1px solid color-mix(in srgb, var(--m) 22%, transparent);
+      border-radius: 3px;
+      padding: 0.9rem 1rem 1rem;
+      box-shadow: inset 0 1px 0 rgba(255,252,240,0.55);
+    }
+    .section-card h2 {
+      font-family: var(--serif); font-size: 1.08rem; font-weight: 700;
+      margin: 0 0 0.6rem 0; color: var(--ink);
+      padding-bottom: 0.35rem; border-bottom: 1px dashed color-mix(in srgb, var(--m) 30%, transparent);
+    }
+    .section-card ul { list-style: none; margin: 0; padding: 0; }
+    .section-card li {
+      font-family: var(--sans); font-size: 0.82rem; color: var(--ink-soft);
+      line-height: 1.35; padding: 0.22rem 0 0.22rem 1.1rem; position: relative;
+    }
+    .section-card li::before {
+      content: "›"; position: absolute; left: 0; top: 0.18rem;
+      color: var(--m); font-weight: 700;
+    }
+
+    .notfound { font-family: var(--sans); color: var(--ink-soft); }
+    .notfound a { color: var(--accent-warm); }
+
+    @media (max-width: 600px) {
+      .room-title { font-size: 1.8rem; }
+      .room-glyph-lg { font-size: 2.4rem; }
+      .sections { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="ws-hub-nav" aria-label="Workspace navigation">
+    <a class="ws-hub-home" href="./">← Math</a>
+    <a class="ws-hub-home" href="../">Hub</a>
+  </nav>
+
+  <main class="room-main" id="main">
+    <!-- filled by script -->
+  </main>
+
+  <script>
+  (function () {
+    var ROOMS = {
+      algebra: {
+        name: "Algebra", kind: "Structure", glyph: "x²", color: "#6b4f28",
+        blurb: "Equations, factoring, functions, and symbolic manipulation — with notes and worked examples.",
+        sections: [
+          { title: "Equations", items: ["Linear & quadratic solving", "Systems of equations", "Inequalities", "Step-by-step worked examples"] },
+          { title: "Factoring", items: ["Common factors & grouping", "Quadratic factoring", "Polynomial division", "Roots & the factor theorem"] },
+          { title: "Functions", items: ["Domain & range", "Transformations", "Composition & inverses", "Graph behaviour"] },
+          { title: "Symbolic manipulation", items: ["Simplification & expansion", "Substitution", "Rearranging formulas"] },
+          { title: "Notes & examples", items: ["Saved derivations", "Reusable templates"] }
+        ]
+      },
+      calculus: {
+        name: "Calculus", kind: "Change", glyph: "∫", color: "#5e3340",
+        blurb: "Limits, derivatives, integrals, and series — with visual explanations of the ideas behind them.",
+        sections: [
+          { title: "Limits", items: ["Definition & intuition", "One-sided limits", "Limits at infinity", "Continuity"] },
+          { title: "Derivatives", items: ["Power, product, quotient, chain rules", "Implicit differentiation", "Higher-order derivatives", "Rates & optimization"] },
+          { title: "Integrals", items: ["Antiderivatives", "Definite integrals & area", "Substitution & parts", "Numerical integration"] },
+          { title: "Series", items: ["Sequences & convergence", "Power & Taylor series", "Fourier preview"] },
+          { title: "Visual explanations", items: ["Tangent-line visuals", "Area-under-curve visuals"] }
+        ]
+      },
+      geometry: {
+        name: "Geometry", kind: "Form", glyph: "△", color: "#2c3a5e",
+        blurb: "Shapes, theorems, coordinate geometry, and diagrams you can reason from.",
+        sections: [
+          { title: "Shapes", items: ["Triangles, circles, polygons", "Area & perimeter", "Surface area & volume"] },
+          { title: "Theorems", items: ["Pythagoras", "Similarity & congruence", "Circle theorems"] },
+          { title: "Coordinate geometry", items: ["Distance & midpoint", "Lines & slopes", "Conic sections"] },
+          { title: "Diagrams", items: ["Construction sketches", "Labeled figures"] }
+        ]
+      },
+      trigonometry: {
+        name: "Trigonometry", kind: "Angle", glyph: "∿", color: "#4f6240",
+        blurb: "The unit circle, identities, sine/cosine/tangent, and the waves and angles they describe.",
+        sections: [
+          { title: "Unit circle", items: ["Radians & degrees", "Reference angles", "Exact values"] },
+          { title: "Identities", items: ["Pythagorean identities", "Angle sum & difference", "Double & half angle"] },
+          { title: "Sine / cosine / tangent", items: ["Graphs & periods", "Amplitude & phase", "Inverse trig"] },
+          { title: "Waves & angles", items: ["Wave parameters", "Phase shifts", "Applications"] }
+        ]
+      },
+      physics: {
+        name: "Physics", kind: "Nature", glyph: "⚛", color: "#3e6060",
+        blurb: "Formulas, mechanics, electricity, and waves — symbolic and numeric tools for applied work.",
+        sections: [
+          { title: "Formulas", items: ["Formula library", "Units & dimensional analysis", "Physical constants"] },
+          { title: "Mechanics", items: ["Kinematics", "Forces & Newton's laws", "Energy & momentum"] },
+          { title: "Electricity", items: ["Circuits (Ohm, Kirchhoff)", "Fields & potential", "Capacitance & current"] },
+          { title: "Waves", items: ["Wave equation", "Frequency, wavelength, speed", "Interference & resonance"] },
+          { title: "Symbolic & numeric tools", items: ["Solve for any variable", "Plug-in calculators"] }
+        ]
+      },
+      statistics: {
+        name: "Statistics", kind: "Data", glyph: "📊", color: "#7a4e26",
+        blurb: "Distributions, descriptive statistics, regression, probability, and hypothesis testing with visual summaries.",
+        sections: [
+          { title: "Distributions", items: ["Normal, binomial, Poisson", "PDF / CDF views", "Parameters & shape"] },
+          { title: "Descriptive statistics", items: ["Mean, median, mode", "Variance & standard deviation", "Quartiles & outliers"] },
+          { title: "Regression", items: ["Linear & polynomial fit", "Correlation", "Residuals & R²"] },
+          { title: "Probability", items: ["Rules & combinatorics", "Conditional probability", "Bayes' theorem"] },
+          { title: "Hypothesis testing", items: ["t-tests & ANOVA", "p-values & confidence intervals", "Effect size"] },
+          { title: "Visual summaries", items: ["Histograms & box plots", "Scatter & fit overlays"] }
+        ]
+      },
+      "time-series": {
+        name: "Time-Series Lab", kind: "Signal", glyph: "〜", color: "#5e2828",
+        blurb: "A serious room for any data over time — electrophysiology traces, stock data, repeated measurements, and signal traces.",
+        callout: "<b>Future-facing room.</b> Full data upload &amp; analysis isn't wired up yet — but the layout below anticipates it, so the tools can be added without redesign.",
+        sections: [
+          { title: "Data input", items: ["Upload CSV", "Paste data", "Multiple named traces"] },
+          { title: "Plot & view", items: ["Plot trace", "Stock-style trend view", "Electrophysiology trace view"] },
+          { title: "Processing", items: ["Smooth / filter data", "Baseline calculation", "Detect peaks / events"] },
+          { title: "Measurements", items: ["Amplitude", "Frequency", "Decay", "Area under curve"] },
+          { title: "Comparison & trends", items: ["Compare across traces", "Repeated measurements", "Trend analysis"] },
+          { title: "Export", items: ["Export notes / results"] }
+        ]
+      },
+      notes: {
+        name: "Notes & Formulas", kind: "Library", glyph: "✎", color: "#4e4a40",
+        blurb: "Personal math notes, a saved formula library, examples, definitions, and reusable explanations.",
+        sections: [
+          { title: "Personal notes", items: ["Free-form math notes", "Tagged by topic"] },
+          { title: "Formula library", items: ["Saved formulas", "Quick reference"] },
+          { title: "Examples", items: ["Worked examples", "Reusable templates"] },
+          { title: "Definitions", items: ["Glossary of terms", "Concept explanations"] }
+        ]
+      },
+      symbols: {
+        name: "Symbols", kind: "Notation", glyph: "π", color: "#5a5048",
+        blurb: "Greek letters, operators, and common notation — copyable, with meaning and pronunciation where useful.",
+        callout: "A fuller, searchable symbol browser also lives in <b>Graph Lab → Symbols</b> tab.",
+        sections: [
+          { title: "Greek letters", items: ["Lower & uppercase", "Names & pronunciation", "Common uses"] },
+          { title: "Operators", items: ["∑ ∏ ∫ ∂ ∇", "Relations (≤ ≥ ≈ ≠)", "Set & logic symbols"] },
+          { title: "Common notation", items: ["Subscripts & superscripts", "Vectors & matrices", "Function notation"] },
+          { title: "Copyable symbols", items: ["Click to copy (planned)", "Meaning where useful"] }
+        ]
+      }
+    };
+
+    function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+    var params = new URLSearchParams(location.search);
+    var key = (params.get("room") || "").toLowerCase();
+    var room = ROOMS[key];
+    var main = document.getElementById("main");
+
+    if (!room) {
+      document.title = "Room not found — Mathematics";
+      main.innerHTML =
+        '<p class="notfound">That room doesn’t exist yet. ' +
+        '<a href="./">← Back to Mathematics</a></p>';
+      return;
+    }
+
+    document.title = room.name + " — Mathematics";
+    document.documentElement.style.setProperty("--m", room.color);
+
+    var html = "";
+    html += '<nav class="crumb"><a href="./">Mathematics</a><span class="sep">/</span><span class="here">' + esc(room.name) + '</span></nav>';
+    html += '<header class="room-head">';
+    html += '<span class="room-glyph-lg">' + room.glyph + '</span>';
+    html += '<div class="room-kicker">' + esc(room.kind) + '</div>';
+    html += '<h1 class="room-title">' + esc(room.name) + '</h1>';
+    html += '<p class="room-blurb">' + esc(room.blurb) + '</p>';
+    html += '<div class="room-status"><span class="dot"></span>Room in progress — structure ready, tools coming</div>';
+    html += '</header>';
+
+    if (room.callout) html += '<div class="callout">' + room.callout + '</div>';
+
+    html += '<div class="sections">';
+    room.sections.forEach(function (sec) {
+      html += '<div class="section-card"><h2>' + esc(sec.title) + '</h2><ul>';
+      sec.items.forEach(function (it) { html += '<li>' + esc(it) + '</li>'; });
+      html += '</ul></div>';
+    });
+    html += '</div>';
+
+    main.innerHTML = html;
+  })();
+  </script>
+
+  <!-- Shared floating scientific calculator (top-right, always available) -->
+  <script src="calc.js" defer></script>
+</body>
+</html>
