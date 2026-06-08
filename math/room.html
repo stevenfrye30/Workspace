@@ -208,6 +208,7 @@
       padding: 0.7rem 0.8rem; outline: none;
     }
     .alg-notes:focus { border-color: var(--m); }
+    .alg-notes.tall { min-height: 280px; }
     .notes-status { font-family: var(--sans); font-size: 0.7rem; color: var(--ink-soft); margin-top: 0.4rem; }
 
     /* Symbol library (click-to-copy cards) */
@@ -658,7 +659,54 @@
       },
       notes: {
         name: "Notes & Formulas", kind: "Library", glyph: "✎", color: "#4e4a40",
-        blurb: "Personal math notes, a saved formula library, examples, definitions, and reusable explanations.",
+        blurb: "Your personal formula vault and study notebook — collect, save, and reuse math from every room in one place.",
+        status: "Your notebook — autosaves locally; organizing tools coming",
+        rich: {
+          topics: [
+            "Personal notes", "Formula library", "Saved definitions", "Worked examples", "Reusable explanations",
+            "Theorem notes", "Study reminders", "Problem-solving strategies", "Notation reminders", "Common mistakes",
+            "Graphing notes", "Statistics notes", "Physics notes", "Time-series notes", "Saved snippets", "Review lists"
+          ],
+          formulas: [
+            { name: "Algebra essentials", body: 'x = <span class="frac"><span class="num">&minus;b &plusmn; &radic;(b<sup>2</sup> &minus; 4ac)</span><span class="den">2a</span></span><br>m = (y<sub>2</sub> &minus; y<sub>1</sub>) / (x<sub>2</sub> &minus; x<sub>1</sub>)<br>y &minus; y<sub>1</sub> = m(x &minus; x<sub>1</sub>)', note: "Full room: Algebra." },
+            { name: "Calculus essentials", body: "(x<sup>n</sup>)&prime; = n x<sup>n&minus;1</sup><br>&int;<sub>a</sub><sup>b</sup> f = F(b) &minus; F(a)<br>[f(g)]&prime; = f&prime;(g)&middot;g&prime;", note: "Full room: Calculus." },
+            { name: "Geometry essentials", body: "d = &radic;[(&Delta;x)<sup>2</sup> + (&Delta;y)<sup>2</sup>]<br>A = &pi;r<sup>2</sup><br>a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>", note: "Full room: Geometry." },
+            { name: "Trigonometry essentials", body: "sin<sup>2</sup>&theta; + cos<sup>2</sup>&theta; = 1<br>sin &theta; = opp / hyp<br>y = a&middot;sin(b(x &minus; c)) + d", note: "Full room: Trigonometry." },
+            { name: "Statistics essentials", body: "x&#772; = &Sigma;x<sub>i</sub> / n<br>s = &radic;(&Sigma;(x<sub>i</sub> &minus; x&#772;)<sup>2</sup> / (n &minus; 1))<br>z = (x &minus; &mu;) / &sigma;", note: "Full room: Statistics." },
+            { name: "Time-Series essentials", body: "f<sub>s</sub> = 1 / &Delta;t<br>MA = (1/k) &Sigma; x<br>AUC &asymp; &Sigma; (&Delta;t/2)(x<sub>i</sub> + x<sub>i+1</sub>)", note: "Full room: Time-Series Lab." },
+            { name: "Physics essentials", body: "F = m a<br>KE = &frac12; m v<sup>2</sup><br>V = I R", note: "Full room: Physics." },
+            { name: "Notation reminders", body: "&Sigma; sum &middot; &int; integral &middot; &Delta; change<br>&part; partial &middot; &nabla; del &middot; &pi; pi<br>&theta; angle &middot; &mu;, &sigma; mean & SD", note: "Copy any symbol in the Symbols room." },
+            { name: "Problem-solving checklist", body: "1. Know what's asked<br>2. List givens & units<br>3. Choose a formula<br>4. Solve symbolically, then plug in<br>5. Check units & sanity", note: "" },
+            { name: "Common mistakes checklist", body: "Sign & distribution slips<br>Degrees vs radians<br>n vs n &minus; 1 in variance<br>Dropping units or + C", note: "" }
+          ],
+          examplesTitle: "Note Templates",
+          examplesSub: "Click a template, then copy its shape into your notes below.",
+          examples: [
+            { q: "Formula note", steps: ["# Formula", "# Meaning", "# Example", "# When to use", "# Common mistake"], ans: "Make each formula self-explaining." },
+            { q: "Worked example note", steps: ["# Problem", "# Plan", "# Steps", "# Answer", "# Check"], ans: "Show the reasoning, not just the result." },
+            { q: "Theorem / definition note", steps: ["# Name", "# Statement", "# Conditions", "# Why it holds", "# Example"], ans: "State the conditions precisely." },
+            { q: "Statistics interpretation note", steps: ["# Result (p, r, CI, &hellip;)", "# Plain-language meaning", "# What it does NOT mean", "# Decision"], ans: "Interpretation matters more than the number." },
+            { q: "Experiment / data-analysis note", steps: ["# Question", "# Data & units", "# Method (filter, baseline, peaks)", "# Measurements", "# Conclusion"], ans: "Record how the data was processed." },
+            { q: "Graphing note", steps: ["# Function", "# Key features (intercepts, asymptotes)", "# Transformations", "# Window / scale"], ans: "Note amplitude, period, and shifts." },
+            { q: "Common-mistake note", steps: ["# Mistake", "# Why it happens", "# Correct approach", "# Memory hook"], ans: "Turn each error into a reminder." }
+          ],
+          tools: [
+            { name: "Save formula", desc: "Add a formula to your library." },
+            { name: "Search notes", desc: "Find notes by keyword." },
+            { name: "Tag notes", desc: "Organize by topic and room." },
+            { name: "Pin formulas", desc: "Keep key formulas on top." },
+            { name: "Export notes", desc: "Download as text or Markdown." },
+            { name: "Copy snippet", desc: "Copy a formula as text or HTML." },
+            { name: "Build study sheet", desc: "Assemble a one-page review." },
+            { name: "Review mode", desc: "Quiz yourself on saved cards." },
+            { name: "Link note to room", desc: "Connect a note to its room." },
+            { name: "Send formula to Graph Lab", desc: "Plot a saved expression.", href: "graph-lab.html", live: true },
+            { name: "Send data note to Time-Series Lab", desc: "Open the signal console.", href: "room.html?room=time-series", live: true },
+            { name: "Open Symbols room", desc: "Grab notation to copy.", href: "room.html?room=symbols", live: true }
+          ],
+          notesTall: true,
+          notesPlaceholder: "# Formula&#10;&#10;# Meaning&#10;&#10;# Example&#10;&#10;# When to use&#10;&#10;# Common mistake"
+        },
         sections: [
           { title: "Personal notes", items: ["Free-form math notes", "Tagged by topic"] },
           { title: "Formula library", items: ["Saved formulas", "Quick reference"] },
@@ -902,9 +950,11 @@
           '</div>');
       }
 
-      // 5 · Notes (saved locally)
+      // 5 · Notes (saved locally) — placeholder & height optionally per room
+      var notesPh = rich.notesPlaceholder || "Scratch work, reminders, your own rules…";
+      var notesCls = "alg-notes" + (rich.notesTall ? " tall" : "");
       h += block("Notes", "Saved locally", "Private to this browser — autosaves as you type.",
-        '<textarea class="alg-notes" id="algNotes" placeholder="Scratch work, reminders, your own rules…" spellcheck="false"></textarea>' +
+        '<textarea class="' + notesCls + '" id="algNotes" placeholder="' + notesPh + '" spellcheck="false"></textarea>' +
         '<div class="notes-status" id="algNotesStatus">Notes are stored only in this browser.</div>');
 
       return h;
