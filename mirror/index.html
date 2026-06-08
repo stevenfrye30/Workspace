@@ -294,7 +294,8 @@
 <nav class="topnav">
   <span class="brand">mirror</span>
   <div class="tabs">
-    <button class="tab-btn active" data-tab="identity">Identity</button>
+    <button class="tab-btn active" data-tab="today">Today</button>
+    <button class="tab-btn" data-tab="identity">Identity</button>
     <button class="tab-btn" data-tab="body">Body</button>
     <button class="tab-btn" data-tab="mind">Mind</button>
     <button class="tab-btn" data-tab="money">Money</button>
@@ -322,7 +323,74 @@
 </div>
 
 <!-- ============== IDENTITY ============== -->
-<section class="view active" id="view-identity">
+<!-- ============== TODAY (quick entry) ============== -->
+<section class="view active" id="view-today">
+  <h1>Today</h1>
+  <div class="lede">Quick check-in — everything here logs to today.</div>
+
+  <div class="section">
+    <div class="section-head"><h2>At a glance</h2><span class="act tiny" id="qtDateLabel"></span></div>
+    <div class="today-grid" id="qtSummary"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Pulse</h2><span class="act tiny" id="qtPulseStatus"></span></div>
+    <div class="card">
+      <div class="meta">Mood</div>
+      <div class="dot-row" id="qtMoodRow"></div>
+      <div class="meta" style="margin-top:10px">Energy</div>
+      <div class="dot-row" id="qtEnergyRow"></div>
+      <div style="margin-top:10px"><input type="text" id="qtPulseNote" placeholder="One line about today (optional)" class="grow"></div>
+      <div style="margin-top:10px"><button class="primary" id="qtPulseSave">Log pulse</button></div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><h2>Water</h2><span class="act tiny" id="qtWaterTotal"></span></div>
+      <div class="card">
+        <div class="chip-row" style="margin-bottom:6px">
+          <button class="chip" data-qtwater="8">+8 oz</button>
+          <button class="chip" data-qtwater="16">+16 oz</button>
+          <button class="chip" data-qtwater="24">+24 oz</button>
+        </div>
+        <div class="tiny" style="color:var(--dim)">Adds to today's water.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2>Sleep last night</h2></div>
+      <div class="card">
+        <div class="form" style="margin:0;background:transparent;border:0;padding:0">
+          <label>Hours<input type="number" id="qtSleepHours" min="0" max="24" step="0.25"></label>
+          <label>Quality (1–5)<input type="number" id="qtSleepQuality" min="1" max="5" step="1"></label>
+          <button class="primary" id="qtSleepAdd">Log</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2>Exercise</h2></div>
+      <div class="card">
+        <div class="form" style="margin:0;background:transparent;border:0;padding:0">
+          <label>Type<input type="text" id="qtExType" placeholder="run, lift, walk"></label>
+          <label>Minutes<input type="number" id="qtExMinutes" min="1" step="1"></label>
+          <button class="primary" id="qtExAdd">Log</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2>Journal note</h2></div>
+      <div class="card">
+        <textarea id="qtJournal" placeholder="A quick note for today."></textarea>
+        <div style="margin-top:8px"><button class="primary" id="qtJournalAdd">Add note</button></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="view" id="view-identity">
   <h1>Identity</h1>
   <div class="lede">Who you are when no one is watching, what you're trying to become, and how you're actually feeling today.</div>
 
@@ -912,6 +980,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.classList.add('active');
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'today') renderTodayTab();
     if (btn.dataset.tab === 'reflect') renderReflect();
     if (btn.dataset.tab === 'timeline') renderTimeline();
   };
@@ -2987,6 +3056,111 @@ function renderReflect() {
 }
 
 /* =============================================================
+   TODAY TAB — quick entry over existing state (no new fields)
+   ============================================================= */
+let qtPulse = { mood: 0, energy: 0 };
+function buildQtDots(rowId, key) {
+  const row = document.getElementById(rowId);
+  if (!row) return;
+  row.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const b = document.createElement('button');
+    b.textContent = i;
+    b.onclick = () => { qtPulse[key] = i; buildQtDots(rowId, key); };
+    if (qtPulse[key] === i) b.classList.add('on');
+    row.appendChild(b);
+  }
+}
+function renderTodaySummary() {
+  const el = document.getElementById('qtSummary');
+  if (!el) return;
+  const today = todayStr();
+  const lbl = document.getElementById('qtDateLabel'); if (lbl) lbl.textContent = fmtDate(today);
+  const pulse = (state.identity.pulse || []).find(p => p.date === today);
+  let kcal = 0, protein = 0;
+  (state.body.food || []).forEach(f => {
+    if (f.date !== today) return;
+    const nn = entryN(f); if (!nn) return;
+    const factor = f.grams / 100;
+    kcal += (nn.kcal || 0) * factor; protein += (nn.protein_g || 0) * factor;
+  });
+  const water = (state.body.water || []).filter(w => w.date === today).reduce((s, w) => s + Number(w.oz || 0), 0);
+  const sleep = (state.body.sleep || []).filter(s => s.date === today).reduce((s, x) => s + Number(x.hours || 0), 0);
+  const exMin = (state.body.exercise || []).filter(e => e.date === today).reduce((s, e) => s + Number(e.minutes || 0), 0);
+  const jrCount = (state.identity.journal || []).filter(j => j.date === today).length;
+  const T = getTargets();
+  const bar = (v, t) => t ? `<div class="target">of ${t}</div><div class="bar"><div class="fill" style="width:${Math.min(100,(v/t)*100)}%"></div></div>` : '';
+  const tile = (k, v, u, t) => `<div class="today-tile"><div class="k">${k}</div><div class="v">${v}${u?`<span class="u">${u}</span>`:''}</div>${bar(typeof v==='number'?v:0, t)}</div>`;
+  el.innerHTML =
+    tile('mood', pulse ? pulse.mood : '—', '') +
+    tile('energy', pulse ? pulse.energy : '—', '') +
+    tile('kcal', Math.round(kcal), 'kcal', T.kcal) +
+    tile('protein', Math.round(protein), 'g', T.protein_g) +
+    tile('water', water, 'oz', T.water_oz) +
+    tile('sleep', sleep ? +sleep.toFixed(2) : '—', 'h') +
+    tile('exercise', exMin, 'min') +
+    tile('journal', jrCount, '');
+  const wt = document.getElementById('qtWaterTotal'); if (wt) wt.textContent = water ? `${water} oz today` : '';
+  const st = document.getElementById('qtPulseStatus'); if (st) st.textContent = pulse ? 'logged today' : '';
+}
+function syncTodayPulseInputs() {
+  const today = todayStr();
+  const pulse = (state.identity.pulse || []).find(p => p.date === today);
+  qtPulse.mood = pulse ? pulse.mood : 0;
+  qtPulse.energy = pulse ? pulse.energy : 0;
+  buildQtDots('qtMoodRow', 'mood');
+  buildQtDots('qtEnergyRow', 'energy');
+  const note = document.getElementById('qtPulseNote');
+  if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
+}
+function renderTodayTab() { renderTodaySummary(); syncTodayPulseInputs(); }
+
+document.getElementById('qtPulseSave').onclick = () => {
+  if (!qtPulse.mood || !qtPulse.energy) { alert('Pick a mood and energy level.'); return; }
+  const today = todayStr();
+  const noteEl = document.getElementById('qtPulseNote');
+  const note = noteEl ? noteEl.value.trim() : '';
+  state.identity.pulse = state.identity.pulse || [];
+  const existing = state.identity.pulse.find(p => p.date === today);
+  if (existing) { existing.mood = qtPulse.mood; existing.energy = qtPulse.energy; existing.note = note; }
+  else state.identity.pulse.push({ date: today, mood: qtPulse.mood, energy: qtPulse.energy, note });
+  saveState(); renderAll(); syncTodayPulseInputs();
+};
+document.querySelectorAll('[data-qtwater]').forEach(b => b.onclick = () => {
+  state.body.water = state.body.water || [];
+  state.body.water.push({ id: uid(), date: todayStr(), oz: Number(b.dataset.qtwater) });
+  saveState(); renderAll();
+});
+document.getElementById('qtSleepAdd').onclick = () => {
+  const hours = Number(document.getElementById('qtSleepHours').value);
+  const quality = Number(document.getElementById('qtSleepQuality').value);
+  if (!hours) { alert('Enter sleep hours.'); return; }
+  state.body.sleep = state.body.sleep || [];
+  state.body.sleep.push({ id: uid(), date: todayStr(), hours, quality });
+  document.getElementById('qtSleepHours').value = '';
+  document.getElementById('qtSleepQuality').value = '';
+  saveState(); renderAll();
+};
+document.getElementById('qtExAdd').onclick = () => {
+  const type = document.getElementById('qtExType').value.trim();
+  const minutes = Number(document.getElementById('qtExMinutes').value);
+  if (!type || !minutes) { alert('Enter exercise type and minutes.'); return; }
+  state.body.exercise = state.body.exercise || [];
+  state.body.exercise.push({ id: uid(), date: todayStr(), type, minutes });
+  document.getElementById('qtExType').value = '';
+  document.getElementById('qtExMinutes').value = '';
+  saveState(); renderAll();
+};
+document.getElementById('qtJournalAdd').onclick = () => {
+  const text = document.getElementById('qtJournal').value.trim();
+  if (!text) { alert('Write a note first.'); return; }
+  state.identity.journal = state.identity.journal || [];
+  state.identity.journal.push({ id: uid(), date: todayStr(), title: '', text, tags: [], createdAt: Date.now() });
+  document.getElementById('qtJournal').value = '';
+  saveState(); renderAll();
+};
+
+/* =============================================================
    TIMELINE — chronological cross-room history
    ============================================================= */
 function buildTimelineEvents() {
@@ -3089,6 +3263,7 @@ function renderAll() {
   renderBooks(); renderIdeas(); renderQuestions(); renderQuotes();
   renderReflect();   // keep Body/Today, Trend, chips and Reflect fresh after import/restore/reset
   renderTimeline();
+  renderTodaySummary();   // summary only — does not clobber an in-progress pulse selection
 }
 
 /* Default date fields to today */
@@ -3096,9 +3271,10 @@ function renderAll() {
   const el = document.getElementById(id); if (el) el.value = todayStr();
 });
 
-loadFoods().then(() => { renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods(); });
+loadFoods().then(() => { renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods(); renderTodaySummary(); });
 renderToday();
 renderAll();
+renderTodayTab();             // build the Today tab (summary + pulse dots) at load
 takeSnapshot('app open');     // automatic undo point each session
 checkBackupReminder();        // nudge to download a file backup if it's been a week
 </script>
