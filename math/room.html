@@ -106,10 +106,115 @@
     .notfound { font-family: var(--sans); color: var(--ink-soft); }
     .notfound a { color: var(--accent-warm); }
 
+    /* ── Rich room layout (Algebra; reusable for future rooms) ───── */
+    .block { margin-bottom: 1.7rem; }
+    .block-head { margin-bottom: 0.7rem; }
+    .block-head h2 {
+      font-family: var(--serif); font-size: 1.28rem; font-weight: 700;
+      margin: 0; color: var(--ink); display: inline;
+    }
+    .block-head .tag {
+      font-family: var(--sans); font-size: 0.6rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--m);
+      margin-left: 0.55rem; vertical-align: 0.15em;
+    }
+    .block-head p {
+      font-family: var(--sans); font-size: 0.8rem; color: var(--ink-soft);
+      margin: 0.25rem 0 0; line-height: 1.35;
+    }
+
+    /* Core topics */
+    .topic-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .topic {
+      font-family: var(--sans); font-size: 0.8rem; font-weight: 600; color: var(--ink);
+      background: color-mix(in srgb, var(--m) 9%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--m) 24%, transparent);
+      border-left: 3px solid var(--m); border-radius: 3px; padding: 0.32rem 0.65rem;
+    }
+
+    /* Formula / rule cards */
+    .formula-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.7rem; }
+    .formula-card {
+      background: linear-gradient(155deg, color-mix(in srgb, var(--m) 9%, var(--bg)), color-mix(in srgb, var(--m) 5%, var(--bg)));
+      border: 1px solid color-mix(in srgb, var(--m) 22%, transparent);
+      border-radius: 4px; padding: 0.7rem 0.85rem 0.75rem;
+    }
+    .f-name {
+      font-family: var(--sans); font-size: 0.64rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; color: var(--m); margin-bottom: 0.45rem;
+    }
+    .f-body {
+      font-family: "Cambria Math", Cambria, Georgia, var(--serif);
+      font-size: 1.05rem; color: var(--ink); line-height: 1.6;
+    }
+    .f-note { font-family: var(--sans); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.5rem; line-height: 1.35; }
+    .frac { display: inline-flex; flex-direction: column; vertical-align: middle; text-align: center; margin: 0 0.12rem; }
+    .frac > span { padding: 0 0.35rem; }
+    .frac .den { border-top: 1px solid currentColor; }
+
+    /* Worked examples */
+    .examples { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: 0.6rem; }
+    details.ex {
+      background: color-mix(in srgb, var(--m) 6%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--m) 22%, transparent);
+      border-radius: 4px; padding: 0.55rem 0.8rem 0.6rem;
+    }
+    details.ex > summary {
+      cursor: pointer; list-style: none; font-family: var(--sans);
+      font-size: 0.84rem; font-weight: 600; color: var(--ink); display: flex; gap: 0.45rem; align-items: baseline;
+    }
+    details.ex > summary::-webkit-details-marker { display: none; }
+    details.ex > summary::before { content: "+"; color: var(--m); font-weight: 700; }
+    details.ex[open] > summary::before { content: "\2212"; }
+    .ex-q { font-family: "Cambria Math", Cambria, Georgia, serif; color: var(--ink); }
+    .ex-steps { margin: 0.55rem 0 0; padding: 0; list-style: none; }
+    .ex-steps li {
+      font-family: var(--sans); font-size: 0.8rem; color: var(--ink-soft);
+      line-height: 1.45; padding: 0.12rem 0 0.12rem 1.25rem; position: relative;
+    }
+    .ex-steps li::before { content: "\2192"; position: absolute; left: 0; color: var(--m); }
+    .ex-ans {
+      font-family: "Cambria Math", Cambria, Georgia, serif; font-weight: 700; color: var(--ink);
+      margin-top: 0.5rem; padding-top: 0.4rem; border-top: 1px dashed color-mix(in srgb, var(--m) 30%, transparent);
+    }
+    .ex-ans b { color: var(--m); }
+
+    /* Practice / tools */
+    .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.6rem; }
+    .tool {
+      position: relative; display: block; text-decoration: none; color: var(--ink);
+      background: color-mix(in srgb, var(--m) 5%, var(--bg));
+      border: 1px dashed color-mix(in srgb, var(--m) 30%, transparent);
+      border-radius: 4px; padding: 0.6rem 0.7rem 0.65rem;
+    }
+    .tool .t-name { font-family: var(--serif); font-weight: 700; font-size: 0.92rem; }
+    .tool .t-desc { font-family: var(--sans); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.22rem; line-height: 1.3; }
+    .tool .t-badge {
+      position: absolute; top: 0.5rem; right: 0.55rem;
+      font-family: var(--sans); font-size: 0.52rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--m); background: color-mix(in srgb, var(--m) 12%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--m) 30%, transparent); border-radius: 999px; padding: 0.1rem 0.4rem;
+    }
+    .tool.live { border-style: solid; transition: transform .12s, border-color .15s, background .2s; }
+    .tool.live:hover { transform: translateY(-1px); border-color: color-mix(in srgb, var(--m) 55%, transparent); background: color-mix(in srgb, var(--m) 11%, var(--bg)); }
+    .tool.soon { opacity: 0.85; }
+
+    /* Notes */
+    .alg-notes {
+      width: 100%; min-height: 130px; resize: vertical;
+      font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.85rem; line-height: 1.5;
+      color: var(--ink); background: color-mix(in srgb, var(--m) 4%, var(--bg));
+      border: 1px solid color-mix(in srgb, var(--m) 26%, transparent); border-radius: 4px;
+      padding: 0.7rem 0.8rem; outline: none;
+    }
+    .alg-notes:focus { border-color: var(--m); }
+    .notes-status { font-family: var(--sans); font-size: 0.7rem; color: var(--ink-soft); margin-top: 0.4rem; }
+
     @media (max-width: 600px) {
       .room-title { font-size: 1.8rem; }
       .room-glyph-lg { font-size: 2.4rem; }
       .sections { grid-template-columns: 1fr; }
+      .formula-grid, .examples, .tool-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -128,7 +233,40 @@
     var ROOMS = {
       algebra: {
         name: "Algebra", kind: "Structure", glyph: "x²", color: "#6b4f28",
-        blurb: "Equations, factoring, functions, and symbolic manipulation — with notes and worked examples.",
+        blurb: "Equations, factoring, functions, and symbolic manipulation — a working reference with rules, worked examples, and room to grow.",
+        status: "Reference & examples ready — interactive tools coming",
+        rich: {
+          topics: [
+            "Equations", "Inequalities", "Factoring", "Functions", "Exponents",
+            "Radicals", "Logarithms", "Systems of equations", "Polynomials", "Rational expressions"
+          ],
+          formulas: [
+            { name: "Slope formula", body: 'm = <span class="frac"><span class="num">y<sub>2</sub> &minus; y<sub>1</sub></span><span class="den">x<sub>2</sub> &minus; x<sub>1</sub></span></span>', note: "Rate of change between two points." },
+            { name: "Slope-intercept form", body: "y = mx + b", note: "m is slope, b is the y-intercept." },
+            { name: "Point-slope form", body: "y &minus; y<sub>1</sub> = m(x &minus; x<sub>1</sub>)", note: "Line through (x<sub>1</sub>, y<sub>1</sub>) with slope m." },
+            { name: "Quadratic formula", body: 'x = <span class="frac"><span class="num">&minus;b &plusmn; &radic;(b<sup>2</sup> &minus; 4ac)</span><span class="den">2a</span></span>', note: "Solves ax<sup>2</sup> + bx + c = 0. Discriminant b<sup>2</sup>&minus;4ac sets the number of real roots." },
+            { name: "Difference of squares", body: "a<sup>2</sup> &minus; b<sup>2</sup> = (a + b)(a &minus; b)", note: "" },
+            { name: "Perfect square trinomials", body: "a<sup>2</sup> &plusmn; 2ab + b<sup>2</sup> = (a &plusmn; b)<sup>2</sup>", note: "" },
+            { name: "Exponent rules", body: "x<sup>a</sup>&middot;x<sup>b</sup> = x<sup>a+b</sup><br>x<sup>a</sup> &divide; x<sup>b</sup> = x<sup>a&minus;b</sup><br>(x<sup>a</sup>)<sup>b</sup> = x<sup>ab</sup><br>x<sup>0</sup> = 1,&nbsp; x<sup>&minus;n</sup> = 1 / x<sup>n</sup>", note: "" },
+            { name: "Logarithm rules", body: "log<sub>b</sub>(xy) = log<sub>b</sub>x + log<sub>b</sub>y<br>log<sub>b</sub>(x/y) = log<sub>b</sub>x &minus; log<sub>b</sub>y<br>log<sub>b</sub>(x<sup>n</sup>) = n&middot;log<sub>b</sub>x<br>change of base: log<sub>b</sub>x = <span class=\"frac\"><span class=\"num\">ln x</span><span class=\"den\">ln b</span></span>", note: "" },
+            { name: "Factoring patterns", body: "GCF &rarr; grouping &rarr; ax<sup>2</sup>+bx+c<br>a<sup>3</sup> + b<sup>3</sup> = (a + b)(a<sup>2</sup> &minus; ab + b<sup>2</sup>)<br>a<sup>3</sup> &minus; b<sup>3</sup> = (a &minus; b)(a<sup>2</sup> + ab + b<sup>2</sup>)", note: "Try factors in order: common factor first, then a pattern." }
+          ],
+          examples: [
+            { q: "Solve&nbsp; 3x + 5 = 20", steps: ["Subtract 5 from both sides: 3x = 15", "Divide both sides by 3"], ans: "x = <b>5</b>" },
+            { q: "Factor&nbsp; x<sup>2</sup> + 5x + 6", steps: ["Find two numbers with product 6 and sum 5", "Those are 2 and 3"], ans: "(x + 2)(x + 3)" },
+            { q: "Solve the system&nbsp; 2x + y = 7,&nbsp; x &minus; y = 2", steps: ["Add the equations: 3x = 9, so x = 3", "Substitute: 2(3) + y = 7"], ans: "x = <b>3</b>,&nbsp; y = <b>1</b>" },
+            { q: "Simplify&nbsp; (x<sup>3</sup> &middot; x<sup>5</sup>) / x<sup>2</sup>", steps: ["Multiply: x<sup>3</sup>&middot;x<sup>5</sup> = x<sup>8</sup>", "Divide: x<sup>8</sup> / x<sup>2</sup> = x<sup>8&minus;2</sup>"], ans: "x<sup>6</sup>" },
+            { q: "Slope through&nbsp; (1, 2)&nbsp; and&nbsp; (4, 11)", steps: ["m = (11 &minus; 2) / (4 &minus; 1)", "m = 9 / 3"], ans: "m = <b>3</b>" }
+          ],
+          tools: [
+            { name: "Equation solver", desc: "Solve linear & quadratic equations step by step." },
+            { name: "Factoring helper", desc: "Factor quadratics and polynomials with hints." },
+            { name: "Function explorer", desc: "Inspect domain, range, and behaviour." },
+            { name: "Graph from equation", desc: "Plot any expression in Graph Lab.", href: "graph-lab.html", live: true },
+            { name: "Check my work", desc: "Paste a step and verify it holds." },
+            { name: "Random practice", desc: "Generate practice problems by topic." }
+          ]
+        },
         sections: [
           { title: "Equations", items: ["Linear & quadratic solving", "Systems of equations", "Inequalities", "Step-by-step worked examples"] },
           { title: "Factoring", items: ["Common factors & grouping", "Quadratic factoring", "Polynomial division", "Roots & the factor theorem"] },
@@ -252,20 +390,108 @@
     html += '<div class="room-kicker">' + esc(room.kind) + '</div>';
     html += '<h1 class="room-title">' + esc(room.name) + '</h1>';
     html += '<p class="room-blurb">' + esc(room.blurb) + '</p>';
-    html += '<div class="room-status"><span class="dot"></span>Room in progress — structure ready, tools coming</div>';
+    var statusText = room.status || "Room in progress — structure ready, tools coming";
+    html += '<div class="room-status"><span class="dot"></span>' + esc(statusText) + '</div>';
     html += '</header>';
 
     if (room.callout) html += '<div class="callout">' + room.callout + '</div>';
 
-    html += '<div class="sections">';
-    room.sections.forEach(function (sec) {
-      html += '<div class="section-card"><h2>' + esc(sec.title) + '</h2><ul>';
-      sec.items.forEach(function (it) { html += '<li>' + esc(it) + '</li>'; });
-      html += '</ul></div>';
-    });
-    html += '</div>';
+    if (room.rich) {
+      html += richBody(room.rich);
+    } else {
+      html += '<div class="sections">';
+      room.sections.forEach(function (sec) {
+        html += '<div class="section-card"><h2>' + esc(sec.title) + '</h2><ul>';
+        sec.items.forEach(function (it) { html += '<li>' + esc(it) + '</li>'; });
+        html += '</ul></div>';
+      });
+      html += '</div>';
+    }
 
     main.innerHTML = html;
+
+    if (room.rich) initNotes(key);
+
+    /* ---- Rich room renderer (raw HTML in formulas/examples is intentional) ---- */
+    function block(title, tag, sub, inner) {
+      var h = '<section class="block"><div class="block-head"><h2>' + esc(title) + '</h2>';
+      if (tag) h += '<span class="tag">' + esc(tag) + '</span>';
+      if (sub) h += '<p>' + esc(sub) + '</p>';
+      h += '</div>' + inner + '</section>';
+      return h;
+    }
+    function richBody(rich) {
+      var h = "";
+
+      // 1 · Core topics
+      h += block("Core Topics", "Map", "The territory this room covers.",
+        '<div class="topic-grid">' +
+        rich.topics.map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join("") +
+        '</div>');
+
+      // 2 · Formula / rule cards
+      h += block("Formula & Rule Cards", "Reference", "Clean, copy-from-the-page rules.",
+        '<div class="formula-grid">' +
+        rich.formulas.map(function (f) {
+          return '<div class="formula-card"><div class="f-name">' + esc(f.name) + '</div>' +
+                 '<div class="f-body">' + f.body + '</div>' +
+                 (f.note ? '<div class="f-note">' + f.note + '</div>' : '') + '</div>';
+        }).join("") +
+        '</div>');
+
+      // 3 · Worked examples
+      h += block("Worked Examples", "Practice", "Click to reveal each solution.",
+        '<div class="examples">' +
+        rich.examples.map(function (ex) {
+          return '<details class="ex"><summary><span class="ex-q">' + ex.q + '</span></summary>' +
+                 '<ul class="ex-steps">' + ex.steps.map(function (s) { return '<li>' + s + '</li>'; }).join("") + '</ul>' +
+                 '<div class="ex-ans">= ' + ex.ans + '</div></details>';
+        }).join("") +
+        '</div>');
+
+      // 4 · Practice / tools (scaffold)
+      h += block("Practice & Tools", "Coming soon", "Interactive helpers — scaffolded now, wired up later.",
+        '<div class="tool-grid">' +
+        rich.tools.map(function (t) {
+          var cls = t.live ? "tool live" : "tool soon";
+          var badge = t.live ? '<span class="t-badge">open</span>' : '<span class="t-badge">soon</span>';
+          var inner = badge + '<div class="t-name">' + esc(t.name) + '</div><div class="t-desc">' + esc(t.desc) + '</div>';
+          return t.href
+            ? '<a class="' + cls + '" href="' + t.href + '">' + inner + '</a>'
+            : '<div class="' + cls + '">' + inner + '</div>';
+        }).join("") +
+        '</div>');
+
+      // 5 · Notes (saved locally)
+      h += block("Notes", "Saved locally", "Private to this browser — autosaves as you type.",
+        '<textarea class="alg-notes" id="algNotes" placeholder="Scratch work, reminders, your own rules…" spellcheck="false"></textarea>' +
+        '<div class="notes-status" id="algNotesStatus">Notes are stored only in this browser.</div>');
+
+      return h;
+    }
+
+    function initNotes(roomKey) {
+      var ta = document.getElementById("algNotes");
+      var status = document.getElementById("algNotesStatus");
+      if (!ta) return;
+      var storeKey = "mathlab.notes." + roomKey;
+      var supported = true;
+      try {
+        var probe = "__t"; window.localStorage.setItem(probe, "1"); window.localStorage.removeItem(probe);
+      } catch (e) { supported = false; }
+      if (!supported) { status.textContent = "Saving unavailable in this browser context."; return; }
+
+      try { ta.value = window.localStorage.getItem(storeKey) || ""; } catch (e) {}
+      var t;
+      ta.addEventListener("input", function () {
+        status.textContent = "Saving…";
+        clearTimeout(t);
+        t = setTimeout(function () {
+          try { window.localStorage.setItem(storeKey, ta.value); status.textContent = "Saved locally ✓"; }
+          catch (e) { status.textContent = "Could not save (storage full?)."; }
+        }, 350);
+      });
+    }
   })();
   </script>
 
