@@ -309,6 +309,7 @@
   <button class="mini-btn" id="importBtn" title="Restore data from a backup file">Import</button>
   <input type="file" id="importFile" accept="application/json" style="display:none">
   <button class="mini-btn" id="snapsBtn" title="Restore an automatic in-browser snapshot">Snapshots</button>
+  <button class="mini-btn" id="driveBtn" title="Back up to Google Drive (optional)">Drive</button>
   <button class="mini-btn danger" id="resetBtn" title="Erase all data">Reset</button>
 </nav>
 
@@ -880,6 +881,12 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const SCHEMA_VERSION = 2;
 const MAX_SNAPS = 12;
+// Google Drive backup (opt-in)
+const GDRIVE_CLIENT_ID_KEY = 'mirror_gdrive_client_id';
+const GDRIVE_FILE_ID_KEY = 'mirror_gdrive_file_id';
+const GDRIVE_LAST_KEY = 'mirror_gdrive_last';
+const GDRIVE_FILENAME = 'mirror-backup.json';
+const GDRIVE_SCOPE = 'https://www.googleapis.com/auth/drive.file';
 const FOODS_URL = '../nutrilens/foods.json';
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
@@ -1108,6 +1115,136 @@ function openSnapshotsModal() {
   document.getElementById('mClose').onclick = closeModal;
   modalBox.querySelectorAll('[data-restore]').forEach(b => b.onclick = () => restoreSnapshot(Number(b.dataset.restore)));
 }
+
+/* ----- Google Drive backup (opt-in, client-side, drive.file scope) ----- */
+let gdriveToken = null;     // access token, in memory only (expires ~1h)
+let gisLoaded = false;
+function loadGis() {
+  if (window.google && window.google.accounts && window.google.accounts.oauth2) { gisLoaded = true; return Promise.resolve(); }
+  return new Promise((resolve, reject) => {
+    const s = document.createElement('script');
+    s.src = 'https://accounts.google.com/gsi/client'; s.async = true; s.defer = true;
+    s.onload = () => { gisLoaded = true; resolve(); };
+    s.onerror = () => reject(new Error('Could not load Google sign-in script (offline or blocked).'));
+    document.head.appendChild(s);
+  });
+}
+function driveConnect() {
+  return new Promise((resolve, reject) => {
+    const clientId = (localStorage.getItem(GDRIVE_CLIENT_ID_KEY) || '').trim();
+    if (!clientId) { reject(new Error('Enter and save your Google OAuth Client ID first.')); return; }
+    loadGis().then(() => {
+      try {
+        const tokenClient = google.accounts.oauth2.initTokenClient({
+          client_id: clientId, scope: GDRIVE_SCOPE,
+          callback: (resp) => {
+            if (resp && resp.access_token) { gdriveToken = resp.access_token; resolve(resp.access_token); }
+            else reject(new Error('Authorization was cancelled.'));
+          },
+          error_callback: (err) => reject(new Error(err && err.message ? err.message : 'Google authorization failed.')),
+        });
+        tokenClient.requestAccessToken();
+      } catch (e) { reject(e); }
+    }).catch(reject);
+  });
+}
+function driveEnsureToken() { return gdriveToken ? Promise.resolve(gdriveToken) : driveConnect(); }
+async function driveFindFile() {
+  const q = encodeURIComponent(`name='${GDRIVE_FILENAME}' and trashed=false`);
+  const res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${q}&spaces=drive&fields=files(id,modifiedTime)`,
+    { headers: { Authorization: 'Bearer ' + gdriveToken } });
+  if (!res.ok) throw new Error('Drive search failed (' + res.status + ')');
+  const data = await res.json();
+  return data.files && data.files[0];
+}
+async function driveUpdate(fileId, content) {
+  const res = await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`,
+    { method: 'PATCH', headers: { Authorization: 'Bearer ' + gdriveToken, 'Content-Type': 'application/json' }, body: content });
+  if (!res.ok) throw new Error('Drive update failed (' + res.status + ')');
+}
+async function driveCreate(content) {
+  const metadata = { name: GDRIVE_FILENAME, mimeType: 'application/json' };
+  const boundary = 'mirror' + uid();
+  const body =
+    `--${boundary}\r\nContent-Type: application/json; charset=UTF-8\r\n\r\n${JSON.stringify(metadata)}\r\n` +
+    `--${boundary}\r\nContent-Type: application/json\r\n\r\n${content}\r\n--${boundary}--`;
+  const res = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id',
+    { method: 'POST', headers: { Authorization: 'Bearer ' + gdriveToken, 'Content-Type': `multipart/related; boundary=${boundary}` }, body });
+  if (!res.ok) throw new Error('Drive upload failed (' + res.status + ')');
+  return (await res.json()).id;
+}
+async function driveBackup() {
+  try {
+    await driveEnsureToken();
+    const content = JSON.stringify(state, null, 2);
+    let fileId = localStorage.getItem(GDRIVE_FILE_ID_KEY);
+    if (fileId) { try { await driveUpdate(fileId, content); } catch { fileId = null; } } // stale id → recreate
+    if (!fileId) {
+      const existing = await driveFindFile();
+      if (existing) { fileId = existing.id; await driveUpdate(fileId, content); }
+      else fileId = await driveCreate(content);
+      localStorage.setItem(GDRIVE_FILE_ID_KEY, fileId);
+    }
+    localStorage.setItem(GDRIVE_LAST_KEY, String(Date.now()));
+    localStorage.setItem(LAST_EXPORT_KEY, String(Date.now())); // a Drive backup also satisfies the weekly nudge
+    hideBanner();
+    openDriveModal();
+  } catch (e) { alert('Drive backup failed: ' + e.message); }
+}
+async function driveRestore() {
+  try {
+    await driveEnsureToken();
+    let fileId = localStorage.getItem(GDRIVE_FILE_ID_KEY);
+    if (!fileId) { const f = await driveFindFile(); fileId = f && f.id; }
+    if (!fileId) { alert('No Mirror backup found in your Drive yet.'); return; }
+    const res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+      { headers: { Authorization: 'Bearer ' + gdriveToken } });
+    if (!res.ok) throw new Error('Download failed (' + res.status + ')');
+    const obj = JSON.parse(await res.text());
+    if (!obj.identity || !obj.body) throw new Error('That Drive file is not a Mirror backup.');
+    if (!confirm('Replace current data with the Google Drive backup? Your current data is snapshotted first.')) return;
+    takeSnapshot('before Drive restore');
+    state = migrate(obj);
+    const d = defaultState();
+    for (const k of Object.keys(d)) state[k] = Object.assign(d[k], state[k] || {});
+    saveState(); renderAll();
+    closeModal();
+    showBanner('Restored from Google Drive.', false);
+  } catch (e) { alert('Drive restore failed: ' + e.message); }
+}
+function openDriveModal() {
+  const clientId = localStorage.getItem(GDRIVE_CLIENT_ID_KEY) || '';
+  const last = Number(localStorage.getItem(GDRIVE_LAST_KEY) || 0);
+  modalBox.innerHTML = `<h3>Google Drive backup</h3>
+    <div class="sub">Saves your Mirror data to one private file in your Google Drive (app-created files only). Optional — Mirror stays fully local until you connect.</div>
+    <div class="field"><label>Google OAuth Client ID</label>
+      <input type="text" id="gdClientId" placeholder="xxxxxx.apps.googleusercontent.com" value="${escapeHtml(clientId)}"></div>
+    <div class="actions" style="justify-content:flex-start;margin-bottom:12px">
+      <button class="ghost" id="gdSaveId">Save ID</button>
+      <button class="primary" id="gdConnect">${gdriveToken ? 'Reconnect' : 'Connect Drive'}</button>
+    </div>
+    <div class="snap"><span>Status<div class="when">${gdriveToken ? 'connected this session' : 'not connected'}</div></span></div>
+    <div class="snap"><span>Last Drive backup<div class="when">${last ? new Date(last).toLocaleString() : 'never'}</div></span></div>
+    <div class="actions" style="justify-content:flex-start;margin-top:14px">
+      <button class="primary" id="gdBackup">Back up to Drive</button>
+      <button class="ghost" id="gdRestore">Restore from Drive</button>
+    </div>
+    <div class="sub" style="margin-top:14px">First time? You need a free Google Cloud OAuth Client ID (Web app; authorized origin <strong>https://stevenfrye30.github.io</strong>). Ask me for the setup steps.</div>
+    <div class="actions" style="margin-top:6px"><button class="ghost" id="gdClose">Close</button></div>`;
+  overlay.classList.add('open');
+  document.getElementById('gdSaveId').onclick = () => {
+    localStorage.setItem(GDRIVE_CLIENT_ID_KEY, document.getElementById('gdClientId').value.trim());
+    showBanner('Client ID saved.', false);
+  };
+  document.getElementById('gdConnect').onclick = () => {
+    localStorage.setItem(GDRIVE_CLIENT_ID_KEY, document.getElementById('gdClientId').value.trim());
+    driveConnect().then(() => openDriveModal()).catch(e => alert(e.message));
+  };
+  document.getElementById('gdBackup').onclick = driveBackup;
+  document.getElementById('gdRestore').onclick = driveRestore;
+  document.getElementById('gdClose').onclick = closeModal;
+}
+document.getElementById('driveBtn').onclick = openDriveModal;
 
 /* =============================================================
    IDENTITY
