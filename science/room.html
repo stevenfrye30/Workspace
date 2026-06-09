@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Science Room</title>
+  <meta name="description" content="A room inside the Science Lab.">
+  <link rel="stylesheet" href="../_shared/hub-nav.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1e2a3a; --panel: #28384c; --fg: #e8ecf1; --muted: #8fa3ba;
+      --border: #32445c; --gold: #d4a24c; --rule: #3a4d66; --c: #d4a24c;
+    }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background:
+        radial-gradient(ellipse 90% 50% at 50% -10%, color-mix(in srgb, var(--c) 14%, transparent), transparent 60%),
+        var(--bg);
+      background-attachment: fixed; color: var(--fg); line-height: 1.5; min-height: 100vh;
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0.6rem 1.6rem 3rem; }
+
+    .crumb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; font-weight: 600; margin: 0.6rem 0 1rem; }
+    .crumb a { color: var(--c); text-decoration: none; }
+    .crumb a:hover { text-decoration: underline; }
+    .crumb .sep { color: var(--muted); margin: 0 0.4rem; }
+    .crumb .here { color: var(--muted); }
+
+    .r-head { position: relative; border-bottom: 1px solid var(--c); padding-bottom: 1rem; margin-bottom: 1.3rem; }
+    .r-glyph { position: absolute; top: -0.2rem; right: 0; font-size: 3.2rem; opacity: 0.3; }
+    .r-kicker { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c); font-weight: 700; }
+    .r-title { font-size: 2.2rem; font-weight: 600; margin: 0.15rem 0 0; }
+    .r-blurb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.92rem; color: var(--muted); margin-top: 0.45rem; max-width: 50rem; line-height: 1.5; }
+    .r-status { display: inline-flex; align-items: center; gap: 0.4rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--c);
+      background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); border-radius: 999px; padding: 0.22rem 0.7rem; margin-top: 0.8rem; }
+    .r-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+
+    .callout { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.84rem; line-height: 1.5; color: var(--fg);
+      background: color-mix(in srgb, var(--c) 10%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+      border-left: 3px solid var(--c); border-radius: 3px; padding: 0.7rem 0.9rem; margin: 0 0 1.4rem; }
+    .callout b { color: var(--c); }
+
+    .block { margin-bottom: 1.7rem; }
+    .block-head { margin-bottom: 0.7rem; }
+    .block-head h2 { display: inline; font-size: 1.2rem; font-weight: 600; }
+    .block-head .tag { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-left: 0.55rem; vertical-align: 0.15em; }
+    .block-head p { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    .topic-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .topic { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--fg);
+      background: color-mix(in srgb, var(--c) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+      border-left: 3px solid var(--c); border-radius: 3px; padding: 0.32rem 0.65rem; }
+
+    .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.7rem; }
+    .card { background: linear-gradient(155deg, color-mix(in srgb, var(--c) 12%, var(--panel)), var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem 0.85rem 0.75rem; }
+    .card .c-name { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.45rem; }
+    .card .c-body { font-size: 1rem; line-height: 1.55; }
+    .card .c-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.35; }
+
+    /* element card preview (periodic table) */
+    .elcard { display: inline-flex; flex-direction: column; width: 5.4rem; padding: 0.5rem 0.6rem; border: 1px solid var(--c); border-radius: 4px; background: color-mix(in srgb, var(--c) 14%, var(--panel)); }
+    .elcard .z { font-family: -apple-system, sans-serif; font-size: 0.62rem; color: var(--muted); }
+    .elcard .sym { font-size: 1.9rem; font-weight: 700; line-height: 1; color: var(--c); }
+    .elcard .nm { font-family: -apple-system, sans-serif; font-size: 0.66rem; color: var(--fg); margin-top: 0.15rem; }
+    .elcard .ms { font-family: -apple-system, sans-serif; font-size: 0.6rem; color: var(--muted); }
+
+    .links { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.6rem; }
+    .lnk { position: relative; display: block; text-decoration: none; color: var(--fg);
+      background: color-mix(in srgb, var(--c) 7%, var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.6rem 0.75rem; }
+    .lnk.live { transition: transform 0.12s, border-color 0.15s, background 0.2s; }
+    .lnk.live:hover { transform: translateY(-1px); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, var(--panel)); }
+    .lnk.soon { border-style: dashed; opacity: 0.85; }
+    .lnk .l-name { font-family: -apple-system, "Segoe UI", sans-serif; font-weight: 600; font-size: 0.9rem; }
+    .lnk .l-desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; line-height: 1.3; }
+    .lnk .l-badge { position: absolute; top: 0.5rem; right: 0.55rem; font-family: -apple-system, sans-serif; font-size: 0.52rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); border-radius: 999px; padding: 0.1rem 0.4rem; }
+
+    .sci-notes { width: 100%; min-height: 150px; resize: vertical; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.85rem; line-height: 1.5;
+      color: var(--fg); background: color-mix(in srgb, var(--c) 6%, #1a2433); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem 0.8rem; outline: none; }
+    .sci-notes:focus { border-color: var(--c); }
+    .sci-notes.tall { min-height: 280px; }
+    .notes-status { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; color: var(--muted); margin-top: 0.4rem; }
+
+    .notfound { font-family: -apple-system, "Segoe UI", sans-serif; color: var(--muted); }
+    .notfound a { color: var(--gold); }
+
+    @media (max-width: 600px) { .r-title { font-size: 1.7rem; } .r-glyph { font-size: 2.4rem; } .card-grid, .links { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="ws-hub-nav" aria-label="Workspace navigation">
+    <a class="ws-hub-home" href="./">← Science</a>
+    <a class="ws-hub-home" href="../">Hub</a>
+  </nav>
+
+  <main class="page" id="main"></main>
+
+  <script>
+  (function () {
+    var ROOMS = {
+      "periodic-table": {
+        name: "Periodic Table", kind: "Core hub", glyph: "⚛", color: "#d4a24c",
+        blurb: "The connective center of the Science Lab — every element a doorway into chemistry, biochemistry, physics, and the bench.",
+        status: "Central hub — scaffold ready; interactive table coming",
+        callout: "<b>Future-facing.</b> The clickable periodic table and per-element cards aren't built yet — this scaffolds their structure and the connections the table will anchor.",
+        topics: ["Elements", "Groups & families", "Periods", "Atomic structure", "Electron configuration", "Periodic trends", "Bonding", "Oxidation states", "Electronegativity", "Atomic mass", "Biological relevance", "Lab relevance"],
+        cards: [
+          { name: "Element card (planned layout)", body: '<span class="elcard"><span class="z">6</span><span class="sym">C</span><span class="nm">Carbon</span><span class="ms">12.011</span></span>', note: "Each element will open a card: atomic number & mass, electron configuration, electronegativity, oxidation states, bonding behaviour, and biological + lab relevance." },
+          { name: "Periodic trends", body: "Across a period →: radius ↓, electronegativity ↑, ionization energy ↑.<br>Down a group ↓: radius ↑, electronegativity ↓.", note: "" },
+          { name: "Groups & families", body: "Alkali (1) · alkaline earth (2) · transition metals · halogens (17) · noble gases (18) · lanthanides & actinides.", note: "" },
+          { name: "Bonding from the table", body: "Ionic (metal + nonmetal) · covalent (nonmetal + nonmetal) · metallic. Polarity follows ΔEN.", note: "" }
+        ],
+        links: [
+          { name: "Chemistry", desc: "Reactions, stoichiometry, acids/bases.", href: "room.html?room=chemistry", tag: "room" },
+          { name: "Biochemistry", desc: "Where elements become life.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Physics", desc: "Atomic structure & forces.", href: "room.html?room=physics", tag: "room" },
+          { name: "Scientific Symbols & Units", desc: "Notation, SI units, constants.", href: "room.html?room=symbols-units", tag: "room" },
+          { name: "Class Archive", desc: "Chemistry coursework & glossary.", href: "room.html?room=class-archive", tag: "room" }
+        ]
+      },
+
+      chemistry: {
+        name: "Chemistry", kind: "Matter", glyph: "🧪", color: "#e0794b",
+        blurb: "From atoms and bonds to reactions and equilibria — the rules that govern matter.",
+        status: "Scaffold ready — coursework preserved in the Class Archive",
+        topics: ["Atoms & molecules", "Bonding", "Stoichiometry", "Acids & bases", "Equilibrium", "Thermodynamics", "Kinetics", "Organic chemistry basics"],
+        cards: [
+          { name: "Mole & stoichiometry", body: "n = m / M · mole ratios from balanced equations · limiting reagent.", note: "" },
+          { name: "Acids & bases", body: "pH = −log[H⁺] · pH + pOH = 14 · strong vs weak · buffers (Henderson–Hasselbalch).", note: "" },
+          { name: "Equilibrium", body: "K = [products] / [reactants] · Le Chatelier · Q vs K.", note: "" }
+        ],
+        links: [
+          { name: "Periodic Table", desc: "The elements behind the chemistry.", href: "room.html?room=periodic-table", tag: "room" },
+          { name: "Browse chemistry clusters", desc: "Foundations, organic, acid-base, thermo, electrochem.", href: "cluster.html", tag: "archive" },
+          { name: "Search coursework", desc: "Full-text across lectures & glossary.", href: "search.html", tag: "archive" },
+          { name: "Scientific Symbols & Units", desc: "Chemical notation & constants.", href: "room.html?room=symbols-units", tag: "room" }
+        ]
+      },
+
+      biology: {
+        name: "Biology", kind: "Life", glyph: "🌿", color: "#6fae5f",
+        blurb: "Life from cells to ecosystems — structure, information, and change.",
+        status: "Scaffold ready — coursework preserved in the Class Archive",
+        topics: ["Cells", "Genetics", "Evolution", "Physiology", "Ecology", "Molecular biology"],
+        cards: [
+          { name: "Central dogma", body: "DNA → (transcription) → RNA → (translation) → protein.", note: "" },
+          { name: "Cell types", body: "Prokaryote (no nucleus) vs eukaryote (membrane-bound organelles).", note: "" }
+        ],
+        links: [
+          { name: "Biochemistry", desc: "The molecules underneath.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Browse biology clusters", desc: "Cells, genetics, immunity, the body.", href: "cluster.html", tag: "archive" },
+          { name: "Glossary", desc: "Cell biology, genetics, immunology terms.", href: "glossary.html", tag: "archive" },
+          { name: "Periodic Table", desc: "Bio-relevant elements.", href: "room.html?room=periodic-table", tag: "room" }
+        ]
+      },
+
+      biochemistry: {
+        name: "Biochemistry", kind: "Molecules of life", glyph: "🧬", color: "#7fb0d0",
+        blurb: "The chemistry inside the cell — proteins, enzymes, metabolism, and the molecules that carry information.",
+        status: "Scaffold ready — coursework preserved in the Class Archive",
+        topics: ["Proteins", "Enzymes", "Metabolism", "DNA / RNA", "Membranes", "Signaling", "Macromolecules"],
+        cards: [
+          { name: "Enzyme kinetics", body: "v = V<sub>max</sub>[S] / (K<sub>m</sub> + [S]) · K<sub>m</sub> = [S] at ½V<sub>max</sub>.", note: "Michaelis–Menten." },
+          { name: "Core metabolism", body: "Glycolysis → pyruvate → TCA cycle → oxidative phosphorylation (ATP).", note: "" },
+          { name: "Macromolecules", body: "Proteins · nucleic acids · carbohydrates · lipids.", note: "" }
+        ],
+        links: [
+          { name: "Biology", desc: "The cells these molecules build.", href: "room.html?room=biology", tag: "room" },
+          { name: "Chemistry", desc: "Bonds & reactions underneath.", href: "room.html?room=chemistry", tag: "room" },
+          { name: "Browse biomolecules cluster", desc: "Proteins, enzymes, metabolism.", href: "cluster.html", tag: "archive" },
+          { name: "Periodic Table", desc: "C, H, N, O, P, S and friends.", href: "room.html?room=periodic-table", tag: "room" }
+        ]
+      },
+
+      physics: {
+        name: "Physics", kind: "Forces & fields", glyph: "🧲", color: "#c98bd0",
+        blurb: "Mechanics, electricity, waves, and measurement — the science-bench view, with the full formula reference in Math Lab.",
+        status: "Scaffold ready — formulas live in Math Lab Physics",
+        callout: "Math Lab already holds a full <b>Physics</b> reference (formulas + worked examples). This room is the science-bench framing; use the link below for the equations.",
+        topics: ["Mechanics", "Electricity", "Waves", "Optics", "Thermodynamics", "Scientific measurement"],
+        cards: [
+          { name: "Measurement", body: "SI units · significant figures · uncertainty · error propagation.", note: "" },
+          { name: "Waves", body: "v = f λ · frequency, period, amplitude · interference & resonance.", note: "" }
+        ],
+        links: [
+          { name: "Math Lab · Physics", desc: "Full formula reference & worked examples.", href: "../math/room.html?room=physics", tag: "math" },
+          { name: "Graph Lab", desc: "Plot motion or any equation.", href: "../math/graph-lab.html", tag: "math" },
+          { name: "Data & Analysis", desc: "Turn measurements into results.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Periodic Table", desc: "Atomic structure.", href: "room.html?room=periodic-table", tag: "room" }
+        ]
+      },
+
+      neuroscience: {
+        name: "Neuroscience & Electrophysiology", kind: "Signals", glyph: "🧠", color: "#e06b8b",
+        blurb: "Neurons, synapses, and the electrical & optical signals they produce — your hub for ephys and imaging work.",
+        status: "Future-facing — ephys & imaging hub",
+        callout: "<b>Future-facing.</b> This room anchors your electrophysiology and calcium-imaging work and connects it to the Time-Series analysis tools in Math Lab.",
+        topics: ["Neurons", "Synapses", "Membrane potential", "Action potentials", "Patch clamp", "Calcium imaging", "GCaMP / iGluSnFR", "Synaptic transmission", "Trace & signal analysis"],
+        cards: [
+          { name: "Membrane potential", body: "Resting V<sub>m</sub> ≈ −70 mV · Nernst: E = (RT/zF)·ln([ion]<sub>out</sub>/[ion]<sub>in</sub>).", note: "" },
+          { name: "Recording modalities", body: "Patch clamp (current/voltage) · Ca²⁺ imaging (GCaMP) · glutamate sensing (iGluSnFR).", note: "" },
+          { name: "Signal features", body: "Amplitude · decay τ · frequency · baseline · area under curve.", note: "These map directly onto the Time-Series Lab toolkit." }
+        ],
+        links: [
+          { name: "Math Lab · Time-Series", desc: "Analyze traces: smoothing, peaks, AUC.", href: "../math/room.html?room=time-series", tag: "math" },
+          { name: "Lab Methods", desc: "Patch clamp, imaging, troubleshooting.", href: "room.html?room=lab-methods", tag: "room" },
+          { name: "Biochemistry", desc: "Receptors, channels, signaling.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Data & Analysis", desc: "Design, controls, statistics.", href: "room.html?room=data-analysis", tag: "room" }
+        ]
+      },
+
+      "lab-methods": {
+        name: "Lab Methods", kind: "Technique", glyph: "🔬", color: "#b8a24c",
+        blurb: "The bench itself — how experiments actually get done, and how to fix them when they don't.",
+        status: "Scaffold ready — protocols & troubleshooting coming",
+        topics: ["Pipetting", "Microscopy", "Electrophysiology", "Protein purification", "Enzyme assays", "Imaging", "Safety", "Troubleshooting"],
+        cards: [
+          { name: "Good technique", body: "Calibrate · replicate · label everything · keep a real notebook.", note: "" },
+          { name: "Troubleshooting", body: "Change one variable at a time · check controls first · note what failed.", note: "" }
+        ],
+        links: [
+          { name: "Neuroscience & Ephys", desc: "Recording & imaging methods.", href: "room.html?room=neuroscience", tag: "room" },
+          { name: "Biochemistry", desc: "Assays & purification context.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Data & Analysis", desc: "From bench to result.", href: "room.html?room=data-analysis", tag: "room" }
+        ]
+      },
+
+      "data-analysis": {
+        name: "Data & Analysis", kind: "Evidence", glyph: "📈", color: "#5fb0a8",
+        blurb: "Turning measurements into conclusions — graphs, statistics, traces, controls, and honest error.",
+        status: "Scaffold ready — wired to Math Lab tools",
+        topics: ["Graphs", "Statistics", "Time-series traces", "Experimental design", "Controls", "Error & uncertainty", "Replicates"],
+        cards: [
+          { name: "Controls", body: "Positive & negative controls · vehicle · blinding · randomization.", note: "" },
+          { name: "Reporting error", body: "mean ± SD (spread) or ± SEM (precision of the mean) · always state n.", note: "" }
+        ],
+        links: [
+          { name: "Math Lab · Statistics", desc: "Distributions, regression, tests.", href: "../math/room.html?room=statistics", tag: "math" },
+          { name: "Math Lab · Time-Series", desc: "Trace smoothing, peaks, AUC.", href: "../math/room.html?room=time-series", tag: "math" },
+          { name: "Graph Lab", desc: "Plot and explore.", href: "../math/graph-lab.html", tag: "math" },
+          { name: "Search coursework", desc: "Find a method or definition.", href: "search.html", tag: "archive" }
+        ]
+      },
+
+      "symbols-units": {
+        name: "Scientific Symbols & Units", kind: "Notation", glyph: "µ", color: "#8fa3ba",
+        blurb: "The shared notation of the lab — SI units, prefixes, Greek letters, and chemical & biological shorthand.",
+        status: "Scaffold ready — copyable picker coming",
+        topics: ["SI base units", "Derived units", "Prefixes", "Greek letters", "Chemical notation", "Biological notation", "Lab abbreviations", "Constants"],
+        cards: [
+          { name: "SI base units", body: "metre (m) · kilogram (kg) · second (s) · ampere (A) · kelvin (K) · mole (mol) · candela (cd).", note: "" },
+          { name: "Prefixes", body: "n (10⁻⁹) · µ (10⁻⁶) · m (10⁻³) · c (10⁻²) · k (10³) · M (10⁶) · G (10⁹).", note: "" },
+          { name: "Common constants", body: "N<sub>A</sub> = 6.022×10²³ · R = 8.314 J/mol·K · k<sub>B</sub> = 1.38×10⁻²³ J/K.", note: "" }
+        ],
+        links: [
+          { name: "Math Lab · Symbols", desc: "Click-to-copy symbol library (175 symbols).", href: "../math/room.html?room=symbols", tag: "math" },
+          { name: "Periodic Table", desc: "Element symbols.", href: "room.html?room=periodic-table", tag: "room" },
+          { name: "Chemistry", desc: "Notation in context.", href: "room.html?room=chemistry", tag: "room" }
+        ]
+      },
+
+      notes: {
+        name: "Notes & Study Library", kind: "Notebook", glyph: "📓", color: "#c2b280",
+        blurb: "Your science notebook — definitions, diagrams, formulas, saved explanations, and study reminders, kept in this browser.",
+        status: "Your notebook — autosaves locally",
+        topics: ["Science notes", "Definitions", "Diagrams", "Formulas", "Saved explanations", "Study reminders", "Review lists"],
+        links: [
+          { name: "Class Archive", desc: "Glossary & full-text search.", href: "room.html?room=class-archive", tag: "room" },
+          { name: "Scientific Symbols & Units", desc: "Notation for your notes.", href: "room.html?room=symbols-units", tag: "room" }
+        ],
+        notesTall: true,
+        notesPlaceholder: "# Concept&#10;&#10;# Definition&#10;&#10;# Why it matters&#10;&#10;# Example&#10;&#10;# Source (class / cluster)"
+      },
+
+      "class-archive": {
+        name: "Class Archive", kind: "Preserved coursework", glyph: "🗄", color: "#9aa6b2",
+        blurb: "Five years of college coursework, preserved and searchable — the original study tools, untouched.",
+        status: "Preserved — nothing deleted; some material still to sort",
+        callout: "<b>Everything is preserved.</b> The tools below read your original extracted coursework (482 source files · 14 clusters · 2,039 glossary terms). Material without a clean science room — <b>Humanities &amp; Gen Ed</b> (Earth Science, Psychology, Religion) — waits in <b>To Sort</b> below.",
+        topics: ["Lecture notes", "Reference sheets", "Assignments", "Study material", "OCR'd content", "14 topic clusters", "2,039 glossary terms", "To Sort"],
+        cards: [
+          { name: "What's inside", body: "482 source files · 14 clusters · 2,039 glossary terms across chemistry, biology, biochemistry, math/physics, and gen-ed.", note: "" },
+          { name: "To Sort", body: "Humanities &amp; Gen Ed — Earth Science, Psychology, Religion.", note: "Parked here during the Science restructure until it gets a proper home (science room or a separate space)." }
+        ],
+        links: [
+          { name: "Tutoring Center", desc: "Flashcards & quizzes over the glossary, by discipline or bridge concept.", href: "tutor.html", tag: "archive" },
+          { name: "Browse by Cluster", desc: "493 files across 14 clusters, slide-by-slide (OCR included).", href: "cluster.html", tag: "archive" },
+          { name: "Search Everything", desc: "Full-text across all lectures + 2,039 glossary terms.", href: "search.html", tag: "archive" },
+          { name: "Glossary Browser", desc: "All 2,039 terms with definitions & related concepts.", href: "glossary.html", tag: "archive" }
+        ]
+      }
+    };
+
+    function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+    var params = new URLSearchParams(location.search);
+    var key = (params.get("room") || "").toLowerCase();
+    var room = ROOMS[key];
+    var main = document.getElementById("main");
+
+    if (!room) {
+      document.title = "Room not found — Science Lab";
+      main.innerHTML = '<p class="notfound" style="margin-top:1.5rem;">That room doesn’t exist yet. <a href="./">← Back to the Science Lab</a></p>';
+      return;
+    }
+
+    document.title = room.name + " — Science Lab";
+    document.documentElement.style.setProperty("--c", room.color);
+
+    var TAGLABEL = { room: "room", math: "math lab", archive: "coursework", soon: "soon" };
+    var h = "";
+    h += '<nav class="crumb"><a href="./">Science Lab</a><span class="sep">/</span><span class="here">' + esc(room.name) + '</span></nav>';
+    h += '<header class="r-head"><span class="r-glyph">' + room.glyph + '</span>' +
+         '<div class="r-kicker">' + esc(room.kind) + '</div>' +
+         '<h1 class="r-title">' + esc(room.name) + '</h1>' +
+         '<p class="r-blurb">' + esc(room.blurb) + '</p>' +
+         '<div class="r-status"><span class="dot"></span>' + esc(room.status || "Scaffold ready") + '</div></header>';
+
+    if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
+
+    if (room.topics) {
+      h += '<section class="block"><div class="block-head"><h2>Core Topics</h2><span class="tag">Map</span><p>The territory this room covers.</p></div>' +
+        '<div class="topic-grid">' + room.topics.map(function (t) { return '<span class="topic">' + esc(t) + '</span>'; }).join("") + '</div></section>';
+    }
+
+    if (room.cards) {
+      h += '<section class="block"><div class="block-head"><h2>Reference Cards</h2><span class="tag">Bench notes</span><p>Compact reminders — fuller material in the Class Archive.</p></div>' +
+        '<div class="card-grid">' + room.cards.map(function (c) {
+          return '<div class="card"><div class="c-name">' + esc(c.name) + '</div><div class="c-body">' + c.body + '</div>' +
+            (c.note ? '<div class="c-note">' + c.note + '</div>' : '') + '</div>';
+        }).join("") + '</div></section>';
+    }
+
+    if (room.links) {
+      h += '<section class="block"><div class="block-head"><h2>Tools &amp; Connections</h2><span class="tag">Links</span><p>Where this room connects across the labs and your coursework.</p></div>' +
+        '<div class="links">' + room.links.map(function (l) {
+          var cls = l.href ? "lnk live" : "lnk soon";
+          var badge = '<span class="l-badge">' + esc(TAGLABEL[l.tag] || "soon") + '</span>';
+          var inner = badge + '<div class="l-name">' + esc(l.name) + '</div><div class="l-desc">' + esc(l.desc) + '</div>';
+          return l.href ? '<a class="' + cls + '" href="' + l.href + '">' + inner + '</a>' : '<div class="' + cls + '">' + inner + '</div>';
+        }).join("") + '</div></section>';
+    }
+
+    // Notes (saved locally per room, key scilab.notes.<room>)
+    var notesPh = room.notesPlaceholder || "Notes, definitions, reminders…";
+    var notesCls = "sci-notes" + (room.notesTall ? " tall" : "");
+    h += '<section class="block"><div class="block-head"><h2>Notes</h2><span class="tag">Saved locally</span><p>Private to this browser — autosaves as you type.</p></div>' +
+      '<textarea class="' + notesCls + '" id="sciNotes" placeholder="' + notesPh + '" spellcheck="false"></textarea>' +
+      '<div class="notes-status" id="sciNotesStatus">Notes are stored only in this browser.</div></section>';
+
+    main.innerHTML = h;
+    initNotes(key);
+
+    function initNotes(roomKey) {
+      var ta = document.getElementById("sciNotes");
+      var status = document.getElementById("sciNotesStatus");
+      if (!ta) return;
+      var storeKey = "scilab.notes." + roomKey;
+      var ok = true;
+      try { var p = "__t"; window.localStorage.setItem(p, "1"); window.localStorage.removeItem(p); } catch (e) { ok = false; }
+      if (!ok) { status.textContent = "Saving unavailable in this browser context."; return; }
+      try { ta.value = window.localStorage.getItem(storeKey) || ""; } catch (e) {}
+      var t;
+      ta.addEventListener("input", function () {
+        status.textContent = "Saving…";
+        clearTimeout(t);
+        t = setTimeout(function () {
+          try { window.localStorage.setItem(storeKey, ta.value); status.textContent = "Saved locally ✓"; }
+          catch (e) { status.textContent = "Could not save (storage full?)."; }
+        }, 350);
+      });
+    }
+  })();
+  </script>
+</body>
+</html>
