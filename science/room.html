@@ -243,7 +243,7 @@
           { name: "Chemistry", desc: "Reactions, stoichiometry, acids/bases.", href: "room.html?room=chemistry", tag: "room" },
           { name: "Biochemistry", desc: "Where elements become life.", href: "room.html?room=biochemistry", tag: "room" },
           { name: "Physics", desc: "Atomic structure & forces.", href: "room.html?room=physics", tag: "room" },
-          { name: "Scientific Symbols & Units", desc: "Notation, SI units, constants.", href: "room.html?room=symbols-units", tag: "room" },
+          { name: "Data, Symbols & Units", desc: "Notation, SI units, constants, analysis.", href: "room.html?room=data-analysis", tag: "room" },
           { name: "Class Archive", desc: "Chemistry coursework & glossary.", href: "room.html?room=class-archive", tag: "room" },
           { name: "Chemistry Foundations", desc: "Coursework background: atomic structure, bonding, stoichiometry.", href: "cluster.html?id=chem-foundations", tag: "archive" },
           { name: "Quiz: Chemistry Foundations", desc: "Flashcards & quizzes on the foundations.", href: "tutor.html?cluster=chem-foundations", tag: "quiz" }
@@ -305,7 +305,7 @@
           { name: "Redox helper", desc: "Half-reactions & balancing.", tag: "soon" },
           { name: "Organic functional groups", desc: "Guide to the common groups.", tag: "soon" },
           { name: "Open Periodic Table", desc: "The elements behind every reaction.", href: "room.html?room=periodic-table", tag: "room" },
-          { name: "Scientific Symbols & Units", desc: "Chemical notation & constants.", href: "room.html?room=symbols-units", tag: "room" },
+          { name: "Data, Symbols & Units", desc: "Chemical notation, units & constants.", href: "room.html?room=data-analysis", tag: "room" },
           { name: "Class Archive", desc: "All preserved coursework + study tools.", href: "room.html?room=class-archive", tag: "room" },
           { name: "Cluster: Chemistry Foundations", desc: "Atomic structure, stoichiometry, gas laws.", href: "cluster.html?id=chem-foundations", tag: "archive" },
           { name: "Cluster: Organic Reactivity", desc: "Functional groups, mechanisms, NMR/IR/MS (113 files).", href: "cluster.html?id=organic-reactivity", tag: "archive" },
@@ -382,7 +382,7 @@
           { name: "Open Chemistry", desc: "Bonds, pH, reactions.", href: "room.html?room=chemistry", tag: "room" },
           { name: "Open Neuroscience & Ephys", desc: "Excitable cells & signaling.", href: "room.html?room=neuroscience", tag: "room" },
           { name: "Open Lab Methods", desc: "Microscopy, assays, techniques.", href: "room.html?room=lab-methods", tag: "room" },
-          { name: "Open Data & Analysis", desc: "Design, controls, statistics.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Open Data, Symbols & Units", desc: "Design, controls, statistics, notation.", href: "room.html?room=data-analysis", tag: "room" },
           { name: "Class Archive", desc: "All preserved coursework + study tools.", href: "room.html?room=class-archive", tag: "room" },
           { name: "Cluster: Genetic Information", desc: "Replication, transcription, translation, bioinformatics.", href: "cluster.html?id=genetic-information", tag: "archive" },
           { name: "Cluster: Cellular Machinery", desc: "Membranes, transport, ER/Golgi, cytoskeleton.", href: "cluster.html?id=cellular-machinery", tag: "archive" },
@@ -486,7 +486,7 @@
         links: [
           { name: "Math Lab · Physics", desc: "Full formula reference & worked examples.", href: "../math/room.html?room=physics", tag: "math" },
           { name: "Graph Lab", desc: "Plot motion or any equation.", href: "../math/graph-lab.html", tag: "math" },
-          { name: "Data & Analysis", desc: "Turn measurements into results.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Data, Symbols & Units", desc: "Turn measurements into results.", href: "room.html?room=data-analysis", tag: "room" },
           { name: "Periodic Table", desc: "Atomic structure.", href: "room.html?room=periodic-table", tag: "room" }
         ]
       },
@@ -555,7 +555,7 @@
           { name: "Open Biochemistry", desc: "Receptors, channels, signaling.", href: "room.html?room=biochemistry", tag: "room" },
           { name: "Open Biology", desc: "Cells, physiology, the nervous system.", href: "room.html?room=biology", tag: "room" },
           { name: "Open Lab Methods", desc: "Patch clamp, microscopy, imaging.", href: "room.html?room=lab-methods", tag: "room" },
-          { name: "Open Data & Analysis", desc: "Design, controls, error.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Open Data, Symbols & Units", desc: "Design, controls, error, notation.", href: "room.html?room=data-analysis", tag: "room" },
           { name: "Math Lab · Time-Series", desc: "Smooth, peaks/events, AUC, decay τ.", href: "../math/room.html?room=time-series", tag: "math" },
           { name: "Math Lab · Statistics", desc: "Compare events, tests, effect size.", href: "../math/room.html?room=statistics", tag: "math" },
           { name: "Class Archive", desc: "All preserved coursework + study tools.", href: "room.html?room=class-archive", tag: "room" },
@@ -581,41 +581,52 @@
         links: [
           { name: "Neuroscience & Ephys", desc: "Recording & imaging methods.", href: "room.html?room=neuroscience", tag: "room" },
           { name: "Biochemistry", desc: "Assays & purification context.", href: "room.html?room=biochemistry", tag: "room" },
-          { name: "Data & Analysis", desc: "From bench to result.", href: "room.html?room=data-analysis", tag: "room" }
+          { name: "Data, Symbols & Units", desc: "From bench to result; units & notation.", href: "room.html?room=data-analysis", tag: "room" }
         ]
       },
 
       "data-analysis": {
-        name: "Data & Analysis", kind: "Evidence", glyph: "📈", color: "#5fb0a8",
-        blurb: "Turning measurements into conclusions — graphs, statistics, traces, controls, and honest error.",
-        status: "Scaffold ready — wired to Math Lab tools",
-        topics: ["Graphs", "Statistics", "Time-series traces", "Experimental design", "Controls", "Error & uncertainty", "Replicates"],
+        name: "Data, Symbols & Units", kind: "Evidence & notation", glyph: "📊", color: "#5fb0a8",
+        blurb: "The bench reference for turning measurements into conclusions — experimental design, statistics, traces, and error — plus the shared units, symbols, and notation of science.",
+        status: "Reference room — wired to Math Lab's Statistics, Time-Series, Graph Lab & Symbols",
+        topics: [
+          "Experimental design", "Variables", "Controls", "Replicates", "Graphing", "Statistics",
+          "Time-series analysis", "Error & uncertainty", "Significant figures", "SI base units",
+          "Derived units", "Prefixes", "Scientific notation", "Greek letters", "Chemistry notation",
+          "Biology notation", "Ephys notation", "Imaging notation", "Constants"
+        ],
         cards: [
           { name: "Controls", body: "Positive & negative controls · vehicle · blinding · randomization.", note: "" },
-          { name: "Reporting error", body: "mean ± SD (spread) or ± SEM (precision of the mean) · always state n.", note: "" }
-        ],
-        links: [
-          { name: "Math Lab · Statistics", desc: "Distributions, regression, tests.", href: "../math/room.html?room=statistics", tag: "math" },
-          { name: "Math Lab · Time-Series", desc: "Trace smoothing, peaks, AUC.", href: "../math/room.html?room=time-series", tag: "math" },
-          { name: "Graph Lab", desc: "Plot and explore.", href: "../math/graph-lab.html", tag: "math" },
-          { name: "Search coursework", desc: "Find a method or definition.", href: "search.html", tag: "archive" }
-        ]
-      },
-
-      "symbols-units": {
-        name: "Scientific Symbols & Units", kind: "Notation", glyph: "µ", color: "#8fa3ba",
-        blurb: "The shared notation of the lab — SI units, prefixes, Greek letters, and chemical & biological shorthand.",
-        status: "Scaffold ready — copyable picker coming",
-        topics: ["SI base units", "Derived units", "Prefixes", "Greek letters", "Chemical notation", "Biological notation", "Lab abbreviations", "Constants"],
-        cards: [
+          { name: "Variables", body: "Independent (you change) · dependent (you measure) · controlled (held constant) · confounders.", note: "" },
+          { name: "Replicates", body: "Technical (same sample, repeated) vs biological (independent samples). Report n.", note: "" },
+          { name: "Mean, SD, SEM", body: "x&#772; = &Sigma;x/n · SD = spread · SEM = SD/&radic;n (precision of the mean).", note: "" },
+          { name: "Error & uncertainty", body: "Random (scatter, reduce with n) vs systematic (bias). Report value ± uncertainty.", note: "" },
+          { name: "Significant figures", body: "Keep the digits the measurement supports; the result is only as precise as its least-precise input.", note: "" },
           { name: "SI base units", body: "metre (m) · kilogram (kg) · second (s) · ampere (A) · kelvin (K) · mole (mol) · candela (cd).", note: "" },
           { name: "Prefixes", body: "n (10⁻⁹) · µ (10⁻⁶) · m (10⁻³) · c (10⁻²) · k (10³) · M (10⁶) · G (10⁹).", note: "" },
-          { name: "Common constants", body: "N<sub>A</sub> = 6.022×10²³ · R = 8.314 J/mol·K · k<sub>B</sub> = 1.38×10⁻²³ J/K.", note: "" }
+          { name: "Scientific notation", body: "a × 10<sup>n</sup>, with 1 ≤ |a| &lt; 10. Add/subtract: match exponents; multiply: add exponents.", note: "" },
+          { name: "Unit conversion", body: "Multiply by 1 in disguise (e.g. 1000 mg / 1 g); cancel units; check the result's units.", note: "" },
+          { name: "Common constants", body: "N<sub>A</sub> = 6.022×10²³ /mol · R = 8.314 J/mol·K · k<sub>B</sub> = 1.38×10⁻²³ J/K · c = 3.00×10⁸ m/s.", note: "" },
+          { name: "Chemistry notation", body: "H₂O · Na⁺ · Cl⁻ · ΔG · K · pH · mol/L · e⁻ · subscripts (count) & superscripts (charge).", note: "" },
+          { name: "Biology notation", body: "DNA / RNA · A–T, G–C · 5′→3′ · genotype/phenotype · [S], K<sub>m</sub>, V<sub>max</sub>.", note: "" },
+          { name: "Ephys notation", body: "V<sub>m</sub> · E<sub>ion</sub> · pA · mV · MΩ · pF · ms · τ · R<sub>a</sub> · R<sub>m</sub>.", note: "" },
+          { name: "Imaging notation", body: "ΔF/F · F₀ (baseline) · GCaMP (Ca²⁺) · iGluSnFR (glutamate).", note: "" },
+          { name: "From my coursework archive", body: "The <b>Quantitative Tools</b> cluster (calculus, physics, measurement) is <b>sparse</b> in the archive — most quantitative work lives in Math Lab.", note: "" }
         ],
         links: [
+          { name: "Math Lab · Statistics", desc: "Distributions, regression, hypothesis tests.", href: "../math/room.html?room=statistics", tag: "math" },
+          { name: "Math Lab · Time-Series", desc: "Trace smoothing, peaks, AUC, decay τ.", href: "../math/room.html?room=time-series", tag: "math" },
+          { name: "Math Lab · Graph Lab", desc: "Plot and explore functions & data.", href: "../math/graph-lab.html", tag: "math" },
           { name: "Math Lab · Symbols", desc: "Click-to-copy symbol library (175 symbols).", href: "../math/room.html?room=symbols", tag: "math" },
-          { name: "Periodic Table", desc: "Element symbols.", href: "room.html?room=periodic-table", tag: "room" },
-          { name: "Chemistry", desc: "Notation in context.", href: "room.html?room=chemistry", tag: "room" }
+          { name: "Periodic Table", desc: "Element symbols & units.", href: "room.html?room=periodic-table", tag: "room" },
+          { name: "Biology", desc: "Where the data comes from.", href: "room.html?room=biology", tag: "room" },
+          { name: "Chemistry", desc: "Notation in context.", href: "room.html?room=chemistry", tag: "room" },
+          { name: "Biochemistry", desc: "Kinetics, metabolism, assays.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Neuroscience & Ephys", desc: "Traces, ΔF/F, signal metrics.", href: "room.html?room=neuroscience", tag: "room" },
+          { name: "Class Archive", desc: "All preserved coursework + study tools.", href: "room.html?room=class-archive", tag: "room" },
+          { name: "Cluster: Quantitative Tools", desc: "Calculus, physics, measurement (sparse).", href: "cluster.html?id=quantitative-tools", tag: "archive" },
+          { name: "Search Everything", desc: "Find a method, unit, or definition.", href: "search.html", tag: "archive" },
+          { name: "Glossary Browser", desc: "2,039 terms incl. analytical & math.", href: "glossary.html", tag: "archive" }
         ]
       },
 
@@ -626,7 +637,7 @@
         topics: ["Science notes", "Definitions", "Diagrams", "Formulas", "Saved explanations", "Study reminders", "Review lists"],
         links: [
           { name: "Class Archive", desc: "Glossary & full-text search.", href: "room.html?room=class-archive", tag: "room" },
-          { name: "Scientific Symbols & Units", desc: "Notation for your notes.", href: "room.html?room=symbols-units", tag: "room" }
+          { name: "Data, Symbols & Units", desc: "Notation, units & analysis for your notes.", href: "room.html?room=data-analysis", tag: "room" }
         ],
         notesTall: true,
         notesPlaceholder: "# Concept&#10;&#10;# Definition&#10;&#10;# Why it matters&#10;&#10;# Example&#10;&#10;# Source (class / cluster)"
@@ -668,7 +679,9 @@
     function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
     var params = new URLSearchParams(location.search);
+    var ROOM_ALIAS = { "symbols-units": "data-analysis" };  // merged into Data, Symbols & Units
     var key = (params.get("room") || "").toLowerCase();
+    if (ROOM_ALIAS[key]) key = ROOM_ALIAS[key];
     var room = ROOMS[key];
     var main = document.getElementById("main");
 
