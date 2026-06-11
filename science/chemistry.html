@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chemistry — Science Lab</title>
+  <meta name="description" content="The Chemistry sub-dashboard of the Science Lab — general, organic, physical, and analytical chemistry, focused topic areas, methods, and the backbone tools (Periodic Table, units, and Math Lab).">
+  <link rel="stylesheet" href="../_shared/hub-nav.css">
+  <style>
+    /* Chemistry sub-dashboard — inherits the Science Lab research-bench look
+       (deep navy + gold), with an orange chemistry accent on the header. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1e2a3a; --bg2: #243347; --panel: #28384c;
+      --fg: #e8ecf1; --muted: #8fa3ba; --border: #32445c;
+      --gold: #d4a24c; --rule: #3a4d66; --accent: #e0794b;
+    }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background:
+        radial-gradient(ellipse 90% 50% at 50% -10%, rgba(224,121,75,0.12), transparent 60%),
+        radial-gradient(ellipse 70% 40% at 15% 30%, rgba(212,162,76,0.06), transparent 60%),
+        radial-gradient(ellipse 70% 40% at 85% 70%, rgba(95,176,168,0.05), transparent 60%),
+        var(--bg);
+      background-attachment: fixed;
+      color: var(--fg); line-height: 1.5; min-height: 100vh;
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0.6rem 1.6rem 3rem; }
+
+    .lab-head {
+      position: relative; border-bottom: 1px solid var(--accent);
+      padding: 0.6rem 0 1rem; margin-bottom: 1.1rem;
+      background-image:
+        linear-gradient(rgba(143,163,186,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(143,163,186,0.05) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+    .crumb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.74rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .crumb a { color: var(--accent); text-decoration: none; }
+    .crumb a:hover { text-decoration: underline; }
+    .crumb .sep { color: var(--muted); margin: 0 0.4rem; }
+    .crumb .here { color: var(--muted); }
+    .kicker { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    h1 { font-size: 2.4rem; font-weight: 600; letter-spacing: 0.01em; margin: 0.2rem 0 0; }
+    .sub { color: var(--muted); font-style: italic; font-size: 1rem; margin-top: 0.4rem; max-width: 48rem; }
+    .backbone-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--muted); margin-top: 0.6rem; max-width: 48rem; }
+    .backbone-note a { color: var(--gold); text-decoration: none; }
+    .backbone-note a:hover { text-decoration: underline; }
+
+    .rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.8rem; }
+    .sci-card {
+      position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+      background: linear-gradient(155deg, color-mix(in srgb, var(--c) 16%, var(--panel)), var(--panel));
+      border: 1px solid var(--border); border-left: 3px solid var(--c);
+      border-radius: 4px; padding: 0.8rem 0.9rem 0.85rem; min-height: 7rem;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .sci-card:hover { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--c) 60%, transparent); }
+    .sci-card .glyph { position: absolute; top: 0.5rem; right: 0.7rem; font-size: 1.4rem; opacity: 0.5; }
+    .sci-card .kind { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c); font-weight: 700; }
+    .sci-card .name { font-size: 1.12rem; font-weight: 600; margin: 0.1rem 0 0.25rem; }
+    .sci-card .desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); line-height: 1.35; flex: 1 1 auto; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+    .chip {
+      font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.6rem; font-weight: 600; color: var(--c, var(--gold));
+      background: color-mix(in srgb, var(--c, var(--gold)) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c, var(--gold)) 34%, transparent);
+      border-radius: 999px; padding: 0.1rem 0.45rem;
+    }
+    .l-badge {
+      position: absolute; bottom: 0.55rem; right: 0.7rem;
+      font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.54rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); opacity: 0.8;
+    }
+    .section-label { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1.5rem 0 0.7rem; }
+    .section-label span { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; font-style: italic; opacity: 0.85; }
+
+    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); font-style: italic; }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) { h1 { font-size: 1.9rem; } .rooms { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="ws-hub-nav" aria-label="Workspace navigation">
+    <a class="ws-hub-home" href="./">← Science</a>
+    <a class="ws-hub-home" href="../">Hub</a>
+  </nav>
+
+  <div class="page">
+    <header class="lab-head">
+      <nav class="crumb"><a href="./">Science Lab</a><span class="sep">/</span><span class="here">Chemistry</span></nav>
+      <div class="kicker">Science Lab · Sub-dashboard</div>
+      <h1>Chemistry</h1>
+      <p class="sub">Matter, reactions, structure, energy, analysis, and methods — organized into focused areas instead of one long room.</p>
+      <p class="backbone-note">Running underneath all of it: the <a href="room.html?room=periodic-table">Periodic Table</a> and the scientific math &amp; calculators in <a href="room.html?room=data-analysis">Data, Symbols &amp; Units</a> and <a href="../math/">Math Lab</a> — the backbone tools every area here leans on.</p>
+    </header>
+
+    <div class="section-label">Core chemistry</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#e0794b;" href="room.html?room=chemistry">
+        <span class="glyph">🧪</span><span class="kind">Foundations</span><span class="name">General Chemistry</span>
+        <span class="desc">Atomic structure, bonding, periodic trends, stoichiometry, and solutions — the populated core room with formulas and worked examples.</span>
+        <span class="chips"><span class="chip">Stoichiometry</span><span class="chip">Bonding</span><span class="chip">Periodic trends</span><span class="chip">Solutions</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#d98c5f;" href="cluster.html?id=organic-reactivity">
+        <span class="glyph">⬡</span><span class="kind">Carbon</span><span class="name">Organic Chemistry</span>
+        <span class="desc">Functional groups, reaction mechanisms, synthesis, and structure determination — the largest chemistry cluster in the archive (113 files).</span>
+        <span class="chips"><span class="chip">Functional groups</span><span class="chip">Mechanisms</span><span class="chip">Synthesis</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#c98bd0;" href="cluster.html?id=thermo-equilibrium">
+        <span class="glyph">🔥</span><span class="kind">Energy &amp; rates</span><span class="name">Physical Chemistry</span>
+        <span class="desc">Thermodynamics, equilibrium, kinetics, energy, and reaction rates — the physics behind the reactions.</span>
+        <span class="chips"><span class="chip">Thermodynamics</span><span class="chip">Equilibrium</span><span class="chip">Kinetics</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#5fb0a8;" href="room.html?room=data-analysis">
+        <span class="glyph">📐</span><span class="kind">Measurement</span><span class="name">Analytical Chemistry</span>
+        <span class="desc">Measurement, calibration, standards, error and uncertainty, and spectroscopy-style reasoning — turning samples into trustworthy numbers.</span>
+        <span class="chips"><span class="chip">Calibration</span><span class="chip">Standards</span><span class="chip">Error</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Focused chemistry areas</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#6fae5f;" href="cluster.html?id=acid-base-buffers">
+        <span class="glyph">💧</span><span class="kind">Protons</span><span class="name">Acid-Base &amp; Buffers</span>
+        <span class="desc">pH, strong and weak acids, K<sub>a</sub>/K<sub>b</sub>, and buffer design.</span>
+        <span class="chips"><span class="chip">pH</span><span class="chip">Ka / Kb</span><span class="chip">Henderson–Hasselbalch</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#7fb0d0;" href="cluster.html?id=electrochemistry">
+        <span class="glyph">⚡</span><span class="kind">Electrons</span><span class="name">Electrochemistry</span>
+        <span class="desc">Redox half-reactions, cell potential, and the Nernst equation.</span>
+        <span class="chips"><span class="chip">Redox</span><span class="chip">Cells</span><span class="chip">Nernst</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#d4a24c;" href="cluster.html?id=thermo-equilibrium">
+        <span class="glyph">⚖</span><span class="kind">Direction</span><span class="name">Thermodynamics &amp; Equilibrium</span>
+        <span class="desc">Gibbs free energy, K and Q, and how systems shift (Le Chatelier).</span>
+        <span class="chips"><span class="chip">Gibbs</span><span class="chip">K &amp; Q</span><span class="chip">Le Chatelier</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#e0a04b;" href="cluster.html?id=chem-foundations">
+        <span class="glyph">🧮</span><span class="kind">Amounts</span><span class="name">Solutions &amp; Stoichiometry</span>
+        <span class="desc">Moles, molar mass, concentration, dilution, and gas laws — the quantitative foundation.</span>
+        <span class="chips"><span class="chip">Moles</span><span class="chip">Molarity</span><span class="chip">Gas laws</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Methods &amp; lab connections</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#b8a24c;" href="room.html?room=lab-methods">
+        <span class="glyph">🔬</span><span class="kind">Bench</span><span class="name">Chemistry Methods</span>
+        <span class="desc">Solution and buffer prep, pH, titrations, chromatography, and calibration — gathered in the shared methods hub.</span>
+        <span class="chips"><span class="chip">Solution prep</span><span class="chip">Titration</span><span class="chip">Chromatography</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
+        <span class="glyph">🧬</span><span class="kind">Molecules of life</span><span class="name">Biochemistry Bridge</span>
+        <span class="desc">Where chemistry meets biology — enzymes, metabolism, macromolecules, and the reactions inside the cell.</span>
+        <span class="chips"><span class="chip">Enzymes</span><span class="chip">Metabolism</span><span class="chip">Macromolecules</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Backbone tools</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#d4a24c;" href="room.html?room=periodic-table">
+        <span class="glyph">⚛</span><span class="kind">Core hub</span><span class="name">Periodic Table</span>
+        <span class="desc">The interactive table behind every reaction — elements, trends, and bonding.</span>
+        <span class="chips"><span class="chip">Elements</span><span class="chip">Trends</span><span class="chip">Bonding</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#5fb0a8;" href="room.html?room=data-analysis">
+        <span class="glyph">📊</span><span class="kind">Notation</span><span class="name">Data, Symbols &amp; Units</span>
+        <span class="desc">SI units, prefixes, scientific notation, constants, and error — the language results are written in.</span>
+        <span class="chips"><span class="chip">Units</span><span class="chip">Notation</span><span class="chip">Error</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#c98bd0;" href="room.html?room=physics">
+        <span class="glyph">🧲</span><span class="kind">Bridge</span><span class="name">Physics &amp; Math</span>
+        <span class="desc">Energy, gas laws, and measurement that bridge chemistry into the Math Lab tools.</span>
+        <span class="chips"><span class="chip">Energy</span><span class="chip">Gas laws</span><span class="chip">Math bridge</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#c2b280;" href="../math/">
+        <span class="glyph">🧮</span><span class="kind">Math</span><span class="name">Math Lab</span>
+        <span class="desc">The full math toolset — algebra, calculus, statistics, and more, on its own dashboard.</span>
+        <span class="chips"><span class="chip">Algebra</span><span class="chip">Calculus</span><span class="chip">Statistics</span></span>
+        <span class="l-badge">math lab</span>
+      </a>
+
+      <a class="sci-card" style="--c:#c2b280;" href="../math/graph-lab.html">
+        <span class="glyph">📈</span><span class="kind">Plotting</span><span class="name">Graph Lab</span>
+        <span class="desc">Plot equations and data — titration curves, rate plots, anything.</span>
+        <span class="chips"><span class="chip">Plot</span><span class="chip">Curves</span></span>
+        <span class="l-badge">math lab</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Archive &amp; study tools <span>— preserved coursework</span></div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="cluster.html?id=chem-foundations">
+        <span class="glyph">🗄</span><span class="kind">Cluster</span><span class="name">Chemistry Foundations</span>
+        <span class="desc">Atomic structure, stoichiometry, and gas laws — the preserved foundations lectures.</span>
+        <span class="chips"><span class="chip">Lectures</span><span class="chip">Foundations</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="cluster.html?id=organic-reactivity">
+        <span class="glyph">🗄</span><span class="kind">Cluster</span><span class="name">Organic Reactivity</span>
+        <span class="desc">Functional groups, mechanisms, and NMR/IR/MS — the deepest chemistry cluster (113 files).</span>
+        <span class="chips"><span class="chip">113 files</span><span class="chip">Spectra</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="search.html">
+        <span class="glyph">🔎</span><span class="kind">Find</span><span class="name">Search Everything</span>
+        <span class="desc">Full-text search across all preserved lectures and the glossary.</span>
+        <span class="chips"><span class="chip">Full-text</span></span>
+        <span class="l-badge">archive</span>
+      </a>
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="glossary.html">
+        <span class="glyph">📖</span><span class="kind">Terms</span><span class="name">Glossary Browser</span>
+        <span class="desc">Browse the 2,039-term science glossary, chemistry included.</span>
+        <span class="chips"><span class="chip">2,039 terms</span></span>
+        <span class="l-badge">archive</span>
+      </a>
+
+    </div>
+
+    <footer>
+      Chemistry is the first Science Lab sub-dashboard. The original
+      <a href="room.html?room=chemistry">General Chemistry room</a> stays exactly where it was; this page just organizes the wider subject around it. Source on
+      <a href="https://github.com/stevenfrye30/Workspace">GitHub</a>.
+    </footer>
+  </div>
+</body>
+</html>
