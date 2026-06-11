@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Biology — Science Lab</title>
+  <meta name="description" content="The Biology sub-dashboard of the Science Lab — cells, genetics, immunity, body systems, and ecology, with bridge areas (biochemistry, neuroscience), methods, data tools, and the coursework archive.">
+  <link rel="stylesheet" href="../_shared/hub-nav.css">
+  <style>
+    /* Biology sub-dashboard — inherits the Science Lab research-bench look
+       (deep navy + gold), with a green life-science accent on the header.
+       Matches science/chemistry.html. */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #1e2a3a; --bg2: #243347; --panel: #28384c;
+      --fg: #e8ecf1; --muted: #8fa3ba; --border: #32445c;
+      --gold: #d4a24c; --rule: #3a4d66; --accent: #6fae5f;
+    }
+    body {
+      font-family: Georgia, "Iowan Old Style", serif;
+      background:
+        radial-gradient(ellipse 90% 50% at 50% -10%, rgba(111,174,95,0.12), transparent 60%),
+        radial-gradient(ellipse 70% 40% at 15% 30%, rgba(212,162,76,0.06), transparent 60%),
+        radial-gradient(ellipse 70% 40% at 85% 70%, rgba(95,176,168,0.05), transparent 60%),
+        var(--bg);
+      background-attachment: fixed;
+      color: var(--fg); line-height: 1.5; min-height: 100vh;
+    }
+    .page { max-width: 1100px; margin: 0 auto; padding: 0.6rem 1.6rem 3rem; }
+
+    .lab-head {
+      position: relative; border-bottom: 1px solid var(--accent);
+      padding: 0.6rem 0 1rem; margin-bottom: 1.1rem;
+      background-image:
+        linear-gradient(rgba(143,163,186,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(143,163,186,0.05) 1px, transparent 1px);
+      background-size: 26px 26px;
+    }
+    .crumb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.74rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .crumb a { color: var(--accent); text-decoration: none; }
+    .crumb a:hover { text-decoration: underline; }
+    .crumb .sep { color: var(--muted); margin: 0 0.4rem; }
+    .crumb .here { color: var(--muted); }
+    .kicker { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--accent); font-weight: 700; }
+    h1 { font-size: 2.4rem; font-weight: 600; letter-spacing: 0.01em; margin: 0.2rem 0 0; }
+    .sub { color: var(--muted); font-style: italic; font-size: 1rem; margin-top: 0.4rem; max-width: 48rem; }
+    .backbone-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--muted); margin-top: 0.6rem; max-width: 48rem; }
+    .backbone-note a { color: var(--gold); text-decoration: none; }
+    .backbone-note a:hover { text-decoration: underline; }
+
+    .rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.8rem; }
+    .sci-card {
+      position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
+      background: linear-gradient(155deg, color-mix(in srgb, var(--c) 16%, var(--panel)), var(--panel));
+      border: 1px solid var(--border); border-left: 3px solid var(--c);
+      border-radius: 4px; padding: 0.8rem 0.9rem 0.85rem; min-height: 7rem;
+      transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .sci-card:hover { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--c) 60%, transparent); }
+    .sci-card .glyph { position: absolute; top: 0.5rem; right: 0.7rem; font-size: 1.4rem; opacity: 0.5; }
+    .sci-card .kind { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c); font-weight: 700; }
+    .sci-card .name { font-size: 1.12rem; font-weight: 600; margin: 0.1rem 0 0.25rem; }
+    .sci-card .desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); line-height: 1.35; flex: 1 1 auto; }
+    .chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
+    .chip {
+      font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.6rem; font-weight: 600; color: var(--c, var(--gold));
+      background: color-mix(in srgb, var(--c, var(--gold)) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c, var(--gold)) 34%, transparent);
+      border-radius: 999px; padding: 0.1rem 0.45rem;
+    }
+    .l-badge {
+      position: absolute; bottom: 0.55rem; right: 0.7rem;
+      font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.54rem; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--muted); opacity: 0.8;
+    }
+    .section-label { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1.5rem 0 0.7rem; }
+    .section-label span { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; font-style: italic; opacity: 0.85; }
+
+    footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); font-style: italic; }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    @media (max-width: 600px) { h1 { font-size: 1.9rem; } .rooms { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="ws-hub-nav" aria-label="Workspace navigation">
+    <a class="ws-hub-home" href="./">← Science</a>
+    <a class="ws-hub-home" href="../">Hub</a>
+  </nav>
+
+  <div class="page">
+    <header class="lab-head">
+      <nav class="crumb"><a href="./">Science Lab</a><span class="sep">/</span><span class="here">Biology</span></nav>
+      <div class="kicker">Science Lab · Sub-dashboard</div>
+      <h1>Biology</h1>
+      <p class="sub">Cells, genes, organisms, body systems, disease, ecology, and living systems — organized into focused areas instead of one long room.</p>
+      <p class="backbone-note">Biology connects outward: down to <a href="chemistry.html">Chemistry</a> and <a href="room.html?room=biochemistry">Biochemistry</a> for the molecules of life, across to <a href="room.html?room=lab-methods">Lab Methods</a> and <a href="room.html?room=data-analysis">Data, Symbols &amp; Units</a> for how it's measured, and back to the <a href="room.html?room=class-archive">Class Archive</a> — the deepest part of the coursework collection.</p>
+    </header>
+
+    <div class="section-label">Core biology</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#6fae5f;" href="room.html?room=biology">
+        <span class="glyph">🌿</span><span class="kind">Foundations</span><span class="name">General Biology</span>
+        <span class="desc">Cells, genetics, physiology, evolution, ecology, and living systems — the populated core room with reference cards and examples.</span>
+        <span class="chips"><span class="chip">Cells</span><span class="chip">Genetics</span><span class="chip">Physiology</span><span class="chip">Evolution</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#5fb0a8;" href="cluster.html?id=cellular-machinery">
+        <span class="glyph">🔬</span><span class="kind">The cell</span><span class="name">Cell Biology</span>
+        <span class="desc">Organelles, membranes, transport, signaling, and cell structure — how the cell is built and runs.</span>
+        <span class="chips"><span class="chip">Organelles</span><span class="chip">Membranes</span><span class="chip">Signaling</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#7fb0d0;" href="cluster.html?id=genetic-information">
+        <span class="glyph">🧬</span><span class="kind">Inheritance</span><span class="name">Genetics &amp; Molecular Biology</span>
+        <span class="desc">DNA, RNA, transcription, translation, inheritance, and gene expression — the central dogma in detail.</span>
+        <span class="chips"><span class="chip">DNA / RNA</span><span class="chip">Transcription</span><span class="chip">Expression</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#e0794b;" href="cluster.html?id=immunity-disease">
+        <span class="glyph">🛡</span><span class="kind">Defense</span><span class="name">Immunology &amp; Disease</span>
+        <span class="desc">The immune system, vaccines, pathogens, disease, and the body's defenses.</span>
+        <span class="chips"><span class="chip">Immune system</span><span class="chip">Vaccines</span><span class="chip">Pathogens</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Body &amp; organism systems</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#d98c5f;" href="cluster.html?id=human-body">
+        <span class="glyph">🫀</span><span class="kind">Physiology</span><span class="name">Human Body Systems</span>
+        <span class="desc">Organ systems, homeostasis, and how the body's parts work together.</span>
+        <span class="chips"><span class="chip">Organs</span><span class="chip">Homeostasis</span><span class="chip">Physiology</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#5fb0a8;" href="cluster.html?id=membrane-transport">
+        <span class="glyph">⛩</span><span class="kind">Boundaries</span><span class="name">Membranes &amp; Transport</span>
+        <span class="desc">Membrane structure, passive and active transport, channels, pumps, and endocytosis.</span>
+        <span class="chips"><span class="chip">Transport</span><span class="chip">Channels</span><span class="chip">Gradients</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+      <a class="sci-card" style="--c:#c98bd0;" href="cluster.html?id=cancer-gene-regulation">
+        <span class="glyph">🧫</span><span class="kind">Control gone wrong</span><span class="name">Cancer &amp; Gene Regulation</span>
+        <span class="desc">Gene regulation, the cell cycle, checkpoints, and how their failure drives cancer.</span>
+        <span class="chips"><span class="chip">Gene regulation</span><span class="chip">Cell cycle</span><span class="chip">Cancer</span></span>
+        <span class="l-badge">cluster</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Bridge areas <span>— shared with chemistry &amp; physics</span></div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
+        <span class="glyph">🧬</span><span class="kind">Bridge · molecules of life</span><span class="name">Biochemistry Bridge</span>
+        <span class="desc">Proteins, enzymes, metabolism, DNA/RNA, membranes, and the chemistry of life — where biology meets chemistry.</span>
+        <span class="chips"><span class="chip">Enzymes</span><span class="chip">Metabolism</span><span class="chip">Macromolecules</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#e06b8b;" href="room.html?room=neuroscience">
+        <span class="glyph">🧠</span><span class="kind">Bridge · signals</span><span class="name">Neuroscience &amp; Ephys Bridge</span>
+        <span class="desc">Neurons, synapses, membrane potential, imaging, patch clamp, and biological signals — where biology meets physics.</span>
+        <span class="chips"><span class="chip">Membrane potential</span><span class="chip">Patch clamp</span><span class="chip">Imaging</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Methods &amp; data</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#b8a24c;" href="room.html?room=lab-methods">
+        <span class="glyph">🔬</span><span class="kind">Bench</span><span class="name">Biology Methods</span>
+        <span class="desc">Cell culture, sterile technique, microscopy, staining, controls, and documentation — in the shared methods hub.</span>
+        <span class="chips"><span class="chip">Cell culture</span><span class="chip">Microscopy</span><span class="chip">Staining</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#5fb0a8;" href="room.html?room=data-analysis">
+        <span class="glyph">📊</span><span class="kind">Evidence</span><span class="name">Data, Symbols &amp; Units</span>
+        <span class="desc">Experimental design, statistics, controls and error, units, and notation — turning observations into results.</span>
+        <span class="chips"><span class="chip">Stats</span><span class="chip">Controls</span><span class="chip">Units</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#c98bd0;" href="room.html?room=physics">
+        <span class="glyph">🧲</span><span class="kind">Quantitative</span><span class="name">Physics &amp; Math</span>
+        <span class="desc">Signals, imaging, graphing, statistics, time-series, and measurement — the quantitative tools behind the biology.</span>
+        <span class="chips"><span class="chip">Imaging</span><span class="chip">Time-series</span><span class="chip">Measurement</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Archive &amp; study <span>— preserved coursework</span></div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="room.html?room=class-archive">
+        <span class="glyph">🗄</span><span class="kind">Coursework</span><span class="name">Biology Archive</span>
+        <span class="desc">Biology is the deepest part of the collection — open the Class Archive for the Tutoring Center, clusters, search, and glossary.</span>
+        <span class="chips"><span class="chip">Clusters</span><span class="chip">Tutor</span><span class="chip">Lectures</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="search.html">
+        <span class="glyph">🔎</span><span class="kind">Find</span><span class="name">Search Everything</span>
+        <span class="desc">Full-text search across all preserved lectures and the glossary.</span>
+        <span class="chips"><span class="chip">Full-text</span></span>
+        <span class="l-badge">archive</span>
+      </a>
+
+      <a class="sci-card" style="--c:#9aa6b2;" href="glossary.html">
+        <span class="glyph">📖</span><span class="kind">Terms</span><span class="name">Glossary Browser</span>
+        <span class="desc">Browse the 2,039-term science glossary — biology, cell biology, and physiology included.</span>
+        <span class="chips"><span class="chip">2,039 terms</span></span>
+        <span class="l-badge">archive</span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Also useful</div>
+    <div class="rooms">
+
+      <a class="sci-card" style="--c:#e0794b;" href="chemistry.html">
+        <span class="glyph">🧪</span><span class="kind">Sub-dashboard</span><span class="name">Chemistry</span>
+        <span class="desc">The other Science sub-dashboard — the molecules and reactions underneath biology.</span>
+        <span class="chips"><span class="chip">General</span><span class="chip">Organic</span><span class="chip">Biochem bridge</span></span>
+        <span class="l-badge">dashboard</span>
+      </a>
+
+      <a class="sci-card" style="--c:#d4a24c;" href="room.html?room=periodic-table">
+        <span class="glyph">⚛</span><span class="kind">Core hub</span><span class="name">Periodic Table</span>
+        <span class="desc">The elements behind every biomolecule — C, H, O, N, P, S and the ions cells run on.</span>
+        <span class="chips"><span class="chip">Elements</span><span class="chip">Ions</span><span class="chip">Bonding</span></span>
+        <span class="l-badge">room</span>
+      </a>
+
+    </div>
+
+    <footer>
+      Biology is the second Science Lab sub-dashboard. The original
+      <a href="room.html?room=biology">General Biology room</a> stays exactly where it was; this page organizes the wider subject around it, with Biochemistry and Neuroscience kept as bridge areas rather than folded in. Source on
+      <a href="https://github.com/stevenfrye30/Workspace">GitHub</a>.
+    </footer>
+  </div>
+</body>
+</html>
