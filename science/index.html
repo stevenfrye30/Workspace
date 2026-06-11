@@ -77,6 +77,10 @@
       border-radius: 999px; padding: 0.1rem 0.45rem;
     }
     .section-label { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1.5rem 0 0.7rem; }
+    .section-label span { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; font-style: italic; opacity: 0.85; }
+    /* Bridge areas — smaller, specialized cross-over rooms; lighter than a major discipline. */
+    .sci-card.bridge { min-height: 6.2rem; }
+    .rooms.bridge-row { grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); max-width: 34rem; }
 
     footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); font-style: italic; }
     footer a { color: var(--gold); text-decoration: none; }
@@ -112,7 +116,7 @@
       <span class="chips"><span class="chip">Elements</span><span class="chip">Groups &amp; periods</span><span class="chip">Atomic structure</span><span class="chip">Trends</span><span class="chip">Bonding</span><span class="chip">Bio &amp; lab relevance</span></span>
     </a>
 
-    <div class="section-label">Disciplines</div>
+    <div class="section-label">Major disciplines</div>
     <div class="rooms">
 
       <a class="sci-card" style="--c:#e0794b;" href="chemistry.html">
@@ -127,22 +131,27 @@
         <span class="chips"><span class="chip">Cells</span><span class="chip">Genetics</span><span class="chip">Physiology</span></span>
       </a>
 
-      <a class="sci-card" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
-        <span class="glyph">🧬</span><span class="kind">Molecules of life</span><span class="name">Biochemistry</span>
-        <span class="desc">Proteins, enzymes, metabolism, DNA/RNA, membranes, signaling, macromolecules.</span>
-        <span class="chips"><span class="chip">Enzymes</span><span class="chip">Metabolism</span><span class="chip">DNA/RNA</span></span>
-      </a>
-
-      <a class="sci-card" style="--c:#e06b8b;" href="room.html?room=neuroscience">
-        <span class="glyph">🧠</span><span class="kind">Signals</span><span class="name">Neuroscience &amp; Ephys</span>
-        <span class="desc">Neurons, synapses, membrane potential, patch clamp, calcium imaging (GCaMP / iGluSnFR), trace analysis.</span>
-        <span class="chips"><span class="chip">Membrane potential</span><span class="chip">Patch clamp</span><span class="chip">Ca²⁺ imaging</span></span>
-      </a>
-
       <a class="sci-card" style="--c:#c98bd0;" href="room.html?room=physics">
         <span class="glyph">🧲</span><span class="kind">Forces &amp; fields</span><span class="name">Physics &amp; Math</span>
         <span class="desc">Mechanics, electricity, waves, optics, thermodynamics, and measurement — bridges into Math Lab tools.</span>
         <span class="chips"><span class="chip">Mechanics</span><span class="chip">Waves</span><span class="chip">Measurement</span></span>
+      </a>
+
+    </div>
+
+    <div class="section-label">Bridge areas <span>— smaller, specialized cross-over areas</span></div>
+    <div class="rooms bridge-row">
+
+      <a class="sci-card bridge" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
+        <span class="glyph">🧬</span><span class="kind">Bridge · molecules of life</span><span class="name">Biochemistry</span>
+        <span class="desc">Where chemistry meets biology — proteins, enzymes, metabolism, DNA/RNA, membranes, and signaling.</span>
+        <span class="chips"><span class="chip">Enzymes</span><span class="chip">Metabolism</span><span class="chip">DNA/RNA</span></span>
+      </a>
+
+      <a class="sci-card bridge" style="--c:#e06b8b;" href="room.html?room=neuroscience">
+        <span class="glyph">🧠</span><span class="kind">Bridge · signals</span><span class="name">Neuroscience &amp; Ephys</span>
+        <span class="desc">Where biology meets physics — neurons, synapses, membrane potential, patch clamp, and Ca²⁺ imaging (GCaMP / iGluSnFR).</span>
+        <span class="chips"><span class="chip">Membrane potential</span><span class="chip">Patch clamp</span><span class="chip">Ca²⁺ imaging</span></span>
       </a>
 
     </div>
