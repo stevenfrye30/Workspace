@@ -474,20 +474,53 @@
       },
 
       physics: {
-        name: "Physics", kind: "Forces & fields", glyph: "🧲", color: "#c98bd0",
-        blurb: "Mechanics, electricity, waves, and measurement — the science-bench view, with the full formula reference in Math Lab.",
-        status: "Scaffold ready — formulas live in Math Lab Physics",
-        callout: "Math Lab already holds a full <b>Physics</b> reference (formulas + worked examples). This room is the science-bench framing; use the link below for the equations.",
-        topics: ["Mechanics", "Electricity", "Waves", "Optics", "Thermodynamics", "Scientific measurement"],
+        name: "Physics & Math", kind: "Forces & fields", glyph: "🧲", color: "#c98bd0",
+        blurb: "The bridge room — physical-science concepts on one side, the working math tools that handle them on the other. Light on its own archive; its strength is sending mechanics, waves, circuits, optics, and ephys signals straight into Math Lab's graphing, calculus, statistics, and time-series tools.",
+        status: "Bridge room — concepts here, calculators & graphs in Math Lab",
+        callout: "<b>This room is a bridge, not an archive.</b> Physics has little dedicated coursework saved here — so rather than a thin standalone room, it connects each topic to the tool that does the work: <b>Math Lab</b> for formulas, graphing, calculus, statistics, and time-series. Follow the links below.",
+        topics: [
+          "Mechanics", "Kinematics", "Forces & energy", "Waves", "Sound & resonance",
+          "Electricity & circuits", "Optics", "Thermodynamics", "Units & dimensional analysis",
+          "Significant figures & error", "Graphing relationships", "Calculus in physics",
+          "Statistics & uncertainty", "Time-series signals", "Ephys math"
+        ],
         cards: [
-          { name: "Measurement", body: "SI units · significant figures · uncertainty · error propagation.", note: "" },
-          { name: "Waves", body: "v = f λ · frequency, period, amplitude · interference & resonance.", note: "" }
+          { name: "Measurement & units", body: "SI base units · dimensional analysis (both sides must match) · significant figures · uncertainty &amp; error propagation.", note: "Carry units through every step — they catch mistakes." },
+          { name: "Kinematics", body: "v = Δx/Δt · a = Δv/Δt · x = x₀ + v₀t + ½at² · v² = v₀² + 2aΔx.", note: "Plot x(t) and v(t) in Graph Lab." },
+          { name: "Newton's second law", body: "F = ma · weight W = mg · momentum p = mv.", note: "" },
+          { name: "Energy & work", body: "W = F·d · KE = ½mv² · PE = mgh · power P = W/t.", note: "Energy is conserved in a closed system." },
+          { name: "Waves", body: "v = f λ · period T = 1/f · amplitude &amp; phase · interference &amp; resonance.", note: "Sine / cosine — graph them in Graph Lab." },
+          { name: "Electricity & circuits", body: "Ohm's law V = IR · power P = IV = I²R · series add R, parallel add 1/R · charge Q = CV.", note: "The same Ohm's law returns in ephys (channels)." },
+          { name: "Optics", body: "Snell's law n₁ sinθ₁ = n₂ sinθ₂ · thin lens 1/f = 1/d₀ + 1/dᵢ · magnification m = −dᵢ/d₀.", note: "" },
+          { name: "Thermodynamics", body: "Q = mcΔT · first law ΔU = Q − W · ideal gas PV = nRT.", note: "Connects to Chemistry thermodynamics." },
+          { name: "Graphing relationships", body: "Linear y = mx + b · slope = rate · area under a curve = accumulated quantity (∫).", note: "Graph Lab plots any equation." },
+          { name: "Calculus in physics", body: "velocity = dx/dt · acceleration = dv/dt · displacement = ∫v dt · work = ∫F dx.", note: "Derivatives &amp; integrals — see Math Lab · Calculus." },
+          { name: "Statistics & uncertainty", body: "mean ± SD · standard error · propagate error through a formula · report honest sig figs.", note: "Math Lab · Statistics." },
+          { name: "Time-series signals", body: "A trace is value vs time — smooth, find peaks/events, baseline, amplitude, AUC, decay τ.", note: "Math Lab · Time-Series; shared with ephys." },
+          { name: "Ephys math", body: "Ohm's law I = gV · driving force (V<sub>m</sub> − E<sub>ion</sub>) · capacitance Q = CV · exponential decay fits.", note: "Physics math reused at the synapse — see Neuroscience &amp; Ephys." }
+        ],
+        examples: [
+          { q: "A car travels 100 m in 5 s — average speed?", steps: ["v = Δx/Δt = 100 / 5"], ans: "<b>20 m/s</b>" },
+          { q: "Kinetic energy of 2 kg at 3 m/s", steps: ["KE = ½mv² = ½ × 2 × 3²"], ans: "<b>9 J</b>" },
+          { q: "Wave: f = 50 Hz, λ = 2 m — speed?", steps: ["v = f λ = 50 × 2"], ans: "<b>100 m/s</b>" },
+          { q: "12 V across a 4 Ω resistor — current?", steps: ["Ohm's law I = V/R = 12 / 4"], ans: "<b>3 A</b>" },
+          { q: "Dimensional check: is v = a·t valid?", steps: ["[a·t] = (m/s²)(s) = m/s", "[v] = m/s — units agree"], ans: "<b>valid</b>" },
+          { q: "Take a measured trace to Math Lab", steps: ["Export (time, value) with units", "Smooth → peaks → baseline → AUC → fit τ"], ans: "use <b>Math Lab · Time-Series</b>" }
         ],
         links: [
-          { name: "Math Lab · Physics", desc: "Full formula reference & worked examples.", href: "../math/room.html?room=physics", tag: "math" },
+          { name: "Math Lab (home)", desc: "All the math tools — the dashboard.", href: "../math/", tag: "math" },
+          { name: "Math Lab · Physics", desc: "Full physics formula reference & worked examples.", href: "../math/room.html?room=physics", tag: "math" },
+          { name: "Math Lab · Algebra", desc: "Rearrange & solve equations.", href: "../math/room.html?room=algebra", tag: "math" },
+          { name: "Math Lab · Calculus", desc: "Derivatives & integrals — rates and areas.", href: "../math/room.html?room=calculus", tag: "math" },
+          { name: "Math Lab · Statistics", desc: "Mean, SD, error, tests, effect size.", href: "../math/room.html?room=statistics", tag: "math" },
+          { name: "Math Lab · Time-Series", desc: "Smooth, peaks/events, AUC, decay τ.", href: "../math/room.html?room=time-series", tag: "math" },
+          { name: "Math Lab · Symbols", desc: "Math notation & constants.", href: "../math/room.html?room=symbols", tag: "math" },
           { name: "Graph Lab", desc: "Plot motion or any equation.", href: "../math/graph-lab.html", tag: "math" },
-          { name: "Data, Symbols & Units", desc: "Turn measurements into results.", href: "room.html?room=data-analysis", tag: "room" },
-          { name: "Periodic Table", desc: "Atomic structure.", href: "room.html?room=periodic-table", tag: "room" }
+          { name: "Open Data, Symbols & Units", desc: "Units, error, scientific notation.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Open Neuroscience & Ephys", desc: "Where this math meets the synapse.", href: "room.html?room=neuroscience", tag: "room" },
+          { name: "Open Chemistry", desc: "Thermodynamics, gas laws, energy.", href: "room.html?room=chemistry", tag: "room" },
+          { name: "Open Lab Methods", desc: "Measurement & data-quality habits.", href: "room.html?room=lab-methods", tag: "room" },
+          { name: "Open Periodic Table", desc: "The atomic structure behind matter.", href: "room.html?room=periodic-table", tag: "room" }
         ]
       },
 
@@ -570,18 +603,19 @@
       },
 
       "lab-methods": {
-        name: "Lab Methods", kind: "Technique", glyph: "🔬", color: "#b8a24c",
-        blurb: "The bench itself — how experiments actually get done, and how to fix them when they don't. A working notebook for solution prep, imaging, patch clamp, purification, and the habits that make data trustworthy.",
-        status: "Populated — bench workflows, examples, and scattered archive links",
-        callout: "<b>No single Lab Methods subject in the archive.</b> Method-relevant material is <b>scattered</b> — immuno techniques, bioinformatics, wet-labs, and protocols live across several clusters. The links below point to the nearest ones. (General & educational — no private lab data.)",
+        name: "Lab Methods", kind: "Shared methods hub", glyph: "🔬", color: "#b8a24c",
+        blurb: "The shared methods hub — the bench skills every experiment leans on, gathered in one place: safety, documentation, solution and buffer prep, pipetting, controls, calibration, troubleshooting, and data quality. Specialized techniques are introduced here, but increasingly live inside their own discipline areas.",
+        status: "Populated — shared bench skills; specialized methods move into discipline areas over time",
+        callout: "<b>A shared hub, not the final home for every method.</b> Core bench skills — safety, lab notebook, solution &amp; buffer prep, pipetting, controls, calibration, troubleshooting, data quality — live here for good. Specialized methods are introduced here but will increasingly be surfaced inside their own areas: <b>Chemistry</b>, <b>Organic Chemistry</b>, <b>Analytical Chemistry</b>, <b>Biochemistry</b>, <b>Biology</b>, <b>Neuroscience &amp; Ephys</b>, and <b>Data</b> methods. (No single Lab Methods subject exists in the archive — method material is scattered across clusters; the links below point to the nearest.)",
         topics: [
-          "Lab safety", "PPE", "Sterile technique", "Pipetting", "Solution prep", "Buffers", "pH",
+          "Lab safety", "PPE", "Lab notebook", "Pipetting", "Solution prep", "Buffers", "pH",
+          "Sterile technique", "Controls", "Replicates", "Calibration", "Troubleshooting", "Data quality",
           "Microscopy", "Fluorescence imaging", "Calcium imaging", "GCaMP", "iGluSnFR", "Patch clamp",
           "Electrophysiology setup", "Whole-cell recording", "Protein purification", "Chromatography",
-          "Enzyme assays", "Gel electrophoresis", "Immunostaining / Western", "Cell culture",
-          "Controls", "Replicates", "Troubleshooting", "Lab notebook", "Data quality", "Calibration"
+          "Enzyme assays", "Gel electrophoresis", "Immunostaining / Western", "Cell culture"
         ],
         cards: [
+          { name: "How this hub works", body: "<b>Shared</b> bench skills — safety, notebook, solution &amp; buffer prep, pipetting, controls, calibration, troubleshooting, data quality — live here permanently. <b>Specialized</b> methods are introduced here, then surfaced inside their discipline area: Chemistry, Organic, Analytical, Biochemistry, Biology, Neuroscience &amp; Ephys, and Data methods.", note: "One place to learn a technique; the discipline room for its specifics." },
           { name: "PPE & safety mindset", body: "Gloves, goggles, coat; know your reagents (read the SDS); right waste stream; sharps care.", note: "Safety is part of reproducibility, not box-ticking." },
           { name: "Pipetting accuracy", body: "Pre-wet tips · first stop to aspirate, second to dispense · hold vertical · no bubbles · calibrate.", note: "Verify small volumes by mass." },
           { name: "Solution prep workflow", body: "moles → mass (m = nM) · dissolve in &lt; final volume · bring to volume in a volumetric flask · label.", note: "Label: name, conc, date, initials." },
@@ -631,11 +665,11 @@
           { name: "Enzyme assay planner", desc: "Initial-rate kinetics setup.", tag: "soon" },
           { name: "Troubleshooting decision tree", desc: "One variable at a time.", tag: "soon" },
           { name: "Lab notebook template", desc: "Aim, protocol, observations, data.", tag: "soon" },
-          { name: "Open Chemistry", desc: "Solutions, pH, buffers.", href: "room.html?room=chemistry", tag: "room" },
-          { name: "Open Biochemistry", desc: "Assays, enzymes, purification.", href: "room.html?room=biochemistry", tag: "room" },
-          { name: "Open Biology", desc: "Cells, culture, the systems studied.", href: "room.html?room=biology", tag: "room" },
-          { name: "Open Neuroscience & Ephys", desc: "Patch clamp, imaging, signals.", href: "room.html?room=neuroscience", tag: "room" },
-          { name: "Open Data, Symbols & Units", desc: "Units, error, analysis.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Open Chemistry", desc: "Solutions, pH, buffers — Chemistry methods.", href: "room.html?room=chemistry", tag: "room" },
+          { name: "Open Biochemistry", desc: "Assays, enzymes, purification — Biochem methods.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Open Biology", desc: "Culture & the systems studied — Biology methods.", href: "room.html?room=biology", tag: "room" },
+          { name: "Open Neuroscience & Ephys", desc: "Patch clamp & imaging — ephys methods.", href: "room.html?room=neuroscience", tag: "room" },
+          { name: "Open Data, Symbols & Units", desc: "Units, error, analysis — Data methods.", href: "room.html?room=data-analysis", tag: "room" },
           { name: "Open Periodic Table", desc: "Reagents & elements.", href: "room.html?room=periodic-table", tag: "room" },
           { name: "Class Archive", desc: "All preserved coursework + study tools.", href: "room.html?room=class-archive", tag: "room" },
           { name: "Cluster: Chemistry Foundations", desc: "Solutions, stoichiometry, acid-base.", href: "cluster.html?id=chem-foundations", tag: "archive" },
