@@ -191,6 +191,7 @@
                 color: var(--dim); border: 1px solid var(--line); }
   .tier-badge.t1 { background: var(--accent); color: #fff; border-color: var(--accent); }
   .tier-badge.t2 { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+  .person.bday-today { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
 
   /* Money progress */
   .bar { height: 8px; background: var(--panel2); border-radius: 4px; overflow: hidden;
@@ -300,6 +301,7 @@
     <button class="tab-btn" data-tab="mind">Mind</button>
     <button class="tab-btn" data-tab="money">Money</button>
     <button class="tab-btn" data-tab="relationships">Relationships</button>
+    <button class="tab-btn" data-tab="birthdays">Birthdays</button>
     <button class="tab-btn" data-tab="reflect">Reflect</button>
     <button class="tab-btn" data-tab="timeline">Timeline</button>
   </div>
@@ -806,6 +808,56 @@
   </div>
 </section>
 
+<!-- ============== BIRTHDAYS ============== -->
+<section class="view" id="view-birthdays">
+  <h1>Birthdays</h1>
+  <div class="lede">The days you never want to forget. Kept here, and exported to a file in the archive so they outlive any browser.</div>
+
+  <div class="section">
+    <div class="section-head"><h2>Add a birthday</h2><span class="act tiny">Month is enough — day and year are optional.</span></div>
+    <div class="form">
+      <input type="text" id="bName" class="grow" placeholder="Name">
+      <input type="text" id="bRel" placeholder="relation (mom, friend)">
+      <select id="bMonth">
+        <option value="">Month</option>
+        <option value="1">January</option>
+        <option value="2">February</option>
+        <option value="3">March</option>
+        <option value="4">April</option>
+        <option value="5">May</option>
+        <option value="6">June</option>
+        <option value="7">July</option>
+        <option value="8">August</option>
+        <option value="9">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+      <label>Day<input type="number" id="bDay" min="1" max="31" style="width:64px"></label>
+      <label>Year<input type="number" id="bYear" min="1" max="2100" style="width:84px" placeholder="opt"></label>
+      <input type="text" id="bNote" class="grow" placeholder="note (optional)">
+      <label class="act tiny" style="display:flex;align-items:center;gap:5px"><input type="checkbox" id="bDeceased"> in memoriam</label>
+      <button class="primary" id="bAdd">Add</button>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>The register</h2><span class="act tiny" id="bdayUpcomingNote"></span></div>
+    <div id="bdayList"></div>
+  </div>
+
+  <div class="section" id="bdayMemoriam"></div>
+
+  <div class="section">
+    <div class="section-head"><h2>Kept forever</h2><span class="act tiny">localStorage isn't forever — the repo file is.</span></div>
+    <div class="lede" style="margin-bottom:10px">Export downloads <code>birthdays.json</code> (the durable copy to commit next to this page) and a readable <code>birthdays.md</code>. Restore rebuilds the register from the committed file — so a cleared browser loses nothing.</div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="primary" id="bExport">Export birthdays</button>
+      <button class="ghost" id="bRestore">Restore from repo</button>
+    </div>
+  </div>
+</section>
+
 <!-- ============== REFLECT ============== -->
 <section class="view" id="view-reflect">
   <h1>Reflect</h1>
@@ -878,7 +930,7 @@
 const STORAGE_KEY = 'mirror_v1';
 const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
-const SCHEMA_VERSION = 2;
+const SCHEMA_VERSION = 3;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -888,7 +940,7 @@ const defaultState = () => ({
   body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
-  relationships: { people: [], followUps: [], giftIdeas: [] }
+  relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] }
 });
 function getTargets() { return Object.assign({}, DEFAULT_TARGETS, state.body.targets || {}); }
 
@@ -900,6 +952,8 @@ function migrate(s) {
   let v = s.__v || 1;
   // v1 -> v2: stamp version only; shallow-merge already backfills new fields.
   if (v < 2) { v = 2; }
+  // v2 -> v3: add relationships.birthdays[] (forever birthday register); shallow-merge backfills it.
+  if (v < 3) { v = 3; }
   s.__v = SCHEMA_VERSION;
   return s;
 }
@@ -981,6 +1035,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + btn.dataset.tab).classList.add('active');
     if (btn.dataset.tab === 'today') renderTodayTab();
+    if (btn.dataset.tab === 'birthdays') renderBirthdays();
     if (btn.dataset.tab === 'reflect') renderReflect();
     if (btn.dataset.tab === 'timeline') renderTimeline();
   };
@@ -2666,16 +2721,19 @@ function renderReflectToday() {
       }).join(' · '))}</div></div>`);
   }
 
-  // Upcoming birthday in 14 days
+  // Upcoming birthday in 14 days — from people[] and the forever register
   const upcoming = state.relationships.people
-    .map(p => ({ p, d: daysUntilBirthday(p.birthday) }))
+    .map(p => ({ name: p.name, d: daysUntilBirthday(p.birthday) }))
+    .concat((state.relationships.birthdays || [])
+      .filter(b => !b.deceased)
+      .map(b => ({ name: b.name, d: bdayNextDays(b) })))
     .filter(x => x.d !== null && x.d <= 14)
     .sort((a,b) => a.d - b.d);
   if (upcoming.length) {
     const u = upcoming[0];
     cards.push(`<div class="insight good"><div class="k">Upcoming birthday</div>
-      <div class="v accent">${escapeHtml(u.p.name)}</div>
-      <div class="p">in <strong>${u.d} days</strong>${upcoming.length>1?` · +${upcoming.length-1} more`:''}</div></div>`);
+      <div class="v accent">${escapeHtml(u.name)}</div>
+      <div class="p">${u.d===0?'<strong>today</strong>':`in <strong>${u.d} days</strong>`}${upcoming.length>1?` · +${upcoming.length-1} more`:''}</div></div>`);
   }
 
   // Overdue tier-1 people
@@ -3250,6 +3308,195 @@ document.getElementById('tlClear').onclick = () => {
    ============================================================= */
 function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 
+/* =============================================================
+   BIRTHDAYS — a register kept forever (mirrored to a repo file)
+   ============================================================= */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// Days until the next occurrence of a month/day. Day optional (uses the 1st for sorting).
+function bdayNextDays(b) {
+  if (!b || !b.month) return null;
+  const today = new Date(todayStr() + 'T00:00');
+  const d = b.day || 1;
+  let next = new Date(today.getFullYear(), b.month - 1, d);
+  if (next < today) next = new Date(today.getFullYear() + 1, b.month - 1, d);
+  return Math.round((next - today) / 86400000);
+}
+// Current age (most recent birthday). Needs month + year.
+function bdayCurrentAge(b) {
+  if (!b || !b.year || !b.month) return null;
+  const today = new Date(todayStr() + 'T00:00');
+  let age = today.getFullYear() - b.year;
+  const d = b.day || 1;
+  if (new Date(today.getFullYear(), b.month - 1, d) > today) age -= 1;
+  return age;
+}
+function fmtBirthday(b) {
+  if (!b || !b.month) return '—';
+  let s = MONTHS[b.month - 1];
+  if (b.day) s += ' ' + b.day;
+  if (b.year) s += ', ' + b.year;
+  return s;
+}
+
+function renderBirthdays() {
+  const list = state.relationships.birthdays || [];
+  const el = document.getElementById('bdayList');
+  const memEl = document.getElementById('bdayMemoriam');
+  const noteEl = document.getElementById('bdayUpcomingNote');
+  if (!el) return;
+  const living = list.filter(b => !b.deceased).slice().sort((a, b) => {
+    const da = bdayNextDays(a), db = bdayNextDays(b);
+    return (da == null ? 9999 : da) - (db == null ? 9999 : db);
+  });
+  const gone = list.filter(b => b.deceased).slice().sort((a, b) => (a.month - b.month) || ((a.day || 0) - (b.day || 0)));
+
+  const soonCount = living.filter(b => { const d = bdayNextDays(b); return d != null && d <= 30; }).length;
+  if (noteEl) noteEl.textContent = soonCount ? `${soonCount} in the next 30 days` : (living.length ? `${living.length} kept` : '');
+
+  const card = (b, memoriam) => {
+    const d = bdayNextDays(b);
+    const age = bdayCurrentAge(b);
+    const today0 = d === 0;
+    const soon = d != null && d <= 14;
+    let when = '';
+    if (today0) when = '🎂 today';
+    else if (d != null) when = `in ${d} day${d === 1 ? '' : 's'}`;
+    let agePart = '';
+    if (memoriam) {
+      const wouldBe = b.year ? (new Date(todayStr() + 'T00:00').getFullYear() - b.year) : null;
+      agePart = (wouldBe != null ? ` · would be ${wouldBe}` : '') + (b.passedYear ? ` · d. ${b.passedYear}` : '');
+    } else if (age != null) {
+      agePart = ` · turns ${age + 1}`;
+    }
+    return `<div class="person${today0 ? ' bday-today' : ''}">
+      <div class="head">
+        <div><span class="nm">${escapeHtml(b.name)}</span>${b.relation ? `<span class="rel"> · ${escapeHtml(b.relation)}</span>` : ''}</div>
+        ${memoriam ? '' : `<span class="tier-badge${soon ? ' t1' : ''}">${when}</span>`}
+      </div>
+      <div class="line">${fmtBirthday(b)}${agePart}</div>
+      ${b.note ? `<div class="line" style="color:var(--ink)">${escapeHtml(b.note)}</div>` : ''}
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
+        <button class="ghost" data-bedit="${b.id}">edit</button>
+        <button class="x" data-bdel="${b.id}">×</button>
+      </div>
+    </div>`;
+  };
+
+  el.innerHTML = living.length
+    ? living.map(b => card(b, false)).join('')
+    : '<div class="empty">No birthdays yet. Add the people whose days you never want to forget.</div>';
+
+  if (memEl) {
+    memEl.innerHTML = gone.length
+      ? `<div class="section-head"><h2>In memoriam</h2><span class="act tiny">Kept, always.</span></div>` + gone.map(b => card(b, true)).join('')
+      : '';
+  }
+
+  document.querySelectorAll('#view-birthdays [data-bedit]').forEach(btn => btn.onclick = () => editBirthday(btn.dataset.bedit));
+  document.querySelectorAll('#view-birthdays [data-bdel]').forEach(btn => btn.onclick = () => {
+    const b = list.find(x => x.id === btn.dataset.bdel);
+    if (!b || !confirm(`Remove ${b.name} from the register?`)) return;
+    state.relationships.birthdays = list.filter(x => x.id !== btn.dataset.bdel);
+    saveState(); renderBirthdays();
+  });
+}
+
+document.getElementById('bAdd').onclick = () => {
+  const name = document.getElementById('bName').value.trim();
+  if (!name) return;
+  const month = Number(document.getElementById('bMonth').value) || 0;
+  if (!month) { alert('Pick a month.'); return; }
+  state.relationships.birthdays.push({
+    id: uid(), name,
+    relation: document.getElementById('bRel').value.trim(),
+    month,
+    day: Number(document.getElementById('bDay').value) || null,
+    year: Number(document.getElementById('bYear').value) || null,
+    deceased: document.getElementById('bDeceased').checked,
+    passedYear: null,
+    note: document.getElementById('bNote').value.trim(),
+    createdAt: todayStr()
+  });
+  saveState();
+  ['bName', 'bRel', 'bDay', 'bYear', 'bNote'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('bMonth').value = '';
+  document.getElementById('bDeceased').checked = false;
+  renderBirthdays();
+};
+
+function editBirthday(id) {
+  const b = state.relationships.birthdays.find(x => x.id === id);
+  if (!b) return;
+  openEditModal('Edit birthday', '', [
+    { key: 'name', label: 'Name', type: 'text' },
+    { key: 'relation', label: 'Relation', type: 'text' },
+    { key: 'month', label: 'Month (1–12)', type: 'number', min: 1, step: 1 },
+    { key: 'day', label: 'Day (optional)', type: 'number', min: 1, step: 1 },
+    { key: 'year', label: 'Year (optional)', type: 'number', step: 1 },
+    { key: 'deceased', label: 'In memoriam?', type: 'select', options: [{ value: '', label: 'No' }, { value: '1', label: 'Yes' }] },
+    { key: 'passedYear', label: 'Year of passing (optional)', type: 'number', step: 1 },
+    { key: 'note', label: 'Note', type: 'text' },
+  ], { ...b, deceased: b.deceased ? '1' : '' }, vals => {
+    b.name = vals.name; b.relation = vals.relation; b.note = vals.note;
+    b.month = Number(vals.month) || b.month;
+    b.day = Number(vals.day) || null;
+    b.year = Number(vals.year) || null;
+    b.passedYear = Number(vals.passedYear) || null;
+    b.deceased = !!vals.deceased;
+    saveState(); renderBirthdays();
+  });
+}
+
+function bdayDownload(name, content, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function exportBirthdays() {
+  const list = state.relationships.birthdays || [];
+  bdayDownload('birthdays.json',
+    JSON.stringify({ __type: 'mirror-birthdays', __v: 1, exportedAt: todayStr(), birthdays: list }, null, 2),
+    'application/json');
+  const byDate = (a, b) => (a.month - b.month) || ((a.day || 0) - (b.day || 0));
+  const living = list.filter(b => !b.deceased).slice().sort(byDate);
+  const gone = list.filter(b => b.deceased).slice().sort(byDate);
+  let md = `# Birthdays — kept forever\n\n_${list.length} people · exported ${todayStr()}_\n\n`;
+  const line = b => `- **${b.name}**${b.relation ? ` (${b.relation})` : ''} — ${fmtBirthday(b)}${b.note ? ` — ${b.note}` : ''}`;
+  if (living.length) md += `## The living\n\n` + living.map(line).join('\n') + '\n\n';
+  if (gone.length) md += `## In memoriam\n\n` + gone.map(b =>
+    `- **${b.name}**${b.relation ? ` (${b.relation})` : ''} — ${fmtBirthday(b)}${b.passedYear ? ` (d. ${b.passedYear})` : ''}${b.note ? ` — ${b.note}` : ''}`).join('\n') + '\n';
+  bdayDownload('birthdays.md', md, 'text/markdown');
+}
+
+async function restoreBirthdaysFromRepo() {
+  if (!confirm('Load birthdays from the committed repo file (birthdays.json)? New people are added; matching ones are updated.')) return;
+  try {
+    const res = await fetch('birthdays.json?t=' + Date.now());
+    if (!res.ok) throw new Error('not found');
+    const data = await res.json();
+    const incoming = Array.isArray(data) ? data : (data.birthdays || []);
+    if (!incoming.length) { alert('The repo file has no birthdays in it.'); return; }
+    takeSnapshot('restore birthdays from repo');
+    if (!state.relationships.birthdays) state.relationships.birthdays = [];
+    const byId = new Map(state.relationships.birthdays.map(b => [b.id, b]));
+    incoming.forEach(b => {
+      if (b.id && byId.has(b.id)) Object.assign(byId.get(b.id), b);
+      else state.relationships.birthdays.push(b);
+    });
+    saveState(); renderBirthdays();
+    alert(`Loaded. The register now holds ${state.relationships.birthdays.length} people.`);
+  } catch (e) {
+    alert('Could not load birthdays.json. Make sure it has been committed next to this page (in the mirror/ folder).');
+  }
+}
+
+document.getElementById('bExport').onclick = exportBirthdays;
+document.getElementById('bRestore').onclick = restoreBirthdaysFromRepo;
+
 function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal();
   renderFoodLog(); renderNutrients(); renderToday(); renderTrend();
@@ -3260,6 +3507,7 @@ function renderAll() {
   simpleLog('symptoms','symLog', r => escapeHtml(r.note));
   renderBudget(); renderExpenses(); renderSubs(); renderNetWorth(); renderGoals();
   renderPeople(); refreshPersonSelects(); renderFollowUps(); renderGiftIdeas();
+  renderBirthdays();
   renderBooks(); renderIdeas(); renderQuestions(); renderQuotes();
   renderReflect();   // keep Body/Today, Trend, chips and Reflect fresh after import/restore/reset
   renderTimeline();
