@@ -301,7 +301,6 @@
     <button class="tab-btn" data-tab="mind">Mind</button>
     <button class="tab-btn" data-tab="money">Money</button>
     <button class="tab-btn" data-tab="relationships">Relationships</button>
-    <button class="tab-btn" data-tab="birthdays">Birthdays</button>
     <button class="tab-btn" data-tab="reflect">Reflect</button>
     <button class="tab-btn" data-tab="timeline">Timeline</button>
   </div>
@@ -772,7 +771,6 @@
     <div class="form">
       <input type="text" id="pName" class="grow" placeholder="Name">
       <input type="text" id="pRel" placeholder="relation (mom, friend, coworker)">
-      <label>Birthday<input type="date" id="pBday"></label>
       <select id="pTier">
         <option value="1">Tier 1 — core</option>
         <option value="2">Tier 2 — close</option>
@@ -783,38 +781,9 @@
     <div id="peopleList"></div>
   </div>
 
-  <div class="two-col">
-    <div class="section">
-      <div class="section-head"><h2>Follow-ups</h2><span class="act tiny">What you promised someone.</span></div>
-      <div class="form">
-        <select id="fuPerson" class="grow"></select>
-        <input type="text" id="fuWhat" class="grow" placeholder="what you said you'd do">
-        <input type="date" id="fuDue">
-        <button class="primary" id="fuAdd">Add</button>
-      </div>
-      <div id="fuList"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><h2>Gift ideas</h2></div>
-      <div class="form">
-        <select id="giPerson" class="grow"></select>
-        <input type="text" id="giIdea" class="grow" placeholder="idea">
-        <input type="text" id="giOccasion" placeholder="occasion (birthday, xmas)">
-        <button class="primary" id="giAdd">Add</button>
-      </div>
-      <div id="giList"></div>
-    </div>
-  </div>
-</section>
-
-<!-- ============== BIRTHDAYS ============== -->
-<section class="view" id="view-birthdays">
-  <h1>Birthdays</h1>
-  <div class="lede">The days you never want to forget. Kept here, and exported to a file in the archive so they outlive any browser.</div>
-
   <div class="section">
-    <div class="section-head"><h2>Add a birthday</h2><span class="act tiny">Month is enough — day and year are optional.</span></div>
+    <div class="section-head"><h2>Birthdays</h2><span class="act tiny" id="bdayUpcomingNote"></span></div>
+    <div class="lede" style="margin-bottom:10px">Days you never want to forget. Month is enough — day and year are optional.</div>
     <div class="form">
       <input type="text" id="bName" class="grow" placeholder="Name">
       <input type="text" id="bRel" placeholder="relation (mom, friend)">
@@ -839,10 +808,6 @@
       <label class="act tiny" style="display:flex;align-items:center;gap:5px"><input type="checkbox" id="bDeceased"> in memoriam</label>
       <button class="primary" id="bAdd">Add</button>
     </div>
-  </div>
-
-  <div class="section">
-    <div class="section-head"><h2>The register</h2><span class="act tiny" id="bdayUpcomingNote"></span></div>
     <div id="bdayList"></div>
   </div>
 
@@ -854,6 +819,30 @@
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="primary" id="bExport">Export birthdays</button>
       <button class="ghost" id="bRestore">Restore from repo</button>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="section">
+      <div class="section-head"><h2>Follow-ups</h2><span class="act tiny">What you promised someone.</span></div>
+      <div class="form">
+        <select id="fuPerson" class="grow"></select>
+        <input type="text" id="fuWhat" class="grow" placeholder="what you said you'd do">
+        <input type="date" id="fuDue">
+        <button class="primary" id="fuAdd">Add</button>
+      </div>
+      <div id="fuList"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head"><h2>Gift ideas</h2></div>
+      <div class="form">
+        <select id="giPerson" class="grow"></select>
+        <input type="text" id="giIdea" class="grow" placeholder="idea">
+        <input type="text" id="giOccasion" placeholder="occasion (birthday, xmas)">
+        <button class="primary" id="giAdd">Add</button>
+      </div>
+      <div id="giList"></div>
     </div>
   </div>
 </section>
@@ -930,7 +919,7 @@
 const STORAGE_KEY = 'mirror_v1';
 const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -954,6 +943,24 @@ function migrate(s) {
   if (v < 2) { v = 2; }
   // v2 -> v3: add relationships.birthdays[] (forever birthday register); shallow-merge backfills it.
   if (v < 3) { v = 3; }
+  // v3 -> v4: fold per-person birthdays into the standalone register (one home for birthdays).
+  // NOTE: runs inside loadState before todayStr (const, TDZ) — use uid() only, leave createdAt blank.
+  if (v < 4) {
+    s.relationships = s.relationships || {};
+    s.relationships.birthdays = s.relationships.birthdays || [];
+    (s.relationships.people || []).forEach(p => {
+      if (p.birthday && !p.__bdayMigrated) {
+        const [yy, mm, dd] = p.birthday.split('-').map(Number);
+        if (mm) s.relationships.birthdays.push({
+          id: uid(), name: p.name, relation: p.relation || '',
+          month: mm, day: dd || null, year: yy || null,
+          deceased: false, passedYear: null, note: '', createdAt: ''
+        });
+        p.__bdayMigrated = true;
+      }
+    });
+    v = 4;
+  }
   s.__v = SCHEMA_VERSION;
   return s;
 }
@@ -1035,7 +1042,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
     document.getElementById('view-' + btn.dataset.tab).classList.add('active');
     if (btn.dataset.tab === 'today') renderTodayTab();
-    if (btn.dataset.tab === 'birthdays') renderBirthdays();
     if (btn.dataset.tab === 'reflect') renderReflect();
     if (btn.dataset.tab === 'timeline') renderTimeline();
   };
@@ -2256,26 +2262,16 @@ function renderGoals() {
 document.getElementById('pAdd').onclick = () => {
   const name = document.getElementById('pName').value.trim();
   const relation = document.getElementById('pRel').value.trim();
-  const birthday = document.getElementById('pBday').value;
   const tier = Number(document.getElementById('pTier').value);
   if (!name) return;
   state.relationships.people.push({
-    id: uid(), name, relation, birthday, tier,
+    id: uid(), name, relation, tier,
     lastContact: todayStr(), notes: ''
   });
   saveState();
   document.getElementById('pName').value=''; document.getElementById('pRel').value='';
-  document.getElementById('pBday').value='';
   renderPeople(); refreshPersonSelects();
 };
-function daysUntilBirthday(b) {
-  if (!b) return null;
-  const today = new Date(todayStr() + 'T00:00');
-  const bd = new Date(b + 'T00:00');
-  const this_year = new Date(today.getFullYear(), bd.getMonth(), bd.getDate());
-  const next = this_year < today ? new Date(today.getFullYear()+1, bd.getMonth(), bd.getDate()) : this_year;
-  return Math.round((next - today) / 86400000);
-}
 function contactThreshold(tier) { return tier===1?14 : tier===2?45 : 120; }
 function renderPeople() {
   const el = document.getElementById('peopleList');
@@ -2287,7 +2283,6 @@ function renderPeople() {
     const since = daysBetween(p.lastContact, todayStr());
     const overdue = since > contactThreshold(p.tier);
     if (overdue) overdueCount++;
-    const bdDays = daysUntilBirthday(p.birthday);
     return `<div class="person">
       <div class="head">
         <div><span class="nm">${escapeHtml(p.name)}</span>
@@ -2295,7 +2290,6 @@ function renderPeople() {
         <span class="tier-badge t${p.tier}">tier ${p.tier}</span>
       </div>
       <div class="line ${overdue?'overdue':''}">last contact: ${fmtDate(p.lastContact)} (${since} days ago)</div>
-      ${p.birthday ? `<div class="line">birthday: ${fmtDate(p.birthday)}${bdDays!==null?` · ${bdDays} days`:''}</div>`:''}
       ${p.notes ? `<div class="line" style="color:var(--ink)">${escapeHtml(p.notes)}</div>`:''}
       <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">
         <button class="ghost" data-contact="${p.id}">mark contacted today</button>
@@ -2320,7 +2314,6 @@ function renderPeople() {
     openEditModal('Edit person', '', [
       {key:'name',label:'Name',type:'text'},
       {key:'relation',label:'Relation',type:'text'},
-      {key:'birthday',label:'Birthday',type:'date'},
       {key:'tier',label:'Tier',type:'select',options:[
         {value:1,label:'Tier 1 — core'},{value:2,label:'Tier 2 — close'},{value:3,label:'Tier 3 — warm'}]},
       {key:'lastContact',label:'Last contact',type:'date'},
@@ -2721,12 +2714,10 @@ function renderReflectToday() {
       }).join(' · '))}</div></div>`);
   }
 
-  // Upcoming birthday in 14 days — from people[] and the forever register
-  const upcoming = state.relationships.people
-    .map(p => ({ name: p.name, d: daysUntilBirthday(p.birthday) }))
-    .concat((state.relationships.birthdays || [])
-      .filter(b => !b.deceased)
-      .map(b => ({ name: b.name, d: bdayNextDays(b) })))
+  // Upcoming birthday in 14 days — from the birthday register
+  const upcoming = (state.relationships.birthdays || [])
+    .filter(b => !b.deceased)
+    .map(b => ({ name: b.name, d: bdayNextDays(b) }))
     .filter(x => x.d !== null && x.d <= 14)
     .sort((a,b) => a.d - b.d);
   if (upcoming.length) {
@@ -3393,8 +3384,8 @@ function renderBirthdays() {
       : '';
   }
 
-  document.querySelectorAll('#view-birthdays [data-bedit]').forEach(btn => btn.onclick = () => editBirthday(btn.dataset.bedit));
-  document.querySelectorAll('#view-birthdays [data-bdel]').forEach(btn => btn.onclick = () => {
+  document.querySelectorAll('#view-relationships [data-bedit]').forEach(btn => btn.onclick = () => editBirthday(btn.dataset.bedit));
+  document.querySelectorAll('#view-relationships [data-bdel]').forEach(btn => btn.onclick = () => {
     const b = list.find(x => x.id === btn.dataset.bdel);
     if (!b || !confirm(`Remove ${b.name} from the register?`)) return;
     state.relationships.birthdays = list.filter(x => x.id !== btn.dataset.bdel);
