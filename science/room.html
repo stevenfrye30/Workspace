@@ -140,6 +140,66 @@
 
     @media (max-width: 760px) { .pt-wrap { grid-template-columns: 1fr; } .pt-detail { position: static; } }
 
+    /* ── Master units table / converter (data-analysis room only) ─ */
+    .u-tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.9rem; }
+    .u-tab { font-family: -apple-system, sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--muted); cursor: pointer;
+      padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+    .u-tab.on { color: #11161f; background: var(--c); border-color: var(--c); }
+    .u-pane { display: none; }
+    .u-pane.on { display: block; }
+    .u-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.7rem; }
+    .u-input, .u-select { font-family: -apple-system, sans-serif; font-size: 0.82rem; color: var(--fg);
+      background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; outline: none; }
+    .u-input { width: 9rem; }
+    .u-input:focus, .u-select:focus { border-color: var(--c); }
+    .u-select { flex: 1; min-width: 9rem; }
+    .u-search { width: 100%; font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--fg);
+      background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.45rem 0.6rem; outline: none; margin-bottom: 0.7rem; }
+    .u-search:focus { border-color: var(--c); }
+    .u-scroll { max-height: 24rem; overflow: auto; border: 1px solid var(--border); border-radius: 4px; }
+    table.u-table { width: 100%; border-collapse: collapse; font-family: -apple-system, sans-serif; font-size: 0.78rem; }
+    table.u-table th { text-align: left; color: var(--muted); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+      padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--panel); }
+    table.u-table td { padding: 0.32rem 0.6rem; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); color: var(--fg); }
+    table.u-table tr:last-child td { border-bottom: none; }
+    table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transparent); }
+    .u-val { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; color: var(--c); text-align: right; white-space: nowrap; }
+    .u-sym { font-family: ui-monospace, Menlo, monospace; color: var(--muted); }
+    .u-table tr.from td { color: var(--fg); font-weight: 700; }
+    .u-table tr.from td.u-val { color: var(--fg); }
+    .u-note { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.5; }
+
+    /* ── Chemistry calculators (chemistry room only) ───────────── */
+    .chem .u-row label { font-family: -apple-system, sans-serif; font-size: 0.76rem; color: var(--muted); min-width: 8rem; }
+    .chem-out { font-family: -apple-system, sans-serif; font-size: 0.95rem; color: var(--fg); background: var(--panel);
+      border: 1px solid var(--border); border-left: 3px solid var(--c); border-radius: 4px; padding: 0.6rem 0.8rem; margin: 0.2rem 0 0.2rem; }
+    .chem-out b { color: var(--c); font-family: ui-monospace, Menlo, monospace; }
+
+    /* ── Notes library (notes room only) ───────────────────────── */
+    .notelib-item { display: block; text-decoration: none; color: inherit; background: var(--panel);
+      border: 1px solid var(--border); border-left: 3px solid var(--c); border-radius: 4px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem;
+      transition: border-color 0.15s, transform 0.15s; }
+    .notelib-item:hover { transform: translateY(-1px); border-color: var(--c); }
+    .notelib-room { font-family: -apple-system, sans-serif; font-size: 0.84rem; font-weight: 600; color: var(--c); margin-bottom: 0.2rem; }
+    .notelib-snip { font-family: ui-monospace, Menlo, monospace; font-size: 0.72rem; color: var(--muted); white-space: pre-wrap; max-height: 4.5rem; overflow: hidden; }
+    .notelib-empty { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); font-style: italic; }
+
+    /* ── Scientific calculator (data-analysis room only) ───────── */
+    .calc { max-width: 19rem; outline: none; border-radius: 6px; }
+    .calc:focus { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent); }
+    .calc-display { background: #141d29; border: 1px solid var(--border); border-radius: 5px; padding: 0.6rem 0.7rem; margin-bottom: 0.5rem; min-height: 3.4rem; text-align: right; }
+    .calc-expr { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); min-height: 1rem; word-break: break-all; }
+    .calc-result { font-family: ui-monospace, Menlo, monospace; font-size: 1.5rem; font-weight: 700; color: var(--fg); word-break: break-all; }
+    .calc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }
+    .calc-btn { font-family: -apple-system, sans-serif; font-size: 0.85rem; color: var(--fg); background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 0.55rem 0; cursor: pointer; }
+    .calc-btn:hover { border-color: var(--c); }
+    .calc-btn:active { background: var(--bg2); }
+    .calc-btn.fn { color: var(--c); font-size: 0.74rem; }
+    .calc-btn.op { color: #79b6e0; }
+    .calc-btn.clear { color: #d9746b; }
+    .calc-btn.eq { background: var(--c); color: #11161f; border-color: var(--c); font-weight: 700; }
+    .calc-btn.wide { grid-column: span 2; }
+
     .notfound { font-family: -apple-system, "Segoe UI", sans-serif; color: var(--muted); }
     .notfound a { color: var(--gold); }
 
@@ -226,6 +286,68 @@
       92: { ox: "+6, +4", desc: "Heaviest primordial element; ²³⁵U is fissile.", phys: "Nuclear fission and radiometric dating." }
     };
 
+    /* ── Units, prefixes & constants (data-analysis room). Declared
+       before render so the interactive converter can use them. ──── */
+    var UNITS = {
+      Length:      { base:"m",  u:[["Meter","m",1],["Kilometer","km",1000],["Centimeter","cm",0.01],["Millimeter","mm",1e-3],["Micrometer","µm",1e-6],["Nanometer","nm",1e-9],["Ångström","Å",1e-10],["Mile","mi",1609.344],["Yard","yd",0.9144],["Foot","ft",0.3048],["Inch","in",0.0254],["Nautical mile","nmi",1852],["Light-year","ly",9.4607304725808e15],["Astronomical unit","AU",1.495978707e11],["Parsec","pc",3.0856775814913673e16]] },
+      Mass:        { base:"kg", u:[["Kilogram","kg",1],["Gram","g",1e-3],["Milligram","mg",1e-6],["Microgram","µg",1e-9],["Metric ton","t",1000],["Pound","lb",0.45359237],["Ounce","oz",0.028349523125],["Stone","st",6.35029318],["US ton","ton",907.18474],["Atomic mass unit","u",1.66053906660e-27]] },
+      Time:        { base:"s",  u:[["Second","s",1],["Millisecond","ms",1e-3],["Microsecond","µs",1e-6],["Nanosecond","ns",1e-9],["Minute","min",60],["Hour","h",3600],["Day","d",86400],["Week","wk",604800],["Year (Julian)","yr",31557600]] },
+      Temperature: { base:"K",  special:true, u:[
+                     ["Kelvin","K", function(v){return v;}, function(k){return k;}],
+                     ["Celsius","°C", function(v){return v+273.15;}, function(k){return k-273.15;}],
+                     ["Fahrenheit","°F", function(v){return (v-32)*5/9+273.15;}, function(k){return (k-273.15)*9/5+32;}],
+                     ["Rankine","°R", function(v){return v*5/9;}, function(k){return k*9/5;}]] },
+      Area:        { base:"m²", u:[["Square meter","m²",1],["Square kilometer","km²",1e6],["Square centimeter","cm²",1e-4],["Hectare","ha",1e4],["Acre","ac",4046.8564224],["Square mile","mi²",2589988.110336],["Square yard","yd²",0.83612736],["Square foot","ft²",0.09290304],["Square inch","in²",6.4516e-4]] },
+      Volume:      { base:"m³", u:[["Cubic meter","m³",1],["Liter","L",1e-3],["Milliliter","mL",1e-6],["Cubic centimeter","cm³",1e-6],["Cubic foot","ft³",0.028316846592],["Cubic inch","in³",1.6387064e-5],["US gallon","gal",3.785411784e-3],["US quart","qt",9.46352946e-4],["US pint","pt",4.73176473e-4],["US cup","cup",2.365882365e-4],["US fl ounce","fl oz",2.95735295625e-5],["Tablespoon","tbsp",1.47867648e-5],["Teaspoon","tsp",4.92892159375e-6],["Oil barrel","bbl",0.158987294928]] },
+      Speed:       { base:"m/s",u:[["Meter/second","m/s",1],["Kilometer/hour","km/h",0.2777777777778],["Mile/hour","mph",0.44704],["Foot/second","ft/s",0.3048],["Knot","kn",0.5144444444444],["Speed of light","c",299792458]] },
+      Force:       { base:"N",  u:[["Newton","N",1],["Kilonewton","kN",1000],["Dyne","dyn",1e-5],["Pound-force","lbf",4.4482216152605],["Kilogram-force","kgf",9.80665]] },
+      Pressure:    { base:"Pa", u:[["Pascal","Pa",1],["Kilopascal","kPa",1000],["Megapascal","MPa",1e6],["Bar","bar",1e5],["Atmosphere","atm",101325],["Torr (mmHg)","Torr",133.322387415],["Pound/inch²","psi",6894.757293168],["Inch of mercury","inHg",3386.389]] },
+      Energy:      { base:"J",  u:[["Joule","J",1],["Kilojoule","kJ",1000],["Calorie","cal",4.184],["Kilocalorie","kcal",4184],["Watt-hour","Wh",3600],["Kilowatt-hour","kWh",3.6e6],["Electronvolt","eV",1.602176634e-19],["BTU","BTU",1055.05585262],["Erg","erg",1e-7],["Foot-pound","ft·lb",1.3558179483314]] },
+      Power:       { base:"W",  u:[["Watt","W",1],["Kilowatt","kW",1000],["Megawatt","MW",1e6],["Horsepower (mech)","hp",745.69987158227],["Horsepower (metric)","PS",735.49875],["BTU/hour","BTU/h",0.29307107017]] },
+      Angle:       { base:"rad",u:[["Radian","rad",1],["Degree","°",Math.PI/180],["Gradian","grad",Math.PI/200],["Arcminute","′",Math.PI/10800],["Arcsecond","″",Math.PI/648000],["Turn","turn",2*Math.PI]] },
+      Frequency:   { base:"Hz", u:[["Hertz","Hz",1],["Kilohertz","kHz",1e3],["Megahertz","MHz",1e6],["Gigahertz","GHz",1e9],["Rev/minute","rpm",1/60]] },
+      Data:        { base:"B",  u:[["Bit","bit",0.125],["Byte","B",1],["Kilobyte","kB",1e3],["Megabyte","MB",1e6],["Gigabyte","GB",1e9],["Terabyte","TB",1e12],["Kibibyte","KiB",1024],["Mebibyte","MiB",1048576],["Gibibyte","GiB",1073741824],["Tebibyte","TiB",1099511627776]] },
+      Charge:      { base:"C",  u:[["Coulomb","C",1],["Millicoulomb","mC",1e-3],["Microcoulomb","µC",1e-6],["Elementary charge","e",1.602176634e-19],["Ampere-hour","Ah",3600],["Milliampere-hour","mAh",3.6]] },
+      Amount:      { base:"mol",u:[["Mole","mol",1],["Millimole","mmol",1e-3],["Micromole","µmol",1e-6],["Kilomole","kmol",1000]] }
+    };
+    var U_PREFIXES = [
+      ["quetta","Q","10³⁰"],["ronna","R","10²⁷"],["yotta","Y","10²⁴"],["zetta","Z","10²¹"],["exa","E","10¹⁸"],
+      ["peta","P","10¹⁵"],["tera","T","10¹²"],["giga","G","10⁹"],["mega","M","10⁶"],["kilo","k","10³"],
+      ["hecto","h","10²"],["deca","da","10¹"],["—","—","10⁰"],["deci","d","10⁻¹"],["centi","c","10⁻²"],
+      ["milli","m","10⁻³"],["micro","µ","10⁻⁶"],["nano","n","10⁻⁹"],["pico","p","10⁻¹²"],["femto","f","10⁻¹⁵"],
+      ["atto","a","10⁻¹⁸"],["zepto","z","10⁻²¹"],["yocto","y","10⁻²⁴"],["ronto","r","10⁻²⁷"],["quecto","q","10⁻³⁰"]
+    ];
+    var U_SIBASE = [
+      ["Length","metre","m"],["Mass","kilogram","kg"],["Time","second","s"],["Electric current","ampere","A"],
+      ["Temperature","kelvin","K"],["Amount of substance","mole","mol"],["Luminous intensity","candela","cd"]
+    ];
+    var U_SIDERIVED = [
+      ["Frequency","hertz","Hz","s⁻¹"],["Force","newton","N","kg·m·s⁻²"],["Pressure","pascal","Pa","N·m⁻²"],
+      ["Energy","joule","J","N·m"],["Power","watt","W","J·s⁻¹"],["Charge","coulomb","C","A·s"],
+      ["Voltage","volt","V","W·A⁻¹"],["Capacitance","farad","F","C·V⁻¹"],["Resistance","ohm","Ω","V·A⁻¹"],
+      ["Conductance","siemens","S","A·V⁻¹"],["Magnetic flux","weber","Wb","V·s"],["Flux density","tesla","T","Wb·m⁻²"],
+      ["Inductance","henry","H","Wb·A⁻¹"],["Luminous flux","lumen","lm","cd·sr"],["Illuminance","lux","lx","lm·m⁻²"],
+      ["Catalytic activity","katal","kat","mol·s⁻¹"],["Radioactivity","becquerel","Bq","s⁻¹"],["Absorbed dose","gray","Gy","J·kg⁻¹"]
+    ];
+    var U_CONSTANTS = [
+      ["Speed of light","c","299 792 458","m·s⁻¹"],["Planck constant","h","6.62607015×10⁻³⁴","J·s"],
+      ["Reduced Planck","ℏ","1.054571817×10⁻³⁴","J·s"],["Gravitational","G","6.67430×10⁻¹¹","m³·kg⁻¹·s⁻²"],
+      ["Elementary charge","e","1.602176634×10⁻¹⁹","C"],["Boltzmann","k_B","1.380649×10⁻²³","J·K⁻¹"],
+      ["Avogadro","N_A","6.02214076×10²³","mol⁻¹"],["Gas constant","R","8.314462618","J·mol⁻¹·K⁻¹"],
+      ["Faraday","F","96 485.33212","C·mol⁻¹"],["Standard gravity","g₀","9.80665","m·s⁻²"],
+      ["Electron mass","mₑ","9.1093837015×10⁻³¹","kg"],["Proton mass","mₚ","1.67262192369×10⁻²⁷","kg"],
+      ["Atomic mass unit","u","1.66053906660×10⁻²⁷","kg"],["Vacuum permittivity","ε₀","8.8541878128×10⁻¹²","F·m⁻¹"],
+      ["Vacuum permeability","µ₀","1.25663706212×10⁻⁶","N·A⁻²"],["Stefan–Boltzmann","σ","5.670374419×10⁻⁸","W·m⁻²·K⁻⁴"],
+      ["Rydberg","R∞","1.0973731568160×10⁷","m⁻¹"],["Bohr radius","a₀","5.29177210903×10⁻¹¹","m"]
+    ];
+    function uFmt(x){
+      if (x === 0) return "0";
+      if (!isFinite(x)) return "—";
+      var a = Math.abs(x);
+      if (a < 1e-4 || a >= 1e10) return x.toExponential(6).replace(/\.?0+e/, "e");
+      return String(parseFloat(x.toPrecision(8)));
+    }
+
     var ROOMS = {
       "periodic-table": {
         name: "Periodic Table", kind: "Core hub", glyph: "⚛", color: "#d4a24c",
@@ -253,7 +375,7 @@
       chemistry: {
         name: "Chemistry", kind: "Matter", glyph: "🧪", color: "#e0794b",
         blurb: "Where the periodic table becomes reactions — bonding, equations, solutions, acids/bases, equilibrium, thermodynamics, kinetics, and organic foundations.",
-        status: "Populated — formulas, worked examples, and coursework links",
+        status: "Populated — formulas and worked examples",
         topics: [
           "Atoms & ions", "Elements & compounds", "Periodic trends", "Electron configuration", "Bonding",
           "Ionic bonds", "Covalent bonds", "Molecular geometry", "Intermolecular forces", "Chemical equations",
@@ -278,8 +400,7 @@
           { name: "Nernst equation", body: "E = E° − (RT / nF) ln Q", note: "cell potential away from standard conditions." },
           { name: "Electronegativity trend", body: "↑ across a period · ↓ down a group", note: "peaks at fluorine." },
           { name: "Ionization energy trend", body: "↑ across a period · ↓ down a group", note: "" },
-          { name: "Atomic radius trend", body: "↓ across a period · ↑ down a group", note: "" },
-          { name: "From my coursework archive", body: "Chemistry clusters: Chemistry Foundations · Organic Reactivity · Acid-Base &amp; Buffers · Thermodynamics &amp; Equilibrium · Electrochemistry.", note: "Original lecture material, preserved — open it from the archive links below." }
+          { name: "Atomic radius trend", body: "↓ across a period · ↑ down a group", note: "" }
         ],
         examples: [
           { q: "Molar mass of H₂O", steps: ["H: 2 × 1.008 = 2.016", "O: 1 × 16.00 = 16.00", "Add them"], ans: "<b>18.02 g/mol</b>" },
@@ -294,18 +415,12 @@
           { q: "Why does NaCl form? (connect to the table)", steps: ["Na (Z 11) loses 1e⁻ → Na⁺", "Cl (Z 17) gains 1e⁻ → Cl⁻", "Opposite charges attract"], ans: "<b>Na⁺Cl⁻</b> — open the Periodic Table room to inspect Na &amp; Cl" }
         ],
         links: [
-          { name: "Molar mass calculator", desc: "Sum atomic masses from a formula.", tag: "soon" },
-          { name: "Stoichiometry helper", desc: "Mole ratios from a balanced equation.", tag: "soon" },
-          { name: "Equation balancer", desc: "Balance reactions automatically.", tag: "soon" },
-          { name: "Concentration calculator", desc: "Molarity, mass %, ppm.", tag: "soon" },
-          { name: "Dilution calculator", desc: "M₁V₁ = M₂V₂ solver.", tag: "soon" },
-          { name: "pH calculator", desc: "pH ↔ [H⁺]; strong & weak acids.", tag: "soon" },
-          { name: "Buffer calculator", desc: "Henderson–Hasselbalch.", tag: "soon" },
-          { name: "Equilibrium helper", desc: "K, Q, and ICE tables.", tag: "soon" },
-          { name: "Redox helper", desc: "Half-reactions & balancing.", tag: "soon" },
-          { name: "Organic functional groups", desc: "Guide to the common groups.", tag: "soon" },
           { name: "Open Periodic Table", desc: "The elements behind every reaction.", href: "room.html?room=periodic-table", tag: "room" },
-          { name: "Data, Symbols & Units", desc: "Chemical notation, units & constants.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Data, Symbols & Units", desc: "Chemical notation, units, constants & calculator.", href: "room.html?room=data-analysis", tag: "room" },
+          { name: "Open Biochemistry", desc: "Where chemistry meets biology — enzymes, metabolism.", href: "room.html?room=biochemistry", tag: "room" },
+          { name: "Open Lab Methods", desc: "Solution prep, titrations, chromatography, calibration.", href: "room.html?room=lab-methods", tag: "room" },
+          { name: "Open Physics & Math", desc: "Energy, gas laws, and measurement.", href: "room.html?room=physics", tag: "room" },
+          { name: "Math Lab", desc: "Algebra, calculus, statistics — the full toolset.", href: "../math/", tag: "math" },
           { name: "Class Archive", desc: "All preserved coursework + study tools.", href: "room.html?room=class-archive", tag: "room" },
           { name: "Cluster: Chemistry Foundations", desc: "Atomic structure, stoichiometry, gas laws.", href: "cluster.html?id=chem-foundations", tag: "archive" },
           { name: "Cluster: Organic Reactivity", desc: "Functional groups, mechanisms, NMR/IR/MS (113 files).", href: "cluster.html?id=organic-reactivity", tag: "archive" },
@@ -324,8 +439,8 @@
 
       biology: {
         name: "Biology", kind: "Life", glyph: "🌿", color: "#6fae5f",
-        blurb: "The broad life-science room — cells, genes, immunity, the body, plants, and evolution, backed by the deepest part of the coursework archive.",
-        status: "Populated — broad reference, examples, and coursework links",
+        blurb: "The broad life-science room — cells, genes, immunity, the body, plants, and evolution.",
+        status: "Populated — broad reference and worked examples",
         topics: [
           "Cells", "Organelles", "Membranes", "Membrane transport", "DNA & genes", "Replication",
           "Transcription", "Translation", "Genetics", "Gene regulation", "Cell cycle", "Cell death",
@@ -353,8 +468,7 @@
           { name: "Vaccines", body: "Train adaptive immunity with a safe antigen → memory cells → fast response on real exposure.", note: "" },
           { name: "Homeostasis", body: "Maintaining stable internal conditions, usually by negative feedback.", note: "" },
           { name: "Natural selection", body: "Variation + heritability + differential survival/reproduction → adaptation over generations.", note: "" },
-          { name: "Bioinformatics / BLAST", body: "Align sequences to find homology; BLAST searches databases for similar sequences; build phylogenetic trees.", note: "" },
-          { name: "From my coursework archive", body: "Strong clusters: Genetic Information · Cellular Machinery · Immunity &amp; Disease · Human Body Systems · Membrane Transport · Cancer/Gene Regulation · Biomolecules &amp; Metabolism.", note: "Original lecture material, preserved — open it from the links below." }
+          { name: "Bioinformatics / BLAST", body: "Align sequences to find homology; BLAST searches databases for similar sequences; build phylogenetic trees.", note: "" }
         ],
         examples: [
           { q: "Identify the organelle from its job", steps: ["\"Makes ATP\" → mitochondrion", "\"Sorts & ships proteins\" → Golgi", "\"Builds protein\" → ribosome"], ans: "match <b>function → organelle</b>" },
@@ -365,7 +479,6 @@
           { q: "Antibody–antigen binding", steps: ["Variable region (paratope) binds a specific epitope", "Lock-and-key specificity"], ans: "tags the antigen for <b>destruction</b>" },
           { q: "Why does a vaccine work?", steps: ["Safe antigen primes B & T cells", "Memory cells persist", "Real exposure → fast, strong response"], ans: "pre-built <b>immune memory</b>" },
           { q: "Connect membrane transport to Biochemistry", steps: ["Na⁺/K⁺-ATPase hydrolyzes ATP", "Pumps 3 Na⁺ out / 2 K⁺ in"], ans: "active transport runs on <b>ATP</b> — see Biochemistry" },
-          { q: "Where do my genetics lectures live?", steps: ["Replication, transcription, translation, genetics", "Preserved in the archive"], ans: "the <b>Genetic Information</b> cluster (link below)" },
           { q: "Connect biology data to analysis", steps: ["Gel, qPCR, growth-curve, assay data", "Plot, control, and test it"], ans: "use <b>Data & Analysis</b> + Math Lab" }
         ],
         links: [
@@ -431,8 +544,7 @@
           { name: "RNA vs DNA", body: "RNA: single-stranded, ribose, uracil (U). DNA: double-stranded, deoxyribose, thymine (T).", note: "" },
           { name: "Membrane phospholipid", body: "Amphipathic: hydrophilic head + two hydrophobic tails → forms a bilayer.", note: "" },
           { name: "Hydrophobic effect", body: "Nonpolar groups cluster to minimize disruption of water's H-bonding.", note: "Drives protein folding and membrane assembly." },
-          { name: "Central dogma", body: "DNA → (transcription) → RNA → (translation) → protein.", note: "" },
-          { name: "From my coursework archive", body: "Relevant clusters: Biomolecules &amp; Metabolism · Chemistry Foundations · Acid-Base &amp; Buffers · Cellular Machinery · Genetic Information · Membrane Transport.", note: "Original lecture material, preserved — open it from the archive links below." }
+          { name: "Central dogma", body: "DNA → (transcription) → RNA → (translation) → protein.", note: "" }
         ],
         examples: [
           { q: "Identify the parts of an amino acid", steps: ["Find the central Cα", "Attached: —NH₂, —COOH, —H, and R"], ans: "amino + carboxyl + H + <b>R side chain</b> on Cα" },
@@ -557,8 +669,7 @@
           { name: "Area under curve (charge)", body: "∫ I dt = charge transferred; trapezoidal integration on a trace.", note: "" },
           { name: "Decay time constant τ", body: "Single-exponential fit of the decay; reflects receptor/channel kinetics & clearance.", note: "Units: ms." },
           { name: "Signal-to-noise ratio", body: "SNR = signal amplitude / baseline noise (σ).", note: "Higher = more reliable event detection." },
-          { name: "Whole-cell recording", body: "Rupture the patch → cytoplasmic access → clamp the whole cell.", note: "Quantal view: evoked ≈ N × quantal (≈ mEPSC) size." },
-          { name: "From my coursework archive", body: "Relevant clusters: Cellular Machinery · Membrane Transport · Genetic Information · Biomolecules &amp; Metabolism · Human Body Systems · Quantitative Tools.", note: "Original lecture material, preserved — open it from the archive links below." }
+          { name: "Whole-cell recording", body: "Rupture the patch → cytoplasmic access → clamp the whole cell.", note: "Quantal view: evoked ≈ N × quantal (≈ mEPSC) size." }
         ],
         examples: [
           { q: "How do Na⁺ & K⁺ gradients set V<sub>m</sub>?", steps: ["K⁺ high inside, Na⁺ high outside", "At rest the membrane is mostly K⁺-permeable", "So V<sub>m</sub> sits near E<sub>K</sub>"], ans: "resting V<sub>m</sub> ≈ <b>E<sub>K</sub></b> (~−70 mV); Na⁺ influx depolarizes" },
@@ -635,8 +746,7 @@
           { name: "Controls & replicates", body: "Positive (expected signal) · negative / vehicle (no signal) · internal controls. Technical vs biological replicates — report n.", note: "" },
           { name: "Troubleshooting logic", body: "Change ONE variable · check controls & reagents first · reproduce the failure · log what you tried.", note: "" },
           { name: "Lab notebook standards", body: "Date · aim · materials & lot numbers · exact protocol & settings · observations · raw-data location · conclusion.", note: "Write it as you go; reproducible by a stranger." },
-          { name: "Data quality checklist", body: "Baseline stable? · SNR acceptable? · controls passed? · n adequate? · units & calibration correct? · artifacts flagged?", note: "" },
-          { name: "From my coursework archive", body: "Method-relevant material is <b>scattered</b>, not one subject: immuno techniques (Immunity), bioinformatics (Genetic Information), wet-labs (Elementary Biology), assays & purification (Biomolecules).", note: "Use the cluster links below." }
+          { name: "Data quality checklist", body: "Baseline stable? · SNR acceptable? · controls passed? · n adequate? · units & calibration correct? · artifacts flagged?", note: "" }
         ],
         examples: [
           { q: "Make 1 L of 0.5 M NaCl", steps: ["moles = 0.5 mol/L × 1 L = 0.5 mol", "mass = n × M = 0.5 × 58.44", "Dissolve, then bring to 1 L"], ans: "<b>29.2 g</b> NaCl" },
@@ -686,7 +796,7 @@
       "data-analysis": {
         name: "Data, Symbols & Units", kind: "Evidence & notation", glyph: "📊", color: "#5fb0a8",
         blurb: "The bench reference for turning measurements into conclusions — experimental design, statistics, traces, and error — plus the shared units, symbols, and notation of science.",
-        status: "Reference room — wired to Math Lab's Statistics, Time-Series, Graph Lab & Symbols",
+        status: "Live tools — units converter & calculator — plus reference, wired to Math Lab",
         topics: [
           "Experimental design", "Variables", "Controls", "Replicates", "Graphing", "Statistics",
           "Time-series analysis", "Error & uncertainty", "Significant figures", "SI base units",
@@ -708,8 +818,7 @@
           { name: "Chemistry notation", body: "H₂O · Na⁺ · Cl⁻ · ΔG · K · pH · mol/L · e⁻ · subscripts (count) & superscripts (charge).", note: "" },
           { name: "Biology notation", body: "DNA / RNA · A–T, G–C · 5′→3′ · genotype/phenotype · [S], K<sub>m</sub>, V<sub>max</sub>.", note: "" },
           { name: "Ephys notation", body: "V<sub>m</sub> · E<sub>ion</sub> · pA · mV · MΩ · pF · ms · τ · R<sub>a</sub> · R<sub>m</sub>.", note: "" },
-          { name: "Imaging notation", body: "ΔF/F · F₀ (baseline) · GCaMP (Ca²⁺) · iGluSnFR (glutamate).", note: "" },
-          { name: "From my coursework archive", body: "The <b>Quantitative Tools</b> cluster (calculus, physics, measurement) is <b>sparse</b> in the archive — most quantitative work lives in Math Lab.", note: "" }
+          { name: "Imaging notation", body: "ΔF/F · F₀ (baseline) · GCaMP (Ca²⁺) · iGluSnFR (glutamate).", note: "" }
         ],
         links: [
           { name: "Math Lab · Statistics", desc: "Distributions, regression, hypothesis tests.", href: "../math/room.html?room=statistics", tag: "math" },
@@ -740,38 +849,6 @@
         notesTall: true,
         notesPlaceholder: "# Concept&#10;&#10;# Definition&#10;&#10;# Why it matters&#10;&#10;# Example&#10;&#10;# Source (class / cluster)"
       },
-
-      "class-archive": {
-        name: "Class Archive", kind: "Preserved coursework", glyph: "🗄", color: "#9aa6b2",
-        blurb: "Five years of college coursework, preserved and searchable — the original study tools, untouched.",
-        status: "Preserved — nothing deleted; some material still to sort",
-        callout: "<b>Everything is preserved.</b> The tools below read your original extracted coursework (482 source files · 14 clusters · 2,039 glossary terms). Material without a clean science room — <b>Humanities &amp; Gen Ed</b> (Earth Science, Psychology, Religion) — waits in <b>To Sort</b> below.",
-        topics: ["Lecture notes", "Reference sheets", "Assignments", "Study material", "OCR'd content", "14 topic clusters", "2,039 glossary terms", "To Sort"],
-        cards: [
-          { name: "What's inside", body: "482 source files · 14 clusters · 2,039 glossary terms across chemistry, biology, biochemistry, math/physics, and gen-ed.", note: "" },
-          { name: "To Sort", body: "Humanities &amp; Gen Ed — Earth Science, Psychology, Religion.", note: "Parked here during the Science restructure until it gets a proper home (science room or a separate space)." }
-        ],
-        links: [
-          { name: "Tutoring Center", desc: "Flashcards & quizzes over the glossary, by discipline or bridge concept.", href: "tutor.html", tag: "archive" },
-          { name: "Browse by Cluster (all)", desc: "493 files across 14 clusters, slide-by-slide (OCR included).", href: "cluster.html", tag: "archive" },
-          { name: "Search Everything", desc: "Full-text across all lectures + 2,039 glossary terms.", href: "search.html", tag: "archive" },
-          { name: "Glossary Browser", desc: "All 2,039 terms with definitions & related concepts.", href: "glossary.html", tag: "archive" },
-          { name: "Chemistry Foundations", desc: "Atomic structure, stoichiometry, gas laws, acid-base, thermo.", href: "cluster.html?id=chem-foundations", tag: "archive" },
-          { name: "Organic Reactivity", desc: "Functional groups, mechanisms, NMR/IR/MS (113 files).", href: "cluster.html?id=organic-reactivity", tag: "archive" },
-          { name: "Biomolecules & Metabolism", desc: "Proteins, enzymes, glycolysis, TCA, ox-phos (~118 files).", href: "cluster.html?id=biomolecules", tag: "archive" },
-          { name: "Cellular Machinery", desc: "Membranes, transport, ER/Golgi, cytoskeleton.", href: "cluster.html?id=cellular-machinery", tag: "archive" },
-          { name: "Genetic Information", desc: "Replication, transcription, translation, bioinformatics.", href: "cluster.html?id=genetic-information", tag: "archive" },
-          { name: "Immunity & Disease", desc: "Innate/adaptive immunity, vaccines, autoimmunity.", href: "cluster.html?id=immunity-disease", tag: "archive" },
-          { name: "Human Body Systems", desc: "Anatomy, physiology, organ systems, homeostasis.", href: "cluster.html?id=human-body", tag: "archive" },
-          { name: "Quantitative Tools", desc: "Calculus, physics, measurement (sparse).", href: "cluster.html?id=quantitative-tools", tag: "archive" },
-          { name: "Humanities & Gen Ed — To Sort", desc: "Earth science, psychology, religion — not yet a science room.", href: "cluster.html?id=humanities", tag: "archive" },
-          { name: "Acid-Base & Buffers", desc: "pH, Ka/Kb, buffers, equivalence points.", href: "cluster.html?id=acid-base-buffers", tag: "archive" },
-          { name: "Thermodynamics & Equilibrium", desc: "Gibbs, K, Q, Le Chatelier.", href: "cluster.html?id=thermo-equilibrium", tag: "archive" },
-          { name: "Electrochemistry", desc: "Cell potential, Nernst, Faraday, redox.", href: "cluster.html?id=electrochemistry", tag: "archive" },
-          { name: "Membrane Transport & Endocytosis", desc: "Endocytosis, receptor-mediated uptake.", href: "cluster.html?id=membrane-transport", tag: "archive" },
-          { name: "Cancer, Cell Death & Gene Regulation", desc: "Oncogenes, apoptosis, enhancers, CRISPR.", href: "cluster.html?id=cancer-gene-regulation", tag: "archive" }
-        ]
-      }
     };
 
     function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
@@ -804,6 +881,10 @@
     if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
 
     if (key === "periodic-table") h += periodicTableBlock();
+    if (key === "data-analysis") h += unitsBlock();
+    if (key === "data-analysis") h += calcBlock();
+    if (key === "chemistry") h += chemBlock();
+    if (key === "notes") h += notesLibraryBlock();
 
     if (room.topics) {
       h += '<section class="block"><div class="block-head"><h2>Core Topics</h2><span class="tag">Map</span><p>The territory this room covers.</p></div>' +
@@ -811,7 +892,7 @@
     }
 
     if (room.cards) {
-      h += '<section class="block"><div class="block-head"><h2>Reference Cards</h2><span class="tag">Bench notes</span><p>Compact reminders — fuller material in the Class Archive.</p></div>' +
+      h += '<section class="block"><div class="block-head"><h2>Reference Cards</h2><span class="tag">Bench notes</span><p>Compact reminders for the bench.</p></div>' +
         '<div class="card-grid">' + room.cards.map(function (c) {
           return '<div class="card"><div class="c-name">' + esc(c.name) + '</div><div class="c-body">' + c.body + '</div>' +
             (c.note ? '<div class="c-note">' + c.note + '</div>' : '') + '</div>';
@@ -828,13 +909,23 @@
     }
 
     if (room.links) {
-      h += '<section class="block"><div class="block-head"><h2>Tools &amp; Connections</h2><span class="tag">Links</span><p>Where this room connects across the labs and your coursework.</p></div>' +
-        '<div class="links">' + room.links.map(function (l) {
-          var cls = l.href ? "lnk live" : "lnk soon";
-          var badge = '<span class="l-badge">' + esc(TAGLABEL[l.tag] || "soon") + '</span>';
-          var inner = badge + '<div class="l-name">' + esc(l.name) + '</div><div class="l-desc">' + esc(l.desc) + '</div>';
-          return l.href ? '<a class="' + cls + '" href="' + l.href + '">' + inner + '</a>' : '<div class="' + cls + '">' + inner + '</div>';
-        }).join("") + '</div></section>';
+      // The coursework Class Archive was removed from the Science Lab; hide any
+      // links into it (archive clusters, tutor/search/glossary, class-archive room).
+      var visibleLinks = room.links.filter(function (l) {
+        if (l.tag === "archive") return false;
+        if (l.href && /(?:^|[?&])room=class-archive\b/.test(l.href)) return false;
+        if (l.href && /^(?:cluster|tutor|search|glossary)\.html/.test(l.href)) return false;
+        return true;
+      });
+      if (visibleLinks.length) {
+        h += '<section class="block"><div class="block-head"><h2>Tools &amp; Connections</h2><span class="tag">Links</span><p>Where this room connects across the labs.</p></div>' +
+          '<div class="links">' + visibleLinks.map(function (l) {
+            var cls = l.href ? "lnk live" : "lnk soon";
+            var badge = '<span class="l-badge">' + esc(TAGLABEL[l.tag] || "soon") + '</span>';
+            var inner = badge + '<div class="l-name">' + esc(l.name) + '</div><div class="l-desc">' + esc(l.desc) + '</div>';
+            return l.href ? '<a class="' + cls + '" href="' + l.href + '">' + inner + '</a>' : '<div class="' + cls + '">' + inner + '</div>';
+          }).join("") + '</div></section>';
+      }
     }
 
     // Notes (saved locally per room, key scilab.notes.<room>)
@@ -847,6 +938,10 @@
     main.innerHTML = h;
     initNotes(key);
     if (key === "periodic-table") initPeriodicTable();
+    if (key === "data-analysis") initUnits();
+    if (key === "data-analysis") initCalc();
+    if (key === "chemistry") initChem();
+    if (key === "notes") initNotesLibrary();
 
     function initNotes(roomKey) {
       var ta = document.getElementById("sciNotes");
@@ -888,6 +983,334 @@
       if (el.c === "actinide") return { x: 3 + (el.z - 89), y: 9 };
       return { x: el.g, y: el.p };
     }
+    /* ── Master units table / live converter ───────────────────── */
+    function unitsBlock() {
+      var prefRows = U_PREFIXES.map(function (p) { return '<tr><td>' + esc(p[0]) + '</td><td class="u-sym">' + esc(p[1]) + '</td><td class="u-val">' + p[2] + '</td></tr>'; }).join("");
+      var baseRows = U_SIBASE.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td class="u-sym">' + esc(r[2]) + '</td></tr>'; }).join("");
+      var derRows = U_SIDERIVED.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td>' + esc(r[1]) + '</td><td class="u-sym">' + esc(r[2]) + '</td><td class="u-sym">' + esc(r[3]) + '</td></tr>'; }).join("");
+      var constRows = U_CONSTANTS.map(function (r) { return '<tr><td>' + esc(r[0]) + '</td><td class="u-sym">' + esc(r[1]) + '</td><td class="u-val">' + r[2] + '</td><td class="u-sym">' + esc(r[3]) + '</td></tr>'; }).join("");
+      var catOpts = Object.keys(UNITS).map(function (k) { return '<option>' + k + '</option>'; }).join("");
+      return '<section class="block"><div class="block-head"><h2>Master Units Table</h2><span class="tag">Instrument</span>' +
+        '<p>Live converter across 16 quantities, plus SI prefixes, base &amp; derived units, and physical constants. Type a value, pick a unit, read every equivalent.</p></div>' +
+        '<div class="u-tabs">' +
+          '<button class="u-tab on" type="button" data-pane="convert">Convert</button>' +
+          '<button class="u-tab" type="button" data-pane="prefixes">SI Prefixes</button>' +
+          '<button class="u-tab" type="button" data-pane="si">SI Units</button>' +
+          '<button class="u-tab" type="button" data-pane="constants">Constants</button>' +
+        '</div>' +
+        '<div class="u-pane on" data-pane="convert">' +
+          '<div class="u-row"><select class="u-select" id="uCat">' + catOpts + '</select></div>' +
+          '<div class="u-row"><input class="u-input" id="uVal" type="number" step="any" value="1"><select class="u-select" id="uFrom"></select></div>' +
+          '<input class="u-search" id="uSearch" type="text" placeholder="Filter units in this quantity…" autocomplete="off" spellcheck="false">' +
+          '<div class="u-scroll"><table class="u-table"><thead><tr><th>Unit</th><th>Symbol</th><th style="text-align:right">Value</th></tr></thead><tbody id="uBody"></tbody></table></div>' +
+          '<div class="u-note" id="uNote"></div>' +
+        '</div>' +
+        '<div class="u-pane" data-pane="prefixes"><div class="u-scroll"><table class="u-table"><thead><tr><th>Prefix</th><th>Symbol</th><th style="text-align:right">Factor</th></tr></thead><tbody>' + prefRows + '</tbody></table></div></div>' +
+        '<div class="u-pane" data-pane="si"><div class="u-scroll"><table class="u-table"><thead><tr><th>Base quantity</th><th>Unit</th><th>Symbol</th></tr></thead><tbody>' + baseRows + '</tbody></table></div>' +
+          '<div class="u-scroll" style="margin-top:0.7rem"><table class="u-table"><thead><tr><th>Derived</th><th>Unit</th><th>Symbol</th><th>In SI</th></tr></thead><tbody>' + derRows + '</tbody></table></div></div>' +
+        '<div class="u-pane" data-pane="constants"><div class="u-scroll"><table class="u-table"><thead><tr><th>Constant</th><th>Sym</th><th style="text-align:right">Value</th><th>Unit</th></tr></thead><tbody>' + constRows + '</tbody></table></div></div>' +
+        '</section>';
+    }
+    function initUnits() {
+      var catSel = document.getElementById("uCat");
+      var fromSel = document.getElementById("uFrom");
+      var valInput = document.getElementById("uVal");
+      var searchInput = document.getElementById("uSearch");
+      var body = document.getElementById("uBody");
+      var note = document.getElementById("uNote");
+      if (!catSel || !body) return;
+      var state = { cat: catSel.value || Object.keys(UNITS)[0], fromIdx: 0 };
+
+      var block = catSel.closest(".block");
+      Array.prototype.forEach.call(block.querySelectorAll(".u-tab"), function (t) {
+        t.addEventListener("click", function () {
+          Array.prototype.forEach.call(block.querySelectorAll(".u-tab"), function (x) { x.classList.remove("on"); });
+          Array.prototype.forEach.call(block.querySelectorAll(".u-pane"), function (x) { x.classList.remove("on"); });
+          t.classList.add("on");
+          block.querySelector('.u-pane[data-pane="' + t.getAttribute("data-pane") + '"]').classList.add("on");
+        });
+      });
+
+      function fillFrom() {
+        var us = UNITS[state.cat].u;
+        fromSel.innerHTML = us.map(function (u, i) { return '<option value="' + i + '">' + esc(u[0]) + ' (' + esc(u[1]) + ')</option>'; }).join("");
+        fromSel.value = state.fromIdx;
+      }
+      function toBase(spec, unit, v) { return spec.special ? unit[2](v) : v * unit[2]; }
+      function fromBase(spec, unit, b) { return spec.special ? unit[3](b) : b / unit[2]; }
+      function compute() {
+        var spec = UNITS[state.cat];
+        var from = spec.u[state.fromIdx];
+        var v = parseFloat(valInput.value);
+        if (isNaN(v)) v = 0;
+        var base = toBase(spec, from, v);
+        var q = (searchInput.value || "").toLowerCase();
+        body.innerHTML = spec.u.filter(function (u) {
+          return !q || u[0].toLowerCase().indexOf(q) >= 0 || u[1].toLowerCase().indexOf(q) >= 0;
+        }).map(function (u) {
+          var out = fromBase(spec, u, base);
+          var cls = (u === from) ? ' class="from"' : '';
+          return '<tr' + cls + '><td>' + esc(u[0]) + '</td><td class="u-sym">' + esc(u[1]) + '</td><td class="u-val">' + uFmt(out) + '</td></tr>';
+        }).join("");
+        note.textContent = spec.special
+          ? "Base: " + spec.base + ". Temperature conversions account for scale offsets, not just ratios."
+          : "Converting from " + from[0] + " (" + from[1] + "). Base unit " + spec.base + "; values use exact definitional factors.";
+      }
+      catSel.addEventListener("change", function () { state.cat = catSel.value; state.fromIdx = 0; fillFrom(); compute(); });
+      fromSel.addEventListener("change", function () { state.fromIdx = +fromSel.value; compute(); });
+      valInput.addEventListener("input", compute);
+      searchInput.addEventListener("input", compute);
+      fillFrom(); compute();
+    }
+
+    /* ── Chemistry calculators (chemistry room) ─────────────────── */
+    function chemBlock() {
+      return '<section class="block"><div class="block-head"><h2>Chemistry Calculators</h2><span class="tag">Instrument</span>' +
+        '<p>Molar mass, molarity, dilution, pH, and buffer pH — the everyday chem solvers, live.</p></div>' +
+        '<div class="u-tabs" id="chemTabs">' +
+          '<button class="u-tab on" type="button" data-pane="molar">Molar mass</button>' +
+          '<button class="u-tab" type="button" data-pane="molarity">Molarity</button>' +
+          '<button class="u-tab" type="button" data-pane="dilution">Dilution</button>' +
+          '<button class="u-tab" type="button" data-pane="ph">pH</button>' +
+          '<button class="u-tab" type="button" data-pane="buffer">Buffer</button>' +
+        '</div>' +
+        '<div class="chem">' +
+          '<div class="u-pane on" data-pane="molar">' +
+            '<div class="u-row"><input class="u-input" id="mmFormula" style="width:15rem" placeholder="e.g. Ca(OH)2, NaCl, C6H12O6" autocomplete="off" spellcheck="false"></div>' +
+            '<div class="chem-out" id="mmOut">—</div>' +
+            '<div class="u-note">Supports parentheses and hydrate dots (e.g. CuSO4·5H2O). Element symbols are case-sensitive.</div>' +
+          '</div>' +
+          '<div class="u-pane" data-pane="molarity">' +
+            '<div class="u-row"><label>Moles (mol)</label><input class="u-input" id="molMol" type="number" step="any" value="0.5"></div>' +
+            '<div class="u-row"><label>Volume (L)</label><input class="u-input" id="molVol" type="number" step="any" value="1"></div>' +
+            '<div class="chem-out" id="molOut">—</div>' +
+            '<div class="u-note">Molarity M = moles of solute / litres of solution.</div>' +
+          '</div>' +
+          '<div class="u-pane" data-pane="dilution">' +
+            '<div class="u-row"><label>Stock conc. C₁</label><input class="u-input" id="dC1" type="number" step="any" value="2"></div>' +
+            '<div class="u-row"><label>Target conc. C₂</label><input class="u-input" id="dC2" type="number" step="any" value="0.5"></div>' +
+            '<div class="u-row"><label>Final volume V₂</label><input class="u-input" id="dV2" type="number" step="any" value="100"></div>' +
+            '<div class="chem-out" id="dOut">—</div>' +
+            '<div class="u-note">C₁V₁ = C₂V₂. Keep both concentrations in the same units, and the volume in whatever unit you want V₁ back in.</div>' +
+          '</div>' +
+          '<div class="u-pane" data-pane="ph">' +
+            '<div class="u-row"><label>pH</label><input class="u-input" id="phPH" type="number" step="any" value="7"></div>' +
+            '<div class="u-row"><label>[H⁺] (M)</label><input class="u-input" id="phH" type="number" step="any"></div>' +
+            '<div class="chem-out" id="phOut">—</div>' +
+            '<div class="u-note">pH = −log₁₀[H⁺]. Edit either field; the other follows.</div>' +
+          '</div>' +
+          '<div class="u-pane" data-pane="buffer">' +
+            '<div class="u-row"><label>pKₐ</label><input class="u-input" id="bfPKa" type="number" step="any" value="4.74"></div>' +
+            '<div class="u-row"><label>[A⁻] (base)</label><input class="u-input" id="bfA" type="number" step="any" value="1"></div>' +
+            '<div class="u-row"><label>[HA] (acid)</label><input class="u-input" id="bfHA" type="number" step="any" value="1"></div>' +
+            '<div class="chem-out" id="bfOut">—</div>' +
+            '<div class="u-note">Henderson–Hasselbalch: pH = pKₐ + log₁₀([A⁻]/[HA]).</div>' +
+          '</div>' +
+        '</div></section>';
+    }
+    function initChem() {
+      var tabsEl = document.getElementById("chemTabs");
+      if (!tabsEl) return;
+      var block = tabsEl.closest(".block");
+      Array.prototype.forEach.call(block.querySelectorAll("#chemTabs .u-tab"), function (t) {
+        t.addEventListener("click", function () {
+          Array.prototype.forEach.call(block.querySelectorAll("#chemTabs .u-tab"), function (x) { x.classList.remove("on"); });
+          Array.prototype.forEach.call(block.querySelectorAll(".chem .u-pane"), function (x) { x.classList.remove("on"); });
+          t.classList.add("on");
+          block.querySelector('.chem .u-pane[data-pane="' + t.getAttribute("data-pane") + '"]').classList.add("on");
+        });
+      });
+
+      // Element symbol → atomic mass, from the periodic-table data.
+      var MASS = {};
+      for (var i = 0; i < ELEMENTS.length; i++) {
+        var m = ELEMENTS[i].m;
+        if (typeof m === "string") m = parseFloat(m.replace(/[\[\]]/g, ""));
+        MASS[ELEMENTS[i].s] = m;
+      }
+      function parseGroup(str) {
+        var idx = 0;
+        function count() {
+          var num = "";
+          while (idx < str.length && /[0-9]/.test(str[idx])) { num += str[idx]; idx++; }
+          return num === "" ? 1 : parseInt(num, 10);
+        }
+        function group() {
+          var mass = 0;
+          while (idx < str.length) {
+            var ch = str[idx];
+            if (ch === "(" || ch === "[") { idx++; mass += group() * count(); }
+            else if (ch === ")" || ch === "]") { idx++; return mass; }
+            else if (/[A-Z]/.test(ch)) {
+              var sym = ch; idx++;
+              while (idx < str.length && /[a-z]/.test(str[idx])) { sym += str[idx]; idx++; }
+              if (!(sym in MASS)) throw new Error("Unknown element “" + sym + "”");
+              mass += MASS[sym] * count();
+            } else throw new Error("Unexpected “" + ch + "”");
+          }
+          return mass;
+        }
+        return group();
+      }
+      function molarMass(f) {
+        f = f.replace(/\s+/g, "");
+        if (!f) throw new Error("Enter a formula");
+        var segs = f.split(/[.·]/);
+        var total = 0;
+        for (var s = 0; s < segs.length; s++) {
+          var seg = segs[s]; if (!seg) continue;
+          var coef = 1;
+          var mm = seg.match(/^(\d+)([A-Za-z(\[].*)$/);
+          if (mm) { coef = parseInt(mm[1], 10); seg = mm[2]; }
+          total += coef * parseGroup(seg);
+        }
+        return total;
+      }
+
+      var mmF = document.getElementById("mmFormula"), mmOut = document.getElementById("mmOut");
+      function doMM() {
+        var v = mmF.value.trim();
+        if (!v) { mmOut.textContent = "—"; return; }
+        try { mmOut.innerHTML = "<b>" + uFmt(molarMass(v)) + "</b> g/mol"; }
+        catch (e) { mmOut.textContent = e.message || "Invalid formula"; }
+      }
+      mmF.addEventListener("input", doMM); doMM();
+
+      var molMol = document.getElementById("molMol"), molVol = document.getElementById("molVol"), molOut = document.getElementById("molOut");
+      function doMol() {
+        var n = parseFloat(molMol.value), V = parseFloat(molVol.value);
+        if (isNaN(n) || isNaN(V) || V === 0) { molOut.textContent = "—"; return; }
+        molOut.innerHTML = "<b>" + uFmt(n / V) + "</b> mol/L (M)";
+      }
+      molMol.addEventListener("input", doMol); molVol.addEventListener("input", doMol); doMol();
+
+      var dC1 = document.getElementById("dC1"), dC2 = document.getElementById("dC2"), dV2 = document.getElementById("dV2"), dOut = document.getElementById("dOut");
+      function doDil() {
+        var C1 = parseFloat(dC1.value), C2 = parseFloat(dC2.value), V2 = parseFloat(dV2.value);
+        if (isNaN(C1) || isNaN(C2) || isNaN(V2) || C1 === 0) { dOut.textContent = "—"; return; }
+        var V1 = C2 * V2 / C1;
+        if (V1 > V2) { dOut.innerHTML = "Target is more concentrated than the stock — can't reach it by dilution."; return; }
+        dOut.innerHTML = "Take <b>" + uFmt(V1) + "</b> of stock, add <b>" + uFmt(V2 - V1) + "</b> diluent → " + uFmt(V2) + " total.";
+      }
+      dC1.addEventListener("input", doDil); dC2.addEventListener("input", doDil); dV2.addEventListener("input", doDil); doDil();
+
+      var phPH = document.getElementById("phPH"), phH = document.getElementById("phH"), phOut = document.getElementById("phOut");
+      function showPH(pH) {
+        phOut.innerHTML = "pH = <b>" + uFmt(pH) + "</b> · pOH = <b>" + uFmt(14 - pH) + "</b> · [OH⁻] = <b>" + Math.pow(10, -(14 - pH)).toExponential(3) + "</b> M";
+      }
+      function fromPH() {
+        var pH = parseFloat(phPH.value);
+        if (isNaN(pH)) { phOut.textContent = "—"; return; }
+        phH.value = Math.pow(10, -pH).toExponential(3);
+        showPH(pH);
+      }
+      function fromH() {
+        var H = parseFloat(phH.value);
+        if (isNaN(H) || H <= 0) { phOut.textContent = "—"; return; }
+        var pH = -Math.log(H) / Math.LN10;
+        phPH.value = parseFloat(pH.toFixed(3));
+        showPH(pH);
+      }
+      phPH.addEventListener("input", fromPH); phH.addEventListener("input", fromH); fromPH();
+
+      var bfPKa = document.getElementById("bfPKa"), bfA = document.getElementById("bfA"), bfHA = document.getElementById("bfHA"), bfOut = document.getElementById("bfOut");
+      function doBuf() {
+        var pKa = parseFloat(bfPKa.value), A = parseFloat(bfA.value), HA = parseFloat(bfHA.value);
+        if (isNaN(pKa) || isNaN(A) || isNaN(HA) || A <= 0 || HA <= 0) { bfOut.textContent = "—"; return; }
+        bfOut.innerHTML = "pH = <b>" + uFmt(pKa + Math.log(A / HA) / Math.LN10) + "</b>";
+      }
+      bfPKa.addEventListener("input", doBuf); bfA.addEventListener("input", doBuf); bfHA.addEventListener("input", doBuf); doBuf();
+    }
+
+    /* ── Notes library (notes room) — gathers every room's notes ── */
+    function notesLibraryBlock() {
+      return '<section class="block"><div class="block-head"><h2>Your notes across every room</h2><span class="tag">Library</span>' +
+        '<p>Every room has its own notebook saved in this browser; they are gathered here. The box lower down is a general scratchpad.</p></div>' +
+        '<div id="notesLib"></div></section>';
+    }
+    function initNotesLibrary() {
+      var lib = document.getElementById("notesLib");
+      if (!lib) return;
+      var html = "";
+      var keys = Object.keys(ROOMS);
+      for (var i = 0; i < keys.length; i++) {
+        var k = keys[i];
+        if (k === "notes") continue;
+        var v = "";
+        try { v = window.localStorage.getItem("scilab.notes." + k) || ""; } catch (e) {}
+        if (!v.replace(/\s/g, "")) continue;
+        var snip = v.length > 220 ? v.slice(0, 220) + "…" : v;
+        html += '<a class="notelib-item" href="room.html?room=' + k + '">' +
+          '<div class="notelib-room">' + esc(ROOMS[k].glyph + "  " + ROOMS[k].name) + '</div>' +
+          '<div class="notelib-snip">' + esc(snip) + '</div></a>';
+      }
+      lib.innerHTML = html || '<div class="notelib-empty">No room notes yet. Open any room, write in its Notes box, and they’ll gather here.</div>';
+    }
+
+    /* ── Scientific calculator (data-analysis room) ─────────────── */
+    function calcBlock() {
+      return '<section class="block"><div class="block-head"><h2>Scientific Calculator</h2><span class="tag">Instrument</span>' +
+        '<p>Trig, logs, powers, π and e. Click the keypad, then type — Enter evaluates, Esc clears, Backspace deletes.</p></div>' +
+        '<div class="calc" id="sciCalc" tabindex="0">' +
+          '<div class="calc-display"><div class="calc-expr" id="calcExpr"></div><div class="calc-result" id="calcResult">0</div></div>' +
+          '<div class="calc-grid" id="calcGrid"></div>' +
+        '</div></section>';
+    }
+    function initCalc() {
+      var box = document.getElementById("sciCalc");
+      var exprEl = document.getElementById("calcExpr");
+      var resEl = document.getElementById("calcResult");
+      var grid = document.getElementById("calcGrid");
+      if (!box || !grid) return;
+      var expr = "", result = "0", lastWasResult = false;
+
+      function draw() {
+        exprEl.textContent = expr
+          .replace(/Math\.sin\(/g, "sin(").replace(/Math\.cos\(/g, "cos(").replace(/Math\.tan\(/g, "tan(")
+          .replace(/Math\.log10\(/g, "log(").replace(/Math\.log\(/g, "ln(").replace(/Math\.sqrt\(/g, "√(")
+          .replace(/Math\.PI/g, "π").replace(/Math\.E/g, "e").replace(/\*\*/g, "^").replace(/\*/g, "×").replace(/\//g, "÷");
+        resEl.textContent = result;
+      }
+      function add(v) { if (lastWasResult && /^[0-9.]/.test(v)) expr = ""; lastWasResult = false; expr += v; draw(); }
+      function fn(p) { if (lastWasResult) expr = ""; lastWasResult = false; expr += p; draw(); }
+      function clr() { expr = ""; result = "0"; lastWasResult = false; draw(); }
+      function bksp() { expr = expr.slice(0, -1); lastWasResult = false; draw(); }
+      function evaluate() {
+        if (!expr) return;
+        try {
+          var safe = expr.replace(/Math\.(sin|cos|tan|log|log10|sqrt|PI|E|abs|pow|ceil|floor|cbrt|exp)\b/g, "S");
+          if (/[a-zA-Z]/.test(safe.replace(/S/g, "").replace(/e[+-]?\d/g, ""))) throw 0;
+          var val = Function('"use strict";return(' + expr + ')')();
+          result = (typeof val === "number" && isFinite(val)) ? String(parseFloat(val.toPrecision(12))) : "Error";
+        } catch (e) { result = "Error"; }
+        lastWasResult = true; draw();
+      }
+      var B = [
+        ["sin", "fn", function () { fn("Math.sin("); }], ["cos", "fn", function () { fn("Math.cos("); }], ["tan", "fn", function () { fn("Math.tan("); }], ["log", "fn", function () { fn("Math.log10("); }], ["ln", "fn", function () { fn("Math.log("); }],
+        ["x²", "fn", function () { add("**2"); }], ["√", "fn", function () { fn("Math.sqrt("); }], ["π", "fn", function () { add("Math.PI"); }], ["e", "fn", function () { add("Math.E"); }], ["xʸ", "fn", function () { add("**"); }],
+        ["C", "clear", function () { clr(); }], ["(", "op", function () { add("("); }], [")", "op", function () { add(")"); }], ["%", "op", function () { add("%"); }], ["÷", "op", function () { add("/"); }],
+        ["7", "", function () { add("7"); }], ["8", "", function () { add("8"); }], ["9", "", function () { add("9"); }], ["×", "op", function () { add("*"); }], ["⌫", "clear", function () { bksp(); }],
+        ["4", "", function () { add("4"); }], ["5", "", function () { add("5"); }], ["6", "", function () { add("6"); }], ["−", "op", function () { add("-"); }], ["EE", "fn", function () { add("e"); }],
+        ["1", "", function () { add("1"); }], ["2", "", function () { add("2"); }], ["3", "", function () { add("3"); }], ["+", "op", function () { add("+"); }], ["Ans", "fn", function () { add(result); }],
+        ["0", "wide", function () { add("0"); }], [".", "", function () { add("."); }], ["=", "eq wide", function () { evaluate(); }]
+      ];
+      for (var i = 0; i < B.length; i++) {
+        (function (b) {
+          var el = document.createElement("button");
+          el.className = "calc-btn " + b[1]; el.type = "button"; el.textContent = b[0];
+          el.addEventListener("click", function () { b[2](); box.focus(); });
+          grid.appendChild(el);
+        })(B[i]);
+      }
+      box.addEventListener("keydown", function (e) {
+        var k = e.key;
+        if (/^[0-9.+\-*/%()]$/.test(k)) { e.preventDefault(); add(k); }
+        else if (k === "Enter" || k === "=") { e.preventDefault(); evaluate(); }
+        else if (k === "Backspace") { e.preventDefault(); bksp(); }
+        else if (k === "Escape") { e.preventDefault(); clr(); }
+      });
+    }
+
     function periodicTableBlock() {
       return '<section class="block"><div class="block-head"><h2>Interactive Periodic Table</h2><span class="tag">Instrument</span>' +
         '<p>Click any element for its detail card. Search by name, symbol, or atomic number; tap a category in the legend to filter.</p></div>' +
