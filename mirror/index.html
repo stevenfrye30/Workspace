@@ -58,6 +58,11 @@
   .group[open] > summary::before { transform:rotate(90deg); }
   .group > summary:hover { color:var(--ink); }
   .group > summary:hover::before { color:var(--accent); }
+  .home-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(280px,1fr)); gap:18px; align-items:start; }
+  .widget .section-head { margin-bottom:10px; }
+  .big-num { font-size:1.6rem; font-weight:600; color:var(--accent); font-family:ui-monospace,monospace; }
+  .cust-row { display:flex; justify-content:space-between; align-items:center; padding:7px 0; border-bottom:1px solid var(--line); }
+  .cust-row label { display:flex; gap:8px; align-items:center; cursor:pointer; margin:0; }
   .section-head { display: flex; align-items: baseline; justify-content: space-between;
                   margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
   .section-head h2 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
@@ -347,25 +352,32 @@
     </div>
   </div>
 
-  <div class="section">
-    <div class="section-head"><h2>At a glance</h2><span class="act tiny" id="qtDateLabel"></span></div>
-    <div class="today-grid" id="qtSummary"></div>
-  </div>
-
-  <div class="section">
-    <div class="section-head"><h2>Pulse</h2><span class="act tiny" id="qtPulseStatus"></span></div>
-    <div class="card">
-      <div class="meta">Mood</div>
-      <div class="dot-row" id="qtMoodRow"></div>
-      <div class="meta" style="margin-top:10px">Energy</div>
-      <div class="dot-row" id="qtEnergyRow"></div>
-      <div style="margin-top:10px"><input type="text" id="qtPulseNote" placeholder="One line about today (optional)" class="grow"></div>
-      <div style="margin-top:10px"><button class="primary" id="qtPulseSave">Log pulse</button></div>
+  <div class="section" style="margin-bottom:14px">
+    <div class="chip-row" style="justify-content:flex-end">
+      <button class="mini-btn" id="homeCustomize">✎ Customize home</button>
     </div>
   </div>
 
-  <div class="two-col">
-    <div class="section">
+  <div id="homeWidgets" class="home-grid">
+
+    <div class="widget" data-widget="glance" style="grid-column:1/-1">
+      <div class="section-head"><h2>At a glance</h2><span class="act tiny" id="qtDateLabel"></span></div>
+      <div class="today-grid" id="qtSummary"></div>
+    </div>
+
+    <div class="widget" data-widget="pulse">
+      <div class="section-head"><h2>Pulse</h2><span class="act tiny" id="qtPulseStatus"></span></div>
+      <div class="card">
+        <div class="meta">Mood</div>
+        <div class="dot-row" id="qtMoodRow"></div>
+        <div class="meta" style="margin-top:10px">Energy</div>
+        <div class="dot-row" id="qtEnergyRow"></div>
+        <div style="margin-top:10px"><input type="text" id="qtPulseNote" placeholder="One line about today (optional)" class="grow"></div>
+        <div style="margin-top:10px"><button class="primary" id="qtPulseSave">Log pulse</button></div>
+      </div>
+    </div>
+
+    <div class="widget" data-widget="water">
       <div class="section-head"><h2>Water</h2><span class="act tiny" id="qtWaterTotal"></span></div>
       <div class="card">
         <div class="chip-row" style="margin-bottom:6px">
@@ -373,11 +385,11 @@
           <button class="chip" data-qtwater="16">+16 oz</button>
           <button class="chip" data-qtwater="24">+24 oz</button>
         </div>
-        <div class="tiny" style="color:var(--dim)">Adds to today's water.</div>
+        <div class="tiny" style="color:var(--dim)">Adds to the selected day's water.</div>
       </div>
     </div>
 
-    <div class="section">
+    <div class="widget" data-widget="sleep">
       <div class="section-head"><h2>Sleep last night</h2></div>
       <div class="card">
         <div class="chip-row" id="qtSleepChips" style="margin-bottom:8px"></div>
@@ -389,7 +401,7 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="widget" data-widget="exercise">
       <div class="section-head"><h2>Exercise</h2></div>
       <div class="card">
         <div class="chip-row" id="qtExChips" style="margin-bottom:8px"></div>
@@ -401,13 +413,34 @@
       </div>
     </div>
 
-    <div class="section">
+    <div class="widget" data-widget="journal">
       <div class="section-head"><h2>Journal note</h2></div>
       <div class="card">
         <textarea id="qtJournal" placeholder="A quick note for today."></textarea>
         <div style="margin-top:8px"><button class="primary" id="qtJournalAdd">Add note</button></div>
       </div>
     </div>
+
+    <div class="widget" data-widget="networth">
+      <div class="section-head"><h2>Net worth</h2></div>
+      <div class="card" id="wNetWorth"></div>
+    </div>
+
+    <div class="widget" data-widget="birthdays">
+      <div class="section-head"><h2>Upcoming birthdays</h2></div>
+      <div class="card" id="wBirthdays"></div>
+    </div>
+
+    <div class="widget" data-widget="values">
+      <div class="section-head"><h2>Your values</h2></div>
+      <div class="card" id="wValues"></div>
+    </div>
+
+    <div class="widget" data-widget="prompt">
+      <div class="section-head"><h2>Reflection prompt</h2></div>
+      <div class="card" id="wPrompt"></div>
+    </div>
+
   </div>
 </section>
 
@@ -956,7 +989,7 @@
 const STORAGE_KEY = 'mirror_v1';
 const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
-const SCHEMA_VERSION = 4;
+const SCHEMA_VERSION = 5;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -966,7 +999,8 @@ const defaultState = () => ({
   body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
-  relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] }
+  relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
+  home: { widgets: ['glance','pulse','water','sleep','exercise','journal'] }
 });
 function getTargets() { return Object.assign({}, DEFAULT_TARGETS, state.body.targets || {}); }
 
@@ -998,6 +1032,8 @@ function migrate(s) {
     });
     v = 4;
   }
+  // v4 -> v5: add customizable home (state.home.widgets); shallow-merge backfills it.
+  if (v < 5) { v = 5; }
   s.__v = SCHEMA_VERSION;
   return s;
 }
@@ -3253,7 +3289,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -3291,6 +3327,88 @@ function renderQtChips() {
 document.getElementById('qtDateToday').onclick = () => setQtLogDate(todayStr());
 document.getElementById('qtDateYesterday').onclick = () => setQtLogDate(shiftDate(todayStr(), -1));
 document.getElementById('qtDatePick').onchange = (e) => setQtLogDate(e.target.value);
+
+/* ----- Customizable Home: pick & order the widgets on the Today screen ----- */
+const WIDGET_CATALOG = [
+  { key:'glance',    title:'At a glance' },
+  { key:'pulse',     title:'Pulse' },
+  { key:'water',     title:'Water' },
+  { key:'sleep',     title:'Sleep' },
+  { key:'exercise',  title:'Exercise' },
+  { key:'journal',   title:'Journal note' },
+  { key:'networth',  title:'Net worth' },
+  { key:'birthdays', title:'Upcoming birthdays' },
+  { key:'values',    title:'Your values' },
+  { key:'prompt',    title:'Reflection prompt' },
+];
+const DEFAULT_HOME = ['glance','pulse','water','sleep','exercise','journal'];
+const CATALOG_KEYS = WIDGET_CATALOG.map(c => c.key);
+function homeWidgets() {
+  const w = (state.home && Array.isArray(state.home.widgets)) ? state.home.widgets : DEFAULT_HOME;
+  return w.filter(k => CATALOG_KEYS.includes(k));
+}
+function widgetTitle(k) { const c = WIDGET_CATALOG.find(x => x.key === k); return c ? c.title : k; }
+
+function renderWidgetNetWorth() {
+  const el = document.getElementById('wNetWorth'); if (!el) return;
+  const rows = (state.money.netWorth || []).slice().sort((a, b) => b.date.localeCompare(a.date));
+  if (!rows.length) { el.innerHTML = '<div class="tiny" style="color:var(--dim)">No snapshots yet — add one in Money.</div>'; return; }
+  const nw = (Number(rows[0].assets) || 0) - (Number(rows[0].liabilities) || 0);
+  const prev = rows[1] ? (Number(rows[1].assets) || 0) - (Number(rows[1].liabilities) || 0) : null;
+  const delta = prev != null ? nw - prev : null;
+  el.innerHTML = `<div class="big-num">$${Math.round(nw).toLocaleString()}</div>
+    <div class="tiny" style="color:var(--dim)">as of ${fmtDate(rows[0].date)}${delta != null ? ` · ${delta >= 0 ? '▲' : '▼'} $${Math.abs(Math.round(delta)).toLocaleString()}` : ''}</div>`;
+}
+function renderWidgetBirthdays() {
+  const el = document.getElementById('wBirthdays'); if (!el) return;
+  const up = (state.relationships.birthdays || []).filter(b => !b.deceased)
+    .map(b => ({ b, d: bdayNextDays(b) })).filter(x => x.d != null).sort((a, b) => a.d - b.d).slice(0, 4);
+  el.innerHTML = up.length
+    ? up.map(x => `<div class="line"><strong>${escapeHtml(x.b.name)}</strong> · ${x.d === 0 ? '🎂 today' : `in ${x.d}d`}</div>`).join('')
+    : '<div class="tiny" style="color:var(--dim)">No birthdays yet — add them in Relationships.</div>';
+}
+function renderWidgetValues() {
+  const el = document.getElementById('wValues'); if (!el) return;
+  const vals = state.identity.values || [];
+  el.innerHTML = vals.length
+    ? `<div class="chip-row">${vals.map(v => `<span class="chip">${escapeHtml(v)}</span>`).join('')}</div>`
+    : '<div class="tiny" style="color:var(--dim)">No values yet — add them in Identity.</div>';
+}
+function renderWidgetPrompt() {
+  const el = document.getElementById('wPrompt'); if (!el) return;
+  el.innerHTML = `<div style="font-style:italic;color:var(--ink);line-height:1.5">${escapeHtml(promptFor('week'))}</div>`;
+}
+function renderHome() {
+  const grid = document.getElementById('homeWidgets'); if (!grid) return;
+  renderWidgetNetWorth(); renderWidgetBirthdays(); renderWidgetValues(); renderWidgetPrompt();
+  const order = homeWidgets();
+  order.forEach(key => { const el = grid.querySelector(`[data-widget="${key}"]`); if (el) { el.style.display = ''; grid.appendChild(el); } });
+  grid.querySelectorAll('[data-widget]').forEach(el => { if (!order.includes(el.dataset.widget)) el.style.display = 'none'; });
+}
+function openHomeCustomize() {
+  const enabled = homeWidgets();
+  const disabled = CATALOG_KEYS.filter(k => !enabled.includes(k));
+  const row = (k, on) => `<div class="cust-row" data-k="${k}">
+      <label><input type="checkbox" class="cust-on" ${on ? 'checked' : ''}> ${escapeHtml(widgetTitle(k))}</label>
+      <span><button class="mini-btn cust-up" title="Move up">↑</button> <button class="mini-btn cust-down" title="Move down">↓</button></span>
+    </div>`;
+  modalBox.innerHTML = `<h3>Customize your home</h3>
+    <div class="sub">Choose what shows on this screen and the order. Check to show, uncheck to hide; use ↑ ↓ to reorder. Logging widgets stay interactive; the rest are at-a-glance.</div>
+    <div id="custList">${enabled.map(k => row(k, true)).join('')}${disabled.map(k => row(k, false)).join('')}</div>
+    <div class="actions"><button class="ghost" id="custCancel">Cancel</button><button class="primary" id="custSave">Save</button></div>`;
+  overlay.classList.add('open');
+  const list = document.getElementById('custList');
+  list.querySelectorAll('.cust-up').forEach(b => b.onclick = () => { const r = b.closest('.cust-row'); const p = r.previousElementSibling; if (p) list.insertBefore(r, p); });
+  list.querySelectorAll('.cust-down').forEach(b => b.onclick = () => { const r = b.closest('.cust-row'); const n = r.nextElementSibling; if (n) list.insertBefore(n, r); });
+  document.getElementById('custCancel').onclick = closeModal;
+  document.getElementById('custSave').onclick = () => {
+    const order = [...list.querySelectorAll('.cust-row')].filter(r => r.querySelector('.cust-on').checked).map(r => r.dataset.k);
+    state.home = state.home || {};
+    state.home.widgets = order.length ? order : DEFAULT_HOME.slice();
+    saveState(); closeModal(); renderHome();
+  };
+}
+document.getElementById('homeCustomize').onclick = openHomeCustomize;
 
 document.getElementById('qtPulseSave').onclick = () => {
   if (!qtPulse.mood || !qtPulse.energy) { alert('Pick a mood and energy level.'); return; }
