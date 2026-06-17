@@ -49,6 +49,15 @@
   .view .lede { color: var(--dim); font-style: italic; font-size: 0.96rem;
                 margin-bottom: 30px; max-width: 580px; }
   .section { margin-bottom: 40px; }
+  .group { margin: 0 0 26px; }
+  .group > summary { cursor:pointer; list-style:none; user-select:none; display:flex; align-items:center; gap:8px;
+    font-size:0.72rem; font-weight:700; text-transform:uppercase; letter-spacing:0.09em; color:var(--accent);
+    padding:9px 0; border-bottom:2px solid var(--line); margin-bottom:20px; }
+  .group > summary::-webkit-details-marker { display:none; }
+  .group > summary::before { content:'▸'; font-size:0.8rem; color:var(--dim); transition:transform .15s; }
+  .group[open] > summary::before { transform:rotate(90deg); }
+  .group > summary:hover { color:var(--ink); }
+  .group > summary:hover::before { color:var(--accent); }
   .section-head { display: flex; align-items: baseline; justify-content: space-between;
                   margin-bottom: 12px; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
   .section-head h2 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase;
@@ -302,7 +311,6 @@
     <button class="tab-btn" data-tab="money">Money</button>
     <button class="tab-btn" data-tab="relationships">Relationships</button>
     <button class="tab-btn" data-tab="reflect">Reflect</button>
-    <button class="tab-btn" data-tab="timeline">Timeline</button>
   </div>
   <span class="spacer"></span>
   <button class="mini-btn" id="themeBtn" title="Toggle theme">☾</button>
@@ -463,9 +471,12 @@
   <h1>Body</h1>
   <div class="lede">What you take in and how your body is doing. Food draws from your NutriLens library.</div>
 
+  <details class="group" open>
+    <summary>Today &amp; trends</summary>
+
   <div class="section">
     <div class="section-head">
-      <h2>Today</h2>
+      <h2>Today's nutrition</h2>
       <span style="display:flex;gap:12px;align-items:center">
         <span class="act tiny" id="todayDateLabel"></span>
         <button class="mini-btn" id="targetsEditBtn" title="Edit daily targets">✎ targets</button>
@@ -510,6 +521,10 @@
     <div id="nutrientSummary" class="nutrient-grid"></div>
     <div class="tiny" id="nutrientNote" style="margin-top:8px;color:var(--dim)"></div>
   </div>
+  </details>
+
+  <details class="group" open>
+    <summary>Food</summary>
 
   <div class="section">
     <div class="section-head"><h2>Log food</h2>
@@ -576,6 +591,10 @@
     </div>
     <div id="mealList"></div>
   </div>
+  </details>
+
+  <details class="group" open>
+    <summary>Body measures</summary>
 
   <div class="two-col">
     <div class="section">
@@ -620,6 +639,7 @@
       <div id="symLog"></div>
     </div>
   </div>
+  </details>
 </section>
 
 <!-- ============== MIND ============== -->
@@ -852,8 +872,14 @@
   <h1>Reflect</h1>
   <div class="lede">Where your rooms speak to each other. What the data says about the person you're actually being.</div>
 
+  <div class="range-tabs" style="margin-bottom:24px">
+    <button class="mini-btn active" data-reflectmode="insights">Insights</button>
+    <button class="mini-btn" data-reflectmode="timeline">Timeline</button>
+  </div>
+
+  <div id="reflectInsights">
   <div class="section">
-    <div class="section-head"><h2>Today</h2><span class="act tiny" id="reflectDateLabel"></span></div>
+    <div class="section-head"><h2>Today's snapshot</h2><span class="act tiny" id="reflectDateLabel"></span></div>
     <div id="reflectToday" class="insight-grid"></div>
   </div>
 
@@ -878,12 +904,10 @@
   </div>
 
   <div class="section" id="reflectCloser"></div>
-</section>
+  </div>
 
-<!-- ============== TIMELINE ============== -->
-<section class="view" id="view-timeline">
-  <h1>Timeline</h1>
-  <div class="lede">Your journey, newest first — everything you've logged, in one stream.</div>
+  <div id="reflectTimeline" style="display:none">
+  <div class="lede" style="margin-bottom:16px">Your journey, newest first — everything you've logged, in one stream.</div>
   <div class="section">
     <div class="form">
       <label>Type<select id="tlType">
@@ -904,6 +928,7 @@
       <span class="tiny" id="tlCount" style="color:var(--dim);align-self:center"></span>
     </div>
     <div id="timelineFeed"></div>
+  </div>
   </div>
 </section>
 
@@ -1043,8 +1068,17 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
     document.getElementById('view-' + btn.dataset.tab).classList.add('active');
     if (btn.dataset.tab === 'today') renderTodayTab();
     if (btn.dataset.tab === 'reflect') renderReflect();
-    if (btn.dataset.tab === 'timeline') renderTimeline();
   };
+});
+
+/* Reflect sub-mode toggle: Insights | Timeline (Timeline folded in from its old tab) */
+document.querySelectorAll('[data-reflectmode]').forEach(btn => btn.onclick = () => {
+  document.querySelectorAll('[data-reflectmode]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const mode = btn.dataset.reflectmode;
+  document.getElementById('reflectInsights').style.display = mode === 'insights' ? '' : 'none';
+  document.getElementById('reflectTimeline').style.display = mode === 'timeline' ? '' : 'none';
+  if (mode === 'timeline') renderTimeline(); else renderReflect();
 });
 
 /* ----- Banner (backup reminder + status messages) ----- */
