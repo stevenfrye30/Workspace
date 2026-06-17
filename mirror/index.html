@@ -315,6 +315,7 @@
   <span class="spacer"></span>
   <button class="mini-btn" id="themeBtn" title="Toggle theme">☾</button>
   <button class="mini-btn" id="exportBtn" title="Download a backup of all your data as JSON">Back up</button>
+  <button class="mini-btn" id="repoBtn" title="Save/restore a committed repo copy — your forever backup">Repo</button>
   <button class="mini-btn" id="importBtn" title="Restore data from a backup file">Import</button>
   <input type="file" id="importFile" accept="application/json" style="display:none">
   <button class="mini-btn" id="snapsBtn" title="Restore an automatic in-browser snapshot">Snapshots</button>
@@ -335,7 +336,16 @@
 <!-- ============== TODAY (quick entry) ============== -->
 <section class="view active" id="view-today">
   <h1>Today</h1>
-  <div class="lede">Quick check-in — everything here logs to today.</div>
+  <div class="lede">Quick check-in — pick the day, then log. Defaults to today.</div>
+
+  <div class="section" style="margin-bottom:18px">
+    <div class="chip-row" style="align-items:center">
+      <span class="tiny" style="color:var(--dim);margin-right:2px">Logging for</span>
+      <button class="chip" id="qtDateToday">Today</button>
+      <button class="chip" id="qtDateYesterday">Yesterday</button>
+      <input type="date" id="qtDatePick" style="width:148px">
+    </div>
+  </div>
 
   <div class="section">
     <div class="section-head"><h2>At a glance</h2><span class="act tiny" id="qtDateLabel"></span></div>
@@ -370,6 +380,7 @@
     <div class="section">
       <div class="section-head"><h2>Sleep last night</h2></div>
       <div class="card">
+        <div class="chip-row" id="qtSleepChips" style="margin-bottom:8px"></div>
         <div class="form" style="margin:0;background:transparent;border:0;padding:0">
           <label>Hours<input type="number" id="qtSleepHours" min="0" max="24" step="0.25"></label>
           <label>Quality (1–5)<input type="number" id="qtSleepQuality" min="1" max="5" step="1"></label>
@@ -381,6 +392,7 @@
     <div class="section">
       <div class="section-head"><h2>Exercise</h2></div>
       <div class="card">
+        <div class="chip-row" id="qtExChips" style="margin-bottom:8px"></div>
         <div class="form" style="margin:0;background:transparent;border:0;padding:0">
           <label>Type<input type="text" id="qtExType" placeholder="run, lift, walk"></label>
           <label>Minutes<input type="number" id="qtExMinutes" min="1" step="1"></label>
@@ -1145,6 +1157,50 @@ document.getElementById('resetBtn').onclick = () => {
   state = defaultState(); saveState(); renderAll();
 };
 document.getElementById('snapsBtn').onclick = openSnapshotsModal;
+
+/* ----- Repo backup: whole-app forever-copy committed to git (same pattern as birthdays) ----- */
+function downloadRepoCopy() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'mirror-data.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  localStorage.setItem(LAST_EXPORT_KEY, String(Date.now()));
+  hideBanner();
+}
+async function restoreFromRepo() {
+  if (!confirm('Replace current data with the committed repo copy (mirror-data.json)? Your current data is snapshotted first, so you can undo via Snapshots.')) return;
+  try {
+    const res = await fetch('mirror-data.json?t=' + Date.now());
+    if (!res.ok) throw new Error('not found');
+    const obj = await res.json();
+    if (!obj.identity || !obj.body) throw new Error('Not a Mirror data file');
+    takeSnapshot('before repo restore');
+    state = migrate(obj);
+    const d = defaultState();
+    for (const k of Object.keys(d)) state[k] = Object.assign(d[k], state[k] || {});
+    saveState(); renderAll();
+    closeModal();
+    showBanner('Restored from the repo copy.', false);
+  } catch (e) {
+    alert('Could not load mirror-data.json from the repo. Make sure it has been committed next to index.html (in the mirror/ folder).');
+  }
+}
+function openRepoModal() {
+  modalBox.innerHTML = `<h3>Repo backup — your forever-copy</h3>
+    <div class="sub">Your data lives only in this browser. Save it as <code>mirror-data.json</code> and commit that file next to this page in git — it then outlives any cleared cache, lost laptop, or browser. Restore rebuilds everything from the committed copy.</div>
+    <div class="actions" style="flex-wrap:wrap">
+      <button class="primary" id="repoSave">Save mirror-data.json</button>
+      <button class="ghost" id="repoRestore">Restore from repo</button>
+      <button class="ghost" id="repoClose">Close</button>
+    </div>`;
+  overlay.classList.add('open');
+  document.getElementById('repoSave').onclick = () => { downloadRepoCopy(); closeModal(); showBanner('Saved <strong>mirror-data.json</strong> — commit it to the repo to make it your forever-copy.', false); };
+  document.getElementById('repoRestore').onclick = restoreFromRepo;
+  document.getElementById('repoClose').onclick = closeModal;
+}
+document.getElementById('repoBtn').onclick = openRepoModal;
 
 /* ----- Modal infrastructure (edit forms + snapshot list) ----- */
 const overlay = document.getElementById('modalOverlay');
@@ -3142,6 +3198,7 @@ function renderReflect() {
    TODAY TAB — quick entry over existing state (no new fields)
    ============================================================= */
 let qtPulse = { mood: 0, energy: 0 };
+let qtLogDate = todayStr();   // which day the Today-tab quick entries write to (lets you backfill)
 function buildQtDots(rowId, key) {
   const row = document.getElementById(rowId);
   if (!row) return;
@@ -3157,7 +3214,7 @@ function buildQtDots(rowId, key) {
 function renderTodaySummary() {
   const el = document.getElementById('qtSummary');
   if (!el) return;
-  const today = todayStr();
+  const today = qtLogDate;
   const lbl = document.getElementById('qtDateLabel'); if (lbl) lbl.textContent = fmtDate(today);
   const pulse = (state.identity.pulse || []).find(p => p.date === today);
   let kcal = 0, protein = 0;
@@ -3187,7 +3244,7 @@ function renderTodaySummary() {
   const st = document.getElementById('qtPulseStatus'); if (st) st.textContent = pulse ? 'logged today' : '';
 }
 function syncTodayPulseInputs() {
-  const today = todayStr();
+  const today = qtLogDate;
   const pulse = (state.identity.pulse || []).find(p => p.date === today);
   qtPulse.mood = pulse ? pulse.mood : 0;
   qtPulse.energy = pulse ? pulse.energy : 0;
@@ -3196,11 +3253,48 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderTodaySummary(); syncTodayPulseInputs(); }
+function renderTodayTab() { renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); }
+
+function renderQtDateControl() {
+  const pick = document.getElementById('qtDatePick'); if (!pick) return;
+  pick.value = qtLogDate;
+  const t = document.getElementById('qtDateToday'), y = document.getElementById('qtDateYesterday');
+  if (t) t.classList.toggle('accent', qtLogDate === todayStr());
+  if (y) y.classList.toggle('accent', qtLogDate === shiftDate(todayStr(), -1));
+}
+function setQtLogDate(d) { if (!d) return; qtLogDate = d; renderTodayTab(); }
+
+function renderQtChips() {
+  // Exercise: one-tap recent types
+  const exEl = document.getElementById('qtExChips');
+  if (exEl) {
+    const types = [];
+    (state.body.exercise || []).slice().reverse().forEach(e => { if (e.type && !types.includes(e.type)) types.push(e.type); });
+    exEl.innerHTML = types.slice(0, 6).map(t => `<button class="chip" data-qtex="${escapeHtml(t)}">${escapeHtml(t)}</button>`).join('');
+    exEl.querySelectorAll('[data-qtex]').forEach(b => b.onclick = () => {
+      document.getElementById('qtExType').value = b.dataset.qtex;
+      document.getElementById('qtExMinutes').focus();
+    });
+  }
+  // Sleep: repeat last night's numbers in one tap
+  const slEl = document.getElementById('qtSleepChips');
+  if (slEl) {
+    const last = (state.body.sleep || []).slice().reverse().find(s => s.hours);
+    slEl.innerHTML = last ? `<button class="chip" id="qtSleepRepeat">↺ same as last (${+(+last.hours).toFixed(2)}h${last.quality ? ` · q${last.quality}` : ''})</button>` : '';
+    const rb = document.getElementById('qtSleepRepeat');
+    if (rb) rb.onclick = () => {
+      document.getElementById('qtSleepHours').value = last.hours;
+      if (last.quality) document.getElementById('qtSleepQuality').value = last.quality;
+    };
+  }
+}
+document.getElementById('qtDateToday').onclick = () => setQtLogDate(todayStr());
+document.getElementById('qtDateYesterday').onclick = () => setQtLogDate(shiftDate(todayStr(), -1));
+document.getElementById('qtDatePick').onchange = (e) => setQtLogDate(e.target.value);
 
 document.getElementById('qtPulseSave').onclick = () => {
   if (!qtPulse.mood || !qtPulse.energy) { alert('Pick a mood and energy level.'); return; }
-  const today = todayStr();
+  const today = qtLogDate;
   const noteEl = document.getElementById('qtPulseNote');
   const note = noteEl ? noteEl.value.trim() : '';
   state.identity.pulse = state.identity.pulse || [];
@@ -3211,7 +3305,7 @@ document.getElementById('qtPulseSave').onclick = () => {
 };
 document.querySelectorAll('[data-qtwater]').forEach(b => b.onclick = () => {
   state.body.water = state.body.water || [];
-  state.body.water.push({ id: uid(), date: todayStr(), oz: Number(b.dataset.qtwater) });
+  state.body.water.push({ id: uid(), date: qtLogDate, oz: Number(b.dataset.qtwater) });
   saveState(); renderAll();
 });
 document.getElementById('qtSleepAdd').onclick = () => {
@@ -3219,7 +3313,7 @@ document.getElementById('qtSleepAdd').onclick = () => {
   const quality = Number(document.getElementById('qtSleepQuality').value);
   if (!hours) { alert('Enter sleep hours.'); return; }
   state.body.sleep = state.body.sleep || [];
-  state.body.sleep.push({ id: uid(), date: todayStr(), hours, quality });
+  state.body.sleep.push({ id: uid(), date: qtLogDate, hours, quality });
   document.getElementById('qtSleepHours').value = '';
   document.getElementById('qtSleepQuality').value = '';
   saveState(); renderAll();
@@ -3229,7 +3323,7 @@ document.getElementById('qtExAdd').onclick = () => {
   const minutes = Number(document.getElementById('qtExMinutes').value);
   if (!type || !minutes) { alert('Enter exercise type and minutes.'); return; }
   state.body.exercise = state.body.exercise || [];
-  state.body.exercise.push({ id: uid(), date: todayStr(), type, minutes });
+  state.body.exercise.push({ id: uid(), date: qtLogDate, type, minutes });
   document.getElementById('qtExType').value = '';
   document.getElementById('qtExMinutes').value = '';
   saveState(); renderAll();
@@ -3238,7 +3332,7 @@ document.getElementById('qtJournalAdd').onclick = () => {
   const text = document.getElementById('qtJournal').value.trim();
   if (!text) { alert('Write a note first.'); return; }
   state.identity.journal = state.identity.journal || [];
-  state.identity.journal.push({ id: uid(), date: todayStr(), title: '', text, tags: [], createdAt: Date.now() });
+  state.identity.journal.push({ id: uid(), date: qtLogDate, title: '', text, tags: [], createdAt: Date.now() });
   document.getElementById('qtJournal').value = '';
   saveState(); renderAll();
 };
