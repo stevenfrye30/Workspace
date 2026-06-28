@@ -22,6 +22,8 @@ Other traditions will appear as they earn their place.
 
 **[Dhammapada, Chapter 1 (The Twin Verses)](entity.html?id=dhammapada-chapter-1)** (c. 3rd c. BCE) — Twenty paired verses opening the Dhammapada, on mind, action, and outcome. The pairing is the form. Müller's 1881 translation.
 
+**[The Rolling Forth of the Wheel of Dhamma (SN 56.11)](entity.html?id=dhammacakkappavattana-sutta)** (c. 5th c. BCE, India) — The Buddha's first discourse: the rejection of both indulgence and self-mortification, the noble eightfold path, and the four noble truths, taught to five mendicants in the deer park at Isipatana. Bhikkhu Sujato's public-domain translation.
+
 **[Mundaka Upanishad, Book 1, Part 1](entity.html?id=mundaka-upanishad-book-1-part-1)** (c. 4th–2nd c. BCE, India) — The opening of the Mundaka: Saunaka asks Angiras what one knowledge gives knowledge of everything else, and is answered with the distinction between the higher knowledge and the lower. Müller's 1884 translation.
 
 **The Didache** (late 1st – early 2nd c.) — Earliest known Christian manual; on baptism, prayer, and the ethics of the "two ways." Short enough to sit with in a single evening.
