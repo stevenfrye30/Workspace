@@ -14,11 +14,11 @@ tags: [mahayana, prajnaparamita, emptiness, heart-sutra, mantra, sutra]
 
 ## Primary Text
 
-F. Max Müller, trans., "The Smaller Prajñā-pāramitā-hṛdaya-sūtra," in *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (Oxford, 1894); public domain. Sourced from the Internet Archive scan of SBE XLIX; the Sanskrit proper names, garbled in the scan, are given here in standard transliteration, the English rendering otherwise reproduced as Müller has it.
+**The complete sūtra** (the *Smaller* recension; Müller's own "&c." abbreviations of the standard lists are part of his printed text and are kept; his one footnote is omitted). F. Max Müller, trans., "The Smaller Prajñā-pāramitā-hṛdaya-sūtra," in *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (Oxford, the Clarendon Press, 1894); public domain; sourced from the clean Internet Sacred Text Archive HTML of SBE XLIX (retrieved via the Internet Archive Wayback Machine). Müller's English is reproduced verbatim, including his parenthetical glosses. His italic-letter transliteration is rendered in standard form — the diacritics as macron-and-accent forms and his italic consonants in their standard values, so Müller's *Pragñâpâramitâ*, *Avalokitesvara*, and *Sâriputra* appear here as Prajñāpāramitā, Avalokiteśvara, and Śāriputra. One obvious slip in the printed mantra is corrected: "gone to the other shore. landed" → "gone to the other shore, landed."
 
 Adoration to the Omniscient!
 
-The venerable Bodhisattva Avalokiteśvara, performing his study in the deep Prajñāpāramitā (perfection of wisdom), thought thus: ‘There are the five Skandhas, and these he considered as by their nature empty.’
+The venerable Bodhisattva Avalokiteśvara, performing his study in the deep Prajñāpāramitā (perfection of wisdom), thought thus: ‘There are the five Skandhas, and these he considered as by their nature empty (phenomenal).’
 
 ‘O Śāriputra,’ he said, ‘form here is emptiness, and emptiness indeed is form. Emptiness is not different from form, form is not different from emptiness. What is form that is emptiness, what is emptiness that is form.’
 
@@ -27,6 +27,8 @@ The venerable Bodhisattva Avalokiteśvara, performing his study in the deep Praj
 ‘Here, O Śāriputra, all things have the character of emptiness, they have no beginning, no end, they are faultless and not faultless, they are not imperfect and not perfect. Therefore, O Śāriputra, in this emptiness there is no form, no perception, no name, no concepts, no knowledge. No eye, ear, nose, tongue, body, mind. No form, sound, smell, taste, touch, objects.’
 
 ‘There is no eye,’ &c., till we come to ‘there is no mind.’
+
+(What is left out here are the eighteen Dhātus or aggregates, viz. eye, form, vision; ear, sound, hearing; nose, odour, smelling; tongue, flavour, tasting; body, touch, feeling; mind, objects, thought.)
 
 ‘There is no knowledge, no ignorance, no destruction of knowledge, no destruction of ignorance,’ &c., till we come to ‘there is no decay and death, no destruction of decay and death; there are not (the four truths, viz. that there) is pain, origin of pain, stoppage of pain, and the path to it. There is no knowledge, no obtaining (of Nirvāṇa).’
 
@@ -46,6 +48,8 @@ The *Heart Sūtra* is the most distilled statement of the Mahāyāna's teaching 
 
 The Heart Sūtra crystallized within the Prajñāpāramitā literature in the early centuries CE and exists in a "longer" recension (with a full narrative frame) and the "shorter" one translated here, which is the form chanted daily across the Buddhist world. It is recited in Zen monasteries, Tibetan temples, and Pure Land halls alike, in Sanskrit, Chinese, Tibetan, Japanese, and Korean; Xuanzang's Chinese version of 649 CE is the most widely chanted. The text holds a notable place in manuscript history: a palm-leaf copy preserved at Hōryū-ji in Japan, dated to around the 7th–8th century, is among the oldest surviving Sanskrit Buddhist manuscripts. The English reproduced here is F. Max Müller's, from his 1894 *Sacred Books of the East* volume of Mahāyāna texts.
 
+Müller's SBE XLIX in fact prints both recensions. The Smaller above is the chanted form; the **Larger** wraps the same teaching in a narrative frame the Smaller omits. It opens — *"This I heard: At one time the Bhagavat dwelt at Rājagṛha, on the hill Gṛdhrakūṭa … absorbed in a meditation, called Gambhīrāvasambodha"* — whereupon Śāriputra, "through Buddha's power," asks how one should study the deep Prajñāpāramitā, and Avalokiteśvara answers with the teaching given above. The Larger then closes with the Buddha's own confirmation, which the Smaller lacks: *"Well done, well done, noble son! … So indeed must this study of the deep Prajñāpāramitā be performed … it is applauded by Arhat Tathāgatas."* The two are the same heart; the Larger simply supplies the setting and the Buddha's seal.
+
 ## Reading note
 
 Read "form is emptiness, emptiness is form" as one breath, not two claims. *Emptiness* (śūnyatā) does not mean that things do not exist; it means they have no fixed, independent essence — they arise dependently and pass. So the first half ("form is emptiness") dissolves the solidity of appearances, and the second ("emptiness is form") prevents that dissolution from hardening into a new thing to cling to. The long string of negations works the same way, prying the mind off every handhold, until what remains is the fearless ease the sūtra describes — and then it hands you the mantra, where analysis gives way to practice.
@@ -57,6 +61,6 @@ Read "form is emptiness, emptiness is form" as one breath, not two claims. *Empt
 
 ## Resources
 
-- **Translation (above).** F. Max Müller, *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (1894), public domain; sourced via the Internet Archive scan of SBE XLIX.
+- **Translation (above).** F. Max Müller, *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (1894), public domain; sourced from the clean Internet Sacred Text Archive HTML of SBE XLIX (via the Internet Archive Wayback Machine).
 - **Recommended translation upgrade.** Edward Conze, *Buddhist Wisdom Books* (1958), or Red Pine (Bill Porter), *The Heart Sutra* (Counterpoint, 2004) — the latter with extensive traditional commentary.
 - **Manuscript.** The Hōryū-ji palm-leaf Sanskrit copy (Japan, c. 7th–8th c.) — among the oldest surviving Sanskrit Buddhist manuscripts, now held by the Tokyo National Museum.
