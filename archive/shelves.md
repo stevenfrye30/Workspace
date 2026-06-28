@@ -81,6 +81,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [Heirs of Their Deeds](entity.html?id=owners-of-deeds) — MN 135, karma as moral causation; why beings are born unequal.
 - [The Real Miracle, and Where the World Ends](entity.html?id=kevaddha) — DN 11, instruction over spectacle, and the cosmic question turned inward.
 - [The Simile of the Mountains](entity.html?id=mountain-simile) — SN 3.25, old age and death rolling in like mountains, crushing every rank alike.
+- [The Radiance of Love](entity.html?id=meditation-on-love) — Itivuttaka 27, loving-kindness as the merit that outshines all others.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
