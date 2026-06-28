@@ -80,6 +80,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Unconditioned](entity.html?id=nibbana-udana) — Udāna 8.1 & 8.3, the canon's most direct words on nibbāna, by negation.
 - [The Bliss of Freedom, and the Flame Gone Out](entity.html?id=udana-freedom) — Udāna 2.1 & 8.10: the dragon-king Mucalinda shelters the Buddha ("dispelling the conceit 'I am' is the ultimate happiness"), and the released one like a flame whose destiny cannot be found.
 - [These Rocky Crags Delight Me](entity.html?id=rocky-crags) — Theragāthā 18.1, Mahā Kassapa's hymn to the wild places of meditation.
+- [The Forest and the Quiet Mind](entity.html?id=theragatha-forest) — Theragāthā 1.1, 1.22, 1.41: Subhūti's "so rain, heavens!", peacocks rousing the meditator, and an elder absorbed in jhāna while lightning strikes the peaks.
 - [The Middle Between Existence and Non-Existence](entity.html?id=kaccanagotta) — SN 12.15, right view between the extremes; the root of emptiness.
 - [Heirs of Their Deeds](entity.html?id=owners-of-deeds) — MN 135, karma as moral causation; why beings are born unequal.
 - [The Real Miracle, and Where the World Ends](entity.html?id=kevaddha) — DN 11, instruction over spectacle, and the cosmic question turned inward.
