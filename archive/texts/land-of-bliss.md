@@ -14,17 +14,15 @@ tags: [mahayana, pure-land, amitabha, devotion, faith, sutra]
 
 ## Primary Text
 
-F. Max Müller, trans., "The Larger Sukhāvatī-vyūha" (Description of Sukhāvatī, the Land of Bliss), in *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (Oxford, 1894); public domain. Sourced from the Internet Archive scan of SBE XLIX; the English is reproduced as Müller has it, with the Sanskrit proper names — heavily garbled in the scan — given in standard transliteration. (The sūtra's long lists of proper names are omitted.)
+**Selected passages** (§§ 26, 27, 29, and 38, drawn from the sūtra's 47 sections; Müller's scholarly footnotes are omitted). F. Max Müller, trans., "The Larger Sukhāvatī-vyūha" (Description of Sukhāvatī, the Land of Bliss), in *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (Oxford, the Clarendon Press, 1894); public domain; sourced from the clean Internet Sacred Text Archive HTML of SBE XLIX (retrieved via the Internet Archive Wayback Machine). Müller's English is reproduced verbatim, including his parenthetical glosses. The Sanskrit proper names — which Müller printed in the special italic-letter transliteration of the *Sacred Books of the East* — are lightly modernized: the diacritical letters are given in standard macron-and-accent form (ā, ī, ū, ś, ṃ, ṇ, ḥ, ṛ), while Müller's familiar digraph spellings such as "Bhikshu" are kept. The sūtra's long lists of proper names fall outside the passages selected here. An ellipsis (…) marks where Müller's text is shortened — at the start of an excerpt that begins partway into its section, or within a passage.
 
-‘Because all beings who hear the name of the blessed Amitābha, and having heard it, raise their thought with joyful longing, even for once only, will not turn away again from the highest perfect knowledge.
+§ 26. '… Because all beings who hear the name of the blessed Amitābha, and having heard it, raise their thought with joyful longing, even for once only, will not turn away again from the highest perfect knowledge.
 
-And before the eyes of those beings, O Ānanda, who again and again think of the Tathāgata reverently, and who make the great and unmeasured stock of good works grow, turning their thought towards Bodhi (knowledge), and who pray to be born in that world, Amitābha, the Tathāgata, holy and fully enlightened, when the time of their death has approached, will appear, surrounded by many companies of Bhikshus and honoured by them. And then these beings, having seen the Bhagavat, their thoughts filled with joy, will, when they have died, be born in that world of Sukhāvatī.
+§ 27. 'And before the eyes of those beings, O Ānanda, who again and again think of the Tathāgata reverently, and who make the great and unmeasured stock of good works grow, turning their thought towards Bodhi (knowledge), and who pray to be born in that world, Amitābha, the Tathāgata, holy and fully enlightened, when the time of their death has approached, will appear, surrounded by many companies of Bhikshus and honoured by them. And then these beings, having seen the Bhagavat, their thoughts filled with joy, will, when they have died, be born in that world of Sukhāvatī.
 
-… those beings who meditate on the Tathāgata by giving him the ten thoughts, and who will direct their desire towards that Buddha country … but will meditate on that Tathāgata, if it were by one thought only, and will direct their desire toward that Buddha country, they also will see the Tathāgata Amitābha … they will be born in the world Sukhāvatī, and will never turn away from the highest perfect knowledge.’
+§ 29. '… those beings who meditate on the Tathāgata by giving him the ten thoughts, and who will direct their desire towards that Buddha country … but will meditate on that Tathāgata, if it were by one thought only, and will direct their desire toward that Buddha country, they also will see the Tathāgata Amitābha … they will be born in the world Sukhāvatī, and will never turn away from the highest perfect knowledge.
 
-*Of the Land itself:*
-
-‘And again, O Ānanda, for those beings who have been born in that world Sukhāvatī, there is no idea of others, no idea of self, no idea of inequality, no strife, no dispute, no opposition. Full of equanimity, of benevolent thought, of tender thought, of affectionate thought, of useful thought, of serene thought, of firm thought … they attain perfect wisdom.’
+§ 38. '… for those beings who have been born in that world Sukhāvatī, there is no idea of others, no idea of self, no idea of inequality, no strife, no dispute, no opposition. Full of equanimity, of benevolent thought, of tender thought, of affectionate thought, of useful thought, of serene thought, of firm thought … they attain perfect wisdom.
 
 ## Atlas notes
 
@@ -45,6 +43,6 @@ Pure Land is sometimes dismissed as the "easy path," but its insight is exact: i
 
 ## Resources
 
-- **Translation (above).** F. Max Müller, *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (1894), public domain; sourced via the Internet Archive scan of SBE XLIX.
+- **Translation (above).** F. Max Müller, *Buddhist Mahâyâna Texts*, Sacred Books of the East, Vol. XLIX (1894), public domain; sourced from the clean Internet Sacred Text Archive HTML of SBE XLIX (via the Internet Archive Wayback Machine).
 - **Recommended translation upgrade.** Hisao Inagaki, *The Three Pure Land Sutras* (Numata Center, 1995/2003) — the standard modern English of all three.
 - **Doctrine.** Shinran, *Kyōgyōshinshō* — the great systematic work of Japanese Pure Land, on faith in Amitābha's vow.
