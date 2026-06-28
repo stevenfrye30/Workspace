@@ -74,6 +74,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [On the Origin of Things](entity.html?id=agganna-sutta) — DN 27, the Buddhist account of cosmic and social origins, the elected king and the equality of castes.
 - [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
 - [Wander Alone Like a Rhinoceros](entity.html?id=rhinoceros-sutta) — Snp 1.3, solitude and friendship; among the oldest Buddhist texts.
+- [The Aṭṭhakavagga: Chapter of Octads](entity.html?id=atthakavagga) — Snp Book 4, among the oldest Buddhist poetry: freedom through not grasping any view, taking no side in disputes; selected passages.
 - [The Blind Men and the Elephant](entity.html?id=blind-men-elephant) — Udāna 6.4, the partiality of views and the futility of dogmatic dispute.
 - [The Unconditioned](entity.html?id=nibbana-udana) — Udāna 8.1 & 8.3, the canon's most direct words on nibbāna, by negation.
 - [These Rocky Crags Delight Me](entity.html?id=rocky-crags) — Theragāthā 18.1, Mahā Kassapa's hymn to the wild places of meditation.
