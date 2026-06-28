@@ -69,6 +69,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [Aṅgulimāla, the Murderer Who Stopped](entity.html?id=angulimala) — MN 86, redemption and the harvest of karma.
 - [Dependent Origination](entity.html?id=dependent-origination) — SN 12.1–2, the twelve links by which suffering arises and ceases.
 - [The Snake](entity.html?id=snake-sutta) — Snp 1.1, shedding the near shore and the far like a serpent's skin.
+- [The Honey-Cake](entity.html?id=honeyball-sutta) — MN 18, mental proliferation (papañca), from a flicker of perception to war.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
