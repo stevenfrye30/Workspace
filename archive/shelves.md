@@ -82,6 +82,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Real Miracle, and Where the World Ends](entity.html?id=kevaddha) — DN 11, instruction over spectacle, and the cosmic question turned inward.
 - [The Simile of the Mountains](entity.html?id=mountain-simile) — SN 3.25, old age and death rolling in like mountains, crushing every rank alike.
 - [The Radiance of Love](entity.html?id=meditation-on-love) — Itivuttaka 27, loving-kindness as the merit that outshines all others.
+- [The Noble Search](entity.html?id=noble-search) — MN 26, the Buddha's own account of his quest, awakening, and decision to teach.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
