@@ -84,6 +84,7 @@ The Mahāyāna — the "Great Vehicle," in public-domain translations.
 - [The Land of Bliss](entity.html?id=land-of-bliss) — Sukhāvatī-vyūha, the Pure Land of Amitābha and the way of faith; Müller's 1894 translation from the Sanskrit.
 - [Avalokiteśvara, the All-Sided One](entity.html?id=avalokitesvara) — Lotus Sūtra ch. 24, the bodhisattva of compassion (Guanyin / Kannon); Kern's 1884 translation.
 - [The Bodhisattva Never-Disparaging](entity.html?id=never-disparaging) — Lotus Sūtra ch. 19, who bowed to all as future Buddhas; Kern's 1884 translation.
+- [The Conjured City](entity.html?id=conjured-city) — Lotus Sūtra ch. 7, the magic city of rest and the provisional nirvāṇa; Kern's 1884 translation.
 
 ## Jewish
 
