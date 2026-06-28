@@ -82,6 +82,10 @@ not appear on a public-facing index, sidebar, or sitemap.
   Workspace*); superseded by the Atlas-style `index.html`.
 - `_internal/build_phonetics.py`, `build_science.py`,
   `build_soundmap.py`, `strip_soundmap.py` — build scripts.
+  Note: `build_science.py` is **orphaned** — its source
+  `projects/class notes` was removed, and `science/` is now a
+  self-contained, hand-built rooms page (`index.html` + `room.html`)
+  with no generated-data dependency.
 - `_internal/open-mirror.bat` — local-use launcher.
 
 `projects/culture/Digital Archive/03_web_app/`:
