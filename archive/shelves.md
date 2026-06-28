@@ -95,6 +95,7 @@ The birth-stories — the Buddha's former lives (Jātaka).
 
 - [The Jātaka: Selected Birth-Stories](entity.html?id=jataka-tales) — two beloved tales from the collection of 547: the Banyan Deer who offers his life for a pregnant doe (no. 12) and the monkey-king who outwits a water-ogre (no. 20); Chalmers's 1895 translation.
 - [The Jātaka: Two Quail Tales](entity.html?id=jataka-quail-tales) — the quails who escape the fowler by unity (no. 33) and the fledgling whose "Act of Truth" turns back a forest fire (no. 35); Chalmers's 1895 translation.
+- [The Jātaka: Wisdom and Folly](entity.html?id=jataka-wisdom-tales) — the first tale of the collection, the wise and foolish caravan-leaders and the water-goblin (no. 1), and the crane outwitted by the crab (no. 38); Chalmers's 1895 translation.
 
 The founding of the order — from the Vinaya.
 
