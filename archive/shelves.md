@@ -75,6 +75,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [On the Origin of Things](entity.html?id=agganna-sutta) — DN 27, the Buddhist account of cosmic and social origins, the elected king and the equality of castes.
 - [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
 - [Wander Alone Like a Rhinoceros](entity.html?id=rhinoceros-sutta) — Snp 1.3, solitude and friendship; among the oldest Buddhist texts.
+- [The Going Forth and the Striving](entity.html?id=snp-going-forth-striving) — Snp 3.1–3.2: the prince leaves home and refuses King Bimbisāra's offer of pleasures, and the Bodhisatta routs Māra's armies on the eve of awakening.
 - [The Aṭṭhakavagga: Chapter of Octads](entity.html?id=atthakavagga) — Snp Book 4, among the oldest Buddhist poetry: freedom through not grasping any view, taking no side in disputes; selected passages.
 - [The Pārāyana: Crossing Over](entity.html?id=parayana-crossing) — Snp Book 5: three of the sixteen students' questions — the flood blocked by mindfulness and wisdom, the freed sage "beyond reckoning," and looking on the world as empty to cross beyond death.
 - [The Blind Men and the Elephant](entity.html?id=blind-men-elephant) — Udāna 6.4, the partiality of views and the futility of dogmatic dispute.
