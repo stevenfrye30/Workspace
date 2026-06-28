@@ -70,6 +70,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [Dependent Origination](entity.html?id=dependent-origination) — SN 12.1–2, the twelve links by which suffering arises and ceases.
 - [The Snake](entity.html?id=snake-sutta) — Snp 1.1, shedding the near shore and the far like a serpent's skin.
 - [The Honey-Cake](entity.html?id=honeyball-sutta) — MN 18, mental proliferation (papañca), from a flicker of perception to war.
+- [The Chariot: Is There a Self?](entity.html?id=chariot-simile) — Milindapañha, the Greek king and the monk on not-self.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
