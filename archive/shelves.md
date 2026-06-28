@@ -95,6 +95,10 @@ The birth-stories — the Buddha's former lives (Jātaka).
 
 - [The Jātaka: Selected Birth-Stories](entity.html?id=jataka-tales) — two beloved tales from the collection of 547: the Banyan Deer who offers his life for a pregnant doe (no. 12) and the monkey-king who outwits a water-ogre (no. 20); Chalmers's 1895 translation.
 
+The founding of the order — from the Vinaya.
+
+- [The Vinaya Mahāvagga I: After the Awakening](entity.html?id=vinaya-mahavagga-first) — the weeks after the awakening, Brahmā's plea to teach, the first disciples, and "wander for the welfare of the many"; Rhys Davids & Oldenberg's 1881 translation (SBE XIII).
+
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
 - [The Heart Sūtra](entity.html?id=heart-sutra) — Prajñāpāramitā-hṛdaya, "form is emptiness, emptiness is form"; Müller's 1894 translation from the Sanskrit.
