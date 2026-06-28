@@ -24,6 +24,12 @@ Other traditions will appear as they earn their place.
 
 **[The Rolling Forth of the Wheel of Dhamma (SN 56.11)](entity.html?id=dhammacakkappavattana-sutta)** (c. 5th c. BCE, India) — The Buddha's first discourse: the rejection of both indulgence and self-mortification, the noble eightfold path, and the four noble truths, taught to five mendicants in the deer park at Isipatana. Bhikkhu Sujato's public-domain translation.
 
+**[The Characteristic of Not-Self (SN 22.59)](entity.html?id=anattalakkhana-sutta)** (c. 5th c. BCE, India) — The second discourse: none of the five aggregates is a self, for none can be controlled and all are impermanent. Hearing it, the first five disciples were fully freed. Sujato's translation.
+
+**[The Discourse on Love (Snp 1.8)](entity.html?id=metta-sutta)** (c. 5th c. BCE, India) — The Mettā Sutta: boundless loving-kindness for all beings, fierce as a mother's care for her only child and as wide as the world. The canon's central verses on goodwill. Sujato's translation.
+
+**[The Discourse to the Kālāmas (AN 3.65)](entity.html?id=kalama-sutta)** (c. 5th c. BCE, India) — The charter of free inquiry: accept no teaching on authority, tradition, or logic alone, but test it by whether, in practice, it leads to harm or to welfare. Sujato's translation.
+
 **[Mundaka Upanishad, Book 1, Part 1](entity.html?id=mundaka-upanishad-book-1-part-1)** (c. 4th–2nd c. BCE, India) — The opening of the Mundaka: Saunaka asks Angiras what one knowledge gives knowledge of everything else, and is answered with the distinction between the higher knowledge and the lower. Müller's 1884 translation.
 
 **The Didache** (late 1st – early 2nd c.) — Earliest known Christian manual; on baptism, prayer, and the ethics of the "two ways." Short enough to sit with in a single evening.
