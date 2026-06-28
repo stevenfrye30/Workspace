@@ -73,6 +73,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Chariot: Is There a Self?](entity.html?id=chariot-simile) — Milindapañha, the Greek king and the monk on not-self.
 - [On the Origin of Things](entity.html?id=agganna-sutta) — DN 27, the Buddhist account of cosmic and social origins, the elected king and the equality of castes.
 - [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
+- [Wander Alone Like a Rhinoceros](entity.html?id=rhinoceros-sutta) — Snp 1.3, solitude and friendship; among the oldest Buddhist texts.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
