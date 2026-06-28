@@ -71,6 +71,7 @@ The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
 - [The Diamond Sūtra](entity.html?id=diamond-sutra) — Vajracchedikā Prajñāpāramitā, on the perfection of wisdom; Gemmell's 1912 translation from Kumārajīva's Chinese.
 - [The Lotus Sūtra](entity.html?id=lotus-sutra) — Saddharma-Puṇḍarīka, the burning house and the One Vehicle; Kern's 1884 translation from the Sanskrit.
+- [The Parable of the Lost Son](entity.html?id=lost-son-parable) — Lotus Sūtra ch. 4, the Buddhist prodigal son, told by the disciples; Kern's 1884 translation.
 
 ## Jewish
 
