@@ -71,6 +71,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Snake](entity.html?id=snake-sutta) — Snp 1.1, shedding the near shore and the far like a serpent's skin.
 - [The Honey-Cake](entity.html?id=honeyball-sutta) — MN 18, mental proliferation (papañca), from a flicker of perception to war.
 - [The Chariot: Is There a Self?](entity.html?id=chariot-simile) — Milindapañha, the Greek king and the monk on not-self.
+- [Continuity Without a Self: Rebirth](entity.html?id=milinda-rebirth) — Milindapañha, the reborn one "neither the same nor another" (the flame, the milk) and rebirth without anything transmigrating (the stolen mango); Kelly's translation.
 - [On the Origin of Things](entity.html?id=agganna-sutta) — DN 27, the Buddhist account of cosmic and social origins, the elected king and the equality of castes.
 - [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
 - [Wander Alone Like a Rhinoceros](entity.html?id=rhinoceros-sutta) — Snp 1.3, solitude and friendship; among the oldest Buddhist texts.
