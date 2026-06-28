@@ -62,6 +62,10 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Discourse on the Jewels](entity.html?id=ratana-sutta) — Snp 2.1, the Three Jewels.
 - [The Discourse on Blessings](entity.html?id=mangala-sutta) — Snp 2.4, the highest blessings.
 - [The Discourse to the Kālāmas](entity.html?id=kalama-sutta) — AN 3.65, free inquiry.
+- [With Bāhiya](entity.html?id=bahiya-sutta) — Ud 1.10, awakening in a single sentence.
+- [In a Rosewood Forest](entity.html?id=simsapa-sutta) — SN 56.31, the handful of leaves.
+- [The Shorter Discourse With Māluṅkya](entity.html?id=arrow-sutta) — MN 63, the poisoned arrow.
+- [The Simile of the Raft](entity.html?id=raft-sutta) — MN 22, for crossing, not holding on.
 
 ## Jewish
 
