@@ -79,6 +79,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [These Rocky Crags Delight Me](entity.html?id=rocky-crags) — Theragāthā 18.1, Mahā Kassapa's hymn to the wild places of meditation.
 - [The Middle Between Existence and Non-Existence](entity.html?id=kaccanagotta) — SN 12.15, right view between the extremes; the root of emptiness.
 - [Heirs of Their Deeds](entity.html?id=owners-of-deeds) — MN 135, karma as moral causation; why beings are born unequal.
+- [The Real Miracle, and Where the World Ends](entity.html?id=kevaddha) — DN 11, instruction over spectacle, and the cosmic question turned inward.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
