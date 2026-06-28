@@ -67,6 +67,10 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Shorter Discourse With Māluṅkya](entity.html?id=arrow-sutta) — MN 63, the poisoned arrow.
 - [The Simile of the Raft](entity.html?id=raft-sutta) — MN 22, for crossing, not holding on.
 
+The Mahāyāna — the "Great Vehicle," in public-domain translations.
+
+- [The Diamond Sūtra](entity.html?id=diamond-sutra) — Vajracchedikā Prajñāpāramitā, on the perfection of wisdom; Gemmell's 1912 translation from Kumārajīva's Chinese.
+
 ## Jewish
 
 The Tanakh — selected books and chapters, mostly Leeser 1854 and JPS 1917.
