@@ -66,6 +66,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [In a Rosewood Forest](entity.html?id=simsapa-sutta) — SN 56.31, the handful of leaves.
 - [The Shorter Discourse With Māluṅkya](entity.html?id=arrow-sutta) — MN 63, the poisoned arrow.
 - [The Simile of the Raft](entity.html?id=raft-sutta) — MN 22, for crossing, not holding on.
+- [Aṅgulimāla, the Murderer Who Stopped](entity.html?id=angulimala) — MN 86, redemption and the harvest of karma.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
