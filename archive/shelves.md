@@ -91,6 +91,10 @@ The life of the Buddha — in classical Sanskrit verse.
 
 - [The Buddha-karita of Aśvaghoṣa](entity.html?id=buddha-karita) — the earliest complete poetic life of the Buddha (1st–2nd c. CE): birth, the four sights, the flight from home, and the awakening; selected passages of Cowell's 1894 translation from the Sanskrit.
 
+The birth-stories — the Buddha's former lives (Jātaka).
+
+- [The Jātaka: Selected Birth-Stories](entity.html?id=jataka-tales) — two beloved tales from the collection of 547: the Banyan Deer who offers his life for a pregnant doe (no. 12) and the monkey-king who outwits a water-ogre (no. 20); Chalmers's 1895 translation.
+
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
 - [The Heart Sūtra](entity.html?id=heart-sutra) — Prajñāpāramitā-hṛdaya, "form is emptiness, emptiness is form"; Müller's 1894 translation from the Sanskrit.
