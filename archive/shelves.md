@@ -71,6 +71,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Snake](entity.html?id=snake-sutta) — Snp 1.1, shedding the near shore and the far like a serpent's skin.
 - [The Honey-Cake](entity.html?id=honeyball-sutta) — MN 18, mental proliferation (papañca), from a flicker of perception to war.
 - [The Chariot: Is There a Self?](entity.html?id=chariot-simile) — Milindapañha, the Greek king and the monk on not-self.
+- [On the Origin of Things](entity.html?id=agganna-sutta) — DN 27, the Buddhist account of cosmic and social origins, the elected king and the equality of castes.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
