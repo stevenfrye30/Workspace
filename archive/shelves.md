@@ -87,6 +87,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Noble Search](entity.html?id=noble-search) — MN 26, the Buddha's own account of his quest, awakening, and decision to teach.
 - [The Four Absorptions](entity.html?id=four-absorptions) — DN 2, the deep meditative states (jhāna) and their similes.
 - [Paṭācārā: The Lamp Goes Out](entity.html?id=patacara) — Therīgāthā 5.10, grief, awakening, and freedom like a flame put out.
+- [Therīgāthā: Songs of Freedom](entity.html?id=therigatha-freedom) — three nuns on liberation: Muttā and Sumaṅgala's mother freed from the pestle and the husband (Thig 1.11, 2.3), Vimalā the courtesan freed from beauty's snare (Thig 5.2).
 
 The life of the Buddha — in classical Sanskrit verse.
 
