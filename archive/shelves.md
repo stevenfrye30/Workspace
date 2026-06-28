@@ -97,6 +97,7 @@ The Mahāyāna — the "Great Vehicle," in public-domain translations.
 - [The Eternal Buddha](entity.html?id=eternal-buddha) — Lotus Sūtra ch. 15, the immeasurable lifespan and the good physician; Kern's 1884 translation.
 - [The Land of Bliss](entity.html?id=land-of-bliss) — Sukhāvatī-vyūha, the Pure Land of Amitābha and the way of faith; Müller's 1894 translation from the Sanskrit.
 - [The Smaller Sukhāvatī-vyūha](entity.html?id=smaller-sukhavati) — the shorter Pure Land sūtra: hold the name of Amitāyus in mind for one to seven nights and be reborn in Sukhāvatī; Müller's 1894 translation from the Sanskrit.
+- [The Meditation on Amitāyus](entity.html?id=amitayur-dhyana-sutra) — Amitāyur-dhyāna-sūtra, the third Pure Land sūtra: Queen Vaidehī and the sixteen contemplations of the Land of Highest Happiness; Takakusu's 1894 translation from the Chinese.
 - [Avalokiteśvara, the All-Sided One](entity.html?id=avalokitesvara) — Lotus Sūtra ch. 24, the bodhisattva of compassion (Guanyin / Kannon); Kern's 1884 translation.
 - [The Bodhisattva Never-Disparaging](entity.html?id=never-disparaging) — Lotus Sūtra ch. 19, who bowed to all as future Buddhas; Kern's 1884 translation.
 - [The Conjured City](entity.html?id=conjured-city) — Lotus Sūtra ch. 7, the magic city of rest and the provisional nirvāṇa; Kern's 1884 translation.
