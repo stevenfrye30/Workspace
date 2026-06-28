@@ -75,6 +75,7 @@ The Mahāyāna — the "Great Vehicle," in public-domain translations.
 - [The Parable of the Lost Son](entity.html?id=lost-son-parable) — Lotus Sūtra ch. 4, the Buddhist prodigal son, told by the disciples; Kern's 1884 translation.
 - [The Rain Cloud and the Plants](entity.html?id=rain-cloud-parable) — Lotus Sūtra ch. 5, one rain on all plants, each growing to its kind; Kern's 1884 translation.
 - [The Eternal Buddha](entity.html?id=eternal-buddha) — Lotus Sūtra ch. 15, the immeasurable lifespan and the good physician; Kern's 1884 translation.
+- [The Land of Bliss](entity.html?id=land-of-bliss) — Sukhāvatī-vyūha, the Pure Land of Amitābha and the way of faith; Müller's 1894 translation from the Sanskrit.
 
 ## Jewish
 
