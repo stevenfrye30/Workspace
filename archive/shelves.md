@@ -72,6 +72,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Honey-Cake](entity.html?id=honeyball-sutta) — MN 18, mental proliferation (papañca), from a flicker of perception to war.
 - [The Chariot: Is There a Self?](entity.html?id=chariot-simile) — Milindapañha, the Greek king and the monk on not-self.
 - [On the Origin of Things](entity.html?id=agganna-sutta) — DN 27, the Buddhist account of cosmic and social origins, the elected king and the equality of castes.
+- [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
