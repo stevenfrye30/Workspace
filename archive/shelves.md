@@ -80,6 +80,7 @@ The Mahāyāna — the "Great Vehicle," in public-domain translations.
 - [The Eternal Buddha](entity.html?id=eternal-buddha) — Lotus Sūtra ch. 15, the immeasurable lifespan and the good physician; Kern's 1884 translation.
 - [The Land of Bliss](entity.html?id=land-of-bliss) — Sukhāvatī-vyūha, the Pure Land of Amitābha and the way of faith; Müller's 1894 translation from the Sanskrit.
 - [Avalokiteśvara, the All-Sided One](entity.html?id=avalokitesvara) — Lotus Sūtra ch. 24, the bodhisattva of compassion (Guanyin / Kannon); Kern's 1884 translation.
+- [The Bodhisattva Never-Disparaging](entity.html?id=never-disparaging) — Lotus Sūtra ch. 19, who bowed to all as future Buddhas; Kern's 1884 translation.
 
 ## Jewish
 
