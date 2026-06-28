@@ -86,6 +86,10 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Four Absorptions](entity.html?id=four-absorptions) — DN 2, the deep meditative states (jhāna) and their similes.
 - [Paṭācārā: The Lamp Goes Out](entity.html?id=patacara) — Therīgāthā 5.10, grief, awakening, and freedom like a flame put out.
 
+The life of the Buddha — in classical Sanskrit verse.
+
+- [The Buddha-karita of Aśvaghoṣa](entity.html?id=buddha-karita) — the earliest complete poetic life of the Buddha (1st–2nd c. CE): birth, the four sights, the flight from home, and the awakening; selected passages of Cowell's 1894 translation from the Sanskrit.
+
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
 - [The Heart Sūtra](entity.html?id=heart-sutra) — Prajñāpāramitā-hṛdaya, "form is emptiness, emptiness is form"; Müller's 1894 translation from the Sanskrit.
