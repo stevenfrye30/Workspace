@@ -30,6 +30,14 @@ Other traditions will appear as they earn their place.
 
 **[The Discourse to the Kālāmas (AN 3.65)](entity.html?id=kalama-sutta)** (c. 5th c. BCE, India) — The charter of free inquiry: accept no teaching on authority, tradition, or logic alone, but test it by whether, in practice, it leads to harm or to welfare. Sujato's translation.
 
+**[The Fire Sermon (SN 35.28)](entity.html?id=fire-sermon)** (c. 5th c. BCE, India) — The third great early discourse, to a thousand former fire-worshippers: all that the six senses meet is "burning" with greed, hate, and delusion; seeing it, the disciple cools and is freed. Sujato's translation.
+
+**[The Foundations of Mindfulness (MN 10)](entity.html?id=satipatthana-sutta)** (c. 5th c. BCE, India) — The cornerstone meditation discourse: the four kinds of mindfulness — of body, feelings, mind, and principles — as the path to convergence. Sujato's translation.
+
+**[Mindfulness of Breathing (MN 118)](entity.html?id=anapanasati-sutta)** (c. 5th c. BCE, India) — The complete breath meditation in sixteen steps, from settling the body to the contemplation of letting go. Sujato's translation.
+
+**[The Discourse on Blessings (Snp 2.4)](entity.html?id=mangala-sutta)** (c. 5th c. BCE, India) — The Maṅgala Sutta: a deity asks for the highest blessing, and the Buddha answers with a staircase of them, from keeping wise company to an unshakable mind. Sujato's translation.
+
 **[Mundaka Upanishad, Book 1, Part 1](entity.html?id=mundaka-upanishad-book-1-part-1)** (c. 4th–2nd c. BCE, India) — The opening of the Mundaka: Saunaka asks Angiras what one knowledge gives knowledge of everything else, and is answered with the distinction between the higher knowledge and the lower. Müller's 1884 translation.
 
 **The Didache** (late 1st – early 2nd c.) — Earliest known Christian manual; on baptism, prayer, and the ethics of the "two ways." Short enough to sit with in a single evening.
