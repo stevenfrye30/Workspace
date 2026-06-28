@@ -49,6 +49,20 @@ The Dhammapada — Müller's 1881 translation.
 - [Dhammapada](entity.html?id=dhammapada-chapter-1) — twenty-six chapters.
 - [Dhammapada, an alternate set](entity.html?id=dhammapada-2) — second translation.
 
+The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain translations, with the Pali root text held alongside.
+
+- [The Rolling Forth of the Wheel of Dhamma](entity.html?id=dhammacakkappavattana-sutta) — SN 56.11, the first sermon.
+- [The Characteristic of Not-Self](entity.html?id=anattalakkhana-sutta) — SN 22.59, the second discourse.
+- [The Fire Sermon](entity.html?id=fire-sermon) — SN 35.28, "all is burning."
+- [The Foundations of Mindfulness](entity.html?id=satipatthana-sutta) — MN 10.
+- [Mindfulness of Breathing](entity.html?id=anapanasati-sutta) — MN 118, the sixteen steps.
+- [The Buddha's Final Days](entity.html?id=mahaparinibbana-sutta) — DN 16, the death of the Buddha.
+- [Advice to Sigālaka](entity.html?id=sigalovada-sutta) — DN 31, the householder's ethic.
+- [The Discourse on Love](entity.html?id=metta-sutta) — Snp 1.8, loving-kindness.
+- [The Discourse on the Jewels](entity.html?id=ratana-sutta) — Snp 2.1, the Three Jewels.
+- [The Discourse on Blessings](entity.html?id=mangala-sutta) — Snp 2.4, the highest blessings.
+- [The Discourse to the Kālāmas](entity.html?id=kalama-sutta) — AN 3.65, free inquiry.
+
 ## Jewish
 
 The Tanakh — selected books and chapters, mostly Leeser 1854 and JPS 1917.
