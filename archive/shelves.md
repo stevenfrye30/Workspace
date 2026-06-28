@@ -75,6 +75,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
 - [Wander Alone Like a Rhinoceros](entity.html?id=rhinoceros-sutta) — Snp 1.3, solitude and friendship; among the oldest Buddhist texts.
 - [The Blind Men and the Elephant](entity.html?id=blind-men-elephant) — Udāna 6.4, the partiality of views and the futility of dogmatic dispute.
+- [The Unconditioned](entity.html?id=nibbana-udana) — Udāna 8.1 & 8.3, the canon's most direct words on nibbāna, by negation.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
