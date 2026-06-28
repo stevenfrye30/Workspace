@@ -69,9 +69,11 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
+- [The Heart Sūtra](entity.html?id=heart-sutra) — Prajñāpāramitā-hṛdaya, "form is emptiness, emptiness is form"; Müller's 1894 translation from the Sanskrit.
 - [The Diamond Sūtra](entity.html?id=diamond-sutra) — Vajracchedikā Prajñāpāramitā, on the perfection of wisdom; Gemmell's 1912 translation from Kumārajīva's Chinese.
 - [The Lotus Sūtra](entity.html?id=lotus-sutra) — Saddharma-Puṇḍarīka, the burning house and the One Vehicle; Kern's 1884 translation from the Sanskrit.
 - [The Parable of the Lost Son](entity.html?id=lost-son-parable) — Lotus Sūtra ch. 4, the Buddhist prodigal son, told by the disciples; Kern's 1884 translation.
+- [The Rain Cloud and the Plants](entity.html?id=rain-cloud-parable) — Lotus Sūtra ch. 5, one rain on all plants, each growing to its kind; Kern's 1884 translation.
 
 ## Jewish
 
