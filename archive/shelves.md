@@ -67,6 +67,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Shorter Discourse With Māluṅkya](entity.html?id=arrow-sutta) — MN 63, the poisoned arrow.
 - [The Simile of the Raft](entity.html?id=raft-sutta) — MN 22, for crossing, not holding on.
 - [Aṅgulimāla, the Murderer Who Stopped](entity.html?id=angulimala) — MN 86, redemption and the harvest of karma.
+- [Dependent Origination](entity.html?id=dependent-origination) — SN 12.1–2, the twelve links by which suffering arises and ceases.
 
 The Mahāyāna — the "Great Vehicle," in public-domain translations.
 
