@@ -84,6 +84,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [The Real Miracle, and Where the World Ends](entity.html?id=kevaddha) — DN 11, instruction over spectacle, and the cosmic question turned inward.
 - [The Simile of the Mountains](entity.html?id=mountain-simile) — SN 3.25, old age and death rolling in like mountains, crushing every rank alike.
 - [The Radiance of Love](entity.html?id=meditation-on-love) — Itivuttaka 27, loving-kindness as the merit that outshines all others.
+- [The Three Roots and the Two Nibbāna Elements](entity.html?id=itivuttaka-roots-nibbana) — Itivuttaka 1–3 and 44: give up greed, hate, and delusion; and the two kinds of extinguishment, the living arahant and the final cooling.
 - [The Noble Search](entity.html?id=noble-search) — MN 26, the Buddha's own account of his quest, awakening, and decision to teach.
 - [The Four Absorptions](entity.html?id=four-absorptions) — DN 2, the deep meditative states (jhāna) and their similes.
 - [Paṭācārā: The Lamp Goes Out](entity.html?id=patacara) — Therīgāthā 5.10, grief, awakening, and freedom like a flame put out.
