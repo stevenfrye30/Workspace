@@ -76,6 +76,7 @@ The Pali Canon — early discourses (suttas), in Bhikkhu Sujato's public-domain 
 - [Ambapālī on Age](entity.html?id=ambapali) — Therīgāthā 13.1, a courtesan-turned-nun reads impermanence in her own aging body.
 - [Wander Alone Like a Rhinoceros](entity.html?id=rhinoceros-sutta) — Snp 1.3, solitude and friendship; among the oldest Buddhist texts.
 - [The Aṭṭhakavagga: Chapter of Octads](entity.html?id=atthakavagga) — Snp Book 4, among the oldest Buddhist poetry: freedom through not grasping any view, taking no side in disputes; selected passages.
+- [The Pārāyana: Crossing Over](entity.html?id=parayana-crossing) — Snp Book 5: three of the sixteen students' questions — the flood blocked by mindfulness and wisdom, the freed sage "beyond reckoning," and looking on the world as empty to cross beyond death.
 - [The Blind Men and the Elephant](entity.html?id=blind-men-elephant) — Udāna 6.4, the partiality of views and the futility of dogmatic dispute.
 - [The Unconditioned](entity.html?id=nibbana-udana) — Udāna 8.1 & 8.3, the canon's most direct words on nibbāna, by negation.
 - [The Bliss of Freedom, and the Flame Gone Out](entity.html?id=udana-freedom) — Udāna 2.1 & 8.10: the dragon-king Mucalinda shelters the Buddha ("dispelling the conceit 'I am' is the ultimate happiness"), and the released one like a flame whose destiny cannot be found.
