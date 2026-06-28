@@ -158,6 +158,7 @@ The Tanakh — selected books and chapters, mostly Leeser 1854 and JPS 1917.
 - [Daodejing, Chapters 11–20](entity.html?id=daodejing-chapters-11-20).
 - [Daodejing: Non-Action and the Way of Water (chs. 22, 37, 48, 78)](entity.html?id=daodejing-nonaction-water).
 - [Zhuangzi, Inner Chapters 1–2](entity.html?id=zhuangzi-inner-chapters-1-2).
+- [Zhuangzi: The Way in Action (Cook Ding, the fishes, the empty boat — Bks III, XVII, XVIII, XX)](entity.html?id=zhuangzi-way-in-action).
 
 ## Confucian
 
