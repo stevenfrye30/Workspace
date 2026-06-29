@@ -81,11 +81,16 @@ not appear on a public-facing index, sidebar, or sitemap.
 - `_legacy/legacy_home.html` — earlier homepage (titled *Steven Frye —
   Workspace*); superseded by the Atlas-style `index.html`.
 - `_internal/build_phonetics.py`, `build_science.py`,
-  `build_soundmap.py`, `strip_soundmap.py` — build scripts.
-  Note: `build_science.py` is **orphaned** — its source
-  `projects/class notes` was removed, and `science/` is now a
-  self-contained, hand-built rooms page (`index.html` + `room.html`)
-  with no generated-data dependency.
+  `build_soundmap.py`, `strip_soundmap.py` — build scripts,
+  **all four now orphaned (do not run):**
+  - `build_science.py` — source `projects/class notes` was removed;
+    `science/` is now a self-contained, hand-built rooms page
+    (`index.html` + `room.html`) with no generated-data dependency.
+  - `build_phonetics.py` / `build_soundmap.py` / `strip_soundmap.py` —
+    the IPA → Sound Map → phonetics pipeline; their `ipa/` and
+    `sound-map/` sources are gone (sound-map retired to `_legacy/`).
+    These three carry an ORPHANED header in-file.
+  See `SOURCE_MAP.md` §2e.
 - `_internal/open-mirror.bat` — local-use launcher.
 
 `projects/culture/Digital Archive/03_web_app/`:
