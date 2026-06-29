@@ -17,22 +17,6 @@ library_chapter: 23
 
 Psalm 23 is one of the shortest and most widely received poems in the Hebrew Bible — a lyric of six verses headed *a psalm of David*. The first-person speaker addresses God as both shepherd and host: shepherd through pasture, water, and the valley of deep darkness; host at a table set in the presence of enemies. The poem ends in the house of the LORD, having moved through danger to dwelling. Its compactness and the directness of its voice are part of its civilizational longevity.
 
-## Primary Text
-
-Psalm 23, complete (all six verses). *The Holy Scriptures According to the Masoretic Text* (Philadelphia: Jewish Publication Society of America, 1917); public domain. Verse numbers follow the Masoretic / JPS numbering, in which the superscription "A Psalm of David" stands as the opening of verse 1; the divine name is rendered "the LORD," as in the JPS text. The reproduction is verbatim, including JPS's capitalization at each poetic line. Digital text via Sefaria, verified word-for-word against Mechon-Mamre.
-
-**1.** A Psalm of David. The LORD is my shepherd; I shall not want.
-
-**2.** He maketh me to lie down in green pastures; He leadeth me beside the still waters.
-
-**3.** He restoreth my soul; He guideth me in straight paths for His name's sake.
-
-**4.** Yea, though I walk through the valley of the shadow of death, I will fear no evil, for Thou art with me; Thy rod and Thy staff, they comfort me.
-
-**5.** Thou preparest a table before me in the presence of mine enemies; Thou hast anointed my head with oil; my cup runneth over.
-
-**6.** Surely goodness and mercy shall follow me all the days of my life; And I shall dwell in the house of the LORD for ever.
-
 ## Context
 
 The Book of Psalms — *Tehillim* in Hebrew, *Psalmoi* in Greek — is the central poetic and prayer book of the Hebrew Bible, gathered as one of the books of the Ketuvim (Writings). It contains one hundred and fifty psalms, divided since antiquity into five books (Psalms 1–41, 42–72, 73–89, 90–106, 107–150). Seventy-three psalms carry superscriptions attaching them to David; others are attached to Asaph, the sons of Korah, Solomon, Moses, or Heman, and many carry no attribution. Modern scholarship treats the superscriptions as ancient editorial framing rather than authorial signatures, and dates the composition of individual psalms across a long span — from the early monarchic period (tenth century BCE) through the Persian and possibly the early Hellenistic period — with the present canonical collection assembled in the post-exilic era.
@@ -45,6 +29,10 @@ Two habits help. First, the psalm holds two metaphors in close sequence and does
 
 Second, the phrase usually rendered "the valley of the shadow of death" (verse 4) translates the Hebrew *gei tzalmavet*, which also carries the sense of "deep darkness." Modern translations split the difference. Reading the verse with the awareness that the phrase is darker and rougher in Hebrew than the familiar English suggests, and less specifically about death than the English wording implies, keeps the form the text has.
 
+## The text
+
+The text is held in the Archive library under `tanakh`, with the JPS 1917 and Isaac Leeser (1853) translations available as witnesses — Psalm 23. Six verses; about three minutes' reading.
+
 ## Related
 
 - **structural-parallel** → Book of Job, Chapters 1–2 — paired Hebrew Bible openings on trust in opposite registers; Job 1–2 with the abrupt narration of affliction descending on a man who has trusted, Psalm 23 with a first-person voice declaring trust as the speaker walks through the valley of deep darkness.
@@ -52,7 +40,7 @@ Second, the phrase usually rendered "the valley of the shadow of death" (verse 4
 
 ## Resources
 
-- **Translation (above).** *The Holy Scriptures According to the Masoretic Text* (Jewish Publication Society, 1917), public domain; digital text via [Sefaria](https://www.sefaria.org/Psalms.23), verified against [Mechon-Mamre](https://mechon-mamre.org/e/et/et2623.htm). The JPS 1917 and Isaac Leeser's 1853 translation are both held in the Archive library under `tanakh`.
+- **Translations (library witnesses).** *The Holy Scriptures According to the Masoretic Text* (Jewish Publication Society, 1917) and Isaac Leeser, *The Twenty-four Books of the Holy Scriptures* (1853) — both public domain, held in the Archive library under `tanakh`.
 - **Original-language edition.** *Biblia Hebraica Stuttgartensia*, ed. K. Elliger and W. Rudolph (Deutsche Bibelgesellschaft, 4th rev. ed. 1990) — the modern critical edition of the Hebrew text.
 - **Recommended translation upgrade.** Robert Alter, *The Book of Psalms: A Translation with Commentary* (Norton, 2007) — preserves the rhythm and concrete vocabulary of the Hebrew poetry; the Psalter volume of Alter's larger Hebrew Bible project.
 - **Commentary.** Hans-Joachim Kraus, *Psalms 1–59: A Continental Commentary* (Augsburg, 1988) — the field-standard scholarly commentary in English on the first book of the Psalter.
