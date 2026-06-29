@@ -165,6 +165,7 @@ The Tanakh — selected books and chapters, mostly Leeser 1854 and JPS 1917.
 - [Analects, Book 1](entity.html?id=analects-book-1).
 - [Analects, Book 2](entity.html?id=analects-2).
 - [The Analects: Humaneness and Reciprocity (IV.15, VI.28, XII.1, XII.2, XV.23)](entity.html?id=analects-humaneness-reciprocity).
+- [Mencius: Human Nature and Benevolent Rule (1A:1, 2A:6, 6A:2, 6A:11, 7B:14)](entity.html?id=mencius-human-nature).
 
 ## Islamic
 
