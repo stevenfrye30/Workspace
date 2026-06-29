@@ -1,0 +1,217 @@
+/* Glyphs — one stylesheet. */
+
+:root {
+  --bg:        #1e2a3a;
+  --fg:        #e8ecf1;
+  --muted:     #8fa3ba;
+  --border:    #32445c;
+  --specimen:  #c8b994;
+
+  --font-body: Georgia, "Iowan Old Style", Palatino, serif;
+
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+a { color: var(--specimen); }
+
+.page {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: var(--space-2xl) var(--space-lg) var(--space-3xl);
+}
+
+header {
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-md);
+  margin-bottom: var(--space-2xl);
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+h1 {
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  font-variant: small-caps;
+  color: var(--fg);
+}
+
+.back {
+  text-decoration: none;
+  font-size: 13px;
+  font-style: italic;
+}
+.back:hover { text-decoration: underline; }
+
+/* ── Lineage spine ── */
+
+.lineage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2xl);
+  padding: var(--space-2xl) 0 var(--space-3xl);
+  flex-wrap: wrap;
+}
+
+.lineage-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+  padding: var(--space-md);
+  transition: opacity 0.15s;
+}
+.lineage-node:hover { opacity: 0.75; }
+
+.lineage-specimen {
+  width: 96px;
+  height: 96px;
+  margin-bottom: var(--space-md);
+  color: var(--specimen);
+}
+
+.lineage-name {
+  font-style: italic;
+  font-size: 17px;
+  margin-bottom: 2px;
+}
+
+.lineage-tradition {
+  font-variant: small-caps;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  margin-bottom: 2px;
+}
+
+.lineage-date {
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.lineage-arrow {
+  color: var(--muted);
+  font-size: 28px;
+  line-height: 1;
+  user-select: none;
+}
+
+/* ── Plate ── */
+
+.plate { text-align: left; }
+
+.plate-specimen-frame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: var(--space-2xl) 0 var(--space-2xl);
+}
+
+.plate-specimen {
+  width: 200px;
+  height: 200px;
+  color: var(--specimen);
+}
+
+.plate-specimen-caption {
+  text-align: center;
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: var(--space-sm);
+  letter-spacing: 0.04em;
+}
+
+.plate-name {
+  font-style: italic;
+  font-size: 28px;
+  font-weight: 400;
+  margin-bottom: var(--space-xs);
+}
+
+.plate-meta {
+  font-variant: small-caps;
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: var(--space-xl);
+}
+
+.plate-note {
+  font-size: 16px;
+  margin-bottom: var(--space-xl);
+  max-width: 56ch;
+}
+
+.plate-note em {
+  font-style: italic;
+  color: var(--specimen);
+}
+
+.plate-source {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: var(--space-xl);
+  max-width: 56ch;
+  border-left: 1px solid var(--border);
+  padding-left: var(--space-md);
+}
+
+.plate-source-label {
+  font-variant: small-caps;
+  letter-spacing: 0.08em;
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: var(--space-xs);
+}
+
+.plate-relations {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: var(--space-2xl);
+}
+
+.plate-observation {
+  font-style: italic;
+  color: var(--muted);
+  font-size: 15px;
+  border-top: 1px solid var(--border);
+  padding-top: var(--space-md);
+  max-width: 56ch;
+}
+
+/* ── Footer warning ── */
+
+.warning {
+  margin-top: var(--space-2xl);
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+  text-align: center;
+  letter-spacing: 0.02em;
+}
