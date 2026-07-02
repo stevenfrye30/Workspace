@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Masri — Egyptian Arabic reference desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12161f; --surf:#1a1f2b; --surf2:#222838; --card:#1e2431;
+    --fg:#e9edf4; --muted:#8b97ad; --border:#2c3446;
+    --gold:#d9a441; --blue:#5fb2e6; --green:#6fce9a;
+    --ar:'Noto Naskh Arabic','Traditional Arabic','Amiri','Times New Roman',serif;
+    --ui:'Inter',system-ui,-apple-system,sans-serif;
+    --r:10px;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--fg);font-family:var(--ui);line-height:1.55;min-height:100vh}
+  .ar{font-family:var(--ar);direction:rtl;unicode-bidi:isolate}
+
+  /* ── header ── */
+  header{background:var(--surf);border-bottom:1px solid var(--border);padding:20px 24px;display:flex;align-items:baseline;gap:16px;flex-wrap:wrap}
+  header .title-ar{font-family:var(--ar);font-size:30px;color:var(--gold);line-height:1;direction:rtl;unicode-bidi:isolate}
+  header h1{font-size:20px;font-weight:600;letter-spacing:.02em}
+  header .sub{color:var(--muted);font-style:italic;font-size:14px;flex:1;min-width:220px}
+
+  /* ── nav ── */
+  nav{background:var(--surf);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 12px;position:sticky;top:0;z-index:10}
+  .tab{background:none;border:none;color:var(--muted);font-family:var(--ui);font-size:13px;font-weight:600;
+       letter-spacing:.03em;padding:14px 16px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+  .tab:hover{color:var(--fg)}
+  .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+
+  /* ── layout ── */
+  main{max-width:960px;margin:0 auto;padding:28px 20px 90px}
+  .panel{display:none}
+  .panel.active{display:block}
+  .lead{color:var(--muted);font-size:14px;max-width:760px;margin-bottom:22px;line-height:1.65}
+  .lead b{color:var(--fg)}
+  h2{font-size:15px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin:30px 0 12px}
+  h2:first-of-type{margin-top:0}
+  .note{color:var(--muted);font-size:13px;margin-bottom:12px;line-height:1.6}
+  .note b{color:var(--fg)}
+
+  /* ── start here ── */
+  .start-list{list-style:none;margin:0 0 6px;padding:0}
+  .start-list li{position:relative;padding:7px 0 7px 20px;color:var(--fg);font-size:14px;line-height:1.6;border-bottom:1px solid var(--border)}
+  .start-list li:last-child{border-bottom:none}
+  .start-list li::before{content:"\203A";position:absolute;left:3px;color:var(--gold);font-weight:700}
+  .goto{color:var(--gold);cursor:pointer;font-weight:600}
+  .goto:hover{text-decoration:underline}
+
+  /* ── search ── */
+  .search{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);
+          color:var(--fg);font-family:var(--ui);font-size:14px;padding:11px 14px;margin-bottom:20px;outline:none}
+  .search:focus{border-color:var(--gold)}
+  .search::placeholder{color:var(--muted)}
+
+  /* ── global search ── */
+  #gsearch{background:var(--surf);padding:12px 24px 14px;border-bottom:1px solid var(--border)}
+  #gsearch .search{margin-bottom:0}
+  #gsearch-results{margin-top:10px;max-height:52vh;overflow-y:auto;display:none}
+  #gsearch-results.show{display:block}
+  .gres-count{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.06em;margin:2px 0 8px}
+  .gres{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;margin-bottom:7px;cursor:pointer;font-family:var(--ui)}
+  .gres:hover{border-color:var(--gold)}
+  .gres .where{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
+  .gres .ar{font-family:var(--ar);font-size:18px;color:var(--fg);direction:rtl;unicode-bidi:isolate}
+  .gres .tr{color:var(--blue);font-size:12px;font-style:italic;margin-right:8px}
+  .gres .en{color:var(--fg);font-size:13px;margin-top:3px}
+  .gres .snip{color:var(--muted);font-size:11.5px;margin-top:3px}
+  .gres-empty{color:var(--muted);font-style:italic;padding:8px 2px}
+
+  /* ── tables ── */
+  table{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:14px}
+  th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:1px solid var(--border)}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  tr:hover td{background:var(--surf2)}
+  td.ar{font-size:19px;color:var(--fg)}
+  td .tr{color:var(--blue);font-family:var(--ar),monospace}
+  .card-table{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
+  .card-table h3{font-size:14px;font-weight:600;color:var(--fg);padding:13px 14px 11px;border-bottom:1px solid var(--border);background:var(--surf2)}
+  .card-table table{margin:0}
+  .card-table td:first-child,.card-table th:first-child{padding-left:14px}
+
+  /* ── grids ── */
+  .grid{display:grid;gap:12px}
+  .g-letters{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .g-cells{grid-template-columns:repeat(auto-fill,minmax(120px,1fr))}
+  .g-list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+
+  .letter{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center}
+  .letter .glyph{font-family:var(--ar);font-size:44px;color:var(--gold);line-height:1.1}
+  .letter .lname{font-size:13px;font-weight:600;margin-top:2px}
+  .letter .lsound{color:var(--blue);font-size:13px;margin-top:2px}
+  .letter .forms{display:flex;justify-content:center;gap:6px;margin:10px 0 6px;direction:rtl}
+  .letter .form{flex:1;background:var(--surf2);border-radius:6px;padding:6px 0}
+  .letter .form .fg{font-family:var(--ar);font-size:22px;color:var(--fg);line-height:1}
+  .letter .form .fl{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
+  .letter .lnote{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.45}
+
+  .cell{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center}
+  .cell .glyph{font-family:var(--ar);font-size:28px;color:var(--gold)}
+  .cell .digit{font-family:var(--ar);font-size:18px;color:var(--muted)}
+  .cell .tr{color:var(--blue);font-size:13px;margin-top:2px}
+  .cell .en{color:var(--muted);font-size:12px}
+
+  .item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+  .item .top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+  .item .a{font-family:var(--ar);font-size:22px;color:var(--fg)}
+  .item .t{color:var(--blue);font-size:13px;font-style:italic}
+  .item .e{color:var(--muted);font-size:13px;margin-top:4px}
+
+  /* ── notes ── */
+  .compose{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px}
+  .compose textarea{width:100%;min-height:68px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;
+       color:var(--fg);font-family:'Inter',system-ui,'Noto Naskh Arabic','Traditional Arabic',sans-serif;font-size:14px;
+       padding:10px 12px;outline:none;resize:vertical;line-height:1.5}
+  .compose textarea:focus{border-color:var(--gold)}
+  .compose-row{display:flex;gap:10px;align-items:center;margin-top:10px}
+  .n-select{background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--fg);
+       font-family:var(--ui);font-size:13px;padding:8px 10px;outline:none}
+  .n-select:focus{border-color:var(--gold)}
+  .btn{background:var(--gold);border:none;border-radius:8px;color:#111;cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;padding:9px 16px}
+  .btn:hover{opacity:.9}
+  .chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .chip{background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:20px;cursor:pointer;font-family:var(--ui);font-size:12px;padding:5px 12px}
+  .chip:hover{color:var(--fg)}
+  .chip.active{background:var(--gold);color:#111;border-color:var(--gold);font-weight:600}
+  .note{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
+  .note .meta{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
+  .note .cat{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--gold)}
+  .note .when{font-size:11px;color:var(--muted)}
+  .note .body{font-family:'Inter',system-ui,'Noto Naskh Arabic','Traditional Arabic',sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap}
+  .note .actions{display:flex;gap:6px;margin-top:8px}
+  .note .actions button{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);cursor:pointer;font-family:var(--ui);font-size:11.5px;padding:4px 10px}
+  .note .actions button:hover{color:var(--fg);border-color:var(--gold)}
+  .note .n-edit{width:100%;min-height:60px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;
+       color:var(--fg);font-family:'Inter',system-ui,'Noto Naskh Arabic','Traditional Arabic',sans-serif;font-size:14px;padding:9px 11px;outline:none;resize:vertical;line-height:1.5}
+  .note.starter{border-style:dashed}
+  .empty{color:var(--muted);font-style:italic;padding:20px 0}
+  footer{max-width:960px;margin:0 auto;padding:24px 20px 60px;color:var(--muted);font-size:12px;border-top:1px solid var(--border)}
+  footer b{color:var(--fg)}
+  code{background:var(--surf2);color:var(--gold);padding:1px 6px;border-radius:4px;font-size:12px}
+</style>
+</head>
+<body>
+<header>
+  <span class="title-ar">مصري</span>
+  <h1>Masri</h1>
+  <span class="sub">Egyptian Arabic — a reference desk. Look it up, read it, done.</span>
+</header>
+
+<div id="gsearch">
+  <input id="gsearch-input" class="search" placeholder="Search the desk…" autocomplete="off" spellcheck="false">
+  <div id="gsearch-results"></div>
+</div>
+
+<nav id="nav"></nav>
+
+<main>
+  <section id="p-start"    class="panel"></section>
+  <section id="p-sounds"   class="panel"></section>
+  <section id="p-alphabet" class="panel"></section>
+  <section id="p-grammar"  class="panel"></section>
+  <section id="p-verbs"    class="panel"></section>
+  <section id="p-numbers"  class="panel"></section>
+  <section id="p-time"     class="panel"></section>
+  <section id="p-around"   class="panel"></section>
+  <section id="p-shopping" class="panel"></section>
+  <section id="p-food"     class="panel"></section>
+  <section id="p-health"   class="panel"></section>
+  <section id="p-people"   class="panel"></section>
+  <section id="p-descriptions" class="panel"></section>
+  <section id="p-phrases"  class="panel"></section>
+  <section id="p-vocab"    class="panel"></section>
+  <section id="p-notes"    class="panel"></section>
+</main>
+
+<footer>
+  <b>Masri</b> is Egyptian (Cairene) spoken Arabic — not Modern Standard Arabic, which appears only as
+  contrast. This is a reference desk: no lessons, no scoring. To add a word, phrase, or rule, edit the
+  matching file in <code>data/</code>. See <code>PROJECT.md</code> for what belongs here and what doesn't.
+</footer>
+
+<!-- reference content (plain JS so it also works on double-click) -->
+<script src="data/start.js"></script>
+<script src="data/sounds.js"></script>
+<script src="data/alphabet.js"></script>
+<script src="data/grammar.js"></script>
+<script src="data/verbs.js"></script>
+<script src="data/numbers.js"></script>
+<script src="data/time.js"></script>
+<script src="data/getting-around.js"></script>
+<script src="data/shopping.js"></script>
+<script src="data/food.js"></script>
+<script src="data/health.js"></script>
+<script src="data/people.js"></script>
+<script src="data/descriptions.js"></script>
+<script src="data/phrases.js"></script>
+<script src="data/vocab.js"></script>
+<script src="data/notes.js"></script>
+<script>
+const M = window.MASRI || {};
+const TAT = 'ـ'; // tatweel (kashida) for showing joined letter shapes
+const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+const SECTIONS = [
+  { id:'start',    label:'Start Here' },
+  { id:'sounds',   label:'Sounds' },
+  { id:'alphabet', label:'Alphabet' },
+  { id:'grammar',  label:'Grammar' },
+  { id:'verbs',    label:'Verbs' },
+  { id:'numbers',  label:'Numbers' },
+  { id:'time',     label:'Time & Days' },
+  { id:'around',   label:'Getting Around' },
+  { id:'shopping', label:'Money & Shopping' },
+  { id:'food',     label:'Food & Ordering' },
+  { id:'health',   label:'Health & Emergencies' },
+  { id:'people',   label:'People & Small Talk' },
+  { id:'descriptions', label:'Colors & Descriptions' },
+  { id:'phrases',  label:'Phrases' },
+  { id:'vocab',    label:'Vocabulary' },
+  { id:'notes',    label:'Notes' },
+];
+
+/* ── nav ── */
+const nav = document.getElementById('nav');
+const tabBtns = {};
+SECTIONS.forEach((s, i) => {
+  const b = document.createElement('button');
+  b.className = 'tab' + (i === 0 ? ' active' : '');
+  b.textContent = s.label;
+  b.onclick = () => show(s.id, b);
+  nav.appendChild(b);
+  tabBtns[s.id] = b;
+});
+function activate(id){ const b = tabBtns[id]; if(b) show(id, b); }
+function show(id, btn){
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('p-' + id).classList.add('active');
+}
+
+/* ── renderers ── */
+function tableEl(headers, rows){
+  return `<table><thead><tr>${headers.map(h=>`<th>${h}</th>`).join('')}</tr></thead>`
+    + `<tbody>${rows.map(r=>`<tr>${r.map(c=>{
+        const s = String(c);
+        const isAr = /[؀-ۿ]/.test(s) && !/[A-Za-z<]/.test(s); // pure-Arabic cell → big + RTL
+        return `<td${isAr?' class="ar"':''}>${s}</td>`;
+      }).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+// START HERE
+(function(){
+  const d = M.start; if(!d) return;
+  const panel = document.getElementById('p-start');
+  let h = `<p class="lead">A beginner-friendly front door. This is a reference desk for <b>Egyptian (Cairene) Arabic</b> — look things up, read, and slowly get familiar. Not a course, not a quiz, not Modern Standard Arabic.</p>`;
+  h += `<h2>${esc(d.what.title)}</h2><ul class="start-list">`
+     + d.what.points.map(p => `<li>${p}</li>`).join('') + `</ul>`;
+  h += `<h2>${esc(d.how.title)}</h2><div class="card-table"><table><tbody>`
+     + d.how.rows.map(r => `<tr><td style="white-space:nowrap"><span class="goto" data-goto="${esc(r.id)}">${esc(r.section)}</span></td><td>${r.when}</td></tr>`).join('')
+     + `</tbody></table></div>`;
+  h += `<h2>${esc(d.basics.title)}</h2><ul class="start-list">`
+     + d.basics.points.map(p => `<li>${p}</li>`).join('') + `</ul>`;
+  h += `<h2>${esc(d.survival.title)}</h2>`;
+  if(d.survival.note) h += `<p class="note">${esc(d.survival.note)}</p>`;
+  h += `<div class="card-table">` + tableEl(['Arabic','Masri','English'],
+        d.survival.items.map(p => [p.ar, `<span class="tr">${esc(p.tr)}</span>`, esc(p.en)])) + `</div>`;
+  panel.innerHTML = h;
+  panel.querySelectorAll('.goto').forEach(g => g.onclick = () => activate(g.dataset.goto));
+})();
+
+// SOUNDS
+(function(){
+  const d = M.sounds; if(!d) return;
+  let h = `<p class="lead">${d.intro}</p>`;
+  h += `<h2>Letters to re-learn for Egyptian</h2>`;
+  h += `<p class="note">The first six — ح خ ع غ ق ج — are the trickiest for beginners. Each card gives a rough English hint and an example word.</p>`;
+  h += `<div class="grid g-list">` + d.consonants.map(c => `
+    <div class="item">
+      <div class="top"><span class="a ar">${c.letter}</span><span class="t">${esc(c.name)}</span></div>
+      <div class="e"><b style="color:var(--green)">${esc(c.egyptian)}</b> · ${c.ipa}${c.approx ? ' · <i>' + esc(c.approx) + '</i>' : ''}</div>
+      ${c.ex_ar ? `<div class="e">e.g. <span class="ar">${c.ex_ar}</span> <span style="color:var(--blue)">${esc(c.ex)}</span> — ${esc(c.ex_en)}</div>` : ''}
+      <div class="e">${c.note}</div>
+    </div>`).join('') + `</div>`;
+  h += `<h2>Vowels</h2><p class="note">${d.vowels.intro}</p>`;
+  h += tableEl(['Sound','Word','Masri','Meaning'],
+        d.vowels.rows.map(v => [v.sound, `<span class="ar">${v.ex_ar}</span>`, `<span class="tr">${esc(v.ex)}</span>`, v.gloss]));
+  h += `<h2>Franco-Arabic (texting)</h2><p class="note">${d.franco.intro}</p>`;
+  h += tableEl(['Digit','Letter','Sound'],
+        d.franco.rows.map(f => [f.num, `<span class="ar">${f.letter}</span>`, f.sound]));
+  document.getElementById('p-sounds').innerHTML = h;
+})();
+
+// ALPHABET
+(function(){
+  const d = M.alphabet; if(!d) return;
+  const forms = (ltr, conn) => ({
+    isolated: ltr,
+    initial:  conn ? ltr + TAT : ltr,
+    medial:   conn ? TAT + ltr + TAT : TAT + ltr,
+    final:    TAT + ltr,
+  });
+  let h = `<p class="lead">${d.intro}</p>`;
+  h += `<div class="grid g-letters">` + d.letters.map(L => {
+    const f = forms(L.letter, L.connector);
+    return `<div class="letter">
+      <div class="glyph">${L.letter}</div>
+      <div class="lname">${esc(L.name)} <span class="ar" style="color:var(--muted);font-size:13px">${L.name_ar}</span></div>
+      <div class="lsound">${esc(L.sound)}</div>
+      <div class="forms">
+        ${['isolated','initial','medial','final'].map(k =>
+          `<div class="form"><div class="fg">${f[k]}</div><div class="fl">${k.slice(0,4)}</div></div>`).join('')}
+      </div>
+      ${L.note ? `<div class="lnote">${L.note}</div>` : ''}
+    </div>`;
+  }).join('') + `</div>`;
+  h += `<p class="note" style="margin-top:20px">${d.extras}</p>`;
+  document.getElementById('p-alphabet').innerHTML = h;
+})();
+
+// GRAMMAR
+(function(){
+  const d = M.grammar; if(!d) return;
+  const h = d.map(topic => `
+    <div class="card-table">
+      <h3>${esc(topic.title)}</h3>
+      ${topic.note ? `<div class="note" style="padding:10px 14px 0">${topic.note}</div>` : ''}
+      ${tableEl(topic.headers, topic.rows)}
+    </div>`).join('');
+  document.getElementById('p-grammar').innerHTML =
+    `<p class="lead">The working core. Egyptian forms throughout — MSA only where noted.</p>` + h;
+})();
+
+// VERBS
+(function(){
+  const d = M.verbs; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-verbs').innerHTML = h;
+})();
+
+// NUMBERS
+(function(){
+  const d = M.numbers; if(!d) return;
+  const cells = arr => `<div class="grid g-cells">` + arr.map(n => `
+    <div class="cell">
+      <div class="glyph ar">${n.ar}</div>
+      <div class="digit ar">${n.digit} · ${n.n}</div>
+      <div class="tr">${esc(n.tr)}</div>
+    </div>`).join('') + `</div>`;
+  let h = `<p class="lead">${d.intro}</p>`;
+  h += `<h2>Zero to ten</h2>` + cells(d.ones);
+  h += `<h2>Teens & twenty</h2>` + cells(d.teens);
+  h += `<h2>Tens, hundred, thousand</h2>` + cells(d.tens);
+  h += `<p class="note" style="margin-top:16px">${d.note}</p>`;
+  document.getElementById('p-numbers').innerHTML = h;
+})();
+
+// TIME & DAYS
+(function(){
+  const d = M.time; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-time').innerHTML = h;
+})();
+
+// GETTING AROUND
+(function(){
+  const d = M.around; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-around').innerHTML = h;
+})();
+
+// MONEY & SHOPPING
+(function(){
+  const d = M.shopping; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-shopping').innerHTML = h;
+})();
+
+// FOOD & ORDERING
+(function(){
+  const d = M.food; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-food').innerHTML = h;
+})();
+
+// HEALTH & EMERGENCIES
+(function(){
+  const d = M.health; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-health').innerHTML = h;
+})();
+
+// PEOPLE & SMALL TALK
+(function(){
+  const d = M.people; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-people').innerHTML = h;
+})();
+
+// COLORS & DESCRIPTIONS
+(function(){
+  const d = M.descriptions; if(!d) return;
+  let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
+  h += d.tables.map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  document.getElementById('p-descriptions').innerHTML = h;
+})();
+
+// PHRASES + VOCAB share the searchable list layout
+function renderList(panelId, groups, groupKey, itemsKey, mapItem, placeholder){
+  const panel = document.getElementById(panelId);
+  const search = document.createElement('input');
+  search.className = 'search';
+  search.placeholder = placeholder;
+  const body = document.createElement('div');
+  panel.appendChild(search);
+  panel.appendChild(body);
+
+  function draw(q){
+    q = (q || '').trim().toLowerCase();
+    let any = false;
+    body.innerHTML = groups.map(g => {
+      const items = g[itemsKey].filter(it => !q || mapItem.search(it).toLowerCase().includes(q));
+      if(!items.length) return '';
+      any = true;
+      return `<h2>${esc(g[groupKey])}</h2><div class="grid g-list">`
+        + items.map(mapItem.html).join('') + `</div>`;
+    }).join('');
+    if(!any) body.innerHTML = `<p class="empty">Nothing matches “${esc(q)}”.</p>`;
+  }
+  search.addEventListener('input', () => draw(search.value));
+  draw('');
+}
+
+if(M.phrases){
+  renderList('p-phrases', M.phrases, 'category', 'items', {
+    search: it => `${it.ar} ${it.tr} ${it.en}`,
+    html: it => `<div class="item">
+        <div class="top"><span class="a ar">${it.ar}</span></div>
+        <div class="t">${esc(it.tr)}</div>
+        <div class="e">${esc(it.en)}</div>
+      </div>`,
+  }, 'Search phrases — Arabic, transliteration, or English…');
+}
+if(M.vocab){
+  renderList('p-vocab', M.vocab, 'theme', 'words', {
+    search: w => `${w.ar} ${w.tr} ${w.en}`,
+    html: w => `<div class="item">
+        <div class="top"><span class="a ar">${w.ar}</span><span class="t">${esc(w.tr)}</span></div>
+        <div class="e">${esc(w.en)}</div>
+      </div>`,
+  }, 'Search vocabulary — Arabic, transliteration, or English…');
+}
+
+// NOTES — personal layer. Starter cards come from data/notes.js (read-only);
+// notes you add are saved in this browser (localStorage), shown alongside.
+(function(){
+  const cfg  = M.notes || { categories: [], starters: [] };
+  const CATS = (cfg.categories && cfg.categories.length) ? cfg.categories
+             : ['Sounds','Grammar','Vocabulary','Phrases','Culture','Questions'];
+  const KEY  = 'masri.notes.v1';
+  const panel = document.getElementById('p-notes');
+  let mine = load(), activeCat = 'All', query = '', editId = null;
+
+  function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ return []; } }
+  function persist(){ try { localStorage.setItem(KEY, JSON.stringify(mine)); } catch(e){} }
+  function uid(){ return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+  function fmt(ts){ try { return new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); } catch(e){ return ''; } }
+
+  panel.innerHTML =
+    `<p class="lead">A personal layer on the desk — jot what you notice while studying. Your notes are saved in
+       this browser; the starter cards come from <code>data/notes.js</code>. No scoring, no review queue — just notes.</p>
+     <div class="compose">
+       <textarea id="n-text" dir="auto" placeholder="e.g. I keep mixing up ح and ه…"></textarea>
+       <div class="compose-row">
+         <select id="n-cat" class="n-select">${CATS.map(c => `<option>${esc(c)}</option>`).join('')}</select>
+         <span style="flex:1"></span>
+         <button class="btn" id="n-add">Add note</button>
+       </div>
+     </div>
+     <div class="chips" id="n-chips"></div>
+     <input class="search" id="n-search" placeholder="Search your notes…">
+     <div id="n-list"></div>`;
+
+  const $ = sel => panel.querySelector(sel);
+
+  $('#n-add').onclick = () => {
+    const text = $('#n-text').value.trim(); if(!text) return;
+    mine.unshift({ id: uid(), cat: $('#n-cat').value, text, ts: Date.now() });
+    persist(); $('#n-text').value = ''; draw();
+  };
+  $('#n-search').addEventListener('input', () => { query = $('#n-search').value.trim().toLowerCase(); draw(); });
+
+  const chips = $('#n-chips');
+  chips.innerHTML = ['All', ...CATS]
+    .map(c => `<button class="chip${c==='All'?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  chips.querySelectorAll('.chip').forEach(b => b.onclick = () => {
+    activeCat = b.dataset.cat;
+    chips.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
+    b.classList.add('active'); draw();
+  });
+
+  function draw(){
+    const list = $('#n-list');
+    const starters = (cfg.starters || []).map(s => ({ ...s, starter: true }));
+    let rows = [...mine, ...starters];
+    if(activeCat !== 'All') rows = rows.filter(r => r.cat === activeCat);
+    if(query) rows = rows.filter(r => (r.text + ' ' + r.cat).toLowerCase().includes(query));
+    if(!rows.length){ list.innerHTML = `<p class="empty">No notes here yet. Add one above.</p>`; return; }
+
+    list.innerHTML = rows.map(r => {
+      if(editId && r.id === editId){
+        return `<div class="note">
+            <textarea class="n-edit" dir="auto">${esc(r.text)}</textarea>
+            <div class="actions" style="justify-content:flex-end">
+              <button data-act="save" data-id="${r.id}">Save</button>
+              <button data-act="cancel">Cancel</button>
+            </div></div>`;
+      }
+      return `<div class="note${r.starter?' starter':''}">
+          <div class="meta">
+            <span class="cat">${esc(r.cat)}${r.starter?' · starter':''}</span>
+            ${r.starter ? '' : `<span class="when">${fmt(r.ts)}</span>`}
+          </div>
+          <div class="body" dir="auto">${esc(r.text)}</div>
+          ${r.starter ? '' : `<div class="actions">
+            <button data-act="edit" data-id="${r.id}">edit</button>
+            <button data-act="del"  data-id="${r.id}">delete</button>
+          </div>`}
+        </div>`;
+    }).join('');
+
+    list.querySelectorAll('button[data-act]').forEach(b => b.onclick = () => {
+      const act = b.dataset.act, id = b.dataset.id;
+      if(act === 'del'){ if(confirm('Delete this note?')){ mine = mine.filter(n => n.id !== id); persist(); draw(); } }
+      else if(act === 'edit'){ editId = id; draw(); }
+      else if(act === 'cancel'){ editId = null; draw(); }
+      else if(act === 'save'){
+        const v = list.querySelector('.n-edit').value.trim();
+        const n = mine.find(n => n.id === id);
+        if(n && v){ n.text = v; n.ts = Date.now(); }
+        editId = null; persist(); draw();
+      }
+    });
+  }
+  draw();
+})();
+
+// GLOBAL SEARCH — one box that searches across all loaded window.MASRI data.
+// Independent of the per-section search boxes in Phrases / Vocabulary / Notes.
+(function(){
+  const gi = document.getElementById('gsearch-input');
+  const box = document.getElementById('gsearch-results');
+  if(!gi || !box) return;
+  const label = {}; SECTIONS.forEach(s => label[s.id] = s.label);
+  const strip = s => String(s).replace(/<[^>]*>/g, '');
+  const recs = [];
+  const push = (sec,group,ar,tr,en,note) =>
+    recs.push({sec, secLabel: label[sec]||sec, group: group||'', ar: ar||'', tr: tr||'', en: en||'', note: note||''});
+  const fromTables = (sec,tables) =>
+    (tables||[]).forEach(t => (t.rows||[]).forEach(r => push(sec, t.title, r[0], r[1], r[2], strip(t.note||''))));
+
+  ['verbs','time','around','shopping','food','health','people','descriptions']
+    .forEach(k => { if(M[k] && M[k].tables) fromTables(k, M[k].tables); });
+  if(Array.isArray(M.grammar)) fromTables('grammar', M.grammar);
+  if(Array.isArray(M.phrases)) M.phrases.forEach(c => (c.items||[]).forEach(it => push('phrases', c.category, it.ar, it.tr, it.en, it.note)));
+  if(Array.isArray(M.vocab))   M.vocab.forEach(t => (t.words||[]).forEach(w => push('vocab', t.theme, w.ar, w.tr, w.en, '')));
+  if(M.sounds){
+    (M.sounds.consonants||[]).forEach(c => push('sounds','Sounds', c.letter, c.name, c.egyptian + (c.approx?' · '+c.approx:''), strip(c.note||'')));
+    if(M.sounds.vowels) (M.sounds.vowels.rows||[]).forEach(v => push('sounds','Sounds · vowels', v.ex_ar, v.ex, v.sound+' — '+v.gloss, ''));
+    if(M.sounds.franco) (M.sounds.franco.rows||[]).forEach(f => push('sounds','Sounds · Franco', f.letter, f.num, f.sound, ''));
+  }
+  if(M.alphabet) (M.alphabet.letters||[]).forEach(l => push('alphabet','Alphabet', l.letter, l.name, l.sound, strip(l.note||'')));
+  if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g]||[]).forEach(n => push('numbers','Numbers', n.ar, n.tr, String(n.n), n.digit)));
+  if(M.start && M.start.survival) (M.start.survival.items||[]).forEach(it => push('start','Start Here', it.ar, it.tr, it.en, ''));
+  if(M.notes) (M.notes.starters||[]).forEach(s => push('notes','Notes · '+s.cat, '', '', s.text, ''));
+  try { (JSON.parse(localStorage.getItem('masri.notes.v1'))||[]).forEach(n => push('notes','Notes · '+n.cat, '', '', n.text, '')); } catch(e){}
+
+  // Beginner-friendly normalization: lowercase, strip Latin diacritics via NFD
+  // (ā→a, ḥ→h, ṣ→s, ṭ→t, ḍ→d, ẓ→z, ī→i, ū→u, ē→e, ō→o), Arabic tashkeel, and the
+  // ʿ / ʾ marks. Digraphs kh / gh / sh are plain ASCII and stay as typed.
+  function norm(s){
+    return String(s).toLowerCase()
+      .normalize('NFD').replace(/[̀-ͯ]/g, '')            // Latin combining diacritics
+      .replace(/[ؗ-ًؚ-ْٰـ]/g, '') // Arabic tashkeel + tatweel
+      .replace(/[ʿʾʔʕˤʼʻ‘’`']/g, '') // ayn / hamza marks
+      .normalize('NFC')
+      .replace(/[آأإ]/g, 'ا')   // aa/alef-hamza forms -> alef
+      .replace(/ؤ/g, 'و')                   // waw-hamza -> waw
+      .replace(/ئ/g, 'ي')                   // ya-hamza -> ya
+      .replace(/ى/g, 'ي')                   // alef maqsura -> ya
+      .replace(/ة/g, 'ه')                   // ta marbuta -> ha
+      .replace(/ـ/g, '');                         // tatweel
+  }
+  recs.forEach(r => { r._ar=norm(r.ar); r._tr=norm(r.tr); r._en=norm(r.en); r._group=norm(r.group); r._note=norm(r.note); });
+
+  // Relevance score for a record against a normalized query.
+  // exact ar/tr/en > starts-with > substring > title/category > note-only.
+  function score(r, nq){
+    let s = 0;
+    if(r._ar === nq)         s = Math.max(s, 100);
+    if(r._tr === nq)         s = Math.max(s, 95);
+    if(r._en === nq)         s = Math.max(s, 90);
+    if(r._ar.startsWith(nq)) s = Math.max(s, 75);
+    if(r._tr.startsWith(nq)) s = Math.max(s, 73);
+    if(r._en.startsWith(nq)) s = Math.max(s, 71);
+    if(r._ar.includes(nq))   s = Math.max(s, 55);
+    if(r._tr.includes(nq))   s = Math.max(s, 53);
+    if(r._en.includes(nq))   s = Math.max(s, 51);
+    if(r._group.includes(nq))s = Math.max(s, 30);
+    if(r._note.includes(nq)) s = Math.max(s, 10);
+    return s;
+  }
+
+  const MAX = 60;
+  function run(q){
+    q = q.trim();
+    if(!q){ box.classList.remove('show'); box.innerHTML=''; return; }
+    const nq = norm(q);
+    const scored = [];
+    for(const r of recs){ const sc = score(r, nq); if(sc > 0) scored.push({r, sc}); }
+    scored.sort((a,b) => b.sc - a.sc);        // stable sort → ties keep original order
+    const res = scored.map(x => x.r);
+    box.classList.add('show');
+    if(!res.length){ box.innerHTML = `<div class="gres-empty">No results for “${esc(q)}”.</div>`; return; }
+    const shown = res.slice(0, MAX);
+    box.innerHTML = `<div class="gres-count">${res.length} result${res.length!==1?'s':''}${res.length>MAX?` (showing ${MAX})`:''}</div>`
+      + shown.map(r => `<button class="gres" data-sec="${esc(r.sec)}">
+          <div class="where">${esc(r.secLabel)}${r.group?' · '+esc(r.group):''}</div>
+          ${r.ar?`<span class="ar">${esc(r.ar)}</span>`:''}${r.tr?`<span class="tr">${esc(r.tr)}</span>`:''}
+          ${r.en?`<div class="en">${esc(r.en)}</div>`:''}
+          ${r.note?`<div class="snip">${esc(r.note)}</div>`:''}
+        </button>`).join('');
+    box.querySelectorAll('.gres').forEach(b => b.onclick = () => {
+      activate(b.dataset.sec); box.classList.remove('show'); gi.value=''; window.scrollTo(0,0);
+    });
+  }
+  gi.addEventListener('input', () => run(gi.value));
+  gi.addEventListener('keydown', e => { if(e.key==='Escape'){ gi.value=''; run(''); } });
+})();
+
+// open first panel
+activate('start');
+</script>
+</body>
+</html>
