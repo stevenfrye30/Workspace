@@ -557,16 +557,14 @@ function tableEl(headers, rows){
 // The user types an Arabic word. If Masri already has that exact word in its
 // reference data, the trusted English gloss / transliteration (and IPA, only when
 // a real IPA value exists) are prefilled from that entry — nothing is invented for
-// unknown words. Letters are always split out. An optional "letter details" layer
-// names each letter. Everything stays editable, nothing is stored, no localStorage,
-// and Word Builder is NOT added to the global search.
+// unknown words. Letters are always split out (RTL, logical order). An optional
+// "letter details" layer names each letter. Autofilled values carry explicit
+// provenance so a new word never inherits the previous word's data. Nothing is
+// stored, no localStorage, and Word Builder is NOT added to the global search.
 (function(){
   const panel = document.getElementById('p-word-builder'); if(!panel) return;
   const SL = (typeof SECTION_LABEL !== 'undefined') ? SECTION_LABEL : {};
 
-  // Conventional letter names + short Cairene-flavoured sound cues, keyed by the
-  // isolated character. Small internal map (clearer than reshaping alphabet data);
-  // hamza carriers and special forms are included. Unlisted characters get no name.
   const LETTER_DETAILS = {
     'ا':'alif', 'أ':'hamza on alif', 'إ':'hamza under alif', 'آ':'alif madda, long ʾā',
     'ب':'bāʾ, b', 'ت':'tāʾ, t', 'ث':'thāʾ, th as in "think"', 'ج':'gīm, usually g in Cairene',
@@ -579,7 +577,10 @@ function tableEl(headers, rows){
     'ى':'alif maqṣūra, long ā', 'ء':'hamza, glottal stop', 'ؤ':'hamza on wāw', 'ئ':'hamza on yāʾ'
   };
 
-  let showDetails = false, curStatus = null, curGroups = null, curActiveTok = null;
+  let showDetails = false, curStatus = null, curGroups = null, curActiveTok = null, lastWord = null;
+  // Autofill provenance: the exact value last auto-filled into each field ('' = none / user-owned).
+  const auto = { def: '', tr: '', ipa: '', sound: '' };
+  const FIELDS = [['#wb-def','def'], ['#wb-tr','tr'], ['#wb-ipa','ipa'], ['#wb-sound','sound']];
 
   panel.innerHTML =
     `<p class="lead">Type or paste an Arabic word. If it is already in Masri's
@@ -608,9 +609,8 @@ function tableEl(headers, rows){
 
   const $ = s => panel.querySelector(s);
 
-  // Arabic-only normalization for exact lookup: drop tashkeel / tatweel / marks
-  // and fold the usual variants (آأإ->ا, ؤ->و, ئ/ى->ي, ة->ه), mirroring the global
-  // search's Arabic folding. Code-point tests + literal replacements only.
+  // Arabic-only normalization for exact lookup (unchanged): drop tashkeel / tatweel
+  // / marks and fold آأإ->ا, ؤ->و, ئ/ى->ي, ة->ه. Code-point tests + literal replaces.
   function arNorm(s){
     let out = '';
     for(const ch of String(s)){
@@ -630,9 +630,7 @@ function tableEl(headers, rows){
     return out.replace(/\s+/g, ' ').trim();
   }
 
-  // Split into underlying Arabic letters, logical order (never reversed): keep
-  // hamza / tā marbūṭa / alif maqṣūra / hamza-carriers, drop tatweel, tashkeel,
-  // and punctuation; whitespace becomes a word gap.
+  // Split into underlying letters in logical order (unchanged — never reversed).
   function split(word){
     const raw = [];
     for(const ch of word){
@@ -652,6 +650,8 @@ function tableEl(headers, rows){
     return out;
   }
 
+  // Letter row: RTL container (matches the word above) with each glyph bidi-isolated,
+  // so the logical sequence renders right-to-left with no array reversal.
   function letterRow(word){
     const items = split(word);
     if(!items.some(i => i.ch)) return '';
@@ -661,12 +661,11 @@ function tableEl(headers, rows){
       else { if(prevLetter) h += `<span class="wb-sep">·</span>`;
              h += `<span class="wb-letter ar">${esc(it.ch)}</span>`; prevLetter = true; }
     }
-    return `<div class="wb-letters" dir="ltr">${h}</div>`;
+    return `<div class="wb-letters" dir="rtl">${h}</div>`;
   }
 
-  // Optional letter-details layer: one quiet chip per letter (char — name/cue),
-  // grouped by word (a space starts a new group). Logical order, never reversed;
-  // unrecognized letters show the character with no guessed name.
+  // Optional letter details: RTL sequence of chips (word order + letter order right
+  // to left), but each chip's text stays LTR so the English name reads normally.
   function letterDetails(word){
     const items = split(word);
     if(!items.some(i => i.ch)) return '';
@@ -678,15 +677,12 @@ function tableEl(headers, rows){
     const html = groups.filter(g => g.length).map(g =>
       `<div class="wb-ld-group">` + g.map(ch => {
         const det = LETTER_DETAILS[ch];
-        return `<span class="wb-ld-item"><span class="wb-ld-ch ar">${esc(ch)}</span>${det ? ' — ' + esc(det) : ''}</span>`;
+        return `<span class="wb-ld-item" dir="ltr"><span class="wb-ld-ch ar">${esc(ch)}</span>${det ? ' — ' + esc(det) : ''}</span>`;
       }).join('') + `</div>`
     ).join('');
-    return `<div class="wb-ld" dir="ltr">${html}</div>`;
+    return `<div class="wb-ld" dir="rtl">${html}</div>`;
   }
 
-  // Lightweight lookup index over existing window.MASRI content (separate from the
-  // global search index; Word Builder itself is never indexed). Each record:
-  // {k, ar, tr, en, ipa, kind, src}. `src` is a human-readable source.
   const index = (function(){
     const idx = [], M = window.MASRI || {};
     const add = (ar, tr, en, ipa, kind, src) => {
@@ -729,13 +725,24 @@ function tableEl(headers, rows){
     return groups;
   }
 
+  // Fill only empty fields from a trusted entry, recording each auto-filled value.
   function autofill(m){
     if(m){
-      if(!$('#wb-def').value && m.en)  $('#wb-def').value = m.en;
-      if(!$('#wb-tr').value  && m.tr)  $('#wb-tr').value  = m.tr;
-      if(!$('#wb-ipa').value && m.ipa) $('#wb-ipa').value = m.ipa;
+      if(!$('#wb-def').value && m.en){ $('#wb-def').value = m.en; auto.def = m.en; }
+      if(!$('#wb-tr').value  && m.tr){ $('#wb-tr').value  = m.tr; auto.tr = m.tr; }
+      if(!$('#wb-ipa').value && m.ipa){ $('#wb-ipa').value = m.ipa; auto.ipa = m.ipa; }
     }
-    if(!$('#wb-sound').value && $('#wb-tr').value) $('#wb-sound').value = $('#wb-tr').value;
+    if(!$('#wb-sound').value && $('#wb-tr').value){ $('#wb-sound').value = $('#wb-tr').value; auto.sound = $('#wb-tr').value; }
+  }
+
+  // Provenance reset: clear each field that still holds its exact auto-filled value
+  // (safe — the user didn't touch it); keep fields the user manually changed. After
+  // this, every field's provenance is cleared so the next lookup starts clean.
+  function resetAutoFilled(){
+    FIELDS.forEach(([sel, key]) => {
+      if(auto[key] !== '' && $(sel).value === auto[key]) $(sel).value = '';
+      auto[key] = '';
+    });
   }
 
   function displayEn(en){
@@ -791,6 +798,7 @@ function tableEl(headers, rows){
       $('#wb-out').querySelectorAll('.wb-alt').forEach(b => b.onclick = () => {
         const g = groups[+b.dataset.i];
         $('#wb-def').value = ''; $('#wb-tr').value = ''; $('#wb-ipa').value = ''; $('#wb-sound').value = '';
+        auto.def = auto.tr = auto.ipa = auto.sound = '';
         autofill(g); renderCard({ type: 'found', src: g.src }, groups, token(g.en));
       });
     }
@@ -799,6 +807,8 @@ function tableEl(headers, rows){
   function build(){
     const word = $('#wb-word').value.trim();
     if(!word){ renderCard(null, null); return; }
+    if(word !== lastWord) resetAutoFilled();   // new word → drop stale autofill, keep manual edits
+    lastWord = word;
     const ms = lookup(word);
     if(!ms.length){ renderCard({ type: 'unknown' }, null); return; }
     const groups = meaningGroups(ms);
@@ -809,6 +819,12 @@ function tableEl(headers, rows){
 
   $('#wb-create').onclick = build;
   $('#wb-word').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); build(); } });
+  // As soon as the Arabic word is edited, drop the stale card / status / chooser /
+  // match-state so nothing from the previous word lingers before the next Create.
+  $('#wb-word').addEventListener('input', () => {
+    $('#wb-out').innerHTML = ''; setStatus(null);
+    curStatus = curGroups = curActiveTok = null;
+  });
   $('#wb-details-toggle').addEventListener('change', () => {
     showDetails = $('#wb-details-toggle').checked;
     if($('#wb-out').querySelector('.wb-card')) renderCard(curStatus, curGroups, curActiveTok);
@@ -817,6 +833,7 @@ function tableEl(headers, rows){
     ['#wb-word','#wb-def','#wb-tr','#wb-ipa','#wb-sound'].forEach(s => { $(s).value = ''; });
     $('#wb-out').innerHTML = ''; setStatus(null);
     curStatus = curGroups = curActiveTok = null;
+    auto.def = auto.tr = auto.ipa = auto.sound = ''; lastWord = null;
     $('#wb-word').focus();
   };
 })();
