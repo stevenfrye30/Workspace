@@ -135,6 +135,8 @@
   .wb-btns{display:flex;gap:10px;align-items:center;margin-top:2px;flex-wrap:wrap}
   .wb-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;padding:9px 16px}
   .wb-clear:hover{color:var(--fg);border-color:var(--gold)}
+  .wb-toggle{display:inline-flex;align-items:center;gap:6px;margin-left:auto;color:var(--muted);font-size:12.5px;cursor:pointer;user-select:none}
+  .wb-toggle input{accent-color:var(--gold);cursor:pointer}
   .wb-hint{color:var(--muted);font-style:italic;padding:8px 2px}
   .wb-status{font-size:12.5px;margin:0 2px 14px;line-height:1.5}
   .wb-status.wb-found{color:var(--green)}
@@ -153,6 +155,10 @@
   .wb-letter{font-family:var(--ar);font-size:34px;color:var(--fg);unicode-bidi:isolate}
   .wb-sep{color:var(--muted);font-size:22px}
   .wb-gap{width:28px}
+  .wb-ld{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
+  .wb-ld-group{display:flex;flex-wrap:wrap;gap:5px 10px;padding:8px 11px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;max-width:100%}
+  .wb-ld-item{font-size:12.5px;color:var(--muted);white-space:nowrap;line-height:1.6}
+  .wb-ld-ch{font-family:var(--ar);font-size:16px;color:var(--fg);unicode-bidi:isolate;margin-right:2px}
   .wb-details{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
   .wb-drow.wb-full{grid-column:1 / -1}
   .wb-dval{font-size:16px;color:var(--fg);line-height:1.45}
@@ -162,6 +168,8 @@
     .wb-letter{font-size:26px}
     .wb-card{padding:18px 15px}
     .wb-details{grid-template-columns:1fr;gap:12px}
+    .wb-ld{gap:8px}
+    .wb-ld-group{gap:4px 8px;padding:7px 9px}
   }
 
   /* ── notes ── */
@@ -549,11 +557,30 @@ function tableEl(headers, rows){
 // The user types an Arabic word. If Masri already has that exact word in its
 // reference data, the trusted English gloss / transliteration (and IPA, only when
 // a real IPA value exists) are prefilled from that entry — nothing is invented for
-// unknown words. Letters are always split out. Everything stays editable, nothing
-// is stored, no localStorage, and Word Builder is NOT added to the global search.
+// unknown words. Letters are always split out. An optional "letter details" layer
+// names each letter. Everything stays editable, nothing is stored, no localStorage,
+// and Word Builder is NOT added to the global search.
 (function(){
   const panel = document.getElementById('p-word-builder'); if(!panel) return;
   const SL = (typeof SECTION_LABEL !== 'undefined') ? SECTION_LABEL : {};
+
+  // Conventional letter names + short Cairene-flavoured sound cues, keyed by the
+  // isolated character. Small internal map (clearer than reshaping alphabet data);
+  // hamza carriers and special forms are included. Unlisted characters get no name.
+  const LETTER_DETAILS = {
+    'ا':'alif', 'أ':'hamza on alif', 'إ':'hamza under alif', 'آ':'alif madda, long ʾā',
+    'ب':'bāʾ, b', 'ت':'tāʾ, t', 'ث':'thāʾ, th as in "think"', 'ج':'gīm, usually g in Cairene',
+    'ح':'ḥāʾ, deep voiceless h', 'خ':'khāʾ, kh as in "loch"', 'د':'dāl, d', 'ذ':'dhāl, th as in "this"',
+    'ر':'rāʾ, tapped or rolled r', 'ز':'zāy, z', 'س':'sīn, s', 'ش':'shīn, sh',
+    'ص':'ṣād, emphatic s', 'ض':'ḍād, emphatic d', 'ط':'ṭāʾ, emphatic t', 'ظ':'ẓāʾ, emphatic z',
+    'ع':'ʿayn, voiced throat sound', 'غ':'ghayn, gh', 'ف':'fāʾ, f', 'ق':'qāf, often a glottal stop in Cairene',
+    'ك':'kāf, k', 'ل':'lām, l', 'م':'mīm, m', 'ن':'nūn, n', 'ه':'hāʾ, h',
+    'و':'wāw, w / ū / ō', 'ي':'yāʾ, y / ī / ē', 'ة':'tāʾ marbūṭa, usually -a / -ah',
+    'ى':'alif maqṣūra, long ā', 'ء':'hamza, glottal stop', 'ؤ':'hamza on wāw', 'ئ':'hamza on yāʾ'
+  };
+
+  let showDetails = false, curStatus = null, curGroups = null, curActiveTok = null;
+
   panel.innerHTML =
     `<p class="lead">Type or paste an Arabic word. If it is already in Masri's
        reference data, its meaning and transliteration are filled in from that
@@ -573,6 +600,7 @@ function tableEl(headers, rows){
        <div class="wb-btns">
          <button class="btn" id="wb-create">Create Word Stack</button>
          <button class="wb-clear" id="wb-clear">Clear</button>
+         <label class="wb-toggle"><input type="checkbox" id="wb-details-toggle"> Show letter details</label>
        </div>
      </div>
      <div id="wb-status" class="wb-status" aria-live="polite"></div>
@@ -636,10 +664,29 @@ function tableEl(headers, rows){
     return `<div class="wb-letters" dir="ltr">${h}</div>`;
   }
 
+  // Optional letter-details layer: one quiet chip per letter (char — name/cue),
+  // grouped by word (a space starts a new group). Logical order, never reversed;
+  // unrecognized letters show the character with no guessed name.
+  function letterDetails(word){
+    const items = split(word);
+    if(!items.some(i => i.ch)) return '';
+    const groups = [[]];
+    for(const it of items){
+      if(it.gap){ if(groups[groups.length-1].length) groups.push([]); }
+      else groups[groups.length-1].push(it.ch);
+    }
+    const html = groups.filter(g => g.length).map(g =>
+      `<div class="wb-ld-group">` + g.map(ch => {
+        const det = LETTER_DETAILS[ch];
+        return `<span class="wb-ld-item"><span class="wb-ld-ch ar">${esc(ch)}</span>${det ? ' — ' + esc(det) : ''}</span>`;
+      }).join('') + `</div>`
+    ).join('');
+    return `<div class="wb-ld" dir="ltr">${html}</div>`;
+  }
+
   // Lightweight lookup index over existing window.MASRI content (separate from the
   // global search index; Word Builder itself is never indexed). Each record:
-  // {k: normalized Arabic, ar, tr, en, ipa, kind, src}. `src` is a human-readable
-  // source (table / theme / section) shown as "Found in Masri: …".
+  // {k, ar, tr, en, ipa, kind, src}. `src` is a human-readable source.
   const index = (function(){
     const idx = [], M = window.MASRI || {};
     const add = (ar, tr, en, ipa, kind, src) => {
@@ -664,8 +711,6 @@ function tableEl(headers, rows){
   const rank = { vocab: 0, table: 0, letter: 1, example: 2, phrase: 3 };
   const token = en => String(en).toLowerCase().split(/[\/,;(]/)[0].trim().split(/\s+/)[0] || '';
 
-  // Exact normalized matches, best-first (tie-breaks unchanged: exact raw equality,
-  // simple entry over phrase, shortest gloss, shortest Arabic).
   function lookup(word){
     const key = arNorm(word), raw = word.trim();
     const ms = index.filter(r => r.k === key);
@@ -693,9 +738,6 @@ function tableEl(headers, rows){
     if(!$('#wb-sound').value && $('#wb-tr').value) $('#wb-sound').value = $('#wb-tr').value;
   }
 
-  // Display-only formatting for short grammar gloss markers — expands a trailing
-  // (m)/(f)/(pl) into words. Never changes the stored reference data, never invents
-  // detail beyond the marker present.
   function displayEn(en){
     return String(en)
       .replace(/\s*\(m\s*pl\)\s*$/i, ', masculine plural')
@@ -716,6 +758,7 @@ function tableEl(headers, rows){
     `<div class="wb-drow${cls ? ' ' + cls : ''}"><div class="wb-label">${esc(label)}</div><div class="wb-dval">${valueHtml}</div></div>`;
 
   function renderCard(status, groups, activeTok){
+    curStatus = status; curGroups = groups; curActiveTok = activeTok;
     const word = $('#wb-word').value.trim();
     setStatus(status);
     if(!word){ $('#wb-out').innerHTML = `<p class="wb-hint">Enter an Arabic word above, then “Create Word Stack”.</p>`; return; }
@@ -728,18 +771,18 @@ function tableEl(headers, rows){
         + `</div>`;
     }
     h += `<div class="wb-card">`;
-    // centered anchor: label · word · letters
     h += `<div class="wb-head"><div class="wb-label">Arabic word</div>`
        + `<div class="wb-word ar" dir="rtl">${esc(word)}</div>`;
     const lr = letterRow(word);
-    if(lr) h += `<div class="wb-label wb-letterslabel">Letters</div>` + lr;
+    if(lr){
+      h += `<div class="wb-label wb-letterslabel">Letters</div>` + lr;
+      if(showDetails) h += letterDetails(word);
+    }
     h += `</div>`;
-    // detail rows (English full width; translit / IPA / sound flow in two columns)
     let d = '';
     if(def) d += drow('English', esc(displayEn(def)), 'wb-full');
     if(tr)  d += drow('Transliteration', `<span class="wb-ltr" dir="ltr">${esc(tr)}</span>`);
     if(ipa) d += drow('IPA', `<span class="wb-ltr wb-ipaval" dir="ltr">${esc(ipa)}</span>`);
-    // omit the sound-guide row when it just echoes the transliteration
     if(snd && snd.toLowerCase() !== tr.toLowerCase()) d += drow('English sound guide', `<span class="wb-ltr" dir="ltr">${esc(snd)}</span>`);
     if(d) h += `<div class="wb-details">${d}</div>`;
     h += `</div>`;
@@ -766,9 +809,14 @@ function tableEl(headers, rows){
 
   $('#wb-create').onclick = build;
   $('#wb-word').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); build(); } });
+  $('#wb-details-toggle').addEventListener('change', () => {
+    showDetails = $('#wb-details-toggle').checked;
+    if($('#wb-out').querySelector('.wb-card')) renderCard(curStatus, curGroups, curActiveTok);
+  });
   $('#wb-clear').onclick = () => {
     ['#wb-word','#wb-def','#wb-tr','#wb-ipa','#wb-sound'].forEach(s => { $(s).value = ''; });
     $('#wb-out').innerHTML = ''; setStatus(null);
+    curStatus = curGroups = curActiveTok = null;
     $('#wb-word').focus();
   };
 })();
