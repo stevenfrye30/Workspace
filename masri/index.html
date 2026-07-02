@@ -123,28 +123,37 @@
   .item .e{color:var(--muted);font-size:13px;margin-top:4px}
 
   /* ── word builder ── */
-  .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;display:grid;gap:12px}
+  .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
   .wb-field{display:flex;flex-direction:column;gap:5px}
   .wb-field span{font-size:12px;color:var(--muted);font-weight:600}
   .wb-field em{color:var(--gold);font-style:normal;font-weight:400}
   .wb-in{background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:var(--ui);font-size:15px;padding:10px 12px;outline:none;min-width:0}
   .wb-in:focus{border-color:var(--gold)}
+  .wb-in::placeholder{color:var(--muted);font-style:italic;opacity:.7}
   .wb-in.ar{font-family:var(--ar);font-size:20px}
   .wb-ltr{direction:ltr;text-align:left;font-family:var(--ui)}
   .wb-btns{display:flex;gap:10px;align-items:center;margin-top:2px;flex-wrap:wrap}
   .wb-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;padding:9px 16px}
   .wb-clear:hover{color:var(--fg);border-color:var(--gold)}
   .wb-hint{color:var(--muted);font-style:italic;padding:8px 2px}
-  .wb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:26px 20px;text-align:center}
-  .wb-word{font-family:var(--ar);font-size:44px;color:var(--gold);line-height:1.25;direction:rtl;unicode-bidi:isolate;word-break:break-word}
-  .wb-def{color:var(--fg);font-size:17px;margin-top:8px}
-  .wb-letters{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 8px;margin:20px 0}
-  .wb-letter{font-family:var(--ar);font-size:30px;color:var(--fg);unicode-bidi:isolate}
-  .wb-sep{color:var(--muted);font-size:20px}
-  .wb-gap{width:26px}
-  .wb-ipa{font-family:var(--ui);font-size:20px;color:var(--blue);margin-top:16px;direction:ltr}
-  .wb-sound{font-family:var(--ui);font-size:16px;color:var(--muted);letter-spacing:.04em;margin-top:6px;direction:ltr}
-  @media (max-width:600px){ .wb-word{font-size:34px} .wb-letter{font-size:24px} }
+  .wb-msg{color:var(--gold);font-size:13px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.5}
+  .wb-choose{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+  .wb-choose .wb-label{width:100%;margin-bottom:0}
+  .wb-alt{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;cursor:pointer;font-family:var(--ui);font-size:13px;padding:6px 12px}
+  .wb-alt:hover{border-color:var(--gold)}
+  .wb-alt.active{background:var(--gold);color:#111;border-color:var(--gold)}
+  .wb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:8px 20px}
+  .wb-row{padding:12px 0;border-bottom:1px solid var(--border)}
+  .wb-row:last-child{border-bottom:none}
+  .wb-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+  .wb-word{font-family:var(--ar);font-size:40px;color:var(--gold);line-height:1.2;direction:rtl;unicode-bidi:isolate;word-break:break-word}
+  .wb-val{font-size:16px;color:var(--fg);line-height:1.5}
+  .wb-val.wb-ipaval{color:var(--blue)}
+  .wb-letters{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+  .wb-letter{font-family:var(--ar);font-size:28px;color:var(--fg);unicode-bidi:isolate}
+  .wb-sep{color:var(--muted);font-size:18px}
+  .wb-gap{width:24px}
+  @media (max-width:600px){ .wb-word{font-size:32px} .wb-letter{font-size:23px} }
 
   /* ── notes ── */
   .compose{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px}
@@ -527,26 +536,30 @@ function tableEl(headers, rows){
   document.getElementById('p-descriptions').innerHTML = h;
 })();
 
-// WORD BUILDER — a small pronunciation-reference tool (Sounds & Alphabet).
-// The user types an Arabic word and gets a stacked card: word · definition ·
-// individual letters · IPA · English sound guide. Nothing is stored, no
-// localStorage, and it is deliberately NOT added to the global search index.
+// WORD BUILDER — a pronunciation-reference tool (Sounds & Alphabet).
+// The user types an Arabic word. If Masri already has that exact word in its
+// reference data, the trusted English gloss / transliteration (and IPA, only when
+// a real IPA value exists) are prefilled from that entry — nothing is invented for
+// unknown words. Letters are always split out. Everything stays editable, nothing
+// is stored, no localStorage, and Word Builder is NOT added to the global search.
 (function(){
   const panel = document.getElementById('p-word-builder'); if(!panel) return;
   panel.innerHTML =
-    `<p class="lead">Paste or type an Arabic word to build a simple, stacked
-       pronunciation-reference card — the word, its meaning, its individual letters,
-       and how it sounds. This is a scratch tool: nothing is saved, and it does not
-       look anything up. Fill in what you know; blank fields are just left out.</p>
+    `<p class="lead">Type or paste an Arabic word. If it is already in Masri's
+       reference data, its meaning and transliteration are filled in from that
+       entry (never invented); its letters are always split out. Everything stays
+       editable, and you can add IPA or a sound guide yourself. Nothing is saved.</p>
      <div class="wb-form">
        <label class="wb-field"><span>Arabic word <em>(required)</em></span>
-         <input id="wb-word" class="wb-in ar" dir="rtl" placeholder="مكتبة" autocomplete="off" spellcheck="false"></label>
+         <input id="wb-word" class="wb-in ar" dir="rtl" placeholder="Example: أنا" autocomplete="off" spellcheck="false"></label>
        <label class="wb-field"><span>English definition</span>
-         <input id="wb-def" class="wb-in" placeholder="library" autocomplete="off"></label>
+         <input id="wb-def" class="wb-in" placeholder="Example: library" autocomplete="off"></label>
+       <label class="wb-field"><span>Transliteration</span>
+         <input id="wb-tr" class="wb-in wb-ltr" placeholder="Example: ana" autocomplete="off" spellcheck="false"></label>
        <label class="wb-field"><span>IPA</span>
-         <input id="wb-ipa" class="wb-in wb-ltr" placeholder="/mæk.ta.ba/" autocomplete="off" spellcheck="false"></label>
+         <input id="wb-ipa" class="wb-in wb-ltr" placeholder="Example: /ʔana/" autocomplete="off" spellcheck="false"></label>
        <label class="wb-field"><span>English sound guide</span>
-         <input id="wb-sound" class="wb-in wb-ltr" placeholder="mak-ta-ba" autocomplete="off"></label>
+         <input id="wb-sound" class="wb-in wb-ltr" placeholder="Example: ah-na" autocomplete="off"></label>
        <div class="wb-btns">
          <button class="btn" id="wb-create">Create Word Stack</button>
          <button class="wb-clear" id="wb-clear">Clear</button>
@@ -556,22 +569,42 @@ function tableEl(headers, rows){
 
   const $ = s => panel.querySelector(s);
 
-  // Split an Arabic string into its underlying letters, in logical order.
-  // Keep hamza / tā marbūṭa / alif maqṣūra / hamza carriers (all in 0621–064A);
-  // drop tatweel (0640), tashkeel/diacritics, and punctuation; turn whitespace
-  // into a word gap. Never reverses the character order.
+  // Arabic-only normalization for exact lookup: drop tashkeel / tatweel / marks
+  // and fold the usual variants (آأإ->ا, ؤ->و, ئ/ى->ي, ة->ه), mirroring the global
+  // search's Arabic folding. Code-point tests + literal replacements only.
+  function arNorm(s){
+    let out = '';
+    for(const ch of String(s)){
+      const cp = ch.codePointAt(0);
+      if(cp >= 0x064B && cp <= 0x0655) continue;   // tashkeel + combining hamza/madda
+      if(cp === 0x0670 || cp === 0x0640) continue; // superscript alef, tatweel
+      if(cp >= 0x0610 && cp <= 0x061A) continue;   // Arabic marks
+      if(cp >= 0x06D6 && cp <= 0x06ED) continue;   // Quranic marks
+      let c = ch;
+      if(cp === 0x0622 || cp === 0x0623 || cp === 0x0625) c = 'ا';
+      else if(cp === 0x0624) c = 'و';
+      else if(cp === 0x0626 || cp === 0x0649) c = 'ي';
+      else if(cp === 0x0629) c = 'ه';
+      else if(/\s/.test(ch)) c = ' ';
+      out += c;
+    }
+    return out.replace(/\s+/g, ' ').trim();
+  }
+
+  // Split into underlying Arabic letters, logical order (never reversed): keep
+  // hamza / tā marbūṭa / alif maqṣūra / hamza-carriers, drop tatweel, tashkeel,
+  // and punctuation; whitespace becomes a word gap.
   function split(word){
     const raw = [];
     for(const ch of word){
       if(/\s/.test(ch)){ raw.push({gap:true}); continue; }
       const cp = ch.codePointAt(0);
-      if(cp === 0x0640) continue; // tatweel
+      if(cp === 0x0640) continue;
       const isLetter = (cp >= 0x0621 && cp <= 0x063A) || (cp >= 0x0641 && cp <= 0x064A)
-                     || (cp >= 0x0671 && cp <= 0x06D3); // base + extended Arabic letters
+                     || (cp >= 0x0671 && cp <= 0x06D3);
       if(isLetter) raw.push({ ch });
-      // diacritics / punctuation / anything else → ignored
     }
-    const out = [];                       // collapse + trim gaps
+    const out = [];
     for(const it of raw){
       if(it.gap){ if(out.length && !out[out.length-1].gap) out.push(it); }
       else out.push(it);
@@ -592,26 +625,115 @@ function tableEl(headers, rows){
     return `<div class="wb-letters" dir="ltr">${h}</div>`;
   }
 
+  // Lightweight lookup index over existing window.MASRI content (separate from the
+  // global search index; Word Builder itself is never indexed). Each record:
+  // {k: normalized Arabic, ar, tr, en, ipa, kind}.
+  const index = (function(){
+    const idx = [], M = window.MASRI || {};
+    const add = (ar, tr, en, ipa, kind) => {
+      if(!ar) return; const k = arNorm(ar); if(!k) return;
+      idx.push({ k, ar: String(ar), tr: tr || '', en: en || '', ipa: ipa || '', kind });
+    };
+    ['verbs','time','around','shopping','food','health','people','descriptions'].forEach(key => {
+      if(M[key] && M[key].tables) M[key].tables.forEach(t => (t.rows || []).forEach(r => add(r[0], r[1], r[2], '', 'table')));
+    });
+    if(Array.isArray(M.grammar)) M.grammar.forEach(t => (t.rows || []).forEach(r => add(r[0], r[1], r[2], '', 'table')));
+    if(Array.isArray(M.phrases)) M.phrases.forEach(c => (c.items || []).forEach(it => add(it.ar, it.tr, it.en, '', 'phrase')));
+    if(Array.isArray(M.vocab))   M.vocab.forEach(t => (t.words || []).forEach(w => add(w.ar, w.tr, w.en, '', 'vocab')));
+    if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g] || []).forEach(n => add(n.ar, n.tr, String(n.n), '', 'vocab')));
+    if(M.sounds){
+      (M.sounds.consonants || []).forEach(c => { add(c.ex_ar, c.ex, c.ex_en, '', 'example'); add(c.letter, c.name, c.egyptian, c.ipa, 'letter'); });
+      if(M.sounds.vowels) (M.sounds.vowels.rows || []).forEach(v => add(v.ex_ar, v.ex, v.gloss, '', 'example'));
+    }
+    if(M.alphabet) (M.alphabet.letters || []).forEach(l => add(l.letter, l.name, l.sound, '', 'letter'));
+    return idx;
+  })();
+
+  const rank = { vocab: 0, table: 0, letter: 1, example: 2, phrase: 3 };
+  const token = en => String(en).toLowerCase().split(/[\/,;(]/)[0].trim().split(/\s+/)[0] || '';
+
+  // Exact normalized matches, best-first (tie-breaks: exact raw equality, then
+  // simple entry over phrase, then shortest gloss, then shortest Arabic).
+  function lookup(word){
+    const key = arNorm(word), raw = word.trim();
+    const ms = index.filter(r => r.k === key);
+    ms.sort((a, b) => {
+      const ax = (a.ar === raw) ? 0 : 1, bx = (b.ar === raw) ? 0 : 1; if(ax !== bx) return ax - bx;
+      const ar = (rank[a.kind] != null ? rank[a.kind] : 4), br = (rank[b.kind] != null ? rank[b.kind] : 4); if(ar !== br) return ar - br;
+      const al = (a.en || '').length, bl = (b.en || '').length; if(al !== bl) return al - bl;
+      return a.ar.length - b.ar.length;
+    });
+    return ms;
+  }
+
+  // One representative per genuinely-different meaning (grouped by primary token),
+  // so related glosses (coffee / café) do not force a chooser.
+  function meaningGroups(ms){
+    const seen = {}, groups = [];
+    ms.forEach(m => { const t = token(m.en); if(!t || seen[t]) return; seen[t] = 1; groups.push(m); });
+    return groups;
+  }
+
+  // Prefill editable fields from a trusted entry; never overwrite the user's own
+  // input, never invent. IPA only when the entry carries a real IPA value.
+  function autofill(m){
+    if(m){
+      if(!$('#wb-def').value && m.en)  $('#wb-def').value = m.en;
+      if(!$('#wb-tr').value  && m.tr)  $('#wb-tr').value  = m.tr;
+      if(!$('#wb-ipa').value && m.ipa) $('#wb-ipa').value = m.ipa;
+    }
+    if(!$('#wb-sound').value && $('#wb-tr').value) $('#wb-sound').value = $('#wb-tr').value; // sound guide seeds from translit
+  }
+
+  const row = (label, valueHtml) => `<div class="wb-row"><div class="wb-label">${esc(label)}</div>${valueHtml}</div>`;
+
+  function renderCard(msg, groups, activeTok){
+    const word = $('#wb-word').value.trim();
+    if(!word){ $('#wb-out').innerHTML = `<p class="wb-hint">Enter an Arabic word above, then “Create Word Stack”.</p>`; return; }
+    const def = $('#wb-def').value.trim(), tr = $('#wb-tr').value.trim(),
+          ipa = $('#wb-ipa').value.trim(), snd = $('#wb-sound').value.trim();
+    let h = '';
+    if(msg) h += `<p class="wb-msg">${esc(msg)}</p>`;
+    if(groups && groups.length > 1){
+      h += `<div class="wb-choose"><span class="wb-label">Multiple meanings in Masri — choose one</span>`
+        + groups.map((g, i) => `<button class="wb-alt${token(g.en) === activeTok ? ' active' : ''}" data-i="${i}">${esc(g.en)}${g.tr ? ` · <i>${esc(g.tr)}</i>` : ''}</button>`).join('')
+        + `</div>`;
+    }
+    h += `<div class="wb-card">`;
+    h += row('Arabic word', `<div class="wb-word ar" dir="rtl">${esc(word)}</div>`);
+    if(def) h += row('English', `<div class="wb-val">${esc(def)}</div>`);
+    const lr = letterRow(word); if(lr) h += row('Letters', lr);
+    if(tr)  h += row('Transliteration', `<div class="wb-val wb-ltr" dir="ltr">${esc(tr)}</div>`);
+    if(ipa) h += row('IPA', `<div class="wb-val wb-ltr wb-ipaval" dir="ltr">${esc(ipa)}</div>`);
+    if(snd) h += row('English sound guide', `<div class="wb-val wb-ltr" dir="ltr">${esc(snd)}</div>`);
+    h += `</div>`;
+    $('#wb-out').innerHTML = h;
+    if(groups && groups.length > 1){
+      $('#wb-out').querySelectorAll('.wb-alt').forEach(b => b.onclick = () => {
+        const g = groups[+b.dataset.i];
+        $('#wb-def').value = ''; $('#wb-tr').value = ''; $('#wb-ipa').value = ''; $('#wb-sound').value = '';
+        autofill(g); renderCard('', groups, token(g.en));
+      });
+    }
+  }
+
   function build(){
     const word = $('#wb-word').value.trim();
-    const def  = $('#wb-def').value.trim();
-    const ipa  = $('#wb-ipa').value.trim();
-    const snd  = $('#wb-sound').value.trim();
-    const out  = $('#wb-out');
-    if(!word){ out.innerHTML = `<p class="wb-hint">Enter an Arabic word above, then “Create Word Stack”.</p>`; return; }
-    let h = `<div class="wb-card"><div class="wb-word ar" dir="rtl">${esc(word)}</div>`;
-    if(def) h += `<div class="wb-def">${esc(def)}</div>`;
-    h += letterRow(word);
-    if(ipa) h += `<div class="wb-ipa wb-ltr" dir="ltr">${esc(ipa)}</div>`;
-    if(snd) h += `<div class="wb-sound wb-ltr" dir="ltr">${esc(snd)}</div>`;
-    h += `</div>`;
-    out.innerHTML = h;
+    if(!word){ renderCard('', null); return; }
+    const ms = lookup(word);
+    if(!ms.length){
+      renderCard('This word is not in the Masri reference yet. Add the information you know below.', null);
+      return;
+    }
+    const groups = meaningGroups(ms);
+    autofill(groups[0] || ms[0]);
+    renderCard('', groups.length > 1 ? groups : null, token((groups[0] || ms[0]).en));
   }
 
   $('#wb-create').onclick = build;
   $('#wb-word').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); build(); } });
   $('#wb-clear').onclick = () => {
-    ['#wb-word','#wb-def','#wb-ipa','#wb-sound'].forEach(s => { $(s).value = ''; });
+    ['#wb-word','#wb-def','#wb-tr','#wb-ipa','#wb-sound'].forEach(s => { $(s).value = ''; });
     $('#wb-out').innerHTML = '';
     $('#wb-word').focus();
   };
