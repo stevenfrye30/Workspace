@@ -27,7 +27,7 @@
   /* ── nav ── */
   nav{background:var(--surf);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 12px;position:sticky;top:0;z-index:10}
   .tab{background:none;border:none;color:var(--muted);font-family:var(--ui);font-size:13px;font-weight:600;
-       letter-spacing:.03em;padding:14px 16px;cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
+       letter-spacing:.03em;padding:14px 16px;cursor:pointer;white-space:nowrap;flex:0 0 auto;border-bottom:2px solid transparent;transition:color .15s,border-color .15s}
   .tab:hover{color:var(--fg)}
   .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
@@ -35,7 +35,7 @@
   #subnav{display:flex;flex-wrap:wrap;gap:6px;max-width:960px;margin:0 auto;padding:12px 20px 0}
   #subnav:empty{display:none;padding:0}
   .subtab{background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:20px;
-          font-family:var(--ui);font-size:12px;font-weight:600;padding:5px 13px;cursor:pointer;white-space:nowrap;
+          font-family:var(--ui);font-size:12px;font-weight:600;padding:5px 13px;cursor:pointer;white-space:nowrap;flex:0 0 auto;
           transition:color .15s,border-color .15s,background .15s}
   .subtab:hover{color:var(--fg)}
   .subtab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
@@ -123,7 +123,7 @@
   .item .e{color:var(--muted);font-size:13px;margin-top:4px}
 
   /* ── word builder ── */
-  .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
+  .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
   .wb-field{display:flex;flex-direction:column;gap:5px}
   .wb-field span{font-size:12px;color:var(--muted);font-weight:600}
   .wb-field em{color:var(--gold);font-style:normal;font-weight:400}
@@ -136,24 +136,33 @@
   .wb-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;padding:9px 16px}
   .wb-clear:hover{color:var(--fg);border-color:var(--gold)}
   .wb-hint{color:var(--muted);font-style:italic;padding:8px 2px}
-  .wb-msg{color:var(--gold);font-size:13px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:12px;line-height:1.5}
+  .wb-status{font-size:12.5px;margin:0 2px 14px;line-height:1.5}
+  .wb-status.wb-found{color:var(--green)}
+  .wb-status.wb-unknown{color:var(--gold)}
   .wb-choose{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-  .wb-choose .wb-label{width:100%;margin-bottom:0}
+  .wb-clabel{width:100%;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
   .wb-alt{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;cursor:pointer;font-family:var(--ui);font-size:13px;padding:6px 12px}
   .wb-alt:hover{border-color:var(--gold)}
   .wb-alt.active{background:var(--gold);color:#111;border-color:var(--gold)}
-  .wb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:8px 20px}
-  .wb-row{padding:12px 0;border-bottom:1px solid var(--border)}
-  .wb-row:last-child{border-bottom:none}
+  .wb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:22px}
   .wb-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
-  .wb-word{font-family:var(--ar);font-size:40px;color:var(--gold);line-height:1.2;direction:rtl;unicode-bidi:isolate;word-break:break-word}
-  .wb-val{font-size:16px;color:var(--fg);line-height:1.5}
-  .wb-val.wb-ipaval{color:var(--blue)}
-  .wb-letters{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
-  .wb-letter{font-family:var(--ar);font-size:28px;color:var(--fg);unicode-bidi:isolate}
-  .wb-sep{color:var(--muted);font-size:18px}
-  .wb-gap{width:24px}
-  @media (max-width:600px){ .wb-word{font-size:32px} .wb-letter{font-size:23px} }
+  .wb-head{text-align:center;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px}
+  .wb-head .wb-letterslabel{margin-top:18px}
+  .wb-word{font-family:var(--ar);font-size:62px;color:var(--gold);line-height:1.15;direction:rtl;unicode-bidi:isolate;word-break:break-word}
+  .wb-letters{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px}
+  .wb-letter{font-family:var(--ar);font-size:34px;color:var(--fg);unicode-bidi:isolate}
+  .wb-sep{color:var(--muted);font-size:22px}
+  .wb-gap{width:28px}
+  .wb-details{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
+  .wb-drow.wb-full{grid-column:1 / -1}
+  .wb-dval{font-size:16px;color:var(--fg);line-height:1.45}
+  .wb-ipaval{color:var(--blue)}
+  @media (max-width:600px){
+    .wb-word{font-size:46px}
+    .wb-letter{font-size:26px}
+    .wb-card{padding:18px 15px}
+    .wb-details{grid-template-columns:1fr;gap:12px}
+  }
 
   /* ── notes ── */
   .compose{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px}
@@ -544,6 +553,7 @@ function tableEl(headers, rows){
 // is stored, no localStorage, and Word Builder is NOT added to the global search.
 (function(){
   const panel = document.getElementById('p-word-builder'); if(!panel) return;
+  const SL = (typeof SECTION_LABEL !== 'undefined') ? SECTION_LABEL : {};
   panel.innerHTML =
     `<p class="lead">Type or paste an Arabic word. If it is already in Masri's
        reference data, its meaning and transliteration are filled in from that
@@ -565,6 +575,7 @@ function tableEl(headers, rows){
          <button class="wb-clear" id="wb-clear">Clear</button>
        </div>
      </div>
+     <div id="wb-status" class="wb-status" aria-live="polite"></div>
      <div id="wb-out" aria-live="polite"></div>`;
 
   const $ = s => panel.querySelector(s);
@@ -576,10 +587,10 @@ function tableEl(headers, rows){
     let out = '';
     for(const ch of String(s)){
       const cp = ch.codePointAt(0);
-      if(cp >= 0x064B && cp <= 0x0655) continue;   // tashkeel + combining hamza/madda
-      if(cp === 0x0670 || cp === 0x0640) continue; // superscript alef, tatweel
-      if(cp >= 0x0610 && cp <= 0x061A) continue;   // Arabic marks
-      if(cp >= 0x06D6 && cp <= 0x06ED) continue;   // Quranic marks
+      if(cp >= 0x064B && cp <= 0x0655) continue;
+      if(cp === 0x0670 || cp === 0x0640) continue;
+      if(cp >= 0x0610 && cp <= 0x061A) continue;
+      if(cp >= 0x06D6 && cp <= 0x06ED) continue;
       let c = ch;
       if(cp === 0x0622 || cp === 0x0623 || cp === 0x0625) c = 'ا';
       else if(cp === 0x0624) c = 'و';
@@ -627,33 +638,34 @@ function tableEl(headers, rows){
 
   // Lightweight lookup index over existing window.MASRI content (separate from the
   // global search index; Word Builder itself is never indexed). Each record:
-  // {k: normalized Arabic, ar, tr, en, ipa, kind}.
+  // {k: normalized Arabic, ar, tr, en, ipa, kind, src}. `src` is a human-readable
+  // source (table / theme / section) shown as "Found in Masri: …".
   const index = (function(){
     const idx = [], M = window.MASRI || {};
-    const add = (ar, tr, en, ipa, kind) => {
+    const add = (ar, tr, en, ipa, kind, src) => {
       if(!ar) return; const k = arNorm(ar); if(!k) return;
-      idx.push({ k, ar: String(ar), tr: tr || '', en: en || '', ipa: ipa || '', kind });
+      idx.push({ k, ar: String(ar), tr: tr || '', en: en || '', ipa: ipa || '', kind, src: src || '' });
     };
     ['verbs','time','around','shopping','food','health','people','descriptions'].forEach(key => {
-      if(M[key] && M[key].tables) M[key].tables.forEach(t => (t.rows || []).forEach(r => add(r[0], r[1], r[2], '', 'table')));
+      if(M[key] && M[key].tables) M[key].tables.forEach(t => (t.rows || []).forEach(r => add(r[0], r[1], r[2], '', 'table', t.title || SL[key] || '')));
     });
-    if(Array.isArray(M.grammar)) M.grammar.forEach(t => (t.rows || []).forEach(r => add(r[0], r[1], r[2], '', 'table')));
-    if(Array.isArray(M.phrases)) M.phrases.forEach(c => (c.items || []).forEach(it => add(it.ar, it.tr, it.en, '', 'phrase')));
-    if(Array.isArray(M.vocab))   M.vocab.forEach(t => (t.words || []).forEach(w => add(w.ar, w.tr, w.en, '', 'vocab')));
-    if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g] || []).forEach(n => add(n.ar, n.tr, String(n.n), '', 'vocab')));
+    if(Array.isArray(M.grammar)) M.grammar.forEach(t => (t.rows || []).forEach(r => add(r[0], r[1], r[2], '', 'table', t.title || 'Grammar')));
+    if(Array.isArray(M.phrases)) M.phrases.forEach(c => (c.items || []).forEach(it => add(it.ar, it.tr, it.en, '', 'phrase', c.category || 'Phrases')));
+    if(Array.isArray(M.vocab))   M.vocab.forEach(t => (t.words || []).forEach(w => add(w.ar, w.tr, w.en, '', 'vocab', t.theme || 'Vocabulary')));
+    if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g] || []).forEach(n => add(n.ar, n.tr, String(n.n), '', 'vocab', 'Numbers')));
     if(M.sounds){
-      (M.sounds.consonants || []).forEach(c => { add(c.ex_ar, c.ex, c.ex_en, '', 'example'); add(c.letter, c.name, c.egyptian, c.ipa, 'letter'); });
-      if(M.sounds.vowels) (M.sounds.vowels.rows || []).forEach(v => add(v.ex_ar, v.ex, v.gloss, '', 'example'));
+      (M.sounds.consonants || []).forEach(c => { add(c.ex_ar, c.ex, c.ex_en, '', 'example', 'Sounds'); add(c.letter, c.name, c.egyptian, c.ipa, 'letter', 'Sounds'); });
+      if(M.sounds.vowels) (M.sounds.vowels.rows || []).forEach(v => add(v.ex_ar, v.ex, v.gloss, '', 'example', 'Sounds'));
     }
-    if(M.alphabet) (M.alphabet.letters || []).forEach(l => add(l.letter, l.name, l.sound, '', 'letter'));
+    if(M.alphabet) (M.alphabet.letters || []).forEach(l => add(l.letter, l.name, l.sound, '', 'letter', 'Alphabet'));
     return idx;
   })();
 
   const rank = { vocab: 0, table: 0, letter: 1, example: 2, phrase: 3 };
   const token = en => String(en).toLowerCase().split(/[\/,;(]/)[0].trim().split(/\s+/)[0] || '';
 
-  // Exact normalized matches, best-first (tie-breaks: exact raw equality, then
-  // simple entry over phrase, then shortest gloss, then shortest Arabic).
+  // Exact normalized matches, best-first (tie-breaks unchanged: exact raw equality,
+  // simple entry over phrase, shortest gloss, shortest Arabic).
   function lookup(word){
     const key = arNorm(word), raw = word.trim();
     const ms = index.filter(r => r.k === key);
@@ -666,75 +678,97 @@ function tableEl(headers, rows){
     return ms;
   }
 
-  // One representative per genuinely-different meaning (grouped by primary token),
-  // so related glosses (coffee / café) do not force a chooser.
   function meaningGroups(ms){
     const seen = {}, groups = [];
     ms.forEach(m => { const t = token(m.en); if(!t || seen[t]) return; seen[t] = 1; groups.push(m); });
     return groups;
   }
 
-  // Prefill editable fields from a trusted entry; never overwrite the user's own
-  // input, never invent. IPA only when the entry carries a real IPA value.
   function autofill(m){
     if(m){
       if(!$('#wb-def').value && m.en)  $('#wb-def').value = m.en;
       if(!$('#wb-tr').value  && m.tr)  $('#wb-tr').value  = m.tr;
       if(!$('#wb-ipa').value && m.ipa) $('#wb-ipa').value = m.ipa;
     }
-    if(!$('#wb-sound').value && $('#wb-tr').value) $('#wb-sound').value = $('#wb-tr').value; // sound guide seeds from translit
+    if(!$('#wb-sound').value && $('#wb-tr').value) $('#wb-sound').value = $('#wb-tr').value;
   }
 
-  const row = (label, valueHtml) => `<div class="wb-row"><div class="wb-label">${esc(label)}</div>${valueHtml}</div>`;
+  // Display-only formatting for short grammar gloss markers — expands a trailing
+  // (m)/(f)/(pl) into words. Never changes the stored reference data, never invents
+  // detail beyond the marker present.
+  function displayEn(en){
+    return String(en)
+      .replace(/\s*\(m\s*pl\)\s*$/i, ', masculine plural')
+      .replace(/\s*\(f\s*pl\)\s*$/i, ', feminine plural')
+      .replace(/\s*\(m\)\s*$/i, ', masculine')
+      .replace(/\s*\(f\)\s*$/i, ', feminine')
+      .replace(/\s*\(pl\)\s*$/i, ', plural');
+  }
 
-  function renderCard(msg, groups, activeTok){
+  function setStatus(st){
+    const el = $('#wb-status');
+    if(!st){ el.textContent = ''; el.className = 'wb-status'; return; }
+    if(st.type === 'found'){ el.textContent = st.src ? ('Found in Masri: ' + st.src) : 'Found in Masri.'; el.className = 'wb-status wb-found'; }
+    else { el.textContent = 'This word is not in the Masri reference yet. Add the information you know below.'; el.className = 'wb-status wb-unknown'; }
+  }
+
+  const drow = (label, valueHtml, cls) =>
+    `<div class="wb-drow${cls ? ' ' + cls : ''}"><div class="wb-label">${esc(label)}</div><div class="wb-dval">${valueHtml}</div></div>`;
+
+  function renderCard(status, groups, activeTok){
     const word = $('#wb-word').value.trim();
+    setStatus(status);
     if(!word){ $('#wb-out').innerHTML = `<p class="wb-hint">Enter an Arabic word above, then “Create Word Stack”.</p>`; return; }
     const def = $('#wb-def').value.trim(), tr = $('#wb-tr').value.trim(),
           ipa = $('#wb-ipa').value.trim(), snd = $('#wb-sound').value.trim();
     let h = '';
-    if(msg) h += `<p class="wb-msg">${esc(msg)}</p>`;
     if(groups && groups.length > 1){
-      h += `<div class="wb-choose"><span class="wb-label">Multiple meanings in Masri — choose one</span>`
+      h += `<div class="wb-choose"><span class="wb-clabel">Multiple meanings in Masri — choose one</span>`
         + groups.map((g, i) => `<button class="wb-alt${token(g.en) === activeTok ? ' active' : ''}" data-i="${i}">${esc(g.en)}${g.tr ? ` · <i>${esc(g.tr)}</i>` : ''}</button>`).join('')
         + `</div>`;
     }
     h += `<div class="wb-card">`;
-    h += row('Arabic word', `<div class="wb-word ar" dir="rtl">${esc(word)}</div>`);
-    if(def) h += row('English', `<div class="wb-val">${esc(def)}</div>`);
-    const lr = letterRow(word); if(lr) h += row('Letters', lr);
-    if(tr)  h += row('Transliteration', `<div class="wb-val wb-ltr" dir="ltr">${esc(tr)}</div>`);
-    if(ipa) h += row('IPA', `<div class="wb-val wb-ltr wb-ipaval" dir="ltr">${esc(ipa)}</div>`);
-    if(snd) h += row('English sound guide', `<div class="wb-val wb-ltr" dir="ltr">${esc(snd)}</div>`);
+    // centered anchor: label · word · letters
+    h += `<div class="wb-head"><div class="wb-label">Arabic word</div>`
+       + `<div class="wb-word ar" dir="rtl">${esc(word)}</div>`;
+    const lr = letterRow(word);
+    if(lr) h += `<div class="wb-label wb-letterslabel">Letters</div>` + lr;
+    h += `</div>`;
+    // detail rows (English full width; translit / IPA / sound flow in two columns)
+    let d = '';
+    if(def) d += drow('English', esc(displayEn(def)), 'wb-full');
+    if(tr)  d += drow('Transliteration', `<span class="wb-ltr" dir="ltr">${esc(tr)}</span>`);
+    if(ipa) d += drow('IPA', `<span class="wb-ltr wb-ipaval" dir="ltr">${esc(ipa)}</span>`);
+    // omit the sound-guide row when it just echoes the transliteration
+    if(snd && snd.toLowerCase() !== tr.toLowerCase()) d += drow('English sound guide', `<span class="wb-ltr" dir="ltr">${esc(snd)}</span>`);
+    if(d) h += `<div class="wb-details">${d}</div>`;
     h += `</div>`;
     $('#wb-out').innerHTML = h;
     if(groups && groups.length > 1){
       $('#wb-out').querySelectorAll('.wb-alt').forEach(b => b.onclick = () => {
         const g = groups[+b.dataset.i];
         $('#wb-def').value = ''; $('#wb-tr').value = ''; $('#wb-ipa').value = ''; $('#wb-sound').value = '';
-        autofill(g); renderCard('', groups, token(g.en));
+        autofill(g); renderCard({ type: 'found', src: g.src }, groups, token(g.en));
       });
     }
   }
 
   function build(){
     const word = $('#wb-word').value.trim();
-    if(!word){ renderCard('', null); return; }
+    if(!word){ renderCard(null, null); return; }
     const ms = lookup(word);
-    if(!ms.length){
-      renderCard('This word is not in the Masri reference yet. Add the information you know below.', null);
-      return;
-    }
+    if(!ms.length){ renderCard({ type: 'unknown' }, null); return; }
     const groups = meaningGroups(ms);
-    autofill(groups[0] || ms[0]);
-    renderCard('', groups.length > 1 ? groups : null, token((groups[0] || ms[0]).en));
+    const top = groups[0] || ms[0];
+    autofill(top);
+    renderCard({ type: 'found', src: top.src }, groups.length > 1 ? groups : null, token(top.en));
   }
 
   $('#wb-create').onclick = build;
   $('#wb-word').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); build(); } });
   $('#wb-clear').onclick = () => {
     ['#wb-word','#wb-def','#wb-tr','#wb-ipa','#wb-sound'].forEach(s => { $(s).value = ''; });
-    $('#wb-out').innerHTML = '';
+    $('#wb-out').innerHTML = ''; setStatus(null);
     $('#wb-word').focus();
   };
 })();
