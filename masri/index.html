@@ -122,6 +122,30 @@
   .item .t{color:var(--blue);font-size:13px;font-style:italic}
   .item .e{color:var(--muted);font-size:13px;margin-top:4px}
 
+  /* ── word builder ── */
+  .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:20px;display:grid;gap:12px}
+  .wb-field{display:flex;flex-direction:column;gap:5px}
+  .wb-field span{font-size:12px;color:var(--muted);font-weight:600}
+  .wb-field em{color:var(--gold);font-style:normal;font-weight:400}
+  .wb-in{background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:var(--ui);font-size:15px;padding:10px 12px;outline:none;min-width:0}
+  .wb-in:focus{border-color:var(--gold)}
+  .wb-in.ar{font-family:var(--ar);font-size:20px}
+  .wb-ltr{direction:ltr;text-align:left;font-family:var(--ui)}
+  .wb-btns{display:flex;gap:10px;align-items:center;margin-top:2px;flex-wrap:wrap}
+  .wb-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;padding:9px 16px}
+  .wb-clear:hover{color:var(--fg);border-color:var(--gold)}
+  .wb-hint{color:var(--muted);font-style:italic;padding:8px 2px}
+  .wb-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:26px 20px;text-align:center}
+  .wb-word{font-family:var(--ar);font-size:44px;color:var(--gold);line-height:1.25;direction:rtl;unicode-bidi:isolate;word-break:break-word}
+  .wb-def{color:var(--fg);font-size:17px;margin-top:8px}
+  .wb-letters{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:6px 8px;margin:20px 0}
+  .wb-letter{font-family:var(--ar);font-size:30px;color:var(--fg);unicode-bidi:isolate}
+  .wb-sep{color:var(--muted);font-size:20px}
+  .wb-gap{width:26px}
+  .wb-ipa{font-family:var(--ui);font-size:20px;color:var(--blue);margin-top:16px;direction:ltr}
+  .wb-sound{font-family:var(--ui);font-size:16px;color:var(--muted);letter-spacing:.04em;margin-top:6px;direction:ltr}
+  @media (max-width:600px){ .wb-word{font-size:34px} .wb-letter{font-size:24px} }
+
   /* ── notes ── */
   .compose{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px}
   .compose textarea{width:100%;min-height:68px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;
@@ -174,6 +198,7 @@
   <section id="p-start"    class="panel"></section>
   <section id="p-sounds"   class="panel"></section>
   <section id="p-alphabet" class="panel"></section>
+  <section id="p-word-builder" class="panel"></section>
   <section id="p-grammar"  class="panel"></section>
   <section id="p-verbs"    class="panel"></section>
   <section id="p-numbers"  class="panel"></section>
@@ -217,7 +242,7 @@ const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'
 
 const GROUPS = [
   { id:'g-start',    label:'Start Here',            sections:['start'] },
-  { id:'g-sounds',   label:'Sounds & Alphabet',     sections:['sounds','alphabet'] },
+  { id:'g-sounds',   label:'Sounds & Alphabet',     sections:['sounds','alphabet','word-builder'] },
   { id:'g-grammar',  label:'Grammar & Verbs',       sections:['grammar','verbs'] },
   { id:'g-numbers',  label:'Numbers & Time',        sections:['numbers','time'] },
   { id:'g-everyday', label:'Everyday Life',         sections:['around','shopping','food','health'] },
@@ -225,7 +250,8 @@ const GROUPS = [
   { id:'g-words',    label:'Words & Phrases',       sections:['phrases','vocab'] },
 ];
 const SECTION_LABEL = {
-  start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', grammar:'Grammar', verbs:'Verbs',
+  start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', 'word-builder':'Word Builder',
+  grammar:'Grammar', verbs:'Verbs',
   numbers:'Numbers', time:'Time & Days', around:'Getting Around', shopping:'Money & Shopping',
   food:'Food & Ordering', health:'Health & Emergencies', people:'People & Small Talk',
   descriptions:'Colors & Descriptions', phrases:'Phrases', vocab:'Vocabulary',
@@ -499,6 +525,96 @@ function tableEl(headers, rows){
       ${tableEl(t.headers, t.rows)}
     </div>`).join('');
   document.getElementById('p-descriptions').innerHTML = h;
+})();
+
+// WORD BUILDER — a small pronunciation-reference tool (Sounds & Alphabet).
+// The user types an Arabic word and gets a stacked card: word · definition ·
+// individual letters · IPA · English sound guide. Nothing is stored, no
+// localStorage, and it is deliberately NOT added to the global search index.
+(function(){
+  const panel = document.getElementById('p-word-builder'); if(!panel) return;
+  panel.innerHTML =
+    `<p class="lead">Paste or type an Arabic word to build a simple, stacked
+       pronunciation-reference card — the word, its meaning, its individual letters,
+       and how it sounds. This is a scratch tool: nothing is saved, and it does not
+       look anything up. Fill in what you know; blank fields are just left out.</p>
+     <div class="wb-form">
+       <label class="wb-field"><span>Arabic word <em>(required)</em></span>
+         <input id="wb-word" class="wb-in ar" dir="rtl" placeholder="مكتبة" autocomplete="off" spellcheck="false"></label>
+       <label class="wb-field"><span>English definition</span>
+         <input id="wb-def" class="wb-in" placeholder="library" autocomplete="off"></label>
+       <label class="wb-field"><span>IPA</span>
+         <input id="wb-ipa" class="wb-in wb-ltr" placeholder="/mæk.ta.ba/" autocomplete="off" spellcheck="false"></label>
+       <label class="wb-field"><span>English sound guide</span>
+         <input id="wb-sound" class="wb-in wb-ltr" placeholder="mak-ta-ba" autocomplete="off"></label>
+       <div class="wb-btns">
+         <button class="btn" id="wb-create">Create Word Stack</button>
+         <button class="wb-clear" id="wb-clear">Clear</button>
+       </div>
+     </div>
+     <div id="wb-out" aria-live="polite"></div>`;
+
+  const $ = s => panel.querySelector(s);
+
+  // Split an Arabic string into its underlying letters, in logical order.
+  // Keep hamza / tā marbūṭa / alif maqṣūra / hamza carriers (all in 0621–064A);
+  // drop tatweel (0640), tashkeel/diacritics, and punctuation; turn whitespace
+  // into a word gap. Never reverses the character order.
+  function split(word){
+    const raw = [];
+    for(const ch of word){
+      if(/\s/.test(ch)){ raw.push({gap:true}); continue; }
+      const cp = ch.codePointAt(0);
+      if(cp === 0x0640) continue; // tatweel
+      const isLetter = (cp >= 0x0621 && cp <= 0x063A) || (cp >= 0x0641 && cp <= 0x064A)
+                     || (cp >= 0x0671 && cp <= 0x06D3); // base + extended Arabic letters
+      if(isLetter) raw.push({ ch });
+      // diacritics / punctuation / anything else → ignored
+    }
+    const out = [];                       // collapse + trim gaps
+    for(const it of raw){
+      if(it.gap){ if(out.length && !out[out.length-1].gap) out.push(it); }
+      else out.push(it);
+    }
+    while(out.length && out[out.length-1].gap) out.pop();
+    return out;
+  }
+
+  function letterRow(word){
+    const items = split(word);
+    if(!items.some(i => i.ch)) return '';
+    let h = '', prevLetter = false;
+    for(const it of items){
+      if(it.gap){ h += `<span class="wb-gap"></span>`; prevLetter = false; }
+      else { if(prevLetter) h += `<span class="wb-sep">·</span>`;
+             h += `<span class="wb-letter ar">${esc(it.ch)}</span>`; prevLetter = true; }
+    }
+    return `<div class="wb-letters" dir="ltr">${h}</div>`;
+  }
+
+  function build(){
+    const word = $('#wb-word').value.trim();
+    const def  = $('#wb-def').value.trim();
+    const ipa  = $('#wb-ipa').value.trim();
+    const snd  = $('#wb-sound').value.trim();
+    const out  = $('#wb-out');
+    if(!word){ out.innerHTML = `<p class="wb-hint">Enter an Arabic word above, then “Create Word Stack”.</p>`; return; }
+    let h = `<div class="wb-card"><div class="wb-word ar" dir="rtl">${esc(word)}</div>`;
+    if(def) h += `<div class="wb-def">${esc(def)}</div>`;
+    h += letterRow(word);
+    if(ipa) h += `<div class="wb-ipa wb-ltr" dir="ltr">${esc(ipa)}</div>`;
+    if(snd) h += `<div class="wb-sound wb-ltr" dir="ltr">${esc(snd)}</div>`;
+    h += `</div>`;
+    out.innerHTML = h;
+  }
+
+  $('#wb-create').onclick = build;
+  $('#wb-word').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); build(); } });
+  $('#wb-clear').onclick = () => {
+    ['#wb-word','#wb-def','#wb-ipa','#wb-sound'].forEach(s => { $(s).value = ''; });
+    $('#wb-out').innerHTML = '';
+    $('#wb-word').focus();
+  };
 })();
 
 // PHRASES + VOCAB share the searchable list layout
