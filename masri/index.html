@@ -31,6 +31,17 @@
   .tab:hover{color:var(--fg)}
   .tab.active{color:var(--gold);border-bottom-color:var(--gold)}
 
+  /* ── subsection nav (subordinate to the 7 main tabs) ── */
+  #subnav{display:flex;flex-wrap:wrap;gap:6px;max-width:960px;margin:0 auto;padding:12px 20px 0}
+  #subnav:empty{display:none;padding:0}
+  .subtab{background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:20px;
+          font-family:var(--ui);font-size:12px;font-weight:600;padding:5px 13px;cursor:pointer;white-space:nowrap;
+          transition:color .15s,border-color .15s,background .15s}
+  .subtab:hover{color:var(--fg)}
+  .subtab:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .subtab.active{background:var(--gold);color:#111;border-color:var(--gold)}
+  @media (max-width:600px){ #subnav{flex-wrap:nowrap;overflow-x:auto} }
+
   /* ── layout ── */
   main{max-width:960px;margin:0 auto;padding:28px 20px 90px}
   .panel{display:none}
@@ -157,6 +168,7 @@
 </div>
 
 <nav id="nav"></nav>
+<nav id="subnav" aria-label="Subsection"></nav>
 
 <main>
   <section id="p-start"    class="panel"></section>
@@ -174,7 +186,6 @@
   <section id="p-descriptions" class="panel"></section>
   <section id="p-phrases"  class="panel"></section>
   <section id="p-vocab"    class="panel"></section>
-  <section id="p-notes"    class="panel"></section>
 </main>
 
 <footer>
@@ -199,48 +210,82 @@
 <script src="data/descriptions.js"></script>
 <script src="data/phrases.js"></script>
 <script src="data/vocab.js"></script>
-<script src="data/notes.js"></script>
 <script>
 const M = window.MASRI || {};
 const TAT = 'ـ'; // tatweel (kashida) for showing joined letter shapes
 const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
-const SECTIONS = [
-  { id:'start',    label:'Start Here' },
-  { id:'sounds',   label:'Sounds' },
-  { id:'alphabet', label:'Alphabet' },
-  { id:'grammar',  label:'Grammar' },
-  { id:'verbs',    label:'Verbs' },
-  { id:'numbers',  label:'Numbers' },
-  { id:'time',     label:'Time & Days' },
-  { id:'around',   label:'Getting Around' },
-  { id:'shopping', label:'Money & Shopping' },
-  { id:'food',     label:'Food & Ordering' },
-  { id:'health',   label:'Health & Emergencies' },
-  { id:'people',   label:'People & Small Talk' },
-  { id:'descriptions', label:'Colors & Descriptions' },
-  { id:'phrases',  label:'Phrases' },
-  { id:'vocab',    label:'Vocabulary' },
-  { id:'notes',    label:'Notes' },
+const GROUPS = [
+  { id:'g-start',    label:'Start Here',            sections:['start'] },
+  { id:'g-sounds',   label:'Sounds & Alphabet',     sections:['sounds','alphabet'] },
+  { id:'g-grammar',  label:'Grammar & Verbs',       sections:['grammar','verbs'] },
+  { id:'g-numbers',  label:'Numbers & Time',        sections:['numbers','time'] },
+  { id:'g-everyday', label:'Everyday Life',         sections:['around','shopping','food','health'] },
+  { id:'g-people',   label:'People & Descriptions', sections:['people','descriptions'] },
+  { id:'g-words',    label:'Words & Phrases',       sections:['phrases','vocab'] },
 ];
+const SECTION_LABEL = {
+  start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', grammar:'Grammar', verbs:'Verbs',
+  numbers:'Numbers', time:'Time & Days', around:'Getting Around', shopping:'Money & Shopping',
+  food:'Food & Ordering', health:'Health & Emergencies', people:'People & Small Talk',
+  descriptions:'Colors & Descriptions', phrases:'Phrases', vocab:'Vocabulary',
+};
+const SECTION_GROUP = {};
+GROUPS.forEach(g => g.sections.forEach(sid => SECTION_GROUP[sid] = g.id));
 
 /* ── nav ── */
 const nav = document.getElementById('nav');
+const subnav = document.getElementById('subnav');
 const tabBtns = {};
-SECTIONS.forEach((s, i) => {
+GROUPS.forEach(g => {
   const b = document.createElement('button');
-  b.className = 'tab' + (i === 0 ? ' active' : '');
-  b.textContent = s.label;
-  b.onclick = () => show(s.id, b);
+  b.className = 'tab';
+  b.textContent = g.label;
+  b.setAttribute('role', 'tab');
+  b.onclick = () => showGroup(g.id);
   nav.appendChild(b);
-  tabBtns[s.id] = b;
+  tabBtns[g.id] = b;
 });
-function activate(id){ const b = tabBtns[id]; if(b) show(id, b); }
-function show(id, btn){
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('p-' + id).classList.add('active');
+
+function showGroup(groupId, sectionId){
+  const g = GROUPS.find(x => x.id === groupId); if(!g) return;
+  Object.keys(tabBtns).forEach(k => tabBtns[k].classList.toggle('active', k === groupId));
+  const sid = (sectionId && g.sections.indexOf(sectionId) >= 0) ? sectionId : g.sections[0];
+  buildSubnav(g, sid);
+  showSection(sid);
+}
+
+function buildSubnav(g, activeSid){
+  if(g.sections.length <= 1){ subnav.innerHTML = ''; return; }   // Start Here -> no subsections
+  subnav.setAttribute('role', 'tablist');
+  subnav.innerHTML = g.sections.map(sid =>
+    `<button class="subtab${sid===activeSid?' active':''}" role="tab" aria-selected="${sid===activeSid}" data-section="${esc(sid)}">${esc(SECTION_LABEL[sid])}</button>`
+  ).join('');
+  const btns = Array.prototype.slice.call(subnav.querySelectorAll('.subtab'));
+  btns.forEach((b, i) => {
+    b.onclick = () => showSection(b.dataset.section);
+    b.onkeydown = e => {
+      if(e.key === 'ArrowRight' || e.key === 'ArrowLeft'){
+        e.preventDefault();
+        const nb = btns[(i + (e.key === 'ArrowRight' ? 1 : -1) + btns.length) % btns.length];
+        nb.focus(); showSection(nb.dataset.section);
+      }
+    };
+  });
+}
+
+function showSection(sid){
+  document.querySelectorAll('main .panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('p-' + sid); if(panel) panel.classList.add('active');
+  subnav.querySelectorAll('.subtab').forEach(b => {
+    const on = b.dataset.section === sid;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+}
+
+function activate(sectionId){
+  const gid = SECTION_GROUP[sectionId]; if(gid) showGroup(gid, sectionId);
 }
 
 /* ── renderers ── */
@@ -502,107 +547,13 @@ if(M.vocab){
   }, 'Search vocabulary — Arabic, transliteration, or English…');
 }
 
-// NOTES — personal layer. Starter cards come from data/notes.js (read-only);
-// notes you add are saved in this browser (localStorage), shown alongside.
-(function(){
-  const cfg  = M.notes || { categories: [], starters: [] };
-  const CATS = (cfg.categories && cfg.categories.length) ? cfg.categories
-             : ['Sounds','Grammar','Vocabulary','Phrases','Culture','Questions'];
-  const KEY  = 'masri.notes.v1';
-  const panel = document.getElementById('p-notes');
-  let mine = load(), activeCat = 'All', query = '', editId = null;
-
-  function load(){ try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch(e){ return []; } }
-  function persist(){ try { localStorage.setItem(KEY, JSON.stringify(mine)); } catch(e){} }
-  function uid(){ return 'n' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-  function fmt(ts){ try { return new Date(ts).toLocaleDateString(undefined,{month:'short',day:'numeric',year:'numeric'}); } catch(e){ return ''; } }
-
-  panel.innerHTML =
-    `<p class="lead">A personal layer on the desk — jot what you notice while studying. Your notes are saved in
-       this browser; the starter cards come from <code>data/notes.js</code>. No scoring, no review queue — just notes.</p>
-     <div class="compose">
-       <textarea id="n-text" dir="auto" placeholder="e.g. I keep mixing up ح and ه…"></textarea>
-       <div class="compose-row">
-         <select id="n-cat" class="n-select">${CATS.map(c => `<option>${esc(c)}</option>`).join('')}</select>
-         <span style="flex:1"></span>
-         <button class="btn" id="n-add">Add note</button>
-       </div>
-     </div>
-     <div class="chips" id="n-chips"></div>
-     <input class="search" id="n-search" placeholder="Search your notes…">
-     <div id="n-list"></div>`;
-
-  const $ = sel => panel.querySelector(sel);
-
-  $('#n-add').onclick = () => {
-    const text = $('#n-text').value.trim(); if(!text) return;
-    mine.unshift({ id: uid(), cat: $('#n-cat').value, text, ts: Date.now() });
-    persist(); $('#n-text').value = ''; draw();
-  };
-  $('#n-search').addEventListener('input', () => { query = $('#n-search').value.trim().toLowerCase(); draw(); });
-
-  const chips = $('#n-chips');
-  chips.innerHTML = ['All', ...CATS]
-    .map(c => `<button class="chip${c==='All'?' active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
-  chips.querySelectorAll('.chip').forEach(b => b.onclick = () => {
-    activeCat = b.dataset.cat;
-    chips.querySelectorAll('.chip').forEach(x => x.classList.remove('active'));
-    b.classList.add('active'); draw();
-  });
-
-  function draw(){
-    const list = $('#n-list');
-    const starters = (cfg.starters || []).map(s => ({ ...s, starter: true }));
-    let rows = [...mine, ...starters];
-    if(activeCat !== 'All') rows = rows.filter(r => r.cat === activeCat);
-    if(query) rows = rows.filter(r => (r.text + ' ' + r.cat).toLowerCase().includes(query));
-    if(!rows.length){ list.innerHTML = `<p class="empty">No notes here yet. Add one above.</p>`; return; }
-
-    list.innerHTML = rows.map(r => {
-      if(editId && r.id === editId){
-        return `<div class="note">
-            <textarea class="n-edit" dir="auto">${esc(r.text)}</textarea>
-            <div class="actions" style="justify-content:flex-end">
-              <button data-act="save" data-id="${r.id}">Save</button>
-              <button data-act="cancel">Cancel</button>
-            </div></div>`;
-      }
-      return `<div class="note${r.starter?' starter':''}">
-          <div class="meta">
-            <span class="cat">${esc(r.cat)}${r.starter?' · starter':''}</span>
-            ${r.starter ? '' : `<span class="when">${fmt(r.ts)}</span>`}
-          </div>
-          <div class="body" dir="auto">${esc(r.text)}</div>
-          ${r.starter ? '' : `<div class="actions">
-            <button data-act="edit" data-id="${r.id}">edit</button>
-            <button data-act="del"  data-id="${r.id}">delete</button>
-          </div>`}
-        </div>`;
-    }).join('');
-
-    list.querySelectorAll('button[data-act]').forEach(b => b.onclick = () => {
-      const act = b.dataset.act, id = b.dataset.id;
-      if(act === 'del'){ if(confirm('Delete this note?')){ mine = mine.filter(n => n.id !== id); persist(); draw(); } }
-      else if(act === 'edit'){ editId = id; draw(); }
-      else if(act === 'cancel'){ editId = null; draw(); }
-      else if(act === 'save'){
-        const v = list.querySelector('.n-edit').value.trim();
-        const n = mine.find(n => n.id === id);
-        if(n && v){ n.text = v; n.ts = Date.now(); }
-        editId = null; persist(); draw();
-      }
-    });
-  }
-  draw();
-})();
-
 // GLOBAL SEARCH — one box that searches across all loaded window.MASRI data.
 // Independent of the per-section search boxes in Phrases / Vocabulary / Notes.
 (function(){
   const gi = document.getElementById('gsearch-input');
   const box = document.getElementById('gsearch-results');
   if(!gi || !box) return;
-  const label = {}; SECTIONS.forEach(s => label[s.id] = s.label);
+  const label = SECTION_LABEL;
   const strip = s => String(s).replace(/<[^>]*>/g, '');
   const recs = [];
   const push = (sec,group,ar,tr,en,note) =>
@@ -623,8 +574,6 @@ if(M.vocab){
   if(M.alphabet) (M.alphabet.letters||[]).forEach(l => push('alphabet','Alphabet', l.letter, l.name, l.sound, strip(l.note||'')));
   if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g]||[]).forEach(n => push('numbers','Numbers', n.ar, n.tr, String(n.n), n.digit)));
   if(M.start && M.start.survival) (M.start.survival.items||[]).forEach(it => push('start','Start Here', it.ar, it.tr, it.en, ''));
-  if(M.notes) (M.notes.starters||[]).forEach(s => push('notes','Notes · '+s.cat, '', '', s.text, ''));
-  try { (JSON.parse(localStorage.getItem('masri.notes.v1'))||[]).forEach(n => push('notes','Notes · '+n.cat, '', '', n.text, '')); } catch(e){}
 
   // Beginner-friendly normalization: lowercase, strip Latin diacritics via NFD
   // (ā→a, ḥ→h, ṣ→s, ṭ→t, ḍ→d, ẓ→z, ī→i, ū→u, ē→e, ō→o), Arabic tashkeel, and the

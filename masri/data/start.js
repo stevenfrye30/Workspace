@@ -16,8 +16,7 @@ window.MASRI.start = {
       { section: "Sounds",     id: "sounds",  when: "if pronunciation is confusing — the best place to begin" },
       { section: "Phrases",    id: "phrases", when: "for practical, everyday speaking" },
       { section: "Vocabulary", id: "vocab",   when: "for words grouped by theme" },
-      { section: "Grammar",    id: "grammar", when: "only when you need a specific pattern" },
-      { section: "Notes",      id: "notes",   when: "to write what you keep noticing or mixing up" }
+      { section: "Grammar",    id: "grammar", when: "only when you need a specific pattern" }
     ]
   },
   basics: {
