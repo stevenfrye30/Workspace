@@ -158,6 +158,62 @@
   .item .t{color:var(--blue);font-size:13px;font-style:italic}
   .item .e{color:var(--muted);font-size:13px;margin-top:4px}
 
+  /* ── sounds (grouped pronunciation reference) ── */
+  .snd-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+  .snd-jbtn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
+  .snd-jbtn:hover{border-color:var(--gold)}
+  .snd-jbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .snd-sub{font-size:12px;font-weight:600;color:var(--fg);text-transform:uppercase;letter-spacing:.06em;margin:22px 0 10px}
+  .snd-xref{font-style:italic}
+  .snd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:8px}
+  .snd-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px}
+  .snd-big{border-color:var(--gold)}
+  .snd-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  .snd-glyph{font-family:var(--ar);font-size:38px;color:var(--gold);line-height:1;unicode-bidi:isolate}
+  .snd-big .snd-glyph{font-size:52px}
+  .snd-hmeta{min-width:0}
+  .snd-name{font-size:13px;font-weight:600;color:var(--fg)}
+  .snd-line{font-size:13px;margin-top:2px}
+  .snd-sym{color:var(--green);font-weight:600}
+  .snd-ipa{color:var(--muted);font-family:var(--ui)}
+  .snd-sum{font-size:13px;color:var(--fg);line-height:1.5}
+  .snd-ex{font-size:13px;color:var(--muted);margin-top:7px}
+  .snd-ex .ar{font-family:var(--ar);font-size:18px;color:var(--fg)}
+  .snd-ex .tr{color:var(--blue);font-style:italic;margin:0 3px}
+  .snd-more{margin-top:8px}
+  .snd-more summary{font-size:11.5px;color:var(--gold);cursor:pointer;font-weight:600;list-style:none}
+  .snd-more summary::-webkit-details-marker{display:none}
+  .snd-more summary::before{content:"\25B8 "}
+  .snd-more[open] summary::before{content:"\25BE "}
+  .snd-more summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .snd-det{font-size:12.5px;color:var(--muted);line-height:1.6;margin-top:6px}
+  .snd-audio audio{width:100%;margin-top:8px}
+  .snd-vsym{font-family:var(--ui);font-size:16px;font-weight:600;color:var(--gold)}
+  .snd-vh{color:var(--gold);font-weight:700}
+  .snd-pairs{display:flex;flex-direction:column;gap:6px}
+  .snd-pair{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px}
+  .snd-pv{font-weight:600;color:var(--gold)}
+  .snd-pair .tr{color:var(--blue);font-style:italic;margin:0 2px}
+  .snd-pen{color:var(--muted);font-size:12px}
+  .snd-parrow{color:var(--muted);margin:0 6px}
+  .snd-cmpgrid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+  .snd-cmp{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+  .snd-cmprow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .snd-cmpside{display:inline-flex;align-items:center;gap:6px}
+  .snd-cmpside .snd-glyph{font-size:30px}
+  .snd-cmpvs{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  .snd-cmpnote{font-size:12.5px;color:var(--fg);line-height:1.5}
+  .snd-cmpex{font-size:12px;color:var(--muted);margin-top:7px}
+  .snd-cmpex .ar{font-family:var(--ar);font-size:16px;color:var(--fg)}
+  .snd-cmpex .tr{color:var(--blue);font-style:italic}
+  .snd-fnum{font-weight:700;color:var(--gold);font-family:var(--ui)}
+  .snd-falt{color:var(--muted);font-size:11px}
+  .snd-frex{display:flex;flex-wrap:wrap;gap:8px}
+  .snd-fre{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:13px}
+  .snd-arabizi{font-family:var(--ui);color:var(--blue);font-weight:600}
+  .snd-fre .ar{font-family:var(--ar);font-size:17px;color:var(--fg);margin:0 3px}
+  @media (max-width:600px){ .snd-grid,.snd-cmpgrid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:46px} }
+
   /* ── word builder ── */
   .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
   .wb-field{display:flex;flex-direction:column;gap:5px}
@@ -480,26 +536,123 @@ function tableEl(headers, rows){
   panel.querySelectorAll('.sh-copy').forEach(b => b.addEventListener('click', () => copyText(b.dataset.copy, b)));
 })();
 
-// SOUNDS
+// SOUNDS — grouped Egyptian-Arabic pronunciation reference. Builds from
+// window.MASRI.sounds: signature sounds, Cairene shifts, throat & back, emphatic,
+// Egyptian r, short/long vowels, confusable pairs, and Franco-Arabic. Compact cards
+// keep the key facts visible; longer notes sit in a native <details>. Internal jump
+// buttons scroll to anchors (no history, no localStorage).
 (function(){
   const d = M.sounds; if(!d) return;
+  const panel = document.getElementById('p-sounds');
+
+  // Bold the first occurrence of the target vowel symbol (weight, not colour; no competing spelling).
+  function vh(tr, sym){
+    const i = String(tr).indexOf(sym);
+    if(i < 0) return esc(tr);
+    return esc(tr.slice(0, i)) + '<b class="snd-vh">' + esc(sym) + '</b>' + esc(tr.slice(i + sym.length));
+  }
+
+  // One sound card. Optional `audio` (a trusted local file) would render a play
+  // control; none are set yet, so nothing synthetic is shown.
+  function card(c, big){
+    let h = `<div class="snd-card${big ? ' snd-big' : ''}">`;
+    h += `<div class="snd-head"><span class="snd-glyph ar" dir="rtl">${c.letter}</span>`
+       + `<div class="snd-hmeta"><div class="snd-name">${esc(c.name)}</div>`
+       + `<div class="snd-line"><span class="snd-sym">${esc(c.sym)}</span> <span class="snd-ipa" dir="ltr">${esc(c.ipa)}</span></div></div></div>`;
+    if(c.summary) h += `<div class="snd-sum">${c.summary}</div>`;
+    if(c.ex_ar) h += `<div class="snd-ex"><span class="ar" dir="rtl">${c.ex_ar}</span> <span class="tr" dir="ltr">${esc(c.ex)}</span> — ${esc(c.ex_en)}</div>`;
+    if(c.audio) h += `<div class="snd-audio"><audio controls preload="none" src="${esc(c.audio)}"></audio></div>`;
+    if(c.detail) h += `<details class="snd-more"><summary>More detail</summary><div class="snd-det">${c.detail}</div></details>`;
+    return h + `</div>`;
+  }
+  const grid = (cards, big) => `<div class="snd-grid">` + cards.map(c => card(c, big)).join('') + `</div>`;
+
+  function vowelTable(rows){
+    return `<div class="card-table"><table><thead><tr><th>Vowel</th><th>Example</th><th>Masri</th><th>Meaning</th></tr></thead><tbody>`
+      + rows.map(v => `<tr><td class="snd-vsym">${esc(v.sym)}</td><td><span class="ar" dir="rtl">${v.ar}</span></td>`
+          + `<td><span class="tr" dir="ltr">${vh(v.ex, v.sym)}</span></td><td>${esc(v.en)}${v.note ? ' — ' + v.note : ''}</td></tr>`).join('')
+      + `</tbody></table></div>`;
+  }
+
   let h = `<p class="lead">${d.intro}</p>`;
-  h += `<h2>Letters to re-learn for Egyptian</h2>`;
-  h += `<p class="note">The first six — ح خ ع غ ق ج — are the trickiest for beginners. Each card gives a rough English hint and an example word.</p>`;
-  h += `<div class="grid g-list">` + d.consonants.map(c => `
-    <div class="item">
-      <div class="top"><span class="a ar">${c.letter}</span><span class="t">${esc(c.name)}</span></div>
-      <div class="e"><b style="color:var(--green)">${esc(c.egyptian)}</b> · ${c.ipa}${c.approx ? ' · <i>' + esc(c.approx) + '</i>' : ''}</div>
-      ${c.ex_ar ? `<div class="e">e.g. <span class="ar">${c.ex_ar}</span> <span style="color:var(--blue)">${esc(c.ex)}</span> — ${esc(c.ex_en)}</div>` : ''}
-      <div class="e">${c.note}</div>
+
+  // jump navigation
+  h += `<nav class="snd-jump" aria-label="Sound groups">`
+     + d.jump.map(j => `<button class="snd-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
+     + `</nav>`;
+
+  // A · Cairene signature + shifts
+  h += `<h2 id="snd-cairene">Cairene signature sounds</h2>`;
+  h += grid(d.signature, true);
+  h += `<h3 class="snd-sub">Common Cairene shifts</h3>`;
+  h += `<p class="note">${d.shifts.intro}</p>`;
+  h += grid(d.shifts.cards, false);
+
+  // B · Throat & back
+  h += `<h2 id="snd-throat">Throat &amp; back sounds</h2>`;
+  h += `<p class="note">${d.throat.intro}</p>`;
+  h += grid(d.throat.cards, false);
+
+  // C · Emphatic
+  h += `<h2 id="snd-emphatic">Emphatic consonants</h2>`;
+  h += `<p class="note">${d.emphatic.intro}</p>`;
+  h += grid(d.emphatic.cards, false);
+  if(d.emphatic.crossref) h += `<p class="note snd-xref">${d.emphatic.crossref}</p>`;
+
+  // D · Egyptian r
+  h += `<h2 id="snd-ra">Egyptian ر</h2>`;
+  const r = d.ra;
+  h += grid([{ letter: r.letter, name: r.name, sym: r.sym, ipa: r.ipa, summary: r.summary, detail: r.detail }], false);
+  h += `<div class="card-table"><table><thead><tr><th>Position</th><th>Example</th><th>Meaning</th></tr></thead><tbody>`
+     + r.examples.map(e => `<tr><td>${esc(e.pos)}</td><td><span class="ar" dir="rtl">${e.ar}</span> <span class="tr" dir="ltr">${esc(e.ex)}</span></td><td>${esc(e.en)}</td></tr>`).join('')
+     + `</tbody></table></div>`;
+
+  // Vowels
+  h += `<h2 id="snd-vowels">Vowels</h2>`;
+  h += `<p class="note">${d.vowels.intro}</p>`;
+  h += `<h3 class="snd-sub">Short vowels</h3>` + vowelTable(d.vowels.short);
+  h += `<p class="note">${esc(d.vowels.shortNote)}</p>`;
+  h += `<h3 class="snd-sub">Long vowels</h3>` + vowelTable(d.vowels.long);
+  h += `<h3 class="snd-sub">Short vs long</h3>`;
+  h += `<div class="snd-pairs">` + d.vowels.pairs.map(p =>
+      `<div class="snd-pair"><span class="snd-pv">${esc(p.s.sym)}</span> <span class="tr" dir="ltr">${esc(p.s.ex)}</span> <span class="snd-pen">${esc(p.s.en)}</span>`
+    + ` <span class="snd-parrow" aria-hidden="true">→</span> `
+    + `<span class="snd-pv">${esc(p.l.sym)}</span> <span class="tr" dir="ltr">${esc(p.l.ex)}</span> <span class="snd-pen">${esc(p.l.en)}</span></div>`).join('')
+    + `</div>`;
+
+  // Comparisons
+  h += `<h2 id="snd-compare">Sounds learners often confuse</h2>`;
+  h += `<p class="note">${d.compare.intro}</p>`;
+  h += `<div class="snd-grid snd-cmpgrid">` + d.compare.cards.map(c => `
+    <div class="snd-cmp">
+      <div class="snd-cmprow">
+        <span class="snd-cmpside"><span class="snd-glyph ar" dir="rtl">${c.a.L}</span><span class="snd-sym">${esc(c.a.sym)}</span></span>
+        <span class="snd-cmpvs" aria-hidden="true">vs</span>
+        <span class="snd-cmpside"><span class="snd-glyph ar" dir="rtl">${c.b.L}</span><span class="snd-sym">${esc(c.b.sym)}</span></span>
+      </div>
+      <div class="snd-cmpnote">${esc(c.note)}</div>
+      <div class="snd-cmpex"><span class="ar" dir="rtl">${c.a.ar}</span> <span class="tr" dir="ltr">${esc(c.a.ex)}</span> (${esc(c.a.en)}) · <span class="ar" dir="rtl">${c.b.ar}</span> <span class="tr" dir="ltr">${esc(c.b.ex)}</span> (${esc(c.b.en)})</div>
     </div>`).join('') + `</div>`;
-  h += `<h2>Vowels</h2><p class="note">${d.vowels.intro}</p>`;
-  h += tableEl(['Sound','Word','Masri','Meaning'],
-        d.vowels.rows.map(v => [v.sound, `<span class="ar">${v.ex_ar}</span>`, `<span class="tr">${esc(v.ex)}</span>`, v.gloss]));
-  h += `<h2>Franco-Arabic (texting)</h2><p class="note">${d.franco.intro}</p>`;
-  h += tableEl(['Digit','Letter','Sound'],
-        d.franco.rows.map(f => [f.num, `<span class="ar">${f.letter}</span>`, f.sound]));
-  document.getElementById('p-sounds').innerHTML = h;
+
+  // Franco-Arabic
+  h += `<h2 id="snd-franco">Franco-Arabic (Arabizi)</h2>`;
+  h += `<p class="note">${d.franco.intro}</p>`;
+  h += `<p class="note snd-xref">${d.franco.distinct}</p>`;
+  h += `<div class="card-table"><table><thead><tr><th>Types as</th><th>Letter</th><th>Sound</th></tr></thead><tbody>`
+     + d.franco.rows.map(f => `<tr><td class="snd-fnum">${esc(f.num)}</td><td><span class="ar" dir="rtl">${f.letter}</span></td>`
+         + `<td>${esc(f.sound)}${(f.alt && f.alt !== 'varies') ? ' <span class="snd-falt">(' + esc(f.alt) + ')</span>' : (f.alt === 'varies' ? ' <span class="snd-falt">(varies)</span>' : '')}</td></tr>`).join('')
+     + `</tbody></table></div>`;
+  h += `<h3 class="snd-sub">Recognition examples</h3>`;
+  h += `<div class="snd-frex">` + d.franco.examples.map(e =>
+      `<div class="snd-fre"><span class="snd-arabizi" dir="ltr">${esc(e.arabizi)}</span> = <span class="ar" dir="rtl">${e.ar}</span> <span class="snd-pen">${esc(e.en)}</span></div>`).join('')
+    + `</div>`;
+
+  panel.innerHTML = h;
+
+  // internal jump controls — scroll only, no hash/history
+  panel.querySelectorAll('.snd-jbtn').forEach(b => b.addEventListener('click', () => {
+    const t = document.getElementById(b.dataset.anchor); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
 })();
 
 // ALPHABET
