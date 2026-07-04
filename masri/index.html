@@ -60,6 +60,42 @@
   .start-list li::before{content:"\203A";position:absolute;left:3px;color:var(--gold);font-weight:700}
   .goto{color:var(--gold);cursor:pointer;font-weight:600}
   .goto:hover{text-decoration:underline}
+  /* ── start here (goal-based front door) ── */
+  .sh-lead{margin-bottom:8px}
+  .sh-sub{color:var(--muted);font-size:13px;margin-bottom:18px;line-height:1.6}
+  .sh-tip{color:var(--muted);font-size:13px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 26px;line-height:1.7}
+  .sh-tip code{margin:0 1px}
+  .sh-searchlink{background:none;border:none;color:var(--gold);font-family:var(--ui);font-weight:600;font-size:13px;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+  .sh-searchlink:hover{color:var(--fg)}
+  .sh-goals{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:6px}
+  .sh-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 15px;display:flex;flex-direction:column;gap:5px}
+  .sh-card-title{font-weight:600;color:var(--fg);font-size:14px}
+  .sh-card-desc{color:var(--muted);font-size:12.5px;line-height:1.5;flex:1}
+  .sh-card-go{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:6px}
+  .sh-go{background:var(--gold);border:none;border-radius:8px;color:#111;font-family:var(--ui);font-size:12.5px;font-weight:600;padding:7px 12px;cursor:pointer}
+  .sh-go:hover{opacity:.9}
+  .sh-also{display:inline-flex;flex-wrap:wrap;gap:6px}
+  .sh-go2{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;font-family:var(--ui);font-size:12px;padding:6px 10px;cursor:pointer}
+  .sh-go2:hover{border-color:var(--gold)}
+  .sh-path{margin:6px 0 4px;padding-left:24px;color:var(--fg)}
+  .sh-path li{margin-bottom:7px;line-height:1.5}
+  .sh-step{background:none;border:none;color:var(--gold);font-family:var(--ui);font-size:14px;padding:0;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:2px}
+  .sh-step:hover{color:var(--fg)}
+  .sh-sym{font-family:var(--ui);font-size:16px;color:var(--gold);font-weight:600;white-space:nowrap}
+  .sh-more{margin:12px 0 0}
+  .sh-phrases{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+  .sh-phrase{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+  .sh-pen{color:var(--fg);font-size:13.5px;font-weight:600;margin-bottom:6px}
+  .sh-pform{display:flex;align-items:center;flex-wrap:wrap;gap:5px 10px;padding:5px 0}
+  .sh-pform + .sh-pform{border-top:1px dashed var(--border)}
+  .sh-who{width:100%;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+  .sh-pform .ar{font-family:var(--ar);font-size:20px;color:var(--fg);direction:rtl;unicode-bidi:isolate}
+  .sh-pform .tr{color:var(--blue);font-size:12.5px;font-style:italic}
+  .sh-copy{background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:var(--ui);font-size:11px;padding:3px 9px;margin-left:auto;cursor:pointer;flex:0 0 auto}
+  .sh-copy:hover{color:var(--fg);border-color:var(--gold)}
+  .sh-copy.copied{background:var(--green);color:#111;border-color:var(--green)}
+  .sh-go:focus-visible,.sh-go2:focus-visible,.sh-step:focus-visible,.sh-copy:focus-visible,.sh-searchlink:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  @media (max-width:600px){ .sh-goals{grid-template-columns:1fr} .sh-phrases{grid-template-columns:1fr} }
 
   /* ── search ── */
   .search{width:100%;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);
@@ -240,9 +276,8 @@
 </main>
 
 <footer>
-  <b>Masri</b> is Egyptian (Cairene) spoken Arabic — not Modern Standard Arabic, which appears only as
-  contrast. This is a reference desk: no lessons, no scoring. To add a word, phrase, or rule, edit the
-  matching file in <code>data/</code>. See <code>PROJECT.md</code> for what belongs here and what doesn't.
+  <b>Masri</b> focuses on everyday Egyptian Arabic, primarily Cairene speech. Usage and pronunciation
+  vary across Egypt, and Modern Standard Arabic appears only when a contrast is helpful.
 </footer>
 
 <!-- reference content (plain JS so it also works on double-click) -->
@@ -350,24 +385,98 @@ function tableEl(headers, rows){
       }).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
-// START HERE
+// START HERE — a goal-based front door for a beginner. Builds from window.MASRI.start;
+// every destination is a real <button> (keyboard-accessible) using activate()/search focus.
 (function(){
   const d = M.start; if(!d) return;
   const panel = document.getElementById('p-start');
-  let h = `<p class="lead">A beginner-friendly front door. This is a reference desk for <b>Egyptian (Cairene) Arabic</b> — look things up, read, and slowly get familiar. Not a course, not a quiz, not Modern Standard Arabic.</p>`;
-  h += `<h2>${esc(d.what.title)}</h2><ul class="start-list">`
-     + d.what.points.map(p => `<li>${p}</li>`).join('') + `</ul>`;
-  h += `<h2>${esc(d.how.title)}</h2><div class="card-table"><table><tbody>`
-     + d.how.rows.map(r => `<tr><td style="white-space:nowrap"><span class="goto" data-goto="${esc(r.id)}">${esc(r.section)}</span></td><td>${r.when}</td></tr>`).join('')
+
+  // Clipboard helper: native API with an execCommand fallback (works from file://);
+  // no dependency, no persistence, no alert. Briefly shows "Copied".
+  function copyText(text, btn){
+    const back = () => { btn.textContent = btn.getAttribute('data-label') || 'Copy'; btn.classList.remove('copied'); };
+    const flash = () => { btn.textContent = 'Copied'; btn.classList.add('copied'); setTimeout(back, 1200); };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(flash, () => fallback(text, flash));
+    else fallback(text, flash);
+  }
+  function fallback(text, done){
+    try { const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e){}
+  }
+  const goBtn = (label, go) => `<button class="sh-go" data-go="${esc(go)}">${esc(label)} <span aria-hidden="true">&rarr;</span></button>`;
+
+  let h = '';
+
+  // 1 · Welcome (identity stated once)
+  h += `<p class="lead sh-lead">${d.welcome.lead}</p>`;
+  h += `<p class="sh-sub">${esc(d.welcome.sub)}</p>`;
+
+  if(d.searchTip){
+    const ex = (d.searchTip.examples || []).map(e => `<code>${esc(e)}</code>`).join(' · ');
+    h += `<p class="sh-tip">${esc(d.searchTip.text)}${ex ? ' — e.g. ' + ex : ''} <button class="sh-searchlink" data-search="1">Open search</button></p>`;
+  }
+
+  // 2 · What do you want to do? (goal cards)
+  h += `<h2 id="sh-goals">What do you want to do?</h2>`;
+  h += `<div class="sh-goals">` + d.goals.map(g => {
+    const cta = g.primary.search
+      ? `<button class="sh-go" data-search="1">${esc(g.primary.label)} <span aria-hidden="true">&rarr;</span></button>`
+      : goBtn(g.primary.label, g.primary.go);
+    const also = (g.also || []).map(a => `<button class="sh-go2" data-go="${esc(a.go)}">${esc(a.label)}</button>`).join('');
+    return `<div class="sh-card">
+        <div class="sh-card-title">${esc(g.title)}</div>
+        <div class="sh-card-desc">${esc(g.desc)}</div>
+        <div class="sh-card-go">${cta}${also ? `<span class="sh-also">${also}</span>` : ''}</div>
+      </div>`;
+  }).join('') + `</div>`;
+
+  // 3 · New to Egyptian Arabic? (optional path — a suggested order, not a checklist)
+  h += `<h2>New to Egyptian Arabic?</h2>`;
+  h += `<p class="note">${esc(d.begin.intro)}</p>`;
+  h += `<ol class="sh-path">` + d.begin.steps.map(s => {
+    const attr = s.go ? `data-go="${esc(s.go)}"` : `data-anchor="${esc(s.anchor)}"`;
+    return `<li><button class="sh-step" ${attr}>${esc(s.text)}</button></li>`;
+  }).join('') + `</ol>`;
+
+  // 4 · Egyptian Arabic at a glance
+  h += `<h2>${esc(d.glance.title)}</h2>`;
+  h += `<ul class="start-list">` + d.glance.points.map(p => `<li>${p}</li>`).join('') + `</ul>`;
+  if(d.glance.link) h += `<p class="sh-more">${goBtn('More in Sounds', d.glance.link)}</p>`;
+
+  // 5 · How to read Masri transliteration
+  h += `<h2 id="sh-translit">${esc(d.translit.title)}</h2>`;
+  h += `<div class="card-table"><table><thead><tr><th>Symbol</th><th>Means</th><th>Example</th></tr></thead><tbody>`
+     + d.translit.rows.map(r => `<tr><td class="sh-sym">${esc(r.sym)}</td><td>${esc(r.means)}</td><td><span class="tr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
      + `</tbody></table></div>`;
-  h += `<h2>${esc(d.basics.title)}</h2><ul class="start-list">`
-     + d.basics.points.map(p => `<li>${p}</li>`).join('') + `</ul>`;
-  h += `<h2>${esc(d.survival.title)}</h2>`;
+  h += `<p class="note">${esc(d.translit.note)}</p>`;
+  if(d.translit.link) h += `<p class="sh-more">${goBtn('Full sounds & letters', d.translit.link)}</p>`;
+
+  // 6 · Beginner survival phrases (compact cards; gender labelled; copy control)
+  h += `<h2 id="sh-survival">${esc(d.survival.title)}</h2>`;
   if(d.survival.note) h += `<p class="note">${esc(d.survival.note)}</p>`;
-  h += `<div class="card-table">` + tableEl(['Arabic','Masri','English'],
-        d.survival.items.map(p => [p.ar, `<span class="tr">${esc(p.tr)}</span>`, esc(p.en)])) + `</div>`;
+  h += `<div class="sh-phrases">` + d.survival.items.map(it => {
+    const forms = it.forms || [{ ar: it.ar, tr: it.tr }];
+    const rows = forms.map(f => {
+      const whoTxt = f.who === 'm' ? 'masculine speaker' : f.who === 'f' ? 'feminine speaker' : '';
+      const who = whoTxt ? `<span class="sh-who">${whoTxt}</span>` : '';
+      const label = 'Copy Arabic: ' + it.en + (whoTxt ? ' (' + whoTxt + ')' : '');
+      const copy = `<button class="sh-copy" data-copy="${esc(f.ar)}" data-label="Copy" aria-label="${esc(label)}">Copy</button>`;
+      return `<div class="sh-pform">${who}<span class="ar" dir="rtl">${f.ar}</span><span class="tr">${esc(f.tr)}</span>${copy}</div>`;
+    }).join('');
+    return `<div class="sh-phrase"><div class="sh-pen">${esc(it.en)}</div><div class="sh-pforms">${rows}</div></div>`;
+  }).join('') + `</div>`;
+
   panel.innerHTML = h;
-  panel.querySelectorAll('.goto').forEach(g => g.onclick = () => activate(g.dataset.goto));
+
+  // Wire the controls (all native buttons — keyboard-accessible by default).
+  panel.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => activate(b.dataset.go)));
+  panel.querySelectorAll('[data-search]').forEach(b => b.addEventListener('click', () => {
+    const gi = document.getElementById('gsearch-input'); if(gi){ window.scrollTo(0, 0); gi.focus(); }
+  }));
+  panel.querySelectorAll('[data-anchor]').forEach(b => b.addEventListener('click', () => {
+    const t = document.getElementById(b.dataset.anchor); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  panel.querySelectorAll('.sh-copy').forEach(b => b.addEventListener('click', () => copyText(b.dataset.copy, b)));
 })();
 
 // SOUNDS
