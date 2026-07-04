@@ -449,7 +449,7 @@ function tableEl(headers, rows){
      + d.translit.rows.map(r => `<tr><td class="sh-sym">${esc(r.sym)}</td><td>${esc(r.means)}</td><td><span class="tr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
      + `</tbody></table></div>`;
   h += `<p class="note">${esc(d.translit.note)}</p>`;
-  if(d.translit.link) h += `<p class="sh-more">${goBtn('Full sounds & letters', d.translit.link)}</p>`;
+  if(d.translit.link) h += `<p class="sh-more">${goBtn('More in Sounds', d.translit.link)}</p>`;
 
   // 6 · Beginner survival phrases (compact cards; gender labelled; copy control)
   h += `<h2 id="sh-survival">${esc(d.survival.title)}</h2>`;
@@ -457,7 +457,7 @@ function tableEl(headers, rows){
   h += `<div class="sh-phrases">` + d.survival.items.map(it => {
     const forms = it.forms || [{ ar: it.ar, tr: it.tr }];
     const rows = forms.map(f => {
-      const whoTxt = f.who === 'm' ? 'masculine speaker' : f.who === 'f' ? 'feminine speaker' : '';
+      const whoTxt = f.who || '';
       const who = whoTxt ? `<span class="sh-who">${whoTxt}</span>` : '';
       const label = 'Copy Arabic: ' + it.en + (whoTxt ? ' (' + whoTxt + ')' : '');
       const copy = `<button class="sh-copy" data-copy="${esc(f.ar)}" data-label="Copy" aria-label="${esc(label)}">Copy</button>`;
@@ -465,6 +465,7 @@ function tableEl(headers, rows){
     }).join('');
     return `<div class="sh-phrase"><div class="sh-pen">${esc(it.en)}</div><div class="sh-pforms">${rows}</div></div>`;
   }).join('') + `</div>`;
+  h += `<p class="sh-more"><button class="sh-go" data-go="phrases">See all practical phrases <span aria-hidden="true">&rarr;</span></button></p>`;
 
   panel.innerHTML = h;
 
