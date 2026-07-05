@@ -214,6 +214,69 @@
   .snd-fre .ar{font-family:var(--ar);font-size:17px;color:var(--fg);margin:0 3px}
   @media (max-width:600px){ .snd-grid,.snd-cmpgrid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:46px} }
 
+  /* ── alphabet (reading reference) ── */
+  #p-alphabet h2{scroll-margin-top:66px}
+  .alp-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
+  .alp-jbtn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
+  .alp-jbtn:hover{border-color:var(--gold)}
+  .alp-glyph{font-family:var(--ar);font-size:36px;color:var(--gold);line-height:1;unicode-bidi:isolate}
+  .alp-formdefs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px;margin:12px 0}
+  .alp-fdef{font-size:13px;color:var(--muted)}
+  .alp-fdef b{color:var(--fg)}
+  .alp-jex{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:12px}
+  .alp-jexcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
+  .alp-jexword{font-family:var(--ar);font-size:34px;color:var(--gold);direction:rtl;unicode-bidi:isolate;text-align:center}
+  .alp-jexmeta{text-align:center;font-size:13px;color:var(--muted);margin-top:4px}
+  .alp-jexmeta .tr{color:var(--blue);font-style:italic}
+  .alp-jexkind{font-size:12px;color:var(--fg);margin-top:8px;line-height:1.5}
+  .alp-fams{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+  .alp-fam{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px}
+  .alp-famlet{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:center;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;text-align:left;font-family:var(--ui)}
+  .alp-famlet:hover{border-color:var(--gold)}
+  .alp-famlet .alp-glyph{grid-row:span 3;font-size:32px}
+  .alp-famdots{font-size:11px;color:var(--muted)}
+  .alp-famsnd{font-size:12px;color:var(--green);font-weight:600}
+  .alp-famex{grid-column:2;font-size:11.5px;color:var(--muted)}
+  .alp-famex .ar{font-family:var(--ar);font-size:15px;color:var(--fg)}
+  .alp-famex .tr{color:var(--blue);font-style:italic}
+  .alp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  .alp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;scroll-margin-top:70px}
+  .alp-chead{display:flex;align-items:center;gap:12px;margin-bottom:9px}
+  .alp-cmeta{min-width:0}
+  .alp-lname{font-size:13px;font-weight:600;color:var(--fg)}
+  .alp-lname .ar{font-family:var(--ar);color:var(--muted);font-size:13px;font-weight:400;margin-right:4px}
+  .alp-lsound{font-size:12.5px;color:var(--green);margin:2px 0 6px}
+  .alp-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid}
+  .alp-badge-both{color:var(--green);border-color:var(--green)}
+  .alp-badge-break{color:var(--gold);border-color:var(--gold)}
+  .alp-forms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
+  .alp-form{flex:1 1 0;min-width:52px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}
+  .alp-fg{font-family:var(--ar);font-size:24px;color:var(--fg);unicode-bidi:isolate;line-height:1.1}
+  .alp-fl{font-size:9px;color:var(--muted);margin-top:5px}
+  .alp-ex{font-size:13px;color:var(--muted)}
+  .alp-ex .ar{font-family:var(--ar);font-size:18px;color:var(--fg)}
+  .alp-ex .tr{color:var(--blue);font-style:italic;margin:0 3px}
+  .alp-brk{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+  .alp-carriers{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:6px}
+  .alp-brkcard,.alp-carrier{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 13px}
+  .alp-brkmeta,.alp-carriermeta{min-width:0}
+  .alp-spgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+  .alp-spcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px}
+  .alp-sphead{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+  .alp-spnote{font-size:12.5px;color:var(--muted);line-height:1.55;margin-bottom:7px}
+  .alp-dist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
+  .alp-distcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
+  .alp-distpair{display:flex;align-items:center;gap:10px;margin-bottom:7px}
+  .alp-distpair .alp-glyph{font-size:30px}
+  .alp-distnote{font-size:12.5px;color:var(--fg);line-height:1.5}
+  .alp-mark{font-size:26px;color:var(--gold)}
+  .alp-markdemo .ar{font-family:var(--ar);font-size:20px;color:var(--fg)}
+  .alp-markdemo .tr{color:var(--blue);font-style:italic}
+  .alp-wbcallout{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
+  .alp-wbcallout p{font-size:14px;color:var(--fg);margin:0;flex:1;min-width:200px}
+  .alp-jbtn:focus-visible,.alp-famlet:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  @media (max-width:600px){ .alp-grid,.alp-fams,.alp-jex,.alp-brk,.alp-carriers,.alp-spgrid,.alp-dist,.alp-formdefs{grid-template-columns:1fr} }
+
   /* ── word builder ── */
   .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
   .wb-field{display:flex;flex-direction:column;gap:5px}
@@ -655,31 +718,115 @@ function tableEl(headers, rows){
   }));
 })();
 
-// ALPHABET
+// ALPHABET — a practical Arabic reading reference: joining, shape families, a full
+// alphabetical reference, connection breakers, special forms, and reading marks.
+// Builds from window.MASRI.alphabet. Contextual forms are approximated with the
+// tatweel (kashida); non-connectors show only Isolated + Final (they never join
+// left). Jump buttons scroll to anchors — no history, no localStorage.
 (function(){
   const d = M.alphabet; if(!d) return;
-  const forms = (ltr, conn) => ({
-    isolated: ltr,
-    initial:  conn ? ltr + TAT : ltr,
-    medial:   conn ? TAT + ltr + TAT : TAT + ltr,
-    final:    TAT + ltr,
-  });
+  const panel = document.getElementById('p-alphabet');
+
+  // Isolated/Initial/Medial/Final via kashida. Non-connectors get only two real
+  // shapes (Isolated, Final) — they do not join the following letter.
+  function forms(L, conn){
+    return conn
+      ? { Isolated: L, Initial: L + TAT, Medial: TAT + L + TAT, Final: TAT + L }
+      : { Isolated: L, Final: TAT + L };
+  }
+  const exLine = (ar, ex, en) => `<div class="alp-ex"><span class="ar" dir="rtl">${ar}</span> <span class="tr" dir="ltr">${esc(ex)}</span> — ${esc(en)}</div>`;
+
   let h = `<p class="lead">${d.intro}</p>`;
-  h += `<div class="grid g-letters">` + d.letters.map(L => {
+  h += `<p class="note">${esc(d.soundNote)}</p>`;
+
+  // jump nav
+  h += `<nav class="alp-jump" aria-label="Alphabet sections">`
+     + d.jump.map(j => `<button class="alp-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
+     + `</nav>`;
+
+  // 1 · How joining works
+  h += `<h2 id="alp-join">How joining works</h2>`;
+  h += `<div class="alp-join">`
+     + `<ul class="start-list"><li>Arabic runs <b>right to left</b>.</li>`
+     + `<li>Most letters join to the letter before and after them within a connected segment.</li>`
+     + `<li>Six letters break the connection after themselves: <span class="ar" dir="rtl">${d.joining.breakers}</span>. They can join a letter on their right, but not the following letter on their left.</li></ul>`;
+  h += `<div class="alp-formdefs">` + d.joining.forms.map(f => `<div class="alp-fdef"><b>${esc(f.name)}</b> — ${esc(f.desc)}</div>`).join('') + `</div>`;
+  h += `<p class="note snd-xref">${esc(d.joining.segmentNote)}</p>`;
+  h += `<div class="alp-jex">` + d.joining.examples.map(e =>
+      `<div class="alp-jexcard"><div class="alp-jexword ar" dir="rtl">${e.ar}</div><div class="alp-jexmeta"><span class="tr" dir="ltr">${esc(e.ex)}</span> — ${esc(e.en)}</div><div class="alp-jexkind">${esc(e.kind)}</div></div>`).join('') + `</div>`;
+
+  // 2 · Shape families
+  h += `<h2 id="alp-families">Learn by shape family</h2>`;
+  h += `<p class="note">${esc(d.familiesNote)}</p>`;
+  h += `<div class="alp-fams">` + d.families.map(fam => `<div class="alp-fam">`
+      + fam.letters.map(x => `<button class="alp-famlet" data-anchor="alp-L-${esc(x.L)}" aria-label="Go to ${esc(x.ex_en)} letter ${esc(x.L)} in the reference">
+          <span class="alp-glyph ar" dir="rtl">${x.L}</span>
+          <span class="alp-famdots">${esc(x.dots)}</span>
+          <span class="alp-famsnd">${esc(x.sound)}</span>
+          <span class="alp-famex"><span class="ar" dir="rtl">${x.ex_ar}</span> <span class="tr" dir="ltr">${esc(x.ex)}</span> — ${esc(x.ex_en)}</span>
+        </button>`).join('')
+      + `</div>`).join('') + `</div>`;
+
+  // 3 · Full alphabetical reference
+  h += `<h2 id="alp-ref">Alphabetical reference</h2>`;
+  h += `<p class="note">${esc(d.formOrderNote)}</p>`;
+  h += `<div class="alp-grid">` + d.letters.map(L => {
     const f = forms(L.letter, L.connector);
-    return `<div class="letter">
-      <div class="glyph">${L.letter}</div>
-      <div class="lname">${esc(L.name)} <span class="ar" style="color:var(--muted);font-size:13px">${L.name_ar}</span></div>
-      <div class="lsound">${esc(L.sound)}</div>
-      <div class="forms">
-        ${['isolated','initial','medial','final'].map(k =>
-          `<div class="form"><div class="fg">${f[k]}</div><div class="fl">${k.slice(0,4)}</div></div>`).join('')}
-      </div>
-      ${L.note ? `<div class="lnote">${L.note}</div>` : ''}
-    </div>`;
+    const badge = L.connector
+      ? `<span class="alp-badge alp-badge-both">connects both sides</span>`
+      : `<span class="alp-badge alp-badge-break">breaks after itself</span>`;
+    let c = `<div class="alp-card" id="alp-L-${L.letter}">`;
+    c += `<div class="alp-chead"><span class="alp-glyph ar" dir="rtl">${L.letter}</span>`
+       + `<div class="alp-cmeta"><div class="alp-lname">${esc(L.name)} <span class="ar" dir="rtl">${L.name_ar}</span></div>`
+       + `<div class="alp-lsound">${esc(L.sound)}</div>${badge}</div></div>`;
+    c += `<div class="alp-forms">` + Object.keys(f).map(k =>
+        `<div class="alp-form"><div class="alp-fg ar" dir="rtl">${f[k]}</div><div class="alp-fl">${k}</div></div>`).join('') + `</div>`;
+    c += exLine(L.ex_ar, L.ex, L.ex_en);
+    if(L.note) c += `<details class="snd-more"><summary>More detail</summary><div class="snd-det">${L.note}</div></details>`;
+    return c + `</div>`;
   }).join('') + `</div>`;
-  h += `<p class="note" style="margin-top:20px">${d.extras}</p>`;
-  document.getElementById('p-alphabet').innerHTML = h;
+
+  // 4 · Connection breakers
+  h += `<h2 id="alp-break">Connection breakers</h2>`;
+  h += `<p class="note">${esc(d.breakers.intro)}</p>`;
+  h += `<div class="alp-brk">` + d.breakers.letters.map(b =>
+      `<div class="alp-brkcard"><span class="alp-glyph ar" dir="rtl">${b.L}</span><div class="alp-brkmeta"><div class="alp-lname">${esc(b.name)}</div>${exLine(b.ex_ar, b.ex, b.ex_en)}</div></div>`).join('') + `</div>`;
+
+  // 5 · Special forms
+  h += `<h2 id="alp-special">Special forms</h2>`;
+  const sp = d.special;
+  h += `<h3 class="snd-sub">Hamza (ء) and its carriers</h3>`;
+  h += `<p class="note">${sp.hamza.intro}</p>`;
+  h += `<div class="alp-carriers">` + sp.hamza.carriers.map(c =>
+      `<div class="alp-carrier"><span class="alp-glyph ar" dir="rtl">${c.form}</span><div class="alp-carriermeta"><div class="alp-lname">${esc(c.label)}</div>${exLine(c.ex_ar, c.ex, c.ex_en)}</div></div>`).join('') + `</div>`;
+  const spCard = (o) => `<div class="alp-spcard"><div class="alp-sphead"><span class="alp-glyph ar" dir="rtl">${o.L}</span><span class="alp-lname">${esc(o.name)}</span></div><div class="alp-spnote">${o.note}</div>${exLine(o.ex_ar, o.ex, o.ex_en)}</div>`;
+  h += `<h3 class="snd-sub">Tāʾ marbūṭa · alif maqṣūra · lām-alif</h3>`;
+  h += `<div class="alp-spgrid">` + spCard(sp.tamarbuta) + spCard(sp.maqsura) + spCard(sp.lamalif) + `</div>`;
+  h += `<h3 class="snd-sub">Useful visual distinctions</h3>`;
+  h += `<div class="alp-dist">` + sp.distinctions.map(x =>
+      `<div class="alp-distcard"><div class="alp-distpair"><span class="alp-glyph ar" dir="rtl">${x.a}</span><span class="snd-cmpvs" aria-hidden="true">vs</span><span class="alp-glyph ar" dir="rtl">${x.b}</span></div><div class="alp-distnote">${esc(x.note)}</div></div>`).join('') + `</div>`;
+
+  // 6 · Reading marks
+  h += `<h2 id="alp-marks">Reading marks</h2>`;
+  h += `<p class="note">${esc(d.marks.intro)}</p>`;
+  h += `<div class="card-table"><table><thead><tr><th>Mark</th><th>Name</th><th>Meaning</th><th>Example</th></tr></thead><tbody>`
+     + d.marks.rows.map(m => `<tr><td class="alp-mark ar" dir="rtl">ـ${m.mark}</td><td>${esc(m.name)} <span class="ar" dir="rtl">${m.name_ar}</span></td><td>${esc(m.desc)}</td><td class="alp-markdemo"><span class="ar" dir="rtl">${m.demo.split(' = ')[0]}</span>${m.demo.indexOf(' = ')>=0 ? ' = <span class="tr" dir="ltr">'+esc(m.demo.split(' = ')[1])+'</span>' : ''}</td></tr>`).join('')
+     + `</tbody></table></div>`;
+  h += `<p class="note">${esc(d.marks.note)}</p>`;
+  h += `<p class="note snd-xref">${esc(d.marks.tanwin)}</p>`;
+
+  // 7 · Try Word Builder
+  h += `<h2 id="alp-wb">Try Word Builder</h2>`;
+  h += `<div class="alp-wbcallout"><p>${esc(d.wbNote)}</p>`
+     + `<button class="sh-go" data-go="word-builder" aria-label="Open the Word Builder subsection">Open Word Builder <span aria-hidden="true">&rarr;</span></button></div>`;
+
+  panel.innerHTML = h;
+
+  // wire jump/family anchors (scroll only) and the Word Builder button (activate)
+  panel.querySelectorAll('[data-anchor]').forEach(b => b.addEventListener('click', () => {
+    const t = document.getElementById(b.dataset.anchor); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
+  panel.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => activate(b.dataset.go)));
 })();
 
 // GRAMMAR
