@@ -15,8 +15,7 @@ window.MASRI.sounds = {
     { label: "Emphatic", anchor: "snd-emphatic" },
     { label: "Egyptian r", anchor: "snd-ra" },
     { label: "Vowels", anchor: "snd-vowels" },
-    { label: "Comparisons", anchor: "snd-compare" },
-    { label: "Franco-Arabic", anchor: "snd-franco" }
+    { label: "Comparisons", anchor: "snd-compare" }
   ],
 
   // Section A — signature Cairene sounds (larger cards)
@@ -132,30 +131,6 @@ window.MASRI.sounds = {
         note: "د is a plain d; ض is the heavy (emphatic) d." },
       { a: { L: "ك", sym: "k", ar: "كتير", ex: "ketīr", en: "a lot" }, b: { L: "ق", sym: "ʾ", ar: "قهوة", ex: "ʾahwa", en: "coffee" },
         note: "ك is k. Cairene ق is usually a glottal stop (not k); formal Arabic pronounces ق as /q/." }
-    ]
-  },
-
-  franco: {
-    intro:
-      "“Franco-Arabic” / <i>Arabizi</i> — typing Arabic on a Latin keyboard, with numbers standing in " +
-      "for sounds that have no Latin letter. Conventions vary by person, platform, and region; these are " +
-      "common Egyptian patterns, not fixed spelling rules.",
-    distinct: "This is recognition help only. Masri's own transliteration (<b>ʿ ḥ ā ē ō …</b>) is the readable standard used everywhere else on the desk.",
-    rows: [
-      { num: "2", letter: "ء / ق", sound: "glottal stop (hamza / Egyptian qāf)" },
-      { num: "3", letter: "ع", sound: "ʿayn (the throat sound)" },
-      { num: "5", letter: "خ", sound: "kh" },
-      { num: "6", letter: "ط", sound: "emphatic ṭ" },
-      { num: "7", letter: "ح", sound: "ḥ (breathy throat h)" },
-      { num: "8", letter: "غ", sound: "gh", alt: "also 3’" },
-      { num: "9", letter: "ص", sound: "emphatic ṣ" },
-      { num: "6’", letter: "ظ", sound: "ẓ (often just written z)", alt: "varies" },
-      { num: "9’", letter: "ض", sound: "ḍ (often just written d)", alt: "varies" }
-    ],
-    examples: [
-      { arabizi: "3ayez", ar: "عايز", en: "want" },
-      { arabizi: "7ob", ar: "حب", en: "love" },
-      { arabizi: "2ahwa", ar: "قهوة", en: "coffee" }
     ]
   }
 };

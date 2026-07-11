@@ -13,6 +13,10 @@
     --ar:'Noto Naskh Arabic','Traditional Arabic','Amiri','Times New Roman',serif;
     --ui:'Inter',system-ui,-apple-system,sans-serif;
     --r:10px;
+    /* Display-settings knobs (overridden inline on <html> by the Aa panel; saved
+       in localStorage 'masri-display'). Text sizes multiply base px via calc();
+       Arabic size scales independently of general text size. */
+    --ui-scale:1; --ar-scale:1; --ar-color:var(--fg);
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--fg);font-family:var(--ui);line-height:1.55;min-height:100vh}
@@ -54,20 +58,49 @@
            cursor:pointer;font-family:var(--ui);display:flex;flex-direction:column;gap:5px;transition:border-color .15s,background .15s}
   .pd-card:hover{border-color:var(--gold);background:var(--surf2)}
   .pd-card:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .pd-title{font-weight:600;color:var(--fg);font-size:14.5px}
+  .pd-title{font-weight:600;color:var(--fg);font-size:calc(14.5px * var(--ui-scale))}
   .pd-title .pd-arrow{color:var(--gold);font-weight:700;margin-left:3px}
-  .pd-desc{color:var(--muted);font-size:12.5px;line-height:1.5}
+  .pd-desc{color:var(--muted);font-size:calc(12.5px * var(--ui-scale));line-height:1.5}
   @media (max-width:600px){ .pd-grid{grid-template-columns:1fr} }
+
+  /* ── display settings (Aa popover in the header) ── */
+  .ds-wrap{position:relative;align-self:center;margin-left:auto}
+  .ds-btn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;font-family:var(--ui);font-weight:600;font-size:14px;padding:6px 12px;cursor:pointer;line-height:1}
+  .ds-btn:hover{border-color:var(--gold)}
+  .ds-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ds-panel{position:absolute;right:0;top:calc(100% + 8px);z-index:60;width:min(320px,calc(100vw - 24px));
+       background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px 14px 12px;box-shadow:0 14px 34px rgba(0,0,0,.45)}
+  .ds-panel[hidden]{display:none}
+  .ds-h{font-size:12px;font-weight:700;color:var(--fg);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+  .ds-group{margin-bottom:11px}
+  .ds-glabel{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;font-weight:600}
+  .ds-opts{display:flex;flex-wrap:wrap;gap:6px}
+  .ds-opt{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:5px 11px;cursor:pointer}
+  .ds-opt:hover{border-color:var(--gold)}
+  .ds-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ds-opt[aria-pressed="true"]{background:var(--gold);color:#111;border-color:var(--gold)}
+  .ds-foot{display:flex;justify-content:flex-end;border-top:1px solid var(--border);margin-top:4px;padding-top:10px}
+  .ds-reset{background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer}
+  .ds-reset:hover{color:var(--fg);border-color:var(--gold)}
+  .ds-reset:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  /* On mobile the popover becomes a fixed, viewport-anchored sheet at the bottom
+     so it never sits over the header, main tabs, or Practice sub-nav (which live
+     at the top). Centered, fully within the viewport, scrolls if tall. Desktop
+     keeps the anchored-under-the-button popover above. */
+  @media (max-width:600px){
+    .ds-panel{position:fixed;left:50%;right:auto;top:auto;bottom:14px;transform:translateX(-50%);
+       width:calc(100vw - 20px);max-width:360px;max-height:78vh;overflow-y:auto}
+  }
 
   /* ── layout ── */
   main{max-width:960px;margin:0 auto;padding:28px 20px 90px}
   .panel{display:none}
   .panel.active{display:block}
-  .lead{color:var(--muted);font-size:14px;max-width:760px;margin-bottom:22px;line-height:1.65}
+  .lead{color:var(--muted);font-size:calc(14px * var(--ui-scale));max-width:760px;margin-bottom:22px;line-height:1.65}
   .lead b{color:var(--fg)}
   h2{font-size:15px;font-weight:600;color:var(--gold);text-transform:uppercase;letter-spacing:.07em;margin:30px 0 12px}
   h2:first-of-type{margin-top:0}
-  .note{color:var(--muted);font-size:13px;margin-bottom:12px;line-height:1.6}
+  .note{color:var(--muted);font-size:calc(13px * var(--ui-scale));margin-bottom:12px;line-height:1.6}
   .note b{color:var(--fg)}
 
   /* ── start here ── */
@@ -136,16 +169,26 @@
   .gres-empty{color:var(--muted);font-style:italic;padding:8px 2px}
 
   /* ── tables ── */
-  table{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:14px}
-  th{text-align:left;color:var(--muted);font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:1px solid var(--border)}
-  td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+  /* Content tables are centered (headers + all data cells). Arabic cells stay
+     RTL/isolated via .ar; IPA/English/transliteration are plain LTR text — only
+     their alignment is centered, never their direction. Arabic table text is
+     enlarged and scaled independently through --ar-scale (+ --ar-color). */
+  table{width:100%;border-collapse:collapse;margin-bottom:8px;font-size:calc(14px * var(--ui-scale))}
+  th{text-align:center;color:var(--muted);font-weight:600;font-size:calc(11px * var(--ui-scale));text-transform:uppercase;letter-spacing:.05em;padding:8px 12px;border-bottom:1px solid var(--border)}
+  td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle;text-align:center}
   tr:hover td{background:var(--surf2)}
-  td.ar{font-size:19px;color:var(--fg)}
+  td.ar{font-size:calc(22px * var(--ar-scale));color:var(--ar-color);line-height:1.5}
   td .tr{color:var(--blue);font-family:var(--ar),monospace}
   .card-table{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:20px}
-  .card-table h3{font-size:14px;font-weight:600;color:var(--fg);padding:13px 14px 11px;border-bottom:1px solid var(--border);background:var(--surf2)}
+  .card-table h3{font-size:calc(14px * var(--ui-scale));font-weight:600;color:var(--fg);padding:13px 14px 11px;border-bottom:1px solid var(--border);background:var(--surf2);text-align:center}
   .card-table table{margin:0}
-  .card-table td:first-child,.card-table th:first-child{padding-left:14px}
+  /* Independent tables laid two-up on wider screens with a real CSS grid, so DOM
+     order flows normally left-to-right then top-to-bottom (not down-then-across).
+     minmax(0,1fr) keeps wide cells from forcing overflow; each .card-table stays
+     whole. Single column on mobile. */
+  .tables-2col{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+  .tables-2col > .card-table{margin-bottom:0}
+  @media (min-width:760px){ .tables-2col{grid-template-columns:repeat(2, minmax(0, 1fr))} }
 
   /* ── grids ── */
   .grid{display:grid;gap:12px}
@@ -171,9 +214,9 @@
 
   .item{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
   .item .top{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-  .item .a{font-family:var(--ar);font-size:22px;color:var(--fg)}
-  .item .t{color:var(--blue);font-size:13px;font-style:italic}
-  .item .e{color:var(--muted);font-size:13px;margin-top:4px}
+  .item .a{font-family:var(--ar);font-size:calc(22px * var(--ar-scale));color:var(--ar-color);line-height:1.5}
+  .item .t{color:var(--blue);font-size:calc(13px * var(--ui-scale));font-style:italic}
+  .item .e{color:var(--muted);font-size:calc(13px * var(--ui-scale));margin-top:4px}
 
   /* ── sounds (grouped pronunciation reference) ── */
   .snd-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
@@ -190,10 +233,10 @@
   .snd-big .snd-glyph{font-size:52px}
   .snd-hmeta{min-width:0}
   .snd-name{font-size:13px;font-weight:600;color:var(--fg)}
-  .snd-line{font-size:13px;margin-top:2px}
+  .snd-line{font-size:calc(13px * var(--ui-scale));margin-top:2px}
   .snd-sym{color:var(--green);font-weight:600}
   .snd-ipa{color:var(--muted);font-family:var(--ui)}
-  .snd-sum{font-size:13px;color:var(--fg);line-height:1.5}
+  .snd-sum{font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.5}
   .snd-ex{font-size:13px;color:var(--muted);margin-top:7px}
   .snd-ex .ar{font-family:var(--ar);font-size:18px;color:var(--fg)}
   .snd-ex .tr{color:var(--blue);font-style:italic;margin:0 3px}
@@ -223,12 +266,6 @@
   .snd-cmpex{font-size:12px;color:var(--muted);margin-top:7px}
   .snd-cmpex .ar{font-family:var(--ar);font-size:16px;color:var(--fg)}
   .snd-cmpex .tr{color:var(--blue);font-style:italic}
-  .snd-fnum{font-weight:700;color:var(--gold);font-family:var(--ui)}
-  .snd-falt{color:var(--muted);font-size:11px}
-  .snd-frex{display:flex;flex-wrap:wrap;gap:8px}
-  .snd-fre{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:13px}
-  .snd-arabizi{font-family:var(--ui);color:var(--blue);font-weight:600}
-  .snd-fre .ar{font-family:var(--ar);font-size:17px;color:var(--fg);margin:0 3px}
   @media (max-width:600px){ .snd-grid,.snd-cmpgrid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:46px} }
 
   /* ── alphabet (reading reference) ── */
@@ -298,26 +335,25 @@
   .sym-wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:16px;align-items:start}
   .sym-panel{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden}
   .sym-scroll{overflow-x:auto}
-  .sym-table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0;font-size:13.5px}
+  .sym-table{width:100%;border-collapse:collapse;table-layout:fixed;margin:0;font-size:calc(13.5px * var(--ui-scale))}
   .sym-table col.sym-c-ex{width:41%}
   .sym-table col.sym-c-ipa{width:16%}
   .sym-table col.sym-c-en{width:27%}
   .sym-table col.sym-c-ar{width:16%}
   .sym-table thead th{position:sticky;top:0;background:var(--surf2);color:var(--muted);font-weight:600;font-size:10.5px;
-       text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:9px 12px;border-bottom:1px solid var(--border)}
-  .sym-table th.sym-h-ar{text-align:right}
+       text-transform:uppercase;letter-spacing:.05em;text-align:center;padding:9px 12px;border-bottom:1px solid var(--border)}
   .sym-grouprow td{background:var(--surf2);color:var(--gold);font-weight:700;font-size:10.5px;
-       text-transform:uppercase;letter-spacing:.05em;padding:7px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-  .sym-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top;overflow-wrap:anywhere}
+       text-transform:uppercase;letter-spacing:.05em;padding:7px 12px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);text-align:center}
+  .sym-table td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:middle;text-align:center;overflow-wrap:anywhere}
   .sym-table tr:last-child td{border-bottom:none}
   .sym-row:hover td{background:var(--surf2)}
-  .sym-ex .ar{font-family:var(--ar);font-size:16px;color:var(--fg);margin-left:5px}
+  .sym-ex .ar{font-family:var(--ar);font-size:calc(18px * var(--ar-scale));color:var(--ar-color);margin-left:5px}
   .sym-ex .tr{color:var(--blue);font-style:italic}
   .sym-ex .gloss{color:var(--muted)}
   .sym-en{color:var(--fg);line-height:1.4}
   .sym-masri{display:block;margin-top:4px;font-size:10.5px;color:var(--gold);line-height:1.4}
   .sym-ipa{color:var(--green);font-weight:600;font-family:var(--ui);direction:ltr;white-space:nowrap;cursor:pointer;border-radius:5px}
-  .sym-ar{font-family:var(--ar);font-size:22px;color:var(--gold);direction:rtl;unicode-bidi:isolate;text-align:right;cursor:pointer;border-radius:5px;line-height:1.2}
+  .sym-ar{font-family:var(--ar);font-size:calc(24px * var(--ar-scale));color:var(--gold);direction:rtl;unicode-bidi:isolate;text-align:center;cursor:pointer;border-radius:5px;line-height:1.4}
   .sym-ipa:hover,.sym-ar:hover{outline:1px solid var(--border)}
   .sym-ipa.copied,.sym-ar.copied{background:var(--green);color:#111}
   .sym-copyhint{color:var(--muted);font-size:12px;margin:-8px 0 16px}
@@ -411,6 +447,10 @@
   <span class="title-ar">مصري</span>
   <h1>Masri</h1>
   <span class="sub">Egyptian Arabic — a reference desk. Look it up, read it, done.</span>
+  <div class="ds-wrap">
+    <button id="ds-btn" class="ds-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="ds-panel" aria-label="Display settings" title="Display settings">Aa</button>
+    <div id="ds-panel" class="ds-panel" role="dialog" aria-label="Display settings" aria-modal="false" hidden></div>
+  </div>
 </header>
 
 <div id="gsearch">
@@ -576,6 +616,21 @@ function tableEl(headers, rows){
       }).join('')}</tr>`).join('')}</tbody></table>`;
 }
 
+// Render a list of independent reference tables (each {title, headers, rows, note})
+// as .card-table cards. When there is more than one, wrap them in .tables-2col so
+// the desktop lays them two-up (balanced multicol; single column on mobile). Shared
+// by Grammar, Verbs, Time, Getting Around, Shopping, Food, Health, People,
+// Colors & Descriptions — the sections that previously stacked tables full-width.
+function renderTableCards(arr){
+  const cards = (arr || []).map(t => `
+    <div class="card-table">
+      <h3>${esc(t.title)}</h3>
+      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
+      ${tableEl(t.headers, t.rows)}
+    </div>`).join('');
+  return (arr && arr.length > 1) ? `<div class="tables-2col">${cards}</div>` : cards;
+}
+
 // START HERE — a goal-based front door for a beginner. Builds from window.MASRI.start;
 // every destination is a real <button> (keyboard-accessible) using activate()/search focus.
 (function(){
@@ -673,7 +728,7 @@ function tableEl(headers, rows){
 
 // SOUNDS — grouped Egyptian-Arabic pronunciation reference. Builds from
 // window.MASRI.sounds: signature sounds, Cairene shifts, throat & back, emphatic,
-// Egyptian r, short/long vowels, confusable pairs, and Franco-Arabic. Compact cards
+// Egyptian r, short/long vowels, and confusable pairs. Compact cards
 // keep the key facts visible; longer notes sit in a native <details>. Internal jump
 // buttons scroll to anchors (no history, no localStorage).
 (function(){
@@ -768,19 +823,6 @@ function tableEl(headers, rows){
       <div class="snd-cmpnote">${esc(c.note)}</div>
       <div class="snd-cmpex"><span class="ar" dir="rtl">${c.a.ar}</span> <span class="tr" dir="ltr">${esc(c.a.ex)}</span> (${esc(c.a.en)}) · <span class="ar" dir="rtl">${c.b.ar}</span> <span class="tr" dir="ltr">${esc(c.b.ex)}</span> (${esc(c.b.en)})</div>
     </div>`).join('') + `</div>`;
-
-  // Franco-Arabic
-  h += `<h2 id="snd-franco">Franco-Arabic (Arabizi)</h2>`;
-  h += `<p class="note">${d.franco.intro}</p>`;
-  h += `<p class="note snd-xref">${d.franco.distinct}</p>`;
-  h += `<div class="card-table"><table><thead><tr><th>Types as</th><th>Letter</th><th>Sound</th></tr></thead><tbody>`
-     + d.franco.rows.map(f => `<tr><td class="snd-fnum">${esc(f.num)}</td><td><span class="ar" dir="rtl">${f.letter}</span></td>`
-         + `<td>${esc(f.sound)}${(f.alt && f.alt !== 'varies') ? ' <span class="snd-falt">(' + esc(f.alt) + ')</span>' : (f.alt === 'varies' ? ' <span class="snd-falt">(varies)</span>' : '')}</td></tr>`).join('')
-     + `</tbody></table></div>`;
-  h += `<h3 class="snd-sub">Recognition examples</h3>`;
-  h += `<div class="snd-frex">` + d.franco.examples.map(e =>
-      `<div class="snd-fre"><span class="snd-arabizi" dir="ltr">${esc(e.arabizi)}</span> = <span class="ar" dir="rtl">${e.ar}</span> <span class="snd-pen">${esc(e.en)}</span></div>`).join('')
-    + `</div>`;
 
   panel.innerHTML = h;
 
@@ -989,26 +1031,15 @@ function tableEl(headers, rows){
 // GRAMMAR
 (function(){
   const d = M.grammar; if(!d) return;
-  const h = d.map(topic => `
-    <div class="card-table">
-      <h3>${esc(topic.title)}</h3>
-      ${topic.note ? `<div class="note" style="padding:10px 14px 0">${topic.note}</div>` : ''}
-      ${tableEl(topic.headers, topic.rows)}
-    </div>`).join('');
   document.getElementById('p-grammar').innerHTML =
-    `<p class="lead">The working core. Egyptian forms throughout — MSA only where noted.</p>` + h;
+    `<p class="lead">The working core. Egyptian forms throughout — MSA only where noted.</p>` + renderTableCards(d);
 })();
 
 // VERBS
 (function(){
   const d = M.verbs; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-verbs').innerHTML = h;
 })();
 
@@ -1033,12 +1064,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.time; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-time').innerHTML = h;
 })();
 
@@ -1046,12 +1072,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.around; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-around').innerHTML = h;
 })();
 
@@ -1059,12 +1080,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.shopping; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-shopping').innerHTML = h;
 })();
 
@@ -1072,12 +1088,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.food; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-food').innerHTML = h;
 })();
 
@@ -1085,12 +1096,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.health; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-health').innerHTML = h;
 })();
 
@@ -1098,12 +1104,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.people; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-people').innerHTML = h;
 })();
 
@@ -1111,12 +1112,7 @@ function tableEl(headers, rows){
 (function(){
   const d = M.descriptions; if(!d) return;
   let h = d.intro ? `<p class="lead">${d.intro}</p>` : '';
-  h += d.tables.map(t => `
-    <div class="card-table">
-      <h3>${esc(t.title)}</h3>
-      ${t.note ? `<div class="note" style="padding:10px 14px 0">${t.note}</div>` : ''}
-      ${tableEl(t.headers, t.rows)}
-    </div>`).join('');
+  h += renderTableCards(d.tables);
   document.getElementById('p-descriptions').innerHTML = h;
 })();
 
@@ -1473,7 +1469,6 @@ if(M.vocab){
   if(M.sounds){
     (M.sounds.consonants||[]).forEach(c => push('sounds','Sounds', c.letter, c.name, c.egyptian + (c.approx?' · '+c.approx:''), strip(c.note||'')));
     if(M.sounds.vowels) (M.sounds.vowels.rows||[]).forEach(v => push('sounds','Sounds · vowels', v.ex_ar, v.ex, v.sound+' — '+v.gloss, ''));
-    if(M.sounds.franco) (M.sounds.franco.rows||[]).forEach(f => push('sounds','Sounds · Franco', f.letter, f.num, f.sound, ''));
   }
   if(M.alphabet) (M.alphabet.letters||[]).forEach(l => push('alphabet','Alphabet', l.letter, l.name, l.sound, strip(l.note||'')));
   if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g]||[]).forEach(n => push('numbers','Numbers', n.ar, n.tr, String(n.n), n.digit)));
@@ -1540,6 +1535,101 @@ if(M.vocab){
   }
   gi.addEventListener('input', () => run(gi.value));
   gi.addEventListener('keydown', e => { if(e.key==='Escape'){ gi.value=''; run(''); } });
+})();
+
+// DISPLAY SETTINGS — a header "Aa" popover adjusting text/Arabic size, text/Arabic
+// colour, and the Arabic font by setting CSS custom properties on <html>. Choices
+// persist in localStorage ('masri-display') and are re-applied on load. No external
+// fonts, no dependencies. Keyboard accessible (Escape closes, focus managed);
+// clicking outside closes. Applying centrally via CSS variables means the existing
+// renderers need no changes.
+(function(){
+  const btn = document.getElementById('ds-btn');
+  const panel = document.getElementById('ds-panel');
+  if(!btn || !panel) return;
+  const root = document.documentElement;
+  const KEY = 'masri-display';
+
+  const FONTS = {
+    default: "'Noto Naskh Arabic','Traditional Arabic','Amiri','Times New Roman',serif",
+    trad:    "'Traditional Arabic','Noto Naskh Arabic','Amiri',serif",
+    clean:   "'Segoe UI','Tahoma','Arial','Noto Sans Arabic',sans-serif"
+  };
+  const CTRL = [
+    { id:'ui',  label:'General text size', def:'default',
+      opts:[['smaller','Smaller'],['default','Default'],['larger','Larger'],['xl','Extra large']],
+      map:{smaller:'0.9',default:'1',larger:'1.12',xl:'1.28'} },
+    { id:'ar',  label:'Arabic text size', def:'default',
+      opts:[['default','Default'],['large','Large'],['xl','Extra large'],['max','Maximum']],
+      map:{default:'1',large:'1.18',xl:'1.36',max:'1.6'} },
+    { id:'fg',  label:'General text color', def:'default',
+      opts:[['default','Default'],['contrast','High contrast'],['soft','Soft']] },
+    { id:'arc', label:'Arabic text color', def:'default',
+      opts:[['default','Default'],['white','White'],['gold','Gold'],['blue','Blue'],['green','Green']],
+      map:{default:'var(--fg)',white:'#ffffff',gold:'#e8c15a',blue:'#7cc0ef',green:'#7fd6a6'} },
+    { id:'arf', label:'Arabic font', def:'default',
+      opts:[['default','Site default'],['trad','Traditional Arabic'],['clean','Clean Arabic']] }
+  ];
+  const byId = {}; CTRL.forEach(c => byId[c.id] = c);
+  const DEFAULTS = {}; CTRL.forEach(c => DEFAULTS[c.id] = c.def);
+
+  function load(){
+    let s = {};
+    try { s = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch(e){}
+    const out = {}; CTRL.forEach(c => out[c.id] = (c.opts.some(o => o[0] === s[c.id]) ? s[c.id] : c.def));
+    return out;
+  }
+  let state = load();
+  function save(){ try { localStorage.setItem(KEY, JSON.stringify(state)); } catch(e){} }
+
+  function apply(){
+    root.style.setProperty('--ui-scale', byId.ui.map[state.ui]);
+    root.style.setProperty('--ar-scale', byId.ar.map[state.ar]);
+    root.style.setProperty('--ar-color', byId.arc.map[state.arc]);
+    root.style.setProperty('--ar', FONTS[state.arf] || FONTS.default);
+    if(state.fg === 'contrast'){ root.style.setProperty('--fg','#ffffff'); root.style.setProperty('--muted','#c2ccdd'); }
+    else if(state.fg === 'soft'){ root.style.setProperty('--fg','#c6cedb'); root.style.setProperty('--muted','#828da3'); }
+    else { root.style.removeProperty('--fg'); root.style.removeProperty('--muted'); }
+  }
+
+  function syncPressed(){
+    panel.querySelectorAll('.ds-opt').forEach(b =>
+      b.setAttribute('aria-pressed', String(state[b.dataset.ctrl] === b.dataset.val)));
+  }
+  function buildPanel(){
+    let h = `<div class="ds-h">Display</div>`;
+    h += CTRL.map(c =>
+      `<div class="ds-group" role="group" aria-label="${esc(c.label)}"><div class="ds-glabel">${esc(c.label)}</div><div class="ds-opts">`
+      + c.opts.map(o => `<button type="button" class="ds-opt" data-ctrl="${c.id}" data-val="${o[0]}" aria-pressed="${state[c.id]===o[0]}">${esc(o[1])}</button>`).join('')
+      + `</div></div>`).join('');
+    h += `<div class="ds-foot"><button type="button" class="ds-reset" id="ds-reset">Reset to defaults</button></div>`;
+    panel.innerHTML = h;
+    panel.querySelectorAll('.ds-opt').forEach(b => b.addEventListener('click', () => {
+      state[b.dataset.ctrl] = b.dataset.val; save(); apply(); syncPressed();
+    }));
+    document.getElementById('ds-reset').addEventListener('click', () => {
+      state = Object.assign({}, DEFAULTS); save(); apply(); syncPressed();
+    });
+  }
+
+  function onKey(e){ if(e.key === 'Escape'){ e.preventDefault(); closePanel(true); } }
+  function onOutside(e){ if(!panel.contains(e.target) && e.target !== btn){ closePanel(false); } }
+  function openPanel(){
+    panel.hidden = false; btn.setAttribute('aria-expanded','true');
+    const first = panel.querySelector('.ds-opt'); if(first) first.focus();
+    document.addEventListener('keydown', onKey, true);
+    document.addEventListener('mousedown', onOutside, true);
+  }
+  function closePanel(focusBtn){
+    panel.hidden = true; btn.setAttribute('aria-expanded','false');
+    document.removeEventListener('keydown', onKey, true);
+    document.removeEventListener('mousedown', onOutside, true);
+    if(focusBtn) btn.focus();
+  }
+  btn.addEventListener('click', () => { panel.hidden ? openPanel() : closePanel(true); });
+
+  buildPanel();
+  apply();   // re-apply saved preferences on load
 })();
 
 // open first panel
