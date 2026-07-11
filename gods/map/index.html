@@ -416,30 +416,34 @@ main p { line-height:1.7; }
   letter-spacing:1px; font-weight:bold; opacity:0.85;
 }
 
-/* Barebone stacked layout — class name, then counts, then era, then a single
-   column of pantheons underneath. */
-.barebone-group .pantheon-group-head {
-  flex-direction:column; align-items:flex-start; gap:5px;
-  padding:20px 24px 15px;
+/* Barebone flat grid — compact, never collapsible. Fills the width with small
+   name chips; used both for the big flat list and the by-class groups. */
+.pantheon-chip-row.barebone-flat {
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr));
+  gap:6px; padding:12px 20px 20px;
 }
-.barebone-group .pantheon-group-head h3 { line-height:1.1; }
-.barebone-group .pantheon-group-head .group-count { margin-left:0; }
-.barebone-group .pantheon-group-head .group-era { margin-left:0; }
-.pantheon-chip-row.barebone-column {
-  flex-direction:column; align-items:stretch; flex-wrap:nowrap;
-  gap:6px; max-width:520px;
+.barebone-flat .pantheon-chip {
+  width:100%; justify-content:flex-start; padding:6px 12px 6px 11px;
 }
-.barebone-column .pantheon-chip {
-  width:100%; justify-content:flex-start;
-  padding:9px 14px 9px 13px;
+.barebone-flat .pantheon-chip .chip-name {
+  flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
-.barebone-column .pantheon-chip .chip-name { flex:1; }
-.barebone-column .pantheon-chip .chip-count {
-  margin-left:auto;
-  background:var(--panel2); padding:2px 9px; border-radius:10px;
-  border:1px solid var(--line); flex-shrink:0;
+.barebone-flat .pantheon-chip .chip-count { margin-left:auto; flex-shrink:0; }
+/* Lightweight class label (no toggle, no collapse) for the "By class" sort */
+.barebone-class { margin:0; }
+.barebone-class-head {
+  margin:0; padding:16px 24px 0;
+  color:var(--gold); font-weight:600; letter-spacing:3px;
+  font-variant:small-caps; font-size:15px; opacity:0.92;
+  display:flex; align-items:baseline; gap:10px;
 }
-.barebone-column .pantheon-chip:hover { transform:translateX(2px); }
+.barebone-class-head .barebone-class-count {
+  color:var(--gold-deep); font-size:11px; font-variant:small-caps;
+  letter-spacing:1px; opacity:0.8; font-weight:bold;
+}
+.barebone-class + .barebone-class .barebone-class-head {
+  border-top:1px solid rgba(229,193,88,0.12); padding-top:18px; margin-top:8px;
+}
 /* Pantheon detail card — action button to jump into the family tree */
 .modal-actions { margin-top:22px; }
 .modal-tree-btn {
@@ -1683,6 +1687,7 @@ select:focus:not(:focus-visible),
         <option value="era">Era (earliest first)</option>
         <option value="size">Size (most figures)</option>
         <option value="alpha">Alphabetical</option>
+        <option value="class">By class</option>
       </select>
     </div>
     <span class="total-count" id="pantheonTotalCount"></span>
@@ -2530,6 +2535,10 @@ function renderPantheonGrid() {
   else if (pantheonViewMode === 'barebone') renderPantheonBarebone(counts);
   else renderPantheonGroupedCards(counts);
 
+  // Barebone is never collapsible — hide the collapse-all control there.
+  const collapseBtn = document.getElementById('pantheonCollapseAll');
+  if (collapseBtn) collapseBtn.style.display = (pantheonViewMode === 'barebone') ? 'none' : '';
+
   wirePantheonClicks();
   wirePantheonGroupCollapse();
   updateCollapseAllButtonLabel();
@@ -2665,39 +2674,38 @@ function renderPantheonEraList(counts) {
   document.getElementById('pantheonGroups').innerHTML = html;
 }
 
-// Barebone view — class header + bare pantheon-name chips. Most compact and
-// navigable; clicking a chip opens the pantheon detail card (openPantheonModal)
-// rather than jumping straight into the family tree.
+// A single bare pantheon chip — name + figure count, colored dot. Clicking it
+// opens the pantheon detail card (openPantheonModal).
+function barebonChipHtml(p, count) {
+  return `
+    <button type="button" class="pantheon-chip" style="--pantheon-color:${p.color}" data-pid="${p.id}" title="${escapeAttr(p.description)}" aria-label="Open ${escapeAttr(p.name)} details">
+      <span class="chip-dot" aria-hidden="true"></span>
+      <span class="chip-name">${p.name}</span>
+      <span class="chip-count">${count}</span>
+    </button>`;
+}
+
+// Barebone view — maximally compact, never collapsible. By default one big flat
+// grid of every pantheon (ordered by the Sort dropdown); when Sort is "By class"
+// the same chips sit under lightweight, non-collapsible class labels.
 function renderPantheonBarebone(counts) {
-  const html = allPantheonGroups().map(grp => {
-    const members = sortPantheons(grp.ids.map(id => PANTHEONS_BY_ID[id]).filter(Boolean), counts);
-    if (!members.length) return '';
-    const totalFigures = members.reduce((s,p) => s + (counts[p.id] || 0), 0);
-    const era = groupEraLabel(members);
-    const collapsed = collapsedPantheonGroups.has(grp.id) ? ' collapsed' : '';
-    const tint = chamberAverageColor(members);
-    const tintStyle = tint ? ` style="--chamber-tint:${tint};"` : '';
-    const living = livingPantheonCount(members);
-    const livingSuffix = living > 0 ? ` · ${living} living` : '';
-    const chips = members.map(p => `
-      <button type="button" class="pantheon-chip" style="--pantheon-color:${p.color}" data-pid="${p.id}" title="${escapeAttr(p.description)}" aria-label="Open ${escapeAttr(p.name)} details">
-        <span class="chip-dot" aria-hidden="true"></span>
-        <span class="chip-name">${p.name}</span>
-        <span class="chip-count">${counts[p.id] || 0}</span>
-      </button>
-    `).join('');
-    return `
-      <section class="pantheon-group barebone-group${collapsed}" data-gid="${grp.id}"${tintStyle}>
-        <div class="pantheon-group-head" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
-          <h3><span class="toggle-icon" aria-hidden="true">▾</span>${grp.name}</h3>
-          <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}${livingSuffix}</span>
-          <span class="group-era">${era}</span>
-        </div>
-        <div class="pantheon-chip-row barebone-column">${chips}</div>
-      </section>
-    `;
-  }).join('');
-  document.getElementById('pantheonGroups').innerHTML = html;
+  const container = document.getElementById('pantheonGroups');
+  if (pantheonSortMode === 'class') {
+    container.innerHTML = allPantheonGroups().map(grp => {
+      const members = sortPantheons(grp.ids.map(id => PANTHEONS_BY_ID[id]).filter(Boolean), counts);
+      if (!members.length) return '';
+      const chips = members.map(p => barebonChipHtml(p, counts[p.id] || 0)).join('');
+      return `
+        <section class="barebone-class">
+          <h3 class="barebone-class-head">${grp.name}<span class="barebone-class-count">${members.length}</span></h3>
+          <div class="pantheon-chip-row barebone-flat">${chips}</div>
+        </section>`;
+    }).join('');
+  } else {
+    const all = sortPantheons(DATA.pantheons.slice(), counts);
+    const chips = all.map(p => barebonChipHtml(p, counts[p.id] || 0)).join('');
+    container.innerHTML = `<div class="pantheon-chip-row barebone-flat">${chips}</div>`;
+  }
 }
 
 // Pantheon detail card — reuses the shared modal. Shows region, era, figure
