@@ -2863,6 +2863,7 @@ function ftApplyZoom(z) {
   if (ro) ro.textContent = Math.round(z * 100) + '%';
 }
 
+// "Fit" button — scale the whole tree (both dimensions) into view.
 function ftFit() {
   const vp = document.getElementById('ftViewport');
   const inner = document.getElementById('fullTreeInner');
@@ -2874,10 +2875,26 @@ function ftFit() {
   vp.scrollTo(0, 0);
 }
 
-// After each full render: auto-fit when the pantheon changed, else keep zoom.
+// Default when a pantheon first opens — fit to width but stay readable: never
+// smaller than FT_READABLE_MIN (very wide trees overflow and pan instead of
+// shrinking to a blob), never larger than 100%. Start at the top-left root.
+const FT_READABLE_MIN = 0.55;
+function ftDefaultZoom() {
+  const vp = document.getElementById('ftViewport');
+  const inner = document.getElementById('fullTreeInner');
+  if (!vp || !inner) return;
+  const natW = inner.scrollWidth;
+  if (!natW) return;
+  const z = Math.max(FT_READABLE_MIN, Math.min((vp.clientWidth - 4) / natW, 1));
+  ftApplyZoom(z);
+  vp.scrollTo(0, 0);
+}
+
+// After each full render: pick the readable default when the pantheon changed,
+// else keep the user's current zoom.
 function ftSyncZoom() {
   const pid = fullTreeState && fullTreeState.pantheonId;
-  if (pid && pid !== ftFittedPantheon) { ftFittedPantheon = pid; ftFit(); }
+  if (pid && pid !== ftFittedPantheon) { ftFittedPantheon = pid; ftDefaultZoom(); }
   else ftApplyZoom(ftZoom);
 }
 
