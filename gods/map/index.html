@@ -1334,6 +1334,79 @@ main p { line-height:1.7; }
 .arch-chip-stub { opacity:0.5; cursor:default; }
 .arch-chip-stub:hover { border-color:var(--line); color:var(--ink); background:var(--panel2); }
 
+/* Archetypes tab — button bar + comparison table */
+.arch-btn-bar {
+  display:flex; flex-wrap:wrap; gap:7px;
+  padding:6px 0 18px; margin:0 0 4px;
+  border-bottom:1px solid var(--gold-faint);
+}
+.arch-btn {
+  display:inline-flex; align-items:center; gap:7px;
+  padding:7px 14px; border-radius:9px;
+  border:1px solid var(--line); background:var(--panel);
+  color:var(--ink); font-family:inherit; font-size:13px; letter-spacing:0.3px;
+  cursor:pointer; transition:border-color .14s, background .14s, color .14s;
+}
+.arch-btn:hover { border-color:var(--gold-soft); color:var(--gold); }
+.arch-btn .arch-btn-n {
+  color:var(--muted); font-size:10px; font-variant:small-caps; letter-spacing:0.5px;
+}
+.arch-btn.active {
+  border-color:var(--gold); color:#0a0b1a;
+  background:linear-gradient(180deg, var(--gold), var(--gold-deep));
+}
+.arch-btn.active .arch-btn-n { color:rgba(10,11,26,0.65); }
+
+.arch-empty {
+  color:var(--muted); font-style:italic; font-size:14px;
+  padding:34px 6px; text-align:center; line-height:1.7;
+}
+.arch-table-wrap { overflow-x:auto; margin-top:18px; }
+.arch-table {
+  border-collapse:separate; border-spacing:0; width:100%;
+  font-size:13px;
+}
+.arch-table th, .arch-table td {
+  border-bottom:1px solid var(--line);
+  border-right:1px solid var(--line);
+  padding:10px 12px; vertical-align:top; text-align:left;
+}
+.arch-table thead th {
+  position:sticky; top:0; z-index:2;
+  background:linear-gradient(180deg, #161a32 0%, #0e1124 100%);
+  color:var(--gold); font-weight:600; font-variant:small-caps;
+  letter-spacing:1.4px; font-size:12.5px; white-space:nowrap;
+  border-bottom:1px solid var(--gold-soft);
+}
+.arch-table .arch-corner {
+  color:var(--muted); letter-spacing:1px; font-size:11px;
+}
+.arch-table .arch-row-head {
+  color:var(--ink); font-weight:normal; font-variant:small-caps;
+  letter-spacing:0.8px; white-space:nowrap;
+  background:var(--panel); position:sticky; left:0; z-index:1;
+}
+.arch-row-dot {
+  display:inline-block; width:9px; height:9px; border-radius:50%;
+  margin-right:8px; vertical-align:middle;
+  background:var(--class-color, var(--gold));
+  box-shadow:0 0 6px var(--class-color, var(--gold));
+}
+.arch-table td { background:rgba(255,255,255,0.008); }
+.arch-cell-empty { color:var(--line); text-align:center; }
+.arch-table td:has(.arch-cell-chip) { display:table-cell; }
+.arch-cell-chip {
+  display:inline-flex; align-items:baseline; gap:5px;
+  margin:0 5px 5px 0; padding:4px 9px; border-radius:9px;
+  border:1px solid var(--line); background:var(--panel2);
+  color:var(--ink); font-family:inherit; font-size:12px; cursor:pointer;
+  transition:border-color .13s, color .13s, background .13s;
+}
+.arch-cell-chip:hover { border-color:var(--gold); color:var(--gold); background:rgba(229,193,88,0.06); }
+.arch-cell-chip .p {
+  color:var(--muted); font-size:9.5px; font-style:italic; letter-spacing:0.4px;
+}
+
 .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(2px); z-index:100; align-items:center; justify-content:center; padding:24px; }
 .modal-bg.open { display:flex; animation:fadeIn .25s ease; }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -1666,7 +1739,6 @@ select:focus:not(:focus-visible),
   <button class="tab-btn" data-tab="archetypes" role="tab" aria-selected="false" aria-controls="tab-archetypes">Archetypes</button>
   <button class="tab-btn" data-tab="deified" role="tab" aria-selected="false" aria-controls="tab-deified">Deified Humans</button>
   <button class="tab-btn" data-tab="mentions" role="tab" aria-selected="false" aria-controls="tab-mentions">Notable Mentions</button>
-  <button class="tab-btn" data-tab="browse" role="tab" aria-selected="false" aria-controls="tab-browse">Browse All</button>
 </nav>
 
 <main>
@@ -1769,17 +1841,8 @@ select:focus:not(:focus-visible),
 </section>
 
 <section id="tab-archetypes" class="tab" role="tabpanel">
-  <div class="tab-head">
-    <h2>Archetypes</h2>
-    <p class="intro">
-      Many roles — sky-father, storm-serpent-slayer, dying-and-rising god,
-      trickster — recur with striking consistency across unrelated cultures.
-      Some reflect shared Indo-European inheritance; others are independent
-      convergences on universal human experiences. Click any example to open it.
-    </p>
-  </div>
-  <nav class="archetype-nav" id="archetypeNav"></nav>
-  <div id="archetypeList" class="archetype-grid"></div>
+  <div class="arch-btn-bar" id="archetypeButtons" role="group" aria-label="Archetypes — select to add table columns"></div>
+  <div class="arch-table-wrap" id="archetypeTable"></div>
 </section>
 
 <section id="tab-deified" class="tab" role="tabpanel">
@@ -1806,34 +1869,6 @@ select:focus:not(:focus-visible),
     </p>
   </div>
   <div id="mentionsList"></div>
-</section>
-
-<section id="tab-browse" class="tab" role="tabpanel">
-  <div class="tab-head">
-    <h2>Browse All</h2>
-    <p class="intro">
-      The full catalogue — every figure across every tradition. Search by
-      name, domain, or descriptive phrase; filter by pantheon or category to
-      narrow the field.
-    </p>
-  </div>
-  <div class="filters">
-    <input type="text" id="searchInput" placeholder="Search by name, domain, or description…">
-    <select id="pantheonFilter"><option value="">All pantheons</option></select>
-    <select id="categoryFilter">
-      <option value="">All categories</option>
-      <option value="major">Major</option>
-      <option value="minor">Minor</option>
-      <option value="primordial">Primordial</option>
-      <option value="titan">Titan</option>
-      <option value="hero">Hero / demigod</option>
-      <option value="monster">Monster</option>
-      <option value="deified-human">Deified human</option>
-      <option value="abrahamic">Abrahamic</option>
-    </select>
-    <span class="count" id="browseCount"></span>
-  </div>
-  <div id="browseGrid" class="god-grid"></div>
 </section>
 
 </main>
@@ -2137,11 +2172,8 @@ function init() {
   renderArchetypes();
   renderDeified();
   renderMentions();
-  renderBrowseFilters();
-  renderBrowse();
   wireTabs();
   wireModal();
-  wireBrowse();
   wireHashRouter();
 
   // Initialize Family Trees tab to Zeus (won't update hash since skipHash)
@@ -2220,10 +2252,7 @@ function applyHashFromURL() {
       break;
     case 'archetype':
       selectTab('archetypes', { skipHash: true });
-      if (DATA.archetypes.find(a => a.id === id)) {
-        // Slight delay so the tab is displayed before scrolling
-        setTimeout(() => jumpToArchetype(id), 30);
-      }
+      if (DATA.archetypes.find(a => a.id === id)) selectArchetype(id);
       break;
     default:
       selectTab('overview', { skipHash: true });
@@ -2339,15 +2368,6 @@ document.addEventListener('keydown', e => {
   // Below shortcuts only when not typing in a field
   if (inEditable) return;
 
-  // "/" focuses the search input (if on browse tab, switch and focus)
-  if (e.key === '/' && !e.ctrlKey && !e.metaKey) {
-    e.preventDefault();
-    selectTab('browse');
-    const inp = document.getElementById('searchInput');
-    if (inp) { inp.focus(); inp.select(); }
-    return;
-  }
-
   // Arrow keys on the tablist cycle through tabs when focus is on a tab button
   if ((e.key === 'ArrowLeft' || e.key === 'ArrowRight')
       && t instanceof HTMLElement && t.classList.contains('tab-btn')) {
@@ -2414,7 +2434,7 @@ function followArchetype(archId, fromModal) {
   if (!archId || !DATA.archetypes || !DATA.archetypes.find(a => a.id === archId)) return;
   if (fromModal) closeModal();
   selectTab('archetypes', { skipHash: true });
-  setTimeout(() => jumpToArchetype(archId), 30);
+  selectArchetype(archId);
 }
 
 function renderGodLink(id) {
@@ -3836,80 +3856,98 @@ function pantheonToGroupId(pid) {
   return _PANTHEON_TO_GROUP[pid] || 'other';
 }
 
+// Archetypes tab — a comparison matrix. Buttons (one per archetype) toggle
+// columns; rows are pantheon classes; each cell lists that archetype's figures
+// within that class, annotated with their pantheon of origin.
+let selectedArchetypes = []; // archetype ids, in the order columns were added
+
 function renderArchetypes() {
-  // Jump-nav (unchanged)
-  document.getElementById('archetypeNav').innerHTML = DATA.archetypes.map(a =>
-    `<a href="#arch-${a.id}" onclick="jumpToArchetype('${a.id}'); return false;">${a.name}</a>`
-  ).join('');
-
-  const reach = g => (g.parents||[]).length + (g.children||[]).length
-    + (g.siblings||[]).length + (g.consorts||[]).length + (g.parallels||[]).length;
-  const groupOrder = allPantheonGroups(); // includes 'other' if needed
-
-  document.getElementById('archetypeList').innerHTML = DATA.archetypes.map(a => {
-    const exampleIds = a.examples || [];
-    const knownGods = exampleIds.map(id => GODS_BY_ID[id]).filter(Boolean);
-    const stubIds = exampleIds.filter(id => !GODS_BY_ID[id]);
-
-    // Bucket known gods by pantheon-group so the comparative geography
-    // becomes visible without claiming any equivalence between traditions.
-    const buckets = {};
-    knownGods.forEach(g => {
-      const gid = pantheonToGroupId(g.pantheon);
-      (buckets[gid] = buckets[gid] || []).push(g);
-    });
-
-    const clustersHtml = groupOrder.map(grp => {
-      const list = buckets[grp.id];
-      if (!list || !list.length) return '';
-      const ranked = list.slice().sort((x,y) => reach(y) - reach(x) || x.name.localeCompare(y.name));
-      const chips = ranked.map(g => {
-        const p = PANTHEONS_BY_ID[g.pantheon];
-        return `<span class="arch-chip" onclick="focusFromArchetype('${g.id}')">${g.name}<span class="p">${p ? p.name : ''}</span></span>`;
-      }).join('');
-      return `<div class="arch-cluster"><span class="arch-cluster-label">${grp.name}</span><div class="arch-cluster-chips">${chips}</div></div>`;
-    }).join('');
-
-    const stubsHtml = stubIds.length
-      ? `<div class="arch-cluster arch-cluster-stubs"><span class="arch-cluster-label">Not yet catalogued</span><div class="arch-cluster-chips">${
-          stubIds.map(id => `<span class="arch-chip arch-chip-stub" title="Not yet catalogued">${formatStubName(id)}</span>`).join('')
-        }</div></div>`
-      : '';
-
-    // Scope: figures · traditions · regions · temporal reach.
-    // Lets the reader see whether an archetype is dense, broad, narrow, deep.
-    // The temporal span comes straight from the example pantheons; language
-    // is neutral ("4500 BCE – present"), not "attested" or "originated".
-    const traditionCount = new Set(knownGods.map(g => g.pantheon)).size;
-    const regionCount = Object.keys(buckets).length;
-    const pantheonsForRange = [...new Set(knownGods.map(g => g.pantheon))]
-      .map(pid => PANTHEONS_BY_ID[pid]).filter(Boolean);
-    let spanText = '';
-    if (pantheonsForRange.length) {
-      const earliest = Math.min(...pantheonsForRange.map(p => p.active_from));
-      const latest = Math.max(...pantheonsForRange.map(p => p.active_to));
-      if (Number.isFinite(earliest) && Number.isFinite(latest)) {
-        spanText = ` · ${fmtYear(earliest)} – ${fmtYear(latest)}`;
-      }
-    }
-    const scope = `${knownGods.length} figure${knownGods.length === 1 ? '' : 's'} · ${traditionCount} tradition${traditionCount === 1 ? '' : 's'} · ${regionCount} region${regionCount === 1 ? '' : 's'}${spanText}`;
-
-    return `
-      <div class="archetype-card" id="arch-${a.id}">
-        <h3>${a.name}<span class="arch-count">${scope}</span></h3>
-        <div class="desc">${a.description}</div>
-        <div class="arch-clusters">${clustersHtml}${stubsHtml}</div>
-      </div>
-    `;
-  }).join('');
+  renderArchetypeButtons();
+  renderArchetypeTable();
 }
 
-function jumpToArchetype(id) {
-  const el = document.getElementById('arch-' + id);
-  if (el) {
-    el.scrollIntoView({ behavior:'smooth', block:'start' });
-    updateHash('archetype/' + id);
+function renderArchetypeButtons() {
+  const el = document.getElementById('archetypeButtons');
+  if (!el) return;
+  el.innerHTML = DATA.archetypes.map(a => {
+    const active = selectedArchetypes.includes(a.id);
+    const n = (a.examples || []).filter(id => GODS_BY_ID[id]).length;
+    return `<button type="button" class="arch-btn${active ? ' active' : ''}" data-arch="${a.id}" aria-pressed="${active ? 'true' : 'false'}">${a.name}<span class="arch-btn-n">${n}</span></button>`;
+  }).join('');
+  el.querySelectorAll('.arch-btn').forEach(b => {
+    b.addEventListener('click', () => toggleArchetype(b.dataset.arch));
+  });
+}
+
+function toggleArchetype(id) {
+  const i = selectedArchetypes.indexOf(id);
+  if (i >= 0) selectedArchetypes.splice(i, 1);
+  else selectedArchetypes.push(id);
+  renderArchetypeButtons();
+  renderArchetypeTable();
+}
+
+// Ensure an archetype column is present and scroll the table into view.
+// Used by the "A figure of the … archetype" links and #archetype/<id> deep-links.
+function selectArchetype(id) {
+  if (!DATA.archetypes.find(a => a.id === id)) return;
+  if (!selectedArchetypes.includes(id)) selectedArchetypes.push(id);
+  renderArchetypeButtons();
+  renderArchetypeTable();
+  setTimeout(() => {
+    const wrap = document.getElementById('archetypeTable');
+    if (wrap) wrap.scrollIntoView({ behavior:'smooth', block:'start' });
+  }, 30);
+}
+
+function renderArchetypeTable() {
+  const wrap = document.getElementById('archetypeTable');
+  if (!wrap) return;
+  if (!selectedArchetypes.length) {
+    wrap.innerHTML = `<div class="arch-empty">Select one or more archetypes above to build the table. Rows are pantheon classes; each column you add lists that archetype's figures and their pantheon of origin.</div>`;
+    return;
   }
+  const reach = g => (g.parents||[]).length + (g.children||[]).length
+    + (g.siblings||[]).length + (g.consorts||[]).length + (g.parallels||[]).length;
+  const groups = allPantheonGroups();
+
+  // For each selected archetype, bucket its catalogued figures by pantheon class.
+  const cols = selectedArchetypes.map(aid => {
+    const a = DATA.archetypes.find(x => x.id === aid);
+    const byClass = {};
+    (a.examples || []).forEach(gid => {
+      const g = GODS_BY_ID[gid];
+      if (!g) return;
+      const cid = pantheonToGroupId(g.pantheon);
+      (byClass[cid] = byClass[cid] || []).push(g);
+    });
+    return { a, byClass };
+  });
+
+  // Rows: only classes that have at least one figure in some selected column.
+  const rows = groups.filter(grp => cols.some(c => (c.byClass[grp.id] || []).length));
+
+  const headCells = cols.map(c => `<th scope="col">${c.a.name}</th>`).join('');
+  const bodyRows = rows.map(grp => {
+    const swatch = CLASS_COLORS[grp.id] || CLASS_COLORS.other;
+    const cells = cols.map(c => {
+      const list = (c.byClass[grp.id] || []).slice()
+        .sort((x,y) => reach(y) - reach(x) || x.name.localeCompare(y.name));
+      if (!list.length) return `<td class="arch-cell-empty" aria-hidden="true">·</td>`;
+      const chips = list.map(g => {
+        const p = PANTHEONS_BY_ID[g.pantheon];
+        return `<button type="button" class="arch-cell-chip" onclick="openGod('${g.id}')">${g.name}<span class="p">${p ? p.name : ''}</span></button>`;
+      }).join('');
+      return `<td>${chips}</td>`;
+    }).join('');
+    return `<tr><th scope="row" class="arch-row-head"><span class="arch-row-dot" style="--class-color:${swatch}" aria-hidden="true"></span>${grp.name}</th>${cells}</tr>`;
+  }).join('');
+
+  wrap.innerHTML = `
+    <table class="arch-table">
+      <thead><tr><th scope="col" class="arch-corner">Class</th>${headCells}</tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>`;
 }
 
 function focusFromArchetype(godId) {
@@ -3917,21 +3955,6 @@ function focusFromArchetype(godId) {
   setFocus(godId); // updates hash to god/<id>
 }
 
-// Discovery threads: clicking a curator-note thread inside the Pantheons tab
-// switches to Archetypes and scrolls to the chosen archetype. Reuses
-// selectTab + jumpToArchetype; needs no new infrastructure.
-function followThread(archId) {
-  if (!DATA.archetypes || !DATA.archetypes.find(a => a.id === archId)) return;
-  selectTab('archetypes', { skipHash: true });
-  // Wait for tab display so the target element is laid out before we scroll.
-  setTimeout(() => jumpToArchetype(archId), 30);
-}
-document.addEventListener('click', e => {
-  const a = e.target.closest('.pantheon-threads a[data-arch]');
-  if (!a) return;
-  e.preventDefault();
-  followThread(a.dataset.arch);
-});
 
 /* ---------- Notable Mentions tab ---------- */
 function renderMentions() {
@@ -3990,40 +4013,7 @@ function renderDeified() {
   });
 }
 
-/* ---------- Browse tab ---------- */
-function renderBrowseFilters() {
-  const sel = document.getElementById('pantheonFilter');
-  sel.innerHTML = '<option value="">All pantheons</option>' +
-    DATA.pantheons.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
-}
-
-function renderBrowse() {
-  const q = document.getElementById('searchInput').value.toLowerCase().trim();
-  const pfilter = document.getElementById('pantheonFilter').value;
-  const cfilter = document.getElementById('categoryFilter').value;
-  let list = DATA.gods.slice();
-  if (pfilter) list = list.filter(g => g.pantheon === pfilter);
-  if (cfilter) list = list.filter(g => g.category === cfilter);
-  if (q) {
-    list = list.filter(g => {
-      const hay = [
-        g.name, g.description || '',
-        (g.domains || []).join(' '),
-        (g.epithets || []).join(' '),
-        PANTHEONS_BY_ID[g.pantheon]?.name || ''
-      ].join(' ').toLowerCase();
-      return hay.includes(q);
-    });
-  }
-  document.getElementById('browseCount').textContent = `${list.length} of ${DATA.gods.length}`;
-  document.getElementById('browseGrid').innerHTML = list.length
-    ? list.map(renderGodCard).join('')
-    : '<div class="empty">No matches.</div>';
-  document.querySelectorAll('#browseGrid .god-card').forEach(el => {
-    el.addEventListener('click', () => openGod(el.dataset.gid));
-  });
-}
-
+/* ---------- Shared god card (Deified Humans tab) ---------- */
 function renderGodCard(g) {
   const p = PANTHEONS_BY_ID[g.pantheon];
   const domains = (g.domains || []).slice(0, 3).map(d => d.replace(/-/g,' ')).join(' · ');
@@ -4039,11 +4029,6 @@ function renderGodCard(g) {
   `;
 }
 
-function wireBrowse() {
-  document.getElementById('searchInput').addEventListener('input', renderBrowse);
-  document.getElementById('pantheonFilter').addEventListener('change', renderBrowse);
-  document.getElementById('categoryFilter').addEventListener('change', renderBrowse);
-}
 </script>
 </body>
 </html>
