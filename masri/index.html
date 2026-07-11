@@ -1039,7 +1039,7 @@ function renderTableCards(arr){
   }).join('') + `</div>`;
 
   // Transliteration key — a compact, collapsed reference directly beneath the letter
-  // cards (secondary to the alphabet itself). Moved here from the former Start Here.
+  // cards (secondary to the alphabet itself); data lives in alphabet.js `translit`.
   if(d.translit){
     const t = d.translit;
     h += `<details class="alp-translit"><summary>${esc(t.title)}</summary><div class="alp-translit-body">`

@@ -88,7 +88,7 @@ window.MASRI.around = {
         ["أنا محتاج تاكسي",    "ana meḥtāg taksi",      "I need a taxi (m)"],
         ["العنوان إيه؟",       "el-ʿenwān ēh?",         "what is the address?"],
         ["أنا تايه",           "ana tāyeh",             "I'm lost (m)"],
-        ["ممكن تساعدني؟",      "momken tesaʿedni?",     "can you help me?"]
+        ["ممكن تساعدني؟",      "momken tesaʿedni (m) / tesaʿedīni (f)?",     "can you help me?"]
       ]
     }
   ]

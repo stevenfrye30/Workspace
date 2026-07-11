@@ -58,12 +58,12 @@ window.MASRI.phrases = [
       { ar: "لسه بتعلم", tr: "lessa batʿallem", en: "I'm still learning" },
       { ar: "عربيتي بسيطة", tr: "ʿarabeyyeti basīṭa", en: "my Arabic is basic" },
       { ar: "بتتكلم إنجليزي؟", tr: "betetkallem engelīzi?", en: "do you speak English?" },
-      { ar: "ممكن تتكلم بالراحة؟", tr: "momken tetkallem bel-rāḥa?", en: "can you speak slowly?" },
-      { ar: "ممكن تعيد تاني؟", tr: "momken teʿīd tāni?", en: "can you say that again?" },
+      { ar: "ممكن تتكلم بالراحة؟", tr: "momken tetkallem (m) / tetkallemi (f) bel-rāḥa?", en: "can you speak slowly?" },
+      { ar: "ممكن تعيد تاني؟", tr: "momken teʿīd (m) / teʿīdi (f) tāni?", en: "can you say that again?" },
       { ar: "يعني إيه ده؟", tr: "yaʿni ēh da?", en: "what does this mean?" },
       { ar: "إزاي أقول ...؟", tr: "ezzāy aʾūl ...?", en: "how do I say ...?" },
-      { ar: "اكتبها لي لو سمحت", tr: "ektebha-li law samaḥt", en: "please write it down for me" },
-      { ar: "مش فاهم، آسف", tr: "mesh fāhem, āsef", en: "I don't understand, sorry (m)" }
+      { ar: "اكتبها لي لو سمحت", tr: "ektebha-li (m) / ektebīha-li (f) law samaḥt / samaḥti", en: "please write it down for me" },
+      { ar: "مش فاهم، آسف", tr: "mesh fāhem (m) / fahma (f), āsef / asfa", en: "I don't understand, sorry (m/f)" }
     ]
   },
   {
