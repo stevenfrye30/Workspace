@@ -20423,8 +20423,8 @@
       "wiki_title": "Hermóðr"
     },
     {
-      "id": "njord-mimir-kvasir-alt",
-      "name": "Suttung's father Gillingr",
+      "id": "gillingr",
+      "name": "Gillingr",
       "pantheon": "norse",
       "category": "minor",
       "gender": "M",
@@ -24268,6 +24268,301 @@
         "demeter"
       ],
       "description": "God of wealth and agricultural abundance, son of Demeter and Iasion; often shown as a child bearing a cornucopia."
+    },
+    {
+      "id": "gerd",
+      "name": "Gerðr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "earth",
+        "fertility"
+      ],
+      "parents": [],
+      "consorts": [
+        "freyr"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Radiant jötunn wooed to be Freyr's wife by his servant Skírnir in Skírnismál; her name is linked to the fenced field."
+    },
+    {
+      "id": "farbauti",
+      "name": "Fárbauti",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "giant"
+      ],
+      "parents": [],
+      "consorts": [
+        "laufey"
+      ],
+      "children": [
+        "loki"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Jötunn father of Loki by Laufey; his name, 'cruel striker,' is often read as lightning."
+    },
+    {
+      "id": "laufey",
+      "name": "Laufey",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "foliage"
+      ],
+      "parents": [],
+      "consorts": [
+        "farbauti"
+      ],
+      "children": [
+        "loki"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Mother of Loki, also called Nál ('needle'); Loki's matronymic 'Laufeyjarson' is unusual, and her nature — goddess or jötunn — is uncertain."
+    },
+    {
+      "id": "thjazi",
+      "name": "Þjazi",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "giant"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "skadi"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Jötunn who, in eagle form, forced the theft of Iðunn's apples of youth; slain by the Aesir at Asgard's gate. Father of Skaði."
+    },
+    {
+      "id": "jarnsaxa",
+      "name": "Járnsaxa",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "giant"
+      ],
+      "parents": [],
+      "consorts": [
+        "thor"
+      ],
+      "children": [
+        "magni"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Jötunn consort of Thor and mother of his son Magni."
+    },
+    {
+      "id": "magni",
+      "name": "Magni",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "strength"
+      ],
+      "parents": [
+        "thor",
+        "jarnsaxa"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Thor and the jötunn Járnsaxa; while still a child he alone lifted the slain giant Hrungnir's leg off his father. With Móði he inherits Mjölnir and survives Ragnarök."
+    },
+    {
+      "id": "modi",
+      "name": "Móði",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "courage",
+        "battle-fury"
+      ],
+      "parents": [
+        "thor"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Thor whose name means 'courage' or 'wrath'; with his brother Magni he inherits Mjölnir and survives Ragnarök."
+    },
+    {
+      "id": "od",
+      "name": "Óðr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "wandering",
+        "ecstasy"
+      ],
+      "parents": [],
+      "consorts": [
+        "freyja"
+      ],
+      "children": [
+        "hnoss",
+        "gersemi"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Husband of Freyja who journeys to far lands; in his absence she weeps tears of red gold. His name ('frenzy, mind') echoes Óðinn's."
+    },
+    {
+      "id": "hnoss",
+      "name": "Hnoss",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "treasure",
+        "beauty"
+      ],
+      "parents": [
+        "freyja",
+        "od"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of Freyja and Óðr, so lovely that precious things (hnossir) are named after her."
+    },
+    {
+      "id": "gersemi",
+      "name": "Gersemi",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "treasure",
+        "beauty"
+      ],
+      "parents": [
+        "freyja",
+        "od"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of Freyja and Óðr; like her sister Hnoss, a byword for something precious."
+    },
+    {
+      "id": "dagr",
+      "name": "Dagr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "day",
+        "daylight"
+      ],
+      "parents": [
+        "nott",
+        "delling"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The personified Day, son of Nótt and Dellingr; he rides the sky on the shining-maned horse Skinfaxi."
+    },
+    {
+      "id": "delling",
+      "name": "Dellingr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "dawn"
+      ],
+      "parents": [],
+      "consorts": [
+        "nott"
+      ],
+      "children": [
+        "dagr"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Ás of the shining dawn, third husband of Nótt and father of Dagr (Day)."
+    },
+    {
+      "id": "annar",
+      "name": "Annarr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "earth"
+      ],
+      "parents": [],
+      "consorts": [
+        "nott"
+      ],
+      "children": [
+        "jord"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Second husband of Nótt and, with her, father of Jörð (Earth); attested chiefly in this genealogy."
+    },
+    {
+      "id": "bolthorn",
+      "name": "Bölþorn",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "giant"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "bestla"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Ancient jötunn, father of Bestla and thus maternal grandfather of Odin, Vili, and Vé."
+    },
+    {
+      "id": "groa",
+      "name": "Gróa",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "seidr",
+        "healing",
+        "prophecy"
+      ],
+      "parents": [],
+      "consorts": [
+        "aurvandil"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Völva and wife of Aurvandil; her galdr began to work loose the whetstone lodged in Thor's head before she was distracted."
     }
   ],
   "notable_mentions": [
