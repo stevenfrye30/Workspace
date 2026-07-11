@@ -1366,46 +1366,52 @@ main p { line-height:1.7; }
   border-collapse:separate; border-spacing:0; width:100%;
   font-size:13px;
 }
+/* Fixed layout so all columns share the width and the table fits the screen */
+.arch-table { table-layout:fixed; }
 .arch-table th, .arch-table td {
   border-bottom:1px solid var(--line);
   border-right:1px solid var(--line);
-  padding:10px 12px; vertical-align:top; text-align:left;
+  padding:6px 7px; vertical-align:top; text-align:left;
+  overflow-wrap:anywhere;
 }
+.arch-table th:first-child { width:118px; }
 .arch-table thead th {
   position:sticky; top:0; z-index:2;
   background:linear-gradient(180deg, #161a32 0%, #0e1124 100%);
   color:var(--gold); font-weight:600; font-variant:small-caps;
-  letter-spacing:1.4px; font-size:12.5px; white-space:nowrap;
+  letter-spacing:0.4px; font-size:10.5px; line-height:1.2; white-space:normal;
   border-bottom:1px solid var(--gold-soft);
 }
 .arch-table .arch-corner {
-  color:var(--muted); letter-spacing:1px; font-size:11px;
+  color:var(--muted); letter-spacing:0.5px; font-size:10px;
   position:sticky; left:0; z-index:3;
 }
 .arch-table .arch-row-head {
   color:var(--gold); font-weight:600; font-variant:small-caps;
-  letter-spacing:1px; white-space:nowrap;
+  letter-spacing:0.5px; font-size:11.5px; line-height:1.25;
   background:var(--panel); position:sticky; left:0; z-index:1;
 }
 .arch-col-dot {
-  display:inline-block; width:9px; height:9px; border-radius:50%;
-  margin-right:8px; vertical-align:middle;
+  display:inline-block; width:8px; height:8px; border-radius:50%;
+  margin-right:6px; vertical-align:middle;
   background:var(--class-color, var(--gold));
-  box-shadow:0 0 6px var(--class-color, var(--gold));
+  box-shadow:0 0 5px var(--class-color, var(--gold));
 }
 .arch-table td { background:rgba(255,255,255,0.008); }
 .arch-cell-empty { color:var(--line); text-align:center; }
-.arch-table td:has(.arch-cell-chip) { display:table-cell; }
+/* Chips stack vertically and fill the (narrow) column — name over origin */
 .arch-cell-chip {
-  display:inline-flex; align-items:baseline; gap:5px;
-  margin:0 5px 5px 0; padding:4px 9px; border-radius:9px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:0;
+  width:100%; margin:0 0 4px; padding:3px 6px; border-radius:6px;
   border:1px solid var(--line); background:var(--panel2);
-  color:var(--ink); font-family:inherit; font-size:12px; cursor:pointer;
+  color:var(--ink); font-family:inherit; font-size:11.5px; line-height:1.25;
+  text-align:left; cursor:pointer;
   transition:border-color .13s, color .13s, background .13s;
 }
+.arch-cell-chip:last-child { margin-bottom:0; }
 .arch-cell-chip:hover { border-color:var(--gold); color:var(--gold); background:rgba(229,193,88,0.06); }
 .arch-cell-chip .p {
-  color:var(--muted); font-size:9.5px; font-style:italic; letter-spacing:0.4px;
+  display:block; color:var(--muted); font-size:9px; font-style:italic; letter-spacing:0.3px;
 }
 
 .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(2px); z-index:100; align-items:center; justify-content:center; padding:24px; }
