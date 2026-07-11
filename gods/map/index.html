@@ -387,6 +387,48 @@ main p { line-height:1.7; }
   .pantheon-row .pr-desc { flex-basis:100%; white-space:normal; }
   .pantheon-row .pr-region, .pantheon-row .pr-span { min-width:0; }
 }
+/* Barebone chip grid — most compact view: name-only, click opens a detail card */
+.pantheon-chip-row {
+  display:flex; flex-wrap:wrap; gap:8px;
+  padding:18px 20px 20px;
+}
+.pantheon-group.collapsed .pantheon-chip-row { display:none; }
+.pantheon-chip {
+  display:inline-flex; align-items:center; gap:9px;
+  padding:7px 13px 7px 11px; border-radius:8px;
+  border:1px solid var(--line); background:var(--panel);
+  font-family:inherit; font-size:13.5px; letter-spacing:0.2px;
+  cursor:pointer; transition:border-color .14s, background .14s, transform .1s;
+}
+.pantheon-chip:hover, .pantheon-chip:focus-visible {
+  border-color:var(--gold-soft);
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  transform:translateY(-1px); outline:none;
+}
+.pantheon-chip .chip-dot {
+  width:9px; height:9px; border-radius:50%; flex-shrink:0;
+  background:var(--pantheon-color, var(--gold));
+  box-shadow:0 0 6px var(--pantheon-color, var(--gold));
+}
+.pantheon-chip .chip-name { color:var(--gold); }
+.pantheon-chip .chip-count {
+  color:var(--gold-deep); font-size:10.5px; font-variant:small-caps;
+  letter-spacing:1px; font-weight:bold; opacity:0.85;
+}
+/* Pantheon detail card — action button to jump into the family tree */
+.modal-actions { margin-top:22px; }
+.modal-tree-btn {
+  display:inline-block; padding:10px 20px; cursor:pointer;
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  border:1px solid var(--gold-soft); border-radius:12px / 46%;
+  color:var(--gold); font-family:inherit; font-size:12px;
+  letter-spacing:2px; font-variant:small-caps;
+  transition:background .15s, color .15s, border-color .15s;
+}
+.modal-tree-btn:hover {
+  background:linear-gradient(180deg, var(--gold), var(--gold-deep));
+  color:#0a0b1a; border-color:var(--gold);
+}
 .pantheon-group-head h3 {
   margin:0; color:var(--gold); font-weight:600; letter-spacing:4px;
   font-variant:small-caps; font-size:21px;
@@ -1604,7 +1646,8 @@ select:focus:not(:focus-visible),
     <div class="control-group">
       <label>View</label>
       <div class="view-toggle" id="pantheonViewToggle" role="tablist" aria-label="Pantheon view mode">
-        <button data-view="grouped" class="active" role="tab" aria-selected="true">Grouped</button>
+        <button data-view="barebone" class="active" role="tab" aria-selected="true">Barebone</button>
+        <button data-view="grouped" role="tab" aria-selected="false">Grouped</button>
         <button data-view="list" role="tab" aria-selected="false">Compact</button>
         <button data-view="era" role="tab" aria-selected="false">By era</button>
       </div>
@@ -2375,7 +2418,7 @@ const PANTHEON_GROUPS = [
     ids:['deified-humans'] },
 ];
 
-let pantheonViewMode = 'grouped'; // 'grouped' | 'list' | 'era'
+let pantheonViewMode = 'barebone'; // 'barebone' | 'grouped' | 'list' | 'era'
 let pantheonSortMode = 'era'; // 'era' | 'size' | 'alpha'
 const collapsedPantheonGroups = new Set();
 
@@ -2459,6 +2502,7 @@ function renderPantheonGrid() {
 
   if (pantheonViewMode === 'era') renderPantheonEraList(counts);
   else if (pantheonViewMode === 'list') renderPantheonGroupedList(counts);
+  else if (pantheonViewMode === 'barebone') renderPantheonBarebone(counts);
   else renderPantheonGroupedCards(counts);
 
   wirePantheonClicks();
@@ -2596,7 +2640,78 @@ function renderPantheonEraList(counts) {
   document.getElementById('pantheonGroups').innerHTML = html;
 }
 
+// Barebone view — class header + bare pantheon-name chips. Most compact and
+// navigable; clicking a chip opens the pantheon detail card (openPantheonModal)
+// rather than jumping straight into the family tree.
+function renderPantheonBarebone(counts) {
+  const html = allPantheonGroups().map(grp => {
+    const members = sortPantheons(grp.ids.map(id => PANTHEONS_BY_ID[id]).filter(Boolean), counts);
+    if (!members.length) return '';
+    const totalFigures = members.reduce((s,p) => s + (counts[p.id] || 0), 0);
+    const era = groupEraLabel(members);
+    const collapsed = collapsedPantheonGroups.has(grp.id) ? ' collapsed' : '';
+    const tint = chamberAverageColor(members);
+    const tintStyle = tint ? ` style="--chamber-tint:${tint};"` : '';
+    const living = livingPantheonCount(members);
+    const livingSuffix = living > 0 ? ` · ${living} living` : '';
+    const chips = members.map(p => `
+      <button type="button" class="pantheon-chip" style="--pantheon-color:${p.color}" data-pid="${p.id}" title="${escapeAttr(p.description)}" aria-label="Open ${escapeAttr(p.name)} details">
+        <span class="chip-dot" aria-hidden="true"></span>
+        <span class="chip-name">${p.name}</span>
+        <span class="chip-count">${counts[p.id] || 0}</span>
+      </button>
+    `).join('');
+    return `
+      <section class="pantheon-group${collapsed}" data-gid="${grp.id}"${tintStyle}>
+        <div class="pantheon-group-head" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
+          <h3><span class="toggle-icon" aria-hidden="true">▾</span>${grp.name}</h3>
+          <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}${livingSuffix}</span>
+          <span class="group-era">${era}</span>
+        </div>
+        <div class="pantheon-chip-row">${chips}</div>
+      </section>
+    `;
+  }).join('');
+  document.getElementById('pantheonGroups').innerHTML = html;
+}
+
+// Pantheon detail card — reuses the shared modal. Shows region, era, figure
+// count, description, clickable notable figures, and a doorway into the tree.
+function openPantheonModal(pid) {
+  const p = PANTHEONS_BY_ID[pid];
+  if (!p) return;
+  const n = pantheonCounts()[pid] || 0;
+  const living = (p.active_to >= 2020);
+  const eraTxt = (Number.isFinite(p.active_from) && Number.isFinite(p.active_to))
+    ? fmtYears(p.active_from, p.active_to) : '';
+  const figuresHtml = topFiguresForPantheon(pid, 8).map(name => {
+    const g = DATA.gods.find(x => x.pantheon === pid && x.name === name);
+    return g ? `<span class="god-link" onclick="openGod('${g.id}')">${name}</span>` : name;
+  }).join(', ');
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-head">
+      <div class="modal-head-text">
+        <div class="pantheon-label">${p.region || ''}${eraTxt ? `<span class="pantheon-era"> · ${eraTxt}</span>` : ''}</div>
+        <h2>${p.name}</h2>
+        <div class="epithets">${n} figure${n === 1 ? '' : 's'} catalogued${living ? ' · still practiced' : ''}</div>
+      </div>
+    </div>
+    <div class="desc">${p.description || ''}</div>
+    ${figuresHtml ? `<div class="section-label">Notable Figures</div><div class="modal-parallels">${figuresHtml}</div>` : ''}
+    <div class="modal-actions">
+      <button type="button" class="modal-tree-btn" onclick="closeModal(); selectTab('trees', { skipHash: true }); loadTree('${pid}');">Open family tree →</button>
+    </div>
+  `;
+  document.getElementById('modalBg').classList.add('open');
+  document.getElementById('modal').scrollTop = 0;
+}
+
 function wirePantheonClicks() {
+  // Barebone chips open the pantheon detail card…
+  document.querySelectorAll('#pantheonGroups .pantheon-chip').forEach(el => {
+    el.addEventListener('click', () => openPantheonModal(el.dataset.pid));
+  });
+  // …other views jump straight into the family tree.
   document.querySelectorAll('#pantheonGroups .pantheon-card, #pantheonGroups .pantheon-row').forEach(el => {
     el.addEventListener('click', () => {
       const pid = el.dataset.pid;
