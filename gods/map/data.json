@@ -5673,9 +5673,7 @@
       "domains": [
         "creation"
       ],
-      "parents": [
-        "vishnu-source"
-      ],
+      "parents": [],
       "consorts": [
         "saraswati"
       ],
@@ -5710,8 +5708,7 @@
         "bhudevi"
       ],
       "children": [
-        "kama",
-        "brahma-son"
+        "kama"
       ],
       "archetype": null,
       "parallels": [],
@@ -5806,7 +5803,7 @@
         "tyche",
         "fortuna"
       ],
-      "description": "Goddess of wealth and fortune. Consort of Vishnu, born from the churning of the ocean.",
+      "description": "Goddess of wealth and fortune. Consort of Vishnu, born from the churning of the ocean. Some traditions call her Bhargavi, daughter of Bhrigu and Khyati, while others describe her emergence from the churning of the ocean.",
       "wiki_title": "Lakshmi",
       "epithets": [
         "Shri (Auspicious)",
@@ -6038,7 +6035,7 @@
         "helios",
         "ra"
       ],
-      "description": "Sun-god. Father of Yama (death), Manu (first man), and Karna (hero of the Mahabharata).",
+      "description": "Sun-god. Father of Yama (death), Manu (first man), and Karna (hero of the Mahabharata). Also called Vivasvat.",
       "wiki_title": "Surya"
     },
     {
@@ -13535,8 +13532,7 @@
         "surya",
         "varuna",
         "indra",
-        "vivasvan",
-        "mitra",
+        "mitra-hindu",
         "aryaman",
         "bhaga",
         "amsa"
@@ -17893,8 +17889,7 @@
       ],
       "parents": [],
       "consorts": [
-        "vishnu",
-        "varaha"
+        "vishnu"
       ],
       "children": [
         "sita",
@@ -19839,7 +19834,7 @@
       ],
       "parents": [
         "chandra",
-        "tara"
+        "tara-brihaspati"
       ],
       "consorts": [
         "ila"
@@ -19867,7 +19862,7 @@
         "angiras"
       ],
       "consorts": [
-        "tara"
+        "tara-brihaspati"
       ],
       "children": [
         "kacha"
@@ -20008,8 +20003,7 @@
         "mandodari"
       ],
       "children": [
-        "indrajit",
-        "meghanada"
+        "indrajit"
       ],
       "siblings": [
         "kubera",
@@ -21131,8 +21125,7 @@
         "khyati"
       ],
       "children": [
-        "shukra",
-        "lakshmi-alt"
+        "shukra"
       ],
       "archetype": null,
       "parallels": [],
@@ -24879,7 +24872,9 @@
       "consorts": [
         "ravana"
       ],
-      "children": [],
+      "children": [
+        "indrajit"
+      ],
       "archetype": null,
       "parallels": [],
       "description": "Chief queen of Ravana, remembered for wisdom and virtue despite her husband's ruinous course."
@@ -26488,6 +26483,69 @@
       "archetype": null,
       "parallels": [],
       "description": "Asura who took a draught of amrita during the churning of the ocean and was beheaded by Vishnu; his severed head became Rahu and his body became Ketu, the two eclipse-associated shadow-planets."
+    },
+    {
+      "id": "mitra-hindu",
+      "name": "Mitra",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "aditya",
+        "covenant-friendship"
+      ],
+      "parents": [
+        "aditi",
+        "kashyapa"
+      ],
+      "consorts": [],
+      "children": [
+        "agastya"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Vedic Aditya of covenant, friendship, and the daylit order; with Varuna he upholds cosmic law and, in the pot-birth myth, fathered Agastya and Vasistha."
+    },
+    {
+      "id": "indrajit",
+      "name": "Indrajit (Meghanada)",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "rakshasa-warrior",
+        "conqueror-of-indra"
+      ],
+      "parents": [
+        "ravana",
+        "mandodari"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Ravana and Mandodari; born Meghanada, he took the title Indrajit ('conqueror of Indra') after defeating the king of the gods, and fell to Lakshmana in the Ramayana war."
+    },
+    {
+      "id": "tara-brihaspati",
+      "name": "Tara (wife of Brihaspati)",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "wife-of-brihaspati",
+        "mother-of-budha"
+      ],
+      "parents": [],
+      "consorts": [
+        "brihaspati"
+      ],
+      "children": [
+        "budha"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wife of Brihaspati, abducted by Chandra; mother of Budha by Chandra. Distinct from Tara, the vanara queen of the Ramayana."
     }
   ],
   "notable_mentions": [
