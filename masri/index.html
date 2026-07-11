@@ -300,6 +300,18 @@
   .alp-famex .ar{font-family:var(--ar);font-size:15px;color:var(--fg)}
   .alp-famex .tr{color:var(--blue);font-style:italic}
   .alp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+  /* transliteration key — compact collapsed reference under the letter cards */
+  .alp-translit{margin:14px 0 22px;border:1px solid var(--border);border-radius:var(--r);background:var(--surf2);overflow:hidden}
+  .alp-translit > summary{cursor:pointer;font-weight:600;color:var(--gold);font-size:calc(13.5px * var(--ui-scale));padding:11px 14px;list-style:none}
+  .alp-translit > summary::-webkit-details-marker{display:none}
+  .alp-translit > summary::before{content:"\25B8 "}
+  .alp-translit[open] > summary::before{content:"\25BE "}
+  .alp-translit > summary:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+  .alp-translit-body{padding:0 14px 6px}
+  .alp-translit-tbl{margin-bottom:10px;overflow-x:auto}
+  .alp-translit-tbl td,.alp-translit-tbl th{padding:8px 12px}
+  .alp-translit .note{margin:0 0 10px}
+  .alp-tsym{font-weight:700;color:var(--green);font-size:calc(15px * var(--ui-scale));white-space:nowrap}
   .alp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;scroll-margin-top:70px}
   .alp-chead{display:flex;align-items:center;gap:12px;margin-bottom:9px}
   .alp-cmeta{min-width:0}
@@ -694,7 +706,6 @@
 <nav id="subnav" aria-label="Subsection"></nav>
 
 <main>
-  <section id="p-start"    class="panel"></section>
   <section id="p-sounds"   class="panel"></section>
   <section id="p-alphabet" class="panel"></section>
   <section id="p-symbols"  class="panel"></section>
@@ -722,7 +733,6 @@
 </footer>
 
 <!-- reference content (plain JS so it also works on double-click) -->
-<script src="data/start.js"></script>
 <script src="data/sounds.js"></script>
 <script src="data/alphabet.js"></script>
 <script src="data/symbols.js"></script>
@@ -747,8 +757,7 @@ const TAT = 'ـ'; // tatweel (kashida) for showing joined letter shapes
 const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
 
 const GROUPS = [
-  { id:'g-start',    label:'Start Here',        sections:['start'] },
-  { id:'g-sounds',   label:'Sounds & Alphabet', sections:['sounds','alphabet','symbols'] },
+  { id:'g-sounds',   label:'Sounds & Alphabet', sections:['alphabet','symbols','sounds'] },
   // Practice consolidates the twelve former topic sections. Its landing section
   // is the `practice` dashboard (cards navigate to the rest); `dashboard` flags
   // the group so the subnav shows a compact Back / Prev / Next bar instead of a
@@ -761,7 +770,7 @@ const GROUPS = [
   { id:'g-type',     label:'Type',              sections:['test','word-builder'] },
 ];
 const SECTION_LABEL = {
-  start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', symbols:'Symbols', 'word-builder':'Word Builder',
+  sounds:'Sounds', alphabet:'Alphabet', symbols:'Symbols', 'word-builder':'Word Builder',
   practice:'Practice', listening:'Listening & Speaking',
   grammar:'Grammar', verbs:'Verbs',
   numbers:'Numbers', time:'Time & Days', around:'Getting Around', shopping:'Money & Shopping',
@@ -796,7 +805,7 @@ function showGroup(groupId, sectionId){
 
 function buildSubnav(g, activeSid){
   if(g.dashboard){ buildPracticeSubnav(g, activeSid); return; } // Practice -> dashboard + Back/Prev/Next
-  if(g.sections.length <= 1){ subnav.innerHTML = ''; return; }   // Start Here -> no subsections
+  if(g.sections.length <= 1){ subnav.innerHTML = ''; return; }   // single-section group -> no subsections
   subnav.setAttribute('role', 'tablist');
   subnav.innerHTML = g.sections.map(sid =>
     `<button class="subtab${sid===activeSid?' active':''}" role="tab" aria-selected="${sid===activeSid}" data-section="${esc(sid)}">${esc(SECTION_LABEL[sid])}</button>`
@@ -876,101 +885,6 @@ function renderTableCards(arr){
     </div>`).join('');
   return (arr && arr.length > 1) ? `<div class="tables-2col">${cards}</div>` : cards;
 }
-
-// START HERE — a goal-based front door for a beginner. Builds from window.MASRI.start;
-// every destination is a real <button> (keyboard-accessible) using activate()/search focus.
-(function(){
-  const d = M.start; if(!d) return;
-  const panel = document.getElementById('p-start');
-
-  // Clipboard helper: native API with an execCommand fallback (works from file://);
-  // no dependency, no persistence, no alert. Briefly shows "Copied".
-  function copyText(text, btn){
-    const back = () => { btn.textContent = btn.getAttribute('data-label') || 'Copy'; btn.classList.remove('copied'); };
-    const flash = () => { btn.textContent = 'Copied'; btn.classList.add('copied'); setTimeout(back, 1200); };
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(flash, () => fallback(text, flash));
-    else fallback(text, flash);
-  }
-  function fallback(text, done){
-    try { const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly',''); ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); } catch(e){}
-  }
-  const goBtn = (label, go) => `<button class="sh-go" data-go="${esc(go)}">${esc(label)} <span aria-hidden="true">&rarr;</span></button>`;
-
-  let h = '';
-
-  // 1 · Welcome (identity stated once)
-  h += `<p class="lead sh-lead">${d.welcome.lead}</p>`;
-  h += `<p class="sh-sub">${esc(d.welcome.sub)}</p>`;
-
-  if(d.searchTip){
-    const ex = (d.searchTip.examples || []).map(e => `<code>${esc(e)}</code>`).join(' · ');
-    h += `<p class="sh-tip">${esc(d.searchTip.text)}${ex ? ' — e.g. ' + ex : ''} <button class="sh-searchlink" data-search="1">Open search</button></p>`;
-  }
-
-  // 2 · What do you want to do? (goal cards)
-  h += `<h2 id="sh-goals">What do you want to do?</h2>`;
-  h += `<div class="sh-goals">` + d.goals.map(g => {
-    const cta = g.primary.search
-      ? `<button class="sh-go" data-search="1">${esc(g.primary.label)} <span aria-hidden="true">&rarr;</span></button>`
-      : goBtn(g.primary.label, g.primary.go);
-    const also = (g.also || []).map(a => `<button class="sh-go2" data-go="${esc(a.go)}">${esc(a.label)}</button>`).join('');
-    return `<div class="sh-card">
-        <div class="sh-card-title">${esc(g.title)}</div>
-        <div class="sh-card-desc">${esc(g.desc)}</div>
-        <div class="sh-card-go">${cta}${also ? `<span class="sh-also">${also}</span>` : ''}</div>
-      </div>`;
-  }).join('') + `</div>`;
-
-  // 3 · New to Egyptian Arabic? (optional path — a suggested order, not a checklist)
-  h += `<h2>New to Egyptian Arabic?</h2>`;
-  h += `<p class="note">${esc(d.begin.intro)}</p>`;
-  h += `<ol class="sh-path">` + d.begin.steps.map(s => {
-    const attr = s.go ? `data-go="${esc(s.go)}"` : `data-anchor="${esc(s.anchor)}"`;
-    return `<li><button class="sh-step" ${attr}>${esc(s.text)}</button></li>`;
-  }).join('') + `</ol>`;
-
-  // 4 · Egyptian Arabic at a glance
-  h += `<h2>${esc(d.glance.title)}</h2>`;
-  h += `<ul class="start-list">` + d.glance.points.map(p => `<li>${p}</li>`).join('') + `</ul>`;
-  if(d.glance.link) h += `<p class="sh-more">${goBtn('More in Sounds', d.glance.link)}</p>`;
-
-  // 5 · How to read Masri transliteration
-  h += `<h2 id="sh-translit">${esc(d.translit.title)}</h2>`;
-  h += `<div class="card-table"><table><thead><tr><th>Symbol</th><th>Means</th><th>Example</th></tr></thead><tbody>`
-     + d.translit.rows.map(r => `<tr><td class="sh-sym">${esc(r.sym)}</td><td>${esc(r.means)}</td><td><span class="tr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
-     + `</tbody></table></div>`;
-  h += `<p class="note">${esc(d.translit.note)}</p>`;
-  if(d.translit.link) h += `<p class="sh-more">${goBtn('More in Sounds', d.translit.link)}</p>`;
-
-  // 6 · Beginner survival phrases (compact cards; gender labelled; copy control)
-  h += `<h2 id="sh-survival">${esc(d.survival.title)}</h2>`;
-  if(d.survival.note) h += `<p class="note">${esc(d.survival.note)}</p>`;
-  h += `<div class="sh-phrases">` + d.survival.items.map(it => {
-    const forms = it.forms || [{ ar: it.ar, tr: it.tr }];
-    const rows = forms.map(f => {
-      const whoTxt = f.who || '';
-      const who = whoTxt ? `<span class="sh-who">${whoTxt}</span>` : '';
-      const label = 'Copy Arabic: ' + it.en + (whoTxt ? ' (' + whoTxt + ')' : '');
-      const copy = `<button class="sh-copy" data-copy="${esc(f.ar)}" data-label="Copy" aria-label="${esc(label)}">Copy</button>`;
-      return `<div class="sh-pform">${who}<span class="ar" dir="rtl">${f.ar}</span><span class="tr">${esc(f.tr)}</span>${copy}</div>`;
-    }).join('');
-    return `<div class="sh-phrase"><div class="sh-pen">${esc(it.en)}</div><div class="sh-pforms">${rows}</div></div>`;
-  }).join('') + `</div>`;
-  h += `<p class="sh-more"><button class="sh-go" data-go="phrases">See all practical phrases <span aria-hidden="true">&rarr;</span></button></p>`;
-
-  panel.innerHTML = h;
-
-  // Wire the controls (all native buttons — keyboard-accessible by default).
-  panel.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => activate(b.dataset.go)));
-  panel.querySelectorAll('[data-search]').forEach(b => b.addEventListener('click', () => {
-    const gi = document.getElementById('gsearch-input'); if(gi){ window.scrollTo(0, 0); gi.focus(); }
-  }));
-  panel.querySelectorAll('[data-anchor]').forEach(b => b.addEventListener('click', () => {
-    const t = document.getElementById(b.dataset.anchor); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }));
-  panel.querySelectorAll('.sh-copy').forEach(b => b.addEventListener('click', () => copyText(b.dataset.copy, b)));
-})();
 
 // SOUNDS — grouped Egyptian-Arabic pronunciation reference. Builds from
 // window.MASRI.sounds: signature sounds, Cairene shifts, throat & back, emphatic,
@@ -1123,6 +1037,19 @@ function renderTableCards(arr){
     if(L.note) c += `<details class="snd-more"><summary>More detail</summary><div class="snd-det">${L.note}</div></details>`;
     return c + `</div>`;
   }).join('') + `</div>`;
+
+  // Transliteration key — a compact, collapsed reference directly beneath the letter
+  // cards (secondary to the alphabet itself). Moved here from the former Start Here.
+  if(d.translit){
+    const t = d.translit;
+    h += `<details class="alp-translit"><summary>${esc(t.title)}</summary><div class="alp-translit-body">`
+       + `<div class="card-table alp-translit-tbl"><table><thead><tr><th>Symbol</th><th>Means</th><th>Example</th></tr></thead><tbody>`
+       + t.rows.map(r => `<tr><td class="alp-tsym" dir="ltr">${esc(r.sym)}</td><td>${esc(r.means)}</td>`
+           + `<td><span class="tr" dir="ltr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
+       + `</tbody></table></div>`
+       + (t.note ? `<p class="note">${esc(t.note)}</p>` : '')
+       + `</div></details>`;
+  }
 
   // jump nav to the remaining sections; the Word Builder promo is intentionally omitted.
   h += `<nav class="alp-jump" aria-label="Alphabet sections">`
@@ -2754,7 +2681,6 @@ if(M.vocab){
   }
   if(M.alphabet) (M.alphabet.letters||[]).forEach(l => push('alphabet','Alphabet', l.letter, l.name, l.sound, strip(l.note||'')));
   if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g]||[]).forEach(n => push('numbers','Numbers', n.ar, n.tr, String(n.n), n.digit)));
-  if(M.start && M.start.survival) (M.start.survival.items||[]).forEach(it => push('start','Start Here', it.ar, it.tr, it.en, ''));
   if(M.listening){
     const tl = {}; (M.listening.topics||[]).forEach(t => tl[t.id] = t.label);
     (M.listening.phrases||[]).forEach(p => push('listening', (tl[p.topic]||p.topic), p.arabic, p.transliteration, p.english, ''));
@@ -2920,7 +2846,7 @@ if(M.vocab){
 })();
 
 // open first panel
-activate('start');
+showGroup('g-sounds');   // open on Sounds & Alphabet, Alphabet active by default
 </script>
 </body>
 </html>

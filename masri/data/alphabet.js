@@ -155,5 +155,28 @@ window.MASRI.alphabet = {
     tanwin: "Tanwīn (ً ٌ ٍ) — doubled short-vowel marks that add an -n sound — is mainly a formal-Arabic feature and is not central to Egyptian Arabic."
   },
 
+  // Compact key to the transliteration used across Masri (long vowels, throat sounds,
+  // emphatics). Shown as a collapsed reference beneath the detailed letter cards.
+  translit: {
+    title: "How to read Masri transliteration",
+    rows: [
+      { sym: "ā", means: "long a", ex_tr: "bāb", ex_en: "door" },
+      { sym: "ē", means: "long Egyptian e", ex_tr: "bēt", ex_en: "house" },
+      { sym: "ī", means: "long ee", ex_tr: "fīl", ex_en: "elephant" },
+      { sym: "ō", means: "long Egyptian o", ex_tr: "yōm", ex_en: "day" },
+      { sym: "ū", means: "long oo", ex_tr: "nūr", ex_en: "light" },
+      { sym: "ʿ", means: "the letter ع — a throat sound", ex_tr: "ʿarabi", ex_en: "Arabic" },
+      { sym: "ʾ", means: "hamza / glottal stop (also Egyptian ق)", ex_tr: "ʾahwa", ex_en: "coffee" },
+      { sym: "ḥ", means: "the letter ح — a deep, breathy h", ex_tr: "ḥobb", ex_en: "love" },
+      { sym: "kh", means: "the letter خ — as in “loch”", ex_tr: "khamsa", ex_en: "five" },
+      { sym: "gh", means: "the letter غ — a gargled r", ex_tr: "ghāli", ex_en: "expensive" },
+      { sym: "ṣ", means: "emphatic (heavy) s", ex_tr: "ṣabāḥ", ex_en: "morning" },
+      { sym: "ḍ", means: "emphatic (heavy) d", ex_tr: "ḍēf", ex_en: "guest" },
+      { sym: "ṭ", means: "emphatic (heavy) t", ex_tr: "ṭayyeb", ex_en: "okay" },
+      { sym: "ẓ", means: "ظ — in Egyptian usually said as a heavy z", ex_tr: "zarf", ex_en: "envelope" }
+    ],
+    note: "Transliteration is a pronunciation aid. The Arabic spelling remains the main reference."
+  },
+
   wbNote: "Try a word in Word Builder to see its individual letters, letter names, and word structure."
 };
