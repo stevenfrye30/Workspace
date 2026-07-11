@@ -6229,7 +6229,8 @@
       "consorts": [
         "radha",
         "rukmini",
-        "satyabhama"
+        "satyabhama",
+        "jambavati"
       ],
       "children": [
         "pradyumna"
@@ -24649,7 +24650,9 @@
         "mother-of-the-pandavas",
         "mahabharata"
       ],
-      "parents": [],
+      "parents": [
+        "shurasena"
+      ],
       "consorts": [],
       "children": [
         "karna",
@@ -25038,6 +25041,209 @@
       "archetype": null,
       "parallels": [],
       "description": "Wife of the sage Atri, exalted for her chastity and virtue; mother of Dattatreya, and in Puranic accounts of Chandra."
+    },
+    {
+      "id": "rukmini",
+      "name": "Rukmini",
+      "pantheon": "hindu",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "chief-queen-of-krishna",
+        "avatar-of-lakshmi"
+      ],
+      "parents": [],
+      "consorts": [
+        "krishna"
+      ],
+      "children": [
+        "pradyumna"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Princess of Vidarbha and chief queen of Krishna, worshipped as an avatar of Lakshmi; mother of Pradyumna."
+    },
+    {
+      "id": "satyabhama",
+      "name": "Satyabhama",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen-of-krishna",
+        "valor"
+      ],
+      "parents": [],
+      "consorts": [
+        "krishna"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Fiery queen of Krishna and daughter of Satrajit; she fought at his side in the campaign against Narakasura."
+    },
+    {
+      "id": "jambavati",
+      "name": "Jambavati",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen-of-krishna",
+        "daughter-of-jambavan"
+      ],
+      "parents": [
+        "jambavan"
+      ],
+      "consorts": [
+        "krishna"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of the bear-king Jambavan and a queen of Krishna, wed after Krishna's contest over the Syamantaka jewel."
+    },
+    {
+      "id": "pradyumna",
+      "name": "Pradyumna",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "warrior",
+        "kama-reborn"
+      ],
+      "parents": [
+        "krishna",
+        "rukmini"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Krishna and Rukmini, held to be the god Kama reborn; a leading warrior of the Yadavas."
+    },
+    {
+      "id": "revati",
+      "name": "Revati",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "consort-of-balarama"
+      ],
+      "parents": [],
+      "consorts": [
+        "balarama"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wife of Balarama and daughter of King Kakudmi; in a famed tale she returned from Brahma's realm to find ages had passed on earth."
+    },
+    {
+      "id": "ugrasena",
+      "name": "Ugrasena",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "mathura-king"
+      ],
+      "parents": [],
+      "consorts": [
+        "padmavati"
+      ],
+      "children": [
+        "kamsa"
+      ],
+      "siblings": [
+        "devaka"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Yadava king of Mathura, deposed by his son Kamsa and restored to the throne by Krishna."
+    },
+    {
+      "id": "shurasena",
+      "name": "Shurasena",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "yadava-king"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "vasudeva",
+        "kunti"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Yadava king of the Vrishnis; father of Vasudeva and of Kunti, and thereby grandfather of Krishna."
+    },
+    {
+      "id": "devaka",
+      "name": "Devaka",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "yadava-noble",
+        "father-of-devaki"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "devaki"
+      ],
+      "siblings": [
+        "ugrasena"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Yadava noble, father of Devaki and brother of Ugrasena."
+    },
+    {
+      "id": "padmavati",
+      "name": "Padmavati",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "queen-of-mathura",
+        "mother-of-kamsa"
+      ],
+      "parents": [],
+      "consorts": [
+        "ugrasena"
+      ],
+      "children": [
+        "kamsa"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Queen of Ugrasena and mother of Kamsa in the Puranic Yadava genealogy."
+    },
+    {
+      "id": "narakasura",
+      "name": "Narakasura",
+      "pantheon": "hindu",
+      "category": "monster",
+      "gender": "M",
+      "domains": [
+        "asura-king",
+        "son-of-earth"
+      ],
+      "parents": [
+        "bhudevi"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Asura king of Pragjyotisha, son of the earth-goddess Bhudevi; slain by Krishna. Also called Bhauma."
     }
   ],
   "notable_mentions": [
