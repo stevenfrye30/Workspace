@@ -415,6 +415,31 @@ main p { line-height:1.7; }
   color:var(--gold-deep); font-size:10.5px; font-variant:small-caps;
   letter-spacing:1px; font-weight:bold; opacity:0.85;
 }
+
+/* Barebone stacked layout — class name, then counts, then era, then a single
+   column of pantheons underneath. */
+.barebone-group .pantheon-group-head {
+  flex-direction:column; align-items:flex-start; gap:5px;
+  padding:20px 24px 15px;
+}
+.barebone-group .pantheon-group-head h3 { line-height:1.1; }
+.barebone-group .pantheon-group-head .group-count { margin-left:0; }
+.barebone-group .pantheon-group-head .group-era { margin-left:0; }
+.pantheon-chip-row.barebone-column {
+  flex-direction:column; align-items:stretch; flex-wrap:nowrap;
+  gap:6px; max-width:520px;
+}
+.barebone-column .pantheon-chip {
+  width:100%; justify-content:flex-start;
+  padding:9px 14px 9px 13px;
+}
+.barebone-column .pantheon-chip .chip-name { flex:1; }
+.barebone-column .pantheon-chip .chip-count {
+  margin-left:auto;
+  background:var(--panel2); padding:2px 9px; border-radius:10px;
+  border:1px solid var(--line); flex-shrink:0;
+}
+.barebone-column .pantheon-chip:hover { transform:translateX(2px); }
 /* Pantheon detail card — action button to jump into the family tree */
 .modal-actions { margin-top:22px; }
 .modal-tree-btn {
@@ -2662,13 +2687,13 @@ function renderPantheonBarebone(counts) {
       </button>
     `).join('');
     return `
-      <section class="pantheon-group${collapsed}" data-gid="${grp.id}"${tintStyle}>
+      <section class="pantheon-group barebone-group${collapsed}" data-gid="${grp.id}"${tintStyle}>
         <div class="pantheon-group-head" role="button" tabindex="0" aria-expanded="${collapsed ? 'false' : 'true'}">
           <h3><span class="toggle-icon" aria-hidden="true">▾</span>${grp.name}</h3>
           <span class="group-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${totalFigures} figure${totalFigures === 1 ? '' : 's'}${livingSuffix}</span>
           <span class="group-era">${era}</span>
         </div>
-        <div class="pantheon-chip-row">${chips}</div>
+        <div class="pantheon-chip-row barebone-column">${chips}</div>
       </section>
     `;
   }).join('');
