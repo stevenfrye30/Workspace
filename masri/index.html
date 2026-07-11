@@ -377,6 +377,63 @@
   .sym-audiostatus{font-size:12px;color:var(--muted);min-height:1.1em;margin-top:6px}
   @media (max-width:600px){ .sym-wrap{grid-template-columns:1fr} }
 
+  /* ── listening & speaking ── */
+  .ls-modes{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px}
+  .ls-mode{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:calc(12.5px * var(--ui-scale));font-weight:600;padding:7px 14px;cursor:pointer;white-space:nowrap}
+  .ls-mode:hover{border-color:var(--gold)}
+  .ls-mode:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ls-mode[aria-pressed="true"]{background:var(--gold);color:#111;border-color:var(--gold)}
+  .ls-desc{color:var(--muted);font-size:calc(13px * var(--ui-scale));line-height:1.55;margin:0 0 14px;max-width:760px}
+  .ls-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin:0 0 16px}
+  .ls-filter{display:flex;align-items:center;gap:7px}
+  .ls-filter label{font-size:calc(12px * var(--ui-scale));color:var(--muted);font-weight:600}
+  .ls-select{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;font-family:var(--ui);font-size:calc(13px * var(--ui-scale));padding:6px 10px;cursor:pointer;max-width:100%}
+  .ls-select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ls-stats{display:flex;flex-wrap:wrap;gap:6px 12px;font-size:calc(12px * var(--ui-scale));color:var(--muted);margin-left:auto}
+  .ls-stat b{color:var(--fg)}
+  .ls-audionote{border:1px solid var(--border);background:var(--surf2);border-radius:8px;padding:8px 11px;color:var(--muted);font-size:calc(12px * var(--ui-scale));line-height:1.5;margin:0 0 16px}
+  .ls-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:18px 18px 16px;margin:0 0 14px}
+  .ls-count{font-size:calc(11.5px * var(--ui-scale));color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:0 0 12px}
+  .ls-ar{font-family:var(--ar);direction:rtl;unicode-bidi:isolate;font-size:calc(30px * var(--ar-scale));color:var(--ar-color);line-height:1.5;text-align:center;margin:6px 0}
+  .ls-ar.small{font-size:calc(24px * var(--ar-scale))}
+  .ls-tr{direction:ltr;unicode-bidi:isolate;color:var(--blue);font-style:italic;font-size:calc(15px * var(--ui-scale));text-align:center;margin:6px 0}
+  .ls-en{direction:ltr;unicode-bidi:isolate;color:var(--fg);font-size:calc(15px * var(--ui-scale));text-align:center;margin:6px 0}
+  .ls-prompt{direction:ltr;unicode-bidi:isolate;color:var(--fg);font-size:calc(15px * var(--ui-scale));line-height:1.55;text-align:center;margin:4px 0 10px}
+  .ls-hidden{color:var(--muted);font-style:italic;font-size:calc(13px * var(--ui-scale));text-align:center;margin:8px 0}
+  .ls-controls{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px}
+  .ls-btn{display:inline-flex;align-items:center;gap:6px;background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;font-family:var(--ui);font-size:calc(13px * var(--ui-scale));font-weight:600;padding:9px 14px;cursor:pointer;min-height:40px}
+  .ls-btn:hover{border-color:var(--gold)}
+  .ls-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ls-btn.primary{background:var(--gold);color:#111;border-color:var(--gold)}
+  .ls-btn.play[aria-pressed="true"]{background:var(--green);color:#111;border-color:var(--green)}
+  .ls-btn.unavailable{color:var(--muted);cursor:not-allowed;opacity:.7}
+  .ls-btn:disabled{opacity:.5;cursor:not-allowed}
+  .ls-opts{display:flex;flex-direction:column;gap:9px;margin-top:14px}
+  .ls-opt{display:block;width:100%;text-align:left;background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:10px;font-family:var(--ui);font-size:calc(14px * var(--ui-scale));padding:12px 14px;cursor:pointer;min-height:44px}
+  .ls-opt:hover{border-color:var(--gold)}
+  .ls-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .ls-opt.correct{background:rgba(111,206,154,.16);border-color:var(--green);color:var(--fg)}
+  .ls-opt.wrong{background:rgba(224,122,122,.14);border-color:#e07a7a;color:var(--fg)}
+  .ls-opt:disabled{cursor:default}
+  .ls-feedback{font-size:calc(13px * var(--ui-scale));line-height:1.55;margin-top:12px;min-height:1.2em;text-align:center}
+  .ls-feedback.good{color:var(--green)}
+  .ls-feedback.bad{color:#e79a9a}
+  .ls-status{font-size:calc(12px * var(--ui-scale));color:var(--muted);min-height:1.1em;margin-top:8px;text-align:center}
+  .ls-dlg-line{display:flex;gap:10px;padding:11px 0;border-bottom:1px solid var(--border)}
+  .ls-dlg-line:last-child{border-bottom:none}
+  .ls-dlg-role{flex:0 0 auto;font-size:calc(11px * var(--ui-scale));font-weight:700;color:var(--muted);min-width:64px;padding-top:4px}
+  .ls-dlg-line.you .ls-dlg-role{color:var(--gold)}
+  .ls-dlg-body{min-width:0;flex:1}
+  .ls-dlg-line .ls-ar{text-align:right;font-size:calc(22px * var(--ar-scale));margin:2px 0}
+  .ls-dlg-line .ls-tr,.ls-dlg-line .ls-en{text-align:left;margin:2px 0}
+  .ls-dlg-turn{font-size:calc(12px * var(--ui-scale));color:var(--gold);font-weight:600;margin:2px 0 6px}
+  .ls-roles{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 4px}
+  @media (max-width:600px){
+    .ls-stats{margin-left:0;width:100%}
+    .ls-ar{font-size:calc(26px * var(--ar-scale))}
+    .ls-btn,.ls-mode{flex:1 1 auto;justify-content:center}
+  }
+
   /* ── word builder ── */
   .wb-form{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px;margin-bottom:14px;display:grid;grid-template-columns:minmax(0,1fr);gap:12px}
   .wb-field{display:flex;flex-direction:column;gap:5px}
@@ -644,6 +701,7 @@
   <section id="p-word-builder" class="panel"></section>
   <section id="p-test"     class="panel"></section>
   <section id="p-practice" class="panel"></section>
+  <section id="p-listening" class="panel"></section>
   <section id="p-grammar"  class="panel"></section>
   <section id="p-verbs"    class="panel"></section>
   <section id="p-numbers"  class="panel"></section>
@@ -668,6 +726,7 @@
 <script src="data/sounds.js"></script>
 <script src="data/alphabet.js"></script>
 <script src="data/symbols.js"></script>
+<script src="data/listening.js"></script>
 <script src="data/typing.js"></script>
 <script src="data/passages.js"></script>
 <script src="data/grammar.js"></script>
@@ -695,7 +754,7 @@ const GROUPS = [
   // the group so the subnav shows a compact Back / Prev / Next bar instead of a
   // crowded 13-button row.
   { id:'g-practice', label:'Practice',          dashboard:'practice',
-    sections:['practice','grammar','verbs','numbers','time','around','shopping','food','health','people','descriptions','phrases','vocab'] },
+    sections:['practice','listening','grammar','verbs','numbers','time','around','shopping','food','health','people','descriptions','phrases','vocab'] },
   // Type: moving from recognizing letters to physically typing Arabic. Test (the
   // practice modes) is the default landing section; Word Builder (the existing panel,
   // unchanged) is second.
@@ -703,7 +762,7 @@ const GROUPS = [
 ];
 const SECTION_LABEL = {
   start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', symbols:'Symbols', 'word-builder':'Word Builder',
-  practice:'Practice',
+  practice:'Practice', listening:'Listening & Speaking',
   grammar:'Grammar', verbs:'Verbs',
   numbers:'Numbers', time:'Time & Days', around:'Getting Around', shopping:'Money & Shopping',
   food:'Food & Ordering', health:'Health & Emergencies', people:'People & Small Talk',
@@ -776,9 +835,10 @@ function buildPracticeSubnav(g, activeSid){
 }
 
 function showSection(sid){
-  // Navigating away from Symbols must stop any playing reference clip and reset its
+  // Navigating away from Symbols or Listening must stop any playing clip and reset its
   // button (audio is not tied to panel visibility, so it would otherwise keep playing).
   if(window.MASRI && window.MASRI._symbolAudio) window.MASRI._symbolAudio.stop();
+  if(window.MASRI && window.MASRI._listeningAudio) window.MASRI._listeningAudio.stop();
   document.querySelectorAll('main .panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById('p-' + sid); if(panel) panel.classList.add('active');
   subnav.querySelectorAll('.subtab').forEach(b => {
@@ -1264,6 +1324,7 @@ function renderTableCards(arr){
 (function(){
   const panel = document.getElementById('p-practice'); if(!panel) return;
   const CARDS = [
+    ['listening',    'Beginner listening & speaking: hear, reveal, choose, shadow, respond, and short dialogues.'],
     ['grammar',      'Core sentence structure, articles, possession, questions, and common grammar patterns.'],
     ['verbs',        'Common Egyptian Arabic verbs, conjugation patterns, tense, and negation.'],
     ['numbers',      'Counting, quantities, prices, phone numbers, and useful number patterns.'],
@@ -1277,7 +1338,7 @@ function renderTableCards(arr){
     ['phrases',      'Useful complete expressions for common Egyptian Arabic situations.'],
     ['vocab',        'Browse and review the wider word collection by category.']
   ];
-  let h = `<p class="lead">Twelve reference sections for everyday Egyptian Arabic. Pick a topic to open it; use <b>&larr; Practice</b> in the bar above any section to come back here.</p>`;
+  let h = `<p class="lead">Practice sections for everyday Egyptian Arabic — start with <b>Listening &amp; Speaking</b>, or pick a reference topic. Use <b>&larr; Practice</b> in the bar above any section to come back here.</p>`;
   h += `<div class="pd-grid">` + CARDS.map(([sid, desc]) =>
       `<button class="pd-card" data-go="${esc(sid)}" aria-label="Open ${esc(SECTION_LABEL[sid] || sid)}">`
     + `<span class="pd-title">${esc(SECTION_LABEL[sid] || sid)}<span class="pd-arrow" aria-hidden="true">&rarr;</span></span>`
@@ -1285,6 +1346,309 @@ function renderTableCards(arr){
   panel.innerHTML = h;
   panel.querySelectorAll('[data-go]').forEach(b =>
     b.addEventListener('click', () => { activate(b.dataset.go); window.scrollTo(0, 0); }));
+})();
+
+// LISTENING & SPEAKING — beginner listen/speak practice inside the Practice tab.
+// Five modes (reveal, choose, shadow, respond, dialogues) over an original Cairene
+// phrase library + 8 mini-dialogues (data/listening.js). One shared audio controller
+// (one clip at a time, replay, stop-on-leave via showSection, error-announced, no
+// autoplay/preload). When no native recordings exist (audioReady=false) the UI shows a
+// clear "recording unavailable" state and never requests a file. Session progress is
+// in-memory only (resets on reload); only harmless prefs (mode/topic/display) persist.
+(function(){
+  const panel = document.getElementById('p-listening');
+  const D = M.listening;
+  if(!panel || !D) return;
+
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const audioReady = !!D.audioReady;
+  const audioBase = D.audioBase || 'audio/listening/';
+  const TOPICS = D.topics || [], PHRASES = D.phrases || [], DIALOGUES = D.dialogues || [];
+  const topicLabel = id => (TOPICS.find(t => t.id === id) || {}).label || id;
+
+  const pref = (k,d) => { try{ const v = localStorage.getItem('masri-listening-'+k); return v==null?d:v; }catch(e){ return d; } };
+  const setPref = (k,v) => { try{ localStorage.setItem('masri-listening-'+k, v); }catch(e){} };
+
+  const MODES = [['reveal','Listen & reveal'],['choose','Listen & choose'],['shadow','Shadow & repeat'],['respond','Respond out loud'],['dialogue','Mini-dialogues']];
+  const MODE_DESC = {
+    reveal:'Play the phrase, then reveal the Arabic, transliteration, and English one at a time.',
+    choose:'Play the phrase and pick its English meaning. Wrong answers don’t advance; the answer is explained once you get it.',
+    shadow:'See and hear the phrase, then repeat it aloud. No automatic pronunciation scoring — this is practice.',
+    respond:'Read the prompt, answer out loud, then reveal a natural Egyptian response.',
+    dialogue:'Choose a role and work through a short everyday conversation one line at a time.'
+  };
+
+  const S = {
+    mode: MODES.some(m => m[0] === pref('mode','')) ? pref('mode','') : 'reveal',
+    topic: 'all',
+    display: ['both','tr','en','none'].indexOf(pref('display','both'))>=0 ? pref('display','both') : 'both',
+    ri:0, ci:0, si:0, pi:0,
+    revealed:{}, resp:{},
+    chooseFor:null, chooseOpts:null, chooseAnswered:false, chooseWrong:false,
+    completed:new Set(), practiced:new Set(),
+    correct:0, total:0, streak:0, best:0,
+    dlgId:(DIALOGUES[0]||{}).id||null, dlgRole:'A', dlgStep:0, dlgReveal:false, dlgShowAll:false, dlgDone:new Set()
+  };
+  { const t = pref('topic','all'); S.topic = (t==='all' || TOPICS.some(x=>x.id===t)) ? t : 'all'; }
+
+  const filtered = () => S.topic==='all' ? PHRASES : PHRASES.filter(p => p.topic===S.topic);
+  const clearCard = () => { S.revealed={}; S.resp={}; S.chooseFor=null; S.chooseOpts=null; S.chooseAnswered=false; S.chooseWrong=false; S.dlgReveal=false; };
+  const bumpStreak = () => { S.streak++; if(S.streak>S.best) S.best=S.streak; };
+
+  // ── shared audio controller ───────────────────────────────────────────────
+  let audio=null, curBtn=null;
+  const announce = m => { const el=panel.querySelector('#ls-status'); if(el) el.textContent = m||''; };
+  function resetPlay(b){ if(!b) return; b.classList.remove('playing'); b.setAttribute('aria-pressed','false'); const l=b.querySelector('.ls-btn-lbl'); if(l) l.textContent=b.dataset.playlabel||'Play'; }
+  function stop(){ try{ if(audio) audio.pause(); }catch(e){} if(curBtn){ resetPlay(curBtn); curBtn=null; } }
+  function playBtn(b){
+    const file = b.dataset.audiofile;
+    if(!audioReady || !file){ announce('Recordings aren’t available yet — audio is coming. For now, read the phrase and say it aloud.'); return; }
+    if(curBtn===b){ stop(); return; }
+    stop(); announce('');
+    if(!audio){ audio=new Audio(); audio.addEventListener('ended',()=>{ if(curBtn){ resetPlay(curBtn); curBtn=null; } }); }
+    audio.onerror=()=>{ if(curBtn===b) curBtn=null; resetPlay(b); announce('That recording couldn’t be played.'); };
+    audio.src=audioBase+file;
+    curBtn=b; b.classList.add('playing'); b.setAttribute('aria-pressed','true'); const l=b.querySelector('.ls-btn-lbl'); if(l) l.textContent='Stop';
+    const pr=audio.play(); if(pr&&pr.catch) pr.catch(()=>{ if(curBtn===b) curBtn=null; resetPlay(b); announce('That recording couldn’t be played.'); });
+  }
+  window.MASRI._listeningAudio = { stop, get current(){ return curBtn; } };
+
+  function playHtml(file, label){
+    label = label || 'Play';
+    if(!audioReady) return `<button type="button" class="ls-btn play unavailable" aria-disabled="true" aria-label="${esc(label)} — recording unavailable (audio coming soon)"><span aria-hidden="true">🔊</span> <span class="ls-btn-lbl">${esc(label)}</span></button>`;
+    return `<button type="button" class="ls-btn play" data-audiofile="${esc(file)}" data-playlabel="${esc(label)}" aria-pressed="false" aria-label="${esc(label)}"><span aria-hidden="true">▶</span> <span class="ls-btn-lbl">${esc(label)}</span></button>`;
+  }
+  const arHtml  = t => `<div class="ls-ar" dir="rtl">${esc(t)}</div>`;
+  const trHtml  = t => `<div class="ls-tr" dir="ltr">${esc(t)}</div>`;
+  const enHtml  = t => `<div class="ls-en" dir="ltr">${esc(t)}</div>`;
+  const btn = (action, label, cls) => `<button type="button" class="ls-btn${cls?' '+cls:''}" data-action="${action}">${esc(label)}</button>`;
+
+  // ── mode bodies ───────────────────────────────────────────────────────────
+  function bodyReveal(){
+    const list=filtered(), p=list[S.ri % list.length];
+    const showAr = S.revealed.ar || !audioReady;   // with no audio, the Arabic is the stimulus
+    let h = `<div class="ls-card"><div class="ls-count">${S.ri%list.length+1} of ${list.length} · ${esc(topicLabel(p.topic))}</div>`;
+    h += `<div class="ls-controls">${playHtml(p.audio,'Play')}</div>`;
+    h += showAr ? arHtml(p.arabic) : `<div class="ls-hidden">Arabic hidden — play, then reveal below.</div>`;
+    h += S.revealed.tr ? trHtml(p.transliteration) : '';
+    h += S.revealed.en ? enHtml(p.english) : '';
+    h += `<div class="ls-controls">`;
+    if(!showAr) h += btn('reveal-ar','Reveal Arabic');
+    if(!S.revealed.tr) h += btn('reveal-tr','Reveal transliteration');
+    if(!S.revealed.en) h += btn('reveal-en','Reveal English');
+    h += btn('done-reveal','Got it ▸','primary');
+    h += btn('next-reveal','Skip');
+    h += `</div></div>`;
+    return h;
+  }
+  function bodyChoose(){
+    const list=filtered(), p=list[S.ci % list.length];
+    if(S.chooseFor!==p.id){                       // (re)generate options for this card
+      const pool=PHRASES.filter(x=>x.english!==p.english);
+      for(let i=pool.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=pool[i]; pool[i]=pool[j]; pool[j]=t; }
+      const seen=new Set([p.english]), distract=[];
+      for(const x of pool){ if(seen.has(x.english)) continue; seen.add(x.english); distract.push(x.english); if(distract.length===3) break; }
+      const opts=distract.concat([p.english]);
+      for(let i=opts.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const t=opts[i]; opts[i]=opts[j]; opts[j]=t; }
+      S.chooseFor=p.id; S.chooseOpts=opts; S.chooseAnswered=false; S.chooseWrong=false;
+    }
+    let h=`<div class="ls-card"><div class="ls-count">Question ${S.ci%list.length+1} of ${list.length} · what does this mean?</div>`;
+    h += `<div class="ls-controls">${playHtml(p.audio,'Play phrase')}</div>`;
+    if(!audioReady) h += arHtml(p.arabic) + trHtml(p.transliteration);   // read stimulus when no audio
+    h += `<div class="ls-opts" role="group" aria-label="Choose the English meaning">`;
+    S.chooseOpts.forEach((opt,i)=>{
+      let cls=''; let dis='';
+      if(S.chooseAnswered){ dis=' disabled'; if(opt===p.english) cls=' correct'; }
+      h += `<button type="button" class="ls-opt${cls}" data-action="choose" data-i="${i}"${dis}>${esc(opt)}</button>`;
+    });
+    h += `</div>`;
+    h += `<div class="ls-feedback" id="ls-fb" aria-live="polite"></div>`;
+    if(S.chooseAnswered){
+      h += arHtml(p.arabic) + trHtml(p.transliteration);
+      h += `<div class="ls-controls">${btn('next-choose','Next ▸','primary')}</div>`;
+    }
+    h += `</div>`;
+    return h;
+  }
+  function bodyShadow(){
+    const list=filtered(), p=list[S.si % list.length];
+    const showSupport = S.revealed.support!=null ? S.revealed.support : (S.display==='both'||S.display==='tr'||S.display==='en');
+    let h=`<div class="ls-card"><div class="ls-count">${S.si%list.length+1} of ${list.length} · ${esc(topicLabel(p.topic))}</div>`;
+    h += arHtml(p.arabic);
+    const wantTr = (S.revealed.tr) || (S.revealed.support==null && (S.display==='both'||S.display==='tr'));
+    const wantEn = (S.revealed.en) || (S.revealed.support==null && (S.display==='both'||S.display==='en'));
+    if(wantTr) h += trHtml(p.transliteration);
+    if(wantEn) h += enHtml(p.english);
+    h += `<p class="ls-hidden">Play it, then say it aloud. (No automatic scoring.)</p>`;
+    h += `<div class="ls-controls">${playHtml(p.audio,'Play')}`;
+    if(audioReady) h += playHtml(p.audio.replace(/\.ogg$/,'-slow.ogg'),'Slower');
+    if(!wantTr) h += btn('reveal-tr','Show transliteration');
+    if(!wantEn) h += btn('reveal-en','Show English');
+    h += btn('practiced-shadow','Mark practiced ✓','primary');
+    h += btn('next-shadow','Next ▸');
+    h += `</div></div>`;
+    return h;
+  }
+  function bodyRespond(){
+    const list=filtered(), p=list[S.pi % list.length];
+    let h=`<div class="ls-card"><div class="ls-count">Prompt ${S.pi%list.length+1} of ${list.length} · ${esc(topicLabel(p.topic))}</div>`;
+    h += `<div class="ls-prompt">${esc(p.promptEnglish)}</div>`;
+    h += `<div class="ls-controls">${playHtml(p.audio,'Play prompt')}</div>`;
+    h += `<p class="ls-hidden">Answer out loud, then reveal a suggested response.</p>`;
+    if(S.resp.resp) h += `<div class="ls-count" style="margin-top:10px">Suggested response</div>` + arHtml(p.suggestedResponse);
+    if(S.resp.tr) h += `<div class="ls-count">Prompt · transliteration</div>` + trHtml(p.transliteration);
+    if(S.resp.en) h += `<div class="ls-count">Prompt · English</div>` + enHtml(p.english);
+    h += `<div class="ls-controls">`;
+    if(!S.resp.resp) h += btn('show-resp','Show suggested response','primary');
+    if(!S.resp.tr) h += btn('show-tr','Show transliteration');
+    if(!S.resp.en) h += btn('show-en','Show English');
+    h += btn('practiced-respond','Mark practiced ✓');
+    h += btn('next-respond','Next prompt ▸');
+    h += `</div></div>`;
+    return h;
+  }
+  function bodyDialogue(){
+    const dl = DIALOGUES.find(x=>x.id===S.dlgId) || DIALOGUES[0];
+    if(!dl) return `<div class="ls-card">No dialogues available.</div>`;
+    S.dlgId=dl.id;
+    const lines=dl.lines||[], step=Math.min(S.dlgStep, lines.length), me=S.dlgRole, meLabel=dl.roleLabels[me];
+    let h=`<div class="ls-card">`;
+    h += `<div class="ls-filter"><label for="ls-dlg-sel">Dialogue</label><select id="ls-dlg-sel" class="ls-select">`
+       + DIALOGUES.map(d=>`<option value="${esc(d.id)}"${d.id===dl.id?' selected':''}>${esc(d.title)}</option>`).join('') + `</select></div>`;
+    h += `<p class="ls-en" style="margin-top:10px">${esc(dl.situation)}</p>`;
+    h += `<div class="ls-roles" role="group" aria-label="Choose your role">`
+       + dl.roles.map(r=>`<button type="button" class="ls-mode" data-action="dlg-role" data-role="${esc(r)}" aria-pressed="${r===me}">Be ${esc(dl.roleLabels[r])}</button>`).join('')
+       + `</div>`;
+    h += `<div class="ls-controls" style="justify-content:flex-start">${btn('dlg-full', S.dlgShowAll?'Hide full dialogue':'Show full dialogue')}${btn('dlg-restart','Restart')}</div>`;
+
+    if(S.dlgShowAll){
+      h += `<div style="margin-top:12px">` + lines.map(ln=>renderLine(ln,dl,me,true)).join('') + `</div></div>`;
+      return h;
+    }
+    h += `<div class="ls-count" style="margin-top:12px">Line ${Math.min(step+1,lines.length)} of ${lines.length} · you are ${esc(meLabel)}</div>`;
+    h += `<div>` + lines.slice(0,step).map(ln=>renderLine(ln,dl,me,true)).join('') + `</div>`;
+    if(step < lines.length){
+      const ln=lines[step], mine=ln.role===me;
+      h += `<div class="ls-card" style="background:var(--surf2);margin-top:12px">`;
+      if(mine){
+        h += `<div class="ls-dlg-turn">Your turn (${esc(meLabel)}) — say your line`+(audioReady?', then check it':'')+`.</div>`;
+        h += S.dlgReveal ? renderLine(ln,dl,me,true) : `<div class="ls-hidden">Say it aloud, then reveal.</div>`;
+        h += `<div class="ls-controls">`;
+        if(!S.dlgReveal) h += btn('dlg-reveal','Reveal my line','primary');
+        h += btn('dlg-next','Next line ▸');
+        h += `</div>`;
+      } else {
+        h += `<div class="ls-dlg-turn">${esc(dl.roleLabels[ln.role])} says:</div>`;
+        h += renderLine(ln,dl,me,true);
+        h += `<div class="ls-controls">${btn('dlg-next','Next line ▸','primary')}</div>`;
+      }
+      h += `</div>`;
+    } else {
+      h += `<div class="ls-feedback good" style="margin-top:12px">Dialogue complete ✓</div>`;
+      h += `<div class="ls-controls">${btn('dlg-restart','Practice again','primary')}</div>`;
+    }
+    h += `</div>`;
+    return h;
+  }
+  function renderLine(ln,dl,me,full){
+    const mine=ln.role===me;
+    let h=`<div class="ls-dlg-line${mine?' you':''}"><div class="ls-dlg-role">${esc(dl.roleLabels[ln.role])}</div><div class="ls-dlg-body">`;
+    h += `<div class="ls-controls" style="justify-content:flex-start;margin:0 0 4px">${playHtml(ln.audio, mine?'Play mine':'Play')}</div>`;
+    if(full){ h += arHtml(ln.arabic) + trHtml(ln.transliteration) + enHtml(ln.english); }
+    h += `</div></div>`;
+    return h;
+  }
+
+  const BODY = { reveal:bodyReveal, choose:bodyChoose, shadow:bodyShadow, respond:bodyRespond, dialogue:bodyDialogue };
+
+  function updateStats(){
+    const el=panel.querySelector('#ls-stats'); if(!el) return;
+    el.innerHTML = `<span class="ls-stat">Completed <b>${S.completed.size}</b></span>`
+      + `<span class="ls-stat">Practiced <b>${S.practiced.size}</b></span>`
+      + `<span class="ls-stat">Quiz <b>${S.correct}</b>/<b>${S.total}</b></span>`
+      + `<span class="ls-stat">Streak <b>${S.streak}</b> (best ${S.best})</span>`;
+  }
+  function renderBody(){
+    const body=panel.querySelector('#ls-body'); if(!body) return;
+    body.innerHTML = (BODY[S.mode]||bodyReveal)();
+    updateStats(); announce('');
+  }
+  function syncModes(){ panel.querySelectorAll('.ls-mode[data-mode]').forEach(b=>b.setAttribute('aria-pressed', b.dataset.mode===S.mode ? 'true':'false')); const d=panel.querySelector('#ls-desc'); if(d) d.textContent=MODE_DESC[S.mode]||''; }
+  function toggleFilter(){ const f=panel.querySelector('#ls-filter'); if(f) f.style.display = (S.mode==='dialogue') ? 'none' : ''; }
+
+  function handleChoose(i, elBtn){
+    if(S.chooseAnswered) return;
+    const list=filtered(), p=list[S.ci % list.length];
+    const chosen=S.chooseOpts[i], fb=panel.querySelector('#ls-fb');
+    if(chosen===p.english){
+      S.chooseAnswered=true; S.total++;
+      if(!S.chooseWrong){ S.correct++; bumpStreak(); }
+      S.completed.add(p.id);
+      renderBody();
+      const fb2=panel.querySelector('#ls-fb'); if(fb2){ fb2.className='ls-feedback good'; fb2.textContent = S.chooseWrong ? 'Correct — that’s the one.' : 'Correct! Nice.'; }
+    } else {
+      S.chooseWrong=true; S.streak=0;
+      if(elBtn){ elBtn.classList.add('wrong'); elBtn.disabled=true; }
+      if(fb){ fb.className='ls-feedback bad'; fb.textContent='Not quite — try another.'; }
+      updateStats();
+    }
+  }
+
+  function onBodyClick(e){
+    const playB=e.target.closest('.ls-btn.play'); if(playB){ playBtn(playB); return; }
+    const el=e.target.closest('[data-action]'); if(!el) return;
+    const a=el.dataset.action, list=filtered();
+    switch(a){
+      case 'reveal-ar': S.revealed.ar=true; renderBody(); break;
+      case 'reveal-tr': S.revealed.tr=true; renderBody(); break;
+      case 'reveal-en': S.revealed.en=true; renderBody(); break;
+      case 'done-reveal': { const p=list[S.ri%list.length]; S.completed.add(p.id); bumpStreak(); S.ri++; clearCard(); renderBody(); break; }
+      case 'next-reveal': S.ri++; clearCard(); renderBody(); break;
+      case 'choose': handleChoose(+el.dataset.i, el); break;
+      case 'next-choose': S.ci++; clearCard(); renderBody(); break;
+      case 'practiced-shadow': { const p=list[S.si%list.length]; S.practiced.add(p.id); bumpStreak(); announce('Marked as practiced.'); updateStats(); break; }
+      case 'next-shadow': S.si++; clearCard(); renderBody(); break;
+      case 'show-resp': S.resp.resp=true; renderBody(); break;
+      case 'show-tr': S.resp.tr=true; renderBody(); break;
+      case 'show-en': S.resp.en=true; renderBody(); break;
+      case 'practiced-respond': { const p=list[S.pi%list.length]; S.completed.add(p.id); bumpStreak(); announce('Marked as practiced.'); updateStats(); break; }
+      case 'next-respond': S.pi++; clearCard(); renderBody(); break;
+      case 'dlg-role': stop(); S.dlgRole=el.dataset.role; S.dlgStep=0; S.dlgReveal=false; renderBody(); break;
+      case 'dlg-reveal': S.dlgReveal=true; renderBody(); break;
+      case 'dlg-next': { const dl=DIALOGUES.find(x=>x.id===S.dlgId); const n=(dl.lines||[]).length; S.dlgStep=Math.min(S.dlgStep+1,n); S.dlgReveal=false; if(S.dlgStep>=n) S.dlgDone.add(dl.id); renderBody(); break; }
+      case 'dlg-full': S.dlgShowAll=!S.dlgShowAll; renderBody(); break;
+      case 'dlg-restart': stop(); S.dlgStep=0; S.dlgReveal=false; S.dlgShowAll=false; renderBody(); break;
+    }
+  }
+  function onBodyChange(e){
+    const sel=e.target.closest('#ls-dlg-sel'); if(sel){ stop(); S.dlgId=sel.value; S.dlgStep=0; S.dlgReveal=false; S.dlgShowAll=false; renderBody(); }
+  }
+
+  // ── shell (built once) ────────────────────────────────────────────────────
+  let h = `<p class="lead">Move from reading to <b>recognizing</b> and <b>speaking</b> everyday Egyptian Arabic. Pick a mode, then work through the phrases or a short dialogue.</p>`;
+  h += `<div class="ls-modes" role="group" aria-label="Practice mode">`
+     + MODES.map(m=>`<button type="button" class="ls-mode" data-mode="${m[0]}" aria-pressed="${m[0]===S.mode?'true':'false'}">${esc(m[1])}</button>`).join('') + `</div>`;
+  h += `<p class="ls-desc" id="ls-desc">${esc(MODE_DESC[S.mode]||'')}</p>`;
+  if(!audioReady) h += `<p class="ls-audionote">Native Egyptian recordings are being prepared, so the <b>Play</b> buttons are inactive for now and each phrase is shown so you can read it and say it aloud. There is <b>no automatic pronunciation scoring</b> — this is guided practice. Required recordings are listed in <code>audio/listening/MANIFEST.md</code>.</p>`;
+  h += `<div class="ls-bar">`
+     + `<span class="ls-filter" id="ls-filter"><label for="ls-topic">Topic</label>`
+     + `<select id="ls-topic" class="ls-select"><option value="all"${S.topic==='all'?' selected':''}>All topics</option>`
+     + TOPICS.map(t=>`<option value="${esc(t.id)}"${t.id===S.topic?' selected':''}>${esc(t.label)}</option>`).join('') + `</select></span>`
+     + `<span class="ls-stats" id="ls-stats" aria-live="polite"></span>`
+     + `</div>`;
+  h += `<div id="ls-body"></div>`;
+  h += `<div class="ls-status" id="ls-status" role="status" aria-live="assertive"></div>`;
+  panel.innerHTML = h;
+
+  panel.querySelectorAll('.ls-mode[data-mode]').forEach(b => b.addEventListener('click', () => {
+    if(S.mode===b.dataset.mode) return; stop(); S.mode=b.dataset.mode; setPref('mode',S.mode); clearCard(); syncModes(); toggleFilter(); renderBody();
+  }));
+  const topicSel=panel.querySelector('#ls-topic');
+  if(topicSel) topicSel.addEventListener('change', () => { stop(); S.topic=topicSel.value; setPref('topic',S.topic); S.ri=S.ci=S.si=S.pi=0; clearCard(); renderBody(); });
+  const body=panel.querySelector('#ls-body');
+  body.addEventListener('click', onBodyClick);
+  body.addEventListener('change', onBodyChange);
+  syncModes(); toggleFilter(); renderBody();
 })();
 
 // GRAMMAR
@@ -2391,6 +2755,11 @@ if(M.vocab){
   if(M.alphabet) (M.alphabet.letters||[]).forEach(l => push('alphabet','Alphabet', l.letter, l.name, l.sound, strip(l.note||'')));
   if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g]||[]).forEach(n => push('numbers','Numbers', n.ar, n.tr, String(n.n), n.digit)));
   if(M.start && M.start.survival) (M.start.survival.items||[]).forEach(it => push('start','Start Here', it.ar, it.tr, it.en, ''));
+  if(M.listening){
+    const tl = {}; (M.listening.topics||[]).forEach(t => tl[t.id] = t.label);
+    (M.listening.phrases||[]).forEach(p => push('listening', (tl[p.topic]||p.topic), p.arabic, p.transliteration, p.english, ''));
+    (M.listening.dialogues||[]).forEach(dl => (dl.lines||[]).forEach(ln => push('listening', dl.title, ln.arabic, ln.transliteration, ln.english, '')));
+  }
 
   // Beginner-friendly normalization: lowercase, strip Latin diacritics via NFD
   // (ā→a, ḥ→h, ṣ→s, ṭ→t, ḍ→d, ẓ→z, ī→i, ū→u, ē→e, ō→o), Arabic tashkeel, and the
