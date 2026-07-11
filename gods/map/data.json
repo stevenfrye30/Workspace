@@ -21707,7 +21707,7 @@
       "id": "fjalar",
       "name": "Fjalar and Galar",
       "pantheon": "norse",
-      "category": "monster",
+      "category": "minor",
       "gender": "M",
       "domains": [
         "dwarves",
@@ -24563,6 +24563,81 @@
       "archetype": null,
       "parallels": [],
       "description": "Völva and wife of Aurvandil; her galdr began to work loose the whetstone lodged in Thor's head before she was distracted."
+    },
+    {
+      "id": "norvi",
+      "name": "Nörvi",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "father-of-night"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "nott"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Jötunn father of Nótt (Night), named Nörvi or Narfi in Gylfaginning. Distinct from Narfi, the son of Loki."
+    },
+    {
+      "id": "naglfari",
+      "name": "Naglfari",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "first-husband-of-night"
+      ],
+      "parents": [],
+      "consorts": [
+        "nott"
+      ],
+      "children": [
+        "aud"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "First husband of Nótt and father of her son Auðr; not to be confused with Naglfar, the ship of the dead."
+    },
+    {
+      "id": "aud",
+      "name": "Auðr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "son-of-night"
+      ],
+      "parents": [
+        "nott",
+        "naglfari"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Nótt and her first husband Naglfari, according to Gylfaginning."
+    },
+    {
+      "id": "nep",
+      "name": "Nepr",
+      "pantheon": "norse",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "father-of-nanna"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "nanna-norse"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Father of Nanna, who is called Nepsdóttir; counted among the Aesir in the Prose Edda."
     }
   ],
   "notable_mentions": [
