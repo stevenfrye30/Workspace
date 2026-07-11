@@ -409,6 +409,72 @@
     .wb-ld-group{gap:4px 8px;padding:7px 9px}
   }
 
+  /* ── type · test (typing practice + keyboard reference) ── */
+  .tt-help{margin:0 0 16px}
+  .tt-help > summary{cursor:pointer;font-size:12.5px;color:var(--gold);font-weight:600;list-style:none;padding:2px 0}
+  .tt-help > summary::-webkit-details-marker{display:none}
+  .tt-help > summary::before{content:"\25B8 "}
+  .tt-help[open] > summary::before{content:"\25BE "}
+  .tt-help ol{margin:8px 0 0 18px;color:var(--muted);font-size:12.5px;line-height:1.7}
+  .tt-kbdnote{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 14px;font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.55}
+  .tt-kbdnote kbd{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-family:var(--ui);font-size:11.5px;color:var(--gold)}
+  /* mode selector */
+  .tt-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:18px}
+  .tt-mode{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 12px;text-align:center;cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;color:var(--fg);transition:border-color .15s,background .15s}
+  .tt-mode:hover{border-color:var(--gold)}
+  .tt-mode:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .tt-mode[aria-pressed="true"]{background:var(--gold);color:#111;border-color:var(--gold)}
+  .tt-mode .tt-mdesc{display:block;font-weight:400;font-size:11px;margin-top:3px;opacity:.85}
+  /* prompt card */
+  .tt-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px 18px;text-align:center;margin-bottom:14px}
+  .tt-prompt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+  .tt-target{font-family:var(--ar);color:var(--ar-color);direction:rtl;unicode-bidi:isolate;line-height:1.4;word-break:break-word}
+  .tt-target.letter{font-size:calc(72px * var(--ar-scale))}
+  .tt-target.word{font-size:calc(46px * var(--ar-scale))}
+  .tt-meaning{color:var(--muted);font-size:calc(13px * var(--ui-scale));margin-top:8px}
+  .tt-hintline{color:var(--blue);font-size:calc(13px * var(--ui-scale));font-style:italic;margin-top:6px;min-height:1.2em}
+  .tt-hintline .ar{font-family:var(--ar);font-style:normal}
+  .tt-input{width:100%;max-width:320px;margin:16px auto 0;display:block;background:var(--surf2);border:1px solid var(--border);border-radius:8px;
+       color:var(--fg);font-family:var(--ar);font-size:calc(30px * var(--ar-scale));text-align:center;padding:10px 12px;outline:none;direction:rtl;unicode-bidi:isolate}
+  .tt-input:focus{border-color:var(--gold)}
+  .tt-fb{min-height:1.5em;margin-top:12px;font-size:calc(14px * var(--ui-scale));font-weight:600}
+  .tt-fb .ar{font-family:var(--ar);font-weight:400}
+  .tt-fb.ok{color:var(--green)}
+  .tt-fb.no{color:var(--gold)}
+  .tt-fb .tag{display:inline-block;border-radius:5px;padding:0 5px;margin:0 2px;font-weight:700;font-size:.8em;vertical-align:middle}
+  .tt-fb.ok .tag{background:var(--green);color:#111}
+  .tt-fb.no .tag{background:var(--gold);color:#111}
+  .tt-controls{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:14px}
+  .tt-btn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;font-family:var(--ui);font-size:13px;font-weight:600;padding:8px 15px;cursor:pointer}
+  .tt-btn:hover{border-color:var(--gold)}
+  .tt-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .tt-btn.primary{background:var(--gold);color:#111;border-color:var(--gold)}
+  .tt-score{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;color:var(--muted);font-size:12.5px;margin-top:4px}
+  .tt-score b{color:var(--fg)}
+  /* keyboard */
+  .tt-kbdbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+  .tt-kbwrap{overflow-x:auto;padding-bottom:6px}
+  .tt-kbd{display:inline-flex;flex-direction:column;gap:6px;min-width:640px}
+  .tt-krow{display:flex;gap:6px;justify-content:flex-start}
+  .tt-key{flex:0 0 auto;width:48px;min-height:48px;background:var(--card);border:1px solid var(--border);border-radius:8px;
+       display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 2px}
+  .tt-key.wide{width:auto;min-width:64px;padding-left:10px;padding-right:10px}
+  .tt-key .tt-q{font-family:var(--ui);font-size:10px;color:var(--muted);line-height:1}
+  .tt-key .tt-ka{font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--fg);direction:rtl;unicode-bidi:isolate;line-height:1.3;margin-top:2px}
+  .tt-key.digit .tt-ka{color:var(--muted)}
+  .tt-key.hideq .tt-q{visibility:hidden}
+  .tt-key.target{border-color:var(--gold);box-shadow:0 0 0 2px rgba(217,164,65,.35)}
+  .tt-key.correct{background:var(--green);border-color:var(--green)}
+  .tt-key.correct .tt-q,.tt-key.correct .tt-ka{color:#0c1a12}
+  .tt-key.wrong{background:#5a2f2f;border-color:#8a4a4a}
+  .tt-capture{outline:none}
+  .tt-capture:focus-visible{outline:2px dashed var(--gold);outline-offset:3px}
+  @media (max-width:600px){
+    .tt-target.letter{font-size:calc(60px * var(--ar-scale))}
+    .tt-target.word{font-size:calc(38px * var(--ar-scale))}
+    .tt-key{width:40px;min-height:42px}
+  }
+
   /* ── notes ── */
   .compose{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:16px}
   .compose textarea{width:100%;min-height:68px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;
@@ -467,6 +533,7 @@
   <section id="p-alphabet" class="panel"></section>
   <section id="p-symbols"  class="panel"></section>
   <section id="p-word-builder" class="panel"></section>
+  <section id="p-test"     class="panel"></section>
   <section id="p-practice" class="panel"></section>
   <section id="p-grammar"  class="panel"></section>
   <section id="p-verbs"    class="panel"></section>
@@ -492,6 +559,7 @@
 <script src="data/sounds.js"></script>
 <script src="data/alphabet.js"></script>
 <script src="data/symbols.js"></script>
+<script src="data/typing.js"></script>
 <script src="data/grammar.js"></script>
 <script src="data/verbs.js"></script>
 <script src="data/numbers.js"></script>
@@ -511,13 +579,17 @@ const esc = s => String(s).replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'
 
 const GROUPS = [
   { id:'g-start',    label:'Start Here',        sections:['start'] },
-  { id:'g-sounds',   label:'Sounds & Alphabet', sections:['sounds','alphabet','symbols','word-builder'] },
+  { id:'g-sounds',   label:'Sounds & Alphabet', sections:['sounds','alphabet','symbols'] },
   // Practice consolidates the twelve former topic sections. Its landing section
   // is the `practice` dashboard (cards navigate to the rest); `dashboard` flags
   // the group so the subnav shows a compact Back / Prev / Next bar instead of a
   // crowded 13-button row.
   { id:'g-practice', label:'Practice',          dashboard:'practice',
     sections:['practice','grammar','verbs','numbers','time','around','shopping','food','health','people','descriptions','phrases','vocab'] },
+  // Type: moving from recognizing letters to physically typing Arabic. Word Builder
+  // (the existing panel, unchanged) plus a new Test practice tab. Word Builder is the
+  // default landing section.
+  { id:'g-type',     label:'Type',              sections:['word-builder','test'] },
 ];
 const SECTION_LABEL = {
   start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', symbols:'Symbols', 'word-builder':'Word Builder',
@@ -526,6 +598,7 @@ const SECTION_LABEL = {
   numbers:'Numbers', time:'Time & Days', around:'Getting Around', shopping:'Money & Shopping',
   food:'Food & Ordering', health:'Health & Emergencies', people:'People & Small Talk',
   descriptions:'Colors & Descriptions', phrases:'Phrases', vocab:'Vocabulary',
+  test:'Test',
 };
 const SECTION_GROUP = {};
 GROUPS.forEach(g => g.sections.forEach(sid => SECTION_GROUP[sid] = g.id));
@@ -1399,6 +1472,226 @@ function renderTableCards(arr){
     auto.def = auto.tr = auto.ipa = auto.sound = ''; lastWord = null;
     $('#wb-word').focus();
   };
+})();
+
+// TYPE · TEST — three keyboard-typing practice modes (Letter Typing, Word Typing,
+// Keyboard reference + key quiz). Reuses the vetted 28-letter alphabet
+// (M.alphabet.letters) and derives its word pool at runtime from existing Masri
+// datasets — no network fetch, no second alphabet/corpus. Keyboard layout = Windows
+// Arabic (101), unshifted, from M.typing. Session-only scores (nothing typed is
+// saved); harmless prefs use their own keys: masri-type-mode, masri-keyboard-view.
+(function(){
+  const panel = document.getElementById('p-test'); if(!panel) return;
+  const M = window.MASRI || {};
+  const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } };
+  const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
+
+  // Compare-normalize: strip tatweel + diacritics ONLY — never fold distinct letters
+  // (أ إ آ ا, ة ه, ي ى, and hamza forms stay distinct).
+  const norm = s => String(s).replace(/[ً-ْٰـ]/g,'').trim();
+  const isWord = s => /^[ء-ي]{2,8}$/.test(s);
+  const arSpan = s => `<span class="ar" dir="rtl">${esc(s)}</span>`;
+  function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const x=r[i]; r[i]=r[j]; r[j]=x; } return r; }
+  // Deck: shuffles the full set, no immediate repeat, cycles all before reshuffling.
+  function makeDeck(items, keyOf){
+    let order=[], i=0, last=null;
+    function refill(){ order=shuffle(items); if(order.length>1 && keyOf(order[0])===keyOf(last)) order.push(order.shift()); i=0; }
+    refill();
+    return { next(){ if(i>=order.length) refill(); const v=order[i++]; last=v; return v; } };
+  }
+
+  // Vetted inputs ------------------------------------------------------------
+  const LETTERS = ((M.alphabet && M.alphabet.letters) || []).map(l => ({ ch:l.letter, name:l.name, name_ar:l.name_ar }));
+  const KEYMAP={}, KEY_CODES=new Set(), CODE2AR={}, CODE2Q={};
+  ((M.typing && M.typing.rows) || []).forEach(row => row.forEach(k => {
+    KEY_CODES.add(k.code); CODE2AR[k.code]=k.ar; CODE2Q[k.code]=k.q;
+    if(k.ar && k.ar.length===1 && !k.digit) KEYMAP[k.ar]={ code:k.code, q:k.q };
+  }));
+  const codeLabel = c => CODE2Q[c] || c;
+
+  // Word pool derived from existing Masri datasets (single unvocalized words only).
+  const EXCLUDE = new Set(((M.typing && M.typing.excludeWords) || []).map(norm));
+  const WORDS = (function(){
+    const seen=new Set(), pool=[];
+    const add=(ar,tr,en)=>{ if(!ar) return; const w=norm(ar); if(!isWord(w)||EXCLUDE.has(w)||seen.has(w)) return; seen.add(w); pool.push({ ar:w, tr:tr||'', en:en||'' }); };
+    ['verbs','food','people','descriptions','shopping','around','health','time'].forEach(k=>{ if(M[k]&&M[k].tables) M[k].tables.forEach(t=>(t.rows||[]).forEach(r=>add(r[0],r[1],r[2]))); });
+    if(Array.isArray(M.vocab)) M.vocab.forEach(t=>(t.words||[]).forEach(w=>add(w.ar,w.tr,w.en)));
+    if(Array.isArray(M.phrases)) M.phrases.forEach(c=>(c.items||[]).forEach(it=>{ if(!/\s/.test(String(it.ar))) add(it.ar,it.tr,it.en); }));
+    if(M.numbers) ['ones','teens','tens'].forEach(g=>(M.numbers[g]||[]).forEach(n=>add(n.ar,n.tr,String(n.n))));
+    return pool;
+  })();
+
+  const MODES=[
+    { id:'letter',   label:'Letter Typing', desc:'Type the shown letter' },
+    { id:'word',     label:'Word Typing',   desc:'Type the shown word' },
+    { id:'keyboard', label:'Keyboard',      desc:'Layout + key quiz' }
+  ];
+  let mode = lsGet('masri-type-mode','letter'); if(!MODES.some(m=>m.id===mode)) mode='letter';
+
+  panel.innerHTML =
+    `<p class="lead">Move from recognizing Arabic letters to typing them on a standard keyboard. Switch your keyboard to Arabic, then practice below.</p>`
+   +`<div class="tt-kbdnote">On Windows, press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between installed keyboard languages. Arabic must already be added as a Windows keyboard language.</div>`
+   +`<details class="tt-help"><summary>How to add the Arabic keyboard on Windows</summary>`
+     +`<ol><li>Open <b>Windows Settings</b>.</li><li>Go to <b>Time &amp; language</b>.</li><li>Open <b>Language &amp; region</b>.</li>`
+     +`<li>Add <b>Arabic</b> as a language or keyboard.</li><li>Press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between English and Arabic.</li></ol></details>`
+   +`<div class="tt-modes" role="group" aria-label="Test mode">`
+     + MODES.map(m=>`<button type="button" class="tt-mode" data-mode="${m.id}" aria-pressed="${m.id===mode}">${esc(m.label)}<span class="tt-mdesc">${esc(m.desc)}</span></button>`).join('')
+   +`</div><div id="tt-body"></div>`;
+
+  const body = panel.querySelector('#tt-body');
+  panel.querySelectorAll('.tt-mode').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
+  function setMode(m){ mode=m; lsSet('masri-type-mode',m);
+    panel.querySelectorAll('.tt-mode').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode===m)));
+    render(); }
+  function render(){ if(mode==='letter') renderLetter(); else if(mode==='word') renderWord(); else renderKeyboard(); }
+
+  // Correct = prompts answered correctly. Total = prompts completed (correct, Skip,
+  // or Reveal). Streak = consecutive corrects with no wrong attempt / Skip / Reveal.
+  const scoreBar = s => `<div class="tt-score">Correct <b class="tt-sc">${s.c}</b> · Total <b class="tt-st">${s.t}</b> · Streak <b class="tt-ss">${s.streak}</b></div>`;
+  function updateScore(s){ const a=body.querySelector('.tt-sc'),b=body.querySelector('.tt-st'),c=body.querySelector('.tt-ss'); if(a)a.textContent=s.c; if(b)b.textContent=s.t; if(c)c.textContent=s.streak; }
+
+  // Mode 1: Letter Typing ----------------------------------------------------
+  const L={ score:{c:0,t:0,streak:0}, deck:null, target:null, done:false };
+  function renderLetter(){
+    if(!LETTERS.length){ body.innerHTML='<p class="note">Alphabet data unavailable.</p>'; return; }
+    if(!L.deck) L.deck=makeDeck(LETTERS, x=>x&&x.ch);
+    if(!L.target) L.target=L.deck.next();
+    const t=L.target;
+    body.innerHTML =
+      `<div class="tt-card"><div class="tt-prompt">Type this letter</div>`
+      +`<div class="tt-target letter">${esc(t.ch)}</div>`
+      +`<div class="tt-hintline" id="tt-lh" aria-live="polite"></div>`
+      +`<label class="tt-prompt" for="tt-li" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
+      +`<input id="tt-li" class="tt-input" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the Arabic letter" maxlength="2">`
+      +`<div class="tt-fb" id="tt-lf" role="status" aria-live="polite"></div>`
+      +`<div class="tt-controls">`
+        +`<button type="button" class="tt-btn primary" data-a="check">Check</button>`
+        +`<button type="button" class="tt-btn" data-a="skip">Skip</button>`
+        +`<button type="button" class="tt-btn" data-a="key">Show key</button>`
+        +`<button type="button" class="tt-btn" data-a="name">Show name</button>`
+      +`</div></div>`+scoreBar(L.score);
+    const inp=body.querySelector('#tt-li'), fb=body.querySelector('#tt-lf'), hint=body.querySelector('#tt-lh'), checkBtn=body.querySelector('[data-a=check]');
+    inp.focus();
+    function newLetter(){ L.target=L.deck.next(); L.done=false; renderLetter(); }
+    function check(){
+      if(L.done){ newLetter(); return; }
+      const v=inp.value.trim(); if(!v) return;
+      // Validate by Unicode content, not just maxlength: the answer must be exactly
+      // ONE code point equal to the target letter. This rejects two letters, a letter
+      // plus any other character, and pasted words — regardless of the input cap.
+      const ok = Array.from(v).length===1 && v===t.ch;
+      if(ok){ L.score.c++; L.score.t++; L.score.streak++; L.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
+      else { L.score.streak=0; fb.className='tt-fb no'; fb.innerHTML='That was '+arSpan(v)+' — try again'; inp.value=''; inp.focus(); }
+      updateScore(L.score);
+    }
+    checkBtn.addEventListener('click', check);
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+    body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(L.done){ newLetter(); return; } L.score.t++; L.score.streak=0; updateScore(L.score); fb.className='tt-fb no'; fb.innerHTML='Skipped — it was '+arSpan(t.ch); L.done=true; checkBtn.textContent='Next'; });
+    body.querySelector('[data-a=key]').addEventListener('click', ()=>{ const k=KEYMAP[t.ch]; hint.innerHTML = k ? 'Windows Arabic key: <b>'+esc(k.q)+'</b>' : 'Not on this layout.'; });
+    body.querySelector('[data-a=name]').addEventListener('click', ()=>{ hint.innerHTML = 'Name: <b>'+esc(t.name||'')+'</b> '+(t.name_ar?arSpan(t.name_ar):''); });
+  }
+
+  // Mode 2: Word Typing ------------------------------------------------------
+  const W={ score:{c:0,t:0,streak:0}, deck:null, target:null, done:false };
+  function renderWord(){
+    if(!WORDS.length){ body.innerHTML='<p class="note">No word pool available.</p>'; return; }
+    if(!W.deck) W.deck=makeDeck(WORDS, x=>x&&x.ar);
+    if(!W.target) W.target=W.deck.next();
+    const t=W.target;
+    body.innerHTML =
+      `<div class="tt-card"><div class="tt-prompt">Type this word</div>`
+      +`<div class="tt-target word">${esc(t.ar)}</div>`
+      +(t.en?`<div class="tt-meaning">${esc(t.en)}</div>`:'')
+      +`<div class="tt-hintline" id="tt-wh" aria-live="polite"></div>`
+      +`<label class="tt-prompt" for="tt-wi" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
+      +`<input id="tt-wi" class="tt-input" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the Arabic word">`
+      +`<div class="tt-fb" id="tt-wf" role="status" aria-live="polite"></div>`
+      +`<div class="tt-controls">`
+        +`<button type="button" class="tt-btn primary" data-a="check">Check</button>`
+        +`<button type="button" class="tt-btn" data-a="skip">Skip</button>`
+        +`<button type="button" class="tt-btn" data-a="hint">Show reading</button>`
+      +`</div></div>`+scoreBar(W.score);
+    const inp=body.querySelector('#tt-wi'), fb=body.querySelector('#tt-wf'), hint=body.querySelector('#tt-wh'), checkBtn=body.querySelector('[data-a=check]');
+    inp.focus();
+    function newWord(){ W.target=W.deck.next(); W.done=false; renderWord(); }
+    function check(){
+      if(W.done){ newWord(); return; }
+      const v=norm(inp.value); if(!v) return;
+      if(v===norm(t.ar)){ W.score.c++; W.score.t++; W.score.streak++; W.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
+      else { W.score.streak=0; fb.className='tt-fb no'; fb.innerHTML='Not quite — try again'; inp.focus(); }
+      updateScore(W.score);
+    }
+    checkBtn.addEventListener('click', check);
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+    body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(W.done){ newWord(); return; } W.score.t++; W.score.streak=0; updateScore(W.score); fb.className='tt-fb no'; fb.innerHTML='It was '+arSpan(t.ar)+(t.tr?' <span dir="ltr">('+esc(t.tr)+')</span>':''); W.done=true; checkBtn.textContent='Next'; });
+    body.querySelector('[data-a=hint]').addEventListener('click', ()=>{ hint.innerHTML = t.tr ? 'Reading: <b dir="ltr">'+esc(t.tr)+'</b>' : 'No transliteration available.'; });
+  }
+
+  // Mode 3: Keyboard (reference + physical-key quiz) --------------------------
+  let kbView = lsGet('masri-keyboard-view','both'); if(kbView!=='both'&&kbView!=='ar') kbView='both';
+  let kbTab='ref';
+  const Q={ score:{c:0,t:0,streak:0}, deck:null, target:null, done:false };
+  function keyboardHtml(highlight){
+    const rows=(M.typing&&M.typing.rows)||[];
+    return `<div class="tt-kbwrap"><div class="tt-kbd" role="group" aria-label="Windows Arabic 101 layout">`
+      + rows.map(row=>`<div class="tt-krow">`+row.map(k=>{
+          const cls=['tt-key']; if(k.digit)cls.push('digit'); if(kbView==='ar')cls.push('hideq');
+          if(highlight&&highlight.code===k.code)cls.push(highlight.cls);
+          return `<div class="${cls.join(' ')}" data-code="${k.code}"><span class="tt-q">${esc(k.q)}</span><span class="tt-ka">${esc(k.ar)}</span></div>`;
+        }).join('')+`</div>`).join('')
+      +`</div></div>`;
+  }
+  function renderKeyboard(){
+    const layout=(M.typing&&M.typing.layoutName)||'Arabic keyboard';
+    let h=`<div class="tt-kbdbar" role="group" aria-label="Keyboard mode">`
+      +`<button type="button" class="tt-btn ${kbTab==='ref'?'primary':''}" data-k="ref" aria-pressed="${kbTab==='ref'}">Reference</button>`
+      +`<button type="button" class="tt-btn ${kbTab==='quiz'?'primary':''}" data-k="quiz" aria-pressed="${kbTab==='quiz'}">Key quiz</button>`
+      +`<span class="tt-score" style="margin:0 0 0 auto">Layout: <b>${esc(layout)}</b></span></div>`;
+    if(kbTab==='ref'){
+      h+=`<div class="tt-kbdbar"><span class="tt-prompt" style="margin:0">View</span>`
+        +`<button type="button" class="tt-btn ${kbView==='both'?'primary':''}" data-v="both" aria-pressed="${kbView==='both'}">English key + Arabic</button>`
+        +`<button type="button" class="tt-btn ${kbView==='ar'?'primary':''}" data-v="ar" aria-pressed="${kbView==='ar'}">Arabic only</button></div>`
+        +keyboardHtml(null)
+        +`<p class="note">${esc((M.typing&&M.typing.layoutNote)||'')} Shift-layer characters are not shown.</p>`;
+      body.innerHTML=h;
+    } else {
+      const quizItems=LETTERS.filter(l=>KEYMAP[l.ch]);
+      if(!Q.deck) Q.deck=makeDeck(quizItems, x=>x&&x.ch);
+      if(!Q.target) Q.target=Q.deck.next();
+      const t=Q.target, want=KEYMAP[t.ch].code;
+      h+=`<div class="tt-card"><div class="tt-prompt">Which physical key types this letter?</div>`
+        +`<div class="tt-target letter">${esc(t.ch)}</div>`
+        +`<div class="tt-fb" id="tt-qf" role="status" aria-live="polite">Click the box below, then press the matching key on your keyboard.</div>`
+        +`<div class="tt-capture" id="tt-qcap" tabindex="0" role="button" aria-label="Press the physical key for the shown letter">Press the key…</div>`
+        +`<div class="tt-controls"><button type="button" class="tt-btn" data-a="skip">Skip</button>`
+        +`<button type="button" class="tt-btn" data-a="reveal">Show answer</button>`
+        +`<button type="button" class="tt-btn primary" data-a="next" hidden>Next</button></div></div>`
+        +scoreBar(Q.score)+keyboardHtml(null);
+      body.innerHTML=h;
+      const cap=body.querySelector('#tt-qcap'), fb=body.querySelector('#tt-qf'), nextBtn=body.querySelector('[data-a=next]');
+      cap.focus();
+      const markKey=(code,cls)=>{ const el=body.querySelector('.tt-key[data-code="'+code+'"]'); if(el) el.classList.add(cls); };
+      function finish(){ Q.done=true; markKey(want,'correct'); nextBtn.hidden=false; nextBtn.focus(); }
+      function nextQ(){ Q.target=Q.deck.next(); Q.done=false; renderKeyboard(); }
+      cap.addEventListener('keydown', e=>{
+        if(e.ctrlKey||e.altKey||e.metaKey) return;   // never intercept OS/browser shortcuts
+        if(e.key==='Tab') return;                     // let focus leave normally
+        if(!KEY_CODES.has(e.code)) return;            // ignore keys not on the Arabic layout
+        e.preventDefault();
+        if(Q.done) return;
+        if(e.code===want){ Q.score.c++; Q.score.t++; Q.score.streak++; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct — the <b>'+esc(codeLabel(want))+'</b> key types '+arSpan(t.ch); updateScore(Q.score); finish(); }
+        else { Q.score.streak=0; fb.className='tt-fb no'; fb.innerHTML='That key types '+arSpan(CODE2AR[e.code]||'')+' — try again'; markKey(e.code,'wrong'); updateScore(Q.score);
+          const wc=e.code; setTimeout(()=>{ const el=body.querySelector('.tt-key[data-code="'+wc+'"]'); if(el) el.classList.remove('wrong'); }, 450); }
+      });
+      nextBtn.addEventListener('click', nextQ);
+      body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(Q.done){ nextQ(); return; } Q.score.t++; Q.score.streak=0; updateScore(Q.score); fb.className='tt-fb no'; fb.innerHTML='It is the <b>'+esc(codeLabel(want))+'</b> key'; finish(); });
+      body.querySelector('[data-a=reveal]').addEventListener('click', ()=>{ if(Q.done) return; Q.score.t++; Q.score.streak=0; updateScore(Q.score); fb.className='tt-fb no'; fb.innerHTML=arSpan(t.ch)+' is on the <b>'+esc(codeLabel(want))+'</b> key'; finish(); });
+    }
+    body.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click', ()=>{ kbTab=b.dataset.k; renderKeyboard(); }));
+    body.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click', ()=>{ kbView=b.dataset.v; lsSet('masri-keyboard-view',kbView); renderKeyboard(); }));
+  }
+
+  render();
 })();
 
 // PHRASES + VOCAB share the searchable list layout
