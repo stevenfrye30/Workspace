@@ -646,10 +646,10 @@ const GROUPS = [
   // crowded 13-button row.
   { id:'g-practice', label:'Practice',          dashboard:'practice',
     sections:['practice','grammar','verbs','numbers','time','around','shopping','food','health','people','descriptions','phrases','vocab'] },
-  // Type: moving from recognizing letters to physically typing Arabic. Word Builder
-  // (the existing panel, unchanged) plus a new Test practice tab. Word Builder is the
-  // default landing section.
-  { id:'g-type',     label:'Type',              sections:['word-builder','test'] },
+  // Type: moving from recognizing letters to physically typing Arabic. Test (the
+  // practice modes) is the default landing section; Word Builder (the existing panel,
+  // unchanged) is second.
+  { id:'g-type',     label:'Type',              sections:['test','word-builder'] },
 ];
 const SECTION_LABEL = {
   start:'Start Here', sounds:'Sounds', alphabet:'Alphabet', symbols:'Symbols', 'word-builder':'Word Builder',
