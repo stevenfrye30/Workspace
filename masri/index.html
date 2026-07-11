@@ -469,10 +469,70 @@
   .tt-key.wrong{background:#5a2f2f;border-color:#8a4a4a}
   .tt-capture{outline:none}
   .tt-capture:focus-visible{outline:2px dashed var(--gold);outline-offset:3px}
+  .tt-fbsub{font-size:calc(12px * var(--ui-scale));color:var(--muted);font-weight:400;margin-top:6px}
+  .tt-target.enprompt{font-family:var(--ui);font-size:calc(26px * var(--ui-scale));color:var(--fg);direction:ltr;font-weight:600}
+  /* selectors + review top bar */
+  .tt-topbar{display:flex;justify-content:flex-end;margin-bottom:10px}
+  .tt-review-btn{background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 13px;cursor:pointer}
+  .tt-review-btn:hover{border-color:var(--gold)}
+  .tt-review-btn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .tt-review-btn.has{background:var(--gold);color:#111;border-color:var(--gold)}
+  .tt-review-btn[aria-disabled="true"]{cursor:default;opacity:.7}
+  .tt-sel{display:flex;flex-wrap:wrap;gap:10px 16px;margin-bottom:14px;align-items:flex-end}
+  .tt-selgroup{display:flex;flex-direction:column;gap:5px}
+  .tt-sellabel{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+  .tt-selopts{display:flex;flex-wrap:wrap;gap:5px}
+  .tt-opt{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:4px 11px;cursor:pointer}
+  .tt-opt:hover{border-color:var(--gold)}
+  .tt-opt:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .tt-opt[aria-pressed="true"]{background:var(--gold);color:#111;border-color:var(--gold)}
+  .tt-select{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:8px;font-family:var(--ui);font-size:12.5px;font-weight:600;padding:6px 10px;cursor:pointer}
+  .tt-select:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  /* character-by-character diff */
+  .tt-diff{margin-top:12px;text-align:center;font-weight:400}
+  .tt-diffline{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0}
+  .tt-difflab{font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;min-width:72px;text-align:right}
+  .tt-diffrow{display:inline-flex;gap:5px}
+  .tt-dc{position:relative;width:calc(34px * var(--ar-scale));min-width:30px;height:calc(40px * var(--ar-scale));min-height:38px;border:1px solid var(--border);border-radius:6px;display:inline-flex;align-items:center;justify-content:center;background:var(--surf2)}
+  .tt-dc .tt-dch{font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--fg)}
+  .tt-dsym{position:absolute;top:-8px;right:-6px;font-size:11px;font-weight:700;font-family:var(--ui);line-height:1;background:var(--card);border-radius:50%;padding:1px 2px}
+  .tt-dc.ok{border-color:var(--green)}
+  .tt-dc.ok .tt-dsym{color:var(--green)}
+  .tt-dc.bad{border:2px solid #d98a8a;background:#3a2626}
+  .tt-dc.bad .tt-dsym{color:#e88}
+  .tt-dc.exp{border:2px dashed var(--gold)}
+  .tt-dc.exp .tt-dsym{color:var(--gold)}
+  .tt-dc.extra{border:2px dotted #d98a8a;background:#3a2626}
+  .tt-dc.extra .tt-dch{text-decoration:line-through}
+  .tt-dc.extra .tt-dsym{color:#e88}
+  .tt-dc.gap{border-style:dashed;opacity:.75}
+  .tt-diffcap{font-size:calc(12.5px * var(--ui-scale));color:var(--fg);margin-top:8px}
+  .tt-difflegend{font-size:11px;color:var(--muted);margin-top:8px;display:flex;flex-wrap:wrap;gap:4px 10px;justify-content:center;align-items:center}
+  .tt-difflegend .tt-dc{width:24px;min-width:24px;height:26px;min-height:26px}
+  .tt-difflegend .tt-dch{font-size:13px}
+  /* review panel */
+  .tt-review{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:16px}
+  .tt-revhead{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+  .tt-revh{font-size:15px;font-weight:600;color:var(--fg);margin:0}
+  .tt-summary{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.7;margin-bottom:12px}
+  .tt-summode{color:var(--muted)}
+  .tt-mgroup{margin-bottom:12px}
+  .tt-mlist{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .tt-mitem{display:inline-flex;align-items:center;gap:4px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:4px 9px;font-family:var(--ar);font-size:calc(18px * var(--ar-scale))}
+  .tt-mcount{font-family:var(--ui);font-size:11px;color:var(--gold);font-weight:700}
+  .tt-mrows{display:flex;flex-direction:column;gap:5px;margin-top:6px}
+  .tt-mrow{display:flex;align-items:center;flex-wrap:wrap;gap:8px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-family:var(--ar);font-size:calc(18px * var(--ar-scale))}
+  .tt-mrow .tt-mgloss{font-family:var(--ui);font-size:12.5px;color:var(--fg)}
+  .tt-mrow .tt-mreason{font-family:var(--ui);font-size:11px;color:var(--muted);margin-left:auto}
+  .tt-revactions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .tt-reviewbanner{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--surf2);border:1px solid var(--gold);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:calc(13px * var(--ui-scale));color:var(--fg)}
+  .tt-reviewbanner .tt-btn{margin-left:auto}
   @media (max-width:600px){
     .tt-target.letter{font-size:calc(60px * var(--ar-scale))}
     .tt-target.word{font-size:calc(38px * var(--ar-scale))}
     .tt-key{width:40px;min-height:42px}
+    .tt-difflab{min-width:60px}
+    .tt-mrow .tt-mreason{margin-left:0}
   }
 
   /* ── notes ── */
@@ -1474,15 +1534,18 @@ function renderTableCards(arr){
   };
 })();
 
-// TYPE · TEST — three keyboard-typing practice modes (Letter Typing, Word Typing,
-// Keyboard reference + key quiz). Reuses the vetted 28-letter alphabet
-// (M.alphabet.letters) and derives its word pool at runtime from existing Masri
-// datasets — no network fetch, no second alphabet/corpus. Keyboard layout = Windows
-// Arabic (101), unshifted, from M.typing. Session-only scores (nothing typed is
-// saved); harmless prefs use their own keys: masri-type-mode, masri-keyboard-view.
+// TYPE · TEST — adaptive keyboard-typing practice (Letter Typing, Word Typing,
+// Keyboard reference + key quiz), with per-session mistakes review, difficulty /
+// category / prompt-direction selection, and character-by-character feedback.
+// Reuses the vetted 28-letter alphabet and derives its word pool at runtime from
+// existing Masri datasets (no network, no second corpus). Keyboard = Windows Arabic
+// (101), unshifted, from M.typing. Only harmless PREFERENCES persist in localStorage
+// (mode, keyboard view, letter difficulty, word difficulty/category/prompt); scores,
+// streaks, mistakes, decks and typed answers are session-only, never stored.
 (function(){
   const panel = document.getElementById('p-test'); if(!panel) return;
   const M = window.MASRI || {};
+  const SL = (typeof SECTION_LABEL!=='undefined') ? SECTION_LABEL : {};
   const lsGet=(k,d)=>{ try{ const v=localStorage.getItem(k); return v==null?d:v; }catch(e){ return d; } };
   const lsSet=(k,v)=>{ try{ localStorage.setItem(k,v); }catch(e){} };
 
@@ -1490,9 +1553,10 @@ function renderTableCards(arr){
   // (أ إ آ ا, ة ه, ي ى, and hamza forms stay distinct).
   const norm = s => String(s).replace(/[ً-ْٰـ]/g,'').trim();
   const isWord = s => /^[ء-ي]{2,8}$/.test(s);
+  const nlow = s => String(s||'').toLowerCase().trim();
+  const cp = s => Array.from(String(s));          // Unicode code points (not UTF-16 units)
   const arSpan = s => `<span class="ar" dir="rtl">${esc(s)}</span>`;
   function shuffle(a){ const r=a.slice(); for(let i=r.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); const x=r[i]; r[i]=r[j]; r[j]=x; } return r; }
-  // Deck: shuffles the full set, no immediate repeat, cycles all before reshuffling.
   function makeDeck(items, keyOf){
     let order=[], i=0, last=null;
     function refill(){ order=shuffle(items); if(order.length>1 && keyOf(order[0])===keyOf(last)) order.push(order.shift()); i=0; }
@@ -1501,7 +1565,8 @@ function renderTableCards(arr){
   }
 
   // Vetted inputs ------------------------------------------------------------
-  const LETTERS = ((M.alphabet && M.alphabet.letters) || []).map(l => ({ ch:l.letter, name:l.name, name_ar:l.name_ar }));
+  const ALL_LETTERS = ((M.alphabet && M.alphabet.letters) || []).map(l => ({ ch:l.letter, name:l.name, name_ar:l.name_ar }));
+  const LETTER_META = {}; ALL_LETTERS.forEach(l => LETTER_META[l.ch]=l);
   const KEYMAP={}, KEY_CODES=new Set(), CODE2AR={}, CODE2Q={};
   ((M.typing && M.typing.rows) || []).forEach(row => row.forEach(k => {
     KEY_CODES.add(k.code); CODE2AR[k.code]=k.ar; CODE2Q[k.code]=k.q;
@@ -1509,25 +1574,140 @@ function renderTableCards(arr){
   }));
   const codeLabel = c => CODE2Q[c] || c;
 
-  // Word pool derived from existing Masri datasets (single unvocalized words only).
+  // Word pool derived from Masri datasets. Each word keeps its source categories
+  // (cats Set), so one spelling from several topics is ONE prompt with all its
+  // memberships. `common` flags curated beginner words; `len` = code-point count.
   const EXCLUDE = new Set(((M.typing && M.typing.excludeWords) || []).map(norm));
+  const COMMON  = new Set(((M.typing && M.typing.commonWords)  || []).map(norm));
   const WORDS = (function(){
-    const seen=new Set(), pool=[];
-    const add=(ar,tr,en)=>{ if(!ar) return; const w=norm(ar); if(!isWord(w)||EXCLUDE.has(w)||seen.has(w)) return; seen.add(w); pool.push({ ar:w, tr:tr||'', en:en||'' }); };
-    ['verbs','food','people','descriptions','shopping','around','health','time'].forEach(k=>{ if(M[k]&&M[k].tables) M[k].tables.forEach(t=>(t.rows||[]).forEach(r=>add(r[0],r[1],r[2]))); });
-    if(Array.isArray(M.vocab)) M.vocab.forEach(t=>(t.words||[]).forEach(w=>add(w.ar,w.tr,w.en)));
-    if(Array.isArray(M.phrases)) M.phrases.forEach(c=>(c.items||[]).forEach(it=>{ if(!/\s/.test(String(it.ar))) add(it.ar,it.tr,it.en); }));
-    if(M.numbers) ['ones','teens','tens'].forEach(g=>(M.numbers[g]||[]).forEach(n=>add(n.ar,n.tr,String(n.n))));
-    return pool;
+    const byNorm=new Map();
+    const add=(ar,tr,en,cat)=>{ if(!ar) return; const w=norm(ar); if(!isWord(w)||EXCLUDE.has(w)) return;
+      let o=byNorm.get(w);
+      if(!o){ o={ ar:w, tr:tr||'', en:en||'', cats:new Set() }; byNorm.set(w,o); }
+      else { if(!o.tr && tr) o.tr=tr; if(!o.en && en) o.en=en; }
+      o.cats.add(cat); };
+    ['verbs','food','people','descriptions','shopping','around','health','time'].forEach(k=>{ if(M[k]&&M[k].tables) M[k].tables.forEach(t=>(t.rows||[]).forEach(r=>add(r[0],r[1],r[2],k))); });
+    if(Array.isArray(M.vocab)) M.vocab.forEach(t=>(t.words||[]).forEach(w=>add(w.ar,w.tr,w.en,'vocab')));
+    if(Array.isArray(M.phrases)) M.phrases.forEach(c=>(c.items||[]).forEach(it=>{ if(!/\s/.test(String(it.ar))) add(it.ar,it.tr,it.en,'phrases'); }));
+    if(M.numbers) ['ones','teens','tens'].forEach(g=>(M.numbers[g]||[]).forEach(n=>add(n.ar,n.tr,String(n.n),'numbers')));
+    const arr=Array.from(byNorm.values());
+    arr.forEach(w=>{ w.len=cp(w.ar).length; w.common=COMMON.has(w.ar); });
+    return arr;
   })();
+  // Ambiguity indexes: gloss/transliteration -> set of valid Arabic spellings. In
+  // recall modes ANY valid spelling for the shown prompt is accepted (fair handling).
+  const enIndex=new Map(), trIndex=new Map();
+  WORDS.forEach(w=>{ if(w.en){ const k=nlow(w.en); (enIndex.get(k)||enIndex.set(k,new Set()).get(k)).add(w.ar); }
+                     if(w.tr){ const k=nlow(w.tr); (trIndex.get(k)||trIndex.set(k,new Set()).get(k)).add(w.ar); } });
+  const WORD_CATS = ['verbs','numbers','time','around','shopping','food','health','people','descriptions','phrases','vocab']
+    .filter(c => WORDS.some(w=>w.cats.has(c)));
 
-  const MODES=[
-    { id:'letter',   label:'Letter Typing', desc:'Type the shown letter' },
-    { id:'word',     label:'Word Typing',   desc:'Type the shown word' },
-    { id:'keyboard', label:'Keyboard',      desc:'Layout + key quiz' }
+  // Difficulty pools --------------------------------------------------------
+  const LSETS = (M.typing && M.typing.letterSets) || {};
+  const LETTER_DIFFS = [
+    { id:'beginner', label:'Beginner',  pool:()=>(LSETS.beginner||[]).map(ch=>LETTER_META[ch]).filter(Boolean) },
+    { id:'all',      label:'All letters', pool:()=>ALL_LETTERS.slice() },
+    { id:'similar',  label:'Similar letters', pool:()=>(LSETS.similar||[]).map(ch=>LETTER_META[ch]).filter(Boolean) },
+    { id:'emphatic', label:'Emphatic & throat', pool:()=>(LSETS.emphatic||[]).map(ch=>LETTER_META[ch]).filter(Boolean) }
   ];
-  let mode = lsGet('masri-type-mode','letter'); if(!MODES.some(m=>m.id===mode)) mode='letter';
+  const WORD_DIFFS = [ {id:'all',label:'All'},{id:'short',label:'Short'},{id:'common',label:'Common'},{id:'longer',label:'Longer'} ];
+  const WORD_PROMPTS = [ {id:'copy',label:'Copy Arabic'},{id:'en',label:'English → Arabic'},{id:'tr',label:'Translit → Arabic'} ];
 
+  // Preferences (persist) ----------------------------------------------------
+  const MODES=[ {id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'} ];
+  let mode = lsGet('masri-type-mode','letter'); if(!MODES.some(m=>m.id===mode)) mode='letter';
+  let letterDiff = lsGet('masri-letter-difficulty','all'); if(!LETTER_DIFFS.some(d=>d.id===letterDiff)) letterDiff='all';
+  let wordDiff = lsGet('masri-word-difficulty','all'); if(!WORD_DIFFS.some(d=>d.id===wordDiff)) wordDiff='all';
+  let wordCat = lsGet('masri-word-category','all'); if(wordCat!=='all' && WORD_CATS.indexOf(wordCat)<0) wordCat='all';
+  let wordPrompt = lsGet('masri-word-prompt','copy'); if(!WORD_PROMPTS.some(p=>p.id===wordPrompt)) wordPrompt='copy';
+  let kbView = lsGet('masri-keyboard-view','both'); if(kbView!=='both'&&kbView!=='ar') kbView='both';
+  let kbTab='ref';
+
+  // Session score helpers (Correct/Total/Streak/Best; nothing persisted) -----
+  function newScore(){ return {c:0,t:0,streak:0,best:0}; }
+  function bump(s, kind){ // 'correct' | 'complete' (skip/reveal) | 'wrong'
+    if(kind==='correct'){ s.c++; s.t++; s.streak++; if(s.streak>s.best) s.best=s.streak; }
+    else if(kind==='complete'){ s.t++; s.streak=0; }
+    else { s.streak=0; } }
+  const scoreBar = s => `<div class="tt-score" role="status">Correct <b class="tt-sc">${s.c}</b> · Total <b class="tt-st">${s.t}</b> · Streak <b class="tt-ss">${s.streak}</b> · Best <b class="tt-sb">${s.best}</b></div>`;
+  function updateScore(s){ const q=x=>body.querySelector(x); const a=q('.tt-sc'),b=q('.tt-st'),c=q('.tt-ss'),d=q('.tt-sb'); if(a)a.textContent=s.c; if(b)b.textContent=s.t; if(c)c.textContent=s.streak; if(d)d.textContent=s.best; }
+
+  // Mistakes (session-only) --------------------------------------------------
+  const mistakes = { letter:new Map(), word:new Map(), key:new Map() };
+  function record(type, key, data, reason){
+    const map=mistakes[type]; let m=map.get(key);
+    if(!m){ m=Object.assign({ key, count:0, reviewCorrect:0 }, data); map.set(key,m); }
+    else { Object.assign(m, data); }
+    m.count++; m.reason=reason; m.reviewCorrect=0; updateReviewBtn();
+  }
+  const mCount = () => mistakes.letter.size + mistakes.word.size + mistakes.key.size;
+  function clearMistakes(){ mistakes.letter.clear(); mistakes.word.clear(); mistakes.key.clear(); updateReviewBtn(); }
+  function updateReviewBtn(){ const b=panel.querySelector('#tt-reviewbtn'); if(!b) return; const n=mCount();
+    b.textContent='Review mistakes ('+n+')'; b.classList.toggle('has', n>0); b.setAttribute('aria-disabled', String(n===0)); }
+  function collectReview(types){ const out=[];
+    types.forEach(tp=> mistakes[tp].forEach(m=> out.push(Object.assign({_type:tp}, m))) ); return out; }
+
+  // Unicode-aware character diff (Levenshtein alignment over code points) -----
+  function diffOps(T, Y){ // arrays of code points (already normalized)
+    const n=T.length, m=Y.length, dp=[];
+    for(let i=0;i<=n;i++){ dp[i]=[]; for(let j=0;j<=m;j++){ dp[i][j]= i===0?j : j===0?i : 0; } }
+    for(let i=1;i<=n;i++) for(let j=1;j<=m;j++){ const cost=T[i-1]===Y[j-1]?0:1;
+      dp[i][j]=Math.min(dp[i-1][j-1]+cost, dp[i-1][j]+1, dp[i][j-1]+1); }
+    let i=n,j=m,ops=[];
+    while(i>0||j>0){
+      if(i>0&&j>0 && dp[i][j]===dp[i-1][j-1]+(T[i-1]===Y[j-1]?0:1)){ ops.push({op:T[i-1]===Y[j-1]?'match':'sub', t:T[i-1], y:Y[j-1]}); i--; j--; }
+      else if(i>0 && dp[i][j]===dp[i-1][j]+1){ ops.push({op:'del', t:T[i-1], y:null}); i--; }   // target letter missing from typed
+      else { ops.push({op:'ins', t:null, y:Y[j-1]}); j--; }                                       // extra typed letter
+    }
+    return ops.reverse();
+  }
+  // Two aligned RTL rows + a text caption of the first difference. State is shown by
+  // outline + symbol + label (not colour alone), so it survives high-contrast Aa modes.
+  function renderDiff(targetStr, typedStr){
+    const ops=diffOps(cp(targetStr), cp(typedStr));
+    const cell=(ch,state,sym)=> `<span class="tt-dc ${state}"><span class="tt-dsym" aria-hidden="true">${sym||''}</span><span class="tt-dch">${ch==null?'·':arSpan(ch)}</span></span>`;
+    const targetRow = ops.map(o=> o.op==='ins' ? cell(null,'gap','') : cell(o.t, o.op==='match'?'ok':'exp', o.op==='match'?'':'●') ).join('');
+    const typedRow  = ops.map(o=> o.op==='del' ? cell(null,'gap','') : cell(o.y, o.op==='match'?'ok':(o.op==='sub'?'bad':'extra'), o.op==='match'?'✓':'✗') ).join('');
+    let cap='';
+    const firstBad = ops.find(o=>o.op!=='match'); const posLogical = ops.filter((o,idx)=>idx<=ops.indexOf(firstBad)).filter(o=>o.op!=='ins').length;
+    if(firstBad){ if(firstBad.op==='sub') cap=`Position ${posLogical}: expected ${arSpan(firstBad.t)}, you typed ${arSpan(firstBad.y)}`;
+      else if(firstBad.op==='del') cap=`Missing ${arSpan(firstBad.t)} (around position ${posLogical})`;
+      else cap=`Extra ${arSpan(firstBad.y)} that isn't in the word`; }
+    return `<div class="tt-diff">`
+      +`<div class="tt-diffline"><span class="tt-difflab">Target</span><div class="tt-diffrow" dir="rtl">${targetRow}</div></div>`
+      +`<div class="tt-diffline"><span class="tt-difflab">You typed</span><div class="tt-diffrow" dir="rtl">${typedRow}</div></div>`
+      +(cap?`<div class="tt-diffcap">${cap}</div>`:'')
+      +`<div class="tt-difflegend"><span class="tt-dc ok"><span class="tt-dch">✓</span></span> match · <span class="tt-dc bad"><span class="tt-dsym">✗</span></span> wrong · <span class="tt-dc exp"><span class="tt-dsym">●</span></span> expected · <span class="tt-dc gap"><span class="tt-dch">·</span></span> missing/extra</div>`
+      +`</div>`;
+  }
+
+  // Word filtering -----------------------------------------------------------
+  function filterWords(){
+    return WORDS.filter(w=>{
+      if(wordCat!=='all' && !w.cats.has(wordCat)) return false;
+      if(wordDiff==='short'  && !(w.len>=2 && w.len<=3)) return false;
+      if(wordDiff==='longer' && !(w.len>=5)) return false;
+      if(wordDiff==='common' && !w.common) return false;
+      if(wordPrompt==='en' && !w.en) return false;
+      if(wordPrompt==='tr' && !w.tr) return false;
+      return true;
+    });
+  }
+  function wordAccepts(target, inputNorm){
+    if(wordPrompt==='en'){ const set=enIndex.get(nlow(target.en)); return set?set.has(inputNorm):inputNorm===target.ar; }
+    if(wordPrompt==='tr'){ const set=trIndex.get(nlow(target.tr)); return set?set.has(inputNorm):inputNorm===target.ar; }
+    return inputNorm===target.ar;
+  }
+
+  // Selector controls --------------------------------------------------------
+  function pillGroup(name, opts, cur, label){
+    return `<div class="tt-selgroup" role="group" aria-label="${esc(label)}"><span class="tt-sellabel">${esc(label)}</span><div class="tt-selopts">`
+      + opts.map(o=>`<button type="button" class="tt-opt" data-sel="${name}" data-val="${o.id}" aria-pressed="${o.id===cur}">${esc(o.label)}</button>`).join('')
+      + `</div></div>`;
+  }
+  const reviewBar = () => `<div class="tt-topbar"><button type="button" id="tt-reviewbtn" class="tt-review-btn${mCount()>0?' has':''}" aria-disabled="${mCount()===0}">Review mistakes (${mCount()})</button></div>`;
+
+  // Shell --------------------------------------------------------------------
   panel.innerHTML =
     `<p class="lead">Move from recognizing Arabic letters to typing them on a standard keyboard. Switch your keyboard to Arabic, then practice below.</p>`
    +`<div class="tt-kbdnote">On Windows, press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between installed keyboard languages. Arabic must already be added as a Windows keyboard language.</div>`
@@ -1540,25 +1720,48 @@ function renderTableCards(arr){
 
   const body = panel.querySelector('#tt-body');
   panel.querySelectorAll('.tt-mode').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
-  function setMode(m){ mode=m; lsSet('masri-type-mode',m);
+  function setMode(m){ mode=m; lsSet('masri-type-mode',m); reviewMode=null; reviewPanel=false;
     panel.querySelectorAll('.tt-mode').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.mode===m)));
     render(); }
-  function render(){ if(mode==='letter') renderLetter(); else if(mode==='word') renderWord(); else renderKeyboard(); }
 
-  // Correct = prompts answered correctly. Total = prompts completed (correct, Skip,
-  // or Reveal). Streak = consecutive corrects with no wrong attempt / Skip / Reveal.
-  const scoreBar = s => `<div class="tt-score">Correct <b class="tt-sc">${s.c}</b> · Total <b class="tt-st">${s.t}</b> · Streak <b class="tt-ss">${s.streak}</b></div>`;
-  function updateScore(s){ const a=body.querySelector('.tt-sc'),b=body.querySelector('.tt-st'),c=body.querySelector('.tt-ss'); if(a)a.textContent=s.c; if(b)b.textContent=s.t; if(c)c.textContent=s.streak; }
+  // Session scores + per-mode transient state
+  const L={ score:newScore(), deck:null, target:null, done:false };
+  const W={ score:newScore(), deck:null, target:null, done:false, filtered:[], revealed:false };
+  const Q={ score:newScore(), deck:null, target:null, done:false };
+  let reviewMode=null;       // {types:[...], score, last, item}
+  let reviewPanel=false;     // summary overlay open?
+
+  function render(){
+    if(reviewMode){ renderReviewPractice(); return; }
+    if(reviewPanel){ renderReviewSummary(); return; }
+    if(mode==='letter') renderLetter(); else if(mode==='word') renderWord(); else renderKeyboard();
+  }
+
+  // Wire the selector pill-groups + review button that a mode render just injected.
+  function wireCommon(){
+    body.querySelectorAll('.tt-opt').forEach(b=> b.addEventListener('click', ()=>onSelect(b.dataset.sel, b.dataset.val)));
+    const rb=body.querySelector('#tt-reviewbtn'); if(rb) rb.addEventListener('click', ()=>{ if(mCount()===0) return; reviewPanel=true; render(); });
+    const sel=body.querySelector('#tt-catsel'); if(sel) sel.addEventListener('change', ()=>onSelect('wordCat', sel.value));
+  }
+  function onSelect(name, val){
+    if(name==='letterDiff'){ letterDiff=val; lsSet('masri-letter-difficulty',val); L.deck=null; L.target=null; L.score=newScore(); }
+    else if(name==='wordDiff'){ wordDiff=val; lsSet('masri-word-difficulty',val); W.deck=null; W.target=null; W.score=newScore(); }
+    else if(name==='wordCat'){ wordCat=val; lsSet('masri-word-category',val); W.deck=null; W.target=null; W.score=newScore(); }
+    else if(name==='wordPrompt'){ wordPrompt=val; lsSet('masri-word-prompt',val); W.deck=null; W.target=null; W.score=newScore(); }
+    render();
+  }
 
   // Mode 1: Letter Typing ----------------------------------------------------
-  const L={ score:{c:0,t:0,streak:0}, deck:null, target:null, done:false };
+  function letterPool(){ const d=LETTER_DIFFS.find(x=>x.id===letterDiff)||LETTER_DIFFS[1]; return d.pool(); }
   function renderLetter(){
-    if(!LETTERS.length){ body.innerHTML='<p class="note">Alphabet data unavailable.</p>'; return; }
-    if(!L.deck) L.deck=makeDeck(LETTERS, x=>x&&x.ch);
+    const pool=letterPool();
+    if(!pool.length){ body.innerHTML=reviewBar()+'<p class="note">No letters in this set.</p>'; wireCommon(); return; }
+    if(!L.deck) L.deck=makeDeck(pool, x=>x&&x.ch);
     if(!L.target) L.target=L.deck.next();
     const t=L.target;
-    body.innerHTML =
-      `<div class="tt-card"><div class="tt-prompt">Type this letter</div>`
+    body.innerHTML = reviewBar()
+      + `<div class="tt-sel">`+pillGroup('letterDiff', LETTER_DIFFS, letterDiff, 'Difficulty')+`</div>`
+      + `<div class="tt-card"><div class="tt-prompt">Type this letter</div>`
       +`<div class="tt-target letter">${esc(t.ch)}</div>`
       +`<div class="tt-hintline" id="tt-lh" aria-live="polite"></div>`
       +`<label class="tt-prompt" for="tt-li" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
@@ -1570,38 +1773,51 @@ function renderTableCards(arr){
         +`<button type="button" class="tt-btn" data-a="key">Show key</button>`
         +`<button type="button" class="tt-btn" data-a="name">Show name</button>`
       +`</div></div>`+scoreBar(L.score);
+    wireCommon();
     const inp=body.querySelector('#tt-li'), fb=body.querySelector('#tt-lf'), hint=body.querySelector('#tt-lh'), checkBtn=body.querySelector('[data-a=check]');
     inp.focus();
-    function newLetter(){ L.target=L.deck.next(); L.done=false; renderLetter(); }
+    function next(){ L.target=L.deck.next(); L.done=false; renderLetter(); }
     function check(){
-      if(L.done){ newLetter(); return; }
+      if(L.done){ next(); return; }
       const v=inp.value.trim(); if(!v) return;
-      // Validate by Unicode content, not just maxlength: the answer must be exactly
-      // ONE code point equal to the target letter. This rejects two letters, a letter
-      // plus any other character, and pasted words — regardless of the input cap.
-      const ok = Array.from(v).length===1 && v===t.ch;
-      if(ok){ L.score.c++; L.score.t++; L.score.streak++; L.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
-      else { L.score.streak=0; fb.className='tt-fb no'; fb.innerHTML='That was '+arSpan(v)+' — try again'; inp.value=''; inp.focus(); }
+      const ok = cp(v).length===1 && v===t.ch;
+      if(ok){ bump(L.score,'correct'); L.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
+      else { bump(L.score,'wrong'); record('letter', t.ch, {ch:t.ch, name:t.name}, 'incorrect');
+        fb.className='tt-fb no';
+        fb.innerHTML = `<div>You typed: ${arSpan(v)} &nbsp; Target: ${arSpan(t.ch)}</div>`
+          + `<div class="tt-fbsub">Try again — the target is ${arSpan(t.ch)} (${esc(t.name||'')}). Use “Show key” for its keyboard position.</div>`;
+        inp.value=''; inp.focus(); }
       updateScore(L.score);
     }
     checkBtn.addEventListener('click', check);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
-    body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(L.done){ newLetter(); return; } L.score.t++; L.score.streak=0; updateScore(L.score); fb.className='tt-fb no'; fb.innerHTML='Skipped — it was '+arSpan(t.ch); L.done=true; checkBtn.textContent='Next'; });
+    body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(L.done){ next(); return; } bump(L.score,'complete'); record('letter', t.ch, {ch:t.ch, name:t.name}, 'skipped'); updateScore(L.score); fb.className='tt-fb no'; fb.innerHTML='Skipped — it was '+arSpan(t.ch); L.done=true; checkBtn.textContent='Next'; });
     body.querySelector('[data-a=key]').addEventListener('click', ()=>{ const k=KEYMAP[t.ch]; hint.innerHTML = k ? 'Windows Arabic key: <b>'+esc(k.q)+'</b>' : 'Not on this layout.'; });
     body.querySelector('[data-a=name]').addEventListener('click', ()=>{ hint.innerHTML = 'Name: <b>'+esc(t.name||'')+'</b> '+(t.name_ar?arSpan(t.name_ar):''); });
   }
 
   // Mode 2: Word Typing ------------------------------------------------------
-  const W={ score:{c:0,t:0,streak:0}, deck:null, target:null, done:false };
+  function wordPromptHtml(t){
+    if(wordPrompt==='en') return `<div class="tt-prompt">Type the Arabic for this word</div><div class="tt-target enprompt" dir="ltr">${esc(t.en)}</div>`+catClue(t);
+    if(wordPrompt==='tr') return `<div class="tt-prompt">Type the Arabic for this reading</div><div class="tt-target enprompt" dir="ltr">${esc(t.tr)}</div>`+catClue(t);
+    return `<div class="tt-prompt">Type this word</div><div class="tt-target word">${esc(t.ar)}</div>`+(t.en?`<div class="tt-meaning">${esc(t.en)}</div>`:'');
+  }
+  function catClue(t){ const c=Array.from(t.cats)[0]; return c?`<div class="tt-meaning">Topic: ${esc(SL[c]||c)}</div>`:''; }
   function renderWord(){
-    if(!WORDS.length){ body.innerHTML='<p class="note">No word pool available.</p>'; return; }
-    if(!W.deck) W.deck=makeDeck(WORDS, x=>x&&x.ar);
+    const pool=filterWords();
+    W.filtered=pool;
+    if(!pool.length){
+      body.innerHTML = reviewBar()
+        + `<div class="tt-sel">`+pillGroup('wordDiff',WORD_DIFFS,wordDiff,'Length')+wordCatSelect()+pillGroup('wordPrompt',WORD_PROMPTS,wordPrompt,'Prompt')+`</div>`
+        + `<p class="note">No words match this combination${wordPrompt!=='copy'?' with a usable '+(wordPrompt==='en'?'meaning':'reading'):''}. Change the filters above.</p>`;
+      wireCommon(); return;
+    }
+    if(!W.deck) W.deck=makeDeck(pool, x=>x&&x.ar);
     if(!W.target) W.target=W.deck.next();
     const t=W.target;
-    body.innerHTML =
-      `<div class="tt-card"><div class="tt-prompt">Type this word</div>`
-      +`<div class="tt-target word">${esc(t.ar)}</div>`
-      +(t.en?`<div class="tt-meaning">${esc(t.en)}</div>`:'')
+    body.innerHTML = reviewBar()
+      + `<div class="tt-sel">`+pillGroup('wordDiff',WORD_DIFFS,wordDiff,'Length')+wordCatSelect()+pillGroup('wordPrompt',WORD_PROMPTS,wordPrompt,'Prompt')+`</div>`
+      + `<div class="tt-card">`+wordPromptHtml(t)
       +`<div class="tt-hintline" id="tt-wh" aria-live="polite"></div>`
       +`<label class="tt-prompt" for="tt-wi" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
       +`<input id="tt-wi" class="tt-input" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the Arabic word">`
@@ -1609,28 +1825,144 @@ function renderTableCards(arr){
       +`<div class="tt-controls">`
         +`<button type="button" class="tt-btn primary" data-a="check">Check</button>`
         +`<button type="button" class="tt-btn" data-a="skip">Skip</button>`
-        +`<button type="button" class="tt-btn" data-a="hint">Show reading</button>`
+        + (wordPrompt==='en' ? `<button type="button" class="tt-btn" data-a="hinttr">Show reading</button>` : '')
+        + (wordPrompt==='tr' ? `<button type="button" class="tt-btn" data-a="hinten">Show meaning</button>` : '')
+        + (wordPrompt==='copy' ? `<button type="button" class="tt-btn" data-a="hinttr">Show reading</button>` : '')
+        + (wordPrompt!=='copy' ? `<button type="button" class="tt-btn" data-a="hintfirst">Show first letter</button>` : '')
+        +`<button type="button" class="tt-btn" data-a="reveal">Show answer</button>`
       +`</div></div>`+scoreBar(W.score);
+    wireCommon();
     const inp=body.querySelector('#tt-wi'), fb=body.querySelector('#tt-wf'), hint=body.querySelector('#tt-wh'), checkBtn=body.querySelector('[data-a=check]');
     inp.focus();
-    function newWord(){ W.target=W.deck.next(); W.done=false; renderWord(); }
+    function next(){ W.target=W.deck.next(); W.done=false; W.revealed=false; renderWord(); }
     function check(){
-      if(W.done){ newWord(); return; }
+      if(W.done){ next(); return; }
       const v=norm(inp.value); if(!v) return;
-      if(v===norm(t.ar)){ W.score.c++; W.score.t++; W.score.streak++; W.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
-      else { W.score.streak=0; fb.className='tt-fb no'; fb.innerHTML='Not quite — try again'; inp.focus(); }
+      if(wordAccepts(t, v)){ bump(W.score,'correct'); W.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct — '+arSpan(t.ar); checkBtn.textContent='Next'; }
+      else { bump(W.score,'wrong'); record('word', t.ar, {ar:t.ar, tr:t.tr, en:t.en, cats:t.cats, lastTyped:v}, 'incorrect');
+        fb.className='tt-fb no'; fb.innerHTML='Not quite — try again.'+renderDiff(t.ar, v); inp.focus(); }
       updateScore(W.score);
     }
     checkBtn.addEventListener('click', check);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
-    body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(W.done){ newWord(); return; } W.score.t++; W.score.streak=0; updateScore(W.score); fb.className='tt-fb no'; fb.innerHTML='It was '+arSpan(t.ar)+(t.tr?' <span dir="ltr">('+esc(t.tr)+')</span>':''); W.done=true; checkBtn.textContent='Next'; });
-    body.querySelector('[data-a=hint]').addEventListener('click', ()=>{ hint.innerHTML = t.tr ? 'Reading: <b dir="ltr">'+esc(t.tr)+'</b>' : 'No transliteration available.'; });
+    body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(W.done){ next(); return; } bump(W.score,'complete'); record('word', t.ar, {ar:t.ar, tr:t.tr, en:t.en, cats:t.cats}, 'skipped'); updateScore(W.score); fb.className='tt-fb no'; fb.innerHTML='It was '+arSpan(t.ar)+(t.tr?' <span dir="ltr">('+esc(t.tr)+')</span>':''); W.done=true; checkBtn.textContent='Next'; });
+    const rev=body.querySelector('[data-a=reveal]'); if(rev) rev.addEventListener('click', ()=>{ if(W.done) return; bump(W.score,'complete'); record('word', t.ar, {ar:t.ar, tr:t.tr, en:t.en, cats:t.cats}, 'revealed'); updateScore(W.score); fb.className='tt-fb no'; fb.innerHTML='Answer: '+arSpan(t.ar)+(t.tr?' <span dir="ltr">('+esc(t.tr)+')</span>':''); W.done=true; checkBtn.textContent='Next'; });
+    const hTr=body.querySelector('[data-a=hinttr]'); if(hTr) hTr.addEventListener('click', ()=>{ hint.innerHTML = t.tr?'Reading: <b dir="ltr">'+esc(t.tr)+'</b>':'No transliteration available.'; });
+    const hEn=body.querySelector('[data-a=hinten]'); if(hEn) hEn.addEventListener('click', ()=>{ hint.innerHTML = t.en?'Meaning: <b>'+esc(t.en)+'</b>':'No meaning available.'; });
+    const hF=body.querySelector('[data-a=hintfirst]'); if(hF) hF.addEventListener('click', ()=>{ hint.innerHTML = 'First letter: '+arSpan(cp(t.ar)[0]); });
+  }
+  function wordCatSelect(){
+    let h=`<div class="tt-selgroup"><label class="tt-sellabel" for="tt-catsel">Topic</label><select id="tt-catsel" class="tt-select">`;
+    h+=`<option value="all"${wordCat==='all'?' selected':''}>All topics</option>`;
+    WORD_CATS.forEach(c=>{ h+=`<option value="${c}"${wordCat===c?' selected':''}>${esc(SL[c]||c)}</option>`; });
+    return h+`</select></div>`;
   }
 
+  // Mistakes Review — summary overlay ---------------------------------------
+  function renderReviewSummary(){
+    const s = mode==='word'?W.score:(mode==='keyboard'?Q.score:L.score);
+    const acc = s.t? Math.round(100*s.c/s.t):0;
+    const lm=[...mistakes.letter.values()], wm=[...mistakes.word.values()], km=[...mistakes.key.values()];
+    const topAll=[...lm,...wm,...km].sort((a,b)=>b.count-a.count).slice(0,6);
+    let h = `<div class="tt-review" role="region" aria-label="Mistakes review">`
+      +`<div class="tt-revhead"><h3 class="tt-revh">Session summary &amp; mistakes</h3><button type="button" class="tt-btn" data-a="close">Close</button></div>`
+      +`<div class="tt-summary">Correct <b>${s.c}</b> · Completed <b>${s.t}</b> · Accuracy <b>${acc}%</b> · Streak <b>${s.streak}</b> · Best <b>${s.best}</b> · Mistakes <b>${mCount()}</b> <span class="tt-summode">(${mode} mode)</span></div>`;
+    if(mCount()===0){ h+=`<p class="note">No mistakes recorded yet this session. Missed, skipped, or revealed prompts will appear here.</p>`; }
+    else {
+      if(topAll.length){ h+=`<div class="tt-mgroup"><div class="tt-sellabel">Most missed</div><div class="tt-mlist">`
+        + topAll.map(m=>`<span class="tt-mitem">${m.ch?arSpan(m.ch):arSpan(m.ar)}<span class="tt-mcount">×${m.count}</span></span>`).join('')+`</div></div>`; }
+      if(lm.length) h+=mistGroup('Missed letters', lm.map(m=>`${arSpan(m.ch)}<span class="tt-mcount">×${m.count}</span><span class="tt-mreason">${esc(m.reason)}</span>`));
+      if(wm.length) h+=mistGroup('Missed words', wm.map(m=>`${arSpan(m.ar)}${m.en?'<span class="tt-mgloss">'+esc(m.en)+'</span>':''}<span class="tt-mcount">×${m.count}</span>${m.lastTyped?'<span class="tt-mreason">typed '+arSpan(m.lastTyped)+'</span>':'<span class="tt-mreason">'+esc(m.reason)+'</span>'}`));
+      if(km.length) h+=mistGroup('Missed keyboard keys', km.map(m=>`${arSpan(m.ch)}<span class="tt-mreason">key ${esc(m.q||'')}</span><span class="tt-mcount">×${m.count}</span>`));
+      h+=`<div class="tt-revactions">`
+        +`<button type="button" class="tt-btn primary" data-r="all">Practice all mistakes</button>`
+        + (lm.length?`<button type="button" class="tt-btn" data-r="letter">Practice letter mistakes</button>`:'')
+        + (wm.length?`<button type="button" class="tt-btn" data-r="word">Practice word mistakes</button>`:'')
+        + (km.length?`<button type="button" class="tt-btn" data-r="key">Practice keyboard mistakes</button>`:'')
+        +`<button type="button" class="tt-btn" data-a="clear">Clear mistakes</button></div>`;
+    }
+    h+=`</div>`;
+    body.innerHTML=h;
+    body.querySelector('[data-a=close]').addEventListener('click', ()=>{ reviewPanel=false; render(); });
+    const clr=body.querySelector('[data-a=clear]'); if(clr) clr.addEventListener('click', ()=>{ clearMistakes(); render(); });
+    body.querySelectorAll('[data-r]').forEach(b=> b.addEventListener('click', ()=>{ startReview(b.dataset.r); }));
+    const cl=body.querySelector('[data-a=close]'); if(cl) cl.focus();
+  }
+  function mistGroup(title, rows){ return `<div class="tt-mgroup"><div class="tt-sellabel">${esc(title)}</div><div class="tt-mrows">`+rows.map(r=>`<div class="tt-mrow">${r}</div>`).join('')+`</div></div>`; }
+
+  // Mistakes Review — practice mode -----------------------------------------
+  function startReview(which){ const types = which==='all'?['letter','word','key']:[which];
+    reviewMode={ types, score:newScore(), last:null }; reviewPanel=false; render(); }
+  function reviewNext(){
+    const items=collectReview(reviewMode.types); if(!items.length) return null;
+    const weighted=[]; items.forEach(it=>{ const w=Math.min(it.count,4); for(let i=0;i<w;i++) weighted.push(it); });
+    let pick=weighted[Math.floor(Math.random()*weighted.length)];
+    for(let tr=0; tr<8 && items.length>1 && pick.key===reviewMode.last; tr++) pick=weighted[Math.floor(Math.random()*weighted.length)];
+    reviewMode.last=pick.key; return pick;
+  }
+  function reviewResolve(item, kind){ // 'correct' | 'wrong' | 'complete'
+    bump(reviewMode.score, kind);
+    const map=mistakes[item._type]; const m=map.get(item.key); if(!m) return;
+    if(kind==='correct'){ m.reviewCorrect=(m.reviewCorrect||0)+1; if(m.reviewCorrect>=2){ map.delete(item.key); } }
+    else { m.reviewCorrect=0; if(kind==='wrong') m.count++; }
+    updateReviewBtn();
+  }
+  function renderReviewPractice(){
+    const item=reviewNext();
+    if(!item){ body.innerHTML=`<div class="tt-reviewbanner"><b>Review complete</b> — all selected items mastered. <button type="button" class="tt-btn primary" data-a="exit">Back to practice</button></div>`;
+      body.querySelector('[data-a=exit]').addEventListener('click', exitReview); return; }
+    const remain=collectReview(reviewMode.types).length;
+    let card='';
+    if(item._type==='letter'){
+      card=`<div class="tt-card"><div class="tt-prompt">Type this letter</div><div class="tt-target letter">${esc(item.ch)}</div>`
+        +`<label class="tt-prompt" for="tt-ri" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
+        +`<input id="tt-ri" class="tt-input" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the Arabic letter" maxlength="2">`
+        +`<div class="tt-fb" id="tt-rf" role="status" aria-live="polite"></div>`
+        +`<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="check">Check</button><button type="button" class="tt-btn" data-a="show">Show answer</button></div></div>`;
+    } else if(item._type==='word'){
+      card=`<div class="tt-card"><div class="tt-prompt">Type this word</div><div class="tt-target word">${esc(item.ar)}</div>`+(item.en?`<div class="tt-meaning">${esc(item.en)}</div>`:'')
+        +`<label class="tt-prompt" for="tt-ri" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
+        +`<input id="tt-ri" class="tt-input" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the Arabic word">`
+        +`<div class="tt-fb" id="tt-rf" role="status" aria-live="polite"></div>`
+        +`<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="check">Check</button><button type="button" class="tt-btn" data-a="show">Show answer</button></div></div>`;
+    } else {
+      const want=KEYMAP[item.ch]?KEYMAP[item.ch].code:null;
+      card=`<div class="tt-card"><div class="tt-prompt">Which physical key types this letter?</div><div class="tt-target letter">${esc(item.ch)}</div>`
+        +`<div class="tt-fb" id="tt-rf" role="status" aria-live="polite">Click the box, then press the key.</div>`
+        +`<div class="tt-capture" id="tt-rcap" tabindex="0" role="button" aria-label="Press the physical key">Press the key…</div>`
+        +`<div class="tt-controls"><button type="button" class="tt-btn" data-a="show">Show answer</button></div></div>`;
+      card=card; item._want=want;
+    }
+    body.innerHTML = `<div class="tt-reviewbanner" role="status"><b>Review mode</b> — ${remain} item(s) to master (2 correct each) <button type="button" class="tt-btn" data-a="exit">Exit review</button></div>`
+      + card + scoreBar(reviewMode.score);
+    body.querySelector('[data-a=exit]').addEventListener('click', exitReview);
+    const fb=body.querySelector('#tt-rf'); let done=false;
+    function advance(){ render(); }
+    if(item._type==='letter' || item._type==='word'){
+      const inp=body.querySelector('#tt-ri'), checkBtn=body.querySelector('[data-a=check]'); inp.focus();
+      const target = item._type==='letter'?item.ch:item.ar;
+      function check(){ if(done){ advance(); return; } const raw=inp.value.trim(); if(!raw) return;
+        const good = item._type==='letter' ? (cp(raw).length===1 && raw===target) : (norm(raw)===target);
+        if(good){ reviewResolve(item,'correct'); done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
+        else { reviewResolve(item,'wrong'); fb.className='tt-fb no'; fb.innerHTML = item._type==='letter' ? ('You typed: '+arSpan(raw)+' &nbsp; Target: '+arSpan(target)) : ('Not quite.'+renderDiff(target, norm(raw))); inp.value= item._type==='letter'?'':inp.value; if(item._type==='letter') inp.value=''; inp.focus(); }
+        updateScore(reviewMode.score);
+      }
+      checkBtn.addEventListener('click', check);
+      inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+      body.querySelector('[data-a=show]').addEventListener('click', ()=>{ if(done){ advance(); return; } reviewResolve(item,'complete'); done=true; fb.className='tt-fb no'; fb.innerHTML='Answer: '+arSpan(target); checkBtn.textContent='Next'; updateScore(reviewMode.score); });
+    } else {
+      const cap=body.querySelector('#tt-rcap'); cap.focus();
+      const markKey=()=>{};
+      cap.addEventListener('keydown', e=>{ if(e.ctrlKey||e.altKey||e.metaKey) return; if(e.key==='Tab') return; if(!KEY_CODES.has(e.code)) return; e.preventDefault(); if(done) return;
+        if(e.code===item._want){ reviewResolve(item,'correct'); done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct — '+esc(codeLabel(item._want))+' key'; updateScore(reviewMode.score); setTimeout(advance,700); }
+        else { reviewResolve(item,'wrong'); fb.className='tt-fb no'; fb.innerHTML='That key types '+arSpan(CODE2AR[e.code]||'')+' — try again'; updateScore(reviewMode.score); }
+      });
+      body.querySelector('[data-a=show]').addEventListener('click', ()=>{ if(done) return; reviewResolve(item,'complete'); done=true; fb.className='tt-fb no'; fb.innerHTML=arSpan(item.ch)+' is on the '+esc(item._want?codeLabel(item._want):'?')+' key'; setTimeout(advance,900); });
+    }
+  }
+  function exitReview(){ reviewMode=null; render(); }
+
   // Mode 3: Keyboard (reference + physical-key quiz) --------------------------
-  let kbView = lsGet('masri-keyboard-view','both'); if(kbView!=='both'&&kbView!=='ar') kbView='both';
-  let kbTab='ref';
-  const Q={ score:{c:0,t:0,streak:0}, deck:null, target:null, done:false };
   function keyboardHtml(highlight){
     const rows=(M.typing&&M.typing.rows)||[];
     return `<div class="tt-kbwrap"><div class="tt-kbd" role="group" aria-label="Windows Arabic 101 layout">`
@@ -1643,7 +1975,7 @@ function renderTableCards(arr){
   }
   function renderKeyboard(){
     const layout=(M.typing&&M.typing.layoutName)||'Arabic keyboard';
-    let h=`<div class="tt-kbdbar" role="group" aria-label="Keyboard mode">`
+    let h=reviewBar()+`<div class="tt-kbdbar" role="group" aria-label="Keyboard mode">`
       +`<button type="button" class="tt-btn ${kbTab==='ref'?'primary':''}" data-k="ref" aria-pressed="${kbTab==='ref'}">Reference</button>`
       +`<button type="button" class="tt-btn ${kbTab==='quiz'?'primary':''}" data-k="quiz" aria-pressed="${kbTab==='quiz'}">Key quiz</button>`
       +`<span class="tt-score" style="margin:0 0 0 auto">Layout: <b>${esc(layout)}</b></span></div>`;
@@ -1653,9 +1985,9 @@ function renderTableCards(arr){
         +`<button type="button" class="tt-btn ${kbView==='ar'?'primary':''}" data-v="ar" aria-pressed="${kbView==='ar'}">Arabic only</button></div>`
         +keyboardHtml(null)
         +`<p class="note">${esc((M.typing&&M.typing.layoutNote)||'')} Shift-layer characters are not shown.</p>`;
-      body.innerHTML=h;
+      body.innerHTML=h; wireCommon();
     } else {
-      const quizItems=LETTERS.filter(l=>KEYMAP[l.ch]);
+      const quizItems=ALL_LETTERS.filter(l=>KEYMAP[l.ch]);
       if(!Q.deck) Q.deck=makeDeck(quizItems, x=>x&&x.ch);
       if(!Q.target) Q.target=Q.deck.next();
       const t=Q.target, want=KEYMAP[t.ch].code;
@@ -1667,25 +1999,25 @@ function renderTableCards(arr){
         +`<button type="button" class="tt-btn" data-a="reveal">Show answer</button>`
         +`<button type="button" class="tt-btn primary" data-a="next" hidden>Next</button></div></div>`
         +scoreBar(Q.score)+keyboardHtml(null);
-      body.innerHTML=h;
+      body.innerHTML=h; wireCommon();
       const cap=body.querySelector('#tt-qcap'), fb=body.querySelector('#tt-qf'), nextBtn=body.querySelector('[data-a=next]');
       cap.focus();
       const markKey=(code,cls)=>{ const el=body.querySelector('.tt-key[data-code="'+code+'"]'); if(el) el.classList.add(cls); };
       function finish(){ Q.done=true; markKey(want,'correct'); nextBtn.hidden=false; nextBtn.focus(); }
       function nextQ(){ Q.target=Q.deck.next(); Q.done=false; renderKeyboard(); }
       cap.addEventListener('keydown', e=>{
-        if(e.ctrlKey||e.altKey||e.metaKey) return;   // never intercept OS/browser shortcuts
-        if(e.key==='Tab') return;                     // let focus leave normally
-        if(!KEY_CODES.has(e.code)) return;            // ignore keys not on the Arabic layout
+        if(e.ctrlKey||e.altKey||e.metaKey) return;   // never intercept OS/browser shortcuts (incl. Win+Space)
+        if(e.key==='Tab') return;
+        if(!KEY_CODES.has(e.code)) return;
         e.preventDefault();
         if(Q.done) return;
-        if(e.code===want){ Q.score.c++; Q.score.t++; Q.score.streak++; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct — the <b>'+esc(codeLabel(want))+'</b> key types '+arSpan(t.ch); updateScore(Q.score); finish(); }
-        else { Q.score.streak=0; fb.className='tt-fb no'; fb.innerHTML='That key types '+arSpan(CODE2AR[e.code]||'')+' — try again'; markKey(e.code,'wrong'); updateScore(Q.score);
+        if(e.code===want){ bump(Q.score,'correct'); fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct — the <b>'+esc(codeLabel(want))+'</b> key types '+arSpan(t.ch); updateScore(Q.score); finish(); }
+        else { bump(Q.score,'wrong'); record('key', t.ch, {ch:t.ch, code:want, q:codeLabel(want)}, 'incorrect'); fb.className='tt-fb no'; fb.innerHTML='That key types '+arSpan(CODE2AR[e.code]||'')+' — try again'; markKey(e.code,'wrong'); updateScore(Q.score);
           const wc=e.code; setTimeout(()=>{ const el=body.querySelector('.tt-key[data-code="'+wc+'"]'); if(el) el.classList.remove('wrong'); }, 450); }
       });
       nextBtn.addEventListener('click', nextQ);
-      body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(Q.done){ nextQ(); return; } Q.score.t++; Q.score.streak=0; updateScore(Q.score); fb.className='tt-fb no'; fb.innerHTML='It is the <b>'+esc(codeLabel(want))+'</b> key'; finish(); });
-      body.querySelector('[data-a=reveal]').addEventListener('click', ()=>{ if(Q.done) return; Q.score.t++; Q.score.streak=0; updateScore(Q.score); fb.className='tt-fb no'; fb.innerHTML=arSpan(t.ch)+' is on the <b>'+esc(codeLabel(want))+'</b> key'; finish(); });
+      body.querySelector('[data-a=skip]').addEventListener('click', ()=>{ if(Q.done){ nextQ(); return; } bump(Q.score,'complete'); record('key', t.ch, {ch:t.ch, code:want, q:codeLabel(want)}, 'skipped'); updateScore(Q.score); fb.className='tt-fb no'; fb.innerHTML='It is the <b>'+esc(codeLabel(want))+'</b> key'; finish(); });
+      body.querySelector('[data-a=reveal]').addEventListener('click', ()=>{ if(Q.done) return; bump(Q.score,'complete'); record('key', t.ch, {ch:t.ch, code:want, q:codeLabel(want)}, 'revealed'); updateScore(Q.score); fb.className='tt-fb no'; fb.innerHTML=arSpan(t.ch)+' is on the <b>'+esc(codeLabel(want))+'</b> key'; finish(); });
     }
     body.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click', ()=>{ kbTab=b.dataset.k; renderKeyboard(); }));
     body.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click', ()=>{ kbView=b.dataset.v; lsSet('masri-keyboard-view',kbView); renderKeyboard(); }));

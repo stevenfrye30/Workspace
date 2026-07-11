@@ -20,6 +20,27 @@ window.MASRI.typing = {
   //   بالليل "at night"    — base word الليل (night) is already in the pool
   excludeWords: ["بسكر", "بالليل"],
 
+  // Letter Typing difficulty pools (Arabic letters). "all" is the full 28 from the
+  // alphabet dataset; these are curated subsets used by the difficulty selector:
+  //   beginner — common, visually distinct starter letters
+  //   similar  — the confusable groups (ب ت ث / ج ح خ / د ذ / ر ز / س ش / ص ض / ط ظ / ع غ)
+  //   emphatic — the hardest articulations (emphatic + throat/back sounds)
+  letterSets: {
+    beginner: ["ا","ب","ت","د","ر","س","ف","ك","ل","م","ن","ه","و","ي"],
+    similar:  ["ب","ت","ث","ج","ح","خ","د","ذ","ر","ز","س","ش","ص","ض","ط","ظ","ع","غ"],
+    emphatic: ["ص","ض","ط","ظ","ح","خ","ع","غ","ق"]
+  },
+
+  // Curated high-value beginner words for the Word Typing "Common" difficulty.
+  // Every entry already exists in Masri's vetted data (matched after normalization);
+  // the runtime pool flags matching words as common. Words not found are ignored.
+  commonWords: [
+    "راح","جه","أكل","شرب","عايز","عرف","فهم","عمل","حب","مية","شاي","قهوة","عيش","لبن",
+    "بيت","باب","فلوس","كتير","شوية","كبير","صغير","كويس","آسف","شكرا","أيوة","لأ","ماشي",
+    "طيب","هنا","فين","إمتى","إزاي","كام","يمين","شمال","دلوقتي","بكرة","النهارده","واحد",
+    "اتنين","تلاتة","بنت","ولد","راجل","ست","ماما","بابا","دكتور","مستشفى","مدرسة","عربية"
+  ],
+
   layoutName: "Windows Arabic (101)",
   layoutNote: "Unshifted layer of the standard Windows Arabic (101) layout. The key positions match a physical US-QWERTY keyboard; the large glyph is what each key types when the Arabic layout is active.",
   rows: [
