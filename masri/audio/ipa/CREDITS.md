@@ -1,9 +1,11 @@
 # Symbols IPA reference audio — credits
 
-These are IPA phonetic-sample recordings from **Wikimedia Commons** (category *Audio files
-of phonetic samples*), used unmodified as the **IPA reference sound** for each phoneme in the
-Symbols table. They are the formal reference sound, **not** an Egyptian pronunciation of the
-example word. Most were recorded by **Peter Isotalo**; one is public domain.
+The consonant and short-vowel clips below are IPA phonetic-sample recordings from **Wikimedia
+Commons** (category *Audio files of phonetic samples*), used unmodified as the **IPA reference
+sound** for each phoneme in the Symbols table. They are the formal reference sound, **not** an
+Egyptian pronunciation of the example word. Most were recorded by **Peter Isotalo**; one is
+public domain. The **long vowels** use native Arabic example-word recordings instead — see the
+section after the table.
 
 | Phoneme | Local file | Source file (Commons) | Author | License | File page |
 |---|---|---|---|---|---|
@@ -39,8 +41,23 @@ example word. Most were recorded by **Peter Isotalo**; one is public domain.
 | /u/ | `ipa-u.ogg` | Close back rounded vowel.ogg | Denelson83 assumed (based on copyright claims). | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File%3AClose_back_rounded_vowel.ogg |
 | /a/ | `ipa-a.ogg` | Open front unrounded vowel.ogg | Denelson83 assumed (based on copyright claims). | CC BY-SA 3.0 | https://commons.wikimedia.org/wiki/File%3AOpen_front_unrounded_vowel.ogg |
 
-Long vowels /iː/ /uː/ /aː/ reuse the /i/ /u/ /a/ clips (same vowel quality).
+## Long vowels — native Arabic example-word recordings
+
+No isolated IPA recording that demonstrates vowel **length** exists on Commons, so the long
+vowels use a native Arabic recording of the example word (which carries the long vowel in
+context), used unmodified. These are from the **Shtooka Project** (shtooka.net) via Commons.
+
+| Phoneme | Local file | Source file (Commons) | Word | Author | License | File page |
+|---|---|---|---|---|---|---|
+| /iː/ | `ex-kibir.ogg` | Ar-كبير.ogg | كبير (kibīr) | Zannane Mohamed, Heulin Frederic (Shtooka Project) | CC BY 3.0 US | https://commons.wikimedia.org/wiki/File%3AAr-%D9%83%D8%A8%D9%8A%D8%B1.ogg |
+| /aː/ | `ex-bab.ogg` | Ar-باب.ogg | باب (bāb) | Nhaily Mustapha, Vion Nicolas (Shtooka Project) | CC BY 3.0 US | https://commons.wikimedia.org/wiki/File%3AAr-%D8%A8%D8%A7%D8%A8.ogg |
+
+**/uː/ — held:** the example word فول has no recording on Commons and no isolated long /uː/
+clip exists, so /uː/ currently plays the /u/ quality clip (`ipa-u.ogg`) with a visible
+"length pending" note, until a dedicated long-vowel recording is sourced.
+
 Diphthongs /aj/ /aw/ have no single IPA reference clip and show none.
 
-**Attribution:** CC BY-SA 3.0 files require crediting the author + license + linking the file
-page above (files used unmodified). The /dʒ/ clip is Public Domain (no attribution required).
+**Attribution:** CC BY-SA 3.0 and CC BY 3.0 US files require crediting the author + license +
+linking the file page above (all files used unmodified). The /dʒ/ clip is Public Domain (no
+attribution required).

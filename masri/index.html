@@ -373,6 +373,7 @@
   .sym-play.unavailable{color:var(--muted);cursor:not-allowed;opacity:.65}
   @keyframes sym-pulse{0%,100%{box-shadow:0 0 0 0 rgba(111,206,154,.55)}50%{box-shadow:0 0 0 4px rgba(111,206,154,0)}}
   .sym-noclip{display:inline-flex;align-items:center;height:22px;font-family:var(--ui);font-size:11px;color:var(--muted);font-style:italic;vertical-align:middle;white-space:nowrap}
+  .sym-holdnote{font-family:var(--ui);font-size:10.5px;color:var(--muted);font-style:italic;white-space:nowrap;vertical-align:middle}
   .sym-audiostatus{font-size:12px;color:var(--muted);min-height:1.1em;margin-top:6px}
   @media (max-width:600px){ .sym-wrap{grid-template-columns:1fr} }
 
@@ -775,6 +776,9 @@ function buildPracticeSubnav(g, activeSid){
 }
 
 function showSection(sid){
+  // Navigating away from Symbols must stop any playing reference clip and reset its
+  // button (audio is not tied to panel visibility, so it would otherwise keep playing).
+  if(window.MASRI && window.MASRI._symbolAudio) window.MASRI._symbolAudio.stop();
   document.querySelectorAll('main .panel').forEach(p => p.classList.remove('active'));
   const panel = document.getElementById('p-' + sid); if(panel) panel.classList.add('active');
   subnav.querySelectorAll('.subtab').forEach(b => {
@@ -1147,26 +1151,48 @@ function renderTableCards(arr){
 
   const ipaSymbol = s => String(s).replace(/^\/|\/$/g, '');   // /dʒ/ -> dʒ for copying
 
-  // IPA reference audio: each phoneme plays a formal IPA phonetic-sample clip (from
-  // Wikimedia Commons — see audio/ipa/CREDITS.md). This is the REFERENCE sound, NOT an
-  // Egyptian pronunciation of the example word (the Masri notes stay visible for the
-  // sounds Egyptian realizes differently). Long vowels reuse the short-vowel clip;
-  // diphthongs (/aj/, /aw/) have no single IPA clip. The 36 verified rows are untouched.
+  // Symbols audio. Consonants + short vowels play a formal IPA phonetic-sample clip
+  // (Wikimedia Commons — see audio/ipa/CREDITS.md): the REFERENCE sound, NOT an Egyptian
+  // recording of the example word (the Masri notes stay visible where Egyptian differs).
+  // No isolated IPA long-vowel clip that demonstrates duration exists on Commons, so the
+  // long vowels /iː/ and /aː/ instead play a native Arabic recording of the example word
+  // (which holds the long vowel) so the length is audible in context. /uː/ has no example-
+  // word recording yet (فول), so it plays the /u/ *quality* clip with an honest "length
+  // pending" note. Diphthongs have no single clip. The 36 verified rows are untouched.
   const IPA_TAG = { '/b/':'b','/t/':'t','/d/':'d','/tˤ/':'t-emphatic','/dˤ/':'d-emphatic','/k/':'k','/q/':'q','/ʔ/':'hamza',
     '/m/':'m','/n/':'n','/f/':'f','/θ/':'th','/ð/':'dh','/ðˤ/':'dh-emphatic','/s/':'s','/sˤ/':'s-emphatic','/z/':'z',
     '/ʃ/':'sh','/x/':'kh','/ɣ/':'gh','/ħ/':'h-pharyngeal','/ʕ/':'ayn','/h/':'h','/dʒ/':'j','/l/':'l','/r/':'r','/j/':'y','/w/':'w',
     '/i/':'i','/u/':'u','/a/':'a' };
-  const LONG_REUSE = { '/iː/':'i', '/uː/':'u', '/aː/':'a' };   // long vowels reuse the short-vowel clip
-  const NO_CLIP = new Set(['/aj/','/aw/']);                     // diphthongs: no single IPA reference clip
+  // Long vowels → native Arabic example-word recording (Shtooka Project, CC BY 3.0 US).
+  const WORD_CLIP = { '/iː/': { file:'ex-kibir.ogg', word:'كبير', tr:'kibīr' },
+                      '/aː/': { file:'ex-bab.ogg',   word:'باب',  tr:'bāb'   } };
+  const QUALITY_HOLD = new Set(['/uː/']);   // plays the /u/ quality; a dedicated long /uː/ clip is still being sourced
+  const NO_CLIP = new Set(['/aj/','/aw/']); // diphthongs: no single IPA reference clip
   const audioBase = (d.audio && d.audio.base) || 'audio/ipa/';
   const audioReady = !!(d.audio && d.audio.ready);
-  const clipFor = ipa => { if(NO_CLIP.has(ipa)) return null; const tag = LONG_REUSE[ipa] || IPA_TAG[ipa]; return tag ? audioBase+'ipa-'+tag+'.ogg' : null; };
 
   function playBtnHtml(r){
-    const ipa = esc(r.ipa), src = clipFor(r.ipa);
-    if(!src) return `<span class="sym-noclip" title="A diphthong is a vowel sequence, so the IPA chart has no single reference clip">no single IPA clip</span>`;
-    if(!audioReady) return `<button type="button" class="sym-play unavailable" aria-disabled="true" aria-label="IPA reference sound ${ipa} — audio unavailable"><span class="sym-play-ico" aria-hidden="true">🔇</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
-    return `<button type="button" class="sym-play" data-audio="${esc(src)}" data-ipa="${ipa}" aria-pressed="false" aria-label="Hear phoneme ${ipa} — the formal IPA reference sound (not the Egyptian pronunciation of the word)" title="IPA reference sound ${ipa}"><span class="sym-play-ico" aria-hidden="true">►</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
+    const ipa = esc(r.ipa);
+    if(NO_CLIP.has(r.ipa)) return `<span class="sym-noclip" title="A diphthong is a vowel sequence, so the IPA chart has no single reference clip">no single IPA clip</span>`;
+    const word = WORD_CLIP[r.ipa], hold = QUALITY_HOLD.has(r.ipa);
+    let src, aria, title, note = '';
+    if(word){
+      src = audioBase + word.file;
+      aria = `Hear the long vowel ${ipa} in the native Arabic recording of the example word ${word.word} (${word.tr}) — heard in context, as no isolated IPA long-vowel clip exists`;
+      title = `Example word ${word.word} (${word.tr}) — long ${ipa} in context`;
+    } else if(hold){
+      src = audioBase + 'ipa-' + IPA_TAG['/u/'] + '.ogg';
+      aria = `Hear the ${ipa} vowel quality — a dedicated long-vowel recording is still being sourced`;
+      title = `${ipa}: vowel quality only (dedicated long clip pending)`;
+      note = ` <span class="sym-holdnote" title="No dedicated long /uː/ recording is available yet; this plays the vowel quality only">length pending</span>`;
+    } else {
+      const tag = IPA_TAG[r.ipa]; if(!tag) return '';
+      src = audioBase + 'ipa-' + tag + '.ogg';
+      aria = `Hear phoneme ${ipa} — the formal IPA reference sound (not the Egyptian pronunciation of the word)`;
+      title = `IPA reference sound ${ipa}`;
+    }
+    if(!audioReady) return `<button type="button" class="sym-play unavailable" aria-disabled="true" aria-label="${ipa} — audio unavailable"><span class="sym-play-ico" aria-hidden="true">🔇</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
+    return `<button type="button" class="sym-play" data-audio="${esc(src)}" data-ipa="${ipa}" aria-pressed="false" aria-label="${aria}" title="${title}"><span class="sym-play-ico" aria-hidden="true">►</span><span class="sym-play-lbl">Hear ${ipa}</span></button>${note}`;
   }
 
   function rowHtml(r){
@@ -1195,8 +1221,8 @@ function renderTableCards(arr){
 
   let h = `<p class="lead">${esc(d.intro)}</p>`;
   h += `<p class="sym-copyhint">Tap any <b style="color:var(--green)">IPA symbol</b> or <b style="color:var(--gold)">Arabic letter</b> to copy it`
-     + (audioReady ? `, or <b style="color:var(--gold)">Hear /…/</b> to play the formal <b>IPA reference sound</b> for that phoneme.` : `.`) + `</p>`;
-  if(audioReady) h += `<p class="sym-refnote"><b>About the audio:</b> each clip is the phoneme’s formal <b>IPA reference sound</b>, not an Egyptian recording of the example word. Where Egyptian (Masri) differs — ج, ق, ث, ذ, ظ, and the diphthongs — the small “Masri:” note beside the row is the sound Egyptians actually use. Diphthongs (/aj/, /aw/) are a vowel sequence, so the IPA chart has no single clip for them. Audio: Wikimedia Commons IPA phonetic samples, CC BY-SA 3.0 / Public Domain — see <a href="audio/ipa/CREDITS.md">full credits</a>.</p>`;
+     + (audioReady ? `, or <b style="color:var(--gold)">Hear /…/</b> to play the reference sound for that row.` : `.`) + `</p>`;
+  if(audioReady) h += `<p class="sym-refnote"><b>About the audio:</b> most clips are the phoneme’s formal <b>IPA reference sound</b> (not an Egyptian recording of the example word). The <b>long vowels</b> /iː/ and /aː/ instead play a native Arabic recording of the example word (كبير, باب) so you can hear the length in context; a dedicated long /uː/ clip is still being sourced, so /uː/ currently plays the /u/ quality (“length pending”). Where Egyptian (Masri) differs — ج, ق, ث, ذ, ظ, and the diphthongs — the small “Masri:” note beside the row is the sound Egyptians actually use. Diphthongs (/aj/, /aw/) are a vowel sequence, so the chart has no single clip for them. Audio: Wikimedia Commons — IPA phonetic samples (CC BY-SA 3.0 / Public Domain) and Shtooka Project example words (CC BY 3.0 US); see <a href="audio/ipa/CREDITS.md">full credits</a>.</p>`;
   h += `<div class="sym-wrap">` + d.panels.map(panelHtml).join('') + `</div>`;
   h += `<div class="sym-audiostatus" id="sym-audiostatus" role="status" aria-live="polite"></div>`;
   panel.innerHTML = h;
