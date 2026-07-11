@@ -360,7 +360,20 @@
   .sym-ar{font-family:var(--ar);font-size:calc(24px * var(--ar-scale));color:var(--gold);direction:rtl;unicode-bidi:isolate;text-align:center;cursor:pointer;border-radius:5px;line-height:1.4}
   .sym-ipa:hover,.sym-ar:hover{outline:1px solid var(--border)}
   .sym-ipa.copied,.sym-ar.copied{background:var(--green);color:#111}
-  .sym-copyhint{color:var(--muted);font-size:12px;margin:-8px 0 16px}
+  .sym-copyhint{color:var(--muted);font-size:12px;margin:-8px 0 10px}
+  /* visible attribution / IPA-vs-Masri note above the chart */
+  .sym-refnote{color:var(--muted);font-size:12px;line-height:1.5;margin:0 0 16px;padding:8px 10px;border:1px solid var(--border);border-radius:6px;background:var(--surf2)}
+  .sym-refnote a{color:var(--gold)}
+  /* "Hear /…/" IPA reference-sound button beside each example (wraps cleanly; state = icon + label + pulse, not colour only) */
+  .sym-play{display:inline-flex;align-items:center;gap:4px;background:var(--surf2);border:1px solid var(--border);border-radius:6px;color:var(--gold);cursor:pointer;font-family:var(--ui);font-size:11px;line-height:1;height:22px;padding:0 7px;vertical-align:middle;white-space:nowrap}
+  .sym-play-ico{font-size:9px}
+  .sym-play:hover{border-color:var(--gold)}
+  .sym-play:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .sym-play.playing{background:var(--green);color:#111;border-color:var(--green);animation:sym-pulse 1.1s ease-in-out infinite}
+  .sym-play.unavailable{color:var(--muted);cursor:not-allowed;opacity:.65}
+  @keyframes sym-pulse{0%,100%{box-shadow:0 0 0 0 rgba(111,206,154,.55)}50%{box-shadow:0 0 0 4px rgba(111,206,154,0)}}
+  .sym-noclip{display:inline-flex;align-items:center;height:22px;font-family:var(--ui);font-size:11px;color:var(--muted);font-style:italic;vertical-align:middle;white-space:nowrap}
+  .sym-audiostatus{font-size:12px;color:var(--muted);min-height:1.1em;margin-top:6px}
   @media (max-width:600px){ .sym-wrap{grid-template-columns:1fr} }
 
   /* ── word builder ── */
@@ -1134,10 +1147,32 @@ function renderTableCards(arr){
 
   const ipaSymbol = s => String(s).replace(/^\/|\/$/g, '');   // /dʒ/ -> dʒ for copying
 
+  // IPA reference audio: each phoneme plays a formal IPA phonetic-sample clip (from
+  // Wikimedia Commons — see audio/ipa/CREDITS.md). This is the REFERENCE sound, NOT an
+  // Egyptian pronunciation of the example word (the Masri notes stay visible for the
+  // sounds Egyptian realizes differently). Long vowels reuse the short-vowel clip;
+  // diphthongs (/aj/, /aw/) have no single IPA clip. The 36 verified rows are untouched.
+  const IPA_TAG = { '/b/':'b','/t/':'t','/d/':'d','/tˤ/':'t-emphatic','/dˤ/':'d-emphatic','/k/':'k','/q/':'q','/ʔ/':'hamza',
+    '/m/':'m','/n/':'n','/f/':'f','/θ/':'th','/ð/':'dh','/ðˤ/':'dh-emphatic','/s/':'s','/sˤ/':'s-emphatic','/z/':'z',
+    '/ʃ/':'sh','/x/':'kh','/ɣ/':'gh','/ħ/':'h-pharyngeal','/ʕ/':'ayn','/h/':'h','/dʒ/':'j','/l/':'l','/r/':'r','/j/':'y','/w/':'w',
+    '/i/':'i','/u/':'u','/a/':'a' };
+  const LONG_REUSE = { '/iː/':'i', '/uː/':'u', '/aː/':'a' };   // long vowels reuse the short-vowel clip
+  const NO_CLIP = new Set(['/aj/','/aw/']);                     // diphthongs: no single IPA reference clip
+  const audioBase = (d.audio && d.audio.base) || 'audio/ipa/';
+  const audioReady = !!(d.audio && d.audio.ready);
+  const clipFor = ipa => { if(NO_CLIP.has(ipa)) return null; const tag = LONG_REUSE[ipa] || IPA_TAG[ipa]; return tag ? audioBase+'ipa-'+tag+'.ogg' : null; };
+
+  function playBtnHtml(r){
+    const ipa = esc(r.ipa), src = clipFor(r.ipa);
+    if(!src) return `<span class="sym-noclip" title="A diphthong is a vowel sequence, so the IPA chart has no single reference clip">no single IPA clip</span>`;
+    if(!audioReady) return `<button type="button" class="sym-play unavailable" aria-disabled="true" aria-label="IPA reference sound ${ipa} — audio unavailable"><span class="sym-play-ico" aria-hidden="true">🔇</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
+    return `<button type="button" class="sym-play" data-audio="${esc(src)}" data-ipa="${ipa}" aria-pressed="false" aria-label="Hear phoneme ${ipa} — the formal IPA reference sound (not the Egyptian pronunciation of the word)" title="IPA reference sound ${ipa}"><span class="sym-play-ico" aria-hidden="true">►</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
+  }
+
   function rowHtml(r){
     const masri = r.masri ? `<span class="sym-masri">${esc(r.masri)}</span>` : '';
     return `<tr class="sym-row">`
-      + `<td class="sym-ex"><span class="ar" dir="rtl">${esc(r.ar)}</span> <span class="tr" dir="ltr">${esc(r.tr)}</span> <span class="gloss">· ${esc(r.gloss)}</span></td>`
+      + `<td class="sym-ex"><span class="ar" dir="rtl">${esc(r.ar)}</span> <span class="tr" dir="ltr">${esc(r.tr)}</span> <span class="gloss">· ${esc(r.gloss)}</span> ${playBtnHtml(r)}</td>`
       + `<td><span class="sym-ipa" data-copy="${esc(ipaSymbol(r.ipa))}" title="Copy IPA symbol" role="button" aria-label="Copy IPA ${esc(ipaSymbol(r.ipa))}">${esc(r.ipa)}</span></td>`
       + `<td class="sym-en">${esc(r.eng)}${masri}</td>`
       + `<td><span class="sym-ar" data-copy="${esc(r.letter)}" title="Copy Arabic" role="button" aria-label="Copy Arabic letter">${esc(r.letter)}</span></td>`
@@ -1159,12 +1194,40 @@ function renderTableCards(arr){
   }
 
   let h = `<p class="lead">${esc(d.intro)}</p>`;
-  h += `<p class="sym-copyhint">Tap any <b style="color:var(--green)">IPA symbol</b> or <b style="color:var(--gold)">Arabic letter</b> to copy it.</p>`;
+  h += `<p class="sym-copyhint">Tap any <b style="color:var(--green)">IPA symbol</b> or <b style="color:var(--gold)">Arabic letter</b> to copy it`
+     + (audioReady ? `, or <b style="color:var(--gold)">Hear /…/</b> to play the formal <b>IPA reference sound</b> for that phoneme.` : `.`) + `</p>`;
+  if(audioReady) h += `<p class="sym-refnote"><b>About the audio:</b> each clip is the phoneme’s formal <b>IPA reference sound</b>, not an Egyptian recording of the example word. Where Egyptian (Masri) differs — ج, ق, ث, ذ, ظ, and the diphthongs — the small “Masri:” note beside the row is the sound Egyptians actually use. Diphthongs (/aj/, /aw/) are a vowel sequence, so the IPA chart has no single clip for them. Audio: Wikimedia Commons IPA phonetic samples, CC BY-SA 3.0 / Public Domain — see <a href="audio/ipa/CREDITS.md">full credits</a>.</p>`;
   h += `<div class="sym-wrap">` + d.panels.map(panelHtml).join('') + `</div>`;
+  h += `<div class="sym-audiostatus" id="sym-audiostatus" role="status" aria-live="polite"></div>`;
   panel.innerHTML = h;
 
   panel.querySelectorAll('.sym-ipa, .sym-ar').forEach(el =>
     el.addEventListener('click', () => copyText(el.dataset.copy, el)));
+
+  // Shared audio controller: one reusable Audio, only one clip at a time, no autoplay,
+  // no preload. State is shown by icon + aria-pressed + a pulse (not colour alone). A
+  // missing/unplayable file marks that button unavailable and announces it.
+  const statusEl = panel.querySelector('#sym-audiostatus');
+  const say = m => { if(statusEl) statusEl.textContent = m; };
+  let audio = null, curBtn = null;
+  const ico = (b,t) => { const s=b.querySelector('.sym-play-ico'); if(s) s.textContent=t; };
+  function resetBtn(b){ if(!b) return; b.classList.remove('playing'); b.setAttribute('aria-pressed','false'); ico(b,'►'); b.setAttribute('aria-label','Hear phoneme '+b.dataset.ipa+' — the formal IPA reference sound (not the Egyptian pronunciation of the word)'); }
+  function markUnavailable(b){ b.classList.remove('playing'); b.classList.add('unavailable'); b.setAttribute('aria-disabled','true'); b.setAttribute('aria-pressed','false'); ico(b,'🔇'); b.setAttribute('aria-label','IPA reference sound '+b.dataset.ipa+' — audio not available'); }
+  function stop(){ try{ if(audio) audio.pause(); }catch(e){} if(curBtn){ resetBtn(curBtn); curBtn=null; } }
+  function play(b){
+    if(b.getAttribute('aria-disabled')==='true'){ say('The IPA reference sound for '+b.dataset.ipa+' isn’t available.'); return; }
+    if(curBtn===b){ stop(); return; }         // clicking the active button again pauses it
+    stop(); say('');
+    if(!audio){ audio=new Audio(); audio.addEventListener('ended', ()=>{ if(curBtn){ resetBtn(curBtn); curBtn=null; } }); }
+    audio.onerror = ()=>{ if(curBtn===b) curBtn=null; markUnavailable(b); say('The IPA reference sound for '+b.dataset.ipa+' isn’t available.'); };
+    audio.src = b.dataset.audio;
+    curBtn=b; b.classList.add('playing'); b.setAttribute('aria-pressed','true'); ico(b,'❚❚'); b.setAttribute('aria-label','Stop the IPA reference sound for '+b.dataset.ipa);
+    const pr = audio.play();
+    if(pr && pr.catch) pr.catch(()=>{ if(curBtn===b) curBtn=null; markUnavailable(b); say('Couldn’t play the IPA reference sound for '+b.dataset.ipa+'.'); });
+  }
+  panel.querySelectorAll('.sym-play').forEach(b => b.addEventListener('click', () => play(b)));
+  // Expose the controller for verification/testing (no data, no side effects on load).
+  window.MASRI._symbolAudio = { play, stop, get current(){ return curBtn; } };
 })();
 
 // PRACTICE DASHBOARD — landing panel for the Practice tab. A card grid whose

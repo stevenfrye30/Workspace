@@ -26,6 +26,18 @@ window.MASRI.symbols = {
     "English sound cues. The main symbol shows the formal Arabic reference sound; " +
     "small notes mark common Egyptian (Masri) pronunciations where they differ.",
   columns: ["Example", "IPA", "English", "Arabic"],
+
+  // IPA reference-audio metadata (the 36 rows themselves are untouched). Each row's
+  // button plays a formal IPA phonetic-sample clip for the PHONEME — the reference
+  // sound, NOT an Egyptian pronunciation of the example word. Clips are LOCAL files
+  // under `base`, named by an ASCII phoneme tag:
+  //   ipa-<tag>.ogg   e.g. ipa-b.ogg, ipa-t-emphatic.ogg, ipa-i.ogg
+  // Long vowels (/iː/ /uː/ /aː/) reuse the short-vowel clip; diphthongs (/aj/ /aw/)
+  // have no single IPA clip and show a "no single IPA clip" note instead of a button.
+  // Sources, authors, and licenses (CC BY-SA 3.0 / Public Domain) are recorded in
+  // audio/ipa/CREDITS.md and summarized in a visible attribution note in the UI.
+  audio: { base: "audio/ipa/", ready: true, kind: "ipa" },
+
   panels: [
     {
       groups: [
