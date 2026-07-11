@@ -78,6 +78,59 @@ window.MASRI.passages = {
       { ar:'لو سمحت، أنا تايه ومش عارف الطريق.', tr:'law samaḥt, ana tāyeh we-mesh ʿāref eṭ-ṭarīʾ.', en:"Excuse me, I'm lost and don't know the way." },
       { ar:'ممكن تساعدني أوصل للمحطة؟', tr:'momken tesaʿedni awṣal lel-maḥaṭṭa?', en:'Can you help me get to the station?' },
       { ar:'متشكر جدا على مساعدتك.', tr:'motshakker gedan ʿala mosaʿdetak.', en:'Thank you very much for your help.' }
+    ]},
+    // ── Beginner (more) ───────────────────────────────────────────────────
+    { id:'eg-b5', title:'Greetings and small talk', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'إزيك؟', tr:'ezzayyak?', en:'How are you?' },
+      { ar:'أنا كويس الحمد لله.', tr:'ana kwayyes el-ḥamdu lellāh.', en:"I'm fine, thank God." },
+      { ar:'وانت عامل ايه؟', tr:'wenta ʿāmel ēh?', en:'And how are you doing?' }
+    ]},
+    { id:'eg-b6', title:'Paying at a restaurant', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'الحساب لو سمحت.', tr:'el-ḥesāb law samaḥt.', en:'The bill, please.' },
+      { ar:'الأكل كان جميل.', tr:'el-akl kān gamīl.', en:'The food was lovely.' },
+      { ar:'متشكرين.', tr:'motshakkerīn.', en:'Thank you.' }
+    ]},
+    { id:'eg-b7', title:'Talking about the weather', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'النهارده حر.', tr:'en-naharda ḥarr.', en:'It is hot today.' },
+      { ar:'بكرة هيكون أحسن.', tr:'bokra haykūn aḥsan.', en:'Tomorrow will be better.' },
+      { ar:'خد معاك ميه.', tr:'khod maʿāk mayya.', en:'Take water with you.' }
+    ]},
+    { id:'eg-b8', title:'Asking the time', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'الساعة كام؟', tr:'es-sāʿa kām?', en:'What time is it?' },
+      { ar:'الساعة تلاتة.', tr:'es-sāʿa talāta.', en:"It's three o'clock." },
+      { ar:'لسه بدري.', tr:'lessa badri.', en:'It is still early.' }
+    ]},
+    // ── Intermediate (more) ───────────────────────────────────────────────
+    { id:'eg-i5', title:'At the pharmacy', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'عندي صداع من الصبح.', tr:'ʿandi ṣodāʿ men eṣ-ṣobḥ.', en:'I have had a headache since the morning.' },
+      { ar:'عايز حاجة للصداع لو سمحت.', tr:'ʿāyez ḥāga leṣ-ṣodāʿ law samaḥt.', en:"I'd like something for a headache, please." },
+      { ar:'خد قرص كل تمن ساعات.', tr:'khod ʾorṣ koll taman sāʿāt.', en:'Take one pill every eight hours.' }
+    ]},
+    { id:'eg-i6', title:'A phone call', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'ألو، مساء الخير.', tr:'alu, masāʾ el-khēr.', en:'Hello, good evening.' },
+      { ar:'ممكن أكلم أحمد؟', tr:'momken akallem Aḥmad?', en:'Can I speak to Ahmad?' },
+      { ar:'هو مش موجود دلوقتي.', tr:'howwa mesh mawgūd delwaʾti.', en:'He is not here right now.' }
+    ]},
+    { id:'eg-i7', title:'Describing your neighborhood', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'أنا ساكن في المعادي.', tr:'ana sāken fel-Maʿādi.', en:'I live in Maadi.' },
+      { ar:'فيها محلات ومطاعم كتير.', tr:'fīha maḥallāt we-maṭāʿem ketīr.', en:'It has lots of shops and restaurants.' },
+      { ar:'المكان هادي وحلو.', tr:'el-makān hādi we-ḥelw.', en:'The place is quiet and nice.' }
+    ]},
+    { id:'eg-i8', title:'Weekend plans', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'الجمعة الجاية عندنا أجازة.', tr:'el-gomʿa el-gayya ʿandena agāza.', en:'Next Friday we have a day off.' },
+      { ar:'يمكن نروح البحر.', tr:'yemken nerūḥ el-baḥr.', en:"Maybe we'll go to the sea." },
+      { ar:'لازم نحجز بدري.', tr:'lāzem neḥgez badri.', en:'We need to book early.' }
+    ]},
+    // ── Advanced (more) ───────────────────────────────────────────────────
+    { id:'eg-a3', title:'A short trip', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'الأسبوع اللي فات رحنا الإسكندرية.', tr:'el-osbūʿ elli fāt roḥna el-Eskendereyya.', en:'Last week we went to Alexandria.' },
+      { ar:'قعدنا على البحر وأكلنا سمك.', tr:'ʾaʿadna ʿala el-baḥr we-akalna samak.', en:'We sat by the sea and ate fish.' },
+      { ar:'الجو كان لطيف والرحلة كانت ممتعة.', tr:'el-gaww kān laṭīf we-r-reḥla kānet momteʿa.', en:'The weather was pleasant and the trip was enjoyable.' }
+    ]},
+    { id:'eg-a4', title:'Sharing an opinion', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'في رأيي القراءة حاجة مهمة جدا.', tr:'fi raʾyi el-ʾerāya ḥāga mohemma gedan.', en:'In my opinion, reading is a very important thing.' },
+      { ar:'بتفتح العقل وبتعلمنا حاجات كتير.', tr:'beteftaḥ el-ʿaʾl we-beteʿallemna ḥagāt ketīr.', en:'It opens the mind and teaches us many things.' },
+      { ar:'أنا بحاول أقرا كل يوم شوية.', tr:'ana baḥāwel aʾra koll yōm shwayya.', en:'I try to read a little every day.' }
     ]}
   ],
 
