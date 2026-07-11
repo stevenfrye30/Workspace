@@ -24823,7 +24823,8 @@
         "ramayana"
       ],
       "parents": [
-        "vishrava"
+        "vishrava",
+        "kaikasi"
       ],
       "consorts": [],
       "children": [],
@@ -24847,7 +24848,8 @@
         "ramayana"
       ],
       "parents": [
-        "vishrava"
+        "vishrava",
+        "kaikasi"
       ],
       "consorts": [],
       "children": [],
@@ -24890,7 +24892,9 @@
         "ramayana"
       ],
       "parents": [],
-      "consorts": [],
+      "consorts": [
+        "kaikasi"
+      ],
       "children": [
         "kubera",
         "ravana",
@@ -25467,6 +25471,404 @@
       "archetype": null,
       "parallels": [],
       "description": "Primordial first woman associated with Brahma's creation; wife of Svayambhuva Manu and, with him, a progenitor of humankind."
+    },
+    {
+      "id": "ghatotkacha",
+      "name": "Ghatotkacha",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "rakshasa-warrior",
+        "son-of-bhima"
+      ],
+      "parents": [
+        "bhima",
+        "hidimbi"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Half-rakshasa son of Bhima and Hidimbi; a giant warrior who fell to Karna's celestial spear at Kurukshetra."
+    },
+    {
+      "id": "hidimbi",
+      "name": "Hidimbi",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "rakshasi",
+        "wife-of-bhima"
+      ],
+      "parents": [],
+      "consorts": [
+        "bhima"
+      ],
+      "children": [
+        "ghatotkacha"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Rakshasi who wed Bhima during the Pandavas' exile; mother of Ghatotkacha."
+    },
+    {
+      "id": "ulupi",
+      "name": "Ulupi",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "naga-princess",
+        "wife-of-arjuna"
+      ],
+      "parents": [],
+      "consorts": [
+        "arjuna"
+      ],
+      "children": [
+        "iravan"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Naga princess, a wife of Arjuna and mother of Iravan."
+    },
+    {
+      "id": "iravan",
+      "name": "Iravan",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "naga-warrior",
+        "son-of-arjuna"
+      ],
+      "parents": [
+        "arjuna",
+        "ulupi"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Arjuna and the naga princess Ulupi; he offered himself in sacrifice at Kurukshetra and is venerated in the Kuttantavar tradition."
+    },
+    {
+      "id": "chitrangada",
+      "name": "Chitrangada",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "manipura-princess",
+        "wife-of-arjuna"
+      ],
+      "parents": [],
+      "consorts": [
+        "arjuna"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Warrior princess of Manipura and a wife of Arjuna."
+    },
+    {
+      "id": "vrishasena",
+      "name": "Vrishasena",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "warrior",
+        "son-of-karna"
+      ],
+      "parents": [
+        "karna"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Karna and a warrior at Kurukshetra, slain by Arjuna."
+    },
+    {
+      "id": "balandhara",
+      "name": "Balandhara",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "kashi-princess",
+        "wife-of-bhima"
+      ],
+      "parents": [],
+      "consorts": [
+        "bhima"
+      ],
+      "children": [
+        "sarvaga"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Princess of Kashi and a wife of Bhima; mother of Sarvaga."
+    },
+    {
+      "id": "sarvaga",
+      "name": "Sarvaga",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "prince",
+        "son-of-bhima"
+      ],
+      "parents": [
+        "bhima",
+        "balandhara"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Bhima and the Kashi princess Balandhara."
+    },
+    {
+      "id": "kaikasi",
+      "name": "Kaikasi",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "rakshasi",
+        "mother-of-ravana"
+      ],
+      "parents": [],
+      "consorts": [
+        "vishrava"
+      ],
+      "children": [
+        "ravana",
+        "kumbhakarna",
+        "vibhishana"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Rakshasi wife of the sage Vishrava; mother of Ravana, Kumbhakarna, and Vibhishana."
+    },
+    {
+      "id": "vali-vanara",
+      "name": "Vali",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "vanara-king",
+        "brother-of-sugriva"
+      ],
+      "parents": [],
+      "consorts": [
+        "tara-ramayana"
+      ],
+      "children": [],
+      "siblings": [
+        "sugriva"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Mighty vanara king of Kishkindha and elder brother of Sugriva; slain by Rama."
+    },
+    {
+      "id": "tara-ramayana",
+      "name": "Tara",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "vanara-queen",
+        "wife-of-vali"
+      ],
+      "parents": [],
+      "consorts": [
+        "vali-vanara",
+        "sugriva"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Vanara queen, wife of Vali and later of Sugriva; renowned for her wisdom."
+    },
+    {
+      "id": "ruma",
+      "name": "Ruma",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "vanara-queen",
+        "wife-of-sugriva"
+      ],
+      "parents": [],
+      "consorts": [
+        "sugriva"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Vanara queen, wife of Sugriva."
+    },
+    {
+      "id": "lopamudra",
+      "name": "Lopamudra",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "scholar",
+        "wife-of-agastya"
+      ],
+      "parents": [],
+      "consorts": [
+        "agastya"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Learned wife of the sage Agastya, credited with hymns of the Rigveda."
+    },
+    {
+      "id": "arundhati",
+      "name": "Arundhati",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "devoted-wife",
+        "wife-of-vasistha"
+      ],
+      "parents": [],
+      "consorts": [
+        "vasistha"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wife of the sage Vasistha, upheld as an ideal of devotion and identified with a star of the Great Bear."
+    },
+    {
+      "id": "dridhasyu",
+      "name": "Dridhasyu",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "sage",
+        "son-of-agastya"
+      ],
+      "parents": [
+        "agastya",
+        "lopamudra"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of the sage Agastya and Lopamudra."
+    },
+    {
+      "id": "shakti-maharishi",
+      "name": "Shakti",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "rishi",
+        "son-of-vasistha"
+      ],
+      "parents": [
+        "vasistha"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Eldest son of the sage Vasistha and himself a rishi; father of Parashara. Not to be confused with the goddess-concept Shakti."
+    },
+    {
+      "id": "shilada",
+      "name": "Shilada",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "sage",
+        "father-of-nandi"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "nandi"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sage who, through long austerity, gained Nandi as his son."
+    },
+    {
+      "id": "varuni",
+      "name": "Varuni",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "goddess-of-wine",
+        "consort-of-varuna"
+      ],
+      "parents": [],
+      "consorts": [
+        "varuna"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Goddess of wine, arisen from the churning of the ocean; consort of Varuna."
+    },
+    {
+      "id": "devasena",
+      "name": "Devasena",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "consort-of-kartikeya",
+        "army-of-the-gods"
+      ],
+      "parents": [],
+      "consorts": [
+        "kartikeya"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Consort of Kartikeya, given to him by Indra; her name means 'army of the gods.'"
+    },
+    {
+      "id": "valli",
+      "name": "Valli",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "consort-of-kartikeya",
+        "tamil-tradition"
+      ],
+      "parents": [],
+      "consorts": [
+        "kartikeya"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Tamil maiden who became a consort of Kartikeya (Murugan)."
     }
   ],
   "notable_mentions": [
