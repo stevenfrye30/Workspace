@@ -1380,13 +1380,14 @@ main p { line-height:1.7; }
 }
 .arch-table .arch-corner {
   color:var(--muted); letter-spacing:1px; font-size:11px;
+  position:sticky; left:0; z-index:3;
 }
 .arch-table .arch-row-head {
-  color:var(--ink); font-weight:normal; font-variant:small-caps;
-  letter-spacing:0.8px; white-space:nowrap;
+  color:var(--gold); font-weight:600; font-variant:small-caps;
+  letter-spacing:1px; white-space:nowrap;
   background:var(--panel); position:sticky; left:0; z-index:1;
 }
-.arch-row-dot {
+.arch-col-dot {
   display:inline-block; width:9px; height:9px; border-radius:50%;
   margin-right:8px; vertical-align:middle;
   background:var(--class-color, var(--gold));
@@ -3904,15 +3905,15 @@ function renderArchetypeTable() {
   const wrap = document.getElementById('archetypeTable');
   if (!wrap) return;
   if (!selectedArchetypes.length) {
-    wrap.innerHTML = `<div class="arch-empty">Select one or more archetypes above to build the table. Rows are pantheon classes; each column you add lists that archetype's figures and their pantheon of origin.</div>`;
+    wrap.innerHTML = `<div class="arch-empty">Select one or more archetypes above to build the table. Columns are pantheon classes; each archetype you add becomes a row listing its figures and their pantheon of origin.</div>`;
     return;
   }
   const reach = g => (g.parents||[]).length + (g.children||[]).length
     + (g.siblings||[]).length + (g.consorts||[]).length + (g.parallels||[]).length;
   const groups = allPantheonGroups();
 
-  // For each selected archetype, bucket its catalogued figures by pantheon class.
-  const cols = selectedArchetypes.map(aid => {
+  // For each selected archetype (a row), bucket its catalogued figures by class.
+  const rowsData = selectedArchetypes.map(aid => {
     const a = DATA.archetypes.find(x => x.id === aid);
     const byClass = {};
     (a.examples || []).forEach(gid => {
@@ -3924,14 +3925,17 @@ function renderArchetypeTable() {
     return { a, byClass };
   });
 
-  // Rows: only classes that have at least one figure in some selected column.
-  const rows = groups.filter(grp => cols.some(c => (c.byClass[grp.id] || []).length));
+  // Columns: only classes that have at least one figure in some selected row.
+  const cols = groups.filter(grp => rowsData.some(r => (r.byClass[grp.id] || []).length));
 
-  const headCells = cols.map(c => `<th scope="col">${c.a.name}</th>`).join('');
-  const bodyRows = rows.map(grp => {
+  const headCells = cols.map(grp => {
     const swatch = CLASS_COLORS[grp.id] || CLASS_COLORS.other;
-    const cells = cols.map(c => {
-      const list = (c.byClass[grp.id] || []).slice()
+    return `<th scope="col"><span class="arch-col-dot" style="--class-color:${swatch}" aria-hidden="true"></span>${grp.name}</th>`;
+  }).join('');
+
+  const bodyRows = rowsData.map(r => {
+    const cells = cols.map(grp => {
+      const list = (r.byClass[grp.id] || []).slice()
         .sort((x,y) => reach(y) - reach(x) || x.name.localeCompare(y.name));
       if (!list.length) return `<td class="arch-cell-empty" aria-hidden="true">·</td>`;
       const chips = list.map(g => {
@@ -3940,12 +3944,12 @@ function renderArchetypeTable() {
       }).join('');
       return `<td>${chips}</td>`;
     }).join('');
-    return `<tr><th scope="row" class="arch-row-head"><span class="arch-row-dot" style="--class-color:${swatch}" aria-hidden="true"></span>${grp.name}</th>${cells}</tr>`;
+    return `<tr><th scope="row" class="arch-row-head">${r.a.name}</th>${cells}</tr>`;
   }).join('');
 
   wrap.innerHTML = `
     <table class="arch-table">
-      <thead><tr><th scope="col" class="arch-corner">Class</th>${headCells}</tr></thead>
+      <thead><tr><th scope="col" class="arch-corner">Archetype</th>${headCells}</tr></thead>
       <tbody>${bodyRows}</tbody>
     </table>`;
 }
