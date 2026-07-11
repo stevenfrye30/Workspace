@@ -531,12 +531,43 @@
   .tt-revactions{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
   .tt-reviewbanner{display:flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--surf2);border:1px solid var(--gold);border-radius:8px;padding:9px 12px;margin-bottom:12px;font-size:calc(13px * var(--ui-scale));color:var(--fg)}
   .tt-reviewbanner .tt-btn{margin-left:auto}
+  /* passage typing */
+  .tt-target.seg{font-family:var(--ar);font-size:calc(26px * var(--ar-scale));color:var(--fg);direction:rtl;unicode-bidi:isolate;line-height:1.7;word-break:break-word;text-align:center}
+  .tt-input.seg{max-width:100%;width:100%;font-size:calc(22px * var(--ar-scale));text-align:right}
+  .tt-textarea{width:100%;max-width:100%;min-height:110px;resize:vertical;line-height:1.7;text-align:right;padding:10px 12px}
+  .tt-privacy{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:9px 11px}
+  .tt-passmeta{font-size:11.5px;color:var(--muted);margin-bottom:8px;text-align:center}
+  .tt-passvar{color:var(--gold)}
+  .tt-passref{font-family:var(--ui);font-size:11px;color:var(--gold);border:1px solid var(--border);border-radius:20px;padding:1px 8px;margin-right:4px;white-space:nowrap}
+  .tt-passtoggles{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px}
+  .tt-btn.small{font-size:11.5px;padding:5px 10px}
+  .tt-passfull{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:12px;direction:rtl;font-family:var(--ar);font-size:calc(18px * var(--ar-scale));line-height:2;color:var(--muted)}
+  .tt-passfullseg{margin-left:4px}
+  .tt-passfullseg.cur{color:var(--fg);background:rgba(217,164,65,.15);border-radius:4px;padding:0 3px}
+  /* passage column diff — stacked target/typed cells that wrap cleanly, RTL */
+  .tt-diffcols{display:flex;flex-wrap:wrap;gap:4px;direction:rtl;justify-content:center;margin:8px 0}
+  .tt-dcol{position:relative;display:flex;flex-direction:column;border:1px solid var(--border);border-radius:6px;min-width:26px;background:var(--surf2);overflow:visible}
+  .tt-dcol .tt-dtop,.tt-dcol .tt-dbot{padding:3px 5px;text-align:center;font-family:var(--ar);font-size:calc(17px * var(--ar-scale));line-height:1.35;unicode-bidi:isolate}
+  .tt-dcol .tt-dtop{color:var(--fg);border-bottom:1px solid var(--border)}
+  .tt-dcol .tt-dbot{color:var(--muted)}
+  .tt-dcsym{position:absolute;top:-8px;right:-6px;font-size:10px;font-weight:700;font-family:var(--ui);background:var(--card);border-radius:50%;padding:1px 2px;line-height:1}
+  .tt-dcol.ok{border-color:var(--green)}
+  .tt-dcol.sub{border-color:#d98a8a}
+  .tt-dcol.sub .tt-dbot{color:#e88;text-decoration:line-through}
+  .tt-dcol.sub .tt-dcsym{color:#e88}
+  .tt-dcol.del{border:2px dashed var(--gold)}
+  .tt-dcol.del .tt-dcsym{color:var(--gold)}
+  .tt-dcol.ins{border:2px dotted #d98a8a}
+  .tt-dcol.ins .tt-dbot{color:#e88;text-decoration:line-through}
+  .tt-dcol.ins .tt-dcsym{color:#e88}
   @media (max-width:600px){
     .tt-target.letter{font-size:calc(60px * var(--ar-scale))}
     .tt-target.word{font-size:calc(38px * var(--ar-scale))}
+    .tt-target.seg{font-size:calc(22px * var(--ar-scale))}
     .tt-key{width:40px;min-height:42px}
     .tt-difflab{min-width:60px}
     .tt-mrow .tt-mreason{margin-left:0}
+    .tt-dcol{min-width:22px}
   }
 
   /* ── notes ── */
@@ -624,6 +655,7 @@
 <script src="data/alphabet.js"></script>
 <script src="data/symbols.js"></script>
 <script src="data/typing.js"></script>
+<script src="data/passages.js"></script>
 <script src="data/grammar.js"></script>
 <script src="data/verbs.js"></script>
 <script src="data/numbers.js"></script>
@@ -1619,7 +1651,7 @@ function renderTableCards(arr){
   const WORD_PROMPTS = [ {id:'copy',label:'Copy Arabic'},{id:'en',label:'English → Arabic'},{id:'tr',label:'Translit → Arabic'} ];
 
   // Preferences (persist) ----------------------------------------------------
-  const MODES=[ {id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'} ];
+  const MODES=[ {id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'},{id:'passage',label:'Passage Typing',desc:'Type sentences & passages'} ];
   let mode = lsGet('masri-type-mode','letter'); if(!MODES.some(m=>m.id===mode)) mode='letter';
   let letterDiff = lsGet('masri-letter-difficulty','all'); if(!LETTER_DIFFS.some(d=>d.id===letterDiff)) letterDiff='all';
   let wordDiff = lsGet('masri-word-difficulty','all'); if(!WORD_DIFFS.some(d=>d.id===wordDiff)) wordDiff='all';
@@ -1627,6 +1659,13 @@ function renderTableCards(arr){
   let wordPrompt = lsGet('masri-word-prompt','copy'); if(!WORD_PROMPTS.some(p=>p.id===wordPrompt)) wordPrompt='copy';
   let kbView = lsGet('masri-keyboard-view','both'); if(kbView!=='both'&&kbView!=='ar') kbView='both';
   let kbTab='ref';
+  // Passage Typing preferences (harmless; content/scores/mistakes stay session-only).
+  const PASS_CATS = (M.passages && M.passages.categories) || [];
+  const PASS_DIFFS = [ {id:'all',label:'All'},{id:'beginner',label:'Beginner'},{id:'intermediate',label:'Intermediate'},{id:'advanced',label:'Advanced'} ];
+  let passCat = lsGet('masri-passage-category','egyptian'); if(!PASS_CATS.some(c=>c.id===passCat && c.available)) passCat='egyptian';
+  let passDiff = lsGet('masri-passage-difficulty','all'); if(!PASS_DIFFS.some(d=>d.id===passDiff)) passDiff='all';
+  let passDia = lsGet('masri-passage-diacritics','loose'); if(passDia!=='loose'&&passDia!=='exact') passDia='loose';
+  let passDisplay = lsGet('masri-passage-display','hidden'); if(passDisplay!=='hidden'&&passDisplay!=='full') passDisplay='hidden';
 
   // Session score helpers (Correct/Total/Streak/Best; nothing persisted) -----
   function newScore(){ return {c:0,t:0,streak:0,best:0}; }
@@ -1638,15 +1677,15 @@ function renderTableCards(arr){
   function updateScore(s){ const q=x=>body.querySelector(x); const a=q('.tt-sc'),b=q('.tt-st'),c=q('.tt-ss'),d=q('.tt-sb'); if(a)a.textContent=s.c; if(b)b.textContent=s.t; if(c)c.textContent=s.streak; if(d)d.textContent=s.best; }
 
   // Mistakes (session-only) --------------------------------------------------
-  const mistakes = { letter:new Map(), word:new Map(), key:new Map() };
+  const mistakes = { letter:new Map(), word:new Map(), key:new Map(), passage:new Map() };
   function record(type, key, data, reason){
     const map=mistakes[type]; let m=map.get(key);
     if(!m){ m=Object.assign({ key, count:0, reviewCorrect:0 }, data); map.set(key,m); }
     else { Object.assign(m, data); }
     m.count++; m.reason=reason; m.reviewCorrect=0; updateReviewBtn();
   }
-  const mCount = () => mistakes.letter.size + mistakes.word.size + mistakes.key.size;
-  function clearMistakes(){ mistakes.letter.clear(); mistakes.word.clear(); mistakes.key.clear(); updateReviewBtn(); }
+  const mCount = () => mistakes.letter.size + mistakes.word.size + mistakes.key.size + mistakes.passage.size;
+  function clearMistakes(){ mistakes.letter.clear(); mistakes.word.clear(); mistakes.key.clear(); mistakes.passage.clear(); updateReviewBtn(); }
   function updateReviewBtn(){ const b=panel.querySelector('#tt-reviewbtn'); if(!b) return; const n=mCount();
     b.textContent='Review mistakes ('+n+')'; b.classList.toggle('has', n>0); b.setAttribute('aria-disabled', String(n===0)); }
   function collectReview(types){ const out=[];
@@ -1733,13 +1772,16 @@ function renderTableCards(arr){
   const L={ score:newScore(), deck:null, target:null, done:false };
   const W={ score:newScore(), deck:null, target:null, done:false, filtered:[], revealed:false };
   const Q={ score:newScore(), deck:null, target:null, done:false };
+  // Passage Typing state — session-only. `passage` = current passage object; `seg` =
+  // current segment index; `custom`/`customLines` hold pasted text (never persisted).
+  const P={ score:newScore(), passage:null, seg:0, done:false, custom:'', customLines:null, showTr:false, showEn:false };
   let reviewMode=null;       // {types:[...], score, last, item}
   let reviewPanel=false;     // summary overlay open?
 
   function render(){
     if(reviewMode){ renderReviewPractice(); return; }
     if(reviewPanel){ renderReviewSummary(); return; }
-    if(mode==='letter') renderLetter(); else if(mode==='word') renderWord(); else renderKeyboard();
+    if(mode==='letter') renderLetter(); else if(mode==='word') renderWord(); else if(mode==='passage') renderPassage(); else renderKeyboard();
   }
 
   // Wire the selector pill-groups + review button that a mode render just injected.
@@ -1753,6 +1795,10 @@ function renderTableCards(arr){
     else if(name==='wordDiff'){ wordDiff=val; lsSet('masri-word-difficulty',val); W.deck=null; W.target=null; W.score=newScore(); }
     else if(name==='wordCat'){ wordCat=val; lsSet('masri-word-category',val); W.deck=null; W.target=null; W.score=newScore(); }
     else if(name==='wordPrompt'){ wordPrompt=val; lsSet('masri-word-prompt',val); W.deck=null; W.target=null; W.score=newScore(); }
+    else if(name==='passCat'){ passCat=val; lsSet('masri-passage-category',val); P.passage=null; P.seg=0; P.done=false; P.score=newScore(); }
+    else if(name==='passDiff'){ passDiff=val; lsSet('masri-passage-difficulty',val); P.passage=null; P.seg=0; P.done=false; P.score=newScore(); }
+    else if(name==='passDia'){ passDia=val; lsSet('masri-passage-diacritics',val); P.done=false; }
+    else if(name==='passDisplay'){ passDisplay=val; lsSet('masri-passage-display',val); }
     render();
   }
 
@@ -1867,7 +1913,7 @@ function renderTableCards(arr){
   function renderReviewSummary(){
     const s = mode==='word'?W.score:(mode==='keyboard'?Q.score:L.score);
     const acc = s.t? Math.round(100*s.c/s.t):0;
-    const lm=[...mistakes.letter.values()], wm=[...mistakes.word.values()], km=[...mistakes.key.values()];
+    const lm=[...mistakes.letter.values()], wm=[...mistakes.word.values()], km=[...mistakes.key.values()], pm=[...mistakes.passage.values()];
     const topAll=[...lm,...wm,...km].sort((a,b)=>b.count-a.count).slice(0,6);
     let h = `<div class="tt-review" role="region" aria-label="Mistakes review">`
       +`<div class="tt-revhead"><h3 class="tt-revh">Session summary &amp; mistakes</h3><button type="button" class="tt-btn" data-a="close">Close</button></div>`
@@ -1879,11 +1925,13 @@ function renderTableCards(arr){
       if(lm.length) h+=mistGroup('Missed letters', lm.map(m=>`${arSpan(m.ch)}<span class="tt-mcount">×${m.count}</span><span class="tt-mreason">${esc(m.reason)}</span>`));
       if(wm.length) h+=mistGroup('Missed words', wm.map(m=>`${arSpan(m.ar)}${m.en?'<span class="tt-mgloss">'+esc(m.en)+'</span>':''}<span class="tt-mcount">×${m.count}</span>${m.lastTyped?'<span class="tt-mreason">typed '+arSpan(m.lastTyped)+'</span>':'<span class="tt-mreason">'+esc(m.reason)+'</span>'}`));
       if(km.length) h+=mistGroup('Missed keyboard keys', km.map(m=>`${arSpan(m.ch)}<span class="tt-mreason">key ${esc(m.q||'')}</span><span class="tt-mcount">×${m.count}</span>`));
+      if(pm.length) h+=mistGroup('Missed passage segments', pm.map(m=>`${arSpan(m.target)}<span class="tt-mgloss">${esc(m.title||'')} · seg ${m.seg+1}</span><span class="tt-mcount">×${m.count}</span>${m.lastTyped?'<span class="tt-mreason">typed '+arSpan(m.lastTyped)+'</span>':'<span class="tt-mreason">'+esc(m.reason)+'</span>'}`));
       h+=`<div class="tt-revactions">`
         +`<button type="button" class="tt-btn primary" data-r="all">Practice all mistakes</button>`
         + (lm.length?`<button type="button" class="tt-btn" data-r="letter">Practice letter mistakes</button>`:'')
         + (wm.length?`<button type="button" class="tt-btn" data-r="word">Practice word mistakes</button>`:'')
         + (km.length?`<button type="button" class="tt-btn" data-r="key">Practice keyboard mistakes</button>`:'')
+        + (pm.length?`<button type="button" class="tt-btn" data-r="passage">Practice passage mistakes</button>`:'')
         +`<button type="button" class="tt-btn" data-a="clear">Clear mistakes</button></div>`;
     }
     h+=`</div>`;
@@ -1896,7 +1944,7 @@ function renderTableCards(arr){
   function mistGroup(title, rows){ return `<div class="tt-mgroup"><div class="tt-sellabel">${esc(title)}</div><div class="tt-mrows">`+rows.map(r=>`<div class="tt-mrow">${r}</div>`).join('')+`</div></div>`; }
 
   // Mistakes Review — practice mode -----------------------------------------
-  function startReview(which){ const types = which==='all'?['letter','word','key']:[which];
+  function startReview(which){ const types = which==='all'?['letter','word','key','passage']:[which];
     reviewMode={ types, score:newScore(), last:null }; reviewPanel=false; render(); }
   function reviewNext(){
     const items=collectReview(reviewMode.types); if(!items.length) return null;
@@ -1930,6 +1978,12 @@ function renderTableCards(arr){
         +`<input id="tt-ri" class="tt-input" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the Arabic word">`
         +`<div class="tt-fb" id="tt-rf" role="status" aria-live="polite"></div>`
         +`<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="check">Check</button><button type="button" class="tt-btn" data-a="show">Show answer</button></div></div>`;
+    } else if(item._type==='passage'){
+      card=`<div class="tt-card"><div class="tt-prompt">Type this segment${item.title?' — '+esc(item.title):''}</div><div class="tt-target seg" dir="rtl">${esc(item.target)}</div>`
+        +`<label class="tt-prompt" for="tt-ri" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
+        +`<input id="tt-ri" class="tt-input seg" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type the passage segment">`
+        +`<div class="tt-fb" id="tt-rf" role="status" aria-live="polite"></div>`
+        +`<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="check">Check</button><button type="button" class="tt-btn" data-a="show">Show answer</button></div></div>`;
     } else {
       const want=KEYMAP[item.ch]?KEYMAP[item.ch].code:null;
       card=`<div class="tt-card"><div class="tt-prompt">Which physical key types this letter?</div><div class="tt-target letter">${esc(item.ch)}</div>`
@@ -1943,13 +1997,19 @@ function renderTableCards(arr){
     body.querySelector('[data-a=exit]').addEventListener('click', exitReview);
     const fb=body.querySelector('#tt-rf'); let done=false;
     function advance(){ render(); }
-    if(item._type==='letter' || item._type==='word'){
+    if(item._type==='letter' || item._type==='word' || item._type==='passage'){
       const inp=body.querySelector('#tt-ri'), checkBtn=body.querySelector('[data-a=check]'); inp.focus();
-      const target = item._type==='letter'?item.ch:item.ar;
+      const target = item._type==='letter'?item.ch : item._type==='word'?item.ar : item.target;
       function check(){ if(done){ advance(); return; } const raw=inp.value.trim(); if(!raw) return;
-        const good = item._type==='letter' ? (cp(raw).length===1 && raw===target) : (norm(raw)===target);
+        const good = item._type==='letter' ? (cp(raw).length===1 && raw===target)
+                   : item._type==='word' ? (norm(raw)===target)
+                   : (passSegNorm(raw,false)===passSegNorm(target,false));
         if(good){ reviewResolve(item,'correct'); done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
-        else { reviewResolve(item,'wrong'); fb.className='tt-fb no'; fb.innerHTML = item._type==='letter' ? ('You typed: '+arSpan(raw)+' &nbsp; Target: '+arSpan(target)) : ('Not quite.'+renderDiff(target, norm(raw))); inp.value= item._type==='letter'?'':inp.value; if(item._type==='letter') inp.value=''; inp.focus(); }
+        else { reviewResolve(item,'wrong'); fb.className='tt-fb no';
+          fb.innerHTML = item._type==='letter' ? ('You typed: '+arSpan(raw)+' &nbsp; Target: '+arSpan(target))
+                       : item._type==='word' ? ('Not quite.'+renderDiff(target, norm(raw)))
+                       : ('Not quite.'+renderDiffCols(passSegNorm(target,false), passSegNorm(raw,false)));
+          if(item._type==='letter') inp.value=''; inp.focus(); }
         updateScore(reviewMode.score);
       }
       checkBtn.addEventListener('click', check);
@@ -2026,6 +2086,145 @@ function renderTableCards(arr){
     }
     body.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click', ()=>{ kbTab=b.dataset.k; renderKeyboard(); }));
     body.querySelectorAll('[data-v]').forEach(b=>b.addEventListener('click', ()=>{ kbView=b.dataset.v; lsSet('masri-keyboard-view',kbView); renderKeyboard(); }));
+  }
+
+  // Mode 4: Passage Typing ---------------------------------------------------
+  // Segment-comparison normalization: keep letters + single spaces, drop punctuation
+  // and tatweel; in loose mode also drop diacritics/superscript-alef (default). In
+  // Quran "exact" mode diacritics are kept. Distinct letters are never folded.
+  const PASS_DIA_OPTS = [ {id:'loose',label:'Ignore marks'}, {id:'exact',label:'Exact (with marks)'} ];
+  function passSegNorm(s, exact){
+    s = String(s);
+    s = exact ? s.replace(/ـ/g,'') : s.replace(/[ً-ْٰـ]/g,'');
+    s = s.replace(/[.،؛؟!:«»“”"'()\[\]{}…۔٪-٭]/g,' ');
+    return s.replace(/\s+/g,' ').trim();
+  }
+  // Split pasted text into segments on newlines + sentence enders; keep it session-only.
+  function splitCustom(text){
+    return String(text).split(/\n+|(?<=[.؟!؛])\s+/).map(s=>s.trim()).filter(Boolean).map(s=>({ar:s}));
+  }
+  // Aligned diff for passages: stacked target/typed column-cells in an RTL flex-wrap
+  // row (wraps cleanly for long segments; spaces shown as ␣; state by outline+symbol).
+  function renderDiffCols(targetStr, typedStr){
+    const spc = x => x===' ' ? '␣' : x;
+    const ops = diffOps(cp(targetStr), cp(typedStr));
+    const col=(top,bot,state,sym)=>`<div class="tt-dcol ${state}"><span class="tt-dtop">${top==null?'·':arSpan(spc(top))}</span><span class="tt-dbot">${bot==null?'·':arSpan(spc(bot))}</span>${sym?'<span class="tt-dcsym" aria-hidden="true">'+sym+'</span>':''}</div>`;
+    const cols = ops.map(o=> o.op==='match'?col(o.t,o.y,'ok','')
+        : o.op==='sub'?col(o.t,o.y,'sub','✗')
+        : o.op==='del'?col(o.t,null,'del','＋')
+        : col(null,o.y,'ins','✗') ).join('');
+    const firstBad=ops.find(o=>o.op!=='match');
+    let cap='';
+    if(firstBad){ const pos=ops.filter((o,idx)=>idx<=ops.indexOf(firstBad)).filter(o=>o.op!=='ins').length;
+      if(firstBad.op==='sub') cap=`Position ${pos}: expected ${arSpan(spc(firstBad.t))}, you typed ${arSpan(spc(firstBad.y))}`;
+      else if(firstBad.op==='del') cap=`Missing ${arSpan(spc(firstBad.t))} around position ${pos}`;
+      else cap=`Extra ${arSpan(spc(firstBad.y))} that isn't in the segment`; }
+    return `<div class="tt-diff"><div class="tt-difflab" style="text-align:center;min-width:0">Target (top) vs You typed (bottom) — right to left</div>`
+      +`<div class="tt-diffcols" dir="rtl">${cols}</div>`
+      +(cap?`<div class="tt-diffcap">${cap}</div>`:'')
+      +`<div class="tt-difflegend"><span class="tt-dc ok"><span class="tt-dch">✓</span></span> match · <span class="tt-dc bad"><span class="tt-dsym">✗</span></span> wrong · <span class="tt-dc exp"><span class="tt-dsym">＋</span></span> missing · <span class="tt-dc gap"><span class="tt-dch">␣</span></span> space</div></div>`;
+  }
+  function passList(){ const arr=(M.passages && M.passages[passCat])||[]; return arr.filter(p=> passDiff==='all' || p.difficulty===passDiff); }
+  function passCatPills(){
+    return `<div class="tt-selgroup" role="group" aria-label="Passage category"><span class="tt-sellabel">Category</span><div class="tt-selopts">`
+      + PASS_CATS.map(c=> c.available
+          ? `<button type="button" class="tt-opt" data-sel="passCat" data-val="${esc(c.id)}" aria-pressed="${c.id===passCat}">${esc(c.label)}</button>`
+          : `<button type="button" class="tt-opt" disabled aria-disabled="true" title="${esc(c.note||'Coming soon')}">${esc(c.label)} · soon</button>`
+        ).join('') + `</div></div>`;
+  }
+  function renderPassage(){
+    if(!M.passages){ body.innerHTML=reviewBar()+'<p class="note">Passage data unavailable.</p>'; wireCommon(); return; }
+    let sel = passCatPills();
+    if(passCat!=='custom') sel += pillGroup('passDiff', PASS_DIFFS, passDiff, 'Difficulty');
+    if(passCat==='quran')  sel += pillGroup('passDia', PASS_DIA_OPTS, passDia, 'Diacritics');
+    const selRow = reviewBar() + `<div class="tt-sel">`+sel+`</div>`;
+    if(passCat==='custom'){ renderCustom(selRow); return; }
+    const list=passList();
+    if(!list.length){ body.innerHTML = selRow + `<p class="note">No passages in this set at this difficulty. Change the filters above.</p>`; wireCommon(); return; }
+    if(!P.passage || P.passage.id==='custom' || !list.some(x=>x.id===P.passage.id)){ P.passage=list[0]; P.seg=0; P.done=false; }
+    const picker = `<div class="tt-sel"><div class="tt-selgroup"><label class="tt-sellabel" for="tt-passel">Passage</label><select id="tt-passel" class="tt-select">`
+      + list.map(p=>`<option value="${esc(p.id)}"${p.id===P.passage.id?' selected':''}>${esc(p.title)} · ${esc(p.difficulty)}</option>`).join('')
+      + `</select></div></div>`;
+    renderSegmentCard(selRow + picker, P.passage.lines, P.passage);
+  }
+  function renderCustom(prefix){
+    if(!P.customLines || !P.customLines.length){
+      body.innerHTML = prefix
+        + `<div class="tt-card"><div class="tt-prompt">Paste your own Arabic text</div>`
+        + `<p class="note tt-privacy">Your text stays in this browser tab only — it is not saved to your device or sent anywhere, and it clears when you reload the page.</p>`
+        + `<label class="tt-prompt" for="tt-custom" style="display:block;margin:8px 0 4px">Arabic text</label>`
+        + `<textarea id="tt-custom" class="tt-input tt-textarea" dir="rtl" rows="5" autocomplete="off" spellcheck="false" aria-label="Paste Arabic text to practice"></textarea>`
+        + `<div class="tt-fb" id="tt-cfb" role="status" aria-live="polite"></div>`
+        + `<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="load">Start typing this</button><button type="button" class="tt-btn" data-a="clear">Clear text</button></div></div>`;
+      wireCommon();
+      const ta=body.querySelector('#tt-custom'), cfb=body.querySelector('#tt-cfb'); ta.focus();
+      body.querySelector('[data-a=load]').addEventListener('click',()=>{ const txt=ta.value.trim();
+        if(!txt){ cfb.className='tt-fb no'; cfb.textContent='Please paste some Arabic text first.'; return; }
+        const lines=splitCustom(txt); if(!lines.length){ cfb.className='tt-fb no'; cfb.textContent='No usable text found.'; return; }
+        P.custom=txt; P.customLines=lines; P.passage={ id:'custom', title:'Your text', difficulty:'custom', variety:'Your text', lines }; P.seg=0; P.done=false; P.score=newScore(); render(); });
+      body.querySelector('[data-a=clear]').addEventListener('click',()=>{ ta.value=''; P.custom=''; cfb.textContent=''; ta.focus(); });
+      return;
+    }
+    renderSegmentCard(prefix + `<div class="tt-sel"><button type="button" class="tt-btn" data-a="clearcustom">Clear text &amp; paste new</button></div>`, P.customLines, P.passage);
+  }
+  function renderSegmentCard(prefix, segs, p){
+    const n=segs.length, exact = passCat==='quran' && passDia==='exact';
+    function wireExtras(){
+      const psel=body.querySelector('#tt-passel'); if(psel) psel.addEventListener('change',()=>{ const np=passList().find(x=>x.id===psel.value); if(np){ P.passage=np; P.seg=0; P.done=false; P.score=newScore(); render(); } });
+      const cc=body.querySelector('[data-a=clearcustom]'); if(cc) cc.addEventListener('click',()=>{ P.custom=''; P.customLines=null; P.passage=null; P.seg=0; P.score=newScore(); render(); });
+    }
+    if(P.seg>=n){
+      body.innerHTML = prefix + `<div class="tt-card"><div class="tt-prompt">Passage complete</div>`
+        + `<p class="note">You finished “${esc(p.title)}” — ${n} segment(s).</p>`
+        + `<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="restart">Practice again</button>${passCat!=='custom'?'<button type="button" class="tt-btn" data-a="nextpass">Another passage</button>':''}</div></div>`+scoreBar(P.score);
+      wireCommon(); wireExtras();
+      body.querySelector('[data-a=restart]').addEventListener('click',()=>{ P.seg=0; P.done=false; render(); });
+      const np=body.querySelector('[data-a=nextpass]'); if(np) np.addEventListener('click',()=>{ const l=passList(); const idx=l.findIndex(x=>x.id===p.id); P.passage=l[(idx+1)%l.length]; P.seg=0; P.done=false; P.score=newScore(); render(); });
+      return;
+    }
+    const seg=segs[P.seg];
+    const ref = (passCat==='quran' && seg.ref) ? ` <span class="tt-passref">${esc(seg.ref)}</span>` : '';
+    const hasTr = segs.some(s=>s.tr), hasEn = segs.some(s=>s.en);
+    body.innerHTML = prefix
+      + `<div class="tt-card">`
+      + `<div class="tt-passmeta">${esc(p.title)} · <span class="tt-passvar">${esc(p.variety||'')}</span>${p.source?' · '+esc(p.source):''}</div>`
+      + `<div class="tt-prompt">Segment <b>${P.seg+1}</b> of <b>${n}</b>${ref}</div>`
+      + `<div class="tt-target seg" dir="rtl">${esc(seg.ar)}</div>`
+      + (P.showTr && seg.tr ? `<div class="tt-meaning" dir="ltr">${esc(seg.tr)}</div>` : '')
+      + (P.showEn && seg.en ? `<div class="tt-meaning">${esc(seg.en)}</div>` : '')
+      + `<div class="tt-passtoggles">`
+        + `<button type="button" class="tt-btn small" data-a="togglefull" aria-pressed="${passDisplay==='full'}">${passDisplay==='full'?'Hide full passage':'Show full passage'}</button>`
+        + (hasTr?`<button type="button" class="tt-btn small" data-a="toggletr" aria-pressed="${P.showTr}">${P.showTr?'Hide transliteration':'Show transliteration'}</button>`:'')
+        + (hasEn?`<button type="button" class="tt-btn small" data-a="toggleen" aria-pressed="${P.showEn}">${P.showEn?'Hide English':'Show English'}</button>`:'')
+        + `</div>`
+      + (passDisplay==='full'?`<div class="tt-passfull" dir="rtl">`+segs.map((s,i)=>`<span class="tt-passfullseg${i===P.seg?' cur':''}">${esc(s.ar)}</span>`).join(' ')+`</div>`:'')
+      + `<label class="tt-prompt" for="tt-pi" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
+      + `<input id="tt-pi" class="tt-input seg" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type this Arabic segment">`
+      + `<div class="tt-fb" id="tt-pf" role="status" aria-live="polite"></div>`
+      + `<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="check">Check</button>`
+        + `<button type="button" class="tt-btn" data-a="skip">Skip</button>`
+        + `<button type="button" class="tt-btn" data-a="show">Show answer</button>`
+        + (P.seg>0?`<button type="button" class="tt-btn" data-a="prev">Previous</button>`:'')
+        + `</div></div>` + scoreBar(P.score);
+    wireCommon(); wireExtras();
+    const inp=body.querySelector('#tt-pi'), fb=body.querySelector('#tt-pf'), checkBtn=body.querySelector('[data-a=check]');
+    inp.focus();
+    const mKey=p.id+'#'+P.seg;
+    function recordSeg(reason, typed){ record('passage', mKey, {target:seg.ar, title:p.title, category:passCat, difficulty:p.difficulty, seg:P.seg, passageId:p.id, lastTyped:typed||''}, reason); }
+    function advance(){ P.seg++; P.done=false; render(); }
+    function check(){ if(P.done){ advance(); return; } const raw=inp.value.trim(); if(!raw) return;
+      if(passSegNorm(raw,exact)===passSegNorm(seg.ar,exact)){ bump(P.score,'correct'); P.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
+      else { bump(P.score,'wrong'); recordSeg('incorrect', passSegNorm(raw,exact)); fb.className='tt-fb no'; fb.innerHTML='Not quite — try again.'+renderDiffCols(passSegNorm(seg.ar,exact), passSegNorm(raw,exact)); inp.focus(); }
+      updateScore(P.score);
+    }
+    checkBtn.addEventListener('click', check);
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
+    body.querySelector('[data-a=skip]').addEventListener('click',()=>{ if(P.done){ advance(); return; } bump(P.score,'complete'); recordSeg('skipped'); updateScore(P.score); fb.className='tt-fb no'; fb.innerHTML='Skipped — it was '+arSpan(seg.ar); P.done=true; checkBtn.textContent='Next'; });
+    body.querySelector('[data-a=show]').addEventListener('click',()=>{ if(P.done){ advance(); return; } bump(P.score,'complete'); recordSeg('revealed'); updateScore(P.score); fb.className='tt-fb no'; fb.innerHTML='Answer: '+arSpan(seg.ar)+(seg.tr?' <span dir="ltr">('+esc(seg.tr)+')</span>':''); P.done=true; checkBtn.textContent='Next'; });
+    const prev=body.querySelector('[data-a=prev]'); if(prev) prev.addEventListener('click',()=>{ if(P.seg>0){ P.seg--; P.done=false; render(); } });
+    body.querySelector('[data-a=togglefull]').addEventListener('click',()=>{ passDisplay=passDisplay==='full'?'hidden':'full'; lsSet('masri-passage-display',passDisplay); render(); });
+    const ttr=body.querySelector('[data-a=toggletr]'); if(ttr) ttr.addEventListener('click',()=>{ P.showTr=!P.showTr; render(); });
+    const ten=body.querySelector('[data-a=toggleen]'); if(ten) ten.addEventListener('click',()=>{ P.showEn=!P.showEn; render(); });
   }
 
   render();
