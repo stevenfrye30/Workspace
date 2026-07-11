@@ -270,6 +270,12 @@
 
   /* ── alphabet (reading reference) ── */
   #p-alphabet h2{scroll-margin-top:66px}
+  /* Full alphabet sequence — 28 letters read right-to-left; each jumps to its card. */
+  .alp-allrow{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;direction:rtl;background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;margin:0 0 14px}
+  .alp-allkey{background:var(--surf2);border:1px solid var(--border);border-radius:8px;min-width:44px;padding:6px 4px;cursor:pointer;font-family:var(--ar);font-size:calc(28px * var(--ar-scale));color:var(--gold);line-height:1.15;unicode-bidi:isolate}
+  .alp-allkey:hover{border-color:var(--gold)}
+  .alp-allkey:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  @media (max-width:600px){ .alp-allkey{min-width:38px;font-size:calc(24px * var(--ar-scale))} }
   .alp-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
   .alp-jbtn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
   .alp-jbtn:hover{border-color:var(--gold)}
@@ -326,8 +332,6 @@
   .alp-mark{font-size:26px;color:var(--gold)}
   .alp-markdemo .ar{font-family:var(--ar);font-size:20px;color:var(--fg)}
   .alp-markdemo .tr{color:var(--blue);font-style:italic}
-  .alp-wbcallout{background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:6px}
-  .alp-wbcallout p{font-size:14px;color:var(--fg);margin:0;flex:1;min-width:200px}
   .alp-jbtn:focus-visible,.alp-famlet:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   @media (max-width:600px){ .alp-grid,.alp-fams,.alp-jex,.alp-brk,.alp-carriers,.alp-spgrid,.alp-dist,.alp-formdefs{grid-template-columns:1fr} }
 
@@ -983,12 +987,37 @@ function renderTableCards(arr){
   }
   const exLine = (ar, ex, en) => `<div class="alp-ex"><span class="ar" dir="rtl">${ar}</span> <span class="tr" dir="ltr">${esc(ex)}</span> — ${esc(en)}</div>`;
 
-  let h = `<p class="lead">${d.intro}</p>`;
+  // Combined intro at the very top: the full alphabet SEQUENCE (right-to-left)
+  // immediately followed by the detailed per-letter reference, so they read as one
+  // introduction. Each sequence letter jumps to its detailed card below.
+  let h = `<h2 id="alp-ref">The Arabic alphabet</h2>`;
+  h += `<p class="lead">${d.intro}</p>`;
+  h += `<div class="alp-allrow" dir="rtl" role="list" aria-label="The 28 Arabic letters in order, right to left">`
+     + d.letters.map(L => `<button class="alp-allkey ar" dir="rtl" role="listitem" data-anchor="alp-L-${esc(L.letter)}" aria-label="${esc(L.name)} — jump to details">${L.letter}</button>`).join('')
+     + `</div>`;
   h += `<p class="note">${esc(d.soundNote)}</p>`;
 
-  // jump nav
+  // Detailed alphabetical reference — kept intact, moved directly beneath the sequence.
+  h += `<p class="note">${esc(d.formOrderNote)}</p>`;
+  h += `<div class="alp-grid">` + d.letters.map(L => {
+    const f = forms(L.letter, L.connector);
+    const badge = L.connector
+      ? `<span class="alp-badge alp-badge-both">connects both sides</span>`
+      : `<span class="alp-badge alp-badge-break">breaks after itself</span>`;
+    let c = `<div class="alp-card" id="alp-L-${L.letter}">`;
+    c += `<div class="alp-chead"><span class="alp-glyph ar" dir="rtl">${L.letter}</span>`
+       + `<div class="alp-cmeta"><div class="alp-lname">${esc(L.name)} <span class="ar" dir="rtl">${L.name_ar}</span></div>`
+       + `<div class="alp-lsound">${esc(L.sound)}</div>${badge}</div></div>`;
+    c += `<div class="alp-forms">` + Object.keys(f).map(k =>
+        `<div class="alp-form"><div class="alp-fg ar" dir="rtl">${f[k]}</div><div class="alp-fl">${k}</div></div>`).join('') + `</div>`;
+    c += exLine(L.ex_ar, L.ex, L.ex_en);
+    if(L.note) c += `<details class="snd-more"><summary>More detail</summary><div class="snd-det">${L.note}</div></details>`;
+    return c + `</div>`;
+  }).join('') + `</div>`;
+
+  // jump nav to the remaining sections; the Word Builder promo is intentionally omitted.
   h += `<nav class="alp-jump" aria-label="Alphabet sections">`
-     + d.jump.map(j => `<button class="alp-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
+     + d.jump.filter(j => j.anchor !== 'alp-wb').map(j => `<button class="alp-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
      + `</nav>`;
 
   // 1 · How joining works
@@ -1013,25 +1042,6 @@ function renderTableCards(arr){
           <span class="alp-famex"><span class="ar" dir="rtl">${x.ex_ar}</span> <span class="tr" dir="ltr">${esc(x.ex)}</span> — ${esc(x.ex_en)}</span>
         </button>`).join('')
       + `</div>`).join('') + `</div>`;
-
-  // 3 · Full alphabetical reference
-  h += `<h2 id="alp-ref">Alphabetical reference</h2>`;
-  h += `<p class="note">${esc(d.formOrderNote)}</p>`;
-  h += `<div class="alp-grid">` + d.letters.map(L => {
-    const f = forms(L.letter, L.connector);
-    const badge = L.connector
-      ? `<span class="alp-badge alp-badge-both">connects both sides</span>`
-      : `<span class="alp-badge alp-badge-break">breaks after itself</span>`;
-    let c = `<div class="alp-card" id="alp-L-${L.letter}">`;
-    c += `<div class="alp-chead"><span class="alp-glyph ar" dir="rtl">${L.letter}</span>`
-       + `<div class="alp-cmeta"><div class="alp-lname">${esc(L.name)} <span class="ar" dir="rtl">${L.name_ar}</span></div>`
-       + `<div class="alp-lsound">${esc(L.sound)}</div>${badge}</div></div>`;
-    c += `<div class="alp-forms">` + Object.keys(f).map(k =>
-        `<div class="alp-form"><div class="alp-fg ar" dir="rtl">${f[k]}</div><div class="alp-fl">${k}</div></div>`).join('') + `</div>`;
-    c += exLine(L.ex_ar, L.ex, L.ex_en);
-    if(L.note) c += `<details class="snd-more"><summary>More detail</summary><div class="snd-det">${L.note}</div></details>`;
-    return c + `</div>`;
-  }).join('') + `</div>`;
 
   // 4 · Connection breakers
   h += `<h2 id="alp-break">Connection breakers</h2>`;
@@ -1061,11 +1071,6 @@ function renderTableCards(arr){
      + `</tbody></table></div>`;
   h += `<p class="note">${esc(d.marks.note)}</p>`;
   h += `<p class="note snd-xref">${esc(d.marks.tanwin)}</p>`;
-
-  // 7 · Try Word Builder
-  h += `<h2 id="alp-wb">Try Word Builder</h2>`;
-  h += `<div class="alp-wbcallout"><p>${esc(d.wbNote)}</p>`
-     + `<button class="sh-go" data-go="word-builder" aria-label="Open the Word Builder subsection">Open Word Builder <span aria-hidden="true">&rarr;</span></button></div>`;
 
   panel.innerHTML = h;
 
