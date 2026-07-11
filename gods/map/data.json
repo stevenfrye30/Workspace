@@ -5967,7 +5967,7 @@
         "shachi"
       ],
       "children": [
-        "arjuna-demigod"
+        "arjuna"
       ],
       "archetype": "storm-god",
       "parallels": [
@@ -18806,7 +18806,7 @@
       ],
       "children": [
         "chandra",
-        "datta",
+        "dattatreya",
         "durvasa"
       ],
       "archetype": null,
@@ -19814,7 +19814,7 @@
         "anger"
       ],
       "parents": [
-        "bhumi"
+        "bhudevi"
       ],
       "consorts": [],
       "children": [],
@@ -24638,6 +24638,406 @@
       "archetype": null,
       "parallels": [],
       "description": "Father of Nanna, who is called Nepsdóttir; counted among the Aesir in the Prose Edda."
+    },
+    {
+      "id": "kunti",
+      "name": "Kunti",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "mother-of-the-pandavas",
+        "mahabharata"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "karna",
+        "yudhishthira",
+        "bhima",
+        "arjuna"
+      ],
+      "siblings": [
+        "vasudeva"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Queen mother of the Pandavas and, secretly, of Karna; a boon to summon any god fathered her sons. Sister of Vasudeva, Krishna's father."
+    },
+    {
+      "id": "madri",
+      "name": "Madri",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "mother-of-the-twins",
+        "mahabharata"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "nakula",
+        "sahadeva"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Second wife of Pandu; by Kunti's shared boon she bore the twins Nakula and Sahadeva to the Ashvins."
+    },
+    {
+      "id": "shantanu",
+      "name": "Shantanu",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "kuru-king",
+        "mahabharata"
+      ],
+      "parents": [],
+      "consorts": [
+        "ganga"
+      ],
+      "children": [
+        "bhishma"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Kuru king of Hastinapura; husband of the river-goddess Ganga and father of Bhishma."
+    },
+    {
+      "id": "subhadra",
+      "name": "Subhadra",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "krishnas-sister",
+        "mahabharata"
+      ],
+      "parents": [],
+      "consorts": [
+        "arjuna"
+      ],
+      "children": [
+        "abhimanyu"
+      ],
+      "siblings": [
+        "krishna",
+        "balarama"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sister of Krishna and Balarama; wife of Arjuna and mother of Abhimanyu."
+    },
+    {
+      "id": "abhimanyu",
+      "name": "Abhimanyu",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "warrior",
+        "mahabharata"
+      ],
+      "parents": [
+        "arjuna",
+        "subhadra"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Arjuna and Subhadra; slain at sixteen after breaking alone into the Chakravyuha formation at Kurukshetra."
+    },
+    {
+      "id": "drupada",
+      "name": "Drupada",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "panchala-king",
+        "mahabharata"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "draupadi"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "King of Panchala and father of Draupadi; his enmity with Drona shaped the Mahabharata's rivalries."
+    },
+    {
+      "id": "dasharatha",
+      "name": "Dasharatha",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "ayodhya-king",
+        "ramayana"
+      ],
+      "parents": [],
+      "consorts": [
+        "kausalya"
+      ],
+      "children": [
+        "rama"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "King of Ayodhya of the Solar dynasty and father of Rama; he died of grief after banishing his son to the forest."
+    },
+    {
+      "id": "kausalya",
+      "name": "Kausalya",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen-of-ayodhya",
+        "ramayana"
+      ],
+      "parents": [],
+      "consorts": [
+        "dasharatha"
+      ],
+      "children": [
+        "rama"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Eldest queen of Dasharatha and mother of Rama."
+    },
+    {
+      "id": "vibhishana",
+      "name": "Vibhishana",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "righteous-rakshasa",
+        "ramayana"
+      ],
+      "parents": [
+        "vishrava"
+      ],
+      "consorts": [],
+      "children": [],
+      "siblings": [
+        "ravana",
+        "kubera",
+        "kumbhakarna"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Younger brother of Ravana who defected to Rama; crowned king of Lanka after Ravana's death."
+    },
+    {
+      "id": "kumbhakarna",
+      "name": "Kumbhakarna",
+      "pantheon": "hindu",
+      "category": "monster",
+      "gender": "M",
+      "domains": [
+        "giant-rakshasa",
+        "ramayana"
+      ],
+      "parents": [
+        "vishrava"
+      ],
+      "consorts": [],
+      "children": [],
+      "siblings": [
+        "ravana",
+        "vibhishana",
+        "kubera"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Enormous, near-perpetually sleeping brother of Ravana, roused to fight Rama's army and slain in the war."
+    },
+    {
+      "id": "mandodari",
+      "name": "Mandodari",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen-of-lanka",
+        "ramayana"
+      ],
+      "parents": [],
+      "consorts": [
+        "ravana"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Chief queen of Ravana, remembered for wisdom and virtue despite her husband's ruinous course."
+    },
+    {
+      "id": "vishrava",
+      "name": "Vishrava",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "sage",
+        "ramayana"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "kubera",
+        "ravana",
+        "vibhishana",
+        "kumbhakarna"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Brahmin sage, son of Pulastya; father of Kubera by one wife and of the rakshasa line of Lanka by Kaikasi."
+    },
+    {
+      "id": "daksha",
+      "name": "Daksha",
+      "pantheon": "hindu",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "prajapati",
+        "puranic"
+      ],
+      "parents": [
+        "brahma"
+      ],
+      "consorts": [],
+      "children": [
+        "aditi",
+        "sati",
+        "diti",
+        "kadru",
+        "vinata",
+        "rati"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "A Prajapati and patriarch of the Puranic genealogies, whose many daughters wed gods and sages. His slighting of Shiva drove Sati to self-immolation."
+    },
+    {
+      "id": "diti",
+      "name": "Diti",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "mother-of-daityas",
+        "puranic"
+      ],
+      "parents": [
+        "daksha"
+      ],
+      "consorts": [
+        "kashyapa"
+      ],
+      "children": [
+        "hiranyakashipu"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of Daksha and wife of Kashyapa; mother of the Daitya asuras, including Hiranyakashipu."
+    },
+    {
+      "id": "kadru",
+      "name": "Kadru",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "mother-of-nagas",
+        "puranic"
+      ],
+      "parents": [
+        "daksha"
+      ],
+      "consorts": [
+        "kashyapa"
+      ],
+      "children": [
+        "shesha",
+        "vasuki"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of Daksha and wife of Kashyapa; mother of the nagas, the serpent race."
+    },
+    {
+      "id": "vinata",
+      "name": "Vinata",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "mother-of-garuda",
+        "puranic"
+      ],
+      "parents": [
+        "daksha"
+      ],
+      "consorts": [
+        "kashyapa"
+      ],
+      "children": [
+        "garuda"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of Daksha and wife of Kashyapa; mother of Garuda. A lost wager with Kadru bound her to servitude."
+    },
+    {
+      "id": "sati",
+      "name": "Sati",
+      "pantheon": "hindu",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "shivas-first-consort",
+        "puranic"
+      ],
+      "parents": [
+        "daksha"
+      ],
+      "consorts": [
+        "shiva"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of Daksha and first wife of Shiva; she cast herself into her father's sacrificial fire and was later reborn as Parvati."
+    },
+    {
+      "id": "anasuya",
+      "name": "Anasuya",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "ideal-of-virtue",
+        "puranic"
+      ],
+      "parents": [],
+      "consorts": [
+        "atri"
+      ],
+      "children": [
+        "chandra",
+        "dattatreya"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wife of the sage Atri, exalted for her chastity and virtue; mother of Dattatreya, and in Puranic accounts of Chandra."
     }
   ],
   "notable_mentions": [
