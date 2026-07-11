@@ -429,20 +429,20 @@ main p { line-height:1.7; }
   flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
 .barebone-flat .pantheon-chip .chip-count { margin-left:auto; flex-shrink:0; }
-/* Lightweight class label (no toggle, no collapse) for the "By class" sort */
+/* Minimal class label (no toggle, no collapse) for the "By class" sort — kept
+   understated so it reads as barebones; the class color lives in the swatch. */
 .barebone-class { margin:0; }
 .barebone-class-head {
-  margin:0; padding:16px 24px 0;
-  color:var(--gold); font-weight:600; letter-spacing:3px;
-  font-variant:small-caps; font-size:15px; opacity:0.92;
-  display:flex; align-items:baseline; gap:10px;
+  margin:0; padding:14px 22px 4px; font-weight:normal;
+  color:var(--muted); letter-spacing:1.5px; font-variant:small-caps; font-size:12.5px;
+  display:flex; align-items:center; gap:8px;
 }
 .barebone-class-head .barebone-class-count {
-  color:var(--gold-deep); font-size:11px; font-variant:small-caps;
-  letter-spacing:1px; opacity:0.8; font-weight:bold;
+  color:var(--muted); font-size:10.5px; letter-spacing:1px; opacity:0.7;
 }
+.barebone-class .barebone-flat { padding-top:6px; }
 .barebone-class + .barebone-class .barebone-class-head {
-  border-top:1px solid rgba(229,193,88,0.12); padding-top:18px; margin-top:8px;
+  border-top:1px solid rgba(229,193,88,0.10); padding-top:16px; margin-top:6px;
 }
 /* Class legend — maps the chip dot colors to class names */
 .pantheon-legend {
@@ -1682,9 +1682,6 @@ select:focus:not(:focus-visible),
       figures for cross-cultural comparison only. Coverage is uneven by design.
     </p>
   </div>
-  <p class="pantheon-threads" aria-label="Thematic threads">
-    <span class="threads-prefix">Or follow a thread</span><a href="#archetype/storm-god" data-arch="storm-god">storm gods</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/underworld-ruler" data-arch="underworld-ruler">underworld rulers</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/trickster" data-arch="trickster">tricksters</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/mother-goddess" data-arch="mother-goddess">great mothers</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/sun-god" data-arch="sun-god">sun deities</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/wisdom-god" data-arch="wisdom-god">wisdom figures</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/dying-rising" data-arch="dying-rising">dying-and-rising gods</a><span class="sep" aria-hidden="true">·</span><a href="#archetype/serpent-dragon" data-arch="serpent-dragon">serpent dragons</a>
-  </p>
   <div class="pantheon-view-controls">
     <div class="control-group">
       <label for="pantheonSort">Sort</label>
