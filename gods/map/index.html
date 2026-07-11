@@ -203,30 +203,6 @@ main p { line-height:1.7; }
   font-style: normal;
 }
 
-/* Utility row above the main controls — collapse-all sits over the View toggle */
-.pantheon-utility-row {
-  display:flex; justify-content:flex-start; align-items:center;
-  gap:14px; margin: 0 2px 10px;
-  padding-left:8px;
-}
-.pantheon-utility-row .utility-link {
-  background:var(--panel2); border:1px solid var(--line); color:var(--muted);
-  padding:7px 16px; border-radius:6px; cursor:pointer;
-  font-family:inherit; font-size:11px; letter-spacing:1.3px;
-  font-variant:small-caps; font-weight:bold;
-  transition:all .15s;
-}
-.pantheon-utility-row .utility-link:hover {
-  color:var(--gold); border-color:var(--gold-soft);
-  background:linear-gradient(180deg, var(--panel2), var(--panel));
-  box-shadow:0 0 0 1px rgba(229,193,88,0.12);
-}
-.pantheon-utility-row .utility-link::before {
-  content:'⌃'; display:inline-block; font-style:normal;
-  margin-right:8px; font-size:10px; vertical-align:middle;
-  opacity:0.75; transition:transform .2s;
-}
-.pantheon-utility-row .utility-link[data-state="all-collapsed"]::before { transform:rotate(180deg); }
 
 /* Pantheon view toggle + sort */
 .pantheon-view-controls {
@@ -246,19 +222,6 @@ main p { line-height:1.7; }
   color:var(--muted); font-size:10px; letter-spacing:1.8px;
   font-variant:small-caps; font-weight:bold;
 }
-.view-toggle { display:flex; gap:2px; padding:2px; background:var(--bg); border:1px solid var(--line); border-radius:7px; }
-.view-toggle button {
-  background:transparent; border:1px solid transparent; color:var(--muted);
-  padding:6px 14px; border-radius:5px; cursor:pointer;
-  font-family:inherit; font-size:11px; letter-spacing:1.2px;
-  font-variant:small-caps; transition:all .15s;
-}
-.view-toggle button.active {
-  color:var(--bg); background:linear-gradient(180deg, var(--gold), var(--gold-deep));
-  border-color:var(--gold); font-weight:bold;
-  box-shadow:0 1px 0 rgba(0,0,0,0.35), 0 0 0 1px rgba(229,193,88,0.35);
-}
-.view-toggle button:hover:not(.active) { color:var(--gold); background:rgba(229,193,88,0.06); }
 .pantheon-view-controls select {
   background:var(--panel2); color:var(--ink); border:1px solid var(--line);
   padding:7px 10px; border-radius:6px; font-family:inherit; font-size:12px;
@@ -278,115 +241,6 @@ main p { line-height:1.7; }
   border-left:1px solid var(--line);
 }
 
-/* Grouped pantheons — each group is a self-contained civilizational chamber.
-   When --chamber-tint is set (averaged from constituent pantheon colors),
-   the chamber's interior gradient picks up a quiet civilizational wash —
-   honest atmospheric variation per region without bright coloring. */
-.pantheon-group {
-  margin-bottom:38px;
-  background:
-    linear-gradient(180deg,
-      color-mix(in srgb, var(--chamber-tint, transparent) 7%, #1a1c3c) 0%,
-      color-mix(in srgb, var(--chamber-tint, transparent) 4%, #15173a) 55%,
-      color-mix(in srgb, var(--chamber-tint, transparent) 2%, #11132e) 100%);
-  border:1px solid var(--line);
-  border-top:1px solid var(--gold);
-  border-radius:3px;
-  overflow:hidden;
-  box-shadow:
-    0 6px 22px rgba(0,0,0,0.42),
-    0 1px 0 rgba(0,0,0,0.5),
-    inset 0 1px 0 rgba(229,193,88,0.04);
-}
-.pantheon-group-head {
-  display:flex; align-items:baseline; gap:22px;
-  padding:22px 26px 18px;
-  margin:0;
-  background:
-    linear-gradient(180deg, #161a32 0%, #0e1124 100%);
-  border-bottom:1px solid rgba(229,193,88,0.22);
-  box-shadow:inset 0 -12px 22px rgba(0,0,0,0.35);
-  cursor:pointer;
-  transition:background .18s, border-color .18s;
-  position:relative;
-}
-/* Inner gold pinstripe — pairs with the chamber's gold top edge for a double-rule */
-.pantheon-group-head::before {
-  content:''; position:absolute; left:0; right:0; top:4px; height:1px;
-  background:linear-gradient(90deg,
-    transparent 0%,
-    rgba(229,193,88,0.42) 22%,
-    rgba(229,193,88,0.42) 78%,
-    transparent 100%);
-  opacity:0.7;
-  pointer-events:none;
-}
-.pantheon-group-head:hover {
-  background:
-    linear-gradient(180deg, #1a1f3a 0%, #10132a 100%);
-  border-bottom-color:rgba(229,193,88,0.4);
-}
-.pantheon-group-head .toggle-icon {
-  color:var(--gold-deep); font-size:11px; letter-spacing:0; margin-right:14px;
-  transition:transform .2s, color .2s; display:inline-block;
-  width:12px; text-align:center; vertical-align:middle;
-  opacity:0.7;
-}
-.pantheon-group-head:hover .toggle-icon { opacity:1; }
-.pantheon-group.collapsed .toggle-icon { transform:rotate(-90deg); }
-.pantheon-group.collapsed .pantheon-group-grid,
-.pantheon-group.collapsed .pantheon-compact-list { display:none; }
-.pantheon-group.collapsed .pantheon-group-head { border-bottom-color:transparent; }
-
-/* Compact list row — used in list + era modes */
-.pantheon-compact-list {
-  display:flex; flex-direction:column; gap:5px;
-  padding:18px 18px 18px;
-  margin-bottom:0;
-}
-.pantheon-row {
-  display:flex; align-items:center; gap:14px;
-  padding:9px 12px 9px 16px; border-radius:6px;
-  border:1px solid var(--line); background:var(--panel);
-  cursor:pointer; position:relative; overflow:hidden;
-  transition:border-color .15s, background .15s, transform .1s;
-}
-.pantheon-row::before {
-  content:''; position:absolute; left:0; top:0; bottom:0; width:3px;
-  background:var(--pantheon-color, var(--gold));
-}
-.pantheon-row:hover {
-  border-color:var(--gold-soft); background:linear-gradient(180deg, var(--panel), var(--panel2));
-  transform:translateX(2px);
-}
-.pantheon-row .pr-name {
-  color:var(--gold); font-size:14px; font-weight:normal; flex-shrink:0;
-  min-width:170px; letter-spacing:0.2px;
-}
-.pantheon-row .pr-region {
-  color:var(--cyan); font-size:12px; font-style:italic;
-  min-width:120px; flex-shrink:0;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.pantheon-row .pr-span {
-  color:var(--muted); font-size:11.5px; font-variant:small-caps; letter-spacing:1.3px;
-  min-width:140px; flex-shrink:0;
-}
-.pantheon-row .pr-count {
-  color:var(--gold-deep); font-size:11.5px; font-variant:small-caps; letter-spacing:1.1px;
-  background:var(--panel2); padding:2px 9px; border-radius:10px;
-  border:1px solid var(--line); white-space:nowrap; font-weight:bold;
-  flex-shrink:0;
-}
-.pantheon-row .pr-desc {
-  color:var(--ink); font-size:12px; opacity:0.74; flex:1;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-@media (max-width: 840px) {
-  .pantheon-row { flex-wrap:wrap; gap:6px 12px; }
-  .pantheon-row .pr-desc { flex-basis:100%; white-space:normal; }
-  .pantheon-row .pr-region, .pantheon-row .pr-span { min-width:0; }
-}
 /* Barebone chip grid — most compact view: name-only, click opens a detail card */
 .pantheon-chip-row {
   display:flex; flex-wrap:wrap; gap:8px;
@@ -474,90 +328,6 @@ main p { line-height:1.7; }
 .modal-tree-btn:hover {
   background:linear-gradient(180deg, var(--gold), var(--gold-deep));
   color:#0a0b1a; border-color:var(--gold);
-}
-.pantheon-group-head h3 {
-  margin:0; color:var(--gold); font-weight:600; letter-spacing:4px;
-  font-variant:small-caps; font-size:21px;
-  text-shadow:0 1px 0 #000, 0 0 18px rgba(229,193,88,0.13);
-}
-.pantheon-group-head .group-count {
-  color:var(--ink); font-size:13.5px; font-style:italic; letter-spacing:0.4px;
-  opacity:0.78;
-}
-.pantheon-group-head .group-era {
-  color:var(--cyan); font-size:13px; font-variant:small-caps; letter-spacing:1.6px;
-  margin-left:auto; opacity:0.92;
-}
-
-.pantheon-group-grid {
-  display:grid; gap:12px;
-  padding:22px 22px 22px;
-  grid-template-columns:repeat(auto-fill, minmax(230px, 1fr));
-}
-
-.pantheon-card {
-  background:linear-gradient(95deg,
-    color-mix(in srgb, var(--pantheon-color, var(--gold)) 8%, var(--panel)) 0%,
-    color-mix(in srgb, var(--pantheon-color, var(--gold)) 3%, var(--panel)) 55%,
-    var(--panel) 100%);
-  border:1px solid var(--line); border-radius:8px;
-  padding:12px 14px 11px 17px; cursor:pointer; position:relative; overflow:hidden;
-  transition:border-color .2s, transform .15s, box-shadow .2s, background .2s;
-  min-height:0;
-}
-.pantheon-card::before {
-  content:''; position:absolute; left:0; top:0; bottom:0; width:4px;
-  background:var(--pantheon-color, var(--gold));
-}
-.pantheon-card:hover {
-  border-color:var(--gold-soft); transform:translateY(-2px);
-  box-shadow:0 6px 18px rgba(0,0,0,0.4), 0 0 0 1px var(--gold-faint);
-  background:linear-gradient(180deg,
-    color-mix(in srgb, var(--pantheon-color, var(--gold)) 12%, var(--panel)) 0%,
-    var(--panel2) 100%);
-}
-.pantheon-card .card-head {
-  display:flex; align-items:baseline; gap:8px; justify-content:space-between;
-  margin-bottom:2px;
-}
-.pantheon-card h4 {
-  margin:0; color:var(--gold); font-size:15px; font-weight:normal;
-  letter-spacing:0.3px; line-height:1.25;
-}
-.pantheon-card .count-chip {
-  color:var(--gold-deep); font-size:11.5px; font-variant:small-caps; letter-spacing:1.1px;
-  background:var(--panel2); padding:2px 9px; border-radius:10px;
-  border:1px solid var(--line); white-space:nowrap; font-weight:bold;
-}
-.pantheon-card .region {
-  color:var(--cyan); font-size:12px; font-style:italic; margin:2px 0 3px;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.pantheon-card .span {
-  color:var(--muted); font-size:11.5px; font-variant:small-caps; letter-spacing:1.3px;
-  margin-bottom:6px;
-}
-/* Living traditions — the era line gains a subtle gold-deep tint where
-   active_to >= 2020. Pure word "present" already renders in the data;
-   color carries the rest of the cue without a badge or symbol. */
-.pantheon-card .span.living { color:var(--gold-deep); }
-.pantheon-row .pr-span.living { color:var(--gold-deep); }
-.pantheon-card .desc {
-  color:var(--ink); font-size:12px; line-height:1.45;
-  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
-  overflow:hidden; opacity:0.85;
-}
-.pantheon-card .figures {
-  margin-top:9px; padding-top:8px;
-  border-top:1px dotted var(--gold-faint);
-  color:var(--ink); font-size:12.5px; line-height:1.45;
-  letter-spacing:0.2px; opacity:0.92;
-  overflow:hidden; text-overflow:ellipsis;
-  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
-}
-.pantheon-card .figures .sep {
-  color:var(--gold-deep); margin:0 0.5em;
-  opacity:0.7; font-weight:bold;
 }
 
 .filters { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; align-items:center; }
