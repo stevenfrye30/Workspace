@@ -13609,9 +13609,7 @@
         "surya",
         "saranyu"
       ],
-      "consorts": [
-        "ashvini"
-      ],
+      "consorts": [],
       "children": [],
       "archetype": null,
       "parallels": [
@@ -20026,7 +20024,7 @@
         "conqueror-of-heaven"
       ],
       "parents": [
-        "rambha"
+        "rambha-asura"
       ],
       "consorts": [],
       "children": [],
@@ -26546,6 +26544,68 @@
       "archetype": null,
       "parallels": [],
       "description": "Wife of Brihaspati, abducted by Chandra; mother of Budha by Chandra. Distinct from Tara, the vanara queen of the Ramayana."
+    },
+    {
+      "id": "ila",
+      "name": "Ila",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "lunar-dynasty-progenitor",
+        "consort-of-budha",
+        "mother-of-pururavas"
+      ],
+      "parents": [],
+      "consorts": [
+        "budha"
+      ],
+      "children": [
+        "pururavas"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Progenitor of the Lunar dynasty, consort of Budha and mother of Pururavas. Traditions concerning Ila and Sudyumna describe transformations between female and male forms; the archive uses female here for the relationship in which Ila bears Pururavas."
+    },
+    {
+      "id": "pururavas",
+      "name": "Pururavas",
+      "pantheon": "hindu",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "lunar-dynasty-king",
+        "son-of-budha",
+        "son-of-ila"
+      ],
+      "parents": [
+        "budha",
+        "ila"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Early king of the Lunar dynasty, son of Budha and Ila; celebrated in the tradition of Pururavas and Urvashi."
+    },
+    {
+      "id": "rambha-asura",
+      "name": "Rambha (asura)",
+      "pantheon": "hindu",
+      "category": "monster",
+      "gender": "M",
+      "domains": [
+        "asura",
+        "father-of-mahishasura"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "mahishasura"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Male asura described as the father of Mahishasura; distinct from Rambha, the female apsara of the same name."
     }
   ],
   "notable_mentions": [
