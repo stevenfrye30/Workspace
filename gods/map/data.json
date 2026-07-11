@@ -5680,7 +5680,7 @@
         "saraswati"
       ],
       "children": [
-        "manu",
+        "svayambhuva-manu",
         "marichi",
         "atri",
         "rishis"
@@ -13742,21 +13742,19 @@
     },
     {
       "id": "manu",
-      "name": "Manu",
+      "name": "Vaivasvata Manu",
       "pantheon": "hindu",
       "category": "hero",
       "gender": "M",
       "domains": [
-        "first-man",
         "flood-survivor",
-        "lawgiver"
+        "progenitor-of-mankind",
+        "solar-dynasty"
       ],
       "parents": [
         "surya"
       ],
-      "consorts": [
-        "shatarupa"
-      ],
+      "consorts": [],
       "children": [
         "ikshvaku"
       ],
@@ -13765,7 +13763,7 @@
         "noah",
         "deucalion"
       ],
-      "description": "First man; survived the great flood by heeding Vishnu's fish-avatar warning. Author of the Manusmriti."
+      "description": "Manu of the present age, son of the sun-god Surya; warned by Vishnu's fish-avatar, he survived the great flood and repopulated the earth. Father of Ikshvaku and progenitor of the Solar dynasty."
     },
     {
       "id": "karna",
@@ -25428,6 +25426,47 @@
       "archetype": null,
       "parallels": [],
       "description": "Son of Brihaspati who studied under Shukra to obtain the Sanjivani lore of reviving the dead."
+    },
+    {
+      "id": "svayambhuva-manu",
+      "name": "Svayambhuva Manu",
+      "pantheon": "hindu",
+      "category": "primordial",
+      "gender": "M",
+      "domains": [
+        "first-man",
+        "lawgiver",
+        "primordial-progenitor"
+      ],
+      "parents": [
+        "brahma"
+      ],
+      "consorts": [
+        "shatarupa"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The first of the Manus, mind-born from Brahma and paired with Shatarupa as a primordial progenitor of humankind. The Manava Dharmashastra presents its teachings as a discourse associated with Manu and transmitted through Bhrigu."
+    },
+    {
+      "id": "shatarupa",
+      "name": "Shatarupa",
+      "pantheon": "hindu",
+      "category": "primordial",
+      "gender": "F",
+      "domains": [
+        "first-woman",
+        "primordial-progenitor"
+      ],
+      "parents": [],
+      "consorts": [
+        "svayambhuva-manu"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Primordial first woman associated with Brahma's creation; wife of Svayambhuva Manu and, with him, a progenitor of humankind."
     }
   ],
   "notable_mentions": [
