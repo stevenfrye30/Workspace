@@ -74,7 +74,7 @@ window.MASRI.phrases = [
       { ar: "عندك أولاد؟", tr: "ʿandak awlād?", en: "do you have kids? (to m)" },
       { ar: "أنا متجوز", tr: "ana metgawwez", en: "I'm married (m)" },
       { ar: "أنا لسه مش متجوز", tr: "ana lessa mesh metgawwez", en: "I'm not married yet (m)" },
-      { ar: "إزي العيلة؟", tr: "ezzay el-ʿēla?", en: "how's the family?" },
+      { ar: "إزاي العيلة؟", tr: "ezzāy el-ʿēla?", en: "how's the family?" },
       { ar: "سلّم لي على الكل", tr: "sallem-li ʿala l-koll", en: "say hi to everyone for me" }
     ]
   }

@@ -2705,6 +2705,19 @@ if(M.vocab){
   }
   recs.forEach(r => { r._ar=norm(r.ar); r._tr=norm(r.tr); r._en=norm(r.en); r._group=norm(r.group); r._note=norm(r.note); });
 
+  // Search-only aliases: common beginner romanizations mapped to the entries they should
+  // find. Matched by the query but NEVER displayed — they do not touch the shown Arabic,
+  // transliteration, or English. Targeted (not a global doubled-consonant collapse, which
+  // would merge distinct geminated words and still miss the o/u and vowel cases).
+  const ALIAS_RULES = [
+    { has: t => t.includes('ezzayyak') || t.includes('ezzayyik'), add: 'ezayak izzayak ezzayak ezayk ezzayik' }, // how are you
+    { has: t => t.includes('ezzāy'), add: 'ezay ezzay izzay ezai' },   // how
+    { has: t => t.includes('shukr'), add: 'shokran shukr shokr' },     // thanks
+    { has: t => t.includes('menēn'), add: 'mneen mnen mineen menen' }, // where from
+    { has: t => t.includes('ahlan'), add: 'hello' }                    // everyday hello
+  ];
+  recs.forEach(r => { let a=''; ALIAS_RULES.forEach(rule => { if(rule.has(r.tr)) a += ' '+rule.add; }); r._alias = norm(a); });
+
   // Relevance score for a record against a normalized query.
   // exact ar/tr/en > starts-with > substring > title/category > note-only.
   function score(r, nq){
@@ -2718,6 +2731,7 @@ if(M.vocab){
     if(r._ar.includes(nq))   s = Math.max(s, 55);
     if(r._tr.includes(nq))   s = Math.max(s, 53);
     if(r._en.includes(nq))   s = Math.max(s, 51);
+    if(r._alias && r._alias.includes(nq)) s = Math.max(s, 60);   // beginner-spelling aliases (search-only)
     if(r._group.includes(nq))s = Math.max(s, 30);
     if(r._note.includes(nq)) s = Math.max(s, 10);
     return s;

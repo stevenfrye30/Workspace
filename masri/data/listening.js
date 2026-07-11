@@ -36,7 +36,7 @@ window.MASRI.listening = {
 
   phrases: [
     // ── Greetings ──────────────────────────────────────────────
-    { id:"greet-01", topic:"greetings", arabic:"إزيّك؟", transliteration:"ezzayyak?", english:"How are you? (to a man)",
+    { id:"greet-01", topic:"greetings", arabic:"إزيك؟", transliteration:"ezzayyak?", english:"How are you? (to a man)",
       promptEnglish:"Greet a male friend and ask how he’s doing.", suggestedResponse:"الحمد لله، وإنت؟", audio:"greet-01.ogg", difficulty:1 },
     { id:"greet-02", topic:"greetings", arabic:"صباح الخير", transliteration:"ṣabāḥ el-kheer", english:"Good morning",
       promptEnglish:"Say good morning to someone.", suggestedResponse:"صباح النور", audio:"greet-02.ogg", difficulty:1 },
@@ -44,17 +44,17 @@ window.MASRI.listening = {
       promptEnglish:"Greet someone casually.", suggestedResponse:"أهلاً بيك", audio:"greet-03.ogg", difficulty:1 },
 
     // ── Introducing yourself ───────────────────────────────────
-    { id:"intro-01", topic:"introducing", arabic:"اسمك إيه؟", transliteration:"esmak eh?", english:"What’s your name? (to a man)",
+    { id:"intro-01", topic:"introducing", arabic:"اسمك إيه؟", transliteration:"esmak ēh?", english:"What’s your name? (to a man)",
       promptEnglish:"Ask a man his name.", suggestedResponse:"أنا اسمي كريم", audio:"intro-01.ogg", difficulty:1 },
     { id:"intro-02", topic:"introducing", arabic:"أنا اسمي نيكول", transliteration:"ana esmi Nicole", english:"My name is Nicole",
       promptEnglish:"Introduce yourself by name.", suggestedResponse:"أهلاً يا نيكول", audio:"intro-02.ogg", difficulty:1 },
-    { id:"intro-03", topic:"introducing", arabic:"إنت منين؟", transliteration:"enta mnēn?", english:"Where are you from? (to a man)",
+    { id:"intro-03", topic:"introducing", arabic:"إنت منين؟", transliteration:"enta menēn?", english:"Where are you from? (to a man)",
       promptEnglish:"Ask a man where he’s from.", suggestedResponse:"أنا من أمريكا", audio:"intro-03.ogg", difficulty:2 },
 
     // ── Family & polite talk ───────────────────────────────────
     { id:"fam-01", topic:"family", arabic:"إزاي العيلة؟", transliteration:"ezzāy el-ʿēla?", english:"How’s the family?",
       promptEnglish:"Ask a friend about their family.", suggestedResponse:"كلهم بخير، الحمد لله", audio:"fam-01.ogg", difficulty:2 },
-    { id:"fam-02", topic:"family", arabic:"ألف شكر", transliteration:"alf shokr", english:"Thanks a lot",
+    { id:"fam-02", topic:"family", arabic:"ألف شكر", transliteration:"alf shukr", english:"Thanks a lot",
       promptEnglish:"Thank someone warmly.", suggestedResponse:"العفو", audio:"fam-02.ogg", difficulty:1 },
     { id:"fam-03", topic:"family", arabic:"اتفضل", transliteration:"etfaḍḍal", english:"Here you go / Please (offering, to a man)",
       promptEnglish:"Politely offer something to a man.", suggestedResponse:"شكراً", audio:"fam-03.ogg", difficulty:1 },
@@ -80,7 +80,7 @@ window.MASRI.listening = {
       promptEnglish:"Ask a taxi fare to the airport.", suggestedResponse:"بمية جنيه", audio:"trans-01.ogg", difficulty:3 },
     { id:"trans-02", topic:"transport", arabic:"على طول، لو سمحت", transliteration:"ʿala ṭūl, law samaḥt", english:"Straight ahead, please",
       promptEnglish:"Tell the driver to keep going straight.", suggestedResponse:"حاضر", audio:"trans-02.ogg", difficulty:1 },
-    { id:"trans-03", topic:"transport", arabic:"هنا كويس، شكراً", transliteration:"hena kwayyes, shokran", english:"Here is fine, thanks",
+    { id:"trans-03", topic:"transport", arabic:"هنا كويس، شكراً", transliteration:"hena kwayyes, shukran", english:"Here is fine, thanks",
       promptEnglish:"Tell the driver to stop here.", suggestedResponse:"اتفضل", audio:"trans-03.ogg", difficulty:2 },
 
     // ── Asking directions ──────────────────────────────────────
@@ -100,7 +100,7 @@ window.MASRI.listening = {
       promptEnglish:"Suggest going out tomorrow.", suggestedResponse:"ماشي، اتفقنا", audio:"time-03.ogg", difficulty:2 },
 
     // ── Asking for help ────────────────────────────────────────
-    { id:"help-01", topic:"help", arabic:"ممكن تساعدني؟", transliteration:"momken tesāʿedni?", english:"Can you help me?",
+    { id:"help-01", topic:"help", arabic:"ممكن تساعدني؟", transliteration:"momken tesaʿedni?", english:"Can you help me?",
       promptEnglish:"Ask someone for help.", suggestedResponse:"أكيد، اتفضل", audio:"help-01.ogg", difficulty:1 },
     { id:"help-02", topic:"help", arabic:"أنا تُهت", transliteration:"ana toht", english:"I’m lost",
       promptEnglish:"Tell someone you’re lost.", suggestedResponse:"متقلقش، أنا هساعدك", audio:"help-02.ogg", difficulty:1 },
@@ -124,7 +124,7 @@ window.MASRI.listening = {
       lines:[
         { role:"A", arabic:"أهلاً، أنا اسمي كريم", transliteration:"ahlan, ana esmi Karim", english:"Hi, my name is Karim", audio:"dlg-meet-01.ogg" },
         { role:"B", arabic:"أهلاً يا كريم، أنا نور", transliteration:"ahlan ya Karim, ana Nour", english:"Hi Karim, I’m Nour", audio:"dlg-meet-02.ogg" },
-        { role:"A", arabic:"إنتي منين يا نور؟", transliteration:"enti mnēn ya Nour?", english:"Where are you from, Nour?", audio:"dlg-meet-03.ogg" },
+        { role:"A", arabic:"إنتي منين يا نور؟", transliteration:"enti menēn ya Nour?", english:"Where are you from, Nour?", audio:"dlg-meet-03.ogg" },
         { role:"B", arabic:"أنا من القاهرة، وإنت؟", transliteration:"ana men el-ʾāhera, wenta?", english:"I’m from Cairo, and you?", audio:"dlg-meet-04.ogg" },
         { role:"A", arabic:"أنا من أمريكا", transliteration:"ana men Amrika", english:"I’m from America", audio:"dlg-meet-05.ogg" },
         { role:"B", arabic:"فرصة سعيدة!", transliteration:"forṣa saʿīda!", english:"Nice to meet you!", audio:"dlg-meet-06.ogg" }
@@ -133,11 +133,11 @@ window.MASRI.listening = {
       roles:["A","B"], roleLabels:{ A:"Guest", B:"Host" },
       lines:[
         { role:"B", arabic:"اتفضل، خُش", transliteration:"etfaḍḍal, khosh", english:"Come in, please", audio:"dlg-family-01.ogg" },
-        { role:"A", arabic:"شكراً، البيت جميل", transliteration:"shokran, el-bēt gamīl", english:"Thanks, the house is beautiful", audio:"dlg-family-02.ogg" },
-        { role:"B", arabic:"تشرب إيه؟ شاي ولا قهوة؟", transliteration:"teshrab eh? shāy walla ʾahwa?", english:"What will you drink? Tea or coffee?", audio:"dlg-family-03.ogg" },
+        { role:"A", arabic:"شكراً، البيت جميل", transliteration:"shukran, el-bēt gamīl", english:"Thanks, the house is beautiful", audio:"dlg-family-02.ogg" },
+        { role:"B", arabic:"تشرب إيه؟ شاي ولا قهوة؟", transliteration:"teshrab ēh? shāy walla ʾahwa?", english:"What will you drink? Tea or coffee?", audio:"dlg-family-03.ogg" },
         { role:"A", arabic:"شاي، لو سمحت", transliteration:"shāy, law samaḥt", english:"Tea, please", audio:"dlg-family-04.ogg" },
         { role:"B", arabic:"حاضر، اتفضل اقعد", transliteration:"ḥāḍer, etfaḍḍal oʾʿod", english:"Sure, please have a seat", audio:"dlg-family-05.ogg" },
-        { role:"A", arabic:"ألف شكر", transliteration:"alf shokr", english:"Thanks a lot", audio:"dlg-family-06.ogg" }
+        { role:"A", arabic:"ألف شكر", transliteration:"alf shukr", english:"Thanks a lot", audio:"dlg-family-06.ogg" }
       ] },
     { id:"dlg-coffee", title:"Ordering coffee", situation:"You order at a coffee shop.",
       roles:["A","B"], roleLabels:{ A:"You", B:"Barista" },
@@ -153,7 +153,7 @@ window.MASRI.listening = {
       roles:["A","B"], roleLabels:{ A:"You", B:"Waiter" },
       lines:[
         { role:"A", arabic:"ممكن المنيو؟", transliteration:"momken el-menyu?", english:"Can I have the menu?", audio:"dlg-restaurant-01.ogg" },
-        { role:"B", arabic:"اتفضل. تحب تطلب إيه؟", transliteration:"etfaḍḍal. teḥeb teṭlob eh?", english:"Here you go. What would you like to order?", audio:"dlg-restaurant-02.ogg" },
+        { role:"B", arabic:"اتفضل. تحب تطلب إيه؟", transliteration:"etfaḍḍal. teḥeb teṭlob ēh?", english:"Here you go. What would you like to order?", audio:"dlg-restaurant-02.ogg" },
         { role:"A", arabic:"عايز فراخ ورز", transliteration:"ʿāyez firākh w roz", english:"I’d like chicken and rice", audio:"dlg-restaurant-03.ogg" },
         { role:"B", arabic:"تشرب حاجة؟", transliteration:"teshrab ḥāga?", english:"Anything to drink?", audio:"dlg-restaurant-04.ogg" },
         { role:"A", arabic:"مية، لو سمحت", transliteration:"mayya, law samaḥt", english:"Water, please", audio:"dlg-restaurant-05.ogg" },
@@ -185,14 +185,14 @@ window.MASRI.listening = {
         { role:"A", arabic:"لو سمحت، فين البنك؟", transliteration:"law samaḥt, fēn el-bank?", english:"Excuse me, where’s the bank?", audio:"dlg-directions-01.ogg" },
         { role:"B", arabic:"على طول وبعدين يمين", transliteration:"ʿala ṭūl we baʿdēn yemīn", english:"Straight, then right", audio:"dlg-directions-02.ogg" },
         { role:"A", arabic:"بعيد؟", transliteration:"beʿīd?", english:"Is it far?", audio:"dlg-directions-03.ogg" },
-        { role:"B", arabic:"لأ، قريّب", transliteration:"laʾ, ʾorayyeb", english:"No, it’s close", audio:"dlg-directions-04.ogg" },
-        { role:"A", arabic:"شكراً جزيلاً", transliteration:"shokran gazīlan", english:"Thank you very much", audio:"dlg-directions-05.ogg" },
+        { role:"B", arabic:"لأ، قريب", transliteration:"laʾ, ʾorayyeb", english:"No, it’s close", audio:"dlg-directions-04.ogg" },
+        { role:"A", arabic:"شكراً جزيلاً", transliteration:"shukran gazīlan", english:"Thank you very much", audio:"dlg-directions-05.ogg" },
         { role:"B", arabic:"العفو", transliteration:"el-ʿafw", english:"You’re welcome", audio:"dlg-directions-06.ogg" }
       ] },
     { id:"dlg-plans", title:"Making weekend plans", situation:"You plan the weekend with a friend.",
       roles:["A","B"], roleLabels:{ A:"You", B:"Friend" },
       lines:[
-        { role:"A", arabic:"تعمل إيه الأجازة؟", transliteration:"teʿmel eh el-agāza?", english:"What are you doing this weekend?", audio:"dlg-plans-01.ogg" },
+        { role:"A", arabic:"تعمل إيه الأجازة؟", transliteration:"teʿmel ēh el-agāza?", english:"What are you doing this weekend?", audio:"dlg-plans-01.ogg" },
         { role:"B", arabic:"مفيش حاجة، وإنت؟", transliteration:"mafīsh ḥāga, wenta?", english:"Nothing — and you?", audio:"dlg-plans-02.ogg" },
         { role:"A", arabic:"تحب نروح السينما؟", transliteration:"teḥeb nerūḥ es-sinema?", english:"Want to go to the cinema?", audio:"dlg-plans-03.ogg" },
         { role:"B", arabic:"فكرة حلوة! إمتى؟", transliteration:"fekra ḥelwa! emta?", english:"Nice idea! When?", audio:"dlg-plans-04.ogg" },

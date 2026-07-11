@@ -57,7 +57,7 @@ window.MASRI.food = {
         ["عايز أطلب",              "ʿāyez aṭlob",             "I want to order (m)"],
         ["المنيو لو سمحت",         "el-menyu law samaḥt",     "the menu, please"],
         ["عايز ده",                "ʿāyez da",                "I want this (m)"],
-        ["إيه اللي تنصح بيه؟",     "eh elli tenṣaḥ bīh?",     "what do you recommend?"],
+        ["إيه اللي تنصح بيه؟",     "ēh elli tenṣaḥ bīh?",     "what do you recommend?"],
         ["ده حراق؟",               "da ḥarrāʾ?",              "is this spicy?"],
         ["من غير بصل لو سمحت",     "men ghēr baṣal law samaḥt","without onions, please"],
         ["أنا نباتي",              "ana nabāti",              "I'm vegetarian (m)"],

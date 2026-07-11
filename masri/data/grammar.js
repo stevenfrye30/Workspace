@@ -177,7 +177,7 @@ window.MASRI.grammar = [
     note: "In Egyptian the question word usually comes at the END of the sentence.",
     headers: ["Arabic", "Masri", "English"],
     rows: [
-      ["إسمك إيه؟",   "esmak ēh?",      "what's your name? (m)"],
+      ["اسمك إيه؟",   "esmak ēh?",      "what's your name? (m)"],
       ["ده بكام؟",    "da bekām?",      "how much is this?"],
       ["فين الحمام؟", "fēn el-ḥammām?", "where's the bathroom?"],
       ["رايح فين؟",   "rāyeḥ fēn?",     "where are you going? (m)"],

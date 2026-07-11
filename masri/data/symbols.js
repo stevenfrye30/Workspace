@@ -82,7 +82,7 @@ window.MASRI.symbols = {
           { ar: "ليل",   tr: "lēl",   gloss: "night",    ipa: "/l/",  eng: "l",                           letter: "ل" },
           { ar: "راس",   tr: "rās",   gloss: "head",     ipa: "/r/",  eng: "rolled or tapped r",          letter: "ر" },
           { ar: "يلا",   tr: "yalla", gloss: "let’s go", ipa: "/j/",  eng: "y",                           letter: "ي" },
-          { ar: "واحد",  tr: "wāḥid", gloss: "one",      ipa: "/w/",  eng: "w",                           letter: "و" }
+          { ar: "واحد",  tr: "wāḥed", gloss: "one",      ipa: "/w/",  eng: "w",                           letter: "و" }
         ]},
         { label: "Short vowels", rows: [
           { ar: "بنت",   tr: "bint",    gloss: "girl",      ipa: "/i/", eng: "i as in “bit”",         letter: "ـِ" },
