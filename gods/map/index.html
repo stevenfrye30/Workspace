@@ -1022,8 +1022,8 @@ main p { line-height:1.7; }
 }
 .full-tree-svg { position:absolute; inset:0; pointer-events:none; z-index:0; }
 .full-tree-gen {
-  position:relative; display:block;
-  margin-bottom:46px; z-index:1;
+  position:relative; display:flex; align-items:flex-start; gap:18px;
+  margin-bottom:40px; z-index:1;
 }
 /* The row of figures inside a generation. Wrapped flex; horizontal density
    is the same as before — only the label has lifted out into a banner. */
@@ -1043,52 +1043,21 @@ main p { line-height:1.7; }
   padding-top:30px;
   border-top:1px solid rgba(229,193,88,0.28);
 }
-/* Stratum lintel — centered banner above the figures, flanked by faint
-   gradient lines like a museum hall sign. At strata transitions, the
-   gradient lines become small ❋ ornaments. */
+/* Stratum label — a fixed left-hand gutter so the strata (Primordials,
+   Elder powers, Major/Minor divinities, …) read as a left-side axis rather
+   than centered banners over each row. Right-aligned against the figures. */
 .full-tree-gen-label {
-  display:flex; align-items:center; justify-content:center;
-  gap:18px;
-  margin:6px auto 18px;
-  padding:0 12px;
+  flex:0 0 140px; width:140px; align-self:stretch;
+  display:flex; align-items:center; justify-content:flex-end;
+  text-align:right; padding:4px 14px 4px 0;
   color:var(--gold);
-  font-size:13.5px;
+  font-size:12.5px;
   font-variant:small-caps;
-  letter-spacing:3.6px;
+  letter-spacing:2px;
   font-weight:600;
+  line-height:1.25;
   text-shadow:0 1px 0 rgba(0,0,0,0.55);
-  white-space:nowrap;
-}
-.full-tree-gen-label::before,
-.full-tree-gen-label::after {
-  content:'';
-  flex:1 1 0;
-  max-width:120px;
-  height:1px;
-  background:linear-gradient(90deg, transparent, rgba(229,193,88,0.20) 50%, transparent 100%);
-}
-.full-tree-gen.stratum-transition .full-tree-gen-label::before,
-.full-tree-gen.stratum-transition .full-tree-gen-label::after {
-  content:'❋';
-  flex:0 0 auto;
-  background:none;
-  height:auto;
-  color:var(--gold-deep);
-  font-size:0.78em;
-  opacity:0.7;
-  font-weight:normal;
-  letter-spacing:0;
-}
-/* The stratum suffix sits beside the depth count — quieter than the
-   "Gen N" stamp, and slightly less stretched so the comparative label
-   reads as scholarly subtitle rather than a peer of the generation
-   index. */
-.full-tree-gen-label .gen-stratum {
-  margin-left:6px;
-  color:var(--gold-deep);
-  font-weight:normal;
-  letter-spacing:1.2px;
-  text-shadow:none;
+  border-right:1px solid rgba(229,193,88,0.14);
 }
 .full-tree-node {
   background:var(--panel); border:1px solid var(--line); border-radius:6px;
@@ -3611,12 +3580,9 @@ function renderFullTreeFromState(state) {
     const stratum = dominantStratumLabel(nucleiByGen[gn], byId);
     const isTransition = stratum && stratum !== prevStratum && prevStratum !== null;
     if (stratum) prevStratum = stratum;
-    const labelHtml = stratum
-      ? `<div class="full-tree-gen-label">${stratum}</div>`
-      : '';
     return `
       <div class="full-tree-gen${isTransition ? ' stratum-transition' : ''}" data-gen="${gn}">
-        ${labelHtml}
+        <div class="full-tree-gen-label">${stratum || ''}</div>
         <div class="full-tree-gen-row">${nucleiByGen[gn].map(nucleusHtml).join('')}</div>
       </div>
     `;
