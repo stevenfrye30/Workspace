@@ -1414,6 +1414,26 @@ main p { line-height:1.7; }
   display:block; color:var(--muted); font-size:9px; font-style:italic; letter-spacing:0.3px;
 }
 
+/* Sub-tabs inside the "More" tab */
+.subtab-bar {
+  display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px;
+  border-bottom:1px solid var(--gold-faint); padding-bottom:16px;
+}
+.subtab-btn {
+  padding:8px 18px; border-radius:9px;
+  border:1px solid var(--line); background:var(--panel);
+  color:var(--muted); font-family:inherit; font-size:13px;
+  font-variant:small-caps; letter-spacing:1.2px; cursor:pointer;
+  transition:border-color .14s, background .14s, color .14s;
+}
+.subtab-btn:hover { color:var(--gold); border-color:var(--gold-soft); }
+.subtab-btn.active {
+  color:var(--gold); border-color:var(--gold-soft);
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+}
+.subtab-panel { display:none; }
+.subtab-panel.active { display:block; }
+
 .modal-bg { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(2px); z-index:100; align-items:center; justify-content:center; padding:24px; }
 .modal-bg.open { display:flex; animation:fadeIn .25s ease; }
 @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
@@ -1744,8 +1764,7 @@ select:focus:not(:focus-visible),
   <button class="tab-btn" data-tab="trees" role="tab" aria-selected="false" aria-controls="tab-trees">Family Trees</button>
   <button class="tab-btn" data-tab="timeline" role="tab" aria-selected="false" aria-controls="tab-timeline">Timeline</button>
   <button class="tab-btn" data-tab="archetypes" role="tab" aria-selected="false" aria-controls="tab-archetypes">Archetypes</button>
-  <button class="tab-btn" data-tab="deified" role="tab" aria-selected="false" aria-controls="tab-deified">Deified Humans</button>
-  <button class="tab-btn" data-tab="mentions" role="tab" aria-selected="false" aria-controls="tab-mentions">Notable Mentions</button>
+  <button class="tab-btn" data-tab="more" role="tab" aria-selected="false" aria-controls="tab-more">More</button>
 </nav>
 
 <main>
@@ -1852,30 +1871,37 @@ select:focus:not(:focus-visible),
   <div class="arch-table-wrap" id="archetypeTable"></div>
 </section>
 
-<section id="tab-deified" class="tab" role="tabpanel">
-  <div class="tab-head">
-    <h2>Deified Humans</h2>
-    <p class="intro">
-      Historical persons elevated to divine status — by state decree, posthumous
-      cult, or folk veneration. Rome institutionalized it with the imperial cult;
-      East Asia enshrined sage-kings, generals, and scholars; Egypt deified
-      Imhotep two millennia after his death. The line between great ancestor
-      and god is porous.
-    </p>
+<section id="tab-more" class="tab" role="tabpanel">
+  <div class="subtab-bar" role="tablist" aria-label="More sections">
+    <button class="subtab-btn active" data-subtab="deified" role="tab" aria-selected="true">Deified Humans</button>
+    <button class="subtab-btn" data-subtab="mentions" role="tab" aria-selected="false">Notable Mentions</button>
   </div>
-  <div id="deifiedGrid" class="god-grid"></div>
-</section>
 
-<section id="tab-mentions" class="tab" role="tabpanel">
-  <div class="tab-head">
-    <h2>Notable Mentions</h2>
-    <p class="intro">
-      Figures kept outside the main thousand — secondary heroes, regional
-      deities, names that appear inside other figures' stories, and alternate
-      names of catalogued gods. One line of context each; no family trees.
-    </p>
+  <div class="subtab-panel active" id="subtab-deified" role="tabpanel">
+    <div class="tab-head">
+      <h2>Deified Humans</h2>
+      <p class="intro">
+        Historical persons elevated to divine status — by state decree, posthumous
+        cult, or folk veneration. Rome institutionalized it with the imperial cult;
+        East Asia enshrined sage-kings, generals, and scholars; Egypt deified
+        Imhotep two millennia after his death. The line between great ancestor
+        and god is porous.
+      </p>
+    </div>
+    <div id="deifiedGrid" class="god-grid"></div>
   </div>
-  <div id="mentionsList"></div>
+
+  <div class="subtab-panel" id="subtab-mentions" role="tabpanel">
+    <div class="tab-head">
+      <h2>Notable Mentions</h2>
+      <p class="intro">
+        Figures kept outside the main thousand — secondary heroes, regional
+        deities, names that appear inside other figures' stories, and alternate
+        names of catalogued gods. One line of context each; no family trees.
+      </p>
+    </div>
+    <div id="mentionsList"></div>
+  </div>
 </section>
 
 </main>
@@ -2180,6 +2206,7 @@ function init() {
   renderDeified();
   renderMentions();
   wireTabs();
+  wireSubtabs();
   wireModal();
   wireHashRouter();
 
@@ -2200,6 +2227,13 @@ function wireTabs() {
 }
 
 function selectTab(tabId, { skipHash = false } = {}) {
+  // Deified Humans / Notable Mentions now live under the "More" tab — route
+  // any old link or deep-link to More + the matching sub-tab.
+  if (tabId === 'deified' || tabId === 'mentions') {
+    selectTab('more', { skipHash });
+    activateSubtab(tabId);
+    return;
+  }
   const btn = document.querySelector(`[data-tab="${tabId}"]`);
   const panel = document.getElementById('tab-' + tabId);
   if (!btn || !panel) return;
@@ -2215,6 +2249,22 @@ function selectTab(tabId, { skipHash = false } = {}) {
   panel.classList.add('active');
   if (tabId === 'timeline') renderTimeline();
   if (!skipHash) updateHash('tab/' + tabId);
+}
+
+function activateSubtab(id) {
+  document.querySelectorAll('#tab-more .subtab-btn').forEach(b => {
+    const on = b.dataset.subtab === id;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+  });
+  document.querySelectorAll('#tab-more .subtab-panel').forEach(p => {
+    p.classList.toggle('active', p.id === 'subtab-' + id);
+  });
+}
+function wireSubtabs() {
+  document.querySelectorAll('#tab-more .subtab-btn').forEach(btn => {
+    btn.addEventListener('click', () => activateSubtab(btn.dataset.subtab));
+  });
 }
 
 /* ---------- URL hash router ---------- */
