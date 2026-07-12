@@ -285,6 +285,69 @@
   .snd-cmpvs{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
   @media (max-width:600px){ .snd-grid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:calc(46px * var(--ar-scale))} }
 
+  /* ── sounds typography ──────────────────────────────────────────────────────
+     Bigger, more readable text for the Sounds subtab. EVERY selector below is
+     scoped to #p-sounds on purpose: .snd-more, .snd-det, .snd-cmpvs and .snd-xref
+     are also used by the Alphabet guide, and the vowel/comparison tables inherit
+     the global table rules — an unscoped edit would silently resize other sections.
+     Hierarchy, largest first: Arabic letters > Arabic examples > titles > body >
+     supporting notes. Supporting text grows least, so it never competes with the
+     Arabic that carries the learning. */
+  #p-sounds .lead{font-size:calc(15.5px * var(--ui-scale));line-height:1.7}
+  #p-sounds .note{font-size:calc(14px * var(--ui-scale));line-height:1.65}
+
+  /* the Arabic letter is the loudest thing on the page */
+  #p-sounds .snd-glyph{font-size:calc(44px * var(--ar-scale));line-height:1.15}
+  #p-sounds .snd-big .snd-glyph{font-size:calc(60px * var(--ar-scale))}
+
+  /* card head + body */
+  #p-sounds .snd-name{font-size:calc(14.5px * var(--ui-scale))}
+  #p-sounds .snd-line{font-size:calc(13.5px * var(--ui-scale))}
+  #p-sounds .snd-sum{font-size:calc(14.5px * var(--ui-scale));line-height:1.55}
+  #p-sounds .snd-card{padding:14px 16px}
+
+  /* Arabic example words, clearly above the Latin that supports them */
+  #p-sounds .snd-ex{font-size:calc(13.5px * var(--ui-scale));margin-top:9px}
+  #p-sounds .snd-ex .ar{font-size:calc(24px * var(--ar-scale));line-height:1.5}
+
+  /* "More detail" — a comfortable paragraph, not fine print */
+  #p-sounds .snd-more summary{font-size:calc(13px * var(--ui-scale))}
+  #p-sounds .snd-det{font-size:calc(13.5px * var(--ui-scale));line-height:1.7}
+
+  /* accordion summaries */
+  #p-sounds .snd-acc-t{font-size:calc(15px * var(--ui-scale))}
+  #p-sounds .snd-acc-s{font-size:calc(13px * var(--ui-scale));line-height:1.5}
+
+  /* tables: the ر positions, the merged vowel table, the comparison rows. Arabic in a
+     table had NO size rule, so it was rendering at the 14px Latin table size. */
+  #p-sounds .card-table table{font-size:calc(15px * var(--ui-scale))}
+  #p-sounds .card-table th{font-size:calc(11.5px * var(--ui-scale))}
+  #p-sounds .card-table td{padding:11px 12px;line-height:1.5}
+  #p-sounds .card-table td .ar{font-size:calc(24px * var(--ar-scale));line-height:1.6}
+  #p-sounds .card-table td .tr{font-size:calc(14px * var(--ui-scale))}
+  #p-sounds .snd-vsym{font-size:calc(20px * var(--ui-scale))}
+  #p-sounds .snd-pen{font-size:calc(13px * var(--ui-scale))}
+  #p-sounds .snd-vlong{font-size:calc(13px * var(--ui-scale))}
+
+  /* comparison rows */
+  #p-sounds .snd-cmppair{font-size:calc(30px * var(--ar-scale));line-height:1.5}
+  #p-sounds .snd-cmpsym{font-size:calc(12.5px * var(--ui-scale))}
+  #p-sounds .snd-cmpvs{font-size:calc(12.5px * var(--ui-scale))}
+
+  /* small metadata — grows least of all */
+  #p-sounds .snd-tag{font-size:calc(11px * var(--ui-scale))}
+
+  /* Phones: keep the Arabic large but pull back the two biggest glyphs and the
+     example words a little, so cards stay compact and nothing overflows. */
+  @media (max-width:600px){
+    #p-sounds .snd-big .snd-glyph{font-size:calc(52px * var(--ar-scale))}
+    #p-sounds .snd-glyph{font-size:calc(40px * var(--ar-scale))}
+    #p-sounds .snd-ex .ar{font-size:calc(22px * var(--ar-scale))}
+    #p-sounds .card-table td .ar{font-size:calc(22px * var(--ar-scale))}
+    #p-sounds .snd-cmppair{font-size:calc(27px * var(--ar-scale))}
+    #p-sounds .card-table table{font-size:calc(14.5px * var(--ui-scale))}
+  }
+
   /* ── alphabet (reading reference) ── */
   #p-alphabet h2{scroll-margin-top:66px}
   /* Full alphabet sequence — 28 letters read right-to-left; each jumps to its card. */
