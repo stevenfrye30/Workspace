@@ -279,9 +279,6 @@
   .alp-allkey:hover{border-color:var(--gold)}
   .alp-allkey:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   @media (max-width:600px){ .alp-allkey{min-width:38px;font-size:calc(24px * var(--ar-scale))} }
-  .alp-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
-  .alp-jbtn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
-  .alp-jbtn:hover{border-color:var(--gold)}
   .alp-glyph{font-family:var(--ar);font-size:calc(36px * var(--ar-scale));color:var(--gold);line-height:1;unicode-bidi:isolate}
   .alp-formdefs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px;margin:12px 0}
   .alp-fdef{font-size:13px;color:var(--muted)}
@@ -303,17 +300,29 @@
   .alp-famex .ar{font-family:var(--ar);font-size:calc(15px * var(--ar-scale));color:var(--fg)}
   .alp-famex .tr{color:var(--blue);font-style:italic}
   .alp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
-  /* transliteration key — compact collapsed reference under the letter cards */
-  .alp-translit{margin:14px 0 22px;border:1px solid var(--border);border-radius:var(--r);background:var(--surf2);overflow:hidden}
-  .alp-translit > summary{cursor:pointer;font-weight:600;color:var(--gold);font-size:calc(13.5px * var(--ui-scale));padding:11px 14px;list-style:none}
-  .alp-translit > summary::-webkit-details-marker{display:none}
-  .alp-translit > summary::before{content:"\25B8 "}
-  .alp-translit[open] > summary::before{content:"\25BE "}
-  .alp-translit > summary:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
-  .alp-translit-body{padding:0 14px 6px}
-  .alp-translit-tbl{margin-bottom:10px;overflow-x:auto}
-  .alp-translit-tbl td,.alp-translit-tbl th{padding:8px 12px}
-  .alp-translit .note{margin:0 0 10px}
+  /* Alphabet Guide — the four reference topics as one container of collapsed
+     accordions. Each summary states what the panel holds, so nothing has to be
+     opened to find out; opening one closes the others (see the toggle wiring). */
+  .alp-guide{border:1px solid var(--border);border-radius:var(--r);background:var(--surf2);overflow:hidden;margin:0 0 22px}
+  .alp-acc + .alp-acc{border-top:1px solid var(--border)}
+  .alp-acc > summary{cursor:pointer;padding:12px 14px;list-style:none;display:block}
+  .alp-acc > summary::-webkit-details-marker{display:none}
+  .alp-acc > summary:hover .alp-acc-t{text-decoration:underline}
+  .alp-acc > summary:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+  .alp-acc-t{display:block;font-family:var(--ui);font-weight:600;color:var(--gold);font-size:calc(14px * var(--ui-scale))}
+  .alp-acc-t::before{content:"\25B8 "}
+  .alp-acc[open] .alp-acc-t::before{content:"\25BE "}
+  .alp-acc-s{display:block;font-family:var(--ui);font-size:calc(12px * var(--ui-scale));color:var(--muted);margin-top:3px;line-height:1.45}
+  .alp-acc-body{padding:0 14px 16px}
+  .alp-acc-body > .note:first-child{margin-top:0}
+  .alp-acc-cap{font-family:var(--ui);font-size:calc(11px * var(--ui-scale));font-weight:700;color:var(--fg);text-transform:uppercase;letter-spacing:.06em;margin:18px 0 8px}
+  .alp-acc-body > .alp-acc-cap:first-child{margin-top:2px}
+  .alp-loners{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+  .alp-loner{display:flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:5px 10px;cursor:pointer;font-family:var(--ui);font-size:11.5px;color:var(--muted)}
+  .alp-loner:hover{border-color:var(--gold)}
+  .alp-loner .ar{font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--gold);direction:rtl;unicode-bidi:isolate;line-height:1.2}
+  .alp-tbl{margin-bottom:10px;overflow-x:auto}
+  .alp-tbl td,.alp-tbl th{padding:8px 12px}
   .alp-tsym{font-weight:700;color:var(--green);font-size:calc(15px * var(--ui-scale));white-space:nowrap}
   .alp-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px;scroll-margin-top:70px}
   .alp-chead{display:flex;align-items:center;gap:12px;margin-bottom:9px}
@@ -347,7 +356,7 @@
   .alp-mark{font-size:calc(26px * var(--ar-scale));color:var(--gold)}
   .alp-markdemo .ar{font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--fg)}
   .alp-markdemo .tr{color:var(--blue);font-style:italic}
-  .alp-jbtn:focus-visible,.alp-famlet:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  .alp-famlet:focus-visible,.alp-loner:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   @media (max-width:600px){ .alp-grid,.alp-fams,.alp-jex,.alp-brk,.alp-carriers,.alp-spgrid,.alp-dist,.alp-formdefs{grid-template-columns:1fr} }
 
   /* ── symbols (IPA ⇄ Arabic reference, two coordinated panels) ── */
@@ -1102,8 +1111,10 @@ function renderTableCards(arr){
   }));
 })();
 
-// ALPHABET — a practical Arabic reading reference: joining, shape families, a full
-// alphabetical reference, connection breakers, special forms, and reading marks.
+// ALPHABET — a practical Arabic reading reference: the 28 letters as detailed cards,
+// then the Alphabet Guide — one container of four collapsed accordions covering
+// transliteration, joining and the connection breakers, shape families, and special
+// forms and reading marks.
 // Builds from window.MASRI.alphabet. Contextual forms are approximated with the
 // tatweel (kashida); non-connectors show only Isolated + Final (they never join
 // left). Jump buttons scroll to anchors — no history, no localStorage.
@@ -1144,70 +1155,132 @@ function renderTableCards(arr){
     return c + `</div>`;
   }).join('') + `</div>`;
 
-  // Secondary reference: a compact 4-item menu, then a collapsed transliteration key
-  // and three condensed sections. The detailed cards above are the alphabetical
-  // reference, so there is no separate "Alphabetical reference" section here.
-  h += `<nav class="alp-jump" aria-label="Alphabet reference sections">`
-     + d.jump.filter(j => j.anchor !== 'alp-wb').map(j => `<button class="alp-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
-     + `</nav>`;
+  // ── ALPHABET GUIDE ─────────────────────────────────────────────────────────
+  // The four reference topics (transliteration · joining · shape families · special
+  // forms and marks) as one container of accordions, all collapsed. Each summary
+  // carries a one-line description, so the guide is scannable without opening
+  // anything — which is why the horizontal jump pills are gone: they pointed at
+  // headings the reader can now already see. Every fact the old stacked sections
+  // showed is still here; the prose around it is condensed into tables and chips.
+  const acc = (id, title, blurb, inner) =>
+      `<details class="alp-acc" id="${id}">`
+    + `<summary><span class="alp-acc-t">${esc(title)}</span>`
+    + `<span class="alp-acc-s">${esc(blurb)}</span></summary>`
+    + `<div class="alp-acc-body">${inner}</div></details>`;
+  const cap = t => `<div class="alp-acc-cap">${t}</div>`;
 
-  // 1 · How to read Masri transliteration (collapsed by default)
+  h += `<h2 id="alp-guide">Alphabet Guide</h2>`;
+  h += `<div class="alp-guide">`;
+
+  // 1 · Transliteration. Split in two: the long vowels, then everything else — the
+  // symbols with no English letter, which are the ones beginners misread. The split
+  // is by symbol, so any row added to the data still shows up (in the second table).
   if(d.translit){
-    const t = d.translit;
-    h += `<details class="alp-translit" id="alp-translit"><summary>${esc(t.title)}</summary><div class="alp-translit-body">`
-       + `<div class="card-table alp-translit-tbl"><table><thead><tr><th>Symbol</th><th>Means</th><th>Example</th></tr></thead><tbody>`
-       + t.rows.map(r => `<tr><td class="alp-tsym" dir="ltr">${esc(r.sym)}</td><td>${esc(r.means)}</td>`
-           + `<td><span class="tr" dir="ltr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
-       + `</tbody></table></div>`
-       + (t.note ? `<p class="note">${esc(t.note)}</p>` : '')
-       + `</div></details>`;
+    const t = d.translit, LONG = ['ā','ē','ī','ō','ū'];
+    const tbl = (rows, capText) => cap(esc(capText))
+      + `<div class="card-table alp-tbl"><table><thead><tr><th>Symbol</th><th>Means</th><th>Example</th></tr></thead><tbody>`
+      + rows.map(r => `<tr><td class="alp-tsym" dir="ltr">${esc(r.sym)}</td><td>${esc(r.means)}</td>`
+          + `<td><span class="tr" dir="ltr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
+      + `</tbody></table></div>`;
+    const isLong = r => LONG.indexOf(r.sym) >= 0;
+    let b = '';
+    const longRows = t.rows.filter(isLong), restRows = t.rows.filter(r => !isLong(r));
+    if(longRows.length) b += tbl(longRows, 'Long vowels — hold the vowel longer');
+    if(restRows.length) b += tbl(restRows, 'Sounds English has no letter for');
+    b += `<p class="note snd-xref">Most often misread: <b class="alp-tsym">ʿ</b> is the letter `
+       + `<span class="ar" dir="rtl">ع</span>, a throat sound — <b class="alp-tsym">ʾ</b> is a glottal stop `
+       + `(hamza, and Egyptian <span class="ar" dir="rtl">ق</span>). A dot under a letter `
+       + `(<b class="alp-tsym">ḥ ṣ ḍ ṭ ẓ</b>) does not make a new sound from scratch: it marks the deep or heavy version of h, s, d, t, z.</p>`;
+    b += `<p class="note">${esc(t.note)}</p>`;
+    h += acc('alp-translit', 'Transliteration',
+             'What the accents and marks in Masri’s romanised spellings stand for.', b);
   }
 
-  // 2 · Joining and connection breakers (joining rules + the six breakers, combined)
-  h += `<h2 id="alp-join">Joining and connection breakers</h2>`;
-  h += `<div class="alp-join">`
-     + `<ul class="start-list"><li>Arabic runs <b>right to left</b>.</li>`
-     + `<li>Most letters connect to the letters before and after them within a word.</li>`
-     + `<li>Six letters break the connection after themselves: <span class="ar" dir="rtl">${d.joining.breakers}</span> — they join a letter on their right, but not the next letter on their left.</li></ul>`;
-  h += `<div class="alp-formdefs">` + d.joining.forms.map(f => `<div class="alp-fdef"><b>${esc(f.name)}</b> — ${esc(f.desc)}</div>`).join('') + `</div>`;
-  h += `<p class="note snd-xref">${esc(d.joining.segmentNote)}</p>`;
-  h += `<div class="alp-jex">` + d.joining.examples.map(e =>
-      `<div class="alp-jexcard"><div class="alp-jexword ar" dir="rtl">${e.ar}</div><div class="alp-jexmeta"><span class="tr" dir="ltr">${esc(e.ex)}</span> — ${esc(e.en)}</div><div class="alp-jexkind">${esc(e.kind)}</div></div>`).join('') + `</div>`;
-  // The six breakers as a compact reference row (names + example) — no repeated explanation.
-  h += `<div class="alp-brk">` + d.breakers.letters.map(b =>
-      `<div class="alp-brkcard"><span class="alp-glyph ar" dir="rtl">${b.L}</span><div class="alp-brkmeta"><div class="alp-lname">${esc(b.name)}</div>${exLine(b.ex_ar, b.ex, b.ex_en)}</div></div>`).join('') + `</div>`;
+  // 2 · Joining — the rules, the four positional form names, three worked words, and
+  // the six breakers as a compact row (the rule is stated once, in the bullets).
+  {
+    let b = `<ul class="start-list"><li>Arabic runs <b>right to left</b>.</li>`
+      + `<li>Most letters connect on <b>both</b> sides inside a word, so a letter’s shape depends on its position.</li>`
+      + `<li><b>Six letters never join the letter after them:</b> <span class="ar" dir="rtl">${d.joining.breakers}</span>. `
+      + `They still join a letter on their right — the next letter simply starts a new connected segment.</li></ul>`;
+    b += `<div class="alp-formdefs">`
+       + d.joining.forms.map(f => `<div class="alp-fdef"><b>${esc(f.name)}</b> — ${esc(f.desc)}</div>`).join('')
+       + `</div>`;
+    b += `<p class="note snd-xref">${esc(d.joining.segmentNote)}</p>`;
+    b += cap('Worked examples')
+       + `<div class="alp-jex">` + d.joining.examples.map(e =>
+          `<div class="alp-jexcard"><div class="alp-jexword ar" dir="rtl">${e.ar}</div>`
+        + `<div class="alp-jexmeta"><span class="tr" dir="ltr">${esc(e.ex)}</span> — ${esc(e.en)}</div>`
+        + `<div class="alp-jexkind">${esc(e.kind)}</div></div>`).join('') + `</div>`;
+    b += cap('The six connection breakers')
+       + `<div class="alp-brk">` + d.breakers.letters.map(x =>
+          `<div class="alp-brkcard"><span class="alp-glyph ar" dir="rtl">${x.L}</span>`
+        + `<div class="alp-brkmeta"><div class="alp-lname">${esc(x.name)}</div>${exLine(x.ex_ar, x.ex, x.ex_en)}</div></div>`).join('')
+       + `</div>`;
+    h += acc('alp-join', 'Joining',
+             'How letters connect inside a word — and the six that break the connection.', b);
+  }
 
-  // 3 · Shape families
-  h += `<h2 id="alp-families">Shape families</h2>`;
-  h += `<p class="note">${esc(d.familiesNote)}</p>`;
-  h += `<div class="alp-fams">` + d.families.map(fam => `<div class="alp-fam">`
-      + fam.letters.map(x => `<button class="alp-famlet" data-anchor="alp-L-${esc(x.L)}" aria-label="Go to ${esc(x.ex_en)} letter ${esc(x.L)} in the reference">
-          <span class="alp-glyph ar" dir="rtl">${x.L}</span>
-          <span class="alp-famdots">${esc(x.dots)}</span>
-          <span class="alp-famsnd">${esc(x.sound)}</span>
-          <span class="alp-famex"><span class="ar" dir="rtl">${x.ex_ar}</span> <span class="tr" dir="ltr">${esc(x.ex)}</span> — ${esc(x.ex_en)}</span>
-        </button>`).join('')
-      + `</div>`).join('') + `</div>`;
+  // 3 · Shape families. The groups are exactly the ones in the data and stay unnamed
+  // (naming them would invent categories Arabic does not use). The letters that are in
+  // no group are derived by diffing the data, so the count can never drift out of date.
+  {
+    const inFam = new Set();
+    d.families.forEach(f => f.letters.forEach(x => inFam.add(x.L)));
+    const loners = d.letters.filter(L => !inFam.has(L.letter));
+    let b = `<p class="note">${esc(d.familiesNote)} Tap any letter to jump to its card above.</p>`;
+    b += `<div class="alp-fams">` + d.families.map(fam => `<div class="alp-fam">`
+        + fam.letters.map(x => `<button class="alp-famlet" data-anchor="alp-L-${esc(x.L)}" aria-label="Go to ${esc(x.ex_en)} letter ${esc(x.L)} in the reference">
+            <span class="alp-glyph ar" dir="rtl">${x.L}</span>
+            <span class="alp-famdots">${esc(x.dots)}</span>
+            <span class="alp-famsnd">${esc(x.sound)}</span>
+            <span class="alp-famex"><span class="ar" dir="rtl">${x.ex_ar}</span> <span class="tr" dir="ltr">${esc(x.ex)}</span> — ${esc(x.ex_en)}</span>
+          </button>`).join('')
+        + `</div>`).join('') + `</div>`;
+    if(loners.length){
+      b += cap('Letters in no dot-based family')
+         + `<p class="note">These ${loners.length} letters are not told apart by dots — each has its own shape.</p>`
+         + `<div class="alp-loners">` + loners.map(L =>
+            `<button class="alp-loner" data-anchor="alp-L-${esc(L.letter)}" aria-label="Go to letter ${esc(L.name)} in the reference">`
+          + `<span class="ar" dir="rtl">${L.letter}</span>${esc(L.name)}</button>`).join('') + `</div>`;
+    }
+    h += acc('alp-families', 'Shape families',
+             'Letters that share one base shape and are told apart mainly by their dots.', b);
+  }
 
-  // 4 · Special forms and reading marks (hamza, tāʾ marbūṭa/maqṣūra/lām-alif, distinctions, marks)
-  h += `<h2 id="alp-special">Special forms and reading marks</h2>`;
-  const sp = d.special;
-  h += `<h3 class="snd-sub">Hamza (ء) and its carriers</h3>`;
-  h += `<p class="note">${sp.hamza.intro}</p>`;
-  h += `<div class="alp-carriers">` + sp.hamza.carriers.map(c =>
-      `<div class="alp-carrier"><span class="alp-glyph ar" dir="rtl">${c.form}</span><div class="alp-carriermeta"><div class="alp-lname">${esc(c.label)}</div>${exLine(c.ex_ar, c.ex, c.ex_en)}</div></div>`).join('') + `</div>`;
-  const spCard = (o) => `<div class="alp-spcard"><div class="alp-sphead"><span class="alp-glyph ar" dir="rtl">${o.L}</span><span class="alp-lname">${esc(o.name)}</span></div><div class="alp-spnote">${o.note}</div>${exLine(o.ex_ar, o.ex, o.ex_en)}</div>`;
-  h += `<h3 class="snd-sub">Tāʾ marbūṭa · alif maqṣūra · lām-alif</h3>`;
-  h += `<div class="alp-spgrid">` + spCard(sp.tamarbuta) + spCard(sp.maqsura) + spCard(sp.lamalif) + `</div>`;
-  h += `<h3 class="snd-sub">Useful visual distinctions</h3>`;
-  h += `<div class="alp-dist">` + sp.distinctions.map(x =>
-      `<div class="alp-distcard"><div class="alp-distpair"><span class="alp-glyph ar" dir="rtl">${x.a}</span><span class="snd-cmpvs" aria-hidden="true">vs</span><span class="alp-glyph ar" dir="rtl">${x.b}</span></div><div class="alp-distnote">${esc(x.note)}</div></div>`).join('') + `</div>`;
-  h += `<h3 class="snd-sub">Reading marks</h3>`;
-  h += `<p class="note">${esc(d.marks.intro)}</p>`;
-  h += `<div class="card-table"><table><thead><tr><th>Mark</th><th>Name</th><th>Meaning</th><th>Example</th></tr></thead><tbody>`
-     + d.marks.rows.map(m => `<tr><td class="alp-mark ar" dir="rtl">ـ${m.mark}</td><td>${esc(m.name)} <span class="ar" dir="rtl">${m.name_ar}</span></td><td>${esc(m.desc)}</td><td class="alp-markdemo"><span class="ar" dir="rtl">${m.demo.split(' = ')[0]}</span>${m.demo.indexOf(' = ')>=0 ? ' = <span class="tr" dir="ltr">'+esc(m.demo.split(' = ')[1])+'</span>' : ''}</td></tr>`).join('')
-     + `</tbody></table></div>`;
-  h += `<p class="note snd-xref">${esc(d.marks.tanwin)}</p>`;
+  // 4 · Special forms and marks. Letters first, then the optional marks — kept apart
+  // on purpose, because the marks are written ON a letter and are not letters at all.
+  {
+    const sp = d.special;
+    const spCard = (o) => `<div class="alp-spcard"><div class="alp-sphead"><span class="alp-glyph ar" dir="rtl">${o.L}</span>`
+      + `<span class="alp-lname">${esc(o.name)}</span></div><div class="alp-spnote">${o.note}</div>${exLine(o.ex_ar, o.ex, o.ex_en)}</div>`;
+    let b = cap('Hamza <span class="ar" dir="rtl">ء</span> and its carriers')
+      + `<p class="note">${sp.hamza.intro}</p>`
+      + `<div class="alp-carriers">` + sp.hamza.carriers.map(c =>
+          `<div class="alp-carrier"><span class="alp-glyph ar" dir="rtl">${c.form}</span>`
+        + `<div class="alp-carriermeta"><div class="alp-lname">${esc(c.label)}</div>${exLine(c.ex_ar, c.ex, c.ex_en)}</div></div>`).join('')
+      + `</div>`;
+    b += cap('Tāʾ marbūṭa · alif maqṣūra · lām-alif')
+       + `<div class="alp-spgrid">` + spCard(sp.tamarbuta) + spCard(sp.maqsura) + spCard(sp.lamalif) + `</div>`;
+    b += cap('Easy to confuse by sight')
+       + `<div class="alp-dist">` + sp.distinctions.map(x =>
+          `<div class="alp-distcard"><div class="alp-distpair"><span class="alp-glyph ar" dir="rtl">${x.a}</span>`
+        + `<span class="snd-cmpvs" aria-hidden="true">vs</span><span class="alp-glyph ar" dir="rtl">${x.b}</span></div>`
+        + `<div class="alp-distnote">${esc(x.note)}</div></div>`).join('') + `</div>`;
+    b += cap('Reading marks — not letters')
+       + `<p class="note">Everything above is a <b>letter</b>. The marks below are not: each one is written <b>on</b> a letter to show a short vowel or a doubling, and the word keeps the same spelling without it. ${esc(d.marks.intro)}</p>`
+       + `<div class="card-table alp-tbl"><table><thead><tr><th>Mark</th><th>Name</th><th>Meaning</th><th>Example</th></tr></thead><tbody>`
+       + d.marks.rows.map(m => `<tr><td class="alp-mark ar" dir="rtl">ـ${m.mark}</td>`
+          + `<td>${esc(m.name)} <span class="ar" dir="rtl">${m.name_ar}</span></td><td>${esc(m.desc)}</td>`
+          + `<td class="alp-markdemo"><span class="ar" dir="rtl">${m.demo.split(' = ')[0]}</span>`
+          + `${m.demo.indexOf(' = ')>=0 ? ' = <span class="tr" dir="ltr">'+esc(m.demo.split(' = ')[1])+'</span>' : ''}</td></tr>`).join('')
+       + `</tbody></table></div>`
+       + `<p class="note snd-xref">${esc(d.marks.tanwin)}</p>`;
+    h += acc('alp-special', 'Special forms and marks',
+             'Hamza carriers, ة · ى · لا, and the optional vowel marks — which are letters, and which are not.', b);
+  }
+
+  h += `</div>`;
 
   panel.innerHTML = h;
 
@@ -1216,6 +1289,13 @@ function renderTableCards(arr){
     const t = document.getElementById(b.dataset.anchor); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }));
   panel.querySelectorAll('[data-go]').forEach(b => b.addEventListener('click', () => activate(b.dataset.go)));
+
+  // One panel open at a time: four expanded accordions would be exactly the long,
+  // scroll-heavy page this replaced. Summaries stay readable while one is open.
+  const accs = Array.from(panel.querySelectorAll('.alp-acc'));
+  accs.forEach(x => x.addEventListener('toggle', () => {
+    if(x.open) accs.forEach(y => { if(y !== x) y.open = false; });
+  }));
 })();
 
 // SYMBOLS — Arabic phoneme ⇄ IPA ⇄ English ⇄ letter reference, presented as one
