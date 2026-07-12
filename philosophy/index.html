@@ -322,8 +322,12 @@ ul.clean li { margin:6px 0; }
 .fc-card .q { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:1px; }
 .fc-card .prompt { color:var(--ink); font-size:22px; margin:14px 0 24px; font-style:italic; }
 .fc-card .options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-.fc-card .opt { background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:12px 16px; cursor:pointer; transition:all .15s; font-family:inherit; color:var(--ink); font-size:14px; }
+.fc-card .opt { background:var(--panel2); border:1px solid var(--line); border-radius:6px; padding:12px 16px; min-height:44px; cursor:pointer; transition:all .15s; font-family:inherit; color:var(--ink); font-size:14px; }
 .fc-card .opt:not(:disabled):hover { border-color:var(--accent); }
+/* Deliberate focus ring: the UA default is nearly invisible on the dark panel. Uses an
+   outline so it cannot shift the layout and stays visible over every answer state. */
+.fc-card .opt:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.fc-next:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .fc-card .opt:disabled { cursor:default; opacity:0.85; }
 .fc-card .opt.correct { background:rgba(122,181,145,0.2); border-color:#7bb591; color:#dff7e7; opacity:1; }
 .fc-card .opt.wrong { background:rgba(208,120,120,0.15); border-color:#d07878; color:#ffd1d1; opacity:1; }
@@ -362,16 +366,24 @@ ul.clean li { margin:6px 0; }
     --gold-soft:#999; --gold-faint:#ddd; --papyrus-tint:#fff;
   }
   /* Non-content UI: navigation, filters, and controls. */
-  nav, header, .filters, .fc-wrap, #graph-canvas, .tl-wrap,
+  /* .fc-wrap is no longer hidden: with the Study heading gone, hiding it made the whole
+     printed page blank. The card prints; the mode/reset controls and the Next button
+     (.print-btn) stay hidden, since interactive controls are not useful on paper. */
+  nav, header, .filters, #graph-canvas, .tl-wrap,
   .print-btn, .modal-bg { display:none !important; }
   body { background:#fff; color:#000; }
   main { max-width:none; padding:10px; }
   /* Print only the tab the user is actually looking at. The previous rule forced
      every tab visible, so printing one trail also printed the whole app. */
   .tab:not(.active) { display:none !important; }
-  .card, .trail, .excerpt, .ct-table, .gloss-card, .phil-card {
+  .card, .trail, .excerpt, .ct-table, .gloss-card, .phil-card, .fc-card {
     background:#fff !important; border:1px solid #bbb; page-break-inside:avoid;
   }
+  /* The answered states use light-on-dark colours that would vanish on paper. */
+  .fc-card .opt { background:#fff !important; color:#000; border-color:#bbb; opacity:1; }
+  .fc-card .opt.correct, .fc-card .opt.wrong { color:#000; border-color:#000; }
+  .fc-card .opt.correct { font-weight:bold; }
+  .fc-reveal, .fc-score { color:#000; }
   .trail-step::before { background:#fff; }
   h1, h2, h3, h4 { color:#000; }
   .auto-link, .gloss-link { color:#000; border-bottom:none; }
@@ -1238,48 +1250,170 @@ function renderTables() {
 }
 
 
-// ===== Flashcards =====
+// ===== Flashcards (visible label: Study) =====
 const FC = { score:0, total:0, current:null };
+
+// Unbiased Fisher-Yates. Always returns a NEW array; the input is never mutated, so
+// DATA arrays stay untouched. Replaces the old sort(() => Math.random() - 0.5), which
+// measurably favoured earlier answer positions.
+function fyShuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+
+// Normalised text key used to detect genuinely duplicated work titles and quotes.
+const fcKey = s => (s || '')
+  .normalize('NFKC')
+  .replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
+  .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+
+// Name tokens used to detect a biography sentence that gives the answer away.
+// Handles "Pythagoras of Samos" (head = Pythagoras), parenthetical clarifications,
+// multi-part names and mononyms. Tokens shorter than 3 characters are ignored so
+// particles cannot cause false rejections.
+function fcNameTokens(name) {
+  const base = (name || '').replace(/\([^)]*\)/g, ' ').replace(/\s+/g, ' ').trim();
+  const head = base.split(/\s+of\s+/i)[0].trim();
+  const parts = head.split(/[\s.,'-]+/).filter(w => w.length > 2);
+  const toks = new Set();
+  if (base.length > 2) toks.add(base.toLowerCase());
+  if (head.length > 2) toks.add(head.toLowerCase());
+  if (parts.length) toks.add(parts[parts.length - 1].toLowerCase());
+  return [...toks];
+}
+const fcEsc = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+function fcLeaks(sentence, name) {
+  const s = (sentence || '').toLowerCase();
+  return fcNameTokens(name).some(t => new RegExp('\\b' + fcEsc(t) + '\\b').test(s));
+}
+
+// ---- Pools, computed once. Building them up front means card generation is a single
+// pick with no retry loop and no chance of failing to find a valid card. ----
+
+// A sentence split on ". " can begin mid-parenthesis (bios contain "c. 570-495 BCE"),
+// so reject fragments that start lower-case or with a digit, or that close a bracket
+// they never opened. Without this the leak-avoidance fallback would surface them.
+const fcWellFormed = s => /^[A-Z"“(]/.test((s || '').trim())
+  && (s.split(')').length - 1) <= (s.split('(').length - 1);
+
+// Doctrine: the first qualifying biography sentence that is well formed and does NOT
+// name the philosopher. Preference order keeps the previous behaviour (2nd sentence,
+// then 1st, then later ones).
+const FC_DOCTRINE = (() => {
+  const out = [];
+  DATA.philosophers.forEach(p => {
+    if (!p.bio || p.bio.length <= 120) return;
+    const sents = p.bio.split(/(?<=[.!?])\s+/).filter(s => s.length > 40);
+    if (!sents.length) return;
+    const order = [];
+    if (sents[1]) order.push(sents[1]);
+    if (sents[0]) order.push(sents[0]);
+    sents.forEach((s, i) => { if (i > 1) order.push(s); });
+    const clean = order.find(s => fcWellFormed(s) && !fcLeaks(s, p.name));
+    if (clean) out.push({ name: p.name, prompt: clean });
+  });
+  return out;
+})();
+
+// Works: drop any title claimed by more than one philosopher, so every card has exactly
+// one defensible answer. The underlying works data is not modified.
+const FC_WORKS = (() => {
+  const owners = new Map();
+  DATA.philosophers.forEach(p => (p.works || []).forEach(w => {
+    const k = fcKey(w);
+    if (!k) return;
+    if (!owners.has(k)) owners.set(k, new Set());
+    owners.get(k).add(p.name);
+  }));
+  const out = [];
+  DATA.philosophers.forEach(p => (p.works || []).forEach(w => {
+    const k = fcKey(w);
+    if (k && owners.get(k).size === 1) out.push({ name: p.name, work: w });
+  }));
+  return out;
+})();
+
+// Quotes: drop any quote text attributed to more than one philosopher.
+const FC_QUOTES = (() => {
+  const owners = new Map();
+  (DATA.quotes || []).forEach(q => {
+    if (!q.philosopher) return;
+    const k = fcKey(q.text);
+    if (!owners.has(k)) owners.set(k, new Set());
+    owners.get(k).add(q.philosopher);
+  });
+  return (DATA.quotes || []).filter(q => q.philosopher && owners.get(fcKey(q.text)).size === 1);
+})();
+
+// Influence: one card per directed edge.
+const FC_INFLUENCE = (() => {
+  const out = [];
+  DATA.philosophers.forEach(p => (p.influenced || []).forEach(t => {
+    if (byName[t] != null) out.push({ name: p.name, target: t });
+  }));
+  return out;
+})();
+
+// Distractor selection. Prefers philosophers who share the answer's tradition AND era,
+// then tradition, then era, then anyone else. `exclude` carries every name that would
+// also be a defensible answer for this card, so a distractor can never be correct.
+function fcDistractors(answer, exclude, n) {
+  n = n || 3;
+  const ex = new Set(exclude || []);
+  ex.add(answer);
+  const a = byName[answer] != null ? DATA.philosophers[byName[answer]] : null;
+  const pool = DATA.philosophers.filter(x => !ex.has(x.name));
+  const tiers = a
+    ? [ pool.filter(x => x.tradition === a.tradition && x.era === a.era),
+        pool.filter(x => x.tradition === a.tradition),
+        pool.filter(x => x.era === a.era),
+        pool ]
+    : [ pool ];
+  const out = [], seen = new Set();
+  for (const tier of tiers) {
+    for (const x of fyShuffle(tier)) {
+      if (out.length >= n) break;
+      if (seen.has(x.name)) continue;
+      seen.add(x.name);
+      out.push(x.name);
+    }
+    if (out.length >= n) break;
+  }
+  return out;
+}
+const fcPick = arr => arr[Math.floor(Math.random() * arr.length)];
+
 function newFlashcard() {
   const mode = $('#fc-mode').value;
   const wrap = $('#fc-wrap');
   FC.current = null;
-  const sample = (arr, n) => { const c = arr.slice(); const out=[]; for (let i=0;i<n && c.length;i++){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
 
-  if (mode==='doctrine') {
-    const candidates = DATA.philosophers.filter(p => p.bio && p.bio.length>120);
-    const p = candidates[Math.floor(Math.random()*candidates.length)];
-    // Pull the 2nd sentence (key-idea heavy) or first.
-    const sents = p.bio.split(/(?<=[.!?])\s+/).filter(s=>s.length>40);
-    const prompt = sents[1] || sents[0];
-    const pool = [p.name, ...sample(candidates.filter(x=>x.name!==p.name).map(x=>x.name), 3)];
-    pool.sort(()=>Math.random()-0.5);
-    FC.current = { answer: p.name };
-    wrap.innerHTML = renderFC({q:'Whose doctrine is this?', prompt, options:pool});
-  } else if (mode==='works') {
-    const candidates = DATA.philosophers.filter(p => (p.works||[]).length);
-    const p = candidates[Math.floor(Math.random()*candidates.length)];
-    const work = p.works[Math.floor(Math.random()*p.works.length)];
-    const pool = [p.name, ...sample(candidates.filter(x=>x.name!==p.name).map(x=>x.name), 3)];
-    pool.sort(()=>Math.random()-0.5);
-    FC.current = { answer: p.name };
-    wrap.innerHTML = renderFC({q:'Who wrote this work?', prompt: work, options: pool});
-  } else if (mode==='quote') {
-    const candidates = DATA.quotes.filter(q => q.philosopher);
-    const q = candidates[Math.floor(Math.random()*candidates.length)];
-    const pool = [q.philosopher, ...sample(DATA.philosophers.filter(x=>x.name!==q.philosopher).map(x=>x.name), 3)];
-    pool.sort(()=>Math.random()-0.5);
-    FC.current = { answer: q.philosopher };
-    wrap.innerHTML = renderFC({q:'Who said this?', prompt: '"'+q.text+'"', options: pool});
-  } else if (mode==='influence') {
-    const candidates = DATA.philosophers.filter(p => (p.influenced||[]).length);
-    const p = candidates[Math.floor(Math.random()*candidates.length)];
-    const target = p.influenced[Math.floor(Math.random()*p.influenced.length)];
-    const distractors = sample(DATA.philosophers.filter(x => x.name!==target && x.name!==p.name && !(p.influenced||[]).includes(x.name)).map(x=>x.name), 3);
-    const pool = [target, ...distractors]; pool.sort(()=>Math.random()-0.5);
-    FC.current = { answer: target };
-    wrap.innerHTML = renderFC({q:'Whom did they influence?', prompt: p.name, options: pool});
+  let q, prompt, answer, exclude = [];
+  if (mode === 'works') {
+    const c = fcPick(FC_WORKS);
+    q = 'Who wrote this work?'; prompt = c.work; answer = c.name;
+  } else if (mode === 'quote') {
+    const c = fcPick(FC_QUOTES);
+    q = 'Who said this?'; prompt = '"' + c.text + '"'; answer = c.philosopher;
+  } else if (mode === 'influence') {
+    const c = fcPick(FC_INFLUENCE);
+    const p = DATA.philosophers[byName[c.name]];
+    q = 'Whom did they influence?'; prompt = c.name; answer = c.target;
+    // Every other philosopher this thinker influenced is also a true answer, so none of
+    // them may appear as a distractor. The subject is excluded too.
+    exclude = (p.influenced || []).concat([c.name]);
+  } else {
+    const c = fcPick(FC_DOCTRINE);
+    q = 'Whose doctrine is this?'; prompt = c.prompt; answer = c.name;
   }
+  FC.current = { answer, mode };
+  const options = fyShuffle([answer].concat(fcDistractors(answer, exclude)));
+  wrap.innerHTML = renderFC({ q, prompt, options });
+
   let answered = false;
   const opts = wrap.querySelectorAll('.opt');
   opts.forEach(el => el.addEventListener('click', () => {
@@ -1297,15 +1431,22 @@ function newFlashcard() {
     }
     const reveal = document.createElement('div');
     reveal.className = 'fc-reveal';
-    reveal.innerHTML = `<span class="auto-link" data-p="${esc(FC.current.answer)}">${esc(FC.current.answer)}</span> — click for biography.`;
+    reveal.innerHTML = `Answer: <span class="auto-link" data-p="${esc(FC.current.answer)}">${esc(FC.current.answer)}</span>. Click the name for the biography.`;
     wrap.querySelector('.fc-card').appendChild(reveal);
     const s = document.createElement('div'); s.className='fc-score';
     s.textContent = `Score: ${FC.score}/${FC.total} (${Math.round(FC.score/FC.total*100)}%)`;
     wrap.querySelector('.fc-card').appendChild(s);
-    const next = document.createElement('button'); next.className='print-btn'; next.style.marginTop='14px'; next.textContent='Next →';
+    const next = document.createElement('button');
+    next.className = 'print-btn fc-next';
+    next.style.marginTop = '14px';
+    next.textContent = 'Next →';
+    next.setAttribute('aria-label', 'Next card');
     next.addEventListener('click', newFlashcard);
     wrap.querySelector('.fc-card').appendChild(next);
     bindAutoLinks(wrap);
+    // The answered option is now disabled, which would drop focus to <body>. Send it to
+    // Next so a keyboard user keeps their place and can continue with Enter.
+    next.focus({ preventScroll: true });
   }));
 }
 function renderFC({q, prompt, options}) {
