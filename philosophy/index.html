@@ -57,30 +57,58 @@ nav button {
 }
 nav button:hover { color:var(--accent); border-color:var(--gold-soft); }
 nav button.active { color:#0d0a07; background:linear-gradient(180deg, var(--accent), var(--accent-deep)); border-color:var(--accent); font-weight:bold; }
-main { padding:34px 28px 56px; max-width:1400px; margin:0 auto; }
+main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
 .tab { display:none; }
 .tab.active { display:block; }
-/* ===== Home: a single welcome page built from the seven branches ===== */
+/* ===== Home: compact branch portals ===== */
 #home { max-width:1120px; margin:0 auto; }
-.home-welcome {
-  text-align:center; color:var(--muted); font-style:italic;
-  font-size:17px; letter-spacing:1.5px; margin:6px 0 40px;
-}
-#branches-grid { gap:22px; }
+#branches-grid { gap:14px; }
 .branch-card {
-  display:flex; flex-direction:column; align-items:flex-start; gap:10px;
-  width:100%; text-align:left; font-family:inherit;
+  position:relative; overflow:hidden;
+  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
+  min-height:140px; text-align:left; font-family:inherit;
   background:linear-gradient(180deg, var(--panel), var(--panel2));
-  border:1px solid var(--line); border-radius:14px;
-  padding:28px 30px 26px; cursor:pointer;
+  border:1px solid var(--line); border-radius:12px;
+  padding:16px 18px 14px; cursor:pointer;
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
+/* thin accent line along the top edge */
+.branch-card::before {
+  content:''; position:absolute; top:0; left:0; right:0; height:2px;
+  background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:0.35; transition:opacity .2s ease;
+}
+.branch-card .branch-head { display:flex; align-items:center; gap:9px; }
+.branch-card .branch-mark { color:var(--accent); font-size:17px; opacity:0.5; line-height:1; transition:opacity .2s ease; }
 .branch-card .branch-name {
-  color:var(--accent); font-size:22px; letter-spacing:2px;
+  color:var(--accent); font-size:17px; letter-spacing:1.4px;
   font-variant:small-caps; line-height:1.2;
 }
-.branch-card .branch-desc { color:var(--ink); font-size:14.5px; line-height:1.7; opacity:0.88; }
-.branch-card .tags { margin-top:4px; }
+.branch-card .branch-q { color:var(--muted); font-size:13.5px; line-height:1.5; }
+.branch-card .branch-go {
+  margin-top:auto; align-self:flex-end; color:var(--accent);
+  font-size:16px; opacity:0.35; transition:transform .2s ease, opacity .2s ease;
+}
+.branch-card:hover {
+  border-color:var(--gold-soft); transform:translateY(-2px);
+  box-shadow:0 8px 22px rgba(0,0,0,0.26);
+  background:linear-gradient(180deg, var(--panel2), var(--panel));
+}
+.branch-card:hover::before { opacity:0.75; }
+.branch-card:hover .branch-mark { opacity:0.85; }
+.branch-card:hover .branch-go { transform:translateX(4px); opacity:0.9; }
 .branch-card:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+
+/* secondary utility row, deliberately quieter than the branch portals */
+.explore-row { display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin-top:22px; }
+.explore-btn {
+  background:transparent; border:1px solid var(--line); color:var(--muted);
+  font-family:inherit; font-size:12px; letter-spacing:1.4px; text-transform:uppercase;
+  padding:8px 16px; border-radius:14px / 50%; cursor:pointer;
+  transition:color .2s ease, border-color .2s ease;
+}
+.explore-btn:hover { color:var(--accent); border-color:var(--gold-soft); }
+.explore-btn:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 h2 {
   color:var(--accent); font-weight:normal; letter-spacing:3px; font-variant:small-caps;
   border-bottom:none; padding-bottom:14px; position:relative; font-size:24px; margin-top:0;
@@ -102,7 +130,9 @@ main p { line-height:1.7; }
   display:flex; flex-wrap:wrap; justify-content:center;
   grid-template-columns:none;
 }
-.grid-branches > .branch-card { flex:1 1 min(320px, 100%); max-width:440px; }
+/* flex-shrink:0 so a fifth card cannot squeeze onto a row below its basis; this is
+   what holds the four-then-three arrangement without hardcoding any branch. */
+.grid-branches > .branch-card { flex:1 0 min(220px, 100%); max-width:270px; }
 .grid-schools { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
 .hover-card { cursor:pointer; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }
 .hover-card:hover { border-color:var(--gold-soft); transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.28), 0 0 0 1px var(--gold-faint); background:linear-gradient(180deg, var(--panel2), var(--panel)); }
@@ -362,8 +392,13 @@ ul.clean li { margin:6px 0; }
 <main>
 
 <section id="home" class="tab active">
-  <p class="home-welcome">Begin with a question.</p>
   <div class="grid grid-branches" id="branches-grid"></div>
+  <div class="explore-row">
+    <button class="explore-btn" data-go="graph">Influence Map</button>
+    <button class="explore-btn" data-go="paths">Reading Paths</button>
+    <button class="explore-btn" data-go="tables">Compare Ideas</button>
+    <button class="explore-btn" id="surprise-me">Surprise Me</button>
+  </div>
 </section>
 
 <section id="library" class="tab">
@@ -694,16 +729,61 @@ function bindAutoLinks(root) {
   root.querySelectorAll('.gloss-link').forEach(el => el.addEventListener('click', () => linkT(el.dataset.g)));
 }
 
+// ===== Home explore row =====
+// Routes into the existing Resources panels; Surprise Me reuses existing modals and
+// Library panels only, so it can never land on content that has no view.
+function bindExploreRow() {
+  $$('.explore-btn[data-go]').forEach(el => {
+    el.addEventListener('click', () => { location.hash = '#/resources/' + el.dataset.go; });
+  });
+  const pick = arr => arr[Math.floor(Math.random()*arr.length)];
+  $('#surprise-me').addEventListener('click', () => {
+    const kinds = [];
+    if (DATA.philosophers.length) kinds.push('philosopher');
+    if (DATA.branches.length) kinds.push('branch');
+    if (DATA.glossary.length) kinds.push('term');
+    if (DATA.quotes.filter(q=>q.philosopher).length) kinds.push('quote');
+    if (DATA.excerpts.length) kinds.push('excerpt');
+    if (!kinds.length) return;
+    const kind = pick(kinds);
+    if (kind==='philosopher') linkP(pick(DATA.philosophers).name);
+    else if (kind==='branch') linkB(pick(DATA.branches).name);
+    else if (kind==='term') linkT(pick(DATA.glossary).term);
+    else if (kind==='quote') {
+      const q = pick(DATA.quotes.filter(x=>x.philosopher));
+      location.hash = '#/library/quotes';
+      setTimeout(() => { $('#quote-search').value = q.philosopher; renderQuotes(); }, 0);
+    } else {
+      const e = pick(DATA.excerpts);
+      location.hash = '#/library/excerpts';
+      setTimeout(() => { $('#excerpt-search').value = e.who; renderExcerpts(); }, 0);
+    }
+  });
+}
+
 // ===== Branches =====
+// Marks are keyed by position, not by branch name, so the grid stays card-count and
+// name agnostic. Extra branches simply cycle through the set.
+const BRANCH_MARKS = ['𓊽','𓂀','𓋹','𓏛','𓎟','𓉐','𓁐'];
+// The shortest question a branch already carries is its punchiest. Selected at render
+// time so no branch data has to change.
+function shortestQuestion(b) {
+  const qs = (b.questions||[]).filter(Boolean);
+  if (!qs.length) return '';
+  return qs.reduce((a,c) => c.length < a.length ? c : a);
+}
 function renderBranches() {
   $('#branches-grid').innerHTML = DATA.branches.map((b,i) => `
-    <button class="branch-card hover-card" data-i="${i}">
-      <span class="branch-name">${esc(b.name)}</span>
-      <span class="branch-desc">${esc(b.desc)}</span>
-      <span class="tags">${b.concepts.slice(0,3).map(c => `<span class="tag">${esc(c.term)}</span>`).join('')}</span>
+    <button class="branch-card" data-i="${i}">
+      <span class="branch-head">
+        <span class="branch-mark" aria-hidden="true">${BRANCH_MARKS[i % BRANCH_MARKS.length]}</span>
+        <span class="branch-name">${esc(b.name)}</span>
+      </span>
+      <span class="branch-q">${esc(shortestQuestion(b))}</span>
+      <span class="branch-go" aria-hidden="true">&#8594;</span>
     </button>
   `).join('');
-  $$('#branches-grid .hover-card').forEach(el => el.addEventListener('click', () => linkB(DATA.branches[+el.dataset.i].name)));
+  $$('#branches-grid .branch-card').forEach(el => el.addEventListener('click', () => linkB(DATA.branches[+el.dataset.i].name)));
 }
 function showBranch(i) {
   const b = DATA.branches[i];
@@ -1366,6 +1446,7 @@ $('#excerpt-search').addEventListener('input', renderExcerpts);
 
 // Initial render
 renderBranches();
+bindExploreRow();
 populateFilters();
 renderPhilosophers();
 renderSchools();
