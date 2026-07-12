@@ -195,13 +195,15 @@ main p { line-height:1.7; }
 .resource-section a { color:var(--accent); text-decoration:none; transition:color .2s ease; }
 .resource-section a:hover { color:var(--ink); text-decoration:underline; text-underline-offset:3px; }
 /* ===== Resources: area buttons ===== */
-.res-lede { color:var(--muted); font-style:italic; font-size:14px; margin:0 0 20px; }
 /* max-width holds the grid at four columns on wide desktops (3 rows of 4); it falls to
-   two columns at medium widths and one on narrow phones. */
+   two columns at medium widths and one on narrow phones. The small top margin replaces
+   the breathing room the removed heading used to provide. */
 .res-grid {
   display:grid; grid-template-columns:repeat(auto-fit, minmax(min(230px,100%), 1fr));
-  gap:14px; max-width:1000px; margin:0 auto;
+  gap:14px; max-width:1000px; margin:14px auto 0;
 }
+/* Same breathing room now that the Study heading and description are gone. */
+#flashcards .filters { margin-top:14px; }
 .res-card {
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
   min-height:104px; padding:16px 16px 14px; text-align:center; font-family:inherit; cursor:pointer;
@@ -392,7 +394,7 @@ ul.clean li { margin:6px 0; }
 </header>
 <nav id="nav">
   <button data-tab="explore">Explore</button>
-  <button data-tab="flashcards">Flashcards</button>
+  <button data-tab="flashcards">Study</button>
   <button data-tab="resources">Resources</button>
 </nav>
 <main>
@@ -484,8 +486,6 @@ ul.clean li { margin:6px 0; }
 </section>
 
 <section id="flashcards" class="tab">
-  <h2>Flashcards</h2>
-  <p>Quiz yourself. Three modes: identify the philosopher from their doctrine; match doctrine to philosopher; identify influence relationships.</p>
   <div class="filters">
     <select id="fc-mode">
       <option value="doctrine">Mode: Whose doctrine?</option>
@@ -500,8 +500,6 @@ ul.clean li { margin:6px 0; }
 
 <section id="resources" class="tab">
   <div id="respanel-hub" class="lib-panel active">
-    <h2>External Resources</h2>
-    <p class="res-lede">Select an area to explore resources.</p>
     <div id="res-grid" class="res-grid"></div>
     <div id="res-vt-row" class="res-vt-row"></div>
     <p class="res-attrib">Resource collection compiled by Mercedes Corredor, Virginia Tech.</p>
