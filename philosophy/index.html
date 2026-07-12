@@ -141,6 +141,21 @@ main p { line-height:1.7; }
 .hover-card { cursor:pointer; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }
 .hover-card:hover { border-color:var(--gold-soft); transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.28), 0 0 0 1px var(--gold-faint); background:linear-gradient(180deg, var(--panel2), var(--panel)); }
 .hover-card h3 { margin-top:0; color:var(--accent); }
+/* School and glossary cards are real links to their own modal routes, so they are
+   reachable with Tab, open with Enter, and can be opened in a new tab. These rules
+   strip the default anchor look; the card styling below supplies the rest. */
+a.hover-card, a.gloss-card { display:block; color:inherit; text-decoration:none; }
+a.hover-card:focus-visible, a.gloss-card:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+/* A screen-reader-only label. Used where a visible field label would clutter the
+   compact filter rows but the control still needs a real accessible name. */
+.sr-only {
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); clip-path:inset(50%); white-space:nowrap; border:0;
+}
+/* Shown in place of a results grid when a search or filter matches nothing, so the
+   area never goes silently blank. */
+.empty-state { grid-column:1 / -1; margin:0; padding:28px 6px; text-align:center; color:var(--muted); font-style:italic; }
+.result-count { color:var(--muted); font-size:13px; margin-left:auto; }
 .tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
 .tag { background:var(--panel2); color:var(--muted); padding:4px 11px; border-radius:14px; font-size:12px; border:1px solid var(--line); transition:all .2s ease; }
 .tag.era { border-color:var(--warm); color:var(--warm); }
@@ -307,14 +322,28 @@ ul.clean li { margin:6px 0; }
 .excerpt .src { margin-top:12px; color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; }
 
 /* Tables */
+/* Each comparison table gets its own horizontal scroller. Four columns cannot shrink
+   below about 430px without becoming unreadable, so on a 360px phone the table used to
+   push the whole document sideways. Now only this wrapper scrolls. renderTables makes
+   the wrapper focusable and gives it a region role only when it actually overflows, so
+   desktop gains no phantom tab stops. */
+.table-wrap { overflow-x:auto; -webkit-overflow-scrolling:touch; margin-bottom:22px; }
+.table-wrap:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:6px; }
+.table-wrap > .ct-table { margin-bottom:0; }
 .ct-table { width:100%; border-collapse:collapse; background:var(--panel); border:1px solid var(--line); border-radius:6px; overflow:hidden; margin-bottom:22px; font-size:13px; }
 .ct-table caption { text-align:left; padding:12px 16px; color:var(--accent); font-size:16px; border-bottom:1px solid var(--line); background:var(--panel2); }
 .ct-table caption .desc { display:block; color:var(--muted); font-size:12px; font-style:italic; font-weight:normal; margin-top:4px; }
 .ct-table th { background:var(--panel2); color:var(--warm); text-transform:uppercase; letter-spacing:0.5px; font-size:11px; padding:8px 12px; text-align:left; border-bottom:1px solid var(--line); }
 .ct-table td { padding:10px 12px; border-bottom:1px solid var(--line); vertical-align:top; color:var(--ink); }
 .ct-table tr:last-child td { border-bottom:none; }
-.ct-table td:first-child { color:var(--accent); font-weight:bold; cursor:pointer; }
-.ct-table td:first-child:hover { color:var(--ink); }
+/* The first column is emphasised because it names the subject of the row, whether or
+   not that subject is a philosopher we hold a record for. The clickable treatment
+   (accent colour, pointer, hover) is reserved for .who, which renderTables adds only
+   when the name resolves. Nine rows name a group or a figure with no record; they stay
+   plain so nothing looks like a link that leads nowhere. */
+.ct-table td:first-child { font-weight:bold; }
+.ct-table td.who { color:var(--accent); cursor:pointer; }
+.ct-table td.who:hover { color:var(--ink); }
 
 /* Flashcards */
 .fc-wrap { display:flex; flex-direction:column; align-items:center; padding:20px; }
@@ -379,6 +408,9 @@ ul.clean li { margin:6px 0; }
   .card, .trail, .excerpt, .ct-table, .gloss-card, .phil-card, .fc-card {
     background:#fff !important; border:1px solid #bbb; page-break-inside:avoid;
   }
+  /* On paper there is no scrolling, so the wrapper must not clip the columns it hides
+     off the right edge on a phone. */
+  .table-wrap { overflow:visible !important; }
   /* The answered states use light-on-dark colours that would vanish on paper. */
   .fc-card .opt { background:#fff !important; color:#000; border-color:#bbb; opacity:1; }
   .fc-card .opt.correct, .fc-card .opt.wrong { color:#000; border-color:#000; }
@@ -416,7 +448,7 @@ ul.clean li { margin:6px 0; }
 </section>
 
 <section id="explore" class="tab">
-  <nav class="lib-nav" id="explore-nav">
+  <nav class="lib-nav" id="explore-nav" aria-label="Explore destinations">
     <button data-ex="philosophers" class="active">𓁹 Philosophers</button>
     <button data-ex="map">𓂀 Influence Map</button>
     <button data-ex="schools">𓉐 Schools</button>
@@ -426,19 +458,26 @@ ul.clean li { margin:6px 0; }
 
   <div id="expanel-philosophers" class="lib-panel active">
     <div class="filters">
+      <label class="sr-only" for="phil-search">Search philosophers by name</label>
       <input type="text" id="phil-search" placeholder="Search by name… (press /)">
+      <label class="sr-only" for="filter-tradition">Filter philosophers by tradition</label>
       <select id="filter-tradition"><option value="">All traditions</option></select>
+      <label class="sr-only" for="filter-era">Filter philosophers by era</label>
       <select id="filter-era"><option value="">All eras</option></select>
+      <label class="sr-only" for="filter-region">Filter philosophers by region</label>
       <select id="filter-region"><option value="">All regions</option></select>
+      <label class="sr-only" for="filter-school">Filter philosophers by school</label>
       <select id="filter-school"><option value="">All schools</option></select>
+      <label class="sr-only" for="filter-branch">Filter philosophers by branch</label>
       <select id="filter-branch"><option value="">All branches</option></select>
+      <label class="sr-only" for="sort-by">Sort philosophers</label>
       <select id="sort-by">
         <option value="birth">Sort: chronological</option>
         <option value="name">Sort: A→Z</option>
         <option value="tradition">Sort: tradition</option>
         <option value="era">Sort: era</option>
       </select>
-      <span id="phil-count" style="color:var(--muted);font-size:13px;margin-left:auto"></span>
+      <span id="phil-count" class="result-count" aria-live="polite"></span>
     </div>
     <div class="grid phil-grid" id="phil-grid" tabindex="0"></div>
   </div>
@@ -446,10 +485,12 @@ ul.clean li { margin:6px 0; }
   <div id="respanel-graph" class="lib-panel">
     <p>A network of philosophical influence. Drag nodes, zoom, click a node to open its biography.</p>
     <div class="filters">
+      <label class="sr-only" for="graph-scope">Choose how many philosophers the map shows</label>
       <select id="graph-scope">
         <option value="major">Most connected</option>
         <option value="all">All philosophers</option>
       </select>
+      <label class="sr-only" for="graph-filter-tradition">Filter the map by tradition</label>
       <select id="graph-filter-tradition"><option value="">All traditions</option></select>
       <label class="graph-toggle"><input type="checkbox" id="graph-isolates"> Include unconnected philosophers</label>
       <button class="print-btn" id="graph-fit">Fit view</button>
@@ -462,8 +503,11 @@ ul.clean li { margin:6px 0; }
   <div id="expanel-schools" class="lib-panel">
     <p>First-class pages for major schools. Click a school for description, era, tradition, and full member list.</p>
     <div class="filters">
+      <label class="sr-only" for="school-search">Search schools by name or description</label>
       <input type="text" id="school-search" placeholder="Search schools…">
+      <label class="sr-only" for="filter-school-tradition">Filter schools by tradition</label>
       <select id="filter-school-tradition"><option value="">All traditions</option></select>
+      <span id="school-count" class="result-count" aria-live="polite"></span>
     </div>
     <div class="grid grid-schools" id="schools-grid"></div>
   </div>
@@ -471,25 +515,30 @@ ul.clean li { margin:6px 0; }
   <div id="expanel-glossary" class="lib-panel">
     <p>Technical terms from across traditions. These auto-link inside philosopher bios; click any card for the full entry.</p>
     <div class="filters">
+      <label class="sr-only" for="gloss-search">Search glossary terms and definitions</label>
       <input type="text" id="gloss-search" placeholder="Search terms…">
+      <label class="sr-only" for="gloss-trad">Filter glossary terms by tradition</label>
       <select id="gloss-trad"><option value="">All traditions</option></select>
+      <span id="gloss-count" class="result-count" aria-live="polite"></span>
     </div>
     <div class="grid gloss-grid" id="gloss-grid"></div>
   </div>
 
   <div id="expanel-ideas" class="lib-panel">
-    <nav class="idea-switch" id="idea-switch">
-      <button data-iv="trails" class="active">Thematic Trails</button>
-      <button data-iv="compare">Compare Ideas</button>
+    <nav class="idea-switch" id="idea-switch" role="tablist" aria-label="Ideas views">
+      <button data-iv="trails" class="active" id="ideatab-trails" role="tab"
+              aria-selected="true" aria-controls="ideaview-trails">Thematic Trails</button>
+      <button data-iv="compare" id="ideatab-compare" role="tab"
+              aria-selected="false" aria-controls="ideaview-compare" tabindex="-1">Compare Ideas</button>
     </nav>
 
-    <div id="ideaview-trails" class="lib-panel active">
+    <div id="ideaview-trails" class="lib-panel active" role="tabpanel" aria-labelledby="ideatab-trails">
       <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
       <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
       <div id="trails-body"></div>
     </div>
 
-    <div id="ideaview-compare" class="lib-panel">
+    <div id="ideaview-compare" class="lib-panel" role="tabpanel" aria-labelledby="ideatab-compare">
       <h2>Compare Ideas <button class="print-btn" onclick="window.print()">Print</button></h2>
       <p>Side-by-side tables of positions across philosophers on major questions.</p>
       <div id="tables-body"></div>
@@ -530,6 +579,8 @@ const $$ = s => Array.from(document.querySelectorAll(s));
 
 const esc = s => (s==null?'':String(s)).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const yr = y => y==null ? '?' : (y<0 ? Math.abs(y)+' BCE' : y+' CE');
+// Result counts read as prose, so they have to agree in number: "1 school", "57 schools".
+const plural = (n, word) => n + ' ' + word + (n===1 ? '' : 's');
 const cFmt = c => c==null ? '?' : (c<0 ? Math.abs(c)+'c BCE' : c+'c CE');
 
 const byName = {};
@@ -560,22 +611,53 @@ const NAV = { tab:'home', ex:'philosophers', idea:'trails' };
 function setExPanel(name) {
   if (!EX_PANELS.includes(name)) name = 'philosophers';
   NAV.ex = name;
-  $$('#explore-nav button').forEach(b => b.classList.toggle('active', b.dataset.ex===name));
+  // The subnav buttons are route controls, not tabs, so the destination the user is
+  // currently on is announced with aria-current. Setting it here means a cold deep link
+  // and the browser back button both land with the right button marked.
+  $$('#explore-nav button').forEach(b => {
+    const on = b.dataset.ex===name;
+    b.classList.toggle('active', on);
+    if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
+  });
   EX_PANELS.forEach(p => {
     const el = document.getElementById(EX_PANEL_ID[p]);
     if (el) el.classList.toggle('active', p===name);
   });
   if (name==='map' && !GRAPH.drawn) renderGraph();
 }
+// Trails and Compare are two views of one route family, so they are a real tab pair:
+// aria-selected carries the state and only the selected tab is in the tab order.
 function setIdeaView(v) {
   if (!IDEA_VIEWS.includes(v)) v = 'trails';
   NAV.idea = v;
-  $$('#idea-switch button').forEach(b => b.classList.toggle('active', b.dataset.iv===v));
+  $$('#idea-switch button').forEach(b => {
+    const on = b.dataset.iv===v;
+    b.classList.toggle('active', on);
+    b.setAttribute('aria-selected', on ? 'true' : 'false');
+    b.tabIndex = on ? 0 : -1;
+  });
   IDEA_VIEWS.forEach(x => {
     const el = document.getElementById('ideaview-' + x);
     if (el) el.classList.toggle('active', x===v);
   });
+  // A hidden panel measures zero, so the tables can only be tested for overflow once
+  // Compare is on screen.
+  updateTableWraps();
 }
+// Roving arrow-key movement between the two Ideas tabs, as the tab pattern expects.
+$('#idea-switch').addEventListener('keydown', e => {
+  const keys = { ArrowLeft:-1, ArrowRight:1, Home:'first', End:'last' };
+  if (!(e.key in keys)) return;
+  const i = IDEA_VIEWS.indexOf(NAV.idea);
+  const step = keys[e.key];
+  const next = step==='first' ? 0
+             : step==='last'  ? IDEA_VIEWS.length-1
+             : (i + step + IDEA_VIEWS.length) % IDEA_VIEWS.length;
+  e.preventDefault();
+  location.hash = '#/explore/ideas/' + IDEA_VIEWS[next];
+  const btn = $('#idea-switch button[data-iv="' + IDEA_VIEWS[next] + '"]');
+  if (btn) btn.focus();
+});
 function setTab(name) {
   if (!KNOWN_TABS.includes(name)) name = 'home';
   NAV.tab = name;
@@ -848,8 +930,12 @@ function renderPhilosophers() {
     era:(a,b)=>((a.era||'').localeCompare(b.era||''))||((a.birth==null?9999:a.birth)-(b.birth==null?9999:b.birth)),
   };
   filteredList.sort(sorters[sortBy]);
-  $('#phil-count').textContent = filteredList.length + ' philosophers';
+  $('#phil-count').textContent = plural(filteredList.length, 'philosopher');
   selectedIdx = 0;
+  if (!filteredList.length) {
+    $('#phil-grid').innerHTML = '<p class="empty-state">No philosophers match these filters.</p>';
+    return;
+  }
   $('#phil-grid').innerHTML = filteredList.map((p,k) => `
     <div class="phil-card" data-i="${byName[p.name]}" data-k="${k}" tabindex="-1">
       <div class="name">${esc(p.name)}</div>
@@ -954,8 +1040,16 @@ function renderSchools() {
     (!q || s.name.toLowerCase().includes(q) || (s.desc||'').toLowerCase().includes(q)) &&
     (!ft || s.tradition===ft)
   );
+  $('#school-count').textContent = plural(list.length, 'school');
+  if (!list.length) {
+    $('#schools-grid').innerHTML = '<p class="empty-state">No schools match this search.</p>';
+    return;
+  }
+  // Each card is an anchor to the school's own modal route. That is what the old click
+  // handler did by hand, so behaviour is unchanged, but the card is now reachable with
+  // Tab, opens with Enter, and can be opened in a new tab.
   $('#schools-grid').innerHTML = list.map(s => `
-    <div class="card hover-card" data-s="${esc(s.name)}">
+    <a class="card hover-card" href="#/school/${encodeURIComponent(s.name)}" aria-label="${esc(s.name)}">
       <h3>${esc(s.name)}</h3>
       <p style="margin:6px 0;color:var(--muted);font-size:13px">${esc(s.desc)}</p>
       <div class="tags">
@@ -963,9 +1057,8 @@ function renderSchools() {
         ${s.tradition?`<span class="tag tradition">${esc(s.tradition)}</span>`:''}
         <span class="tag">${s.members.length} members</span>
       </div>
-    </div>
+    </a>
   `).join('');
-  $$('#schools-grid .hover-card').forEach(el => el.addEventListener('click', () => linkS(el.dataset.s)));
 }
 function showSchool(s) {
   $('#modal-content').innerHTML = `
@@ -996,14 +1089,20 @@ function renderGlossary() {
     (!ft || g.tradition===ft)
   );
   list.sort((a,b)=>a.term.localeCompare(b.term));
+  $('#gloss-count').textContent = plural(list.length, 'term');
+  if (!list.length) {
+    $('#gloss-grid').innerHTML = '<p class="empty-state">No terms match this search.</p>';
+    return;
+  }
+  // Anchors for the same reason as the school cards: real keyboard reachability and a
+  // real route, replacing a div with a click listener.
   $('#gloss-grid').innerHTML = list.map(g => `
-    <div class="gloss-card hover-card" data-t="${esc(g.term)}">
+    <a class="gloss-card hover-card" href="#/term/${encodeURIComponent(g.term)}" aria-label="${esc(g.term)}">
       <div class="term">${esc(g.term)}</div>
       <div class="trad">${esc(g.tradition)}</div>
       <div class="def">${esc(g.def)}</div>
-    </div>
+    </a>
   `).join('');
-  $$('#gloss-grid .gloss-card').forEach(el => el.addEventListener('click', () => linkT(el.dataset.t)));
 }
 function showTerm(g) {
   // find any philosophers whose bio mentions the term
@@ -1235,19 +1334,44 @@ function renderTrails() {
 // ===== Tables =====
 function renderTables() {
   $('#tables-body').innerHTML = (DATA.tables||[]).map(t => `
+    <div class="table-wrap" data-title="${esc(t.title)}">
     <table class="ct-table">
       <caption>${esc(t.title)}<span class="desc">${esc(t.desc)}</span></caption>
       <thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>
       <tbody>
         ${t.rows.map(r=>`<tr>${r.map((c,i)=>{
-          if (i===0 && byName[c]!=null) return `<td data-name="${esc(c)}">${esc(c)}</td>`;
+          // Only a first-column value we hold a philosopher record for becomes a link.
+          // The rest (groups like "Pyrrhonists", pairs like "Nussbaum / Sen") stay plain
+          // text, so nothing looks clickable that has nowhere to go.
+          if (i===0 && byName[c]!=null) return `<td class="who" data-name="${esc(c)}">${esc(c)}</td>`;
           return `<td>${esc(c)}</td>`;
         }).join('')}</tr>`).join('')}
       </tbody>
     </table>
+    </div>
   `).join('');
   $$('#tables-body td[data-name]').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
+  updateTableWraps();
 }
+
+// A scroll container is only useful to a keyboard user, and only announceable as a
+// region, when it actually scrolls. On a phone the tables overflow and get both; on a
+// desktop they fit, so they stay out of the tab order entirely.
+function updateTableWraps() {
+  $$('#tables-body .table-wrap').forEach(w => {
+    const scrolls = w.scrollWidth > w.clientWidth + 1;
+    if (scrolls) {
+      w.setAttribute('tabindex', '0');
+      w.setAttribute('role', 'region');
+      w.setAttribute('aria-label', (w.dataset.title || 'Comparison') + ' table, scroll to see all columns');
+    } else {
+      w.removeAttribute('tabindex');
+      w.removeAttribute('role');
+      w.removeAttribute('aria-label');
+    }
+  });
+}
+window.addEventListener('resize', updateTableWraps);
 
 
 // ===== Flashcards (visible label: Study) =====
