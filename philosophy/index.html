@@ -198,24 +198,6 @@ main p { line-height:1.7; }
 }
 .lib-panel { display:none; }
 .lib-panel.active { display:block; }
-/* Two compact switches inside Explore > Philosophers: the primary view (Directory or
-   Influence Map) and, within Directory, the content being browsed. Deliberately quieter
-   than .lib-nav so the page does not read as a stack of tab bars. */
-.view-switch, .content-switch { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
-.view-switch { margin:0 0 18px; }
-.content-switch { margin:0 0 18px; }
-.view-switch button, .content-switch button {
-  background:transparent; border:1px solid var(--line); color:var(--muted);
-  font-family:inherit; cursor:pointer; border-radius:14px / 50%;
-  transition:color .2s ease, border-color .2s ease, background .2s ease;
-}
-.view-switch button { padding:7px 18px; font-size:12px; letter-spacing:1.4px; text-transform:uppercase; }
-.content-switch button { padding:5px 14px; font-size:11.5px; letter-spacing:1px; }
-.view-switch button:hover, .content-switch button:hover { color:var(--accent); border-color:var(--gold-soft); }
-.view-switch button.active, .content-switch button.active {
-  color:var(--accent); border-color:var(--gold-soft); background:var(--gold-faint);
-}
-.view-switch button:focus-visible, .content-switch button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .branch-empty { color:var(--muted); font-size:14px; line-height:1.6; margin:6px 0 0; }
 .resource-toc-cats { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin:18px 0 32px; }
 .resource-toc-cat { background:linear-gradient(180deg, var(--panel), var(--panel2)); border:1px solid var(--gold-faint); border-radius:10px; padding:16px 22px 18px; transition:border-color .25s ease, box-shadow .25s ease; }
@@ -263,14 +245,6 @@ ul.clean li { margin:6px 0; }
 .trail-step .what { color:var(--ink); font-style:italic; font-size:14px; margin-top:3px; line-height:1.55; }
 
 /* Quotes */
-.q-grid { columns:2 400px; column-gap:20px; }
-.quote { break-inside:avoid; background:var(--panel); border-left:3px solid var(--accent); padding:16px 20px; margin-bottom:16px; border-radius:0 8px 8px 0; transition:border-left-width .2s ease, padding-left .2s ease, background .25s ease; }
-.quote:hover { border-left-width:5px; padding-left:22px; background:linear-gradient(180deg, var(--panel), var(--panel2)); }
-.quote .text { color:var(--ink); font-style:italic; font-size:15px; line-height:1.65; }
-.quote .attr { color:var(--muted); font-size:12px; margin-top:10px; letter-spacing:0.3px; }
-.quote .attr a { color:var(--accent2); cursor:pointer; text-decoration:none; transition:color .2s ease; }
-.quote .attr a:hover { color:var(--accent); }
-.quote .theme { float:right; background:var(--panel2); color:var(--muted); font-size:10px; padding:2px 9px; border-radius:10px; border:1px solid var(--line); }
 
 /* Glossary */
 .gloss-grid { grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; }
@@ -352,7 +326,7 @@ ul.clean li { margin:6px 0; }
   /* Print only the tab the user is actually looking at. The previous rule forced
      every tab visible, so printing one trail also printed the whole app. */
   .tab:not(.active) { display:none !important; }
-  .card, .trail, .excerpt, .ct-table, .quote, .gloss-card, .phil-card {
+  .card, .trail, .excerpt, .ct-table, .gloss-card, .phil-card {
     background:#fff !important; border:1px solid #bbb; page-break-inside:avoid;
   }
   .trail-step::before { background:#fff; }
@@ -360,7 +334,7 @@ ul.clean li { margin:6px 0; }
   .auto-link, .gloss-link { color:#000; border-bottom:none; }
   a { color:#000; text-decoration:none; }
   .chip, .tag { background:#f0f0f0; color:#333; border-color:#bbb; }
-  .muted, .quote .theme { color:#555; }
+  .muted { color:#555; }
 }
 .print-btn { float:right; background:var(--panel2); border:1px solid var(--line); color:var(--ink); padding:6px 12px; border-radius:4px; cursor:pointer; font-family:inherit; font-size:12px; margin-top:-4px; }
 .print-btn:hover { border-color:var(--accent); color:var(--accent); }
@@ -391,74 +365,44 @@ ul.clean li { margin:6px 0; }
 <section id="explore" class="tab">
   <nav class="lib-nav" id="explore-nav">
     <button data-ex="philosophers" class="active">𓁹 Philosophers</button>
+    <button data-ex="map">𓂀 Influence Map</button>
     <button data-ex="schools">𓉐 Schools</button>
     <button data-ex="glossary">𓏛 Glossary</button>
   </nav>
 
   <div id="expanel-philosophers" class="lib-panel active">
-    <nav class="view-switch" id="phil-view-switch">
-      <button data-pv="directory" class="active">Directory</button>
-      <button data-pv="map">Influence Map</button>
-    </nav>
-
-    <div id="philview-directory" class="lib-panel active">
-      <nav class="content-switch" id="phil-content-switch">
-        <button data-cv="philosophers" class="active">Philosophers</button>
-        <button data-cv="quotes">Quotes</button>
-        <button data-cv="excerpts">Excerpts</button>
-      </nav>
-
-      <div id="content-philosophers" class="lib-panel active">
-        <div class="filters">
-          <input type="text" id="phil-search" placeholder="Search by name… (press /)">
-          <select id="filter-tradition"><option value="">All traditions</option></select>
-          <select id="filter-era"><option value="">All eras</option></select>
-          <select id="filter-region"><option value="">All regions</option></select>
-          <select id="filter-school"><option value="">All schools</option></select>
-          <select id="filter-branch"><option value="">All branches</option></select>
-          <select id="sort-by">
-            <option value="birth">Sort: chronological</option>
-            <option value="name">Sort: A→Z</option>
-            <option value="tradition">Sort: tradition</option>
-            <option value="era">Sort: era</option>
-          </select>
-          <span id="phil-count" style="color:var(--muted);font-size:13px;margin-left:auto"></span>
-        </div>
-        <div class="grid phil-grid" id="phil-grid" tabindex="0"></div>
-      </div>
-
-      <div id="content-quotes" class="lib-panel">
-        <div class="filters">
-          <input type="text" id="quote-search" placeholder="Search quotes…">
-          <select id="quote-theme"><option value="">All themes</option></select>
-        </div>
-        <div id="quotes-body" class="q-grid"></div>
-      </div>
-
-      <div id="content-excerpts" class="lib-panel">
-        <p>Short passages from canonical works. Click a philosopher's name for the full biography.</p>
-        <div class="filters">
-          <input type="text" id="excerpt-search" placeholder="Search excerpts…">
-        </div>
-        <div id="excerpts-body"></div>
-      </div>
+    <div class="filters">
+      <input type="text" id="phil-search" placeholder="Search by name… (press /)">
+      <select id="filter-tradition"><option value="">All traditions</option></select>
+      <select id="filter-era"><option value="">All eras</option></select>
+      <select id="filter-region"><option value="">All regions</option></select>
+      <select id="filter-school"><option value="">All schools</option></select>
+      <select id="filter-branch"><option value="">All branches</option></select>
+      <select id="sort-by">
+        <option value="birth">Sort: chronological</option>
+        <option value="name">Sort: A→Z</option>
+        <option value="tradition">Sort: tradition</option>
+        <option value="era">Sort: era</option>
+      </select>
+      <span id="phil-count" style="color:var(--muted);font-size:13px;margin-left:auto"></span>
     </div>
+    <div class="grid phil-grid" id="phil-grid" tabindex="0"></div>
+  </div>
 
-    <div id="respanel-graph" class="lib-panel">
-      <p>A network of philosophical influence. Drag nodes, zoom, click a node to open its biography.</p>
-      <div class="filters">
-        <select id="graph-scope">
-          <option value="major">Most connected</option>
-          <option value="all">All philosophers</option>
-        </select>
-        <select id="graph-filter-tradition"><option value="">All traditions</option></select>
-        <label class="graph-toggle"><input type="checkbox" id="graph-isolates"> Include unconnected philosophers</label>
-        <button class="print-btn" id="graph-fit">Fit view</button>
-      </div>
-      <p class="graph-status" id="graph-status"></p>
-      <div class="graph-legend" id="graph-legend"></div>
-      <div id="graph-canvas"></div>
+  <div id="respanel-graph" class="lib-panel">
+    <p>A network of philosophical influence. Drag nodes, zoom, click a node to open its biography.</p>
+    <div class="filters">
+      <select id="graph-scope">
+        <option value="major">Most connected</option>
+        <option value="all">All philosophers</option>
+      </select>
+      <select id="graph-filter-tradition"><option value="">All traditions</option></select>
+      <label class="graph-toggle"><input type="checkbox" id="graph-isolates"> Include unconnected philosophers</label>
+      <button class="print-btn" id="graph-fit">Fit view</button>
     </div>
+    <p class="graph-status" id="graph-status"></p>
+    <div class="graph-legend" id="graph-legend"></div>
+    <div id="graph-canvas"></div>
   </div>
 
   <div id="expanel-schools" class="lib-panel">
@@ -550,9 +494,11 @@ DATA.philosophers.forEach((p,i) => { byName[p.name] = i; });
 // Explore holds the philosopher collection (Directory + Influence Map + Quotes +
 // Excerpts), Schools and Glossary. Library holds the structured learning panels.
 // Resources is its own top-level tab for the external link hub.
-const EX_PANELS     = ['philosophers','schools','glossary'];
-const PHIL_VIEWS    = ['directory','map'];
-const CONTENT_VIEWS = ['philosophers','quotes','excerpts'];
+// Explore is four flat subtabs. The map keeps its historical element id so the whole
+// Phase 1 graph implementation moves without being rewritten.
+const EX_PANELS     = ['philosophers','map','schools','glossary'];
+const EX_PANEL_ID   = { philosophers:'expanel-philosophers', map:'respanel-graph',
+                        schools:'expanel-schools', glossary:'expanel-glossary' };
 const LIB_PANELS    = ['paths','compare','trails'];
 const ENTITY_ROUTES = ['philosopher','branch','school','term'];
 // Workspace was removed as a feature. It is absent from KNOWN_TABS, so '#/workspace'
@@ -562,35 +508,17 @@ const KNOWN_TABS    = ['home','explore','library','flashcards','resources'];
 
 // Live navigation state. closeModal and the '/' shortcut read this so a modal always
 // returns to the exact view it was opened from, rather than one hardcoded route.
-const NAV = { tab:'home', ex:'philosophers', pv:'directory', cv:'philosophers', lib:'paths' };
+const NAV = { tab:'home', ex:'philosophers', lib:'paths' };
 
 function setExPanel(name) {
   if (!EX_PANELS.includes(name)) name = 'philosophers';
   NAV.ex = name;
   $$('#explore-nav button').forEach(b => b.classList.toggle('active', b.dataset.ex===name));
   EX_PANELS.forEach(p => {
-    const el = document.getElementById('expanel-' + p);
+    const el = document.getElementById(EX_PANEL_ID[p]);
     if (el) el.classList.toggle('active', p===name);
   });
-}
-function setPhilView(v) {
-  if (!PHIL_VIEWS.includes(v)) v = 'directory';
-  NAV.pv = v;
-  $$('#phil-view-switch button').forEach(b => b.classList.toggle('active', b.dataset.pv===v));
-  const dir = document.getElementById('philview-directory');
-  const map = document.getElementById('respanel-graph');
-  if (dir) dir.classList.toggle('active', v==='directory');
-  if (map) map.classList.toggle('active', v==='map');
-  if (v==='map' && !GRAPH.drawn) renderGraph();
-}
-function setContentView(c) {
-  if (!CONTENT_VIEWS.includes(c)) c = 'philosophers';
-  NAV.cv = c;
-  $$('#phil-content-switch button').forEach(b => b.classList.toggle('active', b.dataset.cv===c));
-  CONTENT_VIEWS.forEach(x => {
-    const el = document.getElementById('content-' + x);
-    if (el) el.classList.toggle('active', x===c);
-  });
+  if (name==='map' && !GRAPH.drawn) renderGraph();
 }
 function setLibPanel(name) {
   if (!LIB_PANELS.includes(name)) name = 'paths';
@@ -610,56 +538,49 @@ function setTab(name) {
 }
 // The canonical hash for whatever is on screen right now.
 function currentPath() {
-  if (NAV.tab === 'explore') {
-    if (NAV.ex !== 'philosophers') return '#/explore/' + NAV.ex;
-    if (NAV.pv === 'map') return '#/explore/philosophers/map';
-    if (NAV.cv !== 'philosophers') return '#/explore/philosophers/' + NAV.cv;
-    return '#/explore/philosophers';
-  }
+  if (NAV.tab === 'explore') return '#/explore/' + NAV.ex;
   if (NAV.tab === 'library') return '#/library/' + NAV.lib;
   return '#/' + NAV.tab;
 }
-const philDirPath = () => NAV.cv==='philosophers' ? '#/explore/philosophers' : '#/explore/philosophers/' + NAV.cv;
 
 // Old routes -> canonical new routes. Everything here is normalised in the address bar
 // so a stale bookmark lands in the right place and then reads correctly.
 const ROUTE_ALIASES = {
-  'resources/graph':   'explore/philosophers/map',
+  // The map is now a flat Explore subtab.
+  'explore/philosophers/map': 'explore/map',
+  'resources/graph':   'explore/map',
+  'home/graph':        'explore/map',
+  'graph':             'explore/map',
+  // Quotes and Excerpts are no longer browsable panels; their content lives in the
+  // philosopher modal, so every old browse route lands on the philosopher directory.
+  'explore/philosophers/quotes':   'explore/philosophers',
+  'explore/philosophers/excerpts': 'explore/philosophers',
+  'library/quotes':    'explore/philosophers',
+  'library/excerpts':  'explore/philosophers',
+  'quotes':            'explore/philosophers',
+  'excerpts':          'explore/philosophers',
   'resources/trails':  'library/trails',
   'resources/paths':   'library/paths',
   'resources/tables':  'library/compare',
   'resources/hub':     'resources',
-  'home/graph':        'explore/philosophers/map',
   'home/trails':       'library/trails',
   'home/paths':        'library/paths',
   'home/tables':       'library/compare',
-  'graph':             'explore/philosophers/map',
   'trails':            'library/trails',
   'paths':             'library/paths',
   'tables':            'library/compare',
   'library/philosophers': 'explore/philosophers',
   'library/schools':      'explore/schools',
   'library/glossary':     'explore/glossary',
-  'library/quotes':       'explore/philosophers/quotes',
-  'library/excerpts':     'explore/philosophers/excerpts',
   'philosophers':      'explore/philosophers',
   'schools':           'explore/schools',
   'glossary':          'explore/glossary',
-  'quotes':            'explore/philosophers/quotes',
-  'excerpts':          'explore/philosophers/excerpts',
   'branches':          'home',
   'workspace':         'home',
 };
 
 $$('#nav > button').forEach(b => b.addEventListener('click', () => { location.hash = '#/' + b.dataset.tab; }));
 $$('#explore-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/explore/' + b.dataset.ex; }));
-$$('#phil-view-switch button').forEach(b => b.addEventListener('click', () => {
-  location.hash = b.dataset.pv==='map' ? '#/explore/philosophers/map' : philDirPath();
-}));
-$$('#phil-content-switch button').forEach(b => b.addEventListener('click', () => {
-  const c = b.dataset.cv;
-  location.hash = c==='philosophers' ? '#/explore/philosophers' : '#/explore/philosophers/' + c;
-}));
 $$('#lib-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/library/' + b.dataset.lib; }));
 
 function handleHash() {
@@ -699,12 +620,6 @@ function handleHash() {
   setTab(tab);
   if (tab === 'explore') {
     setExPanel(parts[1] || 'philosophers');
-    if (NAV.ex === 'philosophers') {
-      const third = parts[2];
-      if (third === 'map') { setContentView('philosophers'); setPhilView('map'); }
-      else if (CONTENT_VIEWS.includes(third)) { setPhilView('directory'); setContentView(third); }
-      else { setPhilView('directory'); setContentView('philosophers'); }
-    }
   } else if (tab === 'library') {
     setLibPanel(parts[1] || 'paths');
   }
@@ -748,11 +663,9 @@ document.addEventListener('keydown', e => {
     // Focus the search box belonging to the view you are actually looking at; from
     // anywhere else, go to the Explore Philosophers directory and focus its search.
     const focusIt = sel => { const el = $(sel); if (el) el.focus(); };
-    if (NAV.tab==='explore' && NAV.ex==='schools')        focusIt('#school-search');
-    else if (NAV.tab==='explore' && NAV.ex==='glossary')  focusIt('#gloss-search');
-    else if (NAV.tab==='explore' && NAV.ex==='philosophers' && NAV.pv==='directory' && NAV.cv==='quotes')   focusIt('#quote-search');
-    else if (NAV.tab==='explore' && NAV.ex==='philosophers' && NAV.pv==='directory' && NAV.cv==='excerpts') focusIt('#excerpt-search');
-    else if (NAV.tab==='explore' && NAV.ex==='philosophers' && NAV.pv==='directory') focusIt('#phil-search');
+    if (NAV.tab==='explore' && NAV.ex==='schools')            focusIt('#school-search');
+    else if (NAV.tab==='explore' && NAV.ex==='glossary')      focusIt('#gloss-search');
+    else if (NAV.tab==='explore' && NAV.ex==='philosophers')  focusIt('#phil-search');
     else { location.hash = '#/explore/philosophers'; setTimeout(()=>focusIt('#phil-search'), 0); }
   }
 });
@@ -853,7 +766,6 @@ function populateFilters() {
   const branchHasMembers = b => DATA.philosophers.some(p => (p.branches||[]).includes(b.name));
   DATA.branches.filter(branchHasMembers).forEach(b => { const o = document.createElement('option'); o.value=b.name; o.textContent=b.name; $('#filter-branch').appendChild(o); });
   fill('#filter-school-tradition', uniqSort(DATA.schools.map(s=>s.tradition)));
-  uniqSort(DATA.quotes.map(q=>q.theme)).forEach(t => { const o = document.createElement('option'); o.value=t; o.textContent=t; $('#quote-theme').appendChild(o); });
   uniqSort(DATA.glossary.map(g=>g.tradition)).forEach(t => { const o = document.createElement('option'); o.value=t; o.textContent=t; $('#gloss-trad').appendChild(o); });
   // graph tradition filter
   uniqSort(DATA.philosophers.map(p=>p.tradition)).forEach(v => { const o = document.createElement('option'); o.value=v; o.textContent=v; $('#graph-filter-tradition').appendChild(o); });
@@ -909,6 +821,36 @@ $('#phil-grid').addEventListener('keydown', e => {
   updateSelected();
 });
 
+// Quotes and Excerpts are no longer browsable panels; the philosopher modal is their
+// only home. Both standalone collections (DATA.quotes / DATA.excerpts) and the
+// philosopher-level p.excerpts array are treated as sources and reconciled at render
+// time. Nothing is written back: the dataset is left exactly as it is.
+const normText = s => (s||'')
+  .normalize('NFKC')
+  .replace(/[‘’]/g, "'").replace(/[“”]/g, '"')
+  .toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+// Merge sources, drop duplicates by normalised text, and never invent an empty section.
+function philExcerpts(p) {
+  const seen = new Set(), out = [];
+  const add = e => {
+    if (!e || !e.text) return;
+    const k = normText(e.text);
+    if (seen.has(k)) return;
+    seen.add(k); out.push(e);
+  };
+  (p.excerpts || []).forEach(add);
+  (DATA.excerpts || []).filter(e => e.who === p.name).forEach(add);
+  return out;
+}
+function philQuotes(p) {
+  const seen = new Set(), out = [];
+  (DATA.quotes || []).filter(q => q.philosopher === p.name).forEach(q => {
+    const k = normText(q.text);
+    if (seen.has(k)) return;
+    seen.add(k); out.push(q);
+  });
+  return out;
+}
 function showPhilosopher(p) {
   const bioHtml = p.bio ? autoLink(p.bio, p.name).split('\n').map(l=>`<p>${l}</p>`).join('') :
     '<p style="color:var(--muted);font-style:italic">No extended biography. See SEP link below.</p>';
@@ -917,8 +859,9 @@ function showPhilosopher(p) {
   const branches = (p.branches||[]).length ? `<div class="section-label">Branches</div><div class="chip-row">${p.branches.map(b=>`<span class="tag branch" data-b="${esc(b)}">${esc(b)}</span>`).join('')}</div>` : '';
   const infBy = (p.influencedBy||[]).length ? `<div class="section-label">Influenced By</div><div class="chip-row">${p.influencedBy.map(n=>`<span class="chip" data-name="${esc(n)}">${esc(n)}</span>`).join('')}</div>` : '';
   const infd = (p.influenced||[]).length ? `<div class="section-label">Influenced</div><div class="chip-row">${p.influenced.map(n=>`<span class="chip" data-name="${esc(n)}">${esc(n)}</span>`).join('')}</div>` : '';
-  const excerpts = (p.excerpts||[]).length ? `<div class="section-label">Primary-Text Excerpts</div>${p.excerpts.map(e=>`<div class="excerpt" style="margin:8px 0"><div><b style="color:var(--accent2)">${esc(e.work)}</b></div><div class="text">"${esc(e.text)}"</div><div class="src">${esc(e.src)}</div></div>`).join('')}` : '';
-  const myQuotes = DATA.quotes.filter(q => q.philosopher===p.name);
+  const myExcerpts = philExcerpts(p);
+  const excerpts = myExcerpts.length ? `<div class="section-label">Primary-Text Excerpts</div>${myExcerpts.map(e=>`<div class="excerpt" style="margin:8px 0"><div><b style="color:var(--accent2)">${esc(e.work)}</b></div><div class="text">"${esc(e.text)}"</div><div class="src">${esc(e.src)}</div></div>`).join('')}` : '';
+  const myQuotes = philQuotes(p);
   const quotes = myQuotes.length ? `<div class="section-label">Quotes</div>${myQuotes.map(q=>`<div style="font-style:italic;color:var(--muted);border-left:2px solid var(--accent);padding-left:10px;margin:6px 0">"${esc(q.text)}"</div>`).join('')}` : '';
 
   $('#modal-content').innerHTML = `
@@ -1199,8 +1142,8 @@ $('#graph-isolates').addEventListener('change', renderGraph);
 $('#graph-fit').addEventListener('click', fitGraph);
 // The deferred vis-network script executes after this one. If the graph panel is
 // already showing (e.g. a cold load of #/home/graph), draw it once vis arrives.
-// The map panel is nested inside Explore > Philosophers, so "active" alone is not
-// enough: it must actually be on screen, or vis would measure a zero-size canvas.
+// The map is a flat Explore subtab, but "active" alone is still not enough: it must be
+// on screen, or vis would measure a zero-size canvas while the Explore tab is hidden.
 const graphPanelOpen = () => {
   const el = document.getElementById('respanel-graph');
   return !!el && el.classList.contains('active') && el.offsetParent !== null;
@@ -1260,33 +1203,6 @@ function renderTables() {
   $$('#tables-body td[data-name]').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
 }
 
-// ===== Quotes =====
-function renderQuotes() {
-  const q = ($('#quote-search').value||'').toLowerCase();
-  const theme = $('#quote-theme').value;
-  const list = DATA.quotes.filter(x => (!q || x.text.toLowerCase().includes(q) || x.author.toLowerCase().includes(q)) && (!theme || x.theme===theme));
-  $('#quotes-body').innerHTML = list.map(x => `
-    <div class="quote">
-      <div class="text">"${esc(x.text)}"</div>
-      <div class="attr"><span class="theme">${esc(x.theme)}</span>— ${x.philosopher?`<a data-name="${esc(x.philosopher)}">${esc(x.author)}</a>`:esc(x.author)}</div>
-    </div>
-  `).join('') || '<p style="color:var(--muted)">No quotes match.</p>';
-  $$('#quotes-body a[data-name]').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
-}
-
-// ===== Excerpts =====
-function renderExcerpts() {
-  const q = ($('#excerpt-search').value||'').toLowerCase();
-  const list = (DATA.excerpts||[]).filter(e => !q || e.text.toLowerCase().includes(q) || e.who.toLowerCase().includes(q) || e.work.toLowerCase().includes(q));
-  $('#excerpts-body').innerHTML = list.map(e => `
-    <div class="excerpt">
-      <span class="who" data-name="${esc(e.who)}">${esc(e.who)}</span><span class="work">— ${esc(e.work)}</span>
-      <div class="text">"${esc(e.text)}"</div>
-      <div class="src">${esc(e.src)}</div>
-    </div>
-  `).join('') || '<p style="color:var(--muted)">No excerpts match.</p>';
-  $$('#excerpts-body .who').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
-}
 
 // ===== Flashcards =====
 const FC = { score:0, total:0, current:null };
@@ -1436,13 +1352,10 @@ function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-
 ['#phil-search','#filter-tradition','#filter-era','#filter-region','#filter-school','#filter-branch','#sort-by'].forEach(id => {
   $(id).addEventListener(id.includes('search')?'input':'change', renderPhilosophers);
 });
-$('#quote-search').addEventListener('input', renderQuotes);
-$('#quote-theme').addEventListener('change', renderQuotes);
 $('#school-search').addEventListener('input', renderSchools);
 $('#filter-school-tradition').addEventListener('change', renderSchools);
 $('#gloss-search').addEventListener('input', renderGlossary);
 $('#gloss-trad').addEventListener('change', renderGlossary);
-$('#excerpt-search').addEventListener('input', renderExcerpts);
 
 // Initial render
 renderBranches();
@@ -1453,8 +1366,6 @@ renderGlossary();
 renderTrails();
 renderPaths();
 renderTables();
-renderQuotes();
-renderExcerpts();
 renderResources();
 newFlashcard();
 handleHash();
