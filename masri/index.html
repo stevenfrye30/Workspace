@@ -222,11 +222,36 @@
   .item .e{color:var(--muted);font-size:calc(13px * var(--ui-scale));margin-top:4px}
 
   /* ── sounds (grouped pronunciation reference) ── */
-  .snd-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
-  .snd-jbtn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
-  .snd-jbtn:hover{border-color:var(--gold)}
-  .snd-jbtn:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-  .snd-sub{font-size:12px;font-weight:600;color:var(--fg);text-transform:uppercase;letter-spacing:.06em;margin:22px 0 10px}
+  /* Sound Guide — same collapsed-accordion shell as the Alphabet Guide, so the two
+     halves of this subtab group now behave identically. */
+  .snd-guide{border:1px solid var(--border);border-radius:var(--r);background:var(--surf2);overflow:hidden;margin:0 0 22px}
+  .snd-acc + .snd-acc{border-top:1px solid var(--border)}
+  .snd-acc > summary{cursor:pointer;padding:12px 14px;list-style:none;display:block}
+  .snd-acc > summary::-webkit-details-marker{display:none}
+  .snd-acc > summary:hover .snd-acc-t{text-decoration:underline}
+  .snd-acc > summary:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+  .snd-acc-t{display:block;font-family:var(--ui);font-weight:600;color:var(--gold);font-size:calc(14px * var(--ui-scale))}
+  .snd-acc-t::before{content:"\25B8 "}
+  .snd-acc[open] .snd-acc-t::before{content:"\25BE "}
+  .snd-acc-s{display:block;font-family:var(--ui);font-size:calc(12px * var(--ui-scale));color:var(--muted);margin-top:3px;line-height:1.45}
+  .snd-acc-body{padding:0 14px 16px}
+  .snd-acc-body > .note:first-child{margin-top:0}
+  .snd-acc-body > .snd-grid:first-child{margin-top:12px}
+  /* one merged short-vs-long vowel table, and the confusable pairs as compact rows */
+  .snd-vlong{color:var(--muted)}
+  .snd-cmptbl td{vertical-align:middle}
+  .snd-cmppair{white-space:nowrap;font-family:var(--ar);font-size:calc(24px * var(--ar-scale));color:var(--gold);direction:rtl;unicode-bidi:isolate}
+  .snd-cmppair .snd-cmpvs{font-family:var(--ui);font-size:11px;color:var(--muted);margin:0 6px}
+  .snd-cmpsym{font-family:var(--ui);font-size:11.5px;color:var(--green);font-weight:600;white-space:nowrap}
+  .snd-tag{display:inline-block;font-family:var(--ui);font-size:10px;font-weight:600;color:var(--gold);border:1px solid var(--gold);border-radius:20px;padding:1px 8px;margin-top:8px}
+  /* Three columns do not fit a 360px phone, so each pair becomes its own block there
+     rather than a table that scrolls sideways inside the page. */
+  @media (max-width:600px){
+    .snd-cmptbl table,.snd-cmptbl tbody,.snd-cmptbl tr,.snd-cmptbl td{display:block;width:100%}
+    .snd-cmptbl thead{display:none}
+    .snd-cmptbl tr{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin-bottom:8px}
+    .snd-cmptbl td{border:0;padding:3px 0}
+  }
   .snd-xref{font-style:italic}
   .snd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px;margin-bottom:8px}
   .snd-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px}
@@ -253,23 +278,12 @@
   .snd-audio audio{width:100%;margin-top:8px}
   .snd-vsym{font-family:var(--ui);font-size:16px;font-weight:600;color:var(--gold)}
   .snd-vh{color:var(--gold);font-weight:700}
-  .snd-pairs{display:flex;flex-direction:column;gap:6px}
-  .snd-pair{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:8px 12px;font-size:14px}
   .snd-pv{font-weight:600;color:var(--gold)}
   .snd-pair .tr{color:var(--blue);font-style:italic;margin:0 2px}
   .snd-pen{color:var(--muted);font-size:12px}
-  .snd-parrow{color:var(--muted);margin:0 6px}
-  .snd-cmpgrid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
-  .snd-cmp{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
-  .snd-cmprow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
-  .snd-cmpside{display:inline-flex;align-items:center;gap:6px}
-  .snd-cmpside .snd-glyph{font-size:calc(30px * var(--ar-scale))}
+  /* still used by the Alphabet guide's "easy to confuse" cards */
   .snd-cmpvs{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
-  .snd-cmpnote{font-size:12.5px;color:var(--fg);line-height:1.5}
-  .snd-cmpex{font-size:12px;color:var(--muted);margin-top:7px}
-  .snd-cmpex .ar{font-family:var(--ar);font-size:calc(16px * var(--ar-scale));color:var(--fg)}
-  .snd-cmpex .tr{color:var(--blue);font-style:italic}
-  @media (max-width:600px){ .snd-grid,.snd-cmpgrid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:calc(46px * var(--ar-scale))} }
+  @media (max-width:600px){ .snd-grid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:calc(46px * var(--ar-scale))} }
 
   /* ── alphabet (reading reference) ── */
   #p-alphabet h2{scroll-margin-top:66px}
@@ -1006,10 +1020,11 @@ function renderTableCards(arr){
 }
 
 // SOUNDS — grouped Egyptian-Arabic pronunciation reference. Builds from
-// window.MASRI.sounds: signature sounds, Cairene shifts, throat & back, emphatic,
-// Egyptian r, short/long vowels, and confusable pairs. Compact cards
-// keep the key facts visible; longer notes sit in a native <details>. Internal jump
-// buttons scroll to anchors (no history, no localStorage).
+// window.MASRI.sounds. The intro and the two signature Cairene cards (ج, ق) stay
+// visible; the other six groups — Cairene shifts, throat & back, emphatic, Egyptian
+// r, vowels, and confusable pairs — sit in the Sound Guide, one container of
+// collapsed accordions (same shell as the Alphabet Guide). Compact cards keep the key
+// facts visible; longer notes sit in a native <details>. No history, no localStorage.
 (function(){
   const d = M.sounds; if(!d) return;
   const panel = document.getElementById('p-sounds');
@@ -1036,78 +1051,115 @@ function renderTableCards(arr){
   }
   const grid = (cards, big) => `<div class="snd-grid">` + cards.map(c => card(c, big)).join('') + `</div>`;
 
-  function vowelTable(rows){
-    return `<div class="card-table"><table><thead><tr><th>Vowel</th><th>Example</th><th>Masri</th><th>Meaning</th></tr></thead><tbody>`
-      + rows.map(v => `<tr><td class="snd-vsym">${esc(v.sym)}</td><td><span class="ar" dir="rtl">${v.ar}</span></td>`
-          + `<td><span class="tr" dir="ltr">${vh(v.ex, v.sym)}</span></td><td>${esc(v.en)}${v.note ? ' — ' + v.note : ''}</td></tr>`).join('')
-      + `</tbody></table></div>`;
-  }
-
+  // Above the fold: the intro and the two signature Cairene sounds (ج, ق) — the reason
+  // most learners open this tab. Everything else moves into the Sound Guide below.
   let h = `<p class="lead">${d.intro}</p>`;
-
-  // jump navigation
-  h += `<nav class="snd-jump" aria-label="Sound groups">`
-     + d.jump.map(j => `<button class="snd-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
-     + `</nav>`;
-
-  // A · Cairene signature + shifts
   h += `<h2 id="snd-cairene">Cairene signature sounds</h2>`;
   h += grid(d.signature, true);
-  h += `<h3 class="snd-sub">Common Cairene shifts</h3>`;
-  h += `<p class="note">${d.shifts.intro}</p>`;
-  h += grid(d.shifts.cards, false);
 
-  // B · Throat & back
-  h += `<h2 id="snd-throat">Throat &amp; back sounds</h2>`;
-  h += `<p class="note">${d.throat.intro}</p>`;
-  h += grid(d.throat.cards, false);
+  // ── SOUND GUIDE ────────────────────────────────────────────────────────────
+  // The six remaining groups as one container of collapsed accordions, matching the
+  // Alphabet Guide. Every card, table row, hedge and note from the old stacked page
+  // is still rendered — it is now one click away instead of one long scroll. The
+  // jump pills are gone: six labelled summaries already name every group.
+  const sacc = (id, title, blurb, inner) =>
+      `<details class="snd-acc" id="${id}">`
+    + `<summary><span class="snd-acc-t">${esc(title)}</span>`
+    + `<span class="snd-acc-s">${esc(blurb)}</span></summary>`
+    + `<div class="snd-acc-body">${inner}</div></details>`;
 
-  // C · Emphatic
-  h += `<h2 id="snd-emphatic">Emphatic consonants</h2>`;
-  h += `<p class="note">${d.emphatic.intro}</p>`;
-  h += grid(d.emphatic.cards, false);
-  if(d.emphatic.crossref) h += `<p class="note snd-xref">${d.emphatic.crossref}</p>`;
+  h += `<h2 id="snd-guide">Sound Guide</h2>`;
+  h += `<div class="snd-guide">`;
 
-  // D · Egyptian r
-  h += `<h2 id="snd-ra">Egyptian ر</h2>`;
-  const r = d.ra;
-  h += grid([{ letter: r.letter, name: r.name, sym: r.sym, ipa: r.ipa, summary: r.summary, detail: r.detail }], false);
-  h += `<div class="card-table"><table><thead><tr><th>Position</th><th>Example</th><th>Meaning</th></tr></thead><tbody>`
-     + r.examples.map(e => `<tr><td>${esc(e.pos)}</td><td><span class="ar" dir="rtl">${e.ar}</span> <span class="tr" dir="ltr">${esc(e.ex)}</span></td><td>${esc(e.en)}</td></tr>`).join('')
-     + `</tbody></table></div>`;
+  // 1 · Cairene shifts
+  h += sacc('snd-shifts', 'Cairene shifts',
+            'Letters Egyptians often pronounce differently — the outcome depends on the word.',
+            `<p class="note">${d.shifts.intro}</p>` + grid(d.shifts.cards, false));
 
-  // Vowels
-  h += `<h2 id="snd-vowels">Vowels</h2>`;
-  h += `<p class="note">${d.vowels.intro}</p>`;
-  h += `<h3 class="snd-sub">Short vowels</h3>` + vowelTable(d.vowels.short);
-  h += `<p class="note">${esc(d.vowels.shortNote)}</p>`;
-  h += `<h3 class="snd-sub">Long vowels</h3>` + vowelTable(d.vowels.long);
-  h += `<h3 class="snd-sub">Short vs long</h3>`;
-  h += `<div class="snd-pairs">` + d.vowels.pairs.map(p =>
-      `<div class="snd-pair"><span class="snd-pv">${esc(p.s.sym)}</span> <span class="tr" dir="ltr">${esc(p.s.ex)}</span> <span class="snd-pen">${esc(p.s.en)}</span>`
-    + ` <span class="snd-parrow" aria-hidden="true">→</span> `
-    + `<span class="snd-pv">${esc(p.l.sym)}</span> <span class="tr" dir="ltr">${esc(p.l.ex)}</span> <span class="snd-pen">${esc(p.l.en)}</span></div>`).join('')
-    + `</div>`;
+  // 2 · Throat & back
+  h += sacc('snd-throat', 'Throat & back',
+            'Sounds made in the throat or the back of the mouth — ح خ ع غ.',
+            `<p class="note">${d.throat.intro}</p>` + grid(d.throat.cards, false));
 
-  // Comparisons
-  h += `<h2 id="snd-compare">Sounds learners often confuse</h2>`;
-  h += `<p class="note">${d.compare.intro}</p>`;
-  h += `<div class="snd-grid snd-cmpgrid">` + d.compare.cards.map(c => `
-    <div class="snd-cmp">
-      <div class="snd-cmprow">
-        <span class="snd-cmpside"><span class="snd-glyph ar" dir="rtl">${c.a.L}</span><span class="snd-sym">${esc(c.a.sym)}</span></span>
-        <span class="snd-cmpvs" aria-hidden="true">vs</span>
-        <span class="snd-cmpside"><span class="snd-glyph ar" dir="rtl">${c.b.L}</span><span class="snd-sym">${esc(c.b.sym)}</span></span>
-      </div>
-      <div class="snd-cmpnote">${esc(c.note)}</div>
-      <div class="snd-cmpex"><span class="ar" dir="rtl">${c.a.ar}</span> <span class="tr" dir="ltr">${esc(c.a.ex)}</span> (${esc(c.a.en)}) · <span class="ar" dir="rtl">${c.b.ar}</span> <span class="tr" dir="ltr">${esc(c.b.ex)}</span> (${esc(c.b.en)})</div>
-    </div>`).join('') + `</div>`;
+  // 3 · Emphatic. ظ is both a Cairene shift AND an emphatic, so its card is rendered
+  // here too — the SAME data object from d.shifts, tagged as a repeat. Nothing is
+  // copied or added to the data; this simply retires the old "its card is elsewhere"
+  // cross-reference, whose facts (ẓāʾ, /zˤ/, emphatic, heavy z) are all on that card.
+  {
+    const zaa = d.shifts.cards.filter(c => c.letter === 'ظ');
+    const cards = d.emphatic.cards.map(c => card(c, false)).join('')
+      + zaa.map(c => card(c, false)
+          .replace(/<\/div>\s*$/, `<div class="snd-tag">also listed under Cairene shifts</div></div>`)).join('');
+    h += sacc('snd-emphatic', 'Emphatic sounds',
+              'The heavy, retracted consonants — ص ض ط, and ظ.',
+              `<p class="note">${d.emphatic.intro}</p><div class="snd-grid">${cards}</div>`);
+  }
+
+  // 4 · Egyptian ر
+  {
+    const r = d.ra;
+    const b = grid([{ letter: r.letter, name: r.name, sym: r.sym, ipa: r.ipa, summary: r.summary, detail: r.detail }], false)
+      + `<div class="card-table"><table><thead><tr><th>Position</th><th>Example</th><th>Meaning</th></tr></thead><tbody>`
+      + r.examples.map(e => `<tr><td>${esc(e.pos)}</td><td><span class="ar" dir="rtl">${e.ar}</span> <span class="tr" dir="ltr">${esc(e.ex)}</span></td><td>${esc(e.en)}</td></tr>`).join('')
+      + `</tbody></table></div>`;
+    h += sacc('snd-ra', 'Egyptian ر', 'A tapped or lightly rolled r — not the soft English r.', b);
+  }
+
+  // 5 · Vowels — the short table, the long table and the short-vs-long pair list were
+  // three views of one fact set (the pair list repeated examples already in both
+  // tables). They are merged into ONE table: each pair on a row, then the long vowels
+  // that have no pair (ē, ō) on their own rows. Pairing comes from d.vowels.pairs and
+  // the rows from d.vowels.short/long, so nothing is hand-copied and no example is lost.
+  {
+    const V = d.vowels;
+    const sBy = {}, lBy = {};
+    V.short.forEach(v => sBy[v.sym] = v);
+    V.long.forEach(v => lBy[v.sym] = v);
+    const cell = (v) => v
+      ? `<span class="snd-vsym">${esc(v.sym)}</span> <span class="ar" dir="rtl">${v.ar}</span> `
+        + `<span class="tr" dir="ltr">${vh(v.ex, v.sym)}</span> <span class="snd-pen">${esc(v.en)}</span>`
+        + (v.note ? ` <span class="snd-vlong">— ${v.note}</span>` : '')
+      : `<span class="snd-vlong">—</span>`;
+    const paired = new Set();
+    let rows = V.pairs.map(p => {
+      paired.add(p.s.sym); paired.add(p.l.sym);
+      return `<tr><td>${cell(sBy[p.s.sym])}</td><td>${cell(lBy[p.l.sym])}</td></tr>`;
+    }).join('');
+    // long vowels with no short partner (ē, ō) — and, defensively, any unpaired short
+    rows += V.long.filter(v => !paired.has(v.sym)).map(v => `<tr><td>${cell(null)}</td><td>${cell(v)}</td></tr>`).join('');
+    rows += V.short.filter(v => !paired.has(v.sym)).map(v => `<tr><td>${cell(v)}</td><td>${cell(null)}</td></tr>`).join('');
+    const b = `<p class="note">${V.intro}</p>`
+      + `<div class="card-table"><table><thead><tr><th>Short</th><th>Long — held longer</th></tr></thead><tbody>`
+      + rows + `</tbody></table></div>`
+      + `<p class="note snd-xref">${esc(V.shortNote)}</p>`;
+    h += sacc('snd-vowels', 'Vowels',
+              'Three short vowels, their long partners, and the Egyptian ē and ō.', b);
+  }
+
+  // 6 · Easy to confuse — the same seven pairs, as compact rows instead of seven cards.
+  {
+    const b = `<p class="note">${d.compare.intro}</p>`
+      + `<div class="card-table snd-cmptbl"><table><thead><tr><th>Pair</th><th>How to tell them apart</th><th>Examples</th></tr></thead><tbody>`
+      + d.compare.cards.map(c =>
+          `<tr><td><span class="snd-cmppair">${c.a.L}<span class="snd-cmpvs" aria-hidden="true">vs</span>${c.b.L}</span>`
+        + `<div class="snd-cmpsym">${esc(c.a.sym)} · ${esc(c.b.sym)}</div></td>`
+        + `<td>${esc(c.note)}</td>`
+        + `<td><span class="ar" dir="rtl">${c.a.ar}</span> <span class="tr" dir="ltr">${esc(c.a.ex)}</span> (${esc(c.a.en)})<br>`
+        + `<span class="ar" dir="rtl">${c.b.ar}</span> <span class="tr" dir="ltr">${esc(c.b.ex)}</span> (${esc(c.b.en)})</td></tr>`).join('')
+      + `</tbody></table></div>`;
+    h += sacc('snd-compare', 'Easy to confuse',
+              'Seven pairs learners mix up, and the one thing that separates each.', b);
+  }
+
+  h += `</div>`;
 
   panel.innerHTML = h;
 
   // internal jump controls — scroll only, no hash/history
-  panel.querySelectorAll('.snd-jbtn').forEach(b => b.addEventListener('click', () => {
-    const t = document.getElementById(b.dataset.anchor); if(t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  // One panel open at a time, exactly like the Alphabet Guide.
+  const saccs = Array.from(panel.querySelectorAll('.snd-acc'));
+  saccs.forEach(x => x.addEventListener('toggle', () => {
+    if(x.open) saccs.forEach(y => { if(y !== x) y.open = false; });
   }));
 })();
 
