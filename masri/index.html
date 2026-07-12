@@ -640,6 +640,47 @@
   .tt-passprog b{color:var(--fg);font-weight:600}
   .tt-passsaved{display:block;margin-top:3px;color:var(--muted)}
   .tt-linkbtn{background:none;border:none;color:var(--gold);font-family:var(--ui);font-size:11.5px;padding:0 0 0 6px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+
+  /* ── Defense (Type → Test → Defense) ──────────────────────────────────────
+     Same card/border/radius vocabulary as the rest of Type. Enemies are absolutely
+     positioned inside .dfn-field and moved by JS (elapsed-time), so no layout shift.
+     Arabic labels use --ar-scale like every other Arabic surface. */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .dfn-stats{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .dfn-stat{background:var(--surf2);border:1px solid var(--border);border-radius:20px;padding:4px 11px;font-family:var(--ui);font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .dfn-stat b{color:var(--fg);font-weight:600;margin-left:4px}
+  .dfn-stat.lives b{color:var(--gold)}
+  .dfn-field{position:relative;height:260px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+  .dfn-wall{position:absolute;top:0;bottom:0;left:0;width:34px;background:repeating-linear-gradient(0deg,var(--card),var(--card) 8px,var(--surf) 8px,var(--surf) 16px);border-right:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:15px;z-index:2}
+  .dfn-wall.hit{border-right-color:#e06666}
+  .dfn-enemy{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-50%);will-change:left;z-index:1}
+  .dfn-ar{font-family:var(--ar);font-size:calc(19px * var(--ar-scale));color:var(--fg);direction:rtl;unicode-bidi:isolate;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1px 8px;line-height:1.5;white-space:nowrap}
+  .dfn-emoji{font-size:20px;line-height:1}
+  /* Prefix highlight: border + weight + a caret, never colour alone. */
+  .dfn-enemy.match .dfn-ar{border-color:var(--gold);color:var(--gold);font-weight:600;box-shadow:0 0 0 1px var(--gold)}
+  .dfn-enemy.match .dfn-ar::after{content:"▸";margin-right:5px;font-size:11px}
+  .dfn-enemy.gone .dfn-ar,.dfn-enemy.gone .dfn-emoji{opacity:0;transform:scale(.6);transition:opacity .18s ease,transform .18s ease}
+  .dfn-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12.5px;text-align:center;padding:0 16px}
+  .dfn-note{color:var(--muted);font-size:11.5px;line-height:1.6;margin-top:8px}
+  .dfn-res{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+  .dfn-res div{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:11.5px;color:var(--muted)}
+  .dfn-res b{display:block;color:var(--fg);font-size:15px;font-weight:600}
+  .dfn-miss{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .dfn-missitem{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11.5px;color:var(--muted);text-align:center}
+  .dfn-missitem .ar{display:block;font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--fg)}
+  .dfn-missitem .tr{color:var(--blue);font-style:italic}
+  @media (prefers-reduced-motion: reduce){
+    .dfn-enemy{will-change:auto}
+    .dfn-enemy.gone .dfn-ar,.dfn-enemy.gone .dfn-emoji{transition:none}
+    .dfn-wall.hit{animation:none}
+  }
+  @media (max-width:600px){
+    .dfn-field{height:210px}
+    .dfn-wall{width:26px;font-size:13px}
+    .dfn-ar{font-size:calc(16px * var(--ar-scale));padding:1px 6px}
+    .dfn-emoji{font-size:17px}
+    .dfn-stat{font-size:11px;padding:3px 9px}
+  }
   .tt-passfullseg.cur{color:var(--fg);background:rgba(217,164,65,.15);border-radius:4px;padding:0 3px}
   /* passage column diff — stacked target/typed cells that wrap cleanly, RTL */
   .tt-diffcols{display:flex;flex-wrap:wrap;gap:4px;direction:rtl;justify-content:center;margin:8px 0}
@@ -2043,7 +2084,7 @@ function renderTableCards(arr){
   const WORD_PROMPTS = [ {id:'copy',label:'Copy Arabic'},{id:'en',label:'English → Arabic'},{id:'tr',label:'Translit → Arabic'} ];
 
   // Preferences (persist) ----------------------------------------------------
-  const MODES=[ {id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'},{id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'passage',label:'Passage Typing',desc:'Type sentences & passages'} ];
+  const MODES=[ {id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'},{id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'passage',label:'Passage Typing',desc:'Type sentences & passages'},{id:'defense',label:'Defense',desc:'Type to stop the enemies'} ];
   let mode = lsGet('masri-type-mode','letter'); if(!MODES.some(m=>m.id===mode)) mode='letter';
   let letterDiff = lsGet('masri-letter-difficulty','all'); if(!LETTER_DIFFS.some(d=>d.id===letterDiff)) letterDiff='all';
   let wordDiff = lsGet('masri-word-difficulty','all'); if(!WORD_DIFFS.some(d=>d.id===wordDiff)) wordDiff='all';
@@ -2198,9 +2239,15 @@ function renderTableCards(arr){
   let reviewPanel=false;     // summary overlay open?
 
   function render(){
+    // Any render that is not Defense must first tear the game down: no orphan rAF
+    // loop, no pending spawn, no live enemies. Switching modes, opening the review
+    // panel and leaving the section all funnel through here.
+    if(mode!=='defense' || reviewMode || reviewPanel) defStop();
     if(reviewMode){ renderReviewPractice(); return; }
     if(reviewPanel){ renderReviewSummary(); return; }
-    if(mode==='letter') renderLetter(); else if(mode==='word') renderWord(); else if(mode==='passage') renderPassage(); else renderKeyboard();
+    if(mode==='letter') renderLetter(); else if(mode==='word') renderWord();
+    else if(mode==='passage') renderPassage(); else if(mode==='defense') renderDefense();
+    else renderKeyboard();
   }
 
   // Wire the selector pill-groups + review button that a mode render just injected.
@@ -2218,6 +2265,10 @@ function renderTableCards(arr){
     else if(name==='passDiff'){ passDiff=val; lsSet('masri-passage-difficulty',val); P.passage=null; P.seg=0; P.done=false; P.score=newScore(); }
     else if(name==='passDia'){ passDia=val; lsSet('masri-passage-diacritics',val); P.done=false; }
     else if(name==='passDisplay'){ passDisplay=val; lsSet('masri-passage-display',val); }
+    // Defense: changing targets or speed abandons the current round (v1 never resumes
+    // an abandoned round) — defStop() runs first so no loop or enemy survives.
+    else if(name==='defMode'){ defStop(); defMode=val; lsSet('masri-defense-mode',val); }
+    else if(name==='defSpeed'){ defStop(); defSpeed=val; lsSet('masri-defense-speed',val); }
     render();
   }
 
@@ -2680,6 +2731,304 @@ function renderTableCards(arr){
     body.querySelector('[data-a=togglefull]').addEventListener('click',()=>{ passDisplay=passDisplay==='full'?'hidden':'full'; lsSet('masri-passage-display',passDisplay); render(); });
     const ttr=body.querySelector('[data-a=toggletr]'); if(ttr) ttr.addEventListener('click',()=>{ P.showTr=!P.showTr; render(); });
     const ten=body.querySelector('[data-a=toggleen]'); if(ten) ten.addEventListener('click',()=>{ P.showEn=!P.showEn; render(); });
+  }
+
+  // Mode 5: Defense ----------------------------------------------------------
+  // Emoji enemies drift right→left (matching Arabic reading direction) toward a wall.
+  // Type an enemy's Arabic target and press Enter to destroy it. No clicking.
+  //
+  // Targets are NOT a new corpus: letters come from M.alphabet.letters (isolated forms
+  // only in v1 — no contextual shapes are generated) and words from the same vetted
+  // datasets the Word Typing pool uses. Comparison reuses passSegNorm(), the existing
+  // Arabic normalizer — no second normalization system.
+  //
+  // SCORING  round(( base + streakBonus × streak_before_hit ) × speed multiplier)
+  //          e.g. Normal, 3-streak: (100 + 10×3) × 1.25 = 163
+  // ACCURACY correct Enter submissions ÷ all Enter submissions. An enemy reaching the
+  //          wall is a MISS, not a submission, so it never counts against accuracy.
+  const DCFG = (M.typing && M.typing.defense) || {};
+  const DEMOJI = DCFG.emoji || ['👾'];
+  const DROUND = DCFG.round || 15, DLIVES = DCFG.lives || 3, DLANES = DCFG.lanes || 4;
+  const DSPEEDS = DCFG.speeds || { normal:{label:'Normal',cross:18,gap:2.4,mult:1.25} };
+  const DSCORE = DCFG.score || { base:100, streakBonus:10 };
+  const DEF_MODES = [ {id:'letters',label:'Letters'}, {id:'words',label:'Words'} ];
+  const DEF_SPEED_IDS = ['slow','normal','fast'].filter(s=>DSPEEDS[s]);
+
+  let defMode = lsGet('masri-defense-mode','letters'); if(!DEF_MODES.some(m=>m.id===defMode)) defMode='letters';
+  let defSpeed = lsGet('masri-defense-speed','normal'); if(!DSPEEDS[defSpeed]) defSpeed = DEF_SPEED_IDS[0] || 'normal';
+  const DMISS_KEY = 'masri-defense-missed';   // isolated from passage/mistake storage
+
+  // Target pools. Every target carries a STABLE id derived from its source record's
+  // position, never from the visible Arabic alone.
+  const DEF_LETTERS = ((M.alphabet && M.alphabet.letters) || [])
+    .map((l,i) => ({ id:'def-l-'+i, ar:l.letter, tr:l.name||'', en:l.sound||'' }))
+    .filter(t => t.ar);
+  const DEF_WORDS = (function(){
+    const ex = new Set((DCFG.wordExclude||[]).map(norm));
+    const hard = new Set(((M.typing && M.typing.excludeWords) || []).map(norm));
+    const common = new Set(((M.typing && M.typing.commonWords) || []).map(norm));
+    const lo = DCFG.wordMinLen || 2, hi = DCFG.wordMaxLen || 6;
+    const out = [], seen = new Set();
+    const add = (ar,tr,en,cat,i) => {
+      if(!ar || !tr || !en) return;
+      const w = norm(ar);
+      if(!new RegExp('^[ء-ي]{'+lo+','+hi+'}$').test(w)) return;   // short, clean, no spaces/punctuation
+      if(ex.has(w) || hard.has(w) || !common.has(w)) return;      // vetted beginner words only
+      if(seen.has(w)) return; seen.add(w);
+      out.push({ id:'def-w-'+cat+'-'+i, ar:w, tr:String(tr), en:String(en) });
+    };
+    ['verbs','food','people','descriptions','shopping','around','health','time'].forEach(k=>{
+      if(M[k] && M[k].tables) M[k].tables.forEach((t,ti)=>(t.rows||[]).forEach((r,ri)=>add(r[0],r[1],r[2],k,ti+'-'+ri)));
+    });
+    if(Array.isArray(M.vocab)) M.vocab.forEach((t,ti)=>(t.words||[]).forEach((w,wi)=>add(w.ar,w.tr,w.en,'vocab',ti+'-'+wi)));
+    if(M.numbers) ['ones','teens','tens'].forEach(g=>(M.numbers[g]||[]).forEach((n,ni)=>add(n.ar,n.tr,String(n.n),'num-'+g,ni)));
+    return out;
+  })();
+  const defPool = () => (defMode==='words' ? DEF_WORDS : DEF_LETTERS);
+
+  // Game state. Session-only: nothing here is ever persisted.
+  const D = { phase:'setup', enemies:[], spawned:0, resolved:0, lives:DLIVES, score:0,
+              streak:0, best:0, correct:0, wrong:0, defeated:0, missed:[], deck:null,
+              queue:null, raf:0, lastTs:0, nextSpawn:0, fb:'' };
+  const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function defStop(){                      // full teardown — safe to call any time
+    if(D.raf) cancelAnimationFrame(D.raf);
+    D.raf=0; D.enemies=[]; D.phase='setup'; D.queue=null; D.fb='';
+  }
+  function defReset(queue){
+    D.enemies=[]; D.spawned=0; D.resolved=0; D.lives=DLIVES; D.score=0; D.streak=0; D.best=0;
+    D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.fb='';
+    D.queue = queue || null;
+    D.deck = makeDeck(defPool(), t=>t && t.id);
+    D.lastTs=0; D.nextSpawn=0;
+  }
+  function defAnnounce(msg){ const el=body.querySelector('#dfn-live'); if(el) el.textContent = msg; }
+  function defSummary(){
+    return `${D.enemies.length} enem${D.enemies.length===1?'y':'ies'} active. `
+      + `${D.lives} ${D.lives===1?'life':'lives'} remaining. ${D.resolved} of ${DROUND} resolved. Score ${D.score}.`;
+  }
+
+  function renderDefense(){
+    const pool = defPool();
+    const sel = reviewBar()
+      + `<div class="tt-sel">` + pillGroup('defMode', DEF_MODES, defMode, 'Targets')
+      + pillGroup('defSpeed', DEF_SPEED_IDS.map(s=>({id:s,label:DSPEEDS[s].label})), defSpeed, 'Speed') + `</div>`;
+    if(D.phase==='over'){ body.innerHTML = sel + defResultHtml(); wireCommon(); wireDefenseResult(); return; }
+
+    const playing = D.phase==='playing' || D.phase==='paused';
+    body.innerHTML = sel
+      + `<div class="tt-card">`
+      + `<div class="dfn-stats" role="group" aria-label="Game state">`
+        + `<span class="dfn-stat">Score<b>${D.score}</b></span>`
+        + `<span class="dfn-stat lives">Lives<b>${D.lives} of ${DLIVES}</b></span>`
+        + `<span class="dfn-stat">Streak<b>${D.streak}</b></span>`
+        + `<span class="dfn-stat">Progress<b>${D.resolved} / ${DROUND}</b></span>`
+      + `</div>`
+      + `<div class="dfn-field" id="dfn-field" aria-hidden="true"><div class="dfn-wall" id="dfn-wall">🛡️</div>`
+        + (playing ? '' : `<div class="dfn-empty">Enemies come from the right carrying an Arabic target. Type the target and press Enter to stop one before it reaches the wall.</div>`)
+      + `</div>`
+      + `<div id="dfn-live" class="sr-only" role="status" aria-live="polite"></div>`
+      + `<label class="tt-prompt" for="dfn-in" style="display:block;margin:0 0 4px">Type the Arabic target, then press Enter</label>`
+      + `<input id="dfn-in" class="tt-input seg" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"`
+        + ` aria-label="Type an enemy's Arabic target and press Enter. Escape clears the box."${playing && D.phase==='playing' ? '' : ' disabled aria-disabled="true"'}>`
+      + `<div class="tt-fb" id="dfn-fb" role="status" aria-live="polite">${D.fb||''}</div>`
+      + `<div class="tt-controls">`
+        + (D.phase==='playing' || D.phase==='paused'
+            ? `<button type="button" class="tt-btn primary" data-a="dpause" aria-pressed="${D.phase==='paused'}">${D.phase==='paused'?'Resume':'Pause'}</button>`
+              + `<button type="button" class="tt-btn" data-a="drestart">Restart round</button>`
+            : `<button type="button" class="tt-btn primary" data-a="dstart"${pool.length?'':' disabled aria-disabled="true"'}>Start round</button>`)
+      + `</div>`
+      + `<p class="dfn-note">${DROUND} enemies · ${DLIVES} lives · ${esc(DSPEEDS[defSpeed].label)} speed. `
+        + `Score = (${DSCORE.base} + ${DSCORE.streakBonus} × current streak) × ${DSPEEDS[defSpeed].mult}. `
+        + `A wrong Enter costs your streak, not a life. Escape clears the box. `
+        + `${pool.length} target${pool.length===1?'':'s'} in this set.</p>`
+      + `</div>`;
+    wireCommon();
+    const inp=body.querySelector('#dfn-in');
+    body.querySelector('[data-a=dstart]')?.addEventListener('click', ()=>defStart(null));
+    body.querySelector('[data-a=drestart]')?.addEventListener('click', ()=>defStart(D.queue));
+    body.querySelector('[data-a=dpause]')?.addEventListener('click', defTogglePause);
+    if(inp){
+      inp.addEventListener('keydown', e=>{
+        if(e.key==='Enter'){ e.preventDefault(); defSubmit(inp); }
+        else if(e.key==='Escape'){ e.preventDefault(); inp.value=''; defHighlight(''); }
+      });
+      inp.addEventListener('input', ()=>defHighlight(inp.value));
+      if(D.phase==='playing') inp.focus();
+    }
+    if(D.phase==='playing' || D.phase==='paused') D.enemies.forEach(mountEnemy);
+  }
+
+  function defStart(queue){
+    defStop(); defReset(queue); D.phase='playing'; render();
+    D.lastTs=0; D.nextSpawn=0;
+    D.raf = requestAnimationFrame(defTick);
+    defAnnounce('Round started. ' + defSummary());
+  }
+  function defTogglePause(){
+    if(D.phase==='playing'){ D.phase='paused'; if(D.raf) cancelAnimationFrame(D.raf); D.raf=0; defAnnounce('Paused. '+defSummary()); }
+    else if(D.phase==='paused'){ D.phase='playing'; D.lastTs=0; D.raf=requestAnimationFrame(defTick); defAnnounce('Resumed. '+defSummary()); }
+    render();
+  }
+
+  function nextTarget(){
+    if(D.queue && D.queue.length) return D.queue[D.spawned % D.queue.length];   // Practice-missed rounds repeat the misses
+    return D.deck.next();
+  }
+  function spawnEnemy(){
+    const t = nextTarget(); if(!t) return;
+    const e = { key:'e'+(D.spawned), t, x:100, lane:D.spawned % DLANES,
+                emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)], el:null };
+    D.enemies.push(e); D.spawned++;
+    mountEnemy(e);
+  }
+  function mountEnemy(e){
+    const field = body.querySelector('#dfn-field'); if(!field) return;
+    if(e.el && e.el.isConnected) return;
+    const d=document.createElement('div');
+    d.className='dfn-enemy'; d.dataset.k=e.key;
+    d.style.top = ((e.lane + 0.5) * (100/DLANES)) + '%';
+    d.innerHTML = `<span class="dfn-ar" dir="rtl">${esc(e.t.ar)}</span><span class="dfn-emoji" aria-hidden="true">${e.emoji}</span>`;
+    field.appendChild(d); e.el=d;
+    placeEnemy(e);
+  }
+  function placeEnemy(e){
+    if(!e.el) return;
+    // x: 100 = spawn edge (right), 0 = wall (left). Reduced motion quantizes to 5%
+    // steps so the movement reads as stepped, not continuous — same timing either way.
+    const x = reduceMotion() ? Math.round(e.x/5)*5 : e.x;
+    e.el.style.left = 'calc(38px + ' + (x/100) + ' * (100% - 38px - 4.5em))';
+  }
+
+  function defTick(ts){
+    if(D.phase!=='playing'){ D.raf=0; return; }
+    // Section hidden (user left Type, or the tab switched) → stop everything cleanly.
+    if(!panel.offsetParent){ defStop(); return; }
+    if(!D.lastTs) D.lastTs = ts;
+    const dt = Math.min((ts - D.lastTs)/1000, 0.25);   // elapsed seconds, clamped over a tab stall
+    D.lastTs = ts;
+    const cfg = DSPEEDS[defSpeed];
+
+    if(D.spawned < DROUND){
+      D.nextSpawn -= dt;
+      if(D.nextSpawn <= 0){ spawnEnemy(); D.nextSpawn = cfg.gap; }
+    }
+    const perSec = 100 / cfg.cross;
+    for(let i=D.enemies.length-1;i>=0;i--){
+      const e=D.enemies[i];
+      e.x -= perSec * dt;
+      if(e.x <= 0){ hitWall(e, i); continue; }
+      placeEnemy(e);
+    }
+    if(D.spawned>=DROUND && D.enemies.length===0){ endRound(); return; }
+    D.raf = requestAnimationFrame(defTick);
+  }
+
+  function removeEnemy(e, i, destroyed){
+    D.enemies.splice(i,1);
+    if(e.el){
+      const el=e.el;
+      if(destroyed && !reduceMotion()){ el.classList.add('gone'); setTimeout(()=>el.remove(), 200); }
+      else el.remove();
+    }
+    D.resolved++;
+  }
+  function hitWall(e, i){
+    removeEnemy(e, i, false);
+    D.lives--; D.streak=0;
+    D.missed.push(e.t);
+    const wall=body.querySelector('#dfn-wall');
+    if(wall && !reduceMotion()){ wall.classList.add('hit'); setTimeout(()=>wall.classList.remove('hit'), 220); }
+    else if(wall){ wall.classList.add('hit'); setTimeout(()=>wall.classList.remove('hit'), 400); }
+    syncStats();
+    defAnnounce('Wall hit. ' + defSummary());
+    if(D.lives<=0){ endRound(); }
+  }
+
+  function defHighlight(raw){
+    const q = passSegNorm(raw, false);
+    D.enemies.forEach(e=>{
+      if(!e.el) return;
+      const on = q.length>0 && passSegNorm(e.t.ar,false).indexOf(q)===0;
+      e.el.classList.toggle('match', on);
+    });
+  }
+  function defSubmit(inp){
+    if(D.phase!=='playing') return;
+    const raw = inp.value.trim(); if(!raw) return;
+    const q = passSegNorm(raw, false);
+    // Exact matches only. Several enemies can carry the same target → take the one
+    // closest to the wall (smallest x).
+    let best=-1;
+    D.enemies.forEach((e,i)=>{ if(passSegNorm(e.t.ar,false)===q){ if(best<0 || e.x < D.enemies[best].x) best=i; } });
+    const fb=body.querySelector('#dfn-fb');
+    if(best<0){
+      D.wrong++; D.streak=0;
+      if(fb){ fb.className='tt-fb no'; fb.innerHTML='Not an active target — '+arSpan(raw); }
+      D.fb = fb ? fb.innerHTML : '';
+      inp.value=''; defHighlight(''); syncStats();
+      defAnnounce('Missed submission. ' + defSummary());
+      return;
+    }
+    const e=D.enemies[best];
+    D.score += Math.round((DSCORE.base + DSCORE.streakBonus * D.streak) * DSPEEDS[defSpeed].mult);
+    D.streak++; if(D.streak > D.best) D.best = D.streak;
+    D.correct++; D.defeated++;
+    removeEnemy(e, best, true);
+    if(fb){ fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> '+arSpan(e.t.ar)+' destroyed'; }
+    D.fb = fb ? fb.innerHTML : '';
+    inp.value=''; defHighlight(''); syncStats();
+    defAnnounce('Destroyed. ' + defSummary());
+    if(D.spawned>=DROUND && D.enemies.length===0) endRound();
+  }
+  // Update the stat chips in place — re-rendering mid-round would drop the enemies.
+  function syncStats(){
+    const s=body.querySelectorAll('.dfn-stat b');
+    if(s.length>=4){ s[0].textContent=D.score; s[1].textContent=D.lives+' of '+DLIVES; s[2].textContent=D.streak; s[3].textContent=D.resolved+' / '+DROUND; }
+  }
+
+  function endRound(){
+    if(D.raf) cancelAnimationFrame(D.raf); D.raf=0;
+    D.enemies.forEach(e=>{ if(e.el) e.el.remove(); });
+    D.enemies=[]; D.phase='over';
+    // Persist only the missed targets (namespaced, isolated from passage/mistake data).
+    if(D.missed.length) jsonSet(DMISS_KEY, D.missed.slice(-30).map(t=>({id:t.id,ar:t.ar,tr:t.tr,en:t.en})));
+    render();
+    const subs = D.correct + D.wrong;
+    defAnnounce(`Round over. Score ${D.score}. ${D.defeated} destroyed, ${D.missed.length} missed, `
+      + `${subs? Math.round(D.correct/subs*100):0}% typing accuracy.`);
+  }
+  function defResultHtml(){
+    const subs = D.correct + D.wrong;
+    const acc = subs ? Math.round(D.correct/subs*100) : 0;
+    const missed = D.missed;
+    return `<div class="tt-card"><div class="tt-prompt">Round over</div>`
+      + `<div class="dfn-res">`
+        + `<div>Score<b>${D.score}</b></div>`
+        + `<div>Typing accuracy<b>${acc}%</b></div>`
+        + `<div>Enemies defeated<b>${D.defeated} of ${DROUND}</b></div>`
+        + `<div>Targets missed<b>${missed.length}</b></div>`
+        + `<div>Wrong submissions<b>${D.wrong}</b></div>`
+        + `<div>Best streak<b>${D.best}</b></div>`
+        + `<div>Mode<b>${esc(defMode==='words'?'Words':'Letters')}</b></div>`
+        + `<div>Speed<b>${esc(DSPEEDS[defSpeed].label)}</b></div>`
+      + `</div>`
+      + `<p class="note">Typing accuracy counts Enter presses only (${D.correct} correct of ${subs}). An enemy reaching the wall is a missed target, not a wrong answer.</p>`
+      + (missed.length ? `<div class="tt-prompt" style="margin-top:10px">Targets that got through</div>`
+          + `<div class="dfn-miss">` + missed.map(t=>`<span class="dfn-missitem">${arSpan(t.ar)}<span class="tr">${esc(t.tr||'')}</span><br>${esc(t.en||'')}</span>`).join('') + `</div>` : '')
+      + `<div class="tt-controls">`
+        + `<button type="button" class="tt-btn primary" data-a="dagain">Play again</button>`
+        + (missed.length ? `<button type="button" class="tt-btn" data-a="dmissed">Practice missed targets</button>` : '')
+      + `</div></div>`;
+  }
+  function wireDefenseResult(){
+    body.querySelector('[data-a=dagain]')?.addEventListener('click', ()=>defStart(null));
+    body.querySelector('[data-a=dmissed]')?.addEventListener('click', ()=>{
+      const uniq=[]; const seen=new Set();
+      D.missed.forEach(t=>{ if(!seen.has(t.id)){ seen.add(t.id); uniq.push(t); } });
+      defStart(uniq.length ? uniq : null);   // queue repeats to fill the round
+    });
   }
 
   // Restore saved mistakes, then open. Also expose a single hook so a global-search

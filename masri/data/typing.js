@@ -41,6 +41,40 @@ window.MASRI.typing = {
     "اتنين","تلاتة","بنت","ولد","راجل","ست","ماما","بابا","دكتور","مستشفى","مدرسة","عربية"
   ],
 
+  // ── Defense (Type → Test → Defense) ───────────────────────────────────────
+  // CONFIGURATION ONLY — all game logic lives in index.html. The target pools are
+  // NOT duplicated here: letters come from M.alphabet.letters and words from the
+  // same vetted datasets the Word Typing pool already uses. This block only tunes
+  // the game and names the words we refuse to use as targets.
+  defense: {
+    // Restrained, widely-rendering emoji. Reuse across enemies is fine — the Arabic
+    // target is the content; the creature is decoration.
+    emoji: ["👾","🧟","🐍","🦂","👻","🤖","🐙","🦇"],
+
+    round: 15,          // enemies spawned per round
+    lives: 3,           // wall hits allowed before the round ends
+    lanes: 4,           // vertical tracks, so labels don't overlap illegibly
+
+    // Speeds. `cross` = seconds an enemy takes to cross the field (elapsed-time based,
+    // never frame-count based). `gap` = seconds between spawns. `mult` = score multiplier.
+    speeds: {
+      slow:   { label:"Slow",   cross:26, gap:3.4, mult:1    },
+      normal: { label:"Normal", cross:18, gap:2.4, mult:1.25 },
+      fast:   { label:"Fast",   cross:12, gap:1.6, mult:1.5  }
+    },
+
+    // Scoring: round(( base + streakBonus × streak-before-this-hit ) × speed multiplier)
+    score: { base:100, streakBonus:10 },
+
+    // Word-target guards. Words are drawn from the existing vetted pool, then filtered:
+    // 2–6 Arabic letters, no spaces/punctuation, must have transliteration + English.
+    // These are additionally refused because their exact wording is unresolved or
+    // gender-sensitive (see NATIVE_REVIEW.md) — a game is the wrong place to drill them.
+    wordExclude: ["تايه", "تهت", "مدرسة", "إزازة", "ازازة", "قزازة"],
+    wordMinLen: 2,
+    wordMaxLen: 6
+  },
+
   layoutName: "Windows Arabic (101)",
   layoutNote: "Unshifted layer of the standard Windows Arabic (101) layout. The key positions match a physical US-QWERTY keyboard; the large glyph is what each key types when the Arabic layout is active.",
   rows: [
