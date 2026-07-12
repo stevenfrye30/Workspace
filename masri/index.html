@@ -503,7 +503,7 @@
   .tt-help > summary::before{content:"\25B8 "}
   .tt-help[open] > summary::before{content:"\25BE "}
   .tt-help ol{margin:8px 0 0 18px;color:var(--muted);font-size:12.5px;line-height:1.7}
-  .tt-kbdnote{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 16px;font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.55}
+  .tt-kbdnote{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:16px 0 0;font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.55}
   .tt-kbdnote kbd{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-family:var(--ui);font-size:11.5px;color:var(--gold)}
   /* the "how to add" disclosure lives inside the same help box, attached below the Win+Space line */
   .tt-kbdnote .tt-help{margin:9px 0 0;padding-top:9px;border-top:1px solid var(--border)}
@@ -2141,14 +2141,17 @@ function renderTableCards(arr){
   const reviewBar = () => `<div class="tt-topbar"><button type="button" id="tt-reviewbtn" class="tt-review-btn${mCount()>0?' has':''}" aria-disabled="${mCount()===0}">Review mistakes (${mCount()})</button></div>`;
 
   // Shell --------------------------------------------------------------------
+  // Order: mode cards → active-mode content (#tt-body) → unified Windows keyboard-help
+  // box. The help box lives in the shell AFTER #tt-body, so it stays pinned at the
+  // bottom of the section across every mode re-render (which only replace #tt-body).
   panel.innerHTML =
-    `<div class="tt-kbdnote"><div class="tt-kbdnote-lead">On Windows, press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between installed keyboard languages. Arabic must already be added as a Windows keyboard language.</div>`
+    `<div class="tt-modes" role="group" aria-label="Test mode">`
+     + MODES.map(m=>`<button type="button" class="tt-mode" data-mode="${m.id}" aria-pressed="${m.id===mode}">${esc(m.label)}<span class="tt-mdesc">${esc(m.desc)}</span></button>`).join('')
+   +`</div><div id="tt-body"></div>`
+   +`<div class="tt-kbdnote"><div class="tt-kbdnote-lead">On Windows, press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between installed keyboard languages. Arabic must already be added as a Windows keyboard language.</div>`
      +`<details class="tt-help"><summary>How to add the Arabic keyboard on Windows</summary>`
        +`<ol><li>Open <b>Windows Settings</b>.</li><li>Go to <b>Time &amp; language</b>.</li><li>Open <b>Language &amp; region</b>.</li>`
-       +`<li>Add <b>Arabic</b> as a language or keyboard.</li><li>Press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between English and Arabic.</li></ol></details></div>`
-   +`<div class="tt-modes" role="group" aria-label="Test mode">`
-     + MODES.map(m=>`<button type="button" class="tt-mode" data-mode="${m.id}" aria-pressed="${m.id===mode}">${esc(m.label)}<span class="tt-mdesc">${esc(m.desc)}</span></button>`).join('')
-   +`</div><div id="tt-body"></div>`;
+       +`<li>Add <b>Arabic</b> as a language or keyboard.</li><li>Press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between English and Arabic.</li></ol></details></div>`;
 
   const body = panel.querySelector('#tt-body');
   panel.querySelectorAll('.tt-mode').forEach(b => b.addEventListener('click', () => setMode(b.dataset.mode)));
