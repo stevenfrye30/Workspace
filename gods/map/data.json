@@ -5681,7 +5681,7 @@
         "svayambhuva-manu",
         "marichi",
         "atri",
-        "rishis"
+        "saptarishi"
       ],
       "archetype": "creator",
       "parallels": [],
@@ -24921,7 +24921,8 @@
         "diti",
         "kadru",
         "vinata",
-        "rati"
+        "rati",
+        "twenty-seven-nakshatras"
       ],
       "archetype": null,
       "parallels": [],
@@ -24944,7 +24945,8 @@
         "kashyapa"
       ],
       "children": [
-        "hiranyakashipu"
+        "hiranyakashipu",
+        "daityas"
       ],
       "archetype": null,
       "parallels": [],
@@ -26606,6 +26608,106 @@
       "archetype": null,
       "parallels": [],
       "description": "Male asura described as the father of Mahishasura; distinct from Rambha, the female apsara of the same name."
+    },
+    {
+      "id": "daityas",
+      "name": "Daityas",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "asura-race",
+        "descendants-of-diti"
+      ],
+      "parents": [
+        "kashyapa",
+        "diti"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Collective race of asuras descended from Diti and Kashyapa; individual Daityas such as Hiranyakashipu are catalogued separately."
+    },
+    {
+      "id": "danavas",
+      "name": "Danavas",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "asura-race",
+        "descendants-of-danu"
+      ],
+      "parents": [
+        "kashyapa"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Collective race of asuras born of Kashyapa and the Hindu mother Danu, who is not separately catalogued here; often opposed to the devas."
+    },
+    {
+      "id": "maruts",
+      "name": "Maruts",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "storm-gods",
+        "wind",
+        "companions-of-indra"
+      ],
+      "parents": [
+        "rudra"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Band of storm and wind deities who accompany Indra; treated here as children of Rudra, while other traditions connect them with Diti."
+    },
+    {
+      "id": "saptarishi",
+      "name": "Saptarishis",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "seven-sages",
+        "mind-born-sages"
+      ],
+      "parents": [
+        "brahma"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The seven great sages associated with Brahma; their membership varies by cosmic age and source, and several sages of the Saptarishi traditions are catalogued individually."
+    },
+    {
+      "id": "twenty-seven-nakshatras",
+      "name": "Twenty-seven Nakshatras",
+      "pantheon": "hindu",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "lunar-mansions",
+        "wives-of-chandra",
+        "daughters-of-daksha"
+      ],
+      "parents": [
+        "daksha"
+      ],
+      "consorts": [
+        "chandra"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The twenty-seven lunar mansions, daughters of Daksha and collective wives of Chandra; his special affection for Rohini is associated with Daksha's curse and the moon's waxing and waning."
     }
   ],
   "notable_mentions": [
