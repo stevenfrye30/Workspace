@@ -59,7 +59,7 @@ window.MASRI.alphabet = {
       { L: "ض", sound: "ḍ", dots: "one dot above", ex_ar: "ضيف", ex: "ḍēf", ex_en: "guest" } ] },
     { letters: [
       { L: "ط", sound: "ṭ", dots: "no dots", ex_ar: "طيب", ex: "ṭayyeb", ex_en: "kind" },
-      { L: "ظ", sound: "heavy z", dots: "one dot above", ex_ar: "ظرف", ex: "zarf", ex_en: "envelope" } ] },
+      { L: "ظ", sound: "heavy z", dots: "one dot above", ex_ar: "ظرف", ex: "ẓarf", ex_en: "envelope" } ] },
     { letters: [
       { L: "ع", sound: "ʿ", dots: "no dots", ex_ar: "عين", ex: "ʿēn", ex_en: "eye" },
       { L: "غ", sound: "gh", dots: "one dot above", ex_ar: "غالي", ex: "ghāli", ex_en: "expensive" } ] },
@@ -87,7 +87,7 @@ window.MASRI.alphabet = {
     { letter: "ص", name: "ṣād",  name_ar: "صَاد",  sound: "ṣ (emphatic s)", ipa: "/sˤ/", connector: true, ex_ar: "صباح", ex: "ṣabāḥ", ex_en: "morning" },
     { letter: "ض", name: "ḍād",  name_ar: "ضَاد",  sound: "ḍ (emphatic d)", ipa: "/dˤ/", connector: true, ex_ar: "ضيف", ex: "ḍēf", ex_en: "guest" },
     { letter: "ط", name: "ṭāʾ",  name_ar: "طَاء",  sound: "ṭ (emphatic t)", ipa: "/tˤ/", connector: true, ex_ar: "طيب", ex: "ṭayyeb", ex_en: "kind / nice" },
-    { letter: "ظ", name: "ẓāʾ",  name_ar: "ظَاء",  sound: "often a heavy z", ipa: "/zˤ/", connector: true, ex_ar: "ظرف", ex: "zarf", ex_en: "envelope", note: "Egyptian: often a heavy z; formal transliteration ẓ." },
+    { letter: "ظ", name: "ẓāʾ",  name_ar: "ظَاء",  sound: "often a heavy z", ipa: "/zˤ/", connector: true, ex_ar: "ظرف", ex: "ẓarf", ex_en: "envelope", note: "Egyptian: often a heavy z; formal transliteration ẓ." },
     { letter: "ع", name: "ʿayn", name_ar: "عَيْن", sound: "ʿ (throat sound)", ipa: "/ʕ/", connector: true, ex_ar: "عين", ex: "ʿēn", ex_en: "eye" },
     { letter: "غ", name: "ghayn",name_ar: "غَيْن", sound: "gh", ipa: "/ɣ/", connector: true, ex_ar: "غالي", ex: "ghāli", ex_en: "expensive" },
     { letter: "ف", name: "fāʾ",  name_ar: "فَاء",  sound: "f", ipa: "/f/", connector: true, ex_ar: "فيل", ex: "fīl", ex_en: "elephant" },
@@ -170,7 +170,7 @@ window.MASRI.alphabet = {
       { sym: "ṣ", means: "emphatic (heavy) s", ex_tr: "ṣabāḥ", ex_en: "morning" },
       { sym: "ḍ", means: "emphatic (heavy) d", ex_tr: "ḍēf", ex_en: "guest" },
       { sym: "ṭ", means: "emphatic (heavy) t", ex_tr: "ṭayyeb", ex_en: "okay" },
-      { sym: "ẓ", means: "ظ — in Egyptian usually said as a heavy z", ex_tr: "zarf", ex_en: "envelope" }
+      { sym: "ẓ", means: "ظ — in Egyptian usually said as a heavy z", ex_tr: "ẓarf", ex_en: "envelope" }
     ],
     note: "Transliteration is a pronunciation aid. The Arabic spelling remains the main reference."
   },
