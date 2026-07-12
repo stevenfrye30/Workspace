@@ -65,8 +65,8 @@ main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
 #branches-grid { gap:14px; }
 .branch-card {
   position:relative; overflow:hidden;
-  display:flex; flex-direction:column; align-items:flex-start; gap:8px;
-  min-height:140px; text-align:left; font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+  min-height:140px; text-align:center; font-family:inherit;
   background:linear-gradient(180deg, var(--panel), var(--panel2));
   border:1px solid var(--line); border-radius:12px;
   padding:16px 18px 14px; cursor:pointer;
@@ -78,7 +78,7 @@ main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
   background:linear-gradient(90deg, transparent, var(--accent), transparent);
   opacity:0.35; transition:opacity .2s ease;
 }
-.branch-card .branch-head { display:flex; align-items:center; gap:9px; }
+.branch-card .branch-head { display:flex; align-items:center; justify-content:center; gap:9px; }
 .branch-card .branch-mark { color:var(--accent); font-size:17px; opacity:0.5; line-height:1; transition:opacity .2s ease; }
 .branch-card .branch-name {
   color:var(--accent); font-size:17px; letter-spacing:1.4px;
@@ -86,7 +86,7 @@ main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
 }
 .branch-card .branch-q { color:var(--muted); font-size:13.5px; line-height:1.5; }
 .branch-card .branch-go {
-  margin-top:auto; align-self:flex-end; color:var(--accent);
+  margin-top:auto; align-self:center; color:var(--accent);
   font-size:16px; opacity:0.35; transition:transform .2s ease, opacity .2s ease;
 }
 .branch-card:hover {
@@ -373,7 +373,7 @@ ul.clean li { margin:6px 0; }
 </header>
 <nav id="nav">
   <button data-tab="home" class="active">Home</button>
-  <button data-tab="resources">Resources</button>
+  <button data-tab="resources">Explore</button>
   <button data-tab="library">Library</button>
   <button data-tab="workspace">Workspace</button>
   <button data-tab="flashcards">Flashcards</button>
@@ -465,21 +465,21 @@ ul.clean li { margin:6px 0; }
 
 <section id="resources" class="tab">
   <nav class="lib-nav" id="res-nav">
-    <button data-res="hub" class="active">𓎟 Resource Hub</button>
-    <button data-res="graph">𓂀 Influence Graph</button>
-    <button data-res="trails">𓋹 Trails</button>
+    <button data-res="graph" class="active">𓂀 Influence Map</button>
+    <button data-res="trails">𓋹 Thematic Trails</button>
     <button data-res="paths">𓏛 Reading Paths</button>
-    <button data-res="tables">𓊽 Compare</button>
+    <button data-res="tables">𓊽 Compare Ideas</button>
+    <button data-res="hub">𓎟 External Resources</button>
   </nav>
 
-  <div id="respanel-hub" class="lib-panel active">
-    <h2>Resource Hub</h2>
+  <div id="respanel-hub" class="lib-panel">
+    <h2>External Resources</h2>
     <p style="color:var(--muted);font-style:italic">Compiled by Mercedes Corredor (Virginia Tech).</p>
     <div id="resources-body" class="resource-section"></div>
   </div>
 
-  <div id="respanel-graph" class="lib-panel">
-    <h2>Influence Graph</h2>
+  <div id="respanel-graph" class="lib-panel active">
+    <h2>Influence Map</h2>
     <p>A force-directed network of philosophical influence. Drag nodes, zoom, click a node to open its biography. Only major figures are shown by default to keep the graph readable.</p>
     <div class="filters">
       <select id="graph-scope">
@@ -505,7 +505,7 @@ ul.clean li { margin:6px 0; }
   </div>
 
   <div id="respanel-tables" class="lib-panel">
-    <h2>Compare <button class="print-btn" onclick="window.print()">Print</button></h2>
+    <h2>Compare Ideas <button class="print-btn" onclick="window.print()">Print</button></h2>
     <p>Side-by-side tables of positions across philosophers on major questions.</p>
     <div id="tables-body"></div>
   </div>
@@ -564,8 +564,11 @@ DATA.philosophers.forEach((p,i) => { byName[p.name] = i; });
 // ===== Tabs & hash routing =====
 const LIB_PANELS = ['philosophers','schools','glossary','quotes','excerpts'];
 // Home is now a single welcome page. The graph, trails, reading paths and compare
-// tables moved under Resources; MOVED_FROM_HOME keeps their old links working.
-const RES_PANELS = ['hub','graph','trails','paths','tables'];
+// tables moved under the Explore tab; MOVED_FROM_HOME keeps their old links working.
+// The route namespace stays 'resources' so every existing link keeps resolving.
+// Order matches the visible subtab order; the first entry is the default panel.
+const RES_PANELS = ['graph','trails','paths','tables','hub'];
+const RES_DEFAULT = RES_PANELS[0];
 const MOVED_FROM_HOME = ['graph','trails','paths','tables'];
 const ENTITY_ROUTES = ['philosopher','branch','school','term'];
 const KNOWN_TABS = ['home','resources','library','workspace','flashcards'];
@@ -578,7 +581,7 @@ function setLibPanel(name) {
   });
 }
 function setResPanel(name) {
-  if (!RES_PANELS.includes(name)) name = 'hub';
+  if (!RES_PANELS.includes(name)) name = RES_DEFAULT;
   $$('#res-nav button').forEach(b => b.classList.toggle('active', b.dataset.res===name));
   RES_PANELS.forEach(p => {
     const el = document.getElementById('respanel-' + p);
@@ -627,7 +630,7 @@ function handleHash() {
   else if (MOVED_FROM_HOME.includes(tab)) { setResPanel(tab); tab = 'resources'; }
   else if (tab === 'branches') { tab = 'home'; }
   else if (tab === 'library') { setLibPanel(parts[1] || 'philosophers'); }
-  else if (tab === 'resources') { setResPanel(parts[1] || 'hub'); }
+  else if (tab === 'resources') { setResPanel(parts[1] || RES_DEFAULT); }
   // Old #/home/<panel> links: branches stays Home, the rest now live in Resources.
   else if (tab === 'home' && MOVED_FROM_HOME.includes(parts[1])) { setResPanel(parts[1]); tab = 'resources'; }
   setTab(KNOWN_TABS.includes(tab) ? tab : 'home');
