@@ -14850,7 +14850,7 @@
       ],
       "parents": [],
       "consorts": [
-        "terra"
+        "tellus"
       ],
       "children": [
         "saturn",
@@ -28939,6 +28939,529 @@
       "archetype": null,
       "parallels": [],
       "description": "Aztec 'Flower Prince', god of flowers, music, dance, games, and pleasure; a male counterpart in domain to Xochiquetzal, associated with her in the sources without an asserted family or identity link here."
+    },
+    {
+      "id": "vertumnus",
+      "name": "Vertumnus",
+      "pantheon": "roman",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "seasons",
+        "change",
+        "gardens"
+      ],
+      "parents": [],
+      "consorts": [
+        "pomona"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Roman god of the seasons, ripening, and change, and husband of the orchard-goddess Pomona. He carries an older Etruscan background (Voltumna) but is received here as a Roman deity, not reassigned to the Etruscan pantheon."
+    },
+    {
+      "id": "juturna",
+      "name": "Juturna",
+      "pantheon": "roman",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "springs",
+        "wells",
+        "fountains"
+      ],
+      "parents": [],
+      "consorts": [
+        "janus"
+      ],
+      "children": [
+        "fons"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Roman goddess of springs, wells, and fountains, honoured at a pool in the Forum; in the tradition followed here she is a consort of Janus and mother of Fons."
+    },
+    {
+      "id": "fons",
+      "name": "Fons",
+      "pantheon": "roman",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "wells",
+        "springs"
+      ],
+      "parents": [
+        "janus",
+        "juturna"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Roman god of wells and springs, whose festival the Fontinalia fell in October; counted in one genealogical tradition as the son of Janus and Juturna."
+    },
+    {
+      "id": "salacia",
+      "name": "Salacia",
+      "pantheon": "roman",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "sea",
+        "saltwater"
+      ],
+      "parents": [],
+      "consorts": [
+        "neptune"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Roman goddess of salt water and the deep sea, the consort of Neptune. A genuinely Roman cult figure rather than merely a Latin name for the Greek Amphitrite."
+    },
+    {
+      "id": "nerio",
+      "name": "Nerio",
+      "pantheon": "roman",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "valor",
+        "war",
+        "personification"
+      ],
+      "parents": [],
+      "consorts": [
+        "mars"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Archaic Roman personification of the valour and strength of Mars. The archive structures Mars's cult partners as consorts, and she is placed here accordingly; ancient and later accounts variously describe her as that martial force or explicitly as the wife of Mars."
+    },
+    {
+      "id": "tiberinus",
+      "name": "Tiberinus",
+      "pantheon": "roman",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "tiber",
+        "rivers"
+      ],
+      "parents": [
+        "janus"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Personified god of the river Tiber, invoked in Roman state cult for the river central to the city. One genealogical tradition, followed here, makes him a son of Janus; this is a single account rather than an uncontested Roman genealogy."
+    },
+    {
+      "id": "eriu",
+      "name": "Ériu",
+      "pantheon": "celtic-irish",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "sovereignty",
+        "ireland",
+        "land"
+      ],
+      "parents": [
+        "ernmas"
+      ],
+      "consorts": [
+        "elatha"
+      ],
+      "children": [
+        "bres"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sovereignty goddess of the Tuatha Dé Danann and eponym of Ireland (Éire), a daughter of Ernmas; her genealogy and consort traditions vary across sources, and the structured links here reflect one such tradition (consort Elatha, mother of Bres)."
+    },
+    {
+      "id": "banba",
+      "name": "Banba",
+      "pantheon": "celtic-irish",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "sovereignty",
+        "ireland"
+      ],
+      "parents": [
+        "ernmas"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "One of the three sovereignty goddesses who gave their names to Ireland, a daughter of Ernmas; her husband and further genealogy vary by source and are left to prose."
+    },
+    {
+      "id": "fodla",
+      "name": "Fódla",
+      "pantheon": "celtic-irish",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "sovereignty",
+        "ireland"
+      ],
+      "parents": [
+        "ernmas"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "One of the three sovereignty goddesses of Ireland alongside Ériu and Banba, a daughter of Ernmas; further relationships vary and are not structured here."
+    },
+    {
+      "id": "credne",
+      "name": "Credne",
+      "pantheon": "celtic-irish",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "metalworking",
+        "bronze",
+        "crafts"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Bronze- and metal-worker of the Tuatha Dé Danann, one of the three craft-gods (trí dé dána) with the smith Goibniu and the wright Luchta.",
+      "siblings": [
+        "goibniu",
+        "luchta"
+      ]
+    },
+    {
+      "id": "luchta",
+      "name": "Luchta",
+      "pantheon": "celtic-irish",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "carpentry",
+        "woodworking",
+        "crafts"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wright and carpenter of the Tuatha Dé Danann, one of the three craft-gods with Goibniu and Credne, who together made the weapons for the second battle of Mag Tuired.",
+      "siblings": [
+        "goibniu",
+        "credne"
+      ]
+    },
+    {
+      "id": "cian",
+      "name": "Cian",
+      "pantheon": "celtic-irish",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "father-of-lugh"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "lugh"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Father of the god Lugh in Irish tradition; Lugh's mother was Ethniu, daughter of the Fomorian Balor, named here in prose rather than as a separate record."
+    },
+    {
+      "id": "chasca",
+      "name": "Ch’aska",
+      "pantheon": "inca",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "venus",
+        "dawn",
+        "twilight"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Andean goddess associated with the planet Venus and the light of dawn and dusk, a herald and attendant of the sun Inti."
+    },
+    {
+      "id": "urcuchillay",
+      "name": "Urcuchillay",
+      "pantheon": "inca",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "llamas",
+        "herding",
+        "constellation"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Andean protector deity of llamas and herds, identified with a dark-cloud constellation (the Llama) in the night sky and venerated by pastoralists."
+    },
+    {
+      "id": "coniraya",
+      "name": "Cuniraya",
+      "pantheon": "inca",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "creation",
+        "trickster",
+        "fertility"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Coastal creator and trickster deity of the Huarochirí Manuscript who wandered in disguise animating the land. Though the source pairs his name with Viracocha, he is treated here as a distinct local creator-form rather than simply identified with the highland Viracocha."
+    },
+    {
+      "id": "cavillaca",
+      "name": "Cavillaca",
+      "pantheon": "inca",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "maiden",
+        "transformation"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Divine maiden of the Huarochirí Manuscript who conceived a child after unknowingly eating a fruit into which Cuniraya had transformed his seed; refusing him, she fled to the sea and was turned to stone. This is not modelled as a marriage or ordinary union."
+    },
+    {
+      "id": "suwa",
+      "name": "Suwāʿ",
+      "pantheon": "arabian",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "pre-islamic-idol"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Pre-Islamic Arabian deity named in the Qur'an (71:23) among the idols of the people of Noah. Later Islamic historical and exegetical tradition, such as Ibn al-Kalbi's Book of Idols, describes tribal worship and a female form; these details belong to that later tradition rather than to the Qur'anic verse itself."
+    },
+    {
+      "id": "yaghuth",
+      "name": "Yaghūth",
+      "pantheon": "arabian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "pre-islamic-idol"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Pre-Islamic Arabian deity named in the Qur'an (71:23) among the idols of Noah's people. Later Islamic tradition associates the name with particular tribes and, in some accounts, a lion form; the verse itself names only the deity."
+    },
+    {
+      "id": "yauq",
+      "name": "Yaʿūq",
+      "pantheon": "arabian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "pre-islamic-idol"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Pre-Islamic Arabian deity named in the Qur'an (71:23). Later exegetical and historical tradition links the name to specific tribes and, in some accounts, a horse form, which are not stated directly in the verse."
+    },
+    {
+      "id": "nasr",
+      "name": "Nasr",
+      "pantheon": "arabian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "pre-islamic-idol"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Pre-Islamic Arabian deity named in the Qur'an (71:23). Later Islamic tradition associates the name with tribal worship and, in some accounts, a vulture or eagle form; the Qur'anic verse names only the deity."
+    },
+    {
+      "id": "almaqah",
+      "name": "Almaqah",
+      "pantheon": "arabian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "sabaean",
+        "state-cult",
+        "protection",
+        "agriculture"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Chief national deity of the ancient South Arabian kingdom of Saba, worshipped prominently at the Awwam sanctuary (Mahram Bilqis) near Marib and attested also in the Ethio-Sabaean sphere. His lunar versus solar character is a disputed scholarly classification and he is not linked structurally to another astral deity here."
+    },
+    {
+      "id": "tsovinar",
+      "name": "Tsovinar",
+      "pantheon": "armenian",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "sea",
+        "rain",
+        "storms"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Armenian goddess associated with the sea, rain, and storm; a fiery water-being in tradition. Later epic genealogies attached to her name are left to prose rather than structured fields."
+    },
+    {
+      "id": "barsamin",
+      "name": "Barsamin",
+      "pantheon": "armenian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "sky",
+        "weather"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Armenian god of the sky and weather whose name and cult derive from the West Semitic Baʿal Šamem (Baʿal Shamin, 'lord of the heavens'); he is kept here as a distinct Armenian record without a merged or structured Semitic parallel."
+    },
+    {
+      "id": "hayk",
+      "name": "Hayk",
+      "pantheon": "armenian",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "progenitor",
+        "archery",
+        "founder"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Legendary ancestral patriarch and culture hero of the Armenians, the master archer who in tradition slew the tyrant Bel and led his people to their homeland; no royal genealogy is opened here."
+    },
+    {
+      "id": "aray",
+      "name": "Ara the Beautiful",
+      "pantheon": "armenian",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "beauty",
+        "legendary-king",
+        "armenian-hero"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Legendary Armenian king renowned for his beauty. In the preserved legend the Assyrian queen Shamiram (Semiramis) desired him, he fell in battle against her, and she sought to have him restored to life. Later scholars have interpreted the figure in terms of fertility or a dying-and-returning divinity; that reading is noted only as interpretation."
+    },
+    {
+      "id": "thanh-giong",
+      "name": "Thánh Gióng",
+      "pantheon": "vietnamese",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "hero",
+        "defense",
+        "iron-horse"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Phù Đổng Thiên Vương, the boy of Vietnamese legend who grew overnight into a giant warrior and, riding an iron horse, drove off invaders before ascending to heaven; counted among the Four Immortals of Vietnamese tradition."
+    },
+    {
+      "id": "chu-dong-tu",
+      "name": "Chử Đồng Tử",
+      "pantheon": "vietnamese",
+      "category": "deified-human",
+      "gender": "M",
+      "domains": [
+        "immortal",
+        "wealth",
+        "marshland"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A poor marshland fisherman of Vietnamese legend who, through virtue and a fated marriage, attained immortality; one of the Four Immortals. His wife Tiên Dung is mentioned here in prose only."
+    },
+    {
+      "id": "lieu-hanh",
+      "name": "Liễu Hạnh",
+      "pantheon": "vietnamese",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "mother-goddess",
+        "dao-mau",
+        "four-immortals"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Princess Liễu Hạnh, a principal deity of the Vietnamese Đạo Mẫu (Mother Goddess) tradition and one of the Four Immortals; her role is specifically that of the venerated Mother Goddess rather than a generic creator or universal mother-goddess."
     }
   ],
   "notable_mentions": [
