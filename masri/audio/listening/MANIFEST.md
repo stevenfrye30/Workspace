@@ -16,7 +16,7 @@ to `true` in `data/listening.js` to activate playback.
 ### greetings
 | File | Optional slow | Arabic | English |
 |---|---|---|---|
-| `greet-01.ogg` | `greet-01-slow.ogg` | إزيّك؟ | How are you? (to a man) |
+| `greet-01.ogg` | `greet-01-slow.ogg` | إزيك؟ | How are you? (to a man) |
 | `greet-02.ogg` | `greet-02-slow.ogg` | صباح الخير | Good morning |
 | `greet-03.ogg` | `greet-03-slow.ogg` | أهلاً! | Hi! / Welcome! |
 

@@ -38,7 +38,7 @@ window.MASRI.listening = {
     // ── Greetings ──────────────────────────────────────────────
     { id:"greet-01", topic:"greetings", arabic:"إزيك؟", transliteration:"ezzayyak?", english:"How are you? (to a man)",
       promptEnglish:"Greet a male friend and ask how he’s doing.", suggestedResponse:"الحمد لله، وإنت؟", audio:"greet-01.ogg", difficulty:1 },
-    { id:"greet-02", topic:"greetings", arabic:"صباح الخير", transliteration:"ṣabāḥ el-kheer", english:"Good morning",
+    { id:"greet-02", topic:"greetings", arabic:"صباح الخير", transliteration:"ṣabāḥ el-khēr", english:"Good morning",
       promptEnglish:"Say good morning to someone.", suggestedResponse:"صباح النور", audio:"greet-02.ogg", difficulty:1 },
     { id:"greet-03", topic:"greetings", arabic:"أهلاً!", transliteration:"ahlan!", english:"Hi! / Welcome!",
       promptEnglish:"Greet someone casually.", suggestedResponse:"أهلاً بيك", audio:"greet-03.ogg", difficulty:1 },
