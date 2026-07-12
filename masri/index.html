@@ -753,12 +753,62 @@
   .dfn-stat{background:var(--surf2);border:1px solid var(--border);border-radius:20px;padding:4px 11px;font-family:var(--ui);font-size:11.5px;color:var(--muted);white-space:nowrap}
   .dfn-stat b{color:var(--fg);font-weight:600;margin-left:4px}
   .dfn-stat.lives b{color:var(--gold)}
-  .dfn-field{position:relative;height:260px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
-  .dfn-wall{position:absolute;top:0;bottom:0;left:0;width:34px;background:repeating-linear-gradient(0deg,var(--card),var(--card) 8px,var(--surf) 8px,var(--surf) 16px);border-right:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:15px;z-index:2}
-  .dfn-wall.hit{border-right-color:#e06666}
-  .dfn-enemy{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;transform:translateY(-50%);will-change:left;z-index:1}
+  /* The map. A fixed aspect ratio box: every coordinate is a percentage of it, so the
+     whole board scales down on a phone rather than forcing a horizontal scroll. */
+  .dfn-field{position:relative;width:100%;aspect-ratio:100/62;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:10px}
+  @supports not (aspect-ratio:1/1){ .dfn-field{height:300px} }
+  .dfn-svg{position:absolute;inset:0;width:100%;height:100%}
+  .dfn-route{fill:none;stroke:var(--border);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
+  .dfn-scen{fill:var(--card);stroke:var(--border);stroke-width:.4}
+  .dfn-gate{position:absolute;transform:translate(-50%,-50%);font-size:13px;line-height:1;z-index:1;opacity:.75}
+  /* Villages: healthy → damaged → destroyed. State is shown by TEXT + icon + border,
+     never by colour alone. */
+  .dfn-vil{position:absolute;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:1px;
+           background:var(--card);border:1px solid var(--green);border-radius:10px;padding:3px 7px;white-space:nowrap}
+  .dfn-vil .vic{font-size:19px;line-height:1}
+  .dfn-vil .vin{font-family:var(--ui);font-size:9.5px;color:var(--muted);letter-spacing:.03em}
+  .dfn-vil .vip{font-family:var(--ui);font-size:10px;font-weight:600;color:var(--green)}
+  .dfn-vil.damaged{border-color:var(--gold)} .dfn-vil.damaged .vip{color:var(--gold)}
+  .dfn-vil.dead{border-color:#e06666;opacity:.75} .dfn-vil.dead .vip{color:#e06666}
+  .dfn-vil.struck{animation:dfnstruck .45s ease-out}
+  @keyframes dfnstruck{ 0%,100%{transform:translate(-50%,-50%)} 25%{transform:translate(-54%,-50%)} 75%{transform:translate(-46%,-50%)} }
+  /* Villagers and animals. One shared loop moves them; no timer per NPC. */
+  .dfn-npc{position:absolute;font-size:15px;line-height:1;z-index:2;will-change:transform;pointer-events:none}
+  .dfn-npc.panic{animation:dfnpanic .3s linear infinite}
+  @keyframes dfnpanic{ 0%,100%{transform:translate(-50%,-50%) rotate(-12deg)} 50%{transform:translate(-50%,-50%) rotate(12deg)} }
+  .dfn-npc.eaten{opacity:0;transform:translate(-50%,-50%) scale(.4);transition:opacity .3s ease,transform .3s ease}
+  /* Stylised, non-realistic hit: a red flash plus a bone/dust puff. No gore. */
+  .dfn-splat{position:absolute;transform:translate(-50%,-50%);z-index:4;pointer-events:none;font-size:17px;
+             animation:dfnsplat .7s ease-out forwards}
+  @keyframes dfnsplat{ 0%{opacity:1;transform:translate(-50%,-50%) scale(.7)} 100%{opacity:0;transform:translate(-50%,-140%) scale(1.25)} }
+  .dfn-flash{position:absolute;inset:0;z-index:3;background:rgba(224,102,102,.28);pointer-events:none;animation:dfnflash .42s ease-out forwards}
+  @keyframes dfnflash{ from{opacity:1} to{opacity:0} }
+  .dfn-enemy{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;z-index:5;will-change:transform}
+  .dfn-enemy.attacking .dfn-emoji{animation:dfnbite .28s linear infinite}
+  @keyframes dfnbite{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
+  /* Village roster chips in the HUD. */
+  .dfn-vils{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
+  .dfn-vchip{background:var(--surf2);border:1px solid var(--green);border-radius:20px;padding:4px 11px;font-family:var(--ui);font-size:11.5px;color:var(--muted);white-space:nowrap}
+  .dfn-vchip b{color:var(--green);font-weight:600;margin-left:4px}
+  .dfn-vchip.damaged{border-color:var(--gold)} .dfn-vchip.damaged b{color:var(--gold)}
+  .dfn-vchip.dead{border-color:#e06666;text-decoration:line-through} .dfn-vchip.dead b{color:#e06666}
+  @media (prefers-reduced-motion: reduce){
+    .dfn-npc.panic,.dfn-enemy.attacking .dfn-emoji,.dfn-vil.struck{animation:none}
+    .dfn-splat{animation:dfnsplatrm 1s ease-out forwards}
+    @keyframes dfnsplatrm{ from{opacity:1} to{opacity:0} }
+  }
   .dfn-ar{font-family:var(--ar);font-size:calc(19px * var(--ar-scale));color:var(--fg);direction:rtl;unicode-bidi:isolate;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:1px 8px;line-height:1.5;white-space:nowrap}
-  .dfn-emoji{font-size:20px;line-height:1}
+  .dfn-emoji{font-size:22px;line-height:1}
+  /* Phones: give the board a TALLER box. x and y are mapped independently from the
+     measured element, so a different aspect simply spreads the map out — no distortion
+     of routes, zones or collisions — and the villages stop colliding with their NPCs. */
+  @media (max-width:600px){
+    .dfn-field{aspect-ratio:100/88}
+    .dfn-emoji{font-size:18px} .dfn-npc{font-size:12px}
+    .dfn-vil{padding:2px 5px;gap:0} .dfn-vil .vic{font-size:15px}
+    .dfn-vil .vin{font-size:8.5px} .dfn-vil .vip{font-size:9px}
+    .dfn-gate{font-size:11px}
+  }
   /* Prefix highlight: border + weight + a caret, never colour alone. */
   .dfn-enemy.match .dfn-ar{border-color:var(--gold);color:var(--gold);font-weight:600;box-shadow:0 0 0 1px var(--gold)}
   .dfn-enemy.match .dfn-ar::after{content:"▸";margin-right:5px;font-size:11px}
@@ -805,12 +855,9 @@
   @media (prefers-reduced-motion: reduce){
     .dfn-enemy{will-change:auto}
     .dfn-enemy.gone .dfn-ar,.dfn-enemy.gone .dfn-emoji{transition:none}
-    .dfn-wall.hit{animation:none}
     .dfn-float{animation:none;opacity:.9}
   }
   @media (max-width:600px){
-    .dfn-field{height:210px}
-    .dfn-wall{width:26px;font-size:13px}
     .dfn-ar{font-size:calc(16px * var(--ar-scale));padding:1px 6px}
     .dfn-emoji{font-size:17px}
     .dfn-stat{font-size:11px;padding:3px 9px}
@@ -818,8 +865,8 @@
   }
   /* Narrow phones: shrink the emoji, never the Arabic — the target is the content. */
   @media (max-width:380px){
-    .dfn-emoji{font-size:14px}
-    .dfn-wall{width:22px;font-size:11px}
+    .dfn-emoji{font-size:16px}
+    .dfn-ar{font-size:calc(15px * var(--ar-scale))}
     .dfn-res div{flex:1 1 44%}
   }
   .tt-passfullseg.cur{color:var(--fg);background:rgba(217,164,65,.15);border-radius:4px;padding:0 3px}
@@ -3061,7 +3108,7 @@ function renderTableCards(arr){
   //          wall is a MISS, not a submission, so it never counts against accuracy.
   const DCFG = (M.typing && M.typing.defense) || {};
   const DEMOJI = DCFG.emoji || ['👾'];
-  const DROUND = DCFG.round || 15, DLIVES = DCFG.lives || 3, DLANES = DCFG.lanes || 4;
+  const DROUND = DCFG.round || 15, DLIVES = DCFG.lives || 3;
   const DSPEEDS = DCFG.speeds || { normal:{label:'Normal',cross:18,gap:2.4,mult:1.25} };
   const DSCORE = DCFG.score || { base:100, streakBonus:10 };
   const DEF_MODES = [ {id:'letters',label:'Letters'}, {id:'words',label:'Words'} ];
@@ -3252,13 +3299,76 @@ function renderTableCards(arr){
     return base;
   }
 
+  // ── VILLAGE MAP (phase one) ───────────────────────────────────────────────
+  // A fixed node/edge network in a 100 x 62 coordinate space (the field's aspect ratio),
+  // NOT free-form pathfinding: routes gate→village are breadth-first searched ONCE at
+  // load and cached, so a frame never does graph work. Every position is a percentage,
+  // so the board scales instead of scrolling on a phone.
+  const VCFG = DCFG.village || {};
+  const MAP_W = 100, MAP_H = 62;
+  const NODES = {
+    g1:{x:3,  y:8,  gate:true},  g2:{x:50, y:3,  gate:true},
+    g3:{x:97, y:20, gate:true},  g4:{x:52, y:59, gate:true},
+    j1:{x:24, y:12}, j2:{x:50, y:20}, j3:{x:72, y:22},
+    j4:{x:26, y:46}, j5:{x:52, y:40}, j6:{x:86, y:38},
+    v1:{x:14, y:30, vil:'v1'}, v2:{x:82, y:9,  vil:'v2'}, v3:{x:76, y:53, vil:'v3'}
+  };
+  const EDGES = [
+    ['g1','j1'], ['j1','v1'], ['j1','j2'], ['g2','j2'], ['j2','j3'], ['j2','j5'],
+    ['j3','v2'], ['j3','j6'], ['g3','j6'], ['j6','v2'], ['j6','v3'], ['j5','j3'],
+    ['g4','j5'], ['j5','j4'], ['j4','v1'], ['j5','v3'], ['j4','j2']
+  ];
+  const ADJ = (function(){
+    const a = {}; Object.keys(NODES).forEach(k => a[k] = []);
+    EDGES.forEach(([u,v]) => { a[u].push(v); a[v].push(u); });
+    return a;
+  })();
+  const GATES = Object.keys(NODES).filter(k => NODES[k].gate);
+  const VNODES = { v1:'v1', v2:'v2', v3:'v3' };
+  // BFS once per (from,to). Cached — a retarget mid-route is a map lookup, not a search.
+  const ROUTES = {};
+  function routeKey(a,b){ return a+'>'+b; }
+  function findRoute(from, to){
+    const k = routeKey(from,to);
+    if(ROUTES[k]) return ROUTES[k];
+    const prev = { [from]: null }, q = [from];
+    while(q.length){
+      const cur = q.shift();
+      if(cur === to) break;
+      ADJ[cur].forEach(nx => { if(!(nx in prev)){ prev[nx] = cur; q.push(nx); } });
+    }
+    if(!(to in prev)) return (ROUTES[k] = null);
+    const path = []; let c = to;
+    while(c){ path.unshift(c); c = prev[c]; }
+    return (ROUTES[k] = path);
+  }
+  const dist = (a,b) => Math.hypot(NODES[a].x-NODES[b].x, NODES[a].y-NODES[b].y);
+  function routeLen(path){ let L=0; for(let i=1;i<path.length;i++) L += dist(path[i-1], path[i]); return L; }
+
+  const VILLAGE_DEFS = VCFG.villages || [
+    { id:'v1', name:'Bahari',  icon:'🏘️' },
+    { id:'v2', name:'Qibli',   icon:'🏡' },
+    { id:'v3', name:'Wahaat',  icon:'🕌' }
+  ];
+  const NPC_KINDS = VCFG.npcs || [
+    { e:'🧍', kind:'villager' }, { e:'🧕', kind:'villager' }, { e:'👨‍🌾', kind:'villager' },
+    { e:'🐐', kind:'animal' },   { e:'🐕', kind:'animal' },   { e:'🐔', kind:'animal' },
+    { e:'🐄', kind:'animal' }
+  ];
+  const OCCUPANTS = VCFG.occupants || 5;     // per village
+  const WANDER_R  = VCFG.wanderRadius || 6;  // NPCs never leave their own village zone
+  const PANIC_R   = VCFG.panicRadius  || 13; // how close a zombie must be to scare them
+  const REACH_R   = VCFG.reachRadius  || 2.5;// zombie "arrives" at the village
+
   // Game state. Session-only: nothing here is ever persisted.
+  // D.lives = villages STILL STANDING. Keeping the name means endRound(), defAdvice()
+  // and the whole 1.3 result pipeline keep working untouched.
   const D = { phase:'setup', enemies:[], spawned:0, resolved:0, lives:DLIVES, score:0,
               streak:0, best:0, correct:0, wrong:0, defeated:0, missed:[], deck:null,
               queue:null, queueLabel:'', raf:0, lastTs:0, nextSpawn:0, fb:'', fbCls:'',
               timers:new Set(), count:0, composing:false, trackW:0,
               phase2:'', wait:0, last:[], nearMiss:[], missCount:{},
-              clock:0, records:[] };
+              clock:0, records:[], villages:[], npcs:[], mapW:0, mapH:0, lastGate:'' };
 
   // ONE media-query object, read from a cached boolean — not re-queried per frame.
   const RM_MQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -3300,9 +3410,105 @@ function renderTableCards(arr){
     D.best=0; D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.queue=null;
     D.queueLabel=''; D.fb=''; D.fbCls=''; D.nextSpawn=0; D.composing=false;
     D.phase2=''; D.wait=0; D.last=[]; D.nearMiss=[]; D.missCount={};
-    D.clock=0; D.records=[];
+    D.clock=0; D.records=[]; D.lastGate='';
+    buildVillages();
   }
   function defStop(){ defAbort(); defResetState(); }
+
+  // ── VILLAGES + NPCs ───────────────────────────────────────────────────────
+  // Occupants are the "lives" of a village: lose them all and the village falls.
+  // NPCs wander only inside their own village zone (never across the map) and are
+  // moved by the SAME rAF loop as the zombies — no timer per NPC.
+  function buildVillages(){
+    D.npcs = [];
+    D.villages = VILLAGE_DEFS.map(def => {
+      const nd = NODES[def.id];
+      const v = { id:def.id, name:def.name, icon:def.icon, x:nd.x, y:nd.y,
+                  occupants:OCCUPANTS, alive:true, el:null, struckAt:0 };
+      for(let i=0;i<OCCUPANTS;i++){
+        const k = NPC_KINDS[(i + VILLAGE_DEFS.indexOf(def)*2) % NPC_KINDS.length];
+        const a = (i / OCCUPANTS) * Math.PI * 2;
+        const r = WANDER_R * (0.45 + 0.5 * ((i*7)%5)/5);
+        D.npcs.push({ id:def.id+'-n'+i, vid:def.id, emoji:k.e, kind:k.kind, alive:true, el:null,
+                      hx:nd.x, hy:nd.y,                       // home = village centre
+                      x:nd.x + Math.cos(a)*r, y:nd.y + Math.sin(a)*r,
+                      ph:a, sp:0.55 + ((i*13)%7)/14, panic:false });
+      }
+      return v;
+    });
+    D.lives = D.villages.length;
+  }
+  const livingVillages = () => D.villages.filter(v => v.alive);
+  function villageOf(id){ return D.villages.find(v => v.id===id); }
+  function npcsOf(id){ return D.npcs.filter(nn => nn.vid===id && nn.alive); }
+
+  // ── coordinate helpers: map units (0..100 x, 0..62 y) → pixels ─────────────
+  function measureMap(){
+    const f = body.querySelector('#dfn-field'); if(!f) return;
+    D.mapW = f.clientWidth; D.mapH = f.clientHeight;
+  }
+  const px = (x) => (x / MAP_W) * (D.mapW || 600);
+  const py = (y) => (y / MAP_H) * (D.mapH || 372);
+  function place(el, x, y){
+    if(!el) return;
+    el.style.transform = 'translate3d(' + Math.round(px(x)) + 'px,' + Math.round(py(y)) + 'px,0) translate(-50%,-50%)';
+  }
+  function placeAll(){
+    D.villages.forEach(v => place(v.el, v.x, v.y));
+    D.npcs.forEach(nn => place(nn.el, nn.x, nn.y));
+    D.enemies.forEach(placeEnemy);
+  }
+
+  // Static scenery + routes, drawn once as SVG. Decorative only — it never overlaps the
+  // Arabic labels, which live in DOM above it.
+  function mapSvg(){
+    const line = ([u,v]) => `<line x1="${NODES[u].x}" y1="${NODES[u].y}" x2="${NODES[v].x}" y2="${NODES[v].y}" class="dfn-route"/>`;
+    const rocks = [[38,8],[64,12],[18,20],[92,28],[36,32],[62,32],[10,44],[44,54],[68,44],[90,50],[28,4],[8,56]];
+    return `<svg class="dfn-svg" viewBox="0 0 ${MAP_W} ${MAP_H}" preserveAspectRatio="none" aria-hidden="true">`
+      + EDGES.map(line).join('')
+      + rocks.map(([x,y],i) => i%2
+          ? `<circle cx="${x}" cy="${y}" r="1.9" class="dfn-scen"/>`
+          : `<rect x="${x-1.7}" y="${y-1.7}" width="3.4" height="3.4" rx="0.8" class="dfn-scen"/>`).join('')
+      + `</svg>`;
+  }
+  function mountMap(){
+    const f = body.querySelector('#dfn-field'); if(!f) return;
+    measureMap();
+    if(!f.querySelector('.dfn-svg')) f.insertAdjacentHTML('afterbegin', mapSvg());
+    GATES.forEach(g => {
+      const d = document.createElement('div');
+      d.className = 'dfn-gate'; d.textContent = '🚪';
+      d.style.left = '0'; d.style.top = '0';
+      f.appendChild(d); place(d, NODES[g].x, NODES[g].y);
+    });
+    D.villages.forEach(v => {
+      const d = document.createElement('div');
+      d.className = 'dfn-vil'; d.dataset.v = v.id; d.style.left='0'; d.style.top='0';
+      f.appendChild(d); v.el = d; paintVillage(v); place(d, v.x, v.y);
+    });
+    D.npcs.forEach(nn => {
+      const d = document.createElement('div');
+      d.className = 'dfn-npc'; d.textContent = nn.emoji; d.style.left='0'; d.style.top='0';
+      f.appendChild(d); nn.el = d; place(d, nn.x, nn.y);
+    });
+    D.enemies.forEach(mountEnemy);
+  }
+  function paintVillage(v){
+    if(!v.el) return;
+    const state = !v.alive ? 'dead' : (v.occupants <= Math.ceil(OCCUPANTS/2) ? 'damaged' : '');
+    v.el.className = 'dfn-vil' + (state ? ' ' + state : '');
+    v.el.innerHTML = `<span class="vic">${v.alive ? v.icon : '🔥'}</span>`
+      + `<span class="vin">${esc(v.name)}</span>`
+      + `<span class="vip">${v.alive ? v.occupants + '/' + OCCUPANTS : 'destroyed'}</span>`;
+  }
+  function syncVillages(){
+    const row = body.querySelector('#dfn-vils'); if(!row) return;
+    row.innerHTML = D.villages.map(v => {
+      const st = !v.alive ? 'dead' : (v.occupants <= Math.ceil(OCCUPANTS/2) ? 'damaged' : '');
+      return `<span class="dfn-vchip${st?' '+st:''}">${esc(v.name)}<b>`
+        + (v.alive ? v.occupants + '/' + OCCUPANTS + ' safe' : 'destroyed') + `</b></span>`;
+    }).join('');
+  }
   function defNewRound(queue, label){
     defAbort(); defResetState();
     D.queue = (queue && queue.length) ? queue : null;
@@ -3311,7 +3517,7 @@ function renderTableCards(arr){
   }
 
   function defAnnounce(msg){ const el=body.querySelector('#dfn-live'); if(el) el.textContent = msg; }
-  const livesWord = n => n===1 ? '1 life' : n+' lives';
+  const livesWord = n => n===1 ? '1 village standing' : n+' villages standing';
 
   function renderDefense(){
     const pool = defPool();
@@ -3339,13 +3545,14 @@ function renderTableCards(arr){
       + `<div class="tt-card">`
       + `<div class="dfn-stats" role="group" aria-label="Game state">`
         + `<span class="dfn-stat">Score<b>${D.score}</b></span>`
-        + `<span class="dfn-stat lives">Lives<b>${D.lives} of ${DLIVES}</b></span>`
+        + `<span class="dfn-stat lives">Villages<b>${D.lives} of ${DLIVES}</b></span>`
         + `<span class="dfn-stat">Streak<b>${D.streak}</b></span>`
-        + `<span class="dfn-stat">Progress<b>${D.resolved} / ${DROUND}</b></span>`
+        + `<span class="dfn-stat">Wave<b>${D.resolved} / ${DROUND}</b></span>`
         + `<span class="dfn-stat phase${D.phase2?' on':''}" id="dfn-phase">${esc(D.phase2||'')}</span>`
       + `</div>`
-      + `<div class="dfn-field" id="dfn-field" aria-hidden="true"><div class="dfn-wall" id="dfn-wall">🛡️</div>`
-        + (live ? '' : `<div class="dfn-empty">Enemies come from the right carrying an Arabic target. Type the target and press Enter to stop one before it reaches the wall.</div>`)
+      + `<div class="dfn-vils" id="dfn-vils" role="group" aria-label="Villages"></div>`
+      + `<div class="dfn-field" id="dfn-field" aria-hidden="true">`
+        + (live ? '' : `<div class="dfn-empty">Zombies enter from the gates around the edge and walk the paths toward your three villages. Type a zombie's Arabic target and press Enter to destroy it. One that gets through takes a villager or an animal — a village falls when it has no one left, and you lose only when all three are gone.</div>`)
         + (D.phase==='count' ? `<div class="dfn-count" id="dfn-count">Ready</div>` : '')
       + `</div>`
       + `<div id="dfn-live" class="sr-only" role="status" aria-live="polite"></div>`
@@ -3361,7 +3568,7 @@ function renderTableCards(arr){
             : `<button type="button" class="tt-btn primary" data-a="dstart"${pool.length?'':' disabled aria-disabled="true"'}>Start round</button>`
               + (recentMisses.length ? `<button type="button" class="tt-btn" data-a="drecent">Practice recent misses (${recentMisses.length})</button>` : ''))
       + `</div>`
-      + `<p class="dfn-note">${DROUND} enemies · ${DLIVES} lives · ${esc(DSPEEDS[defSpeed].label)} speed · `
+      + `<p class="dfn-note">${DROUND} zombies · ${DLIVES} villages · ${OCCUPANTS} people & animals each · ${esc(DSPEEDS[defSpeed].label)} speed · `
         + `<b>${esc(defMode==='words' ? 'Words' : 'Letters')}</b>`
         + ` · <b>${esc((defMode==='words'
               ? (DEF_WORD_CATS.find(c=>c.id===defWordCat)||{}).label
@@ -3373,9 +3580,9 @@ function renderTableCards(arr){
         + `<b>${pool.length}</b> unique target${pool.length===1?'':'s'} available`
         + (pool.length && pool.length < DROUND ? ` — fewer than ${DROUND}, so targets will repeat (spaced apart where possible).` : '.')
         + (pool.length ? '' : ' <b>No targets in this set yet</b> — play a round to collect recent misses, or pick another set.')
-        + ` Pacing eases you in, then tightens for the final wave. `
+        + ` The first zombies rush one gate together, then threats come from every gate. `
         + `Score = (${DSCORE.base} + ${DSCORE.streakBonus} × current streak) × ${DSPEEDS[defSpeed].mult}. `
-        + `A wrong Enter costs your streak, not a life. Escape clears the box. `
+        + `A wrong Enter costs your streak, not a villager. Escape clears the box. `
         + `Defense shows recent misses and slower targets a little more often.`
         + (recentMisses.length && !live ? ` <b>Recent misses</b> are the last targets that got through, saved across rounds — not only this round's.` : '')
       + `</p>`
@@ -3403,8 +3610,8 @@ function renderTableCards(arr){
       inp.addEventListener('input', ()=>{ if(!D.composing) defHighlight(inp.value); });
       if(canType) inp.focus();
     }
-    if(live) D.enemies.forEach(mountEnemy);
-    if(live) measureTrack();
+    if(live){ mountMap(); measureTrack(); }
+    syncVillages();
   }
 
   // Start: short "Ready / 3 / 2 / 1 / Defend" countdown, then spawning begins. The
@@ -3478,53 +3685,46 @@ function renderTableCards(arr){
     return weightedPick(pool, null);
   }
 
-  // LANE SELECTION (1.2). Round-robin let two long labels stack. Rule now:
-  //   1. estimate the new label's width (measured for the same text when possible)
-  //   2. for each lane, find its trailing enemy (largest x) and compute the clear space
-  //      between the field's right edge and that enemy's right edge, in px
-  //   3. pick the lane with the most clearance; require at least (labelWidth + laneGapPx)
-  //   4. if no lane qualifies, wait — but never longer than maxSpawnWaitSec, after which
-  //      the roomiest lane is used anyway so the round always progresses
-  const LANE_GAP = DCFG.laneGapPx || 18;
   const MAX_WAIT = DCFG.maxSpawnWaitSec || 2.5;
-  const widthCache = new Map();
-  function estWidth(ar){
-    if(widthCache.has(ar)) return widthCache.get(ar);
-    const field = body.querySelector('#dfn-field');
-    let w = 40 + ar.length * 12;                      // fallback estimate
-    if(field){
-      const probe = document.createElement('div');
-      probe.className='dfn-enemy'; probe.style.visibility='hidden'; probe.style.left='-9999px';
-      probe.innerHTML = `<span class="dfn-ar" dir="rtl">${esc(ar)}</span><span class="dfn-emoji">👾</span>`;
-      field.appendChild(probe); w = probe.offsetWidth || w; probe.remove();
-    }
-    widthCache.set(ar, w); return w;
+
+  // GATE + ROUTE. A zombie enters at an outer gate and walks the node network to a
+  // LIVING village. Gates rotate so threats arrive from different directions; the
+  // opening rush deliberately comes from one gate so a beginner sees what to do.
+  function pickGate(){
+    const opts = GATES.filter(g => g !== D.lastGate);
+    const g = (D.spawned < (VCFG.rushCount || 3))
+      ? GATES[0]                                   // opening rush: one visible column
+      : opts[Math.floor(Math.random() * opts.length)] || GATES[0];
+    D.lastGate = g; return g;
   }
-  function pickLane(ar){
-    const fieldW = D.fieldW || 600, wallW = D.wallW || 34;
-    const need = estWidth(ar) + LANE_GAP;
-    let bestLane = 0, bestClear = -Infinity;
-    for(let l=0; l<DLANES; l++){
-      const inLane = D.enemies.filter(e=>e.lane===l);
-      // trailing enemy = the one nearest the spawn edge (largest x)
-      let clear = fieldW;
-      if(inLane.length){
-        const trail = inLane.reduce((a,b)=> a.x>b.x ? a : b);
-        const track = Math.max(0, fieldW - wallW - (trail.w||40));
-        const trailRight = wallW + trail.x*track + (trail.w||40);
-        clear = fieldW - trailRight;
-      }
-      if(clear > bestClear){ bestClear = clear; bestLane = l; }
-    }
-    return { lane:bestLane, ok:bestClear >= need };
+  function pickVillage(){
+    const live = livingVillages();
+    if(!live.length) return null;
+    // Prefer the village with the most left to lose, so pressure spreads instead of
+    // dog-piling one village; ties broken randomly.
+    const max = Math.max(...live.map(v => v.occupants));
+    const top = live.filter(v => v.occupants === max);
+    return top[Math.floor(Math.random() * top.length)];
+  }
+  function assignRoute(e, fromNode){
+    const v = pickVillage();
+    if(!v) return false;
+    const path = findRoute(fromNode, v.id);
+    if(!path) return false;
+    e.vid = v.id; e.path = path; e.seg = 0; e.segT = 0;
+    e.len = routeLen(path);
+    e.speed = e.len / (DSPEEDS[defSpeed].cross || 18);   // every route takes ~`cross` seconds
+    return true;
   }
   function spawnEnemy(){
     const t = nextTarget(); if(!t) return true;
-    const pick = pickLane(t.ar);
-    if(!pick.ok && D.wait < MAX_WAIT) return false;     // hold this spawn briefly
+    if(!livingVillages().length) return true;
+    const gate = pickGate();
+    const e = { key:'e'+(D.spawned), t, el:null, gate,
+                emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)],
+                x:NODES[gate].x, y:NODES[gate].y, attacking:false };
+    if(!assignRoute(e, gate)) return true;
     D.wait = 0;
-    const e = { key:'e'+(D.spawned), t, x:1, lane:pick.lane,
-                emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)], el:null, w:0 };
     // 1.3 — one record per spawned target; resolved on defeat or wall hit.
     e.rec = { id:t.id, ar:t.ar, tr:t.tr||'', en:t.en||'', kind:t.kind||'letter',
               category: defMode==='words' ? defWordCat : defLetterSet,
@@ -3542,31 +3742,15 @@ function renderTableCards(arr){
     const field = body.querySelector('#dfn-field'); if(!field) return;
     if(e.el && e.el.isConnected) return;
     const d=document.createElement('div');
-    d.className='dfn-enemy'; d.dataset.k=e.key;
-    d.style.top = ((e.lane + 0.5) * (100/DLANES)) + '%';
+    d.className='dfn-enemy'; d.dataset.k=e.key; d.style.left='0'; d.style.top='0';
     d.innerHTML = `<span class="dfn-ar" dir="rtl">${esc(e.t.ar)}</span><span class="dfn-emoji" aria-hidden="true">${e.emoji}</span>`;
     field.appendChild(d); e.el=d;
-    e.w = d.offsetWidth || 0;          // real rendered width, so wide labels stop at the wall correctly
     placeEnemy(e);
   }
-  // Pixel positioning in JS. No calc() arithmetic: `x` is normalized travel (1 = spawn
-  // edge, 0 = wall face), converted with the measured field, wall and enemy widths, so
-  // a long Arabic label touches the wall exactly when its own left edge does.
-  function measureTrack(){
-    const field = body.querySelector('#dfn-field'), wall = body.querySelector('#dfn-wall');
-    if(!field) return;
-    D.fieldW = field.clientWidth;
-    D.wallW = wall ? wall.offsetWidth : 34;
-    D.enemies.forEach(e=>{ if(e.el) e.w = e.el.offsetWidth || e.w; });
-  }
-  function placeEnemy(e){
-    if(!e.el) return;
-    const fieldW = D.fieldW || (body.querySelector('#dfn-field') || {clientWidth:600}).clientWidth;
-    const wallW = D.wallW || 34;
-    const track = Math.max(0, fieldW - wallW - (e.w || 40));
-    const x = RM ? Math.round(e.x*20)/20 : e.x;    // reduced motion: 5% steps, same timing
-    e.el.style.left = Math.round(wallW + x * track) + 'px';
-  }
+  // Positioning is a transform in px derived from the measured map — no layout read per
+  // frame, and percentages mean the board scales instead of scrolling.
+  function measureTrack(){ measureMap(); placeAll(); }
+  function placeEnemy(e){ place(e.el, e.x, e.y); }
 
   function defTick(ts){
     if(D.phase!=='playing'){ D.raf=0; return; }
@@ -3593,15 +3777,92 @@ function renderTableCards(arr){
         else { D.wait += dt; D.nextSpawn = 0.12; }        // re-check shortly; capped by MAX_WAIT
       }
     }
-    const perSec = 1 / cfg.cross;                  // normalized travel per second
+    // ZOMBIES — walk the node route. Nothing pathfinds here: the route was resolved at
+    // spawn (or on retarget) from the cached BFS table.
     for(let i=D.enemies.length-1;i>=0;i--){
       const e=D.enemies[i];
-      e.x -= perSec * dt;
-      if(e.x <= 0){ hitWall(e, i); continue; }
+      if(e.attacking) continue;                  // mid-attack: frozen on its victim
+      if(!stepEnemy(e, dt)){ continue; }         // false = it arrived and was resolved
       placeEnemy(e);
     }
-    if(D.spawned>=DROUND && D.enemies.length===0){ endRound(); return; }
+    stepNpcs(dt);
+    if(!livingVillages().length){ endRound(); return; }              // all villages fell
+    if(D.spawned>=DROUND && D.enemies.length===0){ endRound(); return; }  // wave survived
     D.raf = requestAnimationFrame(defTick);
+  }
+
+  // One zombie step along its polyline. Returns false when it reached its village and
+  // was resolved (so the caller must not touch it again).
+  function stepEnemy(e, dt){
+    let move = e.speed * dt;
+    while(move > 0){
+      const a = NODES[e.path[e.seg]], b = NODES[e.path[e.seg+1]];
+      if(!b){ arriveAtVillage(e); return false; }
+      const segLen = Math.hypot(b.x-a.x, b.y-a.y) || 0.001;
+      const remain = (1 - e.segT) * segLen;
+      if(move < remain){
+        e.segT += move / segLen; move = 0;
+      } else {
+        move -= remain; e.seg++; e.segT = 0;
+        if(e.seg >= e.path.length-1){ arriveAtVillage(e); return false; }
+      }
+    }
+    const a = NODES[e.path[e.seg]], b = NODES[e.path[e.seg+1]];
+    e.x = a.x + (b.x-a.x) * e.segT;
+    e.y = a.y + (b.y-a.y) * e.segT;
+    // Its village fell while it was walking → pick a new one from where it stands.
+    const tv = villageOf(e.vid);
+    if(tv && !tv.alive) retarget(e);
+    return true;
+  }
+  function retarget(e){
+    const from = e.path[Math.max(0, e.seg)];      // nearest node behind it
+    const idx = D.enemies.indexOf(e);
+    if(!assignRoute(e, from)){                     // nothing left to attack
+      if(idx>=0) removeEnemy(e, idx, false);
+      return;
+    }
+    e.x = NODES[from].x; e.y = NODES[from].y;      // snap to the node, then continue
+  }
+
+  // NPCs — local wander inside the village zone; flee when a zombie is close. Simple
+  // steering, not an AI: a sine drift plus a repulsion vector, clamped to the zone.
+  function stepNpcs(dt){
+    const zs = D.enemies;
+    for(let i=0;i<D.npcs.length;i++){
+      const nn = D.npcs[i];
+      if(!nn.alive) continue;
+      let fx = 0, fy = 0, scared = false;
+      for(let j=0;j<zs.length;j++){
+        const z = zs[j];
+        const dx = nn.x - z.x, dy = nn.y - z.y;
+        const d2 = dx*dx + dy*dy;
+        if(d2 < PANIC_R*PANIC_R && d2 > 0.0001){
+          const d = Math.sqrt(d2);
+          fx += (dx/d) * (1 - d/PANIC_R); fy += (dy/d) * (1 - d/PANIC_R);
+          scared = true;
+        }
+      }
+      if(scared){
+        const sp = nn.sp * (VCFG.fleeSpeed || 9);
+        nn.x += fx * sp * dt; nn.y += fy * sp * dt;
+      } else if(!RM){
+        nn.ph += dt * nn.sp;                       // gentle idle drift
+        nn.x += Math.cos(nn.ph) * nn.sp * 1.6 * dt;
+        nn.y += Math.sin(nn.ph * 0.7) * nn.sp * 1.2 * dt;
+      }
+      // clamp inside its own village zone — an NPC never wanders the map
+      const dx = nn.x - nn.hx, dy = nn.y - nn.hy;
+      const d = Math.hypot(dx, dy);
+      const lim = WANDER_R * (scared ? 1.5 : 1);
+      if(d > lim){ nn.x = nn.hx + dx/d*lim; nn.y = nn.hy + dy/d*lim; }
+      nn.x = Math.max(2, Math.min(MAP_W-2, nn.x));
+      nn.y = Math.max(2, Math.min(MAP_H-2, nn.y));
+      if(nn.el){
+        if(scared !== nn.panic){ nn.el.classList.toggle('panic', scared); nn.panic = scared; }
+        place(nn.el, nn.x, nn.y);
+      }
+    }
   }
 
   function removeEnemy(e, i, destroyed){
@@ -3624,31 +3885,104 @@ function renderTableCards(arr){
     field.appendChild(f);
     dTimeout(()=>f.remove(), RM ? 700 : 650);
   }
-  function hitWall(e, i){
-    // NEAR MISS: the player had already typed a nonempty prefix of THIS target when it
-    // landed — a speed problem, not a recognition problem. Tracked separately.
+  // A zombie reached its village. This is the old hitWall: the SAME miss accounting,
+  // the SAME persisted stat fields (outcome 'wall', st.wallHits) so 1.3 statistics and
+  // stored records stay schema-compatible — only the fiction and the presentation change.
+  function arriveAtVillage(e){
+    const i = D.enemies.indexOf(e); if(i < 0) return;
+    const v = villageOf(e.vid);
+    // Its village fell in the very frame it arrived: it must go looking for another one,
+    // not evaporate — otherwise a zombie could cost the player nothing at all.
+    if(!v || !v.alive){
+      if(livingVillages().length) retarget(e); else removeEnemy(e, i, false);
+      return;
+    }
+
+    // NEAR MISS: a nonempty prefix of THIS target was already typed — a speed problem,
+    // not a recognition problem. Unchanged from 1.3.
     const inpNow = body.querySelector('#dfn-in');
     const typed = inpNow ? passSegNorm(inpNow.value || '', false) : '';
     const near = !!(typed && passSegNorm(e.t.ar, false).indexOf(typed) === 0);
     if(near) D.nearMiss.push(e.t);
     D.missCount[e.t.id] = (D.missCount[e.t.id] || 0) + 1;
     if(e.rec){
-      e.rec.resolvedAt = D.clock; e.rec.outcome = 'wall'; e.rec.responseMs = null;   // never a defeat time
+      e.rec.resolvedAt = D.clock; e.rec.outcome = 'wall'; e.rec.responseMs = null;
       e.rec.nearMiss = near; e.rec.started = near;
       const st = statFor(e.t.id); st.wallHits++; if(near) st.nearMisses++;
     }
-    removeEnemy(e, i, false);
-    D.lives--; D.streak=0;
+    D.streak = 0;
     D.missed.push(e.t);
-    const wall=body.querySelector('#dfn-wall');
-    if(wall){ wall.classList.add('hit'); dTimeout(()=>wall.classList.remove('hit'), RM ? 400 : 220); }
-    const fb=body.querySelector('#dfn-fb');
-    D.fbCls='no';
-    D.fb = arSpan(e.t.ar) + ' got through — ' + livesWord(D.lives) + ' left';
-    if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb; }
-    syncStats();
-    defAnnounce(e.t.ar + ' reached the wall. ' + livesWord(D.lives) + ' remaining.');
-    if(D.lives<=0) endRound();
+
+    // the victim: the nearest living occupant of this village
+    const living = npcsOf(v.id);
+    const victim = living.length
+      ? living.reduce((a,b)=> Math.hypot(a.x-e.x,a.y-e.y) <= Math.hypot(b.x-e.x,b.y-e.y) ? a : b)
+      : null;
+
+    e.attacking = true;
+    if(e.el) e.el.classList.add('attacking');
+    if(victim){
+      victim.x = (victim.x + e.x)/2; victim.y = (victim.y + e.y)/2;   // grabbed
+      if(victim.el){ victim.el.classList.add('panic'); place(victim.el, victim.x, victim.y); }
+    }
+    const bite = RM ? 260 : 380;
+    dTimeout(()=>{
+      const idx = D.enemies.indexOf(e);
+      if(victim){
+        victim.alive = false;
+        if(victim.el){ victim.el.classList.remove('panic'); victim.el.classList.add('eaten');
+                       const el = victim.el; dTimeout(()=>el.remove(), 320); victim.el = null; }
+        splat(victim.x, victim.y);
+        v.occupants = Math.max(0, v.occupants - 1);
+      }
+      flashField();
+      if(v.el){ v.el.classList.add('struck'); dTimeout(()=>{ if(v.el) v.el.classList.remove('struck'); }, 460); }
+      if(v.occupants <= 0 && v.alive){ destroyVillage(v); }
+      paintVillage(v); syncVillages();
+      const fb = body.querySelector('#dfn-fb');
+      D.fbCls='no';
+      D.fb = arSpan(e.t.ar) + ' got through — ' + esc(v.name)
+           + (v.alive ? ' lost ' + (victim ? (victim.kind==='animal' ? 'an animal' : 'a villager') : 'ground')
+                        + ' · ' + v.occupants + ' left'
+                      : ' has fallen');
+      if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb; }
+      defAnnounce(e.t.ar + ' reached ' + v.name + '. '
+        + (v.alive ? v.occupants + ' of ' + OCCUPANTS + ' still safe there. '
+                   : v.name + ' has been destroyed. ')
+        + livesWord(D.lives) + ' remaining.');
+      if(idx >= 0) removeEnemy(e, idx, false);
+      syncStats();
+      if(!livingVillages().length){ endRound(); return; }
+      if(D.phase==='playing' && D.spawned>=DROUND && D.enemies.length===0) endRound();
+    }, bite);
+  }
+  function destroyVillage(v){
+    v.alive = false; v.occupants = 0;
+    D.lives = livingVillages().length;       // "lives" = villages still standing
+    npcsOf(v.id).forEach(nn => {             // the rest scatter and are gone
+      nn.alive = false;
+      if(nn.el){ const el = nn.el; el.classList.add('eaten'); dTimeout(()=>el.remove(), 320); nn.el = null; }
+    });
+    // any zombie still walking to it now needs a new destination
+    D.enemies.slice().forEach(z => { if(z.vid===v.id && !z.attacking) retarget(z); });
+  }
+  // Stylised, game-like hit: a red flash + a bone/dust puff. Never realistic gore.
+  function splat(x, y){
+    const f = body.querySelector('#dfn-field'); if(!f) return;
+    const marks = VCFG.splat || ['💥','🦴','💀','✳️'];
+    const d = document.createElement('div');
+    d.className = 'dfn-splat';
+    d.textContent = marks[Math.floor(Math.random()*marks.length)];
+    d.style.left='0'; d.style.top='0';
+    f.appendChild(d); place(d, x, y);
+    dTimeout(()=>d.remove(), RM ? 1000 : 720);
+  }
+  function flashField(){
+    const f = body.querySelector('#dfn-field'); if(!f || RM) return;
+    const d = document.createElement('div');
+    d.className = 'dfn-flash';
+    f.appendChild(d);
+    dTimeout(()=>d.remove(), 440);
   }
 
   // Prefix highlight + exact-target lock. Lock uses text ("Target locked") plus a border,
@@ -3752,8 +4086,8 @@ function renderTableCards(arr){
     const subs = D.correct + D.wrong;
     const cleared = D.spawned>=DROUND && D.lives>0;
     const adv = defAdvice();
-    defAnnounce((cleared?'Round cleared. ':'Defenses fell. ')
-      + `Score ${D.score}. ${D.defeated} defeated, ${D.missed.length} reached the wall, `
+    defAnnounce((cleared?'Wave survived. ':'Every village has fallen. ')
+      + `Score ${D.score}. ${D.defeated} destroyed, ${D.missed.length} got through, `
       + `${subs? Math.round(D.correct/subs*100):0} percent typing accuracy.`
       + (adv.rec ? ' Suggested next: ' + adv.rec.label + '.' : '')
       + (SESS.rounds>1 ? ' Session summary available below.' : ''));
@@ -3773,18 +4107,18 @@ function renderTableCards(arr){
     const defeatedRecs = D.records.filter(r=>r.outcome==='defeated' && r.responseMs!=null);
     const avgMs = defeatedRecs.length ? Math.round(defeatedRecs.reduce((a,r)=>a+r.responseMs,0)/defeatedRecs.length) : null;
     const lines = [];
-    if(D.defeated) lines.push({ h:'Strongest area', t:'You defeated ' + D.defeated + ' of the ' + D.spawned + ' targets that appeared'
+    if(D.defeated) lines.push({ h:'Strongest area', t:'You destroyed ' + D.defeated + ' of the ' + D.spawned + ' zombies that appeared'
       + (avgMs!=null ? ', averaging ' + (avgMs/1000).toFixed(1) + ' seconds each.' : '.') });
     const worst = Object.keys(D.missCount).sort((a,b)=>D.missCount[b]-D.missCount[a]);
     if(worst.length){
       const names = worst.slice(0,3).map(id=>{ const m = D.missed.find(t=>t.id===id); return m ? m.ar : ''; }).filter(Boolean);
       if(names.length) lines.push({ h:'Needs practice', ar:names.join(' · '),
-        t:(names.length===1?' reached the wall.':' reached the wall most often.') });
+        t:(names.length===1?' got through to a village.':' got through to a village most often.') });
     }
-    if(recogMisses) lines.push({ h:'Recognition', t:'You let ' + recogMisses + ' target' + (recogMisses===1?'':'s')
-      + ' reach the wall without starting ' + (recogMisses===1?'it':'them') + '.' });
-    if(speedMisses) lines.push({ h:'Typing speed', t:speedMisses + ' target' + (speedMisses===1?'':'s')
-      + ' reached the wall after you had already started typing ' + (speedMisses===1?'it':'them')
+    if(recogMisses) lines.push({ h:'Recognition', t:'You let ' + recogMisses + ' zombie' + (recogMisses===1?'':'s')
+      + ' reach a village without starting ' + (recogMisses===1?'it':'them') + '.' });
+    if(speedMisses) lines.push({ h:'Typing speed', t:speedMisses + ' zombie' + (speedMisses===1?'':'s')
+      + ' reached a village after you had already started typing ' + (speedMisses===1?'it':'them')
       + '. Recognition is fine — the typing needs to be quicker.' });
     if(D.wrong >= 3) lines.push({ h:'Accuracy', t:'Wrong submissions interrupted your streak ' + D.wrong + ' times.' });
 
@@ -3793,11 +4127,11 @@ function renderTableCards(arr){
       ? (DEF_WORD_CATS.find(c=>c.id===defWordCat) || {}).label
       : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet) || {}).label;
     if(D.missed.length >= 3)
-      rec = { a:'dmissed', label:'Practice missed targets', why:'Three or more targets reached the wall.' };
+      rec = { a:'dmissed', label:'Practice missed targets', why:'Three or more zombies got through to a village.' };
     else if(speedMisses >= 2 && acc >= 0.8 && defSpeed !== 'slow')
       rec = { a:'dslower', label:'Try a slower speed', why:'You knew the targets but ran out of time.' };
     else if(recogMisses >= 2)
-      rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'Targets reached the wall before you recognized them.' };
+      rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'Zombies reached a village before you recognized them.' };
     else if(D.wrong >= 3)
       rec = { a:'dagain', label:'Replay for accuracy', why:'Wrong submissions kept breaking your streak.' };
     else if(cleared && D.wrong===0 && defSpeed==='slow')
@@ -3824,13 +4158,13 @@ function renderTableCards(arr){
     if(SESS.rounds >= 2 && SESS.msCount >= 5){
       if(acc >= 85 && SESS.missed >= 3) take = 'You recognize most targets correctly — the misses are costing you on speed, not knowledge.';
       else if(acc < 70) take = 'Wrong submissions are the main leak. Slow down and read the target before typing.';
-      else if(SESS.missed === 0) take = 'Nothing has reached the wall this session. Consider a faster speed or a harder set.';
+      else if(SESS.missed === 0) take = 'No zombie has reached a village this session. Consider a faster speed or a harder set.';
     }
     return `<div class="dfn-session"><b>Session so far</b> <span class="note">(this browser session only — a refresh clears it)</span>`
       + `<div class="dfn-sessgrid">`
         + `<div>Rounds played<b>${SESS.rounds}</b></div>`
         + `<div>Targets defeated<b>${SESS.defeated}</b></div>`
-        + `<div>Reached the wall<b>${SESS.missed}</b></div>`
+        + `<div>Got through<b>${SESS.missed}</b></div>`
         + `<div>Average typing accuracy<b>${acc}%</b></div>`
         + (avg ? `<div>Average response time on defeated targets<b>${avg} s</b></div>` : '')
       + `</div>`
@@ -3845,22 +4179,23 @@ function renderTableCards(arr){
     const missed = D.missed;
     const cleared = D.spawned>=DROUND && D.lives>0;
     const adv = defAdvice();
-    return `<div class="tt-card"><div class="tt-prompt">${cleared?'Round cleared':'Defenses fell'}</div>`
+    return `<div class="tt-card"><div class="tt-prompt">${cleared?'Wave survived':'Every village has fallen'}</div>`
       + `<p class="note">${cleared
-          ? `All ${DROUND} enemies deployed. ${D.defeated} defeated, ${missed.length} reached the wall.`
-          : `The wall fell after ${D.spawned} of ${DROUND} enemies deployed — the round ended early, so the remaining ${Math.max(0,DROUND-D.spawned)} never appeared. ${D.defeated} defeated, ${missed.length} reached the wall.`}</p>`
+          ? `All ${DROUND} zombies came. ${D.defeated} destroyed, ${missed.length} got through. `
+            + `${D.lives} of ${DLIVES} village${D.lives===1?'':'s'} still standing.`
+          : `Every village fell after ${D.spawned} of ${DROUND} zombies — the round ended early, so the remaining ${Math.max(0,DROUND-D.spawned)} never appeared. ${D.defeated} destroyed, ${missed.length} got through.`}</p>`
       + `<div class="dfn-res">`
         + `<div>Score<b>${D.score}</b></div>`
         + `<div>Typing accuracy<b>${acc}%</b></div>`
         + `<div>Enemies deployed<b>${D.spawned} of ${DROUND}</b></div>`
         + `<div>Defeated<b>${D.defeated}</b></div>`
-        + `<div>Reached the wall<b>${missed.length}</b></div>`
+        + `<div>Got through<b>${missed.length}</b></div>`
         + `<div>Wrong submissions<b>${D.wrong}</b></div>`
         + `<div>Best streak<b>${D.best}</b></div>`
         + `<div>Mode<b>${esc(defMode==='words'?'Words':'Letters')}</b></div>`
         + `<div>Speed<b>${esc(DSPEEDS[defSpeed].label)}</b></div>`
       + `</div>`
-      + `<p class="note">Typing accuracy counts Enter presses only (${D.correct} correct of ${subs}). An enemy reaching the wall is a missed target, not a wrong answer.</p>`
+      + `<p class="note">Typing accuracy counts Enter presses only (${D.correct} correct of ${subs}). A zombie reaching a village is a missed target, not a wrong answer.</p>`
       + (missed.length ? `<div class="tt-prompt" style="margin-top:10px">Targets that got through</div>`
           + `<div class="dfn-miss">` + missed.map(t=>`<span class="dfn-missitem">${arSpan(t.ar)}<span class="tr">${esc(t.tr||'')}</span><br>${esc(t.en||'')}</span>`).join('') + `</div>` : '')
       + (adv.lines.length ? `<div class="dfn-advice">` + adv.lines.map(l =>
