@@ -7,11 +7,13 @@
 <script id="vis-script" defer src="https://unpkg.com/vis-network@10.1.0/standalone/umd/vis-network.min.js"></script>
 <style>
 :root {
-  --bg:#0d0a07; --panel:#1a140d; --panel2:#241c12; --ink:#f1e6cc; --muted:#a89478;
-  --accent:#e5c158; --accent-deep:#b8901f; --accent2:#5a93b0; --lapis:#3a6b8c;
-  --line:#3a2e1f; --warm:#d27a3a; --rust:#a04020;
-  --gold-soft:rgba(229,193,88,0.4); --gold-faint:rgba(229,193,88,0.15);
-  --papyrus-tint:rgba(229,193,88,0.025);
+  /* Warmer and a few steps lighter than the original near-black, so the page reads
+     as lamplit parchment rather than a dark utility console. Gold identity retained. */
+  --bg:#1b1710; --panel:#272019; --panel2:#312921; --ink:#f3ead7; --muted:#bcaa8f;
+  --accent:#e5c158; --accent-deep:#c19a2e; --accent2:#7fb0c9; --lapis:#3a6b8c;
+  --line:#3f3425; --warm:#dc8a4e; --rust:#a04020;
+  --gold-soft:rgba(229,193,88,0.32); --gold-faint:rgba(229,193,88,0.12);
+  --papyrus-tint:rgba(229,193,88,0.015);
 }
 * { box-sizing:border-box; }
 html, body { margin:0; padding:0; }
@@ -19,14 +21,14 @@ body {
   font-family: 'Iowan Old Style', Georgia, 'Hoefler Text', serif;
   background:var(--bg);
   background-image:
-    radial-gradient(ellipse at top, rgba(184,144,31,0.05), transparent 60%),
+    radial-gradient(ellipse at top, rgba(229,193,88,0.045), transparent 62%),
     repeating-linear-gradient(0deg, transparent 0 3px, var(--papyrus-tint) 3px 4px);
-  color:var(--ink); line-height:1.6;
+  color:var(--ink); line-height:1.65;
 }
 header {
-  padding:24px 28px 20px;
-  background:linear-gradient(180deg,#1a140c 0%, #100c08 100%);
-  border-bottom:3px double var(--gold-soft);
+  padding:38px 28px 30px;
+  background:linear-gradient(180deg,#2a2218 0%, #1b1710 100%);
+  border-bottom:1px solid var(--gold-faint);
   position:relative;
   text-align:center;
 }
@@ -37,19 +39,14 @@ header::before, header::after {
 header::before { top:6px; }
 header::after { bottom:-1px; opacity:0.5; }
 header h1 {
-  margin:0; font-size:30px; letter-spacing:6px;
+  /* Fluid so the enlarged title cannot overflow narrow screens. */
+  margin:0; font-size:clamp(24px, 6.5vw, 38px); letter-spacing:clamp(3px, 1.6vw, 10px);
   color:var(--accent); font-weight:normal; font-variant:small-caps;
-  text-shadow:0 1px 0 #000, 0 0 20px rgba(229,193,88,0.15);
+  text-shadow:0 0 28px rgba(229,193,88,0.16);
 }
-header h1::before { content:'𓋹'; color:var(--accent); margin-right:18px; font-size:1.1em; opacity:0.85; }
-header h1::after  { content:'𓂀'; color:var(--accent); margin-left:18px;  font-size:1.1em; opacity:0.85; }
-header p {
-  margin:8px 0 0; color:var(--muted); font-style:italic; font-size:13px;
-  letter-spacing:1px;
-}
-header p::before { content:'❖  '; color:var(--accent-deep); font-style:normal; }
-header p::after  { content:'  ❖'; color:var(--accent-deep); font-style:normal; }
-nav { display:flex; gap:6px; padding:10px 28px; background:#0a0805; border-bottom:1px solid var(--line); flex-wrap:nowrap; overflow-x:auto; justify-content:center; }
+header h1::before { content:'𓋹'; color:var(--accent); margin-right:clamp(10px, 2.4vw, 26px); font-size:0.9em; opacity:0.55; }
+header h1::after  { content:'𓂀'; color:var(--accent); margin-left:clamp(10px, 2.4vw, 26px);  font-size:0.9em; opacity:0.55; }
+nav { display:flex; gap:8px; padding:14px 28px; background:rgba(10,8,5,0.5); border-bottom:1px solid var(--line); flex-wrap:nowrap; overflow-x:auto; justify-content:center; }
 nav button {
   background:linear-gradient(180deg, var(--panel), var(--panel2));
   border:1px solid var(--line); color:var(--muted);
@@ -60,9 +57,30 @@ nav button {
 }
 nav button:hover { color:var(--accent); border-color:var(--gold-soft); }
 nav button.active { color:#0d0a07; background:linear-gradient(180deg, var(--accent), var(--accent-deep)); border-color:var(--accent); font-weight:bold; }
-main { padding:24px 28px; max-width:1400px; margin:0 auto; }
+main { padding:34px 28px 56px; max-width:1400px; margin:0 auto; }
 .tab { display:none; }
 .tab.active { display:block; }
+/* ===== Home: a single welcome page built from the seven branches ===== */
+#home { max-width:1120px; margin:0 auto; }
+.home-welcome {
+  text-align:center; color:var(--muted); font-style:italic;
+  font-size:17px; letter-spacing:1.5px; margin:6px 0 40px;
+}
+#branches-grid { gap:22px; }
+.branch-card {
+  display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+  width:100%; text-align:left; font-family:inherit;
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  border:1px solid var(--line); border-radius:14px;
+  padding:28px 30px 26px; cursor:pointer;
+}
+.branch-card .branch-name {
+  color:var(--accent); font-size:22px; letter-spacing:2px;
+  font-variant:small-caps; line-height:1.2;
+}
+.branch-card .branch-desc { color:var(--ink); font-size:14.5px; line-height:1.7; opacity:0.88; }
+.branch-card .tags { margin-top:4px; }
+.branch-card:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
 h2 {
   color:var(--accent); font-weight:normal; letter-spacing:3px; font-variant:small-caps;
   border-bottom:none; padding-bottom:14px; position:relative; font-size:24px; margin-top:0;
@@ -77,10 +95,17 @@ p { margin:10px 0; }
 main p { line-height:1.7; }
 .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px 24px; margin-bottom:16px; transition:border-color .25s ease, box-shadow .25s ease; }
 .grid { display:grid; gap:16px; }
-.grid-branches { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+/* Flex-wrap rather than grid tracks so an incomplete final row centres itself
+   instead of stranding a lone card at the left. Card-count agnostic.
+   The 100% basis floor keeps it from overflowing narrow phones. */
+.grid-branches {
+  display:flex; flex-wrap:wrap; justify-content:center;
+  grid-template-columns:none;
+}
+.grid-branches > .branch-card { flex:1 1 min(320px, 100%); max-width:440px; }
 .grid-schools { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
 .hover-card { cursor:pointer; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }
-.hover-card:hover { border-color:var(--gold-soft); transform:translateY(-3px); box-shadow:0 8px 24px rgba(0,0,0,0.4), 0 0 0 1px var(--gold-faint); background:linear-gradient(180deg, var(--panel), var(--panel2)); }
+.hover-card:hover { border-color:var(--gold-soft); transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.28), 0 0 0 1px var(--gold-faint); background:linear-gradient(180deg, var(--panel2), var(--panel)); }
 .hover-card h3 { margin-top:0; color:var(--accent); }
 .tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
 .tag { background:var(--panel2); color:var(--muted); padding:4px 11px; border-radius:14px; font-size:12px; border:1px solid var(--line); transition:all .2s ease; }
@@ -325,8 +350,7 @@ ul.clean li { margin:6px 0; }
 </nav>
 
 <header>
-  <h1>Philosophy — A Compendium</h1>
-  <p>Branches • Traditions • Philosophers • Schools • Glossary • Trails • Excerpts • Resources</p>
+  <h1>Philosophy</h1>
 </header>
 <nav id="nav">
   <button data-tab="home" class="active">Home</button>
@@ -338,51 +362,8 @@ ul.clean li { margin:6px 0; }
 <main>
 
 <section id="home" class="tab active">
-  <nav class="lib-nav" id="home-nav">
-    <button data-home="branches" class="active">𓊽 Branches</button>
-    <button data-home="graph">𓂀 Influence Graph</button>
-    <button data-home="trails">𓋹 Trails</button>
-    <button data-home="paths">𓏛 Reading Paths</button>
-    <button data-home="tables">𓎟 Compare</button>
-  </nav>
-
-  <div id="home-branches" class="lib-panel active">
-    <h2>Branches of Philosophy</h2>
-    <p>Seven major branches. Click a branch to see questions, concepts, figures, every tagged philosopher, and a suggested reading path.</p>
-    <div class="grid grid-branches" id="branches-grid"></div>
-  </div>
-
-  <div id="home-graph" class="lib-panel">
-    <h2>Influence Graph</h2>
-    <p>A force-directed network of philosophical influence. Drag nodes, zoom, click a node to open its biography. Only major figures are shown by default to keep the graph readable.</p>
-    <div class="filters">
-      <select id="graph-scope">
-        <option value="major">Top ~100 most-connected</option>
-        <option value="all">All philosophers</option>
-      </select>
-      <select id="graph-filter-tradition"><option value="">All traditions</option></select>
-      <button class="print-btn" id="graph-fit">Fit view</button>
-    </div>
-    <div id="graph-canvas"></div>
-  </div>
-
-  <div id="home-trails" class="lib-panel">
-    <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
-    <div id="trails-body"></div>
-  </div>
-
-  <div id="home-paths" class="lib-panel">
-    <h2>Reading Paths <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Suggested study sequences per branch, with passage pointers. Designed to be printed as a personal syllabus.</p>
-    <div id="paths-body"></div>
-  </div>
-
-  <div id="home-tables" class="lib-panel">
-    <h2>Compare <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Side-by-side tables of positions across philosophers on major questions.</p>
-    <div id="tables-body"></div>
-  </div>
+  <p class="home-welcome">Begin with a question.</p>
+  <div class="grid grid-branches" id="branches-grid"></div>
 </section>
 
 <section id="library" class="tab">
@@ -465,9 +446,51 @@ ul.clean li { margin:6px 0; }
 </section>
 
 <section id="resources" class="tab">
-  <h2>Resource Hub</h2>
-  <p style="color:var(--muted);font-style:italic">Compiled by Mercedes Corredor (Virginia Tech).</p>
-  <div id="resources-body" class="resource-section"></div>
+  <nav class="lib-nav" id="res-nav">
+    <button data-res="hub" class="active">𓎟 Resource Hub</button>
+    <button data-res="graph">𓂀 Influence Graph</button>
+    <button data-res="trails">𓋹 Trails</button>
+    <button data-res="paths">𓏛 Reading Paths</button>
+    <button data-res="tables">𓊽 Compare</button>
+  </nav>
+
+  <div id="respanel-hub" class="lib-panel active">
+    <h2>Resource Hub</h2>
+    <p style="color:var(--muted);font-style:italic">Compiled by Mercedes Corredor (Virginia Tech).</p>
+    <div id="resources-body" class="resource-section"></div>
+  </div>
+
+  <div id="respanel-graph" class="lib-panel">
+    <h2>Influence Graph</h2>
+    <p>A force-directed network of philosophical influence. Drag nodes, zoom, click a node to open its biography. Only major figures are shown by default to keep the graph readable.</p>
+    <div class="filters">
+      <select id="graph-scope">
+        <option value="major">Top ~100 most-connected</option>
+        <option value="all">All philosophers</option>
+      </select>
+      <select id="graph-filter-tradition"><option value="">All traditions</option></select>
+      <button class="print-btn" id="graph-fit">Fit view</button>
+    </div>
+    <div id="graph-canvas"></div>
+  </div>
+
+  <div id="respanel-trails" class="lib-panel">
+    <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
+    <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
+    <div id="trails-body"></div>
+  </div>
+
+  <div id="respanel-paths" class="lib-panel">
+    <h2>Reading Paths <button class="print-btn" onclick="window.print()">Print</button></h2>
+    <p>Suggested study sequences per branch, with passage pointers. Designed to be printed as a personal syllabus.</p>
+    <div id="paths-body"></div>
+  </div>
+
+  <div id="respanel-tables" class="lib-panel">
+    <h2>Compare <button class="print-btn" onclick="window.print()">Print</button></h2>
+    <p>Side-by-side tables of positions across philosophers on major questions.</p>
+    <div id="tables-body"></div>
+  </div>
 </section>
 
 <section id="workspace" class="tab">
@@ -522,7 +545,10 @@ DATA.philosophers.forEach((p,i) => { byName[p.name] = i; });
 
 // ===== Tabs & hash routing =====
 const LIB_PANELS = ['philosophers','schools','glossary','quotes','excerpts'];
-const HOME_PANELS = ['branches','graph','trails','paths','tables'];
+// Home is now a single welcome page. The graph, trails, reading paths and compare
+// tables moved under Resources; MOVED_FROM_HOME keeps their old links working.
+const RES_PANELS = ['hub','graph','trails','paths','tables'];
+const MOVED_FROM_HOME = ['graph','trails','paths','tables'];
 const ENTITY_ROUTES = ['philosopher','branch','school','term'];
 const KNOWN_TABS = ['home','resources','library','workspace','flashcards'];
 function setLibPanel(name) {
@@ -533,25 +559,25 @@ function setLibPanel(name) {
     if (el) el.classList.toggle('active', p===name);
   });
 }
-function setHomePanel(name) {
-  if (!HOME_PANELS.includes(name)) name = 'branches';
-  $$('#home-nav button').forEach(b => b.classList.toggle('active', b.dataset.home===name));
-  HOME_PANELS.forEach(p => {
-    const el = document.getElementById('home-' + p);
+function setResPanel(name) {
+  if (!RES_PANELS.includes(name)) name = 'hub';
+  $$('#res-nav button').forEach(b => b.classList.toggle('active', b.dataset.res===name));
+  RES_PANELS.forEach(p => {
+    const el = document.getElementById('respanel-' + p);
     if (el) el.classList.toggle('active', p===name);
   });
   if (name==='graph' && !GRAPH.drawn) renderGraph();
 }
 function setTab(name) {
   if (LIB_PANELS.includes(name)) { setLibPanel(name); name = 'library'; }
-  else if (HOME_PANELS.includes(name)) { setHomePanel(name); name = 'home'; }
+  else if (MOVED_FROM_HOME.includes(name)) { setResPanel(name); name = 'resources'; }
   $$('#nav > button').forEach(b => b.classList.toggle('active', b.dataset.tab===name));
   $$('main > .tab').forEach(t => t.classList.toggle('active', t.id===name));
   window.scrollTo(0,0);
 }
 $$('#nav > button').forEach(b => b.addEventListener('click', () => { location.hash = '#/' + b.dataset.tab; }));
 $$('#lib-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/library/' + b.dataset.lib; }));
-$$('#home-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/home/' + b.dataset.home; }));
+$$('#res-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/resources/' + b.dataset.res; }));
 function handleHash() {
   // Ignore plain anchor links (e.g. #res-...) — only handle our `#/...` routes
   if (location.hash && !location.hash.startsWith('#/')) return;
@@ -580,9 +606,12 @@ function handleHash() {
   let tab = parts[0] || 'home';
   // Sub-panel back-compat: old hash names route to their parent tab
   if (LIB_PANELS.includes(tab)) { setLibPanel(tab); tab = 'library'; }
-  else if (HOME_PANELS.includes(tab)) { setHomePanel(tab); tab = 'home'; }
+  else if (MOVED_FROM_HOME.includes(tab)) { setResPanel(tab); tab = 'resources'; }
+  else if (tab === 'branches') { tab = 'home'; }
   else if (tab === 'library') { setLibPanel(parts[1] || 'philosophers'); }
-  else if (tab === 'home') { setHomePanel(parts[1] || 'branches'); }
+  else if (tab === 'resources') { setResPanel(parts[1] || 'hub'); }
+  // Old #/home/<panel> links: branches stays Home, the rest now live in Resources.
+  else if (tab === 'home' && MOVED_FROM_HOME.includes(parts[1])) { setResPanel(parts[1]); tab = 'resources'; }
   setTab(KNOWN_TABS.includes(tab) ? tab : 'home');
   closeModal(true);
 }
@@ -603,9 +632,9 @@ function closeModal(silent) {
     if (tab === 'library') {
       const sub = $('#lib-nav button.active');
       if (sub) path = '#/library/' + sub.dataset.lib;
-    } else if (tab === 'home') {
-      const sub = $('#home-nav button.active');
-      if (sub) path = '#/home/' + sub.dataset.home;
+    } else if (tab === 'resources') {
+      const sub = $('#res-nav button.active');
+      if (sub) path = '#/resources/' + sub.dataset.res;
     }
     history.replaceState(null,'',path);
   }
@@ -668,11 +697,11 @@ function bindAutoLinks(root) {
 // ===== Branches =====
 function renderBranches() {
   $('#branches-grid').innerHTML = DATA.branches.map((b,i) => `
-    <div class="card hover-card" data-i="${i}">
-      <h3>${esc(b.name)}</h3>
-      <p style="margin:6px 0;color:var(--muted);font-size:14px">${esc(b.desc)}</p>
-      <div class="tags">${b.concepts.slice(0,3).map(c => `<span class="tag">${esc(c.term)}</span>`).join('')}</div>
-    </div>
+    <button class="branch-card hover-card" data-i="${i}">
+      <span class="branch-name">${esc(b.name)}</span>
+      <span class="branch-desc">${esc(b.desc)}</span>
+      <span class="tags">${b.concepts.slice(0,3).map(c => `<span class="tag">${esc(c.term)}</span>`).join('')}</span>
+    </button>
   `).join('');
   $$('#branches-grid .hover-card').forEach(el => el.addEventListener('click', () => linkB(DATA.branches[+el.dataset.i].name)));
 }
@@ -961,7 +990,7 @@ $('#graph-fit').addEventListener('click', () => GRAPH.network && GRAPH.network.f
 // The deferred vis-network script executes after this one. If the graph panel is
 // already showing (e.g. a cold load of #/home/graph), draw it once vis arrives.
 const graphPanelOpen = () => {
-  const el = document.getElementById('home-graph');
+  const el = document.getElementById('respanel-graph');
   return !!el && el.classList.contains('active');
 };
 const visScript = document.getElementById('vis-script');
