@@ -112,7 +112,35 @@ window.MASRI.typing = {
     // enemy in a lane before it may spawn there; if no lane qualifies, the spawn waits
     // up to maxSpawnWaitSec, then takes the roomiest lane anyway so the round advances.
     laneGapPx: 18,
-    maxSpawnWaitSec: 2.5
+    maxSpawnWaitSec: 2.5,
+
+    // ── 1.3 ────────────────────────────────────────────────────────────────
+    // Letter FORM challenge. Isolated is the baseline. "Contextual" shows the joining
+    // shape (initial / medial / final, built with the same kashida rule the Alphabet
+    // section already uses, driven by each letter's `connector` flag — non-connectors
+    // never get initial/medial). The learner still TYPES the base letter: the typing
+    // comparison already strips tatweel, so no new matching rule is introduced and no
+    // impossible form is ever shown.
+    letterForms: [
+      { id:"isolated",   label:"Isolated" },
+      { id:"contextual", label:"Contextual (advanced)" }
+    ],
+
+    // Adaptive weighting. Local, transparent, deliberately mild: struggling targets come
+    // up a little more often, clean fast ones a little less. Clamped so the pool stays
+    // varied and a set/category filter is never bypassed.
+    weights: {
+      wallHit:   1.2,   // per recorded wall hit
+      nearMiss:  0.6,   // per near miss (started typing, ran out of time)
+      wrongAssoc:0.4,   // per wrong submission while this target was live
+      slow:      0.5,   // average response over slowMs
+      slowMs:    4000,
+      fastBonus: -0.3,  // repeatedly fast + clean → slightly less often
+      fastMs:    1500,
+      min:       0.5,
+      max:       4
+    },
+    statsCap: 200       // most-recent target stat records kept in localStorage
   },
 
   layoutName: "Windows Arabic (101)",

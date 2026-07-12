@@ -674,6 +674,14 @@
   .dfn-advice b{color:var(--fg);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
   .dfn-advice .ar{font-family:var(--ar);font-size:calc(17px * var(--ar-scale));color:var(--gold);margin-left:4px}
   .dfn-recwhy{margin-top:8px;font-size:11.5px;color:var(--muted)}
+  .dfn-session{margin-top:12px;background:var(--surf2);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px}
+  .dfn-session > b{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--fg)}
+  .dfn-session .note{font-size:10.5px;margin:0}
+  .dfn-sessgrid{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+  .dfn-sessgrid div{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:11px;color:var(--muted)}
+  .dfn-sessgrid b{display:block;color:var(--fg);font-size:14px;font-weight:600}
+  .dfn-sessmiss{margin-top:8px;font-size:11.5px;color:var(--muted)}
+  .dfn-sessmiss .ar{font-family:var(--ar);font-size:calc(17px * var(--ar-scale));color:var(--gold)}
   .tt-opt[disabled]{opacity:.45;cursor:not-allowed}
   .dfn-lock{min-height:16px;margin:5px 0 0;font-family:var(--ui);font-size:11.5px;color:var(--muted)}
   .dfn-lock.near{color:var(--fg)}
@@ -2303,6 +2311,7 @@ function renderTableCards(arr){
     else if(name==='defSpeed'){ defStop(); defSpeed=val; lsSet('masri-defense-speed',val); }
     else if(name==='defLetterSet'){ defStop(); defLetterSet=val; lsSet('masri-defense-letter-set',val); }
     else if(name==='defWordCat'){ defStop(); defWordCat=val; lsSet('masri-defense-word-category',val); }
+    else if(name==='defLetterForm'){ defStop(); defLetterForm=val; lsSet('masri-defense-letter-form',val); }
     render();
   }
 
@@ -2833,6 +2842,87 @@ function renderTableCards(arr){
   let defWordCat = lsGet('masri-defense-word-category','mixed');
   if(!DEF_WORD_CATS.some(x=>x.id===defWordCat)) defWordCat='mixed';
 
+  // ── 1.3: contextual letter forms ──────────────────────────────────────────
+  // Reuses the Alphabet section's rule exactly: connectors take all four shapes, a
+  // non-connector never joins to its left, so it only ever has Isolated and Final.
+  // The learner TYPES the base letter — passSegNorm already strips tatweel, so the
+  // existing comparison handles it with no new matching rule and no invented shape.
+  const DEF_FORMS = (DCFG.letterForms || [{id:'isolated',label:'Isolated'}]);
+  let defLetterForm = lsGet('masri-defense-letter-form','isolated');
+  if(!DEF_FORMS.some(f=>f.id===defLetterForm)) defLetterForm='isolated';
+  const TATW = '\u0640';
+  const FORM_SHAPES = { initial:'Initial', medial:'Medial', final:'Final' };
+  function contextualTargets(){
+    const conn = {};
+    ((M.alphabet && M.alphabet.letters) || []).forEach(l => { conn[l.letter] = !!l.connector; });
+    const out = [];
+    DEF_LETTERS.forEach(t => {
+      const c = conn[t.ar];
+      const forms = c ? ['initial','medial','final'] : ['final'];   // isolated is the base set
+      forms.forEach(f => {
+        const ar = f==='initial' ? t.ar + TATW : f==='medial' ? TATW + t.ar + TATW : TATW + t.ar;
+        out.push({ id:t.id+'-'+f, base:t.ar, form:f, kind:'letter', ar:ar,
+                   tr:t.tr, en:(FORM_SHAPES[f]||'') + ' form of ' + t.tr });
+      });
+    });
+    return out;
+  }
+
+  // ── 1.3: per-target stats (masri-defense-target-stats) ────────────────────
+  // Small, capped, validated. Feeds ONLY Defense's own pool weighting — nothing
+  // site-wide, no mastery levels, no event log.
+  const STATS_KEY = 'masri-defense-target-stats';
+  const WCFG = DCFG.weights || {};
+  const STATS_CAP = DCFG.statsCap || 200;
+  function validStat(v){
+    return v && typeof v==='object' && ['shown','defeated','wallHits','nearMisses','wrongAssoc','totalMs','lastSeenAt']
+      .every(k => v[k]===undefined || (typeof v[k]==='number' && isFinite(v[k]) && v[k]>=0));
+  }
+  function loadStats(){
+    const raw = jsonGet(STATS_KEY, null);
+    if(!raw || typeof raw!=='object' || Array.isArray(raw)){ if(raw!=null) try{ localStorage.removeItem(STATS_KEY); }catch(e){} return {}; }
+    const out={}; let dropped=0;
+    Object.keys(raw).forEach(k=>{ if(typeof k==='string' && k && validStat(raw[k])) out[k]=raw[k]; else dropped++; });
+    if(dropped) jsonSet(STATS_KEY, out);
+    return out;
+  }
+  let targetStats = loadStats();
+  function statFor(id){
+    return targetStats[id] || (targetStats[id] = { shown:0, defeated:0, wallHits:0, nearMisses:0, wrongAssoc:0, totalMs:0, lastSeenAt:0 });
+  }
+  function saveStats(){
+    const ids = Object.keys(targetStats);
+    if(ids.length > STATS_CAP){    // keep the most recently seen
+      ids.sort((a,b)=>(targetStats[b].lastSeenAt||0)-(targetStats[a].lastSeenAt||0))
+         .slice(STATS_CAP).forEach(k=>{ delete targetStats[k]; });
+    }
+    jsonSet(STATS_KEY, targetStats);
+  }
+  // Weight: baseline 1, nudged up by struggle, down by repeated fast clean kills.
+  // Clamped to [min,max] so the pool always stays varied and the set filter still rules.
+  function weightOf(t){
+    const st = targetStats[t.id]; if(!st) return 1;
+    let w = 1;
+    w += (WCFG.wallHit||1.2)   * (st.wallHits||0);
+    w += (WCFG.nearMiss||0.6)  * (st.nearMisses||0);
+    w += (WCFG.wrongAssoc||0.4)* (st.wrongAssoc||0);
+    const avg = st.defeated ? st.totalMs/st.defeated : 0;
+    if(avg && avg > (WCFG.slowMs||4000)) w += (WCFG.slow||0.5);
+    if(avg && avg < (WCFG.fastMs||1500) && (st.defeated||0) >= 3 && !(st.wallHits||0)) w += (WCFG.fastBonus||-0.3);
+    return Math.max(WCFG.min||0.5, Math.min(WCFG.max||4, w));
+  }
+  function weightedPick(pool, avoid){
+    const cands = pool.filter(t => !avoid || !avoid.has(t.id));
+    const use = cands.length ? cands : pool;
+    let total = 0; const ws = use.map(t => { const w = weightOf(t); total += w; return w; });
+    let r = Math.random() * total;
+    for(let i=0;i<use.length;i++){ r -= ws[i]; if(r <= 0) return use[i]; }
+    return use[use.length-1];
+  }
+
+  // ── 1.3: session summary (in memory only; cleared on refresh, by design) ───
+  const SESS = { rounds:0, defeated:0, missed:0, correct:0, subs:0, msTotal:0, msCount:0, missCounts:{}, missAr:{}, lastCtx:'' };
+
   // RECENT MISSES (masri-defense-missed) — a rolling list across rounds, validated on
   // load so a stale record from an older pool can never crash a round. Defense-only:
   // it never touches the passage/letter/word mistake structures.
@@ -2882,8 +2972,14 @@ function renderTableCards(arr){
     }
     const st = DEF_LETTER_SETS.find(x=>x.id===defLetterSet) || DEF_LETTER_SETS[0];
     if(st.recent) return recentTargets('letter');
-    if(st.set){ const want=new Set(LSETS_D[st.set]||[]); return DEF_LETTERS.filter(l=>want.has(l.ar)); }
-    return DEF_LETTERS.slice();
+    let base;
+    if(st.set){ const want=new Set(LSETS_D[st.set]||[]); base = DEF_LETTERS.filter(l=>want.has(l.ar)); }
+    else base = DEF_LETTERS.slice();
+    if(defLetterForm==='contextual'){
+      const keep = new Set(base.map(l=>l.ar));
+      return contextualTargets().filter(t => keep.has(t.base));   // same set, joined shapes
+    }
+    return base;
   }
 
   // Game state. Session-only: nothing here is ever persisted.
@@ -2891,7 +2987,8 @@ function renderTableCards(arr){
               streak:0, best:0, correct:0, wrong:0, defeated:0, missed:[], deck:null,
               queue:null, queueLabel:'', raf:0, lastTs:0, nextSpawn:0, fb:'', fbCls:'',
               timers:new Set(), count:0, composing:false, trackW:0,
-              phase2:'', wait:0, last:[], nearMiss:[], missCount:{} };
+              phase2:'', wait:0, last:[], nearMiss:[], missCount:{},
+              clock:0, records:[] };
 
   // ONE media-query object, read from a cached boolean — not re-queried per frame.
   const RM_MQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -2933,6 +3030,7 @@ function renderTableCards(arr){
     D.best=0; D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.queue=null;
     D.queueLabel=''; D.fb=''; D.fbCls=''; D.nextSpawn=0; D.composing=false;
     D.phase2=''; D.wait=0; D.last=[]; D.nearMiss=[]; D.missCount={};
+    D.clock=0; D.records=[];
   }
   function defStop(){ defAbort(); defResetState(); }
   function defNewRound(queue, label){
@@ -2960,6 +3058,7 @@ function renderTableCards(arr){
       + `<div class="tt-sel">` + pillGroup('defMode', DEF_MODES, defMode, 'Targets')
       + (defMode==='letters'
           ? pillGroup('defLetterSet', setOpts, defLetterSet, 'Letter set')
+            + (defLetterSet!=='recent' ? pillGroup('defLetterForm', DEF_FORMS, defLetterForm, 'Letter forms') : '')
           : pillGroup('defWordCat', catOpts, defWordCat, 'Category'))
       + pillGroup('defSpeed', DEF_SPEED_IDS.map(s=>({id:s,label:DSPEEDS[s].label})), defSpeed, 'Speed') + `</div>`;
     if(D.phase==='over'){ body.innerHTML = sel + defResultHtml(); wireCommon(); wireDefenseResult(); return; }
@@ -2996,15 +3095,22 @@ function renderTableCards(arr){
         + `<b>${esc(defMode==='words' ? 'Words' : 'Letters')}</b>`
         + ` · <b>${esc((defMode==='words'
               ? (DEF_WORD_CATS.find(c=>c.id===defWordCat)||{}).label
-              : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet)||{}).label) || '')}</b>. `
+              : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet)||{}).label) || '')}</b>`
+        + (defMode==='letters' && defLetterForm==='contextual' && defLetterSet!=='recent'
+            ? ` · <b>Contextual forms</b> — the enemy shows a joined shape (initial, medial or final); you still type the plain letter.`
+            : '')
+        + `. `
         + `<b>${pool.length}</b> unique target${pool.length===1?'':'s'} available`
         + (pool.length && pool.length < DROUND ? ` — fewer than ${DROUND}, so targets will repeat (spaced apart where possible).` : '.')
         + (pool.length ? '' : ' <b>No targets in this set yet</b> — play a round to collect recent misses, or pick another set.')
         + ` Pacing eases you in, then tightens for the final wave. `
         + `Score = (${DSCORE.base} + ${DSCORE.streakBonus} × current streak) × ${DSPEEDS[defSpeed].mult}. `
-        + `A wrong Enter costs your streak, not a life. Escape clears the box.`
+        + `A wrong Enter costs your streak, not a life. Escape clears the box. `
+        + `Defense shows recent misses and slower targets a little more often.`
         + (recentMisses.length && !live ? ` <b>Recent misses</b> are the last targets that got through, saved across rounds — not only this round's.` : '')
-      + `</p></div>`;
+      + `</p>`
+      + (!live ? sessionHtml() : '')
+      + `</div>`;
     wireCommon();
     const inp=body.querySelector('#dfn-in');
     const on=(a,fn)=>{ const b2=body.querySelector('[data-a='+a+']'); if(b2) b2.addEventListener('click', fn); };
@@ -3085,17 +3191,21 @@ function renderTableCards(arr){
       return q[D.spawned % q.length];
     }
     const pool = defPool();
+    if(!pool.length) return null;
     const live = new Set(D.enemies.map(e=>e.t.id));
     const openingIds = new Set(D.spawned < 5 ? D.last.slice(0,5) : []);
     for(let tries=0; tries<12; tries++){
-      const t = D.deck.next();
+      // 1.3 — ADAPTIVE PICK: a weighted draw (struggling targets a little more likely),
+      // still inside the chosen set/category and still under the 1.2 sequencing rules.
+      const t = weightedPick(pool, live.size ? live : null);
       if(!t) return null;
       const tooMany = pool.length <= D.enemies.length + 1;   // pool too small to be picky
       if(!tooMany && live.has(t.id)) continue;               // no simultaneous duplicates
       if(openingIds.has(t.id) && pool.length > 5) continue;  // no repeat in the opening five
+      if(D.last[D.last.length-1] === t.id && pool.length > 1) continue;  // no immediate repeat
       return t;
     }
-    return D.deck.next();
+    return weightedPick(pool, null);
   }
 
   // LANE SELECTION (1.2). Round-robin let two long labels stack. Rule now:
@@ -3145,6 +3255,14 @@ function renderTableCards(arr){
     D.wait = 0;
     const e = { key:'e'+(D.spawned), t, x:1, lane:pick.lane,
                 emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)], el:null, w:0 };
+    // 1.3 — one record per spawned target; resolved on defeat or wall hit.
+    e.rec = { id:t.id, ar:t.ar, tr:t.tr||'', en:t.en||'', kind:t.kind||'letter',
+              category: defMode==='words' ? defWordCat : defLetterSet,
+              form: t.form || 'isolated',
+              spawnedAt: D.clock, resolvedAt:null, outcome:null, responseMs:null,
+              nearMiss:false, hadWrongSubmission:false, started:false };
+    D.records.push(e.rec);
+    const st = statFor(t.id); st.shown++; st.lastSeenAt = Date.now();
     D.enemies.push(e); D.spawned++;
     D.last.push(t.id); if(D.last.length>6) D.last.shift();
     mountEnemy(e);
@@ -3186,6 +3304,8 @@ function renderTableCards(arr){
     if(!D.lastTs) D.lastTs = ts;
     const dt = Math.min((ts - D.lastTs)/1000, 0.25);   // elapsed seconds, clamped across a tab stall
     D.lastTs = ts;
+    D.clock += dt;            // ROUND CLOCK (1.3): advances only while playing, so the
+                              // countdown and any pause are excluded from response times
     const cfg = DSPEEDS[defSpeed];
 
     if(D.spawned < DROUND){
@@ -3239,8 +3359,14 @@ function renderTableCards(arr){
     // landed — a speed problem, not a recognition problem. Tracked separately.
     const inpNow = body.querySelector('#dfn-in');
     const typed = inpNow ? passSegNorm(inpNow.value || '', false) : '';
-    if(typed && passSegNorm(e.t.ar, false).indexOf(typed) === 0) D.nearMiss.push(e.t);
+    const near = !!(typed && passSegNorm(e.t.ar, false).indexOf(typed) === 0);
+    if(near) D.nearMiss.push(e.t);
     D.missCount[e.t.id] = (D.missCount[e.t.id] || 0) + 1;
+    if(e.rec){
+      e.rec.resolvedAt = D.clock; e.rec.outcome = 'wall'; e.rec.responseMs = null;   // never a defeat time
+      e.rec.nearMiss = near; e.rec.started = near;
+      const st = statFor(e.t.id); st.wallHits++; if(near) st.nearMisses++;
+    }
     removeEnemy(e, i, false);
     D.lives--; D.streak=0;
     D.missed.push(e.t);
@@ -3264,6 +3390,7 @@ function renderTableCards(arr){
       if(!e.el) return;
       const t = passSegNorm(e.t.ar,false);
       const on = q.length>0 && t.indexOf(q)===0;
+      if(on && e.rec) e.rec.started = true;   // the player did begin this one
       if(on) matches++;
       if(q.length>0 && t===q) exact++;
       e.el.classList.toggle('match', on);
@@ -3296,6 +3423,13 @@ function renderTableCards(arr){
     let best=-1;
     D.enemies.forEach((e,i)=>{ if(passSegNorm(e.t.ar,false)===q){ if(best<0 || e.x < D.enemies[best].x) best=i; } });
     if(best<0){
+      // 1.3 — associate this wrong answer with any live target it was a prefix of; if it
+      // matched nothing at all, it stays a pure accuracy error attached to no target.
+      D.enemies.forEach(en=>{
+        if(en.rec && q && passSegNorm(en.t.ar,false).indexOf(q)===0){
+          en.rec.hadWrongSubmission = true; statFor(en.t.id).wrongAssoc++;
+        }
+      });
       D.wrong++; D.streak=0; D.fbCls='no';
       D.fb = 'Not an active target — ' + arSpan(raw);
       if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb; }
@@ -3304,6 +3438,12 @@ function renderTableCards(arr){
       return;
     }
     const e=D.enemies[best];
+    if(e.rec){
+      e.rec.resolvedAt = D.clock;
+      e.rec.responseMs = Math.round((D.clock - e.rec.spawnedAt) * 1000);
+      e.rec.outcome = 'defeated';
+      const st = statFor(e.t.id); st.defeated++; st.totalMs += e.rec.responseMs;
+    }
     const pts = Math.round((DSCORE.base + DSCORE.streakBonus * D.streak) * DSPEEDS[defSpeed].mult);
     D.score += pts; D.streak++; if(D.streak > D.best) D.best = D.streak;
     D.correct++; D.defeated++;
@@ -3326,6 +3466,18 @@ function renderTableCards(arr){
     defAbort();                       // cancels rAF + every pending timer; keeps the scoreboard for the panel
     D.phase='over';
     if(D.missed.length) saveMisses(D.missed);
+    saveStats();                                    // 1.3 — commit target stats
+    // 1.3 — session summary (in memory; a refresh clears it, by design)
+    SESS.rounds++;
+    SESS.defeated += D.defeated;
+    SESS.missed += D.missed.length;
+    SESS.correct += D.correct;
+    SESS.subs += (D.correct + D.wrong);
+    D.records.filter(r=>r.outcome==='defeated' && r.responseMs!=null).forEach(r=>{ SESS.msTotal += r.responseMs; SESS.msCount++; });
+    D.missed.forEach(t=>{ SESS.missCounts[t.id] = (SESS.missCounts[t.id]||0)+1; SESS.missAr[t.id] = t.ar; });
+    SESS.lastCtx = (defMode==='words' ? 'Words' : 'Letters') + ' · ' +
+      ((defMode==='words' ? (DEF_WORD_CATS.find(c=>c.id===defWordCat)||{}).label
+                          : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet)||{}).label) || '');
     render();
     const subs = D.correct + D.wrong;
     const cleared = D.spawned>=DROUND && D.lives>0;
@@ -3333,7 +3485,8 @@ function renderTableCards(arr){
     defAnnounce((cleared?'Round cleared. ':'Defenses fell. ')
       + `Score ${D.score}. ${D.defeated} defeated, ${D.missed.length} reached the wall, `
       + `${subs? Math.round(D.correct/subs*100):0} percent typing accuracy.`
-      + (adv.rec ? ' Suggested next: ' + adv.rec.label + '.' : ''));
+      + (adv.rec ? ' Suggested next: ' + adv.rec.label + '.' : '')
+      + (SESS.rounds>1 ? ' Session summary available below.' : ''));
   }
   // RECOMMENDATIONS (1.2) — transparent rules over THIS round's data only. No adaptive
   // model and no mastery claims: every line shown is backed by something that happened.
@@ -3341,18 +3494,29 @@ function renderTableCards(arr){
     const subs = D.correct + D.wrong;
     const acc = subs ? D.correct/subs : 0;
     const cleared = D.spawned >= DROUND && D.lives > 0;
+    // 1.3 — three distinct failure patterns, each from round evidence:
+    //   RECOGNITION  reached the wall and was never started
+    //   TYPING SPEED reached the wall after a valid prefix had been typed (near miss)
+    //   ACCURACY     wrong submissions that matched no active target
+    const speedMisses = D.records.filter(r=>r.outcome==='wall' && r.nearMiss).length;
+    const recogMisses = D.records.filter(r=>r.outcome==='wall' && !r.nearMiss).length;
+    const defeatedRecs = D.records.filter(r=>r.outcome==='defeated' && r.responseMs!=null);
+    const avgMs = defeatedRecs.length ? Math.round(defeatedRecs.reduce((a,r)=>a+r.responseMs,0)/defeatedRecs.length) : null;
     const lines = [];
-    if(D.defeated) lines.push({ h:'Strongest area', t:'You defeated ' + D.defeated + ' of the ' + D.spawned + ' targets that appeared.' });
+    if(D.defeated) lines.push({ h:'Strongest area', t:'You defeated ' + D.defeated + ' of the ' + D.spawned + ' targets that appeared'
+      + (avgMs!=null ? ', averaging ' + (avgMs/1000).toFixed(1) + ' seconds each.' : '.') });
     const worst = Object.keys(D.missCount).sort((a,b)=>D.missCount[b]-D.missCount[a]);
     if(worst.length){
       const names = worst.slice(0,3).map(id=>{ const m = D.missed.find(t=>t.id===id); return m ? m.ar : ''; }).filter(Boolean);
       if(names.length) lines.push({ h:'Needs practice', ar:names.join(' · '),
         t:(names.length===1?' reached the wall.':' reached the wall most often.') });
     }
-    if(D.nearMiss.length) lines.push({ h:'Typing speed', t:D.nearMiss.length + ' target' + (D.nearMiss.length===1?'':'s')
-      + ' reached the wall while you had already started typing ' + (D.nearMiss.length===1?'it':'them')
+    if(recogMisses) lines.push({ h:'Recognition', t:'You let ' + recogMisses + ' target' + (recogMisses===1?'':'s')
+      + ' reach the wall without starting ' + (recogMisses===1?'it':'them') + '.' });
+    if(speedMisses) lines.push({ h:'Typing speed', t:speedMisses + ' target' + (speedMisses===1?'':'s')
+      + ' reached the wall after you had already started typing ' + (speedMisses===1?'it':'them')
       + '. Recognition is fine — the typing needs to be quicker.' });
-    if(D.wrong>=3 && acc<0.7) lines.push({ h:'Accuracy', t:D.wrong + ' submissions did not match any active target.' });
+    if(D.wrong >= 3) lines.push({ h:'Accuracy', t:'Wrong submissions interrupted your streak ' + D.wrong + ' times.' });
 
     let rec = null;
     const setLabel = defMode==='words'
@@ -3360,8 +3524,12 @@ function renderTableCards(arr){
       : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet) || {}).label;
     if(D.missed.length >= 3)
       rec = { a:'dmissed', label:'Practice missed targets', why:'Three or more targets reached the wall.' };
-    else if(D.nearMiss.length >= 2 && acc >= 0.8 && defSpeed !== 'slow')
+    else if(speedMisses >= 2 && acc >= 0.8 && defSpeed !== 'slow')
       rec = { a:'dslower', label:'Try a slower speed', why:'You knew the targets but ran out of time.' };
+    else if(recogMisses >= 2)
+      rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'Targets reached the wall before you recognized them.' };
+    else if(D.wrong >= 3)
+      rec = { a:'dagain', label:'Replay for accuracy', why:'Wrong submissions kept breaking your streak.' };
     else if(cleared && D.wrong===0 && defSpeed==='slow')
       rec = { a:'dfaster', label:'Try Normal speed', why:'A clean sweep at Slow.' };
     else if(cleared && D.wrong===0 && defSpeed==='normal')
@@ -3370,7 +3538,35 @@ function renderTableCards(arr){
       rec = { a:'dagain', label:'Practice similar letters again', why:'Confusable shapes still got through.' };
     else if(D.missed.length)
       rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'A few targets still got through.' };
-    return { lines:lines, rec:rec, setLabel:setLabel };
+    return { lines:lines, rec:rec, setLabel:setLabel, avgMs:avgMs, recogMisses:recogMisses, speedMisses:speedMisses };
+  }
+
+  // 1.3 — SESSION SUMMARY. In-memory only: a page refresh clears it, deliberately, so
+  // nothing here pretends to be long-term mastery.
+  function sessionHtml(){
+    if(!SESS.rounds) return '';
+    const acc = SESS.subs ? Math.round(SESS.correct/SESS.subs*100) : 0;
+    const avg = SESS.msCount ? (SESS.msTotal/SESS.msCount/1000).toFixed(1) : null;
+    const most = Object.keys(SESS.missCounts).sort((a,b)=>SESS.missCounts[b]-SESS.missCounts[a]).slice(0,4)
+      .map(id=>SESS.missAr[id]).filter(Boolean);
+    // one takeaway, only when the sample supports it
+    let take = '';
+    if(SESS.rounds >= 2 && SESS.msCount >= 5){
+      if(acc >= 85 && SESS.missed >= 3) take = 'You recognize most targets correctly — the misses are costing you on speed, not knowledge.';
+      else if(acc < 70) take = 'Wrong submissions are the main leak. Slow down and read the target before typing.';
+      else if(SESS.missed === 0) take = 'Nothing has reached the wall this session. Consider a faster speed or a harder set.';
+    }
+    return `<div class="dfn-session"><b>Session so far</b> <span class="note">(this browser session only — a refresh clears it)</span>`
+      + `<div class="dfn-sessgrid">`
+        + `<div>Rounds played<b>${SESS.rounds}</b></div>`
+        + `<div>Targets defeated<b>${SESS.defeated}</b></div>`
+        + `<div>Reached the wall<b>${SESS.missed}</b></div>`
+        + `<div>Average typing accuracy<b>${acc}%</b></div>`
+        + (avg ? `<div>Average response time on defeated targets<b>${avg} s</b></div>` : '')
+      + `</div>`
+      + (most.length ? `<div class="dfn-sessmiss">Most missed: ${most.map(a=>arSpan(a)).join(' · ')}</div>` : '')
+      + (take ? `<p class="dfn-recwhy">${esc(take)}</p>` : '')
+      + `</div>`;
   }
 
   function defResultHtml(){
@@ -3400,6 +3596,7 @@ function renderTableCards(arr){
       + (adv.lines.length ? `<div class="dfn-advice">` + adv.lines.map(l =>
             `<div><b>${esc(l.h)}</b> ${l.ar ? `<span class="ar" dir="rtl">${esc(l.ar)}</span>` : ''}${esc(l.t)}</div>`).join('') + `</div>` : '')
       + (adv.rec ? `<p class="dfn-recwhy">Suggested next: ${esc(adv.rec.why)}</p>` : '')
+      + sessionHtml()
       + `<div class="tt-controls">`
         + (adv.rec ? `<button type="button" class="tt-btn primary" data-a="${esc(adv.rec.a)}">${esc(adv.rec.label)}</button>` : '')
         + `<button type="button" class="tt-btn${adv.rec?'':' primary'}" data-a="dagain">Play again</button>`
