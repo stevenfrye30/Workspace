@@ -98,7 +98,7 @@ to `true` in `data/listening.js` to activate playback.
 ### Visiting family (`dlg-family`)
 | File | Arabic |
 |---|---|
-| `dlg-family-01.ogg` | اتفضل، خُش |
+| `dlg-family-01.ogg` | اتفضل، خش |
 | `dlg-family-02.ogg` | شكراً، البيت جميل |
 | `dlg-family-03.ogg` | تشرب إيه؟ شاي ولا قهوة؟ |
 | `dlg-family-04.ogg` | شاي، لو سمحت |
@@ -151,7 +151,7 @@ to `true` in `data/listening.js` to activate playback.
 | `dlg-directions-01.ogg` | لو سمحت، فين البنك؟ |
 | `dlg-directions-02.ogg` | على طول وبعدين يمين |
 | `dlg-directions-03.ogg` | بعيد؟ |
-| `dlg-directions-04.ogg` | لأ، قريّب |
+| `dlg-directions-04.ogg` | لأ، قريب |
 | `dlg-directions-05.ogg` | شكراً جزيلاً |
 | `dlg-directions-06.ogg` | العفو |
 

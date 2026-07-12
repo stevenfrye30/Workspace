@@ -147,7 +147,7 @@ window.MASRI.listening = {
     { id:"dlg-family", title:"Visiting family", situation:"You visit a friend’s family at home.",
       roles:["A","B"], roleLabels:{ A:"Guest", B:"Host" },
       lines:[
-        { role:"B", arabic:"اتفضل، خُش", transliteration:"etfaḍḍal, khosh", english:"Come in, please", audio:"dlg-family-01.ogg" },
+        { role:"B", arabic:"اتفضل، خش", transliteration:"etfaḍḍal, khosh", english:"Come in, please", audio:"dlg-family-01.ogg" },
         { role:"A", arabic:"شكراً، البيت جميل", transliteration:"shukran, el-bēt gamīl", english:"Thanks, the house is beautiful", audio:"dlg-family-02.ogg" },
         { role:"B", arabic:"تشرب إيه؟ شاي ولا قهوة؟", transliteration:"teshrab ēh? shāy walla ʾahwa?", english:"What will you drink? Tea or coffee?", audio:"dlg-family-03.ogg" },
         { role:"A", arabic:"شاي، لو سمحت", transliteration:"shāy, law samaḥt", english:"Tea, please", audio:"dlg-family-04.ogg" },
@@ -212,7 +212,7 @@ window.MASRI.listening = {
         { role:"A", arabic:"تحب نروح السينما؟", transliteration:"teḥeb nerūḥ es-sinema?", english:"Want to go to the cinema?", audio:"dlg-plans-03.ogg" },
         { role:"B", arabic:"فكرة حلوة! إمتى؟", transliteration:"fekra ḥelwa! emta?", english:"Nice idea! When?", audio:"dlg-plans-04.ogg" },
         { role:"A", arabic:"بكرة الساعة سبعة", transliteration:"bokra es-sāʿa sabʿa", english:"Tomorrow at seven", audio:"dlg-plans-05.ogg" },
-        { role:"B", arabic:"ماشي، اتفقنا", transliteration:"māshi, etafaʾna", english:"Okay — it’s a deal", audio:"dlg-plans-06.ogg" }
+        { role:"B", arabic:"ماشي، اتفقنا", transliteration:"māshi, ettafaʾna", english:"Okay — it’s a deal", audio:"dlg-plans-06.ogg" }
       ] }
   ]
 };
