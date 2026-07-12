@@ -72,7 +72,47 @@ window.MASRI.typing = {
     // gender-sensitive (see NATIVE_REVIEW.md) — a game is the wrong place to drill them.
     wordExclude: ["تايه", "تهت", "مدرسة", "إزازة", "ازازة", "قزازة"],
     wordMinLen: 2,
-    wordMaxLen: 6
+    wordMaxLen: 6,
+
+    // ── 1.2 ────────────────────────────────────────────────────────────────
+    // Letter challenge sets. `set` names a key in typing.letterSets above — the SAME
+    // pools Letter Typing uses, never a second competing definition. `all` = the 28
+    // isolated letters from alphabet.js. `recent` is built at runtime from saved misses.
+    letterSetsUi: [
+      { id:"all",       label:"All letters" },
+      { id:"beginner",  label:"Beginner",      set:"beginner" },
+      { id:"similar",   label:"Similar shapes", set:"similar" },
+      { id:"emphatic",  label:"Emphatic",      set:"emphatic" },
+      { id:"recent",    label:"Recent misses", recent:true }
+    ],
+
+    // Word categories, defined by SOURCE DATASET (provenance), never by reading the
+    // Arabic. `common:true` = the curated commonWords pool (the 49-word Mixed set).
+    // `src` categories accept any vetted word from those datasets that passes the
+    // structural + exclusion filters, which is why they are larger than Mixed.
+    wordCats: [
+      { id:"mixed",   label:"Mixed",            common:true },
+      { id:"food",    label:"Food",             src:["food"] },
+      { id:"people",  label:"People",           src:["people"] },
+      { id:"around",  label:"Places & Around",  src:["around","shopping"] },
+      { id:"timenum", label:"Time & Numbers",   src:["time","numbers"] },
+      { id:"health",  label:"Health",           src:["health"] },
+      { id:"recent",  label:"Recent misses",    recent:true }
+    ],
+
+    // Gradual pacing. Spawn CADENCE changes, crossing speed does not — pressure rises
+    // without a punishing speed spike. Phases are by enemy index within the round.
+    pacing: [
+      { until:5,  gapMult:1.15, label:"Opening" },
+      { until:10, gapMult:1.00, label:"Pressure rising" },
+      { until:15, gapMult:0.85, label:"Final wave" }
+    ],
+
+    // Lane spacing: a new enemy needs this much clear space (px) behind the trailing
+    // enemy in a lane before it may spawn there; if no lane qualifies, the spawn waits
+    // up to maxSpawnWaitSec, then takes the roomiest lane anyway so the round advances.
+    laneGapPx: 18,
+    maxSpawnWaitSec: 2.5
   },
 
   layoutName: "Windows Arabic (101)",

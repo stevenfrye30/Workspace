@@ -666,6 +666,15 @@
      (never colour-only) and absolutely positioned, so none of them shifts layout. */
   .dfn-count{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;
              font-family:var(--ui);font-size:34px;font-weight:600;color:var(--gold);background:rgba(18,22,31,.55);letter-spacing:.04em}
+  /* Phase chip (Opening / Pressure rising / Final wave) and the result advice block. */
+  .dfn-stat.phase{display:none}
+  .dfn-stat.phase.on{display:inline;background:var(--card);border-color:var(--gold);color:var(--gold);font-weight:600}
+  .dfn-advice{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+  .dfn-advice div{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:7px 11px;font-size:12px;color:var(--muted);line-height:1.55}
+  .dfn-advice b{color:var(--fg);display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+  .dfn-advice .ar{font-family:var(--ar);font-size:calc(17px * var(--ar-scale));color:var(--gold);margin-left:4px}
+  .dfn-recwhy{margin-top:8px;font-size:11.5px;color:var(--muted)}
+  .tt-opt[disabled]{opacity:.45;cursor:not-allowed}
   .dfn-lock{min-height:16px;margin:5px 0 0;font-family:var(--ui);font-size:11.5px;color:var(--muted)}
   .dfn-lock.near{color:var(--fg)}
   .dfn-lock.on{color:var(--gold);font-weight:600}
@@ -2210,7 +2219,9 @@ function renderTableCards(arr){
   // Selector controls --------------------------------------------------------
   function pillGroup(name, opts, cur, label){
     return `<div class="tt-selgroup" role="group" aria-label="${esc(label)}"><span class="tt-sellabel">${esc(label)}</span><div class="tt-selopts">`
-      + opts.map(o=>`<button type="button" class="tt-opt" data-sel="${name}" data-val="${o.id}" aria-pressed="${o.id===cur}">${esc(o.label)}</button>`).join('')
+      + opts.map(o=>`<button type="button" class="tt-opt" data-sel="${name}" data-val="${o.id}" aria-pressed="${o.id===cur}"`
+          + (o.disabled ? ` disabled aria-disabled="true" title="${esc(o.why||'Nothing saved yet — play a round first')}"` : '')
+          + `>${esc(o.label)}</button>`).join('')
       + `</div></div>`;
   }
   const reviewBar = () => `<div class="tt-topbar"><button type="button" id="tt-reviewbtn" class="tt-review-btn${mCount()>0?' has':''}" aria-disabled="${mCount()===0}">Review mistakes (${mCount()})</button></div>`;
@@ -2290,6 +2301,8 @@ function renderTableCards(arr){
     // an abandoned round) — defStop() runs first so no loop or enemy survives.
     else if(name==='defMode'){ defStop(); defMode=val; lsSet('masri-defense-mode',val); }
     else if(name==='defSpeed'){ defStop(); defSpeed=val; lsSet('masri-defense-speed',val); }
+    else if(name==='defLetterSet'){ defStop(); defLetterSet=val; lsSet('masri-defense-letter-set',val); }
+    else if(name==='defWordCat'){ defStop(); defWordCat=val; lsSet('masri-defense-word-category',val); }
     render();
   }
 
@@ -2780,32 +2793,45 @@ function renderTableCards(arr){
   const DMISS_KEY = 'masri-defense-missed';   // isolated from passage/mistake storage
 
   // Target pools. Every target carries a STABLE id derived from its source record's
-  // position, never from the visible Arabic alone.
+  // position (letters: index in alphabet.js; words: dataset + table + row of the FIRST
+  // record that produced it), never from the visible Arabic. `cats` records every source
+  // dataset a word appears in, so a category filter is provenance-based, not text-based.
   const DEF_LETTERS = ((M.alphabet && M.alphabet.letters) || [])
-    .map((l,i) => ({ id:'def-l-'+i, ar:l.letter, tr:l.name||'', en:l.sound||'' }))
+    .map((l,i) => ({ id:'def-l-'+i, kind:'letter', ar:l.letter, tr:l.name||'', en:l.sound||'' }))
     .filter(t => t.ar);
+  const LSETS_D = (M.typing && M.typing.letterSets) || {};
+  const DEF_LETTER_SETS = (DCFG.letterSetsUi || [{id:'all',label:'All letters'}]);
+  const DEF_WORD_CATS = (DCFG.wordCats || [{id:'mixed',label:'Mixed',common:true}]);
+
   const DEF_WORDS = (function(){
     const ex = new Set((DCFG.wordExclude||[]).map(norm));
     const hard = new Set(((M.typing && M.typing.excludeWords) || []).map(norm));
     const common = new Set(((M.typing && M.typing.commonWords) || []).map(norm));
     const lo = DCFG.wordMinLen || 2, hi = DCFG.wordMaxLen || 6;
-    const out = [], seen = new Set();
-    const add = (ar,tr,en,cat,i) => {
+    const re = new RegExp('^[ء-ي]{'+lo+','+hi+'}$');
+    const byWord = new Map();
+    const add = (ar,tr,en,cat,idx) => {
       if(!ar || !tr || !en) return;
       const w = norm(ar);
-      if(!new RegExp('^[ء-ي]{'+lo+','+hi+'}$').test(w)) return;   // short, clean, no spaces/punctuation
-      if(ex.has(w) || hard.has(w) || !common.has(w)) return;      // vetted beginner words only
-      if(seen.has(w)) return; seen.add(w);
-      out.push({ id:'def-w-'+cat+'-'+i, ar:w, tr:String(tr), en:String(en) });
+      if(!re.test(w)) return;                 // short, clean, no spaces/punctuation
+      if(ex.has(w) || hard.has(w)) return;    // review-flagged + Type's own exclusions
+      let o = byWord.get(w);
+      if(!o){ o = { id:'def-w-'+cat+'-'+idx, kind:'word', ar:w, tr:String(tr), en:String(en), cats:new Set() }; byWord.set(w,o); }
+      o.cats.add(cat);
+      if(common.has(w)) o.common = true;
     };
     ['verbs','food','people','descriptions','shopping','around','health','time'].forEach(k=>{
       if(M[k] && M[k].tables) M[k].tables.forEach((t,ti)=>(t.rows||[]).forEach((r,ri)=>add(r[0],r[1],r[2],k,ti+'-'+ri)));
     });
     if(Array.isArray(M.vocab)) M.vocab.forEach((t,ti)=>(t.words||[]).forEach((w,wi)=>add(w.ar,w.tr,w.en,'vocab',ti+'-'+wi)));
-    if(M.numbers) ['ones','teens','tens'].forEach(g=>(M.numbers[g]||[]).forEach((n,ni)=>add(n.ar,n.tr,String(n.n),'num-'+g,ni)));
-    return out;
+    if(M.numbers) ['ones','teens','tens'].forEach(g=>(M.numbers[g]||[]).forEach((n,ni)=>add(n.ar,n.tr,String(n.n),'numbers',g+'-'+ni)));
+    return [...byWord.values()];
   })();
-  const defPool = () => (defMode==='words' ? DEF_WORDS : DEF_LETTERS);
+
+  let defLetterSet = lsGet('masri-defense-letter-set','all');
+  if(!DEF_LETTER_SETS.some(x=>x.id===defLetterSet)) defLetterSet='all';
+  let defWordCat = lsGet('masri-defense-word-category','mixed');
+  if(!DEF_WORD_CATS.some(x=>x.id===defWordCat)) defWordCat='mixed';
 
   // RECENT MISSES (masri-defense-missed) — a rolling list across rounds, validated on
   // load so a stale record from an older pool can never crash a round. Defense-only:
@@ -2826,16 +2852,46 @@ function renderTableCards(arr){
     // newest first, de-duplicated by target id, capped — a perfect round leaves the
     // previous recents in place rather than wiping them.
     const merged=[], seen=new Set();
-    list.concat(recentMisses).forEach(m=>{ if(validMiss(m) && !seen.has(m.id)){ seen.add(m.id); merged.push({id:m.id,ar:m.ar,tr:m.tr||'',en:m.en||''}); } });
+    list.concat(recentMisses).forEach(m=>{ if(validMiss(m) && !seen.has(m.id)){ seen.add(m.id); merged.push({id:m.id,ar:m.ar,tr:m.tr||'',en:m.en||'',kind:m.kind||(String(m.id).indexOf('def-l-')===0?'letter':'word')}); } });
     recentMisses = merged.slice(0,30);
     if(recentMisses.length) jsonSet(DMISS_KEY, recentMisses); else try{ localStorage.removeItem(DMISS_KEY); }catch(e){}
+  }
+  // Recent-miss targets are re-resolved against the CURRENT pools by stable id — a
+  // stored record is never trusted as authority on its own, so a stale id from an older
+  // pool simply drops out instead of injecting a target that no longer exists.
+  function recentTargets(kind){
+    const pool = kind==='letter' ? DEF_LETTERS : DEF_WORDS;
+    const byId = new Map(pool.map(t=>[t.id,t]));
+    const out=[], seen=new Set();
+    recentMisses.forEach(m=>{
+      const k = m.kind || (String(m.id).indexOf('def-l-')===0 ? 'letter' : 'word');
+      if(k!==kind) return;
+      const t = byId.get(m.id);
+      if(t && !seen.has(t.id)){ seen.add(t.id); out.push(t); }
+    });
+    return out;
+  }
+
+  // Active pool = target mode + the chosen letter set / word category.
+  function defPool(){
+    if(defMode==='words'){
+      const c = DEF_WORD_CATS.find(x=>x.id===defWordCat) || DEF_WORD_CATS[0];
+      if(c.recent) return recentTargets('word');
+      if(c.common) return DEF_WORDS.filter(w=>w.common);
+      return DEF_WORDS.filter(w => (c.src||[]).some(k=>w.cats.has(k)));
+    }
+    const st = DEF_LETTER_SETS.find(x=>x.id===defLetterSet) || DEF_LETTER_SETS[0];
+    if(st.recent) return recentTargets('letter');
+    if(st.set){ const want=new Set(LSETS_D[st.set]||[]); return DEF_LETTERS.filter(l=>want.has(l.ar)); }
+    return DEF_LETTERS.slice();
   }
 
   // Game state. Session-only: nothing here is ever persisted.
   const D = { phase:'setup', enemies:[], spawned:0, resolved:0, lives:DLIVES, score:0,
               streak:0, best:0, correct:0, wrong:0, defeated:0, missed:[], deck:null,
               queue:null, queueLabel:'', raf:0, lastTs:0, nextSpawn:0, fb:'', fbCls:'',
-              timers:new Set(), count:0, composing:false, trackW:0 };
+              timers:new Set(), count:0, composing:false, trackW:0,
+              phase2:'', wait:0, last:[], nearMiss:[], missCount:{} };
 
   // ONE media-query object, read from a cached boolean — not re-queried per frame.
   const RM_MQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -2876,6 +2932,7 @@ function renderTableCards(arr){
     D.phase='setup'; D.spawned=0; D.resolved=0; D.lives=DLIVES; D.score=0; D.streak=0;
     D.best=0; D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.queue=null;
     D.queueLabel=''; D.fb=''; D.fbCls=''; D.nextSpawn=0; D.composing=false;
+    D.phase2=''; D.wait=0; D.last=[]; D.nearMiss=[]; D.missCount={};
   }
   function defStop(){ defAbort(); defResetState(); }
   function defNewRound(queue, label){
@@ -2890,8 +2947,20 @@ function renderTableCards(arr){
 
   function renderDefense(){
     const pool = defPool();
+    // The recent-miss option is offered but DISABLED when nothing valid is stored, with
+    // the reason shown — never a silent fallback to another set.
+    const nRecentL = recentTargets('letter').length, nRecentW = recentTargets('word').length;
+    const setOpts = DEF_LETTER_SETS.map(x => x.recent
+        ? { id:x.id, label:x.label + ' (' + nRecentL + ')', disabled: nRecentL===0 }
+        : { id:x.id, label:x.label });
+    const catOpts = DEF_WORD_CATS.map(x => x.recent
+        ? { id:x.id, label:x.label + ' (' + nRecentW + ')', disabled: nRecentW===0 }
+        : { id:x.id, label:x.label });
     const sel = reviewBar()
       + `<div class="tt-sel">` + pillGroup('defMode', DEF_MODES, defMode, 'Targets')
+      + (defMode==='letters'
+          ? pillGroup('defLetterSet', setOpts, defLetterSet, 'Letter set')
+          : pillGroup('defWordCat', catOpts, defWordCat, 'Category'))
       + pillGroup('defSpeed', DEF_SPEED_IDS.map(s=>({id:s,label:DSPEEDS[s].label})), defSpeed, 'Speed') + `</div>`;
     if(D.phase==='over'){ body.innerHTML = sel + defResultHtml(); wireCommon(); wireDefenseResult(); return; }
 
@@ -2904,6 +2973,7 @@ function renderTableCards(arr){
         + `<span class="dfn-stat lives">Lives<b>${D.lives} of ${DLIVES}</b></span>`
         + `<span class="dfn-stat">Streak<b>${D.streak}</b></span>`
         + `<span class="dfn-stat">Progress<b>${D.resolved} / ${DROUND}</b></span>`
+        + `<span class="dfn-stat phase${D.phase2?' on':''}" id="dfn-phase">${esc(D.phase2||'')}</span>`
       + `</div>`
       + `<div class="dfn-field" id="dfn-field" aria-hidden="true"><div class="dfn-wall" id="dfn-wall">🛡️</div>`
         + (live ? '' : `<div class="dfn-empty">Enemies come from the right carrying an Arabic target. Type the target and press Enter to stop one before it reaches the wall.</div>`)
@@ -2922,11 +2992,18 @@ function renderTableCards(arr){
             : `<button type="button" class="tt-btn primary" data-a="dstart"${pool.length?'':' disabled aria-disabled="true"'}>Start round</button>`
               + (recentMisses.length ? `<button type="button" class="tt-btn" data-a="drecent">Practice recent misses (${recentMisses.length})</button>` : ''))
       + `</div>`
-      + `<p class="dfn-note">${DROUND} enemies · ${DLIVES} lives · ${esc(DSPEEDS[defSpeed].label)} speed. `
+      + `<p class="dfn-note">${DROUND} enemies · ${DLIVES} lives · ${esc(DSPEEDS[defSpeed].label)} speed · `
+        + `<b>${esc(defMode==='words' ? 'Words' : 'Letters')}</b>`
+        + ` · <b>${esc((defMode==='words'
+              ? (DEF_WORD_CATS.find(c=>c.id===defWordCat)||{}).label
+              : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet)||{}).label) || '')}</b>. `
+        + `<b>${pool.length}</b> unique target${pool.length===1?'':'s'} available`
+        + (pool.length && pool.length < DROUND ? ` — fewer than ${DROUND}, so targets will repeat (spaced apart where possible).` : '.')
+        + (pool.length ? '' : ' <b>No targets in this set yet</b> — play a round to collect recent misses, or pick another set.')
+        + ` Pacing eases you in, then tightens for the final wave. `
         + `Score = (${DSCORE.base} + ${DSCORE.streakBonus} × current streak) × ${DSPEEDS[defSpeed].mult}. `
-        + `A wrong Enter costs your streak, not a life. Escape clears the box. `
-        + `${pool.length} target${pool.length===1?'':'s'} in this set.`
-        + (recentMisses.length && !live ? ` <b>Recent misses</b> are the last ${recentMisses.length} target${recentMisses.length===1?'':'s'} that got through, saved across rounds — not only this round's.` : '')
+        + `A wrong Enter costs your streak, not a life. Escape clears the box.`
+        + (recentMisses.length && !live ? ` <b>Recent misses</b> are the last targets that got through, saved across rounds — not only this round's.` : '')
       + `</p></div>`;
     wireCommon();
     const inp=body.querySelector('#dfn-in');
@@ -2989,16 +3066,89 @@ function renderTableCards(arr){
     }
   }
 
+  // PACING (1.2) — spawn cadence rises across three phases; crossing speed never
+  // changes inside a chosen Slow/Normal/Fast setting, so pressure grows without a spike.
+  const DPACE = DCFG.pacing || [{until:15, gapMult:1, label:''}];
+  function paceFor(n){ return DPACE.find(p => n < p.until) || DPACE[DPACE.length-1]; }
+
+  // SEQUENCING (1.2) — the deck already avoids immediate repeats; on top of that we
+  // refuse a target that is already on the field (unless the pool is too small to
+  // avoid it) and refuse any repeat inside the opening five.
   function nextTarget(){
-    if(D.queue && D.queue.length) return D.queue[D.spawned % D.queue.length];   // review rounds repeat their targets
+    if(D.queue && D.queue.length){                       // review rounds repeat by design,
+      const q = D.queue;                                  // but space repeats out when they can
+      if(q.length===1) return q[0];
+      for(let i=0;i<q.length;i++){
+        const t = q[(D.spawned + i) % q.length];
+        if(D.last[D.last.length-1] !== t.id) return t;
+      }
+      return q[D.spawned % q.length];
+    }
+    const pool = defPool();
+    const live = new Set(D.enemies.map(e=>e.t.id));
+    const openingIds = new Set(D.spawned < 5 ? D.last.slice(0,5) : []);
+    for(let tries=0; tries<12; tries++){
+      const t = D.deck.next();
+      if(!t) return null;
+      const tooMany = pool.length <= D.enemies.length + 1;   // pool too small to be picky
+      if(!tooMany && live.has(t.id)) continue;               // no simultaneous duplicates
+      if(openingIds.has(t.id) && pool.length > 5) continue;  // no repeat in the opening five
+      return t;
+    }
     return D.deck.next();
   }
+
+  // LANE SELECTION (1.2). Round-robin let two long labels stack. Rule now:
+  //   1. estimate the new label's width (measured for the same text when possible)
+  //   2. for each lane, find its trailing enemy (largest x) and compute the clear space
+  //      between the field's right edge and that enemy's right edge, in px
+  //   3. pick the lane with the most clearance; require at least (labelWidth + laneGapPx)
+  //   4. if no lane qualifies, wait — but never longer than maxSpawnWaitSec, after which
+  //      the roomiest lane is used anyway so the round always progresses
+  const LANE_GAP = DCFG.laneGapPx || 18;
+  const MAX_WAIT = DCFG.maxSpawnWaitSec || 2.5;
+  const widthCache = new Map();
+  function estWidth(ar){
+    if(widthCache.has(ar)) return widthCache.get(ar);
+    const field = body.querySelector('#dfn-field');
+    let w = 40 + ar.length * 12;                      // fallback estimate
+    if(field){
+      const probe = document.createElement('div');
+      probe.className='dfn-enemy'; probe.style.visibility='hidden'; probe.style.left='-9999px';
+      probe.innerHTML = `<span class="dfn-ar" dir="rtl">${esc(ar)}</span><span class="dfn-emoji">👾</span>`;
+      field.appendChild(probe); w = probe.offsetWidth || w; probe.remove();
+    }
+    widthCache.set(ar, w); return w;
+  }
+  function pickLane(ar){
+    const fieldW = D.fieldW || 600, wallW = D.wallW || 34;
+    const need = estWidth(ar) + LANE_GAP;
+    let bestLane = 0, bestClear = -Infinity;
+    for(let l=0; l<DLANES; l++){
+      const inLane = D.enemies.filter(e=>e.lane===l);
+      // trailing enemy = the one nearest the spawn edge (largest x)
+      let clear = fieldW;
+      if(inLane.length){
+        const trail = inLane.reduce((a,b)=> a.x>b.x ? a : b);
+        const track = Math.max(0, fieldW - wallW - (trail.w||40));
+        const trailRight = wallW + trail.x*track + (trail.w||40);
+        clear = fieldW - trailRight;
+      }
+      if(clear > bestClear){ bestClear = clear; bestLane = l; }
+    }
+    return { lane:bestLane, ok:bestClear >= need };
+  }
   function spawnEnemy(){
-    const t = nextTarget(); if(!t) return;
-    const e = { key:'e'+(D.spawned), t, x:1, lane:D.spawned % DLANES,
+    const t = nextTarget(); if(!t) return true;
+    const pick = pickLane(t.ar);
+    if(!pick.ok && D.wait < MAX_WAIT) return false;     // hold this spawn briefly
+    D.wait = 0;
+    const e = { key:'e'+(D.spawned), t, x:1, lane:pick.lane,
                 emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)], el:null, w:0 };
     D.enemies.push(e); D.spawned++;
+    D.last.push(t.id); if(D.last.length>6) D.last.shift();
     mountEnemy(e);
+    return true;
   }
   function mountEnemy(e){
     const field = body.querySelector('#dfn-field'); if(!field) return;
@@ -3039,8 +3189,19 @@ function renderTableCards(arr){
     const cfg = DSPEEDS[defSpeed];
 
     if(D.spawned < DROUND){
+      const pace = paceFor(D.spawned);
+      if(pace.label && pace.label !== D.phase2){
+        D.phase2 = pace.label;
+        const chip = body.querySelector('#dfn-phase');
+        if(chip){ chip.textContent = pace.label; chip.classList.add('on'); }
+        if(D.spawned>0) defAnnounce(pace.label + '.');   // only when it actually changes mid-round
+      }
       D.nextSpawn -= dt;
-      if(D.nextSpawn <= 0){ spawnEnemy(); D.nextSpawn = cfg.gap; }
+      if(D.nextSpawn <= 0){
+        const done = spawnEnemy();                        // false = lanes crowded, hold
+        if(done){ D.nextSpawn = cfg.gap * (pace.gapMult||1); D.wait = 0; }
+        else { D.wait += dt; D.nextSpawn = 0.12; }        // re-check shortly; capped by MAX_WAIT
+      }
     }
     const perSec = 1 / cfg.cross;                  // normalized travel per second
     for(let i=D.enemies.length-1;i>=0;i--){
@@ -3074,6 +3235,12 @@ function renderTableCards(arr){
     dTimeout(()=>f.remove(), RM ? 700 : 650);
   }
   function hitWall(e, i){
+    // NEAR MISS: the player had already typed a nonempty prefix of THIS target when it
+    // landed — a speed problem, not a recognition problem. Tracked separately.
+    const inpNow = body.querySelector('#dfn-in');
+    const typed = inpNow ? passSegNorm(inpNow.value || '', false) : '';
+    if(typed && passSegNorm(e.t.ar, false).indexOf(typed) === 0) D.nearMiss.push(e.t);
+    D.missCount[e.t.id] = (D.missCount[e.t.id] || 0) + 1;
     removeEnemy(e, i, false);
     D.lives--; D.streak=0;
     D.missed.push(e.t);
@@ -3162,15 +3329,56 @@ function renderTableCards(arr){
     render();
     const subs = D.correct + D.wrong;
     const cleared = D.spawned>=DROUND && D.lives>0;
+    const adv = defAdvice();
     defAnnounce((cleared?'Round cleared. ':'Defenses fell. ')
       + `Score ${D.score}. ${D.defeated} defeated, ${D.missed.length} reached the wall, `
-      + `${subs? Math.round(D.correct/subs*100):0} percent typing accuracy.`);
+      + `${subs? Math.round(D.correct/subs*100):0} percent typing accuracy.`
+      + (adv.rec ? ' Suggested next: ' + adv.rec.label + '.' : ''));
   }
+  // RECOMMENDATIONS (1.2) — transparent rules over THIS round's data only. No adaptive
+  // model and no mastery claims: every line shown is backed by something that happened.
+  function defAdvice(){
+    const subs = D.correct + D.wrong;
+    const acc = subs ? D.correct/subs : 0;
+    const cleared = D.spawned >= DROUND && D.lives > 0;
+    const lines = [];
+    if(D.defeated) lines.push({ h:'Strongest area', t:'You defeated ' + D.defeated + ' of the ' + D.spawned + ' targets that appeared.' });
+    const worst = Object.keys(D.missCount).sort((a,b)=>D.missCount[b]-D.missCount[a]);
+    if(worst.length){
+      const names = worst.slice(0,3).map(id=>{ const m = D.missed.find(t=>t.id===id); return m ? m.ar : ''; }).filter(Boolean);
+      if(names.length) lines.push({ h:'Needs practice', ar:names.join(' · '),
+        t:(names.length===1?' reached the wall.':' reached the wall most often.') });
+    }
+    if(D.nearMiss.length) lines.push({ h:'Typing speed', t:D.nearMiss.length + ' target' + (D.nearMiss.length===1?'':'s')
+      + ' reached the wall while you had already started typing ' + (D.nearMiss.length===1?'it':'them')
+      + '. Recognition is fine — the typing needs to be quicker.' });
+    if(D.wrong>=3 && acc<0.7) lines.push({ h:'Accuracy', t:D.wrong + ' submissions did not match any active target.' });
+
+    let rec = null;
+    const setLabel = defMode==='words'
+      ? (DEF_WORD_CATS.find(c=>c.id===defWordCat) || {}).label
+      : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet) || {}).label;
+    if(D.missed.length >= 3)
+      rec = { a:'dmissed', label:'Practice missed targets', why:'Three or more targets reached the wall.' };
+    else if(D.nearMiss.length >= 2 && acc >= 0.8 && defSpeed !== 'slow')
+      rec = { a:'dslower', label:'Try a slower speed', why:'You knew the targets but ran out of time.' };
+    else if(cleared && D.wrong===0 && defSpeed==='slow')
+      rec = { a:'dfaster', label:'Try Normal speed', why:'A clean sweep at Slow.' };
+    else if(cleared && D.wrong===0 && defSpeed==='normal')
+      rec = { a:'dfaster', label:'Try Fast speed', why:'A clean sweep at Normal.' };
+    else if(defMode==='letters' && defLetterSet==='similar' && D.missed.length)
+      rec = { a:'dagain', label:'Practice similar letters again', why:'Confusable shapes still got through.' };
+    else if(D.missed.length)
+      rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'A few targets still got through.' };
+    return { lines:lines, rec:rec, setLabel:setLabel };
+  }
+
   function defResultHtml(){
     const subs = D.correct + D.wrong;
     const acc = subs ? Math.round(D.correct/subs*100) : 0;
     const missed = D.missed;
     const cleared = D.spawned>=DROUND && D.lives>0;
+    const adv = defAdvice();
     return `<div class="tt-card"><div class="tt-prompt">${cleared?'Round cleared':'Defenses fell'}</div>`
       + `<p class="note">${cleared
           ? `All ${DROUND} enemies deployed. ${D.defeated} defeated, ${missed.length} reached the wall.`
@@ -3189,14 +3397,23 @@ function renderTableCards(arr){
       + `<p class="note">Typing accuracy counts Enter presses only (${D.correct} correct of ${subs}). An enemy reaching the wall is a missed target, not a wrong answer.</p>`
       + (missed.length ? `<div class="tt-prompt" style="margin-top:10px">Targets that got through</div>`
           + `<div class="dfn-miss">` + missed.map(t=>`<span class="dfn-missitem">${arSpan(t.ar)}<span class="tr">${esc(t.tr||'')}</span><br>${esc(t.en||'')}</span>`).join('') + `</div>` : '')
+      + (adv.lines.length ? `<div class="dfn-advice">` + adv.lines.map(l =>
+            `<div><b>${esc(l.h)}</b> ${l.ar ? `<span class="ar" dir="rtl">${esc(l.ar)}</span>` : ''}${esc(l.t)}</div>`).join('') + `</div>` : '')
+      + (adv.rec ? `<p class="dfn-recwhy">Suggested next: ${esc(adv.rec.why)}</p>` : '')
       + `<div class="tt-controls">`
-        + `<button type="button" class="tt-btn primary" data-a="dagain">Play again</button>`
-        + (missed.length ? `<button type="button" class="tt-btn" data-a="dmissed">Practice missed targets</button>` : '')
+        + (adv.rec ? `<button type="button" class="tt-btn primary" data-a="${esc(adv.rec.a)}">${esc(adv.rec.label)}</button>` : '')
+        + `<button type="button" class="tt-btn${adv.rec?'':' primary'}" data-a="dagain">Play again</button>`
+        + (missed.length && (!adv.rec || adv.rec.a!=='dmissed') ? `<button type="button" class="tt-btn" data-a="dmissed">Practice missed targets</button>` : '')
         + (recentMisses.length ? `<button type="button" class="tt-btn" data-a="drecent">Practice recent misses (${recentMisses.length})</button>` : '')
       + `</div></div>`;
   }
   function wireDefenseResult(){
     const on=(a,fn)=>{ const b2=body.querySelector('[data-a='+a+']'); if(b2) b2.addEventListener('click', fn); };
+    // A recommendation never changes a setting silently — it applies only on click.
+    on('dslower', ()=>{ const i=DEF_SPEED_IDS.indexOf(defSpeed); const v=DEF_SPEED_IDS[Math.max(0,i-1)];
+      defSpeed=v; lsSet('masri-defense-speed',v); defStart(null,''); });
+    on('dfaster', ()=>{ const i=DEF_SPEED_IDS.indexOf(defSpeed); const v=DEF_SPEED_IDS[Math.min(DEF_SPEED_IDS.length-1,i+1)];
+      defSpeed=v; lsSet('masri-defense-speed',v); defStart(null,''); });
     on('dagain', ()=>defStart(null,''));
     on('dmissed', ()=>{
       const uniq=[]; const seen=new Set();
