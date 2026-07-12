@@ -100,6 +100,26 @@ window.MASRI.passages = {
       { ar:'الساعة تلاتة.', tr:'es-sāʿa talāta.', en:"It's three o'clock." },
       { ar:'لسه بدري.', tr:'lessa badri.', en:'It is still early.' }
     ]},
+    { id:'eg-b9', title:'My family', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'ده بابا وده أخويا.', tr:'da bāba we-da akhūya.', en:'This is my dad and this is my brother.' },
+      { ar:'دي ماما ودي أختي.', tr:'di māma we-di okhti.', en:'This is my mom and this is my sister.' },
+      { ar:'إحنا ساكنين مع بعض.', tr:'eḥna sakenīn maʿa baʿḍ.', en:'We all live together.' }
+    ]},
+    { id:'eg-b10', title:'Buying bread', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'عايز عيش بخمسة جنيه لو سمحت.', tr:'ʿāyez ʿēsh be-khamsa geneh law samaḥt.', en:"I'd like five pounds' worth of bread, please." },
+      { ar:'اتفضل، معاك فكة؟', tr:'etfaḍḍal, maʿāk fakka?', en:'Here you go. Do you have change?' },
+      { ar:'أيوة، اتفضل خمسة بالظبط.', tr:'aywa, etfaḍḍal khamsa bez-zabṭ.', en:'Yes, here you go, exactly five.' }
+    ]},
+    { id:'eg-b11', title:'What do you do', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'إنتي بتشتغلي إيه؟', tr:'enti beteshtaghali ēh?', en:'What do you do for work?' },
+      { ar:'أنا مدرسة، وإنت؟', tr:'ana modarresa, wenta?', en:"I'm a teacher. And you?" },
+      { ar:'أنا لسه طالب في الجامعة.', tr:'ana lessa ṭāleb fel-gamʿa.', en:"I'm still a student at university." }
+    ]},
+    { id:'eg-b12', title:'Evening at home', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'بتعشى بدري مع أهلي.', tr:'batʿashsha badri maʿa ahli.', en:'I have dinner early with my family.' },
+      { ar:'وبعدين بتفرج على التلفزيون.', tr:'we-baʿdēn batfarrag ʿala et-telefezyōn.', en:'Then I watch television.' },
+      { ar:'وبنام قبل الساعة اتناشر.', tr:'we-banām ʾabl es-sāʿa etnāshar.', en:'And I go to sleep before twelve.' }
+    ]},
     // ── Intermediate (more) ───────────────────────────────────────────────
     { id:'eg-i5', title:'At the pharmacy', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'عندي صداع من الصبح.', tr:'ʿandi ṣodāʿ men eṣ-ṣobḥ.', en:'I have had a headache since the morning.' },
@@ -121,6 +141,34 @@ window.MASRI.passages = {
       { ar:'يمكن نروح البحر.', tr:'yemken nerūḥ el-baḥr.', en:"Maybe we'll go to the sea." },
       { ar:'لازم نحجز بدري.', tr:'lāzem neḥgez badri.', en:'We need to book early.' }
     ]},
+    { id:'eg-i9', title:'Ordering a meal', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'عايز طبق كشري وسط.', tr:'ʿāyez ṭabaʾ koshari wesṭ.', en:"I'd like a medium plate of koshari." },
+      { ar:'من غير شطة لو سمحت.', tr:'men ghēr shaṭṭa law samaḥt.', en:'Without hot sauce, please.' },
+      { ar:'وهات معاه ازازة مية.', tr:'we-hāt maʿāh ezāzet mayya.', en:'And bring a bottle of water with it.' },
+      { ar:'هاكله هنا مش سفري.', tr:'hākolo hena mesh safari.', en:"I'll eat it here, not takeaway." }
+    ]},
+    { id:'eg-i10', title:'Metro and microbus', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'الخط ده بيروح التحرير؟', tr:'el-khaṭṭ da beyrūḥ et-Taḥrīr?', en:'Does this line go to Tahrir?' },
+      { ar:'عايز تذكرة واحدة لو سمحت.', tr:'ʿāyez tazkara waḥda law samaḥt.', en:'One ticket, please.' },
+      { ar:'وبعد المترو هاركب ميكروباص.', tr:'we-baʿd el-metro harkab mikrobāṣ.', en:"And after the metro I'll take a microbus." },
+      { ar:'لو سمحت نزلني عند الجامع.', tr:'law samaḥt nazzelni ʿand el-gāmeʿ.', en:'Please let me off at the mosque.' }
+    ]},
+    { id:'eg-i11', title:'At the doctor', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'حاسس بتعب ومش قادر أنام.', tr:'ḥāses be-taʿab we-mesh ʾāder anām.', en:"I feel unwell and I can't sleep." },
+      { ar:'عندي سخونية وزوري وجعني.', tr:'ʿandi sokhoneyya we-zōri wagaʿni.', en:'I have a fever and my throat hurts.' },
+      { ar:'بقالك كام يوم عندك حرارة؟', tr:'baʾālak kām yōm ʿandak ḥarāra?', en:'How many days have you had a fever?' },
+      { ar:'بقالي يومين، والتعب زايد.', tr:'baʾāli yomēn, wet-taʿab zāyed.', en:'Two days now, and it keeps getting worse.' }
+    ]},
+    { id:'eg-i12', title:'A problem in the flat', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'المية قطعت من الصبح.', tr:'el-mayya ʾaṭaʿet men eṣ-ṣobḥ.', en:'The water has been cut off since the morning.' },
+      { ar:'والحنفية في المطبخ بايظة.', tr:'wel-ḥanafeyya fel-maṭbakh bāyẓa.', en:'And the tap in the kitchen is broken.' },
+      { ar:'ممكن تبعتلي البواب دلوقتي؟', tr:'momken tebʿatli el-bawwāb delwaʾti?', en:'Can you send me the doorman now?' }
+    ]},
+    { id:'eg-i13', title:'Running late', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'آسفة، أنا اتأخرت شوية.', tr:'asfa, ana etʾakhkhart shwayya.', en:"Sorry, I'm running a little late." },
+      { ar:'الزحمة كانت فظيعة في الطريق.', tr:'ez-zaḥma kānet faẓīʿa feṭ-ṭarīʾ.', en:'The traffic on the way was terrible.' },
+      { ar:'هبقى عندك بعد تلت ساعة.', tr:'habʾa ʿandak baʿd telt sāʿa.', en:"I'll be at your place in a third of an hour, about twenty minutes." }
+    ]},
     // ── Advanced (more) ───────────────────────────────────────────────────
     { id:'eg-a3', title:'A short trip', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'الأسبوع اللي فات رحنا الإسكندرية.', tr:'el-osbūʿ elli fāt roḥna el-Eskendereyya.', en:'Last week we went to Alexandria.' },
@@ -131,6 +179,24 @@ window.MASRI.passages = {
       { ar:'في رأيي القراءة حاجة مهمة جدا.', tr:'fi raʾyi el-ʾerāya ḥāga mohemma gedan.', en:'In my opinion, reading is a very important thing.' },
       { ar:'بتفتح العقل وبتعلمنا حاجات كتير.', tr:'beteftaḥ el-ʿaʾl we-beteʿallemna ḥagāt ketīr.', en:'It opens the mind and teaches us many things.' },
       { ar:'أنا بحاول أقرا كل يوم شوية.', tr:'ana baḥāwel aʾra koll yōm shwayya.', en:'I try to read a little every day.' }
+    ]},
+    { id:'eg-a5', title:'A day at work', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'بوصل الشغل الساعة تسعة الصبح.', tr:'bawṣal esh-shoghl es-sāʿa tesʿa eṣ-ṣobḥ.', en:'I get to work at nine in the morning.' },
+      { ar:'بقعد مع زمايلي نراجع الشغل.', tr:'baʾʿod maʿa zamayli nerāgeʿ esh-shoghl.', en:'I sit with my colleagues and we go over the work.' },
+      { ar:'بعد الضهر باخد بريك وبشرب شاي.', tr:'baʿd eḍ-ḍohr bākhod brēk we-bashrab shāy.', en:'In the afternoon I take a break and drink tea.' },
+      { ar:'وبمشي الساعة خمسة لو مفيش شغل زيادة.', tr:'we-bamshi es-sāʿa khamsa law mafīsh shoghl zeyāda.', en:'And I leave at five if there is no extra work.' }
+    ]},
+    { id:'eg-a6', title:'Something that happened to me', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'إمبارح كنت راجع من الشغل بالليل.', tr:'embāreḥ kont rāgeʿ men esh-shoghl bel-lēl.', en:'Yesterday I was coming home from work at night.' },
+      { ar:'وبعدين اكتشفت إن موبايلي ضاع مني.', tr:'we-baʿdēn ektashaft en mobayli ḍāʿ menni.', en:'Then I realized my phone was gone.' },
+      { ar:'فضلت أدور عليه لحد ما لقيته في العربية.', tr:'feḍelt adawwar ʿalēh laḥadd ma laʾēto fel-ʿarabeyya.', en:'I kept looking for it until I found it in the car.' },
+      { ar:'الحمد لله، ومن ساعتها بقيت آخد بالي.', tr:'el-ḥamdu lellāh, we-men sāʿetha beʾēt ākhod bāli.', en:"Thank God, and since then I've been more careful." }
+    ]},
+    { id:'eg-a7', title:'Advice for a visitor to Cairo', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
+      { ar:'لو جيت القاهرة، خد بالك من الزحمة.', tr:'law gēt el-ʾāhera, khod bālak men ez-zaḥma.', en:'If you come to Cairo, watch out for the traffic.' },
+      { ar:'متركبش تاكسي من غير ما تتفق على السعر.', tr:'materkabsh taksi men ghēr ma tettefeʾ ʿala es-seʿr.', en:"Don't get in a taxi without agreeing on the price." },
+      { ar:'لازم تجرب الأكل في وسط البلد.', tr:'lāzem tegarrab el-akl fe-wesṭ el-balad.', en:'You have to try the food downtown.' },
+      { ar:'ومتقلقش، الناس هنا بتساعد أي حد تايه.', tr:'we-matʾlaʾsh, en-nās hena betsāʿed ayy ḥadd tāyeh.', en:"And don't worry, people here help anyone who's lost." }
     ]}
   ],
 
