@@ -1021,14 +1021,10 @@ function renderTableCards(arr){
   // immediately followed by the detailed per-letter reference, so they read as one
   // introduction. Each sequence letter jumps to its detailed card below.
   let h = `<h2 id="alp-ref">The Arabic alphabet</h2>`;
-  h += `<p class="lead">${d.intro}</p>`;
   h += `<div class="alp-allrow" dir="rtl" role="list" aria-label="The 28 Arabic letters in order, right to left">`
      + d.letters.map(L => `<button class="alp-allkey ar" dir="rtl" role="listitem" data-anchor="alp-L-${esc(L.letter)}" aria-label="${esc(L.name)} — jump to details">${L.letter}</button>`).join('')
      + `</div>`;
-  h += `<p class="note">${esc(d.soundNote)}</p>`;
-
-  // Detailed alphabetical reference — kept intact, moved directly beneath the sequence.
-  h += `<p class="note">${esc(d.formOrderNote)}</p>`;
+  // Detailed per-letter cards — this IS the alphabetical reference (no separate section).
   h += `<div class="alp-grid">` + d.letters.map(L => {
     const f = forms(L.letter, L.connector);
     const badge = L.connector
@@ -1045,11 +1041,17 @@ function renderTableCards(arr){
     return c + `</div>`;
   }).join('') + `</div>`;
 
-  // Transliteration key — a compact, collapsed reference directly beneath the letter
-  // cards (secondary to the alphabet itself); data lives in alphabet.js `translit`.
+  // Secondary reference: a compact 4-item menu, then a collapsed transliteration key
+  // and three condensed sections. The detailed cards above are the alphabetical
+  // reference, so there is no separate "Alphabetical reference" section here.
+  h += `<nav class="alp-jump" aria-label="Alphabet reference sections">`
+     + d.jump.filter(j => j.anchor !== 'alp-wb').map(j => `<button class="alp-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
+     + `</nav>`;
+
+  // 1 · How to read Masri transliteration (collapsed by default)
   if(d.translit){
     const t = d.translit;
-    h += `<details class="alp-translit"><summary>${esc(t.title)}</summary><div class="alp-translit-body">`
+    h += `<details class="alp-translit" id="alp-translit"><summary>${esc(t.title)}</summary><div class="alp-translit-body">`
        + `<div class="card-table alp-translit-tbl"><table><thead><tr><th>Symbol</th><th>Means</th><th>Example</th></tr></thead><tbody>`
        + t.rows.map(r => `<tr><td class="alp-tsym" dir="ltr">${esc(r.sym)}</td><td>${esc(r.means)}</td>`
            + `<td><span class="tr" dir="ltr">${esc(r.ex_tr)}</span> — ${esc(r.ex_en)}</td></tr>`).join('')
@@ -1058,24 +1060,22 @@ function renderTableCards(arr){
        + `</div></details>`;
   }
 
-  // jump nav to the remaining sections; the Word Builder promo is intentionally omitted.
-  h += `<nav class="alp-jump" aria-label="Alphabet sections">`
-     + d.jump.filter(j => j.anchor !== 'alp-wb').map(j => `<button class="alp-jbtn" data-anchor="${esc(j.anchor)}">${esc(j.label)}</button>`).join('')
-     + `</nav>`;
-
-  // 1 · How joining works
-  h += `<h2 id="alp-join">How joining works</h2>`;
+  // 2 · Joining and connection breakers (joining rules + the six breakers, combined)
+  h += `<h2 id="alp-join">Joining and connection breakers</h2>`;
   h += `<div class="alp-join">`
      + `<ul class="start-list"><li>Arabic runs <b>right to left</b>.</li>`
-     + `<li>Most letters join to the letter before and after them within a connected segment.</li>`
-     + `<li>Six letters break the connection after themselves: <span class="ar" dir="rtl">${d.joining.breakers}</span>. They can join a letter on their right, but not the following letter on their left.</li></ul>`;
+     + `<li>Most letters connect to the letters before and after them within a word.</li>`
+     + `<li>Six letters break the connection after themselves: <span class="ar" dir="rtl">${d.joining.breakers}</span> — they join a letter on their right, but not the next letter on their left.</li></ul>`;
   h += `<div class="alp-formdefs">` + d.joining.forms.map(f => `<div class="alp-fdef"><b>${esc(f.name)}</b> — ${esc(f.desc)}</div>`).join('') + `</div>`;
   h += `<p class="note snd-xref">${esc(d.joining.segmentNote)}</p>`;
   h += `<div class="alp-jex">` + d.joining.examples.map(e =>
       `<div class="alp-jexcard"><div class="alp-jexword ar" dir="rtl">${e.ar}</div><div class="alp-jexmeta"><span class="tr" dir="ltr">${esc(e.ex)}</span> — ${esc(e.en)}</div><div class="alp-jexkind">${esc(e.kind)}</div></div>`).join('') + `</div>`;
+  // The six breakers as a compact reference row (names + example) — no repeated explanation.
+  h += `<div class="alp-brk">` + d.breakers.letters.map(b =>
+      `<div class="alp-brkcard"><span class="alp-glyph ar" dir="rtl">${b.L}</span><div class="alp-brkmeta"><div class="alp-lname">${esc(b.name)}</div>${exLine(b.ex_ar, b.ex, b.ex_en)}</div></div>`).join('') + `</div>`;
 
-  // 2 · Shape families
-  h += `<h2 id="alp-families">Learn by shape family</h2>`;
+  // 3 · Shape families
+  h += `<h2 id="alp-families">Shape families</h2>`;
   h += `<p class="note">${esc(d.familiesNote)}</p>`;
   h += `<div class="alp-fams">` + d.families.map(fam => `<div class="alp-fam">`
       + fam.letters.map(x => `<button class="alp-famlet" data-anchor="alp-L-${esc(x.L)}" aria-label="Go to ${esc(x.ex_en)} letter ${esc(x.L)} in the reference">
@@ -1086,14 +1086,8 @@ function renderTableCards(arr){
         </button>`).join('')
       + `</div>`).join('') + `</div>`;
 
-  // 4 · Connection breakers
-  h += `<h2 id="alp-break">Connection breakers</h2>`;
-  h += `<p class="note">${esc(d.breakers.intro)}</p>`;
-  h += `<div class="alp-brk">` + d.breakers.letters.map(b =>
-      `<div class="alp-brkcard"><span class="alp-glyph ar" dir="rtl">${b.L}</span><div class="alp-brkmeta"><div class="alp-lname">${esc(b.name)}</div>${exLine(b.ex_ar, b.ex, b.ex_en)}</div></div>`).join('') + `</div>`;
-
-  // 5 · Special forms
-  h += `<h2 id="alp-special">Special forms</h2>`;
+  // 4 · Special forms and reading marks (hamza, tāʾ marbūṭa/maqṣūra/lām-alif, distinctions, marks)
+  h += `<h2 id="alp-special">Special forms and reading marks</h2>`;
   const sp = d.special;
   h += `<h3 class="snd-sub">Hamza (ء) and its carriers</h3>`;
   h += `<p class="note">${sp.hamza.intro}</p>`;
@@ -1105,14 +1099,11 @@ function renderTableCards(arr){
   h += `<h3 class="snd-sub">Useful visual distinctions</h3>`;
   h += `<div class="alp-dist">` + sp.distinctions.map(x =>
       `<div class="alp-distcard"><div class="alp-distpair"><span class="alp-glyph ar" dir="rtl">${x.a}</span><span class="snd-cmpvs" aria-hidden="true">vs</span><span class="alp-glyph ar" dir="rtl">${x.b}</span></div><div class="alp-distnote">${esc(x.note)}</div></div>`).join('') + `</div>`;
-
-  // 6 · Reading marks
-  h += `<h2 id="alp-marks">Reading marks</h2>`;
+  h += `<h3 class="snd-sub">Reading marks</h3>`;
   h += `<p class="note">${esc(d.marks.intro)}</p>`;
   h += `<div class="card-table"><table><thead><tr><th>Mark</th><th>Name</th><th>Meaning</th><th>Example</th></tr></thead><tbody>`
      + d.marks.rows.map(m => `<tr><td class="alp-mark ar" dir="rtl">ـ${m.mark}</td><td>${esc(m.name)} <span class="ar" dir="rtl">${m.name_ar}</span></td><td>${esc(m.desc)}</td><td class="alp-markdemo"><span class="ar" dir="rtl">${m.demo.split(' = ')[0]}</span>${m.demo.indexOf(' = ')>=0 ? ' = <span class="tr" dir="ltr">'+esc(m.demo.split(' = ')[1])+'</span>' : ''}</td></tr>`).join('')
      + `</tbody></table></div>`;
-  h += `<p class="note">${esc(d.marks.note)}</p>`;
   h += `<p class="note snd-xref">${esc(d.marks.tanwin)}</p>`;
 
   panel.innerHTML = h;

@@ -13,13 +13,10 @@ window.MASRI.alphabet = {
   soundNote: "Sounds here are the Egyptian readings. For fuller pronunciation guidance, use the Sounds subsection.",
 
   jump: [
-    { label: "How joining works", anchor: "alp-join" },
+    { label: "How to read Masri transliteration", anchor: "alp-translit" },
+    { label: "Joining and connection breakers", anchor: "alp-join" },
     { label: "Shape families", anchor: "alp-families" },
-    { label: "Alphabetical reference", anchor: "alp-ref" },
-    { label: "Connection breakers", anchor: "alp-break" },
-    { label: "Special forms", anchor: "alp-special" },
-    { label: "Reading marks", anchor: "alp-marks" },
-    { label: "Try Word Builder", anchor: "alp-wb" }
+    { label: "Special forms and reading marks", anchor: "alp-special" }
   ],
 
   joining: {
