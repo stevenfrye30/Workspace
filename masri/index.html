@@ -662,6 +662,19 @@
   .dfn-enemy.gone .dfn-ar,.dfn-enemy.gone .dfn-emoji{opacity:0;transform:scale(.6);transition:opacity .18s ease,transform .18s ease}
   .dfn-empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12.5px;text-align:center;padding:0 16px}
   .dfn-note{color:var(--muted);font-size:11.5px;line-height:1.6;margin-top:8px}
+  /* Countdown overlay, exact-target lock, and the floating score. All three are text-led
+     (never colour-only) and absolutely positioned, so none of them shifts layout. */
+  .dfn-count{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:3;
+             font-family:var(--ui);font-size:34px;font-weight:600;color:var(--gold);background:rgba(18,22,31,.55);letter-spacing:.04em}
+  .dfn-lock{min-height:16px;margin:5px 0 0;font-family:var(--ui);font-size:11.5px;color:var(--muted)}
+  .dfn-lock.near{color:var(--fg)}
+  .dfn-lock.on{color:var(--gold);font-weight:600}
+  .dfn-enemy.locked .dfn-ar{border-color:var(--green);color:var(--green);box-shadow:0 0 0 2px var(--green)}
+  .dfn-enemy.locked .dfn-ar::after{content:"⏎"}
+  .dfn-float{position:absolute;z-index:3;font-family:var(--ui);font-size:13px;font-weight:600;color:var(--green);
+             pointer-events:none;transform:translateY(-50%);animation:dfnfloat .65s ease-out forwards}
+  .dfn-float.still{animation:none;opacity:.9}
+  @keyframes dfnfloat{ from{opacity:1;transform:translateY(-50%)} to{opacity:0;transform:translateY(-160%)} }
   .dfn-res{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
   .dfn-res div{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:6px 11px;font-size:11.5px;color:var(--muted)}
   .dfn-res b{display:block;color:var(--fg);font-size:15px;font-weight:600}
@@ -673,6 +686,7 @@
     .dfn-enemy{will-change:auto}
     .dfn-enemy.gone .dfn-ar,.dfn-enemy.gone .dfn-emoji{transition:none}
     .dfn-wall.hit{animation:none}
+    .dfn-float{animation:none;opacity:.9}
   }
   @media (max-width:600px){
     .dfn-field{height:210px}
@@ -680,6 +694,13 @@
     .dfn-ar{font-size:calc(16px * var(--ar-scale));padding:1px 6px}
     .dfn-emoji{font-size:17px}
     .dfn-stat{font-size:11px;padding:3px 9px}
+    .dfn-count{font-size:28px}
+  }
+  /* Narrow phones: shrink the emoji, never the Arabic — the target is the content. */
+  @media (max-width:380px){
+    .dfn-emoji{font-size:14px}
+    .dfn-wall{width:22px;font-size:11px}
+    .dfn-res div{flex:1 1 44%}
   }
   .tt-passfullseg.cur{color:var(--fg);background:rgba(217,164,65,.15);border-radius:4px;padding:0 3px}
   /* passage column diff — stacked target/typed cells that wrap cleanly, RTL */
@@ -2786,28 +2807,86 @@ function renderTableCards(arr){
   })();
   const defPool = () => (defMode==='words' ? DEF_WORDS : DEF_LETTERS);
 
+  // RECENT MISSES (masri-defense-missed) — a rolling list across rounds, validated on
+  // load so a stale record from an older pool can never crash a round. Defense-only:
+  // it never touches the passage/letter/word mistake structures.
+  function validMiss(m){
+    return m && typeof m==='object' && typeof m.id==='string' && m.id
+        && typeof m.ar==='string' && /^[ء-ي\s]+$/.test(m.ar.trim()) && m.ar.trim().length>0;
+  }
+  function loadMisses(){
+    const raw = jsonGet(DMISS_KEY, null);
+    if(!Array.isArray(raw)) { if(raw!=null) try{ localStorage.removeItem(DMISS_KEY); }catch(e){} return []; }
+    const ok = raw.filter(validMiss).map(m=>({ id:m.id, ar:m.ar.trim(), tr:String(m.tr||''), en:String(m.en||'') }));
+    if(ok.length !== raw.length) jsonSet(DMISS_KEY, ok);   // drop invalid entries permanently
+    return ok;
+  }
+  let recentMisses = loadMisses();
+  function saveMisses(list){
+    // newest first, de-duplicated by target id, capped — a perfect round leaves the
+    // previous recents in place rather than wiping them.
+    const merged=[], seen=new Set();
+    list.concat(recentMisses).forEach(m=>{ if(validMiss(m) && !seen.has(m.id)){ seen.add(m.id); merged.push({id:m.id,ar:m.ar,tr:m.tr||'',en:m.en||''}); } });
+    recentMisses = merged.slice(0,30);
+    if(recentMisses.length) jsonSet(DMISS_KEY, recentMisses); else try{ localStorage.removeItem(DMISS_KEY); }catch(e){}
+  }
+
   // Game state. Session-only: nothing here is ever persisted.
   const D = { phase:'setup', enemies:[], spawned:0, resolved:0, lives:DLIVES, score:0,
               streak:0, best:0, correct:0, wrong:0, defeated:0, missed:[], deck:null,
-              queue:null, raf:0, lastTs:0, nextSpawn:0, fb:'' };
-  const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+              queue:null, queueLabel:'', raf:0, lastTs:0, nextSpawn:0, fb:'', fbCls:'',
+              timers:new Set(), count:0, composing:false, trackW:0 };
 
-  function defStop(){                      // full teardown — safe to call any time
+  // ONE media-query object, read from a cached boolean — not re-queried per frame.
+  const RM_MQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  let RM = !!(RM_MQ && RM_MQ.matches);
+  if(RM_MQ){
+    const onRM = e => { RM = !!e.matches; };
+    if(RM_MQ.addEventListener) RM_MQ.addEventListener('change', onRM);
+    else if(RM_MQ.addListener) RM_MQ.addListener(onRM);   // older Safari
+  }
+
+  // One module-lifetime resize listener: re-measure and re-place, so a viewport change
+  // mid-round repositions enemies instead of jumping them.
+  window.addEventListener('resize', ()=>{
+    if(D.phase==='playing' || D.phase==='paused'){ measureTrack(); D.enemies.forEach(placeEnemy); }
+  });
+
+  // Managed timers: every Defense setTimeout goes through here so teardown can kill
+  // callbacks that would otherwise fire against detached elements.
+  function dTimeout(fn, ms){
+    const id = setTimeout(()=>{ D.timers.delete(id); fn(); }, ms);
+    D.timers.add(id); return id;
+  }
+  function clearTimers(){ D.timers.forEach(clearTimeout); D.timers.clear(); }
+
+  // Lifecycle, split in two:
+  //   defAbort() — cancel all active work (rAF, timers, countdown, enemy nodes)
+  //   defResetState() — return the scoreboard to a clean setup state
+  // defStop() = both, and is what mode-switching / leaving the section calls, so the
+  // setup screen can never show a stale score, streak, lives or progress.
+  function defAbort(){
     if(D.raf) cancelAnimationFrame(D.raf);
-    D.raf=0; D.enemies=[]; D.phase='setup'; D.queue=null; D.fb='';
+    D.raf=0; D.lastTs=0; D.count=0;
+    clearTimers();
+    D.enemies.forEach(e=>{ if(e.el) e.el.remove(); });
+    D.enemies=[];
   }
-  function defReset(queue){
-    D.enemies=[]; D.spawned=0; D.resolved=0; D.lives=DLIVES; D.score=0; D.streak=0; D.best=0;
-    D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.fb='';
-    D.queue = queue || null;
+  function defResetState(){
+    D.phase='setup'; D.spawned=0; D.resolved=0; D.lives=DLIVES; D.score=0; D.streak=0;
+    D.best=0; D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.queue=null;
+    D.queueLabel=''; D.fb=''; D.fbCls=''; D.nextSpawn=0; D.composing=false;
+  }
+  function defStop(){ defAbort(); defResetState(); }
+  function defNewRound(queue, label){
+    defAbort(); defResetState();
+    D.queue = (queue && queue.length) ? queue : null;
+    D.queueLabel = D.queue ? (label||'') : '';
     D.deck = makeDeck(defPool(), t=>t && t.id);
-    D.lastTs=0; D.nextSpawn=0;
   }
+
   function defAnnounce(msg){ const el=body.querySelector('#dfn-live'); if(el) el.textContent = msg; }
-  function defSummary(){
-    return `${D.enemies.length} enem${D.enemies.length===1?'y':'ies'} active. `
-      + `${D.lives} ${D.lives===1?'life':'lives'} remaining. ${D.resolved} of ${DROUND} resolved. Score ${D.score}.`;
-  }
+  const livesWord = n => n===1 ? '1 life' : n+' lives';
 
   function renderDefense(){
     const pool = defPool();
@@ -2816,7 +2895,8 @@ function renderTableCards(arr){
       + pillGroup('defSpeed', DEF_SPEED_IDS.map(s=>({id:s,label:DSPEEDS[s].label})), defSpeed, 'Speed') + `</div>`;
     if(D.phase==='over'){ body.innerHTML = sel + defResultHtml(); wireCommon(); wireDefenseResult(); return; }
 
-    const playing = D.phase==='playing' || D.phase==='paused';
+    const live = D.phase==='playing' || D.phase==='paused' || D.phase==='count';
+    const canType = D.phase==='playing';
     body.innerHTML = sel
       + `<div class="tt-card">`
       + `<div class="dfn-stats" role="group" aria-label="Game state">`
@@ -2826,60 +2906,97 @@ function renderTableCards(arr){
         + `<span class="dfn-stat">Progress<b>${D.resolved} / ${DROUND}</b></span>`
       + `</div>`
       + `<div class="dfn-field" id="dfn-field" aria-hidden="true"><div class="dfn-wall" id="dfn-wall">🛡️</div>`
-        + (playing ? '' : `<div class="dfn-empty">Enemies come from the right carrying an Arabic target. Type the target and press Enter to stop one before it reaches the wall.</div>`)
+        + (live ? '' : `<div class="dfn-empty">Enemies come from the right carrying an Arabic target. Type the target and press Enter to stop one before it reaches the wall.</div>`)
+        + (D.phase==='count' ? `<div class="dfn-count" id="dfn-count">Ready</div>` : '')
       + `</div>`
       + `<div id="dfn-live" class="sr-only" role="status" aria-live="polite"></div>`
       + `<label class="tt-prompt" for="dfn-in" style="display:block;margin:0 0 4px">Type the Arabic target, then press Enter</label>`
       + `<input id="dfn-in" class="tt-input seg" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"`
-        + ` aria-label="Type an enemy's Arabic target and press Enter. Escape clears the box."${playing && D.phase==='playing' ? '' : ' disabled aria-disabled="true"'}>`
-      + `<div class="tt-fb" id="dfn-fb" role="status" aria-live="polite">${D.fb||''}</div>`
+        + ` aria-label="Type an enemy's Arabic target and press Enter. Escape clears the box."${canType ? '' : ' disabled aria-disabled="true"'}>`
+      + `<div class="dfn-lock" id="dfn-lock" aria-hidden="true"></div>`
+      + `<div class="tt-fb${D.fbCls?' '+D.fbCls:''}" id="dfn-fb" role="status" aria-live="polite">${D.fb||''}</div>`
       + `<div class="tt-controls">`
-        + (D.phase==='playing' || D.phase==='paused'
-            ? `<button type="button" class="tt-btn primary" data-a="dpause" aria-pressed="${D.phase==='paused'}">${D.phase==='paused'?'Resume':'Pause'}</button>`
+        + (live
+            ? `<button type="button" class="tt-btn primary" data-a="dpause" aria-pressed="${D.phase==='paused'}"${D.phase==='count'?' disabled aria-disabled="true"':''}>${D.phase==='paused'?'Resume':'Pause'}</button>`
               + `<button type="button" class="tt-btn" data-a="drestart">Restart round</button>`
-            : `<button type="button" class="tt-btn primary" data-a="dstart"${pool.length?'':' disabled aria-disabled="true"'}>Start round</button>`)
+            : `<button type="button" class="tt-btn primary" data-a="dstart"${pool.length?'':' disabled aria-disabled="true"'}>Start round</button>`
+              + (recentMisses.length ? `<button type="button" class="tt-btn" data-a="drecent">Practice recent misses (${recentMisses.length})</button>` : ''))
       + `</div>`
       + `<p class="dfn-note">${DROUND} enemies · ${DLIVES} lives · ${esc(DSPEEDS[defSpeed].label)} speed. `
         + `Score = (${DSCORE.base} + ${DSCORE.streakBonus} × current streak) × ${DSPEEDS[defSpeed].mult}. `
         + `A wrong Enter costs your streak, not a life. Escape clears the box. `
-        + `${pool.length} target${pool.length===1?'':'s'} in this set.</p>`
-      + `</div>`;
+        + `${pool.length} target${pool.length===1?'':'s'} in this set.`
+        + (recentMisses.length && !live ? ` <b>Recent misses</b> are the last ${recentMisses.length} target${recentMisses.length===1?'':'s'} that got through, saved across rounds — not only this round's.` : '')
+      + `</p></div>`;
     wireCommon();
     const inp=body.querySelector('#dfn-in');
-    body.querySelector('[data-a=dstart]')?.addEventListener('click', ()=>defStart(null));
-    body.querySelector('[data-a=drestart]')?.addEventListener('click', ()=>defStart(D.queue));
-    body.querySelector('[data-a=dpause]')?.addEventListener('click', defTogglePause);
+    const on=(a,fn)=>{ const b2=body.querySelector('[data-a='+a+']'); if(b2) b2.addEventListener('click', fn); };
+    on('dstart', ()=>defStart(null,''));
+    on('drecent', ()=>defStart(recentMisses.slice(), 'recent misses'));
+    on('drestart', ()=>defStart(D.queue, D.queueLabel));
+    on('dpause', defTogglePause);
     if(inp){
+      // Composition safety: an Arabic IME / mobile keyboard fires Enter while a
+      // composition is still open. Submitting then would read a half-formed word.
+      inp.addEventListener('compositionstart', ()=>{ D.composing=true; });
+      inp.addEventListener('compositionend', ()=>{ D.composing=false; defHighlight(inp.value); });
       inp.addEventListener('keydown', e=>{
-        if(e.key==='Enter'){ e.preventDefault(); defSubmit(inp); }
-        else if(e.key==='Escape'){ e.preventDefault(); inp.value=''; defHighlight(''); }
+        if(e.key==='Enter'){
+          e.preventDefault();
+          if(D.composing || e.isComposing || e.keyCode===229) return;   // still composing → ignore
+          defSubmit(inp);
+        } else if(e.key==='Escape'){ e.preventDefault(); inp.value=''; defHighlight(''); }
       });
-      inp.addEventListener('input', ()=>defHighlight(inp.value));
-      if(D.phase==='playing') inp.focus();
+      inp.addEventListener('input', ()=>{ if(!D.composing) defHighlight(inp.value); });
+      if(canType) inp.focus();
     }
-    if(D.phase==='playing' || D.phase==='paused') D.enemies.forEach(mountEnemy);
+    if(live) D.enemies.forEach(mountEnemy);
+    if(live) measureTrack();
   }
 
-  function defStart(queue){
-    defStop(); defReset(queue); D.phase='playing'; render();
-    D.lastTs=0; D.nextSpawn=0;
-    D.raf = requestAnimationFrame(defTick);
-    defAnnounce('Round started. ' + defSummary());
+  // Start: short "Ready / 3 / 2 / 1 / Defend" countdown, then spawning begins. The
+  // countdown is a managed timer chain, so leaving or pausing kills it.
+  function defStart(queue, label){
+    defNewRound(queue, label);
+    D.phase='count'; render();
+    const steps = ['Ready','3','2','1','Defend'];
+    D.count = 1;
+    let i = 0;
+    const step = () => {
+      const el = body.querySelector('#dfn-count');
+      if(!el || D.phase!=='count'){ return; }
+      el.textContent = steps[i];
+      i++;
+      if(i < steps.length){ dTimeout(step, i===1 ? 500 : 450); }
+      else dTimeout(()=>{
+        if(D.phase!=='count') return;
+        D.count=0; D.phase='playing'; render();
+        D.lastTs=0; D.nextSpawn=0;
+        D.raf = requestAnimationFrame(defTick);
+        defAnnounce('Round started. ' + (D.queueLabel ? 'Practising recent misses. ' : '') + livesWord(D.lives) + '.');
+      }, 400);
+    };
+    step();
+    defAnnounce(D.queueLabel ? 'Practising recent misses. Get ready.' : 'Get ready.');
   }
   function defTogglePause(){
-    if(D.phase==='playing'){ D.phase='paused'; if(D.raf) cancelAnimationFrame(D.raf); D.raf=0; defAnnounce('Paused. '+defSummary()); }
-    else if(D.phase==='paused'){ D.phase='playing'; D.lastTs=0; D.raf=requestAnimationFrame(defTick); defAnnounce('Resumed. '+defSummary()); }
-    render();
+    if(D.phase==='playing'){
+      D.phase='paused'; if(D.raf) cancelAnimationFrame(D.raf); D.raf=0; clearTimers();
+      render(); defAnnounce('Paused. ' + D.resolved + ' of ' + DROUND + ' resolved, ' + livesWord(D.lives) + ' left.');
+    } else if(D.phase==='paused'){
+      D.phase='playing'; D.lastTs=0; D.raf=requestAnimationFrame(defTick);
+      render(); defAnnounce('Resumed.');
+    }
   }
 
   function nextTarget(){
-    if(D.queue && D.queue.length) return D.queue[D.spawned % D.queue.length];   // Practice-missed rounds repeat the misses
+    if(D.queue && D.queue.length) return D.queue[D.spawned % D.queue.length];   // review rounds repeat their targets
     return D.deck.next();
   }
   function spawnEnemy(){
     const t = nextTarget(); if(!t) return;
-    const e = { key:'e'+(D.spawned), t, x:100, lane:D.spawned % DLANES,
-                emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)], el:null };
+    const e = { key:'e'+(D.spawned), t, x:1, lane:D.spawned % DLANES,
+                emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)], el:null, w:0 };
     D.enemies.push(e); D.spawned++;
     mountEnemy(e);
   }
@@ -2891,22 +3008,33 @@ function renderTableCards(arr){
     d.style.top = ((e.lane + 0.5) * (100/DLANES)) + '%';
     d.innerHTML = `<span class="dfn-ar" dir="rtl">${esc(e.t.ar)}</span><span class="dfn-emoji" aria-hidden="true">${e.emoji}</span>`;
     field.appendChild(d); e.el=d;
+    e.w = d.offsetWidth || 0;          // real rendered width, so wide labels stop at the wall correctly
     placeEnemy(e);
+  }
+  // Pixel positioning in JS. No calc() arithmetic: `x` is normalized travel (1 = spawn
+  // edge, 0 = wall face), converted with the measured field, wall and enemy widths, so
+  // a long Arabic label touches the wall exactly when its own left edge does.
+  function measureTrack(){
+    const field = body.querySelector('#dfn-field'), wall = body.querySelector('#dfn-wall');
+    if(!field) return;
+    D.fieldW = field.clientWidth;
+    D.wallW = wall ? wall.offsetWidth : 34;
+    D.enemies.forEach(e=>{ if(e.el) e.w = e.el.offsetWidth || e.w; });
   }
   function placeEnemy(e){
     if(!e.el) return;
-    // x: 100 = spawn edge (right), 0 = wall (left). Reduced motion quantizes to 5%
-    // steps so the movement reads as stepped, not continuous — same timing either way.
-    const x = reduceMotion() ? Math.round(e.x/5)*5 : e.x;
-    e.el.style.left = 'calc(38px + ' + (x/100) + ' * (100% - 38px - 4.5em))';
+    const fieldW = D.fieldW || (body.querySelector('#dfn-field') || {clientWidth:600}).clientWidth;
+    const wallW = D.wallW || 34;
+    const track = Math.max(0, fieldW - wallW - (e.w || 40));
+    const x = RM ? Math.round(e.x*20)/20 : e.x;    // reduced motion: 5% steps, same timing
+    e.el.style.left = Math.round(wallW + x * track) + 'px';
   }
 
   function defTick(ts){
     if(D.phase!=='playing'){ D.raf=0; return; }
-    // Section hidden (user left Type, or the tab switched) → stop everything cleanly.
-    if(!panel.offsetParent){ defStop(); return; }
+    if(!panel.offsetParent){ defStop(); return; }   // section hidden → tear down entirely
     if(!D.lastTs) D.lastTs = ts;
-    const dt = Math.min((ts - D.lastTs)/1000, 0.25);   // elapsed seconds, clamped over a tab stall
+    const dt = Math.min((ts - D.lastTs)/1000, 0.25);   // elapsed seconds, clamped across a tab stall
     D.lastTs = ts;
     const cfg = DSPEEDS[defSpeed];
 
@@ -2914,7 +3042,7 @@ function renderTableCards(arr){
       D.nextSpawn -= dt;
       if(D.nextSpawn <= 0){ spawnEnemy(); D.nextSpawn = cfg.gap; }
     }
-    const perSec = 100 / cfg.cross;
+    const perSec = 1 / cfg.cross;                  // normalized travel per second
     for(let i=D.enemies.length-1;i>=0;i--){
       const e=D.enemies[i];
       e.x -= perSec * dt;
@@ -2929,86 +3057,130 @@ function renderTableCards(arr){
     D.enemies.splice(i,1);
     if(e.el){
       const el=e.el;
-      if(destroyed && !reduceMotion()){ el.classList.add('gone'); setTimeout(()=>el.remove(), 200); }
+      if(destroyed && !RM){ el.classList.add('gone'); dTimeout(()=>el.remove(), 200); }
       else el.remove();
     }
     D.resolved++;
+  }
+  // "+125" floats where the enemy died. Absolutely positioned inside the field, so it
+  // never shifts layout; removed by a managed timer (and by teardown).
+  function floatScore(e, pts){
+    const field = body.querySelector('#dfn-field'); if(!field || !e.el) return;
+    const f=document.createElement('div');
+    f.className='dfn-float' + (RM ? ' still' : '');
+    f.textContent='+'+pts;
+    f.style.left = e.el.style.left; f.style.top = e.el.style.top;
+    field.appendChild(f);
+    dTimeout(()=>f.remove(), RM ? 700 : 650);
   }
   function hitWall(e, i){
     removeEnemy(e, i, false);
     D.lives--; D.streak=0;
     D.missed.push(e.t);
     const wall=body.querySelector('#dfn-wall');
-    if(wall && !reduceMotion()){ wall.classList.add('hit'); setTimeout(()=>wall.classList.remove('hit'), 220); }
-    else if(wall){ wall.classList.add('hit'); setTimeout(()=>wall.classList.remove('hit'), 400); }
+    if(wall){ wall.classList.add('hit'); dTimeout(()=>wall.classList.remove('hit'), RM ? 400 : 220); }
+    const fb=body.querySelector('#dfn-fb');
+    D.fbCls='no';
+    D.fb = arSpan(e.t.ar) + ' got through — ' + livesWord(D.lives) + ' left';
+    if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb; }
     syncStats();
-    defAnnounce('Wall hit. ' + defSummary());
-    if(D.lives<=0){ endRound(); }
+    defAnnounce(e.t.ar + ' reached the wall. ' + livesWord(D.lives) + ' remaining.');
+    if(D.lives<=0) endRound();
   }
 
+  // Prefix highlight + exact-target lock. Lock uses text ("Target locked") plus a border,
+  // never colour alone, and is not announced on every keystroke.
   function defHighlight(raw){
     const q = passSegNorm(raw, false);
+    let matches = 0, exact = 0;
     D.enemies.forEach(e=>{
       if(!e.el) return;
-      const on = q.length>0 && passSegNorm(e.t.ar,false).indexOf(q)===0;
+      const t = passSegNorm(e.t.ar,false);
+      const on = q.length>0 && t.indexOf(q)===0;
+      if(on) matches++;
+      if(q.length>0 && t===q) exact++;
       e.el.classList.toggle('match', on);
+      e.el.classList.toggle('locked', q.length>0 && t===q);
     });
+    const lock = body.querySelector('#dfn-lock');
+    if(lock){
+      if(exact>0){ lock.className='dfn-lock on'; lock.textContent='🎯 Target locked — press Enter to defend'; }
+      else if(matches===1){ lock.className='dfn-lock near'; lock.textContent='One enemy matches — keep typing'; }
+      else { lock.className='dfn-lock'; lock.textContent=''; }
+    }
   }
   function defSubmit(inp){
     if(D.phase!=='playing') return;
     const raw = inp.value.trim(); if(!raw) return;
+    const fb=body.querySelector('#dfn-fb');
+    // Latin / transliteration is never converted or accepted — but say why, and offer
+    // the keyboard reference rather than leaving the player stuck.
+    if(/[A-Za-z]/.test(raw)){
+      D.wrong++; D.streak=0; D.fbCls='no';
+      D.fb = 'Arabic input is required — switch your keyboard language. '
+           + '<button type="button" class="tt-linkbtn" data-a="dkb">View Arabic keyboard</button>';
+      if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb;
+        const k=fb.querySelector('[data-a=dkb]'); if(k) k.addEventListener('click', ()=>setMode('keyboard')); }
+      inp.value=''; defHighlight(''); syncStats();
+      defAnnounce('Arabic input is required.');
+      return;
+    }
     const q = passSegNorm(raw, false);
-    // Exact matches only. Several enemies can carry the same target → take the one
-    // closest to the wall (smallest x).
     let best=-1;
     D.enemies.forEach((e,i)=>{ if(passSegNorm(e.t.ar,false)===q){ if(best<0 || e.x < D.enemies[best].x) best=i; } });
-    const fb=body.querySelector('#dfn-fb');
     if(best<0){
-      D.wrong++; D.streak=0;
-      if(fb){ fb.className='tt-fb no'; fb.innerHTML='Not an active target — '+arSpan(raw); }
-      D.fb = fb ? fb.innerHTML : '';
+      D.wrong++; D.streak=0; D.fbCls='no';
+      D.fb = 'Not an active target — ' + arSpan(raw);
+      if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb; }
       inp.value=''; defHighlight(''); syncStats();
-      defAnnounce('Missed submission. ' + defSummary());
+      defAnnounce('Not an active target. Streak reset.');
       return;
     }
     const e=D.enemies[best];
-    D.score += Math.round((DSCORE.base + DSCORE.streakBonus * D.streak) * DSPEEDS[defSpeed].mult);
-    D.streak++; if(D.streak > D.best) D.best = D.streak;
+    const pts = Math.round((DSCORE.base + DSCORE.streakBonus * D.streak) * DSPEEDS[defSpeed].mult);
+    D.score += pts; D.streak++; if(D.streak > D.best) D.best = D.streak;
     D.correct++; D.defeated++;
+    floatScore(e, pts);
     removeEnemy(e, best, true);
-    if(fb){ fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> '+arSpan(e.t.ar)+' destroyed'; }
-    D.fb = fb ? fb.innerHTML : '';
+    D.fbCls='ok';
+    D.fb = '<span class="tag">✓</span> ' + arSpan(e.t.ar) + ' defeated · +' + pts;
+    if(fb){ fb.className='tt-fb ok'; fb.innerHTML=D.fb; }
     inp.value=''; defHighlight(''); syncStats();
-    defAnnounce('Destroyed. ' + defSummary());
+    defAnnounce(e.t.ar + ' defeated. Streak ' + D.streak + '.');
     if(D.spawned>=DROUND && D.enemies.length===0) endRound();
   }
-  // Update the stat chips in place — re-rendering mid-round would drop the enemies.
+  // Update the stat chips in place — a full re-render mid-round would drop the enemies.
   function syncStats(){
     const s=body.querySelectorAll('.dfn-stat b');
     if(s.length>=4){ s[0].textContent=D.score; s[1].textContent=D.lives+' of '+DLIVES; s[2].textContent=D.streak; s[3].textContent=D.resolved+' / '+DROUND; }
   }
 
   function endRound(){
-    if(D.raf) cancelAnimationFrame(D.raf); D.raf=0;
-    D.enemies.forEach(e=>{ if(e.el) e.el.remove(); });
-    D.enemies=[]; D.phase='over';
-    // Persist only the missed targets (namespaced, isolated from passage/mistake data).
-    if(D.missed.length) jsonSet(DMISS_KEY, D.missed.slice(-30).map(t=>({id:t.id,ar:t.ar,tr:t.tr,en:t.en})));
+    defAbort();                       // cancels rAF + every pending timer; keeps the scoreboard for the panel
+    D.phase='over';
+    if(D.missed.length) saveMisses(D.missed);
     render();
     const subs = D.correct + D.wrong;
-    defAnnounce(`Round over. Score ${D.score}. ${D.defeated} destroyed, ${D.missed.length} missed, `
-      + `${subs? Math.round(D.correct/subs*100):0}% typing accuracy.`);
+    const cleared = D.spawned>=DROUND && D.lives>0;
+    defAnnounce((cleared?'Round cleared. ':'Defenses fell. ')
+      + `Score ${D.score}. ${D.defeated} defeated, ${D.missed.length} reached the wall, `
+      + `${subs? Math.round(D.correct/subs*100):0} percent typing accuracy.`);
   }
   function defResultHtml(){
     const subs = D.correct + D.wrong;
     const acc = subs ? Math.round(D.correct/subs*100) : 0;
     const missed = D.missed;
-    return `<div class="tt-card"><div class="tt-prompt">Round over</div>`
+    const cleared = D.spawned>=DROUND && D.lives>0;
+    return `<div class="tt-card"><div class="tt-prompt">${cleared?'Round cleared':'Defenses fell'}</div>`
+      + `<p class="note">${cleared
+          ? `All ${DROUND} enemies deployed. ${D.defeated} defeated, ${missed.length} reached the wall.`
+          : `The wall fell after ${D.spawned} of ${DROUND} enemies deployed — the round ended early, so the remaining ${Math.max(0,DROUND-D.spawned)} never appeared. ${D.defeated} defeated, ${missed.length} reached the wall.`}</p>`
       + `<div class="dfn-res">`
         + `<div>Score<b>${D.score}</b></div>`
         + `<div>Typing accuracy<b>${acc}%</b></div>`
-        + `<div>Enemies defeated<b>${D.defeated} of ${DROUND}</b></div>`
-        + `<div>Targets missed<b>${missed.length}</b></div>`
+        + `<div>Enemies deployed<b>${D.spawned} of ${DROUND}</b></div>`
+        + `<div>Defeated<b>${D.defeated}</b></div>`
+        + `<div>Reached the wall<b>${missed.length}</b></div>`
         + `<div>Wrong submissions<b>${D.wrong}</b></div>`
         + `<div>Best streak<b>${D.best}</b></div>`
         + `<div>Mode<b>${esc(defMode==='words'?'Words':'Letters')}</b></div>`
@@ -3020,15 +3192,18 @@ function renderTableCards(arr){
       + `<div class="tt-controls">`
         + `<button type="button" class="tt-btn primary" data-a="dagain">Play again</button>`
         + (missed.length ? `<button type="button" class="tt-btn" data-a="dmissed">Practice missed targets</button>` : '')
+        + (recentMisses.length ? `<button type="button" class="tt-btn" data-a="drecent">Practice recent misses (${recentMisses.length})</button>` : '')
       + `</div></div>`;
   }
   function wireDefenseResult(){
-    body.querySelector('[data-a=dagain]')?.addEventListener('click', ()=>defStart(null));
-    body.querySelector('[data-a=dmissed]')?.addEventListener('click', ()=>{
+    const on=(a,fn)=>{ const b2=body.querySelector('[data-a='+a+']'); if(b2) b2.addEventListener('click', fn); };
+    on('dagain', ()=>defStart(null,''));
+    on('dmissed', ()=>{
       const uniq=[]; const seen=new Set();
       D.missed.forEach(t=>{ if(!seen.has(t.id)){ seen.add(t.id); uniq.push(t); } });
-      defStart(uniq.length ? uniq : null);   // queue repeats to fill the round
+      defStart(uniq.length?uniq:null, uniq.length?'this round\'s misses':'');
     });
+    on('drecent', ()=>defStart(recentMisses.slice(), 'recent misses'));
   }
 
   // Restore saved mistakes, then open. Also expose a single hook so a global-search
