@@ -20595,7 +20595,7 @@
     {
       "id": "rishabhanatha",
       "name": "Rishabhanatha",
-      "pantheon": "hindu",
+      "pantheon": "jain",
       "category": "deified-human",
       "gender": "M",
       "domains": [
@@ -20612,12 +20612,12 @@
         "sumangala"
       ],
       "children": [
-        "bharata",
+        "bharata-chakravartin",
         "bahubali"
       ],
       "archetype": null,
       "parallels": [],
-      "description": "First of 24 Jain Tirthankaras. In Jain cosmology he discovered agriculture, law, and kingship before renouncing all; in later Hindu scripture he was absorbed as an avatar of Vishnu.",
+      "description": "First of the twenty-four Jain Tirthankaras; in Jain tradition he taught agriculture, law, and kingship before renouncing all to attain liberation. Later Hindu texts also identify him as a form or avatar of Vishnu.",
       "wiki_title": "Rishabhanatha"
     },
     {
@@ -26791,6 +26791,132 @@
       "archetype": null,
       "parallels": [],
       "description": "Personification of spiritual attainment and success; named with Riddhi as a consort of Ganesha in North-Indian traditions."
+    },
+    {
+      "id": "nabhiraja",
+      "name": "Nabhiraja",
+      "pantheon": "jain",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "king",
+        "father-of-rishabhanatha"
+      ],
+      "parents": [],
+      "consorts": [
+        "marudevi"
+      ],
+      "children": [
+        "rishabhanatha"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "King in Jain tradition, husband of Marudevi and father of Rishabhanatha, the first Tirthankara."
+    },
+    {
+      "id": "marudevi",
+      "name": "Marudevi",
+      "pantheon": "jain",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen",
+        "mother-of-rishabhanatha"
+      ],
+      "parents": [],
+      "consorts": [
+        "nabhiraja"
+      ],
+      "children": [
+        "rishabhanatha"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Queen in Jain tradition, wife of Nabhiraja and mother of Rishabhanatha."
+    },
+    {
+      "id": "sumangala",
+      "name": "Sumangala",
+      "pantheon": "jain",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen",
+        "consort-of-rishabhanatha"
+      ],
+      "parents": [],
+      "consorts": [
+        "rishabhanatha"
+      ],
+      "children": [
+        "bharata-chakravartin"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Consort of Rishabhanatha and mother of Bharata Chakravartin in Jain tradition."
+    },
+    {
+      "id": "sunanda",
+      "name": "Sunanda",
+      "pantheon": "jain",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "queen",
+        "consort-of-rishabhanatha"
+      ],
+      "parents": [],
+      "consorts": [
+        "rishabhanatha"
+      ],
+      "children": [
+        "bahubali"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Consort of Rishabhanatha and mother of Bahubali in Jain tradition."
+    },
+    {
+      "id": "bharata-chakravartin",
+      "name": "Bharata (Chakravartin)",
+      "pantheon": "jain",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "chakravartin",
+        "universal-monarch",
+        "son-of-rishabhanatha"
+      ],
+      "parents": [
+        "rishabhanatha",
+        "sumangala"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Eldest son of Rishabhanatha and Sumangala and the first Chakravartin of the present Jain time cycle; distinct from the other mythological figures named Bharata."
+    },
+    {
+      "id": "bahubali",
+      "name": "Bahubali",
+      "pantheon": "jain",
+      "category": "deified-human",
+      "gender": "M",
+      "domains": [
+        "renunciation",
+        "liberation",
+        "gommateshwara"
+      ],
+      "parents": [
+        "rishabhanatha",
+        "sunanda"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Rishabhanatha and Sunanda, renowned for renouncing worldly power and attaining spiritual liberation; venerated in the monumental Gommateshwara tradition."
     }
   ],
   "notable_mentions": [
