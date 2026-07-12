@@ -503,8 +503,10 @@
   .tt-help > summary::before{content:"\25B8 "}
   .tt-help[open] > summary::before{content:"\25BE "}
   .tt-help ol{margin:8px 0 0 18px;color:var(--muted);font-size:12.5px;line-height:1.7}
-  .tt-kbdnote{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 14px;font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.55}
+  .tt-kbdnote{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;margin:0 0 16px;font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.55}
   .tt-kbdnote kbd{background:var(--card);border:1px solid var(--border);border-radius:5px;padding:1px 6px;font-family:var(--ui);font-size:11.5px;color:var(--gold)}
+  /* the "how to add" disclosure lives inside the same help box, attached below the Win+Space line */
+  .tt-kbdnote .tt-help{margin:9px 0 0;padding-top:9px;border-top:1px solid var(--border)}
   /* mode selector */
   .tt-modes{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:18px}
   .tt-mode{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:11px 12px;text-align:center;cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;color:var(--fg);transition:border-color .15s,background .15s}
@@ -543,6 +545,11 @@
   .tt-kbwrap{overflow-x:auto;padding-bottom:6px}
   .tt-kbd{display:inline-flex;flex-direction:column;gap:6px;min-width:640px}
   .tt-krow{display:flex;gap:6px;justify-content:flex-start}
+  /* realistic physical-keyboard row stagger: the number row sits left of the Q row,
+     and each lower row steps slightly further right (ANSI-style offsets). */
+  .tt-kbd .tt-krow:nth-child(2){margin-left:26px}   /* Q row */
+  .tt-kbd .tt-krow:nth-child(3){margin-left:44px}   /* A row */
+  .tt-kbd .tt-krow:nth-child(4){margin-left:70px}   /* Z row */
   .tt-key{flex:0 0 auto;width:48px;min-height:48px;background:var(--card);border:1px solid var(--border);border-radius:8px;
        display:flex;flex-direction:column;align-items:center;justify-content:center;padding:4px 2px}
   .tt-key.wide{width:auto;min-width:64px;padding-left:10px;padding-right:10px}
@@ -2033,7 +2040,7 @@ function renderTableCards(arr){
   const WORD_PROMPTS = [ {id:'copy',label:'Copy Arabic'},{id:'en',label:'English → Arabic'},{id:'tr',label:'Translit → Arabic'} ];
 
   // Preferences (persist) ----------------------------------------------------
-  const MODES=[ {id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'},{id:'passage',label:'Passage Typing',desc:'Type sentences & passages'} ];
+  const MODES=[ {id:'keyboard',label:'Keyboard',desc:'Layout + key quiz'},{id:'letter',label:'Letter Typing',desc:'Type the shown letter'},{id:'word',label:'Word Typing',desc:'Type the shown word'},{id:'passage',label:'Passage Typing',desc:'Type sentences & passages'} ];
   let mode = lsGet('masri-type-mode','letter'); if(!MODES.some(m=>m.id===mode)) mode='letter';
   let letterDiff = lsGet('masri-letter-difficulty','all'); if(!LETTER_DIFFS.some(d=>d.id===letterDiff)) letterDiff='all';
   let wordDiff = lsGet('masri-word-difficulty','all'); if(!WORD_DIFFS.some(d=>d.id===wordDiff)) wordDiff='all';
@@ -2135,11 +2142,10 @@ function renderTableCards(arr){
 
   // Shell --------------------------------------------------------------------
   panel.innerHTML =
-    `<p class="lead">Move from recognizing Arabic letters to typing them on a standard keyboard. Switch your keyboard to Arabic, then practice below.</p>`
-   +`<div class="tt-kbdnote">On Windows, press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between installed keyboard languages. Arabic must already be added as a Windows keyboard language.</div>`
-   +`<details class="tt-help"><summary>How to add the Arabic keyboard on Windows</summary>`
-     +`<ol><li>Open <b>Windows Settings</b>.</li><li>Go to <b>Time &amp; language</b>.</li><li>Open <b>Language &amp; region</b>.</li>`
-     +`<li>Add <b>Arabic</b> as a language or keyboard.</li><li>Press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between English and Arabic.</li></ol></details>`
+    `<div class="tt-kbdnote"><div class="tt-kbdnote-lead">On Windows, press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between installed keyboard languages. Arabic must already be added as a Windows keyboard language.</div>`
+     +`<details class="tt-help"><summary>How to add the Arabic keyboard on Windows</summary>`
+       +`<ol><li>Open <b>Windows Settings</b>.</li><li>Go to <b>Time &amp; language</b>.</li><li>Open <b>Language &amp; region</b>.</li>`
+       +`<li>Add <b>Arabic</b> as a language or keyboard.</li><li>Press <kbd>Win</kbd> + <kbd>Space</kbd> to switch between English and Arabic.</li></ol></details></div>`
    +`<div class="tt-modes" role="group" aria-label="Test mode">`
      + MODES.map(m=>`<button type="button" class="tt-mode" data-mode="${m.id}" aria-pressed="${m.id===mode}">${esc(m.label)}<span class="tt-mdesc">${esc(m.desc)}</span></button>`).join('')
    +`</div><div id="tt-body"></div>`;
