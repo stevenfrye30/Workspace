@@ -1038,8 +1038,8 @@ function renderTableCards(arr){
 
   // One sound card. Optional `audio` (a trusted local file) would render a play
   // control; none are set yet, so nothing synthetic is shown.
-  function card(c, big){
-    let h = `<div class="snd-card${big ? ' snd-big' : ''}">`;
+  function card(c, big, id){
+    let h = `<div class="snd-card${big ? ' snd-big' : ''}"${id ? ` id="${esc(id)}"` : ''}>`;
     h += `<div class="snd-head"><span class="snd-glyph ar" dir="rtl">${c.letter}</span>`
        + `<div class="snd-hmeta"><div class="snd-name">${esc(c.name)}</div>`
        + `<div class="snd-line"><span class="snd-sym">${esc(c.sym)}</span> <span class="snd-ipa" dir="ltr">${esc(c.ipa)}</span></div></div></div>`;
@@ -1049,7 +1049,9 @@ function renderTableCards(arr){
     if(c.detail) h += `<details class="snd-more"><summary>More detail</summary><div class="snd-det">${c.detail}</div></details>`;
     return h + `</div>`;
   }
-  const grid = (cards, big) => `<div class="snd-grid">` + cards.map(c => card(c, big)).join('') + `</div>`;
+  // Canonical render: each record gets id="snd-c-<letter>" (the 13 letters are distinct).
+  const cardId = c => 'snd-c-' + c.letter;
+  const grid = (cards, big) => `<div class="snd-grid">` + cards.map(c => card(c, big, cardId(c))).join('') + `</div>`;
 
   // Above the fold: the intro and the two signature Cairene sounds (ج, ق) — the reason
   // most learners open this tab. Everything else moves into the Sound Guide below.
@@ -1087,8 +1089,8 @@ function renderTableCards(arr){
   // cross-reference, whose facts (ẓāʾ, /zˤ/, emphatic, heavy z) are all on that card.
   {
     const zaa = d.shifts.cards.filter(c => c.letter === 'ظ');
-    const cards = d.emphatic.cards.map(c => card(c, false)).join('')
-      + zaa.map(c => card(c, false)
+    const cards = d.emphatic.cards.map(c => card(c, false, cardId(c))).join('')
+      + zaa.map(c => card(c, false)   // no id — the canonical ظ card is in Cairene shifts
           .replace(/<\/div>\s*$/, `<div class="snd-tag">also listed under Cairene shifts</div></div>`)).join('');
     h += sacc('snd-emphatic', 'Emphatic sounds',
               'The heavy, retracted consonants — ص ض ط, and ظ.',
@@ -1161,6 +1163,17 @@ function renderTableCards(arr){
   saccs.forEach(x => x.addEventListener('toggle', () => {
     if(x.open) saccs.forEach(y => { if(y !== x) y.open = false; });
   }));
+
+  // Deep routing for global-search hits: open the accordion holding the target (if any)
+  // and scroll to it. Called by the search click handler, which activates the Sounds
+  // section first and then scrolls the page to the top — so defer a tick, or that
+  // scrollTo(0,0) would immediately undo this one.
+  window.MASRI_OPEN_SOUND = function(id){
+    const el = panel.querySelector('#' + CSS.escape(id)); if(!el) return;
+    const acc = el.closest('.snd-acc') || (el.classList.contains('snd-acc') ? el : null);
+    if(acc) acc.open = true;                       // the toggle handler closes the others
+    setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 0);
+  };
 })();
 
 // ALPHABET — a practical Arabic reading reference: the 28 letters as detailed cards,
@@ -2053,8 +2066,21 @@ function renderTableCards(arr){
     if(Array.isArray(M.vocab))   M.vocab.forEach(t => (t.words || []).forEach(w => add(w.ar, w.tr, w.en, '', 'vocab', t.theme || 'Vocabulary')));
     if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g] || []).forEach(n => add(n.ar, n.tr, String(n.n), '', 'vocab', 'Numbers')));
     if(M.sounds){
-      (M.sounds.consonants || []).forEach(c => { add(c.ex_ar, c.ex, c.ex_en, '', 'example', 'Sounds'); add(c.letter, c.name, c.egyptian, c.ipa, 'letter', 'Sounds'); });
-      if(M.sounds.vowels) (M.sounds.vowels.rows || []).forEach(v => add(v.ex_ar, v.ex, v.gloss, '', 'example', 'Sounds'));
+      // Current schema: the 13 records live in signature / shifts / throat / emphatic / ra
+      // (the old consonants / vowels.rows keys never existed here and indexed nothing).
+      const S = M.sounds;
+      const sc = [].concat(S.signature || [], (S.shifts && S.shifts.cards) || [],
+                           (S.throat && S.throat.cards) || [], (S.emphatic && S.emphatic.cards) || []);
+      sc.forEach(c => {
+        add(c.letter, c.name, c.sym, c.ipa, 'letter', 'Sounds');
+        add(c.ex_ar, c.ex, c.ex_en, '', 'example', 'Sounds');   // add() drops empty Arabic
+      });
+      if(S.ra){
+        add(S.ra.letter, S.ra.name, S.ra.sym, S.ra.ipa, 'letter', 'Sounds');
+        (S.ra.examples || []).forEach(e => add(e.ar, e.ex, e.en, '', 'example', 'Sounds'));
+      }
+      if(S.vowels) [].concat(S.vowels.short || [], S.vowels.long || [])
+        .forEach(v => add(v.ar, v.ex, v.en, '', 'example', 'Sounds'));
     }
     if(M.alphabet) (M.alphabet.letters || []).forEach(l => add(l.letter, l.name, l.sound, '', 'letter', 'Alphabet'));
     return idx;
@@ -3885,9 +3911,48 @@ if(M.vocab){
   if(Array.isArray(M.grammar)) fromTables('grammar', M.grammar);
   if(Array.isArray(M.phrases)) M.phrases.forEach(c => (c.items||[]).forEach(it => push('phrases', c.category, it.ar, it.tr, it.en, it.note)));
   if(Array.isArray(M.vocab))   M.vocab.forEach(t => (t.words||[]).forEach(w => push('vocab', t.theme, w.ar, w.tr, w.en, '')));
+  // SOUNDS. Indexed from the real schema: 13 pronunciation records + 8 vowel rows +
+  // 7 comparison concepts = 28. Each DATA record is indexed exactly once — ظ is rendered
+  // in two accordions but exists once in the data, so it yields one Sounds result, and
+  // `soundId` points at its canonical card. The long `detail` prose is deliberately NOT
+  // indexed: it is generic ("throat", "back of the mouth") and would only add noise.
+  // The group is what makes "emphatic", "vowel" and "confuse" findable at all.
   if(M.sounds){
-    (M.sounds.consonants||[]).forEach(c => push('sounds','Sounds', c.letter, c.name, c.egyptian + (c.approx?' · '+c.approx:''), strip(c.note||'')));
-    if(M.sounds.vowels) (M.sounds.vowels.rows||[]).forEach(v => push('sounds','Sounds · vowels', v.ex_ar, v.ex, v.sound+' — '+v.gloss, ''));
+    const S = M.sounds;
+    const pushSound = (group, ar, tr, en, note, soundId) =>
+      recs.push({ sec:'sounds', secLabel: label.sounds || 'Sounds', group,
+                  ar: ar||'', tr: tr||'', en: en||'', note: note||'', soundId });
+    // the 13 records, in their rendered groups
+    const SND_GROUPS = [
+      { group:'Cairene signature', cards: S.signature || [] },
+      { group:'Cairene shifts',    cards: (S.shifts && S.shifts.cards) || [] },
+      { group:'Throat & back',     cards: (S.throat && S.throat.cards) || [] },
+      { group:'Emphatic sounds',   cards: (S.emphatic && S.emphatic.cards) || [] }
+    ];
+    SND_GROUPS.forEach(g => g.cards.forEach(c => pushSound(
+      g.group, c.letter, c.name,
+      c.sym + ' ' + c.ipa + ' — ' + strip(c.summary || ''),
+      c.ex_ar ? c.ex_ar + ' ' + c.ex + ' — ' + c.ex_en : '',
+      'snd-c-' + c.letter)));
+    if(S.ra) pushSound('Egyptian ر', S.ra.letter, S.ra.name,
+      S.ra.sym + ' ' + S.ra.ipa + ' — ' + strip(S.ra.summary || ''),
+      (S.ra.examples || []).map(e => e.ar + ' ' + e.ex + ' — ' + e.en).join(' · '),
+      'snd-c-' + S.ra.letter);
+    // The 8 vowel rows — one record each, routed to the Vowels panel. Saying "short vowel"
+    // / "long vowel" in the English field is what the data already says (they come from
+    // vowels.short / vowels.long) and it makes a search for "vowel" rank these above a
+    // comparison note that merely mentions vowels in passing.
+    if(S.vowels){
+      const vrow = (kind) => (v) => pushSound('Vowels', v.ar, v.ex,
+        kind + ' vowel ' + v.sym + ' — ' + v.en, strip(v.note || ''), 'snd-vowels');
+      (S.vowels.short || []).forEach(vrow('short'));
+      (S.vowels.long  || []).forEach(vrow('long'));
+    }
+    // the 7 comparison concepts. No Arabic in `ar`: the letters are already indexed by
+    // their own cards (and by Alphabet), so repeating them here would only duplicate hits.
+    if(S.compare) (S.compare.cards || []).forEach(c => pushSound(
+      'Easy to confuse', '', c.a.sym + ' vs ' + c.b.sym, c.note,
+      c.a.ex + ' (' + c.a.en + ') · ' + c.b.ex + ' (' + c.b.en + ')', 'snd-compare'));
   }
   if(M.alphabet) (M.alphabet.letters||[]).forEach(l => push('alphabet','Alphabet', l.letter, l.name, l.sound, strip(l.note||'')));
   if(M.numbers) ['ones','teens','tens'].forEach(g => (M.numbers[g]||[]).forEach(n => push('numbers','Numbers', n.ar, n.tr, String(n.n), n.digit)));
@@ -3970,7 +4035,7 @@ if(M.vocab){
     if(!res.length){ box.innerHTML = `<div class="gres-empty">No results for “${esc(q)}”.</div>`; return; }
     const shown = res.slice(0, MAX);
     box.innerHTML = `<div class="gres-count">${res.length} result${res.length!==1?'s':''}${res.length>MAX?` (showing ${MAX})`:''}</div>`
-      + shown.map(r => `<button class="gres" data-sec="${esc(r.sec)}"${r.passageId?` data-passage="${esc(r.passageId)}"`:''}>
+      + shown.map(r => `<button class="gres" data-sec="${esc(r.sec)}"${r.passageId?` data-passage="${esc(r.passageId)}"`:''}${r.soundId?` data-sound="${esc(r.soundId)}"`:''}>
           <div class="where">${esc(r.secLabel)}${r.group?' · '+esc(r.group):''}</div>
           ${r.ar?`<span class="ar">${esc(r.ar)}</span>`:''}${r.tr?`<span class="tr">${esc(r.tr)}</span>`:''}
           ${r.en?`<div class="en">${esc(r.en)}</div>`:''}
@@ -3979,6 +4044,7 @@ if(M.vocab){
     box.querySelectorAll('.gres').forEach(b => b.onclick = () => {
       activate(b.dataset.sec);
       if(b.dataset.passage && typeof window.MASRI_OPEN_PASSAGE === 'function') window.MASRI_OPEN_PASSAGE(b.dataset.passage);
+      if(b.dataset.sound && typeof window.MASRI_OPEN_SOUND === 'function') window.MASRI_OPEN_SOUND(b.dataset.sound);
       box.classList.remove('show'); gi.value=''; window.scrollTo(0,0);
     });
   }
