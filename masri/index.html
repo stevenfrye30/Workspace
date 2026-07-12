@@ -864,7 +864,7 @@ const GROUPS = [
 ];
 const SECTION_LABEL = {
   sounds:'Sounds', alphabet:'Alphabet', symbols:'Symbols', 'word-builder':'Word Builder',
-  practice:'Practice', listening:'Listening & Speaking',
+  practice:'Practice', listening:'Phrases & Speaking',
   grammar:'Grammar', verbs:'Verbs',
   numbers:'Numbers', time:'Time & Days', around:'Getting Around', shopping:'Money & Shopping',
   food:'Food & Ordering', health:'Health & Emergencies', people:'People & Small Talk',
@@ -1337,7 +1337,7 @@ function renderTableCards(arr){
 (function(){
   const panel = document.getElementById('p-practice'); if(!panel) return;
   const CARDS = [
-    ['listening',    'Beginner listening & speaking: hear, reveal, choose, shadow, respond, and short dialogues.'],
+    ['listening',    'Beginner phrases and speaking: read, reveal, quiz yourself, say them aloud, respond, and work through short dialogues.'],
     ['grammar',      'Core sentence structure, articles, possession, questions, and common grammar patterns.'],
     ['verbs',        'Common Egyptian Arabic verbs, conjugation patterns, tense, and negation.'],
     ['numbers',      'Counting, quantities, prices, phone numbers, and useful number patterns.'],
@@ -1387,11 +1387,11 @@ function renderTableCards(arr){
   const pref = (k,d) => { try{ const v = localStorage.getItem('masri-listening-'+k); return v==null?d:v; }catch(e){ return d; } };
   const setPref = (k,v) => { try{ localStorage.setItem('masri-listening-'+k, v); }catch(e){} };
 
-  const MODES = [['reveal','Listen & reveal'],['choose','Listen & choose'],['shadow','Shadow & repeat'],['respond','Respond out loud'],['dialogue','Mini-dialogues']];
+  const MODES = [['reveal','Read & reveal'],['choose','Meaning quiz'],['shadow','Say it aloud'],['respond','Respond out loud'],['dialogue','Mini-dialogues']];
   const MODE_DESC = {
-    reveal:'Play the phrase, then reveal the Arabic, transliteration, and English one at a time.',
-    choose:'Play the phrase and pick its English meaning. Wrong answers don’t advance; the answer is explained once you get it.',
-    shadow:'See and hear the phrase, then repeat it aloud. No automatic pronunciation scoring — this is practice.',
+    reveal:'Read the phrase, then reveal the transliteration and English one at a time.',
+    choose:'Read the phrase and pick its English meaning. Wrong answers don’t advance; the answer is explained once you get it.',
+    shadow:'Read the phrase and say it aloud, using the transliteration as your guide. No automatic pronunciation scoring — this is practice.',
     respond:'Read the prompt, answer out loud, then reveal a natural Egyptian response.',
     dialogue:'Choose a role and work through a short everyday conversation one line at a time.'
   };
@@ -1420,7 +1420,7 @@ function renderTableCards(arr){
   function stop(){ try{ if(audio) audio.pause(); }catch(e){} if(curBtn){ resetPlay(curBtn); curBtn=null; } }
   function playBtn(b){
     const file = b.dataset.audiofile;
-    if(!hasAudio(file)){ announce('Recordings aren’t available yet — audio is coming. For now, read the phrase and say it aloud.'); return; }
+    if(!hasAudio(file)){ announce('There is no recording for this phrase. Read it and say it aloud.'); return; }
     if(curBtn===b){ stop(); return; }
     stop(); announce('');
     if(!audio){ audio=new Audio(); audio.addEventListener('ended',()=>{ if(curBtn){ resetPlay(curBtn); curBtn=null; } }); }
@@ -1433,7 +1433,10 @@ function renderTableCards(arr){
 
   function playHtml(file, label){
     label = label || 'Play';
-    if(!hasAudio(file)) return `<button type="button" class="ls-btn play unavailable" aria-disabled="true" aria-label="${esc(label)} — recording unavailable (audio coming soon)"><span aria-hidden="true">🔊</span> <span class="ls-btn-lbl">${esc(label)}</span></button>`;
+    // No clip for this line → render NOTHING. Masri shows a Play button only where a
+    // real, suitably licensed recording exists; it never leaves a dead control behind and
+    // never substitutes synthetic or wrong-dialect audio.
+    if(!hasAudio(file)) return '';
     return `<button type="button" class="ls-btn play" data-audiofile="${esc(file)}" data-playlabel="${esc(label)}" aria-pressed="false" aria-label="${esc(label)}"><span aria-hidden="true">▶</span> <span class="ls-btn-lbl">${esc(label)}</span></button>`;
   }
   const arHtml  = t => `<div class="ls-ar" dir="rtl">${esc(t)}</div>`;
@@ -1497,7 +1500,7 @@ function renderTableCards(arr){
     const wantEn = (S.revealed.en) || (S.revealed.support==null && (S.display==='both'||S.display==='en'));
     if(wantTr) h += trHtml(p.transliteration);
     if(wantEn) h += enHtml(p.english);
-    h += `<p class="ls-hidden">Play it, then say it aloud. (No automatic scoring.)</p>`;
+    h += `<p class="ls-hidden">Read it, then say it aloud. (No automatic scoring.)</p>`;
     h += `<div class="ls-controls">${playHtml(p.audio,'Play')}`;
     if(audioReady) h += playHtml(p.audio.replace(/\.ogg$/,'-slow.ogg'),'Slower');
     if(!wantTr) h += btn('reveal-tr','Show transliteration');
@@ -1647,7 +1650,7 @@ function renderTableCards(arr){
   h += `<div class="ls-modes" role="group" aria-label="Practice mode">`
      + MODES.map(m=>`<button type="button" class="ls-mode" data-mode="${m[0]}" aria-pressed="${m[0]===S.mode?'true':'false'}">${esc(m[1])}</button>`).join('') + `</div>`;
   h += `<p class="ls-desc" id="ls-desc">${esc(MODE_DESC[S.mode]||'')}</p>`;
-  if(!audioReady) h += `<p class="ls-audionote">Native Egyptian recordings are being prepared, so the <b>Play</b> buttons are inactive for now and each phrase is shown so you can read it and say it aloud. There is <b>no automatic pronunciation scoring</b> — this is guided practice. Required recordings are listed in <code>audio/listening/MANIFEST.md</code>.</p>`;
+  h += `<p class="ls-audionote">A <b>Play</b> button appears only where Masri has a real recording that is suitably licensed and matches the phrase. Most phrases have none, so they are shown to read and say aloud instead. Masri will not substitute synthetic speech, or audio from another Arabic variety labelled as Egyptian. There is <b>no automatic pronunciation scoring</b> — this is guided practice.</p>`;
   h += `<div class="ls-bar">`
      + `<span class="ls-filter" id="ls-filter"><label for="ls-topic">Topic</label>`
      + `<select id="ls-topic" class="ls-select"><option value="all"${S.topic==='all'?' selected':''}>All topics</option>`

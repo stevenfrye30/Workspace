@@ -1,4 +1,4 @@
-// Listening & Speaking — beginner practice for recognizing and saying useful
+// Phrases & Speaking — beginner practice for recognizing and saying useful
 // everyday Egyptian (Cairene) Arabic. Original content written for Masri; natural
 // Cairene forms (not formal MSA) throughout. This is a REFERENCE/practice dataset:
 // no automated speech grading, no synthetic pronunciation.
@@ -12,10 +12,13 @@
 //                when audioReady is true (see below)
 //     difficulty — 1 (easiest) … 3
 //
-// AUDIO: no trusted native Egyptian recordings exist yet, so `audioReady` is false:
-// the UI shows a clear "recording unavailable" state and NEVER requests a file (no
-// 404s, no fake pronunciation). Drop real clips into audio/listening/ using the
-// filenames in audio/listening/MANIFEST.md and flip `audioReady` to true.
+// AUDIO: no trusted native Egyptian recordings exist for these phrases, so `audioReady`
+// stays false. A Play button is rendered ONLY for a filename listed in `audioAvailable`
+// below; every other phrase shows no audio control at all and is never requested (no dead
+// buttons, no 404s, no fake pronunciation, no wrong-dialect audio passed off as Egyptian).
+// Drop real, suitably licensed clips into audio/listening/ using the filenames in
+// audio/listening/MANIFEST.md, add them to `audioAvailable`, and only flip `audioReady`
+// to true once every clip exists. Provenance for anything shipped: audio/listening/CREDITS.md.
 window.MASRI = window.MASRI || {};
 window.MASRI.listening = {
   audioReady: false,
