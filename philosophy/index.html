@@ -198,6 +198,18 @@ main p { line-height:1.7; }
 }
 .lib-panel { display:none; }
 .lib-panel.active { display:block; }
+/* One compact switch inside Explore > Ideas. Deliberately quieter than .lib-nav so
+   Ideas reads as a single destination with two views, not a second tab bar. */
+.idea-switch { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; margin:0 0 18px; }
+.idea-switch button {
+  background:transparent; border:1px solid var(--line); color:var(--muted);
+  font-family:inherit; cursor:pointer; border-radius:14px / 50%;
+  padding:6px 16px; font-size:11.5px; letter-spacing:1.2px; text-transform:uppercase;
+  transition:color .2s ease, border-color .2s ease, background .2s ease;
+}
+.idea-switch button:hover { color:var(--accent); border-color:var(--gold-soft); }
+.idea-switch button.active { color:var(--accent); border-color:var(--gold-soft); background:var(--gold-faint); }
+.idea-switch button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .branch-empty { color:var(--muted); font-size:14px; line-height:1.6; margin:6px 0 0; }
 .resource-toc-cats { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:18px; margin:18px 0 32px; }
 .resource-toc-cat { background:linear-gradient(180deg, var(--panel), var(--panel2)); border:1px solid var(--gold-faint); border-radius:10px; padding:16px 22px 18px; transition:border-color .25s ease, box-shadow .25s ease; }
@@ -352,7 +364,6 @@ ul.clean li { margin:6px 0; }
 <nav id="nav">
   <button data-tab="home" class="active">Home</button>
   <button data-tab="explore">Explore</button>
-  <button data-tab="library">Library</button>
   <button data-tab="flashcards">Flashcards</button>
   <button data-tab="resources">Resources</button>
 </nav>
@@ -368,6 +379,7 @@ ul.clean li { margin:6px 0; }
     <button data-ex="map">𓂀 Influence Map</button>
     <button data-ex="schools">𓉐 Schools</button>
     <button data-ex="glossary">𓏛 Glossary</button>
+    <button data-ex="ideas">𓊽 Ideas</button>
   </nav>
 
   <div id="expanel-philosophers" class="lib-panel active">
@@ -422,6 +434,25 @@ ul.clean li { margin:6px 0; }
     </div>
     <div class="grid gloss-grid" id="gloss-grid"></div>
   </div>
+
+  <div id="expanel-ideas" class="lib-panel">
+    <nav class="idea-switch" id="idea-switch">
+      <button data-iv="trails" class="active">Thematic Trails</button>
+      <button data-iv="compare">Compare Ideas</button>
+    </nav>
+
+    <div id="ideaview-trails" class="lib-panel active">
+      <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
+      <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
+      <div id="trails-body"></div>
+    </div>
+
+    <div id="ideaview-compare" class="lib-panel">
+      <h2>Compare Ideas <button class="print-btn" onclick="window.print()">Print</button></h2>
+      <p>Side-by-side tables of positions across philosophers on major questions.</p>
+      <div id="tables-body"></div>
+    </div>
+  </div>
 </section>
 
 <section id="flashcards" class="tab">
@@ -437,32 +468,6 @@ ul.clean li { margin:6px 0; }
     <button class="print-btn" id="fc-reset">Reset score</button>
   </div>
   <div class="fc-wrap" id="fc-wrap"></div>
-</section>
-
-<section id="library" class="tab">
-  <nav class="lib-nav" id="lib-nav">
-    <button data-lib="paths" class="active">𓏛 Reading Paths</button>
-    <button data-lib="compare">𓊽 Compare Ideas</button>
-    <button data-lib="trails">𓋹 Thematic Trails</button>
-  </nav>
-
-  <div id="libpanel-paths" class="lib-panel active">
-    <h2>Reading Paths <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Suggested study sequences per branch, with passage pointers. Designed to be printed as a personal syllabus.</p>
-    <div id="paths-body"></div>
-  </div>
-
-  <div id="libpanel-compare" class="lib-panel">
-    <h2>Compare Ideas <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Side-by-side tables of positions across philosophers on major questions.</p>
-    <div id="tables-body"></div>
-  </div>
-
-  <div id="libpanel-trails" class="lib-panel">
-    <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
-    <div id="trails-body"></div>
-  </div>
 </section>
 
 <section id="resources" class="tab">
@@ -496,19 +501,21 @@ DATA.philosophers.forEach((p,i) => { byName[p.name] = i; });
 // Resources is its own top-level tab for the external link hub.
 // Explore is four flat subtabs. The map keeps its historical element id so the whole
 // Phase 1 graph implementation moves without being rewritten.
-const EX_PANELS     = ['philosophers','map','schools','glossary'];
+const EX_PANELS     = ['philosophers','map','schools','glossary','ideas'];
 const EX_PANEL_ID   = { philosophers:'expanel-philosophers', map:'respanel-graph',
-                        schools:'expanel-schools', glossary:'expanel-glossary' };
-const LIB_PANELS    = ['paths','compare','trails'];
+                        schools:'expanel-schools', glossary:'expanel-glossary',
+                        ideas:'expanel-ideas' };
+// Ideas holds the two thinking tools that used to sit in the Library tab.
+const IDEA_VIEWS    = ['trails','compare'];
 const ENTITY_ROUTES = ['philosopher','branch','school','term'];
-// Workspace was removed as a feature. It is absent from KNOWN_TABS, so '#/workspace'
-// and any old '#/workspace/<sub>' link falls through to the 'home' default below and
-// is then rewritten to '#/home'. Stored Workspace localStorage data is left untouched.
-const KNOWN_TABS    = ['home','explore','library','flashcards','resources'];
+// Workspace and Library were both removed as features. Neither is in KNOWN_TABS, so
+// '#/workspace' and any unmapped '#/library/<sub>' fall through to the 'home' default
+// and are rewritten to '#/home'. No data is deleted for either.
+const KNOWN_TABS    = ['home','explore','flashcards','resources'];
 
 // Live navigation state. closeModal and the '/' shortcut read this so a modal always
 // returns to the exact view it was opened from, rather than one hardcoded route.
-const NAV = { tab:'home', ex:'philosophers', lib:'paths' };
+const NAV = { tab:'home', ex:'philosophers', idea:'trails' };
 
 function setExPanel(name) {
   if (!EX_PANELS.includes(name)) name = 'philosophers';
@@ -520,13 +527,13 @@ function setExPanel(name) {
   });
   if (name==='map' && !GRAPH.drawn) renderGraph();
 }
-function setLibPanel(name) {
-  if (!LIB_PANELS.includes(name)) name = 'paths';
-  NAV.lib = name;
-  $$('#lib-nav button').forEach(b => b.classList.toggle('active', b.dataset.lib===name));
-  LIB_PANELS.forEach(p => {
-    const el = document.getElementById('libpanel-' + p);
-    if (el) el.classList.toggle('active', p===name);
+function setIdeaView(v) {
+  if (!IDEA_VIEWS.includes(v)) v = 'trails';
+  NAV.idea = v;
+  $$('#idea-switch button').forEach(b => b.classList.toggle('active', b.dataset.iv===v));
+  IDEA_VIEWS.forEach(x => {
+    const el = document.getElementById('ideaview-' + x);
+    if (el) el.classList.toggle('active', x===v);
   });
 }
 function setTab(name) {
@@ -538,8 +545,9 @@ function setTab(name) {
 }
 // The canonical hash for whatever is on screen right now.
 function currentPath() {
-  if (NAV.tab === 'explore') return '#/explore/' + NAV.ex;
-  if (NAV.tab === 'library') return '#/library/' + NAV.lib;
+  if (NAV.tab === 'explore') {
+    return NAV.ex === 'ideas' ? '#/explore/ideas/' + NAV.idea : '#/explore/' + NAV.ex;
+  }
   return '#/' + NAV.tab;
 }
 
@@ -559,16 +567,23 @@ const ROUTE_ALIASES = {
   'library/excerpts':  'explore/philosophers',
   'quotes':            'explore/philosophers',
   'excerpts':          'explore/philosophers',
-  'resources/trails':  'library/trails',
-  'resources/paths':   'library/paths',
-  'resources/tables':  'library/compare',
+  // Trails and Compare moved out of the Library tab into Explore > Ideas.
+  'library/trails':    'explore/ideas/trails',
+  'resources/trails':  'explore/ideas/trails',
+  'home/trails':       'explore/ideas/trails',
+  'trails':            'explore/ideas/trails',
+  'library/compare':   'explore/ideas/compare',
+  'resources/tables':  'explore/ideas/compare',
+  'home/tables':       'explore/ideas/compare',
+  'tables':            'explore/ideas/compare',
+  // The standalone Reading Paths interface is gone. The seven branch modals are now the
+  // only presentation of reading-path data, so these land on Home where the branches are.
+  'library/paths':     'home',
+  'resources/paths':   'home',
+  'home/paths':        'home',
+  'paths':             'home',
+  'library':           'home',
   'resources/hub':     'resources',
-  'home/trails':       'library/trails',
-  'home/paths':        'library/paths',
-  'home/tables':       'library/compare',
-  'trails':            'library/trails',
-  'paths':             'library/paths',
-  'tables':            'library/compare',
   'library/philosophers': 'explore/philosophers',
   'library/schools':      'explore/schools',
   'library/glossary':     'explore/glossary',
@@ -581,7 +596,7 @@ const ROUTE_ALIASES = {
 
 $$('#nav > button').forEach(b => b.addEventListener('click', () => { location.hash = '#/' + b.dataset.tab; }));
 $$('#explore-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/explore/' + b.dataset.ex; }));
-$$('#lib-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/library/' + b.dataset.lib; }));
+$$('#idea-switch button').forEach(b => b.addEventListener('click', () => { location.hash = '#/explore/ideas/' + b.dataset.iv; }));
 
 function handleHash() {
   // Ignore plain anchor links (e.g. #res-...) — only handle our `#/...` routes
@@ -620,8 +635,7 @@ function handleHash() {
   setTab(tab);
   if (tab === 'explore') {
     setExPanel(parts[1] || 'philosophers');
-  } else if (tab === 'library') {
-    setLibPanel(parts[1] || 'paths');
+    if (NAV.ex === 'ideas') setIdeaView(parts[2] || 'trails');
   }
   // Rewrite the address bar to the canonical path for whatever is now on screen, so
   // '#/explore' reads as '#/explore/philosophers' and shared links are unambiguous.
@@ -1173,18 +1187,6 @@ function renderTrails() {
 }
 
 // ===== Reading Paths =====
-function renderPaths() {
-  $('#paths-body').innerHTML = (DATA.reading_paths||[]).map(p => `
-    <div class="trail">
-      <h3>${esc(p.title)} <span style="font-weight:normal;color:var(--muted);font-size:13px">— ${esc(p.branch)}</span></h3>
-      <div class="desc">${esc(p.desc)}</div>
-      <ol class="clean">
-        ${p.stops.map(s=>`<li><span class="auto-link" data-p="${esc(s.who)}">${esc(s.who)}</span> — <i>${esc(s.what)}</i></li>`).join('')}
-      </ol>
-    </div>
-  `).join('');
-  bindAutoLinks($('#paths-body'));
-}
 
 // ===== Tables =====
 function renderTables() {
@@ -1364,7 +1366,6 @@ renderPhilosophers();
 renderSchools();
 renderGlossary();
 renderTrails();
-renderPaths();
 renderTables();
 renderResources();
 newFlashcard();
