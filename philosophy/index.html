@@ -46,6 +46,17 @@ header h1 {
 }
 header h1::before { content:'𓋹'; color:var(--accent); margin-right:clamp(10px, 2.4vw, 26px); font-size:0.9em; opacity:0.55; }
 header h1::after  { content:'𓂀'; color:var(--accent); margin-left:clamp(10px, 2.4vw, 26px);  font-size:0.9em; opacity:0.55; }
+/* The title is the Home control. The decorative symbols stay on the h1, outside the
+   link, so they are not part of the interactive target. */
+header h1 a {
+  color:inherit; text-decoration:none; cursor:pointer;
+  border-bottom:1px solid transparent;
+  transition:color .2s ease, border-color .2s ease, text-shadow .2s ease;
+}
+header h1 a:hover { color:#f0d79a; border-bottom-color:var(--gold-soft); }
+header h1 a:focus-visible { outline:2px solid var(--accent); outline-offset:6px; border-radius:3px; }
+/* Subtle active state, driven by the router rather than by hover. */
+header h1 a.home-active { border-bottom-color:var(--gold-soft); text-shadow:0 0 22px rgba(229,193,88,0.35); }
 /* Wrap rather than scroll. With six tabs, the old nowrap + overflow-x:auto + centre
    combination pushed the first tab off-screen and made it unreachable on narrow widths. */
 nav { display:flex; gap:8px; padding:14px 28px; background:rgba(10,8,5,0.5); border-bottom:1px solid var(--line); flex-wrap:wrap; justify-content:center; }
@@ -67,7 +78,9 @@ main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
 #branches-grid { gap:14px; }
 .branch-card {
   position:relative; overflow:hidden;
-  display:flex; flex-direction:column; align-items:center; gap:8px;
+  /* Centre the whole content group (symbol, name, question, arrow) as one unit rather
+     than anchoring the arrow to the bottom, which made the cards read as top-heavy. */
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
   min-height:140px; text-align:center; font-family:inherit;
   background:linear-gradient(180deg, var(--panel), var(--panel2));
   border:1px solid var(--line); border-radius:12px;
@@ -88,7 +101,7 @@ main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
 }
 .branch-card .branch-q { color:var(--muted); font-size:13.5px; line-height:1.5; }
 .branch-card .branch-go {
-  margin-top:auto; align-self:center; color:var(--accent);
+  align-self:center; color:var(--accent); margin-top:2px;
   font-size:16px; opacity:0.35; transition:transform .2s ease, opacity .2s ease;
 }
 .branch-card:hover {
@@ -359,10 +372,9 @@ ul.clean li { margin:6px 0; }
 </nav>
 
 <header>
-  <h1>Philosophy</h1>
+  <h1><a href="#/home" id="home-title" aria-label="Return to Philosophy home">Philosophy</a></h1>
 </header>
 <nav id="nav">
-  <button data-tab="home" class="active">Home</button>
   <button data-tab="explore">Explore</button>
   <button data-tab="flashcards">Flashcards</button>
   <button data-tab="resources">Resources</button>
@@ -539,7 +551,11 @@ function setIdeaView(v) {
 function setTab(name) {
   if (!KNOWN_TABS.includes(name)) name = 'home';
   NAV.tab = name;
+  // Home has no nav button any more: the title is its control, so no button is active
+  // on Home and the title carries the active state instead.
   $$('#nav > button').forEach(b => b.classList.toggle('active', b.dataset.tab===name));
+  const title = document.getElementById('home-title');
+  if (title) title.classList.toggle('home-active', name==='home');
   $$('main > .tab').forEach(t => t.classList.toggle('active', t.id===name));
   window.scrollTo(0,0);
 }
