@@ -144,7 +144,7 @@ window.MASRI.passages = {
     { id:'eg-i9', title:'Ordering a meal', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'عايز طبق كشري وسط.', tr:'ʿāyez ṭabaʾ koshari wesṭ.', en:"I'd like a medium plate of koshari." },
       { ar:'من غير شطة لو سمحت.', tr:'men ghēr shaṭṭa law samaḥt.', en:'Without hot sauce, please.' },
-      { ar:'وهات معاه ازازة مية.', tr:'we-hāt maʿāh ezāzet mayya.', en:'And bring a bottle of water with it.' },
+      { ar:'وهات معاه إزازة مية.', tr:'we-hāt maʿāh ezāzet mayya.', en:'And bring a bottle of water with it.' },
       { ar:'هاكله هنا مش سفري.', tr:'hākolo hena mesh safari.', en:"I'll eat it here, not takeaway." }
     ]},
     { id:'eg-i10', title:'Metro and microbus', difficulty:'intermediate', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
