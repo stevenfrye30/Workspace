@@ -638,6 +638,8 @@
   .tt-passfullseg{margin-left:4px}
   .tt-passprog{margin-top:12px;text-align:center;font-family:var(--ui);font-size:11.5px;color:var(--muted);letter-spacing:.02em}
   .tt-passprog b{color:var(--fg);font-weight:600}
+  .tt-passsaved{display:block;margin-top:3px;color:var(--muted)}
+  .tt-linkbtn{background:none;border:none;color:var(--gold);font-family:var(--ui);font-size:11.5px;padding:0 0 0 6px;cursor:pointer;text-decoration:underline;text-underline-offset:2px}
   .tt-passfullseg.cur{color:var(--fg);background:rgba(217,164,65,.15);border-radius:4px;padding:0 3px}
   /* passage column diff — stacked target/typed cells that wrap cleanly, RTL */
   .tt-diffcols{display:flex;flex-wrap:wrap;gap:4px;direction:rtl;justify-content:center;margin:8px 0}
@@ -2061,16 +2063,26 @@ function renderTableCards(arr){
   const scoreBar = s => `<div class="tt-score" role="status">Correct <b class="tt-sc">${s.c}</b> · Total <b class="tt-st">${s.t}</b> · Streak <b class="tt-ss">${s.streak}</b> · Best <b class="tt-sb">${s.best}</b></div>`;
   function updateScore(s){ const q=x=>body.querySelector(x); const a=q('.tt-sc'),b=q('.tt-st'),c=q('.tt-ss'),d=q('.tt-sb'); if(a)a.textContent=s.c; if(b)b.textContent=s.t; if(c)c.textContent=s.streak; if(d)d.textContent=s.best; }
 
-  // Mistakes (session-only) --------------------------------------------------
+  // Mistakes — kept in memory and mirrored to localStorage so "Review mistakes"
+  // survives a reload. Saved under MIST_KEY; restored once at startup (see init).
+  const MTYPES = ['letter','word','key','passage'];
   const mistakes = { letter:new Map(), word:new Map(), key:new Map(), passage:new Map() };
+  function saveMistakes(){
+    const out={}; MTYPES.forEach(t=> out[t]=[...mistakes[t].values()]);
+    jsonSet(MIST_KEY, out);
+  }
+  function loadMistakes(){
+    const saved=jsonGet(MIST_KEY,null); if(!saved || typeof saved!=='object') return;
+    MTYPES.forEach(t=> (Array.isArray(saved[t])?saved[t]:[]).forEach(m=>{ if(m && m.key) mistakes[t].set(m.key,m); }) );
+  }
   function record(type, key, data, reason){
     const map=mistakes[type]; let m=map.get(key);
     if(!m){ m=Object.assign({ key, count:0, reviewCorrect:0 }, data); map.set(key,m); }
     else { Object.assign(m, data); }
-    m.count++; m.reason=reason; m.reviewCorrect=0; updateReviewBtn();
+    m.count++; m.reason=reason; m.reviewCorrect=0; updateReviewBtn(); saveMistakes();
   }
   const mCount = () => mistakes.letter.size + mistakes.word.size + mistakes.key.size + mistakes.passage.size;
-  function clearMistakes(){ mistakes.letter.clear(); mistakes.word.clear(); mistakes.key.clear(); mistakes.passage.clear(); updateReviewBtn(); }
+  function clearMistakes(){ MTYPES.forEach(t=>mistakes[t].clear()); updateReviewBtn(); saveMistakes(); }
   function updateReviewBtn(){ const b=panel.querySelector('#tt-reviewbtn'); if(!b) return; const n=mCount();
     b.textContent='Review mistakes ('+n+')'; b.classList.toggle('has', n>0); b.setAttribute('aria-disabled', String(n===0)); }
   function collectReview(types){ const out=[];
@@ -2165,6 +2177,18 @@ function renderTableCards(arr){
   // Passage session tally — counts this tab's finished passages, cleared segments and
   // wrong attempts. Session-only: never saved, and reset by the filters that reset P.
   const PS={ passages:0, segments:0, mistakes:0 };
+
+  // SAVED PROGRESS (localStorage, this browser only — no accounts, nothing sent anywhere).
+  //   masri-passage-done  — ids of passages finished at least once (shown as ✓ in the picker)
+  //   masri-type-mistakes — the lists behind "Review mistakes", so they survive a reload
+  // Scores and the session tally above stay session-only.
+  const DONE_KEY='masri-passage-done', MIST_KEY='masri-type-mistakes';
+  const jsonGet=(k,d)=>{ try{ const v=JSON.parse(localStorage.getItem(k)); return v==null?d:v; }catch(e){ return d; } };
+  const jsonSet=(k,v)=>{ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} };
+  const savedDone=jsonGet(DONE_KEY,[]);
+  const doneSet=new Set(Array.isArray(savedDone)?savedDone:[]);
+  function markDone(id){ if(!id || id==='custom' || doneSet.has(id)) return; doneSet.add(id); jsonSet(DONE_KEY,[...doneSet]); }
+
   let reviewMode=null;       // {types:[...], score, last, item}
   let reviewPanel=false;     // summary overlay open?
 
@@ -2529,10 +2553,20 @@ function renderTableCards(arr){
     P.passage = l[(i+1)%l.length]; P.seg=0; P.done=false; P.score=newScore(); render();
   }
   function passProgressInner(){
+    const list=passList(), doneHere=list.filter(p=>doneSet.has(p.id)).length;
     return `This session: <b>${PS.passages}</b> passage${PS.passages===1?'':'s'}`
-      + ` · <b>${PS.segments}</b> segment${PS.segments===1?'':'s'} · <b>${PS.mistakes}</b> mistake${PS.mistakes===1?'':'s'}`;
+      + ` · <b>${PS.segments}</b> segment${PS.segments===1?'':'s'} · <b>${PS.mistakes}</b> mistake${PS.mistakes===1?'':'s'}`
+      + (list.length ? `<span class="tt-passsaved">Finished before: <b>${doneHere}</b> of ${list.length} in this set`
+          + (doneSet.size?` <button type="button" class="tt-linkbtn" data-a="resetprog">Reset saved progress</button>`:'')
+          + `</span>` : '');
   }
   function passProgress(){ return `<div class="tt-passprog">${passProgressInner()}</div>`; }
+  function resetProgress(){
+    doneSet.clear(); jsonSet(DONE_KEY,[]);
+    clearMistakes();
+    PS.passages=0; PS.segments=0; PS.mistakes=0;
+    render();
+  }
   // The card is not re-rendered on a wrong answer, so refresh the tally in place.
   function updateProgress(){ const el=body.querySelector('.tt-passprog'); if(el) el.innerHTML=passProgressInner(); }
   function passCatPills(){
@@ -2553,7 +2587,7 @@ function renderTableCards(arr){
     if(!list.length){ body.innerHTML = selRow + `<p class="note">No passages in this set at this difficulty. Change the filters above.</p>`; wireCommon(); return; }
     if(!P.passage || P.passage.id==='custom' || !list.some(x=>x.id===P.passage.id)){ P.passage=list[0]; P.seg=0; P.done=false; }
     const picker = `<div class="tt-sel"><div class="tt-selgroup"><label class="tt-sellabel" for="tt-passel">Passage</label><select id="tt-passel" class="tt-select">`
-      + list.map(p=>`<option value="${esc(p.id)}"${p.id===P.passage.id?' selected':''}>${esc(p.title)} · ${esc(p.difficulty)}</option>`).join('')
+      + list.map(p=>`<option value="${esc(p.id)}"${p.id===P.passage.id?' selected':''}>${doneSet.has(p.id)?'✓ ':''}${esc(p.title)} · ${esc(p.difficulty)}</option>`).join('')
       + `</select><button type="button" class="tt-btn small" data-a="randpass">Random passage</button></div></div>`;
     renderSegmentCard(selRow + picker, P.passage.lines, P.passage);
   }
@@ -2584,6 +2618,7 @@ function renderTableCards(arr){
       const cc=body.querySelector('[data-a=clearcustom]'); if(cc) cc.addEventListener('click',()=>{ P.custom=''; P.customLines=null; P.passage=null; P.seg=0; P.score=newScore(); render(); });
       const rp=body.querySelector('[data-a=randpass]'); if(rp) rp.addEventListener('click', randomPassage);
       const np=body.querySelector('[data-a=nextpass]'); if(np) np.addEventListener('click', nextPassage);
+      const rs=body.querySelector('[data-a=resetprog]'); if(rs) rs.addEventListener('click', resetProgress);
     }
     if(P.seg>=n){
       body.innerHTML = prefix + `<div class="tt-card"><div class="tt-prompt">Passage complete</div>`
@@ -2626,7 +2661,7 @@ function renderTableCards(arr){
     inp.focus();
     const mKey=p.id+'#'+P.seg;
     function recordSeg(reason, typed){ record('passage', mKey, {target:seg.ar, title:p.title, category:passCat, difficulty:p.difficulty, seg:P.seg, passageId:p.id, lastTyped:typed||''}, reason); }
-    function advance(){ if(P.seg+1>=n) PS.passages++; P.seg++; P.done=false; render(); }
+    function advance(){ if(P.seg+1>=n){ PS.passages++; markDone(p.id); } P.seg++; P.done=false; render(); }
     function check(){ if(P.done){ advance(); return; } const raw=inp.value.trim(); if(!raw) return;
       if(passSegNorm(raw,exact)===passSegNorm(seg.ar,exact)){ bump(P.score,'correct'); PS.segments++; P.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
       else { bump(P.score,'wrong'); PS.mistakes++; recordSeg('incorrect', passSegNorm(raw,exact)); fb.className='tt-fb no'; fb.innerHTML='Not quite — try again.'+renderDiffCols(passSegNorm(seg.ar,exact), passSegNorm(raw,exact)); inp.focus(); }
@@ -2642,6 +2677,22 @@ function renderTableCards(arr){
     const ten=body.querySelector('[data-a=toggleen]'); if(ten) ten.addEventListener('click',()=>{ P.showEn=!P.showEn; render(); });
   }
 
+  // Restore saved mistakes, then open. Also expose a single hook so a global-search
+  // hit on a passage can jump straight into it (see GLOBAL SEARCH below).
+  loadMistakes();
+  window.MASRI_OPEN_PASSAGE = function(id){
+    const cats=['egyptian','quran'];
+    for(const c of cats){
+      const p=((M.passages && M.passages[c])||[]).find(x=>x.id===id);
+      if(!p) continue;
+      passCat=c; lsSet('masri-passage-category',c);
+      passDiff='all'; lsSet('masri-passage-difficulty','all');
+      P.passage=p; P.seg=0; P.done=false; P.score=newScore();
+      setMode('passage');
+      return true;
+    }
+    return false;
+  };
   render();
 })();
 
@@ -2721,6 +2772,16 @@ if(M.vocab){
     (M.listening.phrases||[]).forEach(p => push('listening', (tl[p.topic]||p.topic), p.arabic, p.transliteration, p.english, ''));
     (M.listening.dialogues||[]).forEach(dl => (dl.lines||[]).forEach(ln => push('listening', dl.title, ln.arabic, ln.transliteration, ln.english, '')));
   }
+  // Passage Typing lines. A hit carries its passage id, so clicking the result opens
+  // Type → Test → Passage Typing on that exact passage (see the click handler below).
+  if(M.passages){
+    ['egyptian','quran'].forEach(cat => (M.passages[cat]||[]).forEach(p =>
+      (p.lines||[]).forEach(ln => recs.push({
+        sec:'test', secLabel:(label.test||'Test'), group:'Passage · '+p.title,
+        ar:ln.ar||'', tr:ln.tr||'', en:ln.en||'', note:p.difficulty||'', passageId:p.id
+      }))
+    ));
+  }
 
   // Beginner-friendly normalization: lowercase, strip Latin diacritics via NFD
   // (ā→a, ḥ→h, ṣ→s, ṭ→t, ḍ→d, ẓ→z, ī→i, ū→u, ē→e, ō→o), Arabic tashkeel, and the
@@ -2785,14 +2846,16 @@ if(M.vocab){
     if(!res.length){ box.innerHTML = `<div class="gres-empty">No results for “${esc(q)}”.</div>`; return; }
     const shown = res.slice(0, MAX);
     box.innerHTML = `<div class="gres-count">${res.length} result${res.length!==1?'s':''}${res.length>MAX?` (showing ${MAX})`:''}</div>`
-      + shown.map(r => `<button class="gres" data-sec="${esc(r.sec)}">
+      + shown.map(r => `<button class="gres" data-sec="${esc(r.sec)}"${r.passageId?` data-passage="${esc(r.passageId)}"`:''}>
           <div class="where">${esc(r.secLabel)}${r.group?' · '+esc(r.group):''}</div>
           ${r.ar?`<span class="ar">${esc(r.ar)}</span>`:''}${r.tr?`<span class="tr">${esc(r.tr)}</span>`:''}
           ${r.en?`<div class="en">${esc(r.en)}</div>`:''}
           ${r.note?`<div class="snip">${esc(r.note)}</div>`:''}
         </button>`).join('');
     box.querySelectorAll('.gres').forEach(b => b.onclick = () => {
-      activate(b.dataset.sec); box.classList.remove('show'); gi.value=''; window.scrollTo(0,0);
+      activate(b.dataset.sec);
+      if(b.dataset.passage && typeof window.MASRI_OPEN_PASSAGE === 'function') window.MASRI_OPEN_PASSAGE(b.dataset.passage);
+      box.classList.remove('show'); gi.value=''; window.scrollTo(0,0);
     });
   }
   gi.addEventListener('input', () => run(gi.value));
