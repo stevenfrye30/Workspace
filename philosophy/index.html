@@ -46,7 +46,9 @@ header h1 {
 }
 header h1::before { content:'𓋹'; color:var(--accent); margin-right:clamp(10px, 2.4vw, 26px); font-size:0.9em; opacity:0.55; }
 header h1::after  { content:'𓂀'; color:var(--accent); margin-left:clamp(10px, 2.4vw, 26px);  font-size:0.9em; opacity:0.55; }
-nav { display:flex; gap:8px; padding:14px 28px; background:rgba(10,8,5,0.5); border-bottom:1px solid var(--line); flex-wrap:nowrap; overflow-x:auto; justify-content:center; }
+/* Wrap rather than scroll. With six tabs, the old nowrap + overflow-x:auto + centre
+   combination pushed the first tab off-screen and made it unreachable on narrow widths. */
+nav { display:flex; gap:8px; padding:14px 28px; background:rgba(10,8,5,0.5); border-bottom:1px solid var(--line); flex-wrap:wrap; justify-content:center; }
 nav button {
   background:linear-gradient(180deg, var(--panel), var(--panel2));
   border:1px solid var(--line); color:var(--muted);
@@ -196,6 +198,24 @@ main p { line-height:1.7; }
 }
 .lib-panel { display:none; }
 .lib-panel.active { display:block; }
+/* Two compact switches inside Explore > Philosophers: the primary view (Directory or
+   Influence Map) and, within Directory, the content being browsed. Deliberately quieter
+   than .lib-nav so the page does not read as a stack of tab bars. */
+.view-switch, .content-switch { display:flex; flex-wrap:wrap; gap:6px; justify-content:center; }
+.view-switch { margin:0 0 18px; }
+.content-switch { margin:0 0 18px; }
+.view-switch button, .content-switch button {
+  background:transparent; border:1px solid var(--line); color:var(--muted);
+  font-family:inherit; cursor:pointer; border-radius:14px / 50%;
+  transition:color .2s ease, border-color .2s ease, background .2s ease;
+}
+.view-switch button { padding:7px 18px; font-size:12px; letter-spacing:1.4px; text-transform:uppercase; }
+.content-switch button { padding:5px 14px; font-size:11.5px; letter-spacing:1px; }
+.view-switch button:hover, .content-switch button:hover { color:var(--accent); border-color:var(--gold-soft); }
+.view-switch button.active, .content-switch button.active {
+  color:var(--accent); border-color:var(--gold-soft); background:var(--gold-faint);
+}
+.view-switch button:focus-visible, .content-switch button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
 .ws-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); gap:20px; margin-top:18px; }
 .ws-panel { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px 22px; display:flex; flex-direction:column; min-height:360px; transition:border-color .25s ease, box-shadow .25s ease; }
 .ws-panel:hover { border-color:var(--gold-faint); box-shadow:0 6px 20px rgba(0,0,0,0.3); }
@@ -328,7 +348,23 @@ ul.clean li { margin:6px 0; }
 .fc-score { color:var(--accent); font-size:14px; margin-top:10px; }
 
 /* Graph */
-#graph-canvas { width:100%; height:640px; background:var(--panel); border:1px solid var(--line); border-radius:6px; }
+/* Responsive height, and pan-y so a one-finger scroll over the map still scrolls the
+   page instead of being swallowed by the canvas. */
+#graph-canvas {
+  width:100%; height:clamp(300px, 52vh, 600px);
+  background:var(--panel); border:1px solid var(--line); border-radius:6px;
+  touch-action:pan-y;
+}
+.graph-toggle { display:inline-flex; align-items:center; gap:7px; color:var(--muted); font-size:12px; cursor:pointer; }
+/* override the generic .filters input rule, which would stretch the checkbox */
+.filters .graph-toggle input[type="checkbox"] {
+  min-width:0; width:14px; height:14px; padding:0; margin:0; cursor:pointer; accent-color:var(--accent);
+}
+.graph-status { color:var(--muted); font-size:12.5px; margin:10px 0 6px; }
+.graph-legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin:0 0 10px; }
+.graph-legend .lg { display:inline-flex; align-items:center; gap:6px; color:var(--muted); font-size:11.5px; }
+.graph-legend .lg-dot { width:9px; height:9px; border-radius:50%; display:inline-block; }
+.graph-legend .lg.lg-context { font-style:italic; opacity:0.75; }
 
 /* Print */
 @media print {
@@ -373,10 +409,11 @@ ul.clean li { margin:6px 0; }
 </header>
 <nav id="nav">
   <button data-tab="home" class="active">Home</button>
-  <button data-tab="resources">Explore</button>
+  <button data-tab="explore">Explore</button>
   <button data-tab="library">Library</button>
   <button data-tab="workspace">Workspace</button>
   <button data-tab="flashcards">Flashcards</button>
+  <button data-tab="resources">Resources</button>
 </nav>
 <main>
 
@@ -384,36 +421,80 @@ ul.clean li { margin:6px 0; }
   <div class="grid grid-branches" id="branches-grid"></div>
 </section>
 
-<section id="library" class="tab">
-  <h2>Library</h2>
-  <nav class="lib-nav" id="lib-nav">
-    <button data-lib="philosophers" class="active">Philosophers</button>
-    <button data-lib="schools">Schools</button>
-    <button data-lib="glossary">Glossary</button>
-    <button data-lib="quotes">Quotes</button>
-    <button data-lib="excerpts">Excerpts</button>
+<section id="explore" class="tab">
+  <nav class="lib-nav" id="explore-nav">
+    <button data-ex="philosophers" class="active">𓁹 Philosophers</button>
+    <button data-ex="schools">𓉐 Schools</button>
+    <button data-ex="glossary">𓏛 Glossary</button>
   </nav>
 
-  <div id="lib-philosophers" class="lib-panel active">
-    <div class="filters">
-      <input type="text" id="phil-search" placeholder="Search by name… (press /)">
-      <select id="filter-tradition"><option value="">All traditions</option></select>
-      <select id="filter-era"><option value="">All eras</option></select>
-      <select id="filter-region"><option value="">All regions</option></select>
-      <select id="filter-school"><option value="">All schools</option></select>
-      <select id="filter-branch"><option value="">All branches</option></select>
-      <select id="sort-by">
-        <option value="birth">Sort: chronological</option>
-        <option value="name">Sort: A→Z</option>
-        <option value="tradition">Sort: tradition</option>
-        <option value="era">Sort: era</option>
-      </select>
-      <span id="phil-count" style="color:var(--muted);font-size:13px;margin-left:auto"></span>
+  <div id="expanel-philosophers" class="lib-panel active">
+    <nav class="view-switch" id="phil-view-switch">
+      <button data-pv="directory" class="active">Directory</button>
+      <button data-pv="map">Influence Map</button>
+    </nav>
+
+    <div id="philview-directory" class="lib-panel active">
+      <nav class="content-switch" id="phil-content-switch">
+        <button data-cv="philosophers" class="active">Philosophers</button>
+        <button data-cv="quotes">Quotes</button>
+        <button data-cv="excerpts">Excerpts</button>
+      </nav>
+
+      <div id="content-philosophers" class="lib-panel active">
+        <div class="filters">
+          <input type="text" id="phil-search" placeholder="Search by name… (press /)">
+          <select id="filter-tradition"><option value="">All traditions</option></select>
+          <select id="filter-era"><option value="">All eras</option></select>
+          <select id="filter-region"><option value="">All regions</option></select>
+          <select id="filter-school"><option value="">All schools</option></select>
+          <select id="filter-branch"><option value="">All branches</option></select>
+          <select id="sort-by">
+            <option value="birth">Sort: chronological</option>
+            <option value="name">Sort: A→Z</option>
+            <option value="tradition">Sort: tradition</option>
+            <option value="era">Sort: era</option>
+          </select>
+          <span id="phil-count" style="color:var(--muted);font-size:13px;margin-left:auto"></span>
+        </div>
+        <div class="grid phil-grid" id="phil-grid" tabindex="0"></div>
+      </div>
+
+      <div id="content-quotes" class="lib-panel">
+        <div class="filters">
+          <input type="text" id="quote-search" placeholder="Search quotes…">
+          <select id="quote-theme"><option value="">All themes</option></select>
+        </div>
+        <div id="quotes-body" class="q-grid"></div>
+      </div>
+
+      <div id="content-excerpts" class="lib-panel">
+        <p>Short passages from canonical works. Click a philosopher's name for the full biography.</p>
+        <div class="filters">
+          <input type="text" id="excerpt-search" placeholder="Search excerpts…">
+        </div>
+        <div id="excerpts-body"></div>
+      </div>
     </div>
-    <div class="grid phil-grid" id="phil-grid" tabindex="0"></div>
+
+    <div id="respanel-graph" class="lib-panel">
+      <p>A network of philosophical influence. Drag nodes, zoom, click a node to open its biography.</p>
+      <div class="filters">
+        <select id="graph-scope">
+          <option value="major">Most connected</option>
+          <option value="all">All philosophers</option>
+        </select>
+        <select id="graph-filter-tradition"><option value="">All traditions</option></select>
+        <label class="graph-toggle"><input type="checkbox" id="graph-isolates"> Include unconnected philosophers</label>
+        <button class="print-btn" id="graph-fit">Fit view</button>
+      </div>
+      <p class="graph-status" id="graph-status"></p>
+      <div class="graph-legend" id="graph-legend"></div>
+      <div id="graph-canvas"></div>
+    </div>
   </div>
 
-  <div id="lib-schools" class="lib-panel">
+  <div id="expanel-schools" class="lib-panel">
     <p>First-class pages for major schools. Click a school for description, era, tradition, and full member list.</p>
     <div class="filters">
       <input type="text" id="school-search" placeholder="Search schools…">
@@ -422,29 +503,13 @@ ul.clean li { margin:6px 0; }
     <div class="grid grid-schools" id="schools-grid"></div>
   </div>
 
-  <div id="lib-glossary" class="lib-panel">
+  <div id="expanel-glossary" class="lib-panel">
     <p>Technical terms from across traditions. These auto-link inside philosopher bios; click any card for the full entry.</p>
     <div class="filters">
       <input type="text" id="gloss-search" placeholder="Search terms…">
       <select id="gloss-trad"><option value="">All traditions</option></select>
     </div>
     <div class="grid gloss-grid" id="gloss-grid"></div>
-  </div>
-
-  <div id="lib-quotes" class="lib-panel">
-    <div class="filters">
-      <input type="text" id="quote-search" placeholder="Search quotes…">
-      <select id="quote-theme"><option value="">All themes</option></select>
-    </div>
-    <div id="quotes-body" class="q-grid"></div>
-  </div>
-
-  <div id="lib-excerpts" class="lib-panel">
-    <p>Short passages from canonical works — public-domain or short quotation-length. Click a philosopher's name for the full biography.</p>
-    <div class="filters">
-      <input type="text" id="excerpt-search" placeholder="Search excerpts…">
-    </div>
-    <div id="excerpts-body"></div>
   </div>
 </section>
 
@@ -463,51 +528,37 @@ ul.clean li { margin:6px 0; }
   <div class="fc-wrap" id="fc-wrap"></div>
 </section>
 
-<section id="resources" class="tab">
-  <nav class="lib-nav" id="res-nav">
-    <button data-res="graph" class="active">𓂀 Influence Map</button>
-    <button data-res="trails">𓋹 Thematic Trails</button>
-    <button data-res="paths">𓏛 Reading Paths</button>
-    <button data-res="tables">𓊽 Compare Ideas</button>
-    <button data-res="hub">𓎟 External Resources</button>
+<section id="library" class="tab">
+  <nav class="lib-nav" id="lib-nav">
+    <button data-lib="paths" class="active">𓏛 Reading Paths</button>
+    <button data-lib="compare">𓊽 Compare Ideas</button>
+    <button data-lib="trails">𓋹 Thematic Trails</button>
   </nav>
 
-  <div id="respanel-hub" class="lib-panel">
-    <h2>External Resources</h2>
-    <p style="color:var(--muted);font-style:italic">Compiled by Mercedes Corredor (Virginia Tech).</p>
-    <div id="resources-body" class="resource-section"></div>
-  </div>
-
-  <div id="respanel-graph" class="lib-panel active">
-    <h2>Influence Map</h2>
-    <p>A force-directed network of philosophical influence. Drag nodes, zoom, click a node to open its biography. Only major figures are shown by default to keep the graph readable.</p>
-    <div class="filters">
-      <select id="graph-scope">
-        <option value="major">Top ~100 most-connected</option>
-        <option value="all">All philosophers</option>
-      </select>
-      <select id="graph-filter-tradition"><option value="">All traditions</option></select>
-      <button class="print-btn" id="graph-fit">Fit view</button>
-    </div>
-    <div id="graph-canvas"></div>
-  </div>
-
-  <div id="respanel-trails" class="lib-panel">
-    <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
-    <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
-    <div id="trails-body"></div>
-  </div>
-
-  <div id="respanel-paths" class="lib-panel">
+  <div id="libpanel-paths" class="lib-panel active">
     <h2>Reading Paths <button class="print-btn" onclick="window.print()">Print</button></h2>
     <p>Suggested study sequences per branch, with passage pointers. Designed to be printed as a personal syllabus.</p>
     <div id="paths-body"></div>
   </div>
 
-  <div id="respanel-tables" class="lib-panel">
+  <div id="libpanel-compare" class="lib-panel">
     <h2>Compare Ideas <button class="print-btn" onclick="window.print()">Print</button></h2>
     <p>Side-by-side tables of positions across philosophers on major questions.</p>
     <div id="tables-body"></div>
+  </div>
+
+  <div id="libpanel-trails" class="lib-panel">
+    <h2>Thematic Trails <button class="print-btn" onclick="window.print()">Print</button></h2>
+    <p>Curated walks across big questions. Each stop is a philosopher's one-line contribution.</p>
+    <div id="trails-body"></div>
+  </div>
+</section>
+
+<section id="resources" class="tab">
+  <div id="respanel-hub" class="lib-panel active">
+    <h2>External Resources</h2>
+    <p style="color:var(--muted);font-style:italic">Compiled by Mercedes Corredor (Virginia Tech).</p>
+    <div id="resources-body" class="resource-section"></div>
   </div>
 </section>
 
@@ -562,78 +613,169 @@ const byName = {};
 DATA.philosophers.forEach((p,i) => { byName[p.name] = i; });
 
 // ===== Tabs & hash routing =====
-const LIB_PANELS = ['philosophers','schools','glossary','quotes','excerpts'];
-// Home is now a single welcome page. The graph, trails, reading paths and compare
-// tables moved under the Explore tab; MOVED_FROM_HOME keeps their old links working.
-// The route namespace stays 'resources' so every existing link keeps resolving.
-// Order matches the visible subtab order; the first entry is the default panel.
-const RES_PANELS = ['graph','trails','paths','tables','hub'];
-const RES_DEFAULT = RES_PANELS[0];
-const MOVED_FROM_HOME = ['graph','trails','paths','tables'];
+// Explore holds the philosopher collection (Directory + Influence Map + Quotes +
+// Excerpts), Schools and Glossary. Library holds the structured learning panels.
+// Resources is its own top-level tab for the external link hub.
+const EX_PANELS     = ['philosophers','schools','glossary'];
+const PHIL_VIEWS    = ['directory','map'];
+const CONTENT_VIEWS = ['philosophers','quotes','excerpts'];
+const LIB_PANELS    = ['paths','compare','trails'];
 const ENTITY_ROUTES = ['philosopher','branch','school','term'];
-const KNOWN_TABS = ['home','resources','library','workspace','flashcards'];
+const KNOWN_TABS    = ['home','explore','library','workspace','flashcards','resources'];
+
+// Live navigation state. closeModal and the '/' shortcut read this so a modal always
+// returns to the exact view it was opened from, rather than one hardcoded route.
+const NAV = { tab:'home', ex:'philosophers', pv:'directory', cv:'philosophers', lib:'paths' };
+
+function setExPanel(name) {
+  if (!EX_PANELS.includes(name)) name = 'philosophers';
+  NAV.ex = name;
+  $$('#explore-nav button').forEach(b => b.classList.toggle('active', b.dataset.ex===name));
+  EX_PANELS.forEach(p => {
+    const el = document.getElementById('expanel-' + p);
+    if (el) el.classList.toggle('active', p===name);
+  });
+}
+function setPhilView(v) {
+  if (!PHIL_VIEWS.includes(v)) v = 'directory';
+  NAV.pv = v;
+  $$('#phil-view-switch button').forEach(b => b.classList.toggle('active', b.dataset.pv===v));
+  const dir = document.getElementById('philview-directory');
+  const map = document.getElementById('respanel-graph');
+  if (dir) dir.classList.toggle('active', v==='directory');
+  if (map) map.classList.toggle('active', v==='map');
+  if (v==='map' && !GRAPH.drawn) renderGraph();
+}
+function setContentView(c) {
+  if (!CONTENT_VIEWS.includes(c)) c = 'philosophers';
+  NAV.cv = c;
+  $$('#phil-content-switch button').forEach(b => b.classList.toggle('active', b.dataset.cv===c));
+  CONTENT_VIEWS.forEach(x => {
+    const el = document.getElementById('content-' + x);
+    if (el) el.classList.toggle('active', x===c);
+  });
+}
 function setLibPanel(name) {
-  if (!LIB_PANELS.includes(name)) name = 'philosophers';
+  if (!LIB_PANELS.includes(name)) name = 'paths';
+  NAV.lib = name;
   $$('#lib-nav button').forEach(b => b.classList.toggle('active', b.dataset.lib===name));
   LIB_PANELS.forEach(p => {
-    const el = document.getElementById('lib-' + p);
+    const el = document.getElementById('libpanel-' + p);
     if (el) el.classList.toggle('active', p===name);
   });
-}
-function setResPanel(name) {
-  if (!RES_PANELS.includes(name)) name = RES_DEFAULT;
-  $$('#res-nav button').forEach(b => b.classList.toggle('active', b.dataset.res===name));
-  RES_PANELS.forEach(p => {
-    const el = document.getElementById('respanel-' + p);
-    if (el) el.classList.toggle('active', p===name);
-  });
-  if (name==='graph' && !GRAPH.drawn) renderGraph();
 }
 function setTab(name) {
-  if (LIB_PANELS.includes(name)) { setLibPanel(name); name = 'library'; }
-  else if (MOVED_FROM_HOME.includes(name)) { setResPanel(name); name = 'resources'; }
+  if (!KNOWN_TABS.includes(name)) name = 'home';
+  NAV.tab = name;
   $$('#nav > button').forEach(b => b.classList.toggle('active', b.dataset.tab===name));
   $$('main > .tab').forEach(t => t.classList.toggle('active', t.id===name));
   window.scrollTo(0,0);
 }
+// The canonical hash for whatever is on screen right now.
+function currentPath() {
+  if (NAV.tab === 'explore') {
+    if (NAV.ex !== 'philosophers') return '#/explore/' + NAV.ex;
+    if (NAV.pv === 'map') return '#/explore/philosophers/map';
+    if (NAV.cv !== 'philosophers') return '#/explore/philosophers/' + NAV.cv;
+    return '#/explore/philosophers';
+  }
+  if (NAV.tab === 'library') return '#/library/' + NAV.lib;
+  return '#/' + NAV.tab;
+}
+const philDirPath = () => NAV.cv==='philosophers' ? '#/explore/philosophers' : '#/explore/philosophers/' + NAV.cv;
+
+// Old routes -> canonical new routes. Everything here is normalised in the address bar
+// so a stale bookmark lands in the right place and then reads correctly.
+const ROUTE_ALIASES = {
+  'resources/graph':   'explore/philosophers/map',
+  'resources/trails':  'library/trails',
+  'resources/paths':   'library/paths',
+  'resources/tables':  'library/compare',
+  'resources/hub':     'resources',
+  'home/graph':        'explore/philosophers/map',
+  'home/trails':       'library/trails',
+  'home/paths':        'library/paths',
+  'home/tables':       'library/compare',
+  'graph':             'explore/philosophers/map',
+  'trails':            'library/trails',
+  'paths':             'library/paths',
+  'tables':            'library/compare',
+  'library/philosophers': 'explore/philosophers',
+  'library/schools':      'explore/schools',
+  'library/glossary':     'explore/glossary',
+  'library/quotes':       'explore/philosophers/quotes',
+  'library/excerpts':     'explore/philosophers/excerpts',
+  'philosophers':      'explore/philosophers',
+  'schools':           'explore/schools',
+  'glossary':          'explore/glossary',
+  'quotes':            'explore/philosophers/quotes',
+  'excerpts':          'explore/philosophers/excerpts',
+  'branches':          'home',
+};
+
 $$('#nav > button').forEach(b => b.addEventListener('click', () => { location.hash = '#/' + b.dataset.tab; }));
+$$('#explore-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/explore/' + b.dataset.ex; }));
+$$('#phil-view-switch button').forEach(b => b.addEventListener('click', () => {
+  location.hash = b.dataset.pv==='map' ? '#/explore/philosophers/map' : philDirPath();
+}));
+$$('#phil-content-switch button').forEach(b => b.addEventListener('click', () => {
+  const c = b.dataset.cv;
+  location.hash = c==='philosophers' ? '#/explore/philosophers' : '#/explore/philosophers/' + c;
+}));
 $$('#lib-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/library/' + b.dataset.lib; }));
-$$('#res-nav button').forEach(b => b.addEventListener('click', () => { location.hash = '#/resources/' + b.dataset.res; }));
+
 function handleHash() {
   // Ignore plain anchor links (e.g. #res-...) — only handle our `#/...` routes
   if (location.hash && !location.hash.startsWith('#/')) return;
-  const h = (location.hash || '#/home').replace(/^#\//,'');
-  const parts = h.split('/');
+  let h = (location.hash || '#/home').replace(/^#\//,'').replace(/\/+$/,'');
 
   // Entity deep-link: open modal WITHOUT changing the active tab
-  if (ENTITY_ROUTES.includes(parts[0]) && parts[1]) {
-    const arg = decodeURIComponent(parts[1]);
-    if (parts[0]==='philosopher') {
+  const p0 = h.split('/');
+  if (ENTITY_ROUTES.includes(p0[0]) && p0[1]) {
+    const arg = decodeURIComponent(p0[1]);
+    if (p0[0]==='philosopher') {
       const p = DATA.philosophers[byName[arg]];
       if (p) showPhilosopher(p);
-    } else if (parts[0]==='branch') {
+    } else if (p0[0]==='branch') {
       const i = DATA.branches.findIndex(b => b.name===arg);
       if (i>=0) showBranch(i);
-    } else if (parts[0]==='school') {
+    } else if (p0[0]==='school') {
       const s = DATA.schools.find(x => x.name===arg);
       if (s) showSchool(s);
-    } else if (parts[0]==='term') {
+    } else if (p0[0]==='term') {
       const g = DATA.glossary.find(x => x.term===arg);
       if (g) showTerm(g);
     }
     return;
   }
 
-  let tab = parts[0] || 'home';
-  // Sub-panel back-compat: old hash names route to their parent tab
-  if (LIB_PANELS.includes(tab)) { setLibPanel(tab); tab = 'library'; }
-  else if (MOVED_FROM_HOME.includes(tab)) { setResPanel(tab); tab = 'resources'; }
-  else if (tab === 'branches') { tab = 'home'; }
-  else if (tab === 'library') { setLibPanel(parts[1] || 'philosophers'); }
-  else if (tab === 'resources') { setResPanel(parts[1] || RES_DEFAULT); }
-  // Old #/home/<panel> links: branches stays Home, the rest now live in Resources.
-  else if (tab === 'home' && MOVED_FROM_HOME.includes(parts[1])) { setResPanel(parts[1]); tab = 'resources'; }
-  setTab(KNOWN_TABS.includes(tab) ? tab : 'home');
+  // Normalise an old route to its canonical form before doing anything else.
+  if (ROUTE_ALIASES[h]) {
+    h = ROUTE_ALIASES[h];
+    history.replaceState(null, '', '#/' + h);
+  }
+
+  const parts = h.split('/');
+  const tab = KNOWN_TABS.includes(parts[0]) ? parts[0] : 'home';
+  // Activate the tab FIRST so the graph canvas is measurable when the map view opens.
+  setTab(tab);
+  if (tab === 'explore') {
+    setExPanel(parts[1] || 'philosophers');
+    if (NAV.ex === 'philosophers') {
+      const third = parts[2];
+      if (third === 'map') { setContentView('philosophers'); setPhilView('map'); }
+      else if (CONTENT_VIEWS.includes(third)) { setPhilView('directory'); setContentView(third); }
+      else { setPhilView('directory'); setContentView('philosophers'); }
+    }
+  } else if (tab === 'library') {
+    setLibPanel(parts[1] || 'paths');
+  }
+  // Rewrite the address bar to the canonical path for whatever is now on screen, so
+  // '#/explore' reads as '#/explore/philosophers' and shared links are unambiguous.
+  if (location.hash.startsWith('#/')) {
+    const canon = currentPath();
+    if (location.hash !== canon) history.replaceState(null, '', canon);
+  }
   closeModal(true);
 }
 window.addEventListener('hashchange', handleHash);
@@ -648,16 +790,9 @@ function openModal() { $('#modal-bg').classList.add('open'); }
 function closeModal(silent) {
   $('#modal-bg').classList.remove('open');
   if (!silent && /#\/(philosopher|branch|school|term)\//.test(location.hash)) {
-    const tab = ($('#nav > button.active')||{}).dataset?.tab || 'home';
-    let path = '#/' + tab;
-    if (tab === 'library') {
-      const sub = $('#lib-nav button.active');
-      if (sub) path = '#/library/' + sub.dataset.lib;
-    } else if (tab === 'resources') {
-      const sub = $('#res-nav button.active');
-      if (sub) path = '#/resources/' + sub.dataset.res;
-    }
-    history.replaceState(null,'',path);
+    // Return to the exact view the modal was opened from: Directory, Influence Map,
+    // Quotes, Excerpts, Schools, Glossary or a Library panel.
+    history.replaceState(null, '', currentPath());
   }
 }
 $('#modal-bg').addEventListener('click', e => { if (e.target.id==='modal-bg') closeModal(); });
@@ -672,14 +807,15 @@ document.addEventListener('keydown', e => {
   if (e.key==='Escape') closeModal();
   else if (e.key==='/' && !isTypingTarget(document.activeElement)) {
     e.preventDefault();
-    const vis = $('#nav > button.active').dataset.tab;
-    const sub = vis==='library' ? ($('#lib-nav button.active')||{}).dataset?.lib : null;
-    if (sub==='quotes')        $('#quote-search').focus();
-    else if (sub==='schools')  $('#school-search').focus();
-    else if (sub==='glossary') $('#gloss-search').focus();
-    else if (sub==='excerpts') $('#excerpt-search').focus();
-    else if (sub==='philosophers') $('#phil-search').focus();
-    else { location.hash='#/library/philosophers'; setTimeout(()=>$('#phil-search').focus(),0); }
+    // Focus the search box belonging to the view you are actually looking at; from
+    // anywhere else, go to the Explore Philosophers directory and focus its search.
+    const focusIt = sel => { const el = $(sel); if (el) el.focus(); };
+    if (NAV.tab==='explore' && NAV.ex==='schools')        focusIt('#school-search');
+    else if (NAV.tab==='explore' && NAV.ex==='glossary')  focusIt('#gloss-search');
+    else if (NAV.tab==='explore' && NAV.ex==='philosophers' && NAV.pv==='directory' && NAV.cv==='quotes')   focusIt('#quote-search');
+    else if (NAV.tab==='explore' && NAV.ex==='philosophers' && NAV.pv==='directory' && NAV.cv==='excerpts') focusIt('#excerpt-search');
+    else if (NAV.tab==='explore' && NAV.ex==='philosophers' && NAV.pv==='directory') focusIt('#phil-search');
+    else { location.hash = '#/explore/philosophers'; setTimeout(()=>focusIt('#phil-search'), 0); }
   }
 });
 
@@ -956,13 +1092,89 @@ function showTerm(g) {
 }
 
 // ===== Graph =====
-const GRAPH = { drawn:false, network:null, failed:false };
+const GRAPH = { drawn:false, network:null, failed:false, connectedIds:[], allIds:[] };
 const visReady = () => typeof vis !== 'undefined' && vis && typeof vis.Network === 'function';
+const coarsePointer = () => window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
+const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 function graphMessage(msg) {
   const c = $('#graph-canvas');
   if (c) c.innerHTML = `<p style="padding:24px;color:var(--muted)">${esc(msg)}</p>`;
 }
+const CTX_COLOR = '#5a5468';
+// Degree over the WHOLE dataset, not the rendered subset.
+const GRAPH_DEGREE = {};
+DATA.philosophers.forEach(p => { GRAPH_DEGREE[p.name] = (p.influenced||[]).length + (p.influencedBy||[]).length; });
+const TOTAL_EDGES = DATA.philosophers.reduce((n,p) =>
+  n + (p.influenced||[]).filter(t => byName[t] != null).length, 0);
+
+// Decide exactly who is drawn. Returns the emphasised set, the subdued cross-tradition
+// context set, and the edges among them, so the status line can tell the truth.
+function graphSelection() {
+  const scope = $('#graph-scope').value;
+  const ft = $('#graph-filter-tradition').value;
+  const showIsolates = $('#graph-isolates').checked;
+
+  let base = DATA.philosophers.filter(p => !ft || p.tradition===ft);
+  if (scope==='major') {
+    base = base.slice().sort((a,b)=>(GRAPH_DEGREE[b.name]||0)-(GRAPH_DEGREE[a.name]||0)).slice(0, 100);
+  }
+  if (!showIsolates) base = base.filter(p => (GRAPH_DEGREE[p.name]||0) > 0);
+  const baseSet = new Set(base.map(p=>p.name));
+
+  // When a tradition is selected, keep its direct neighbours from other traditions as
+  // subdued context. Without this the filter silently deletes every cross-tradition link.
+  const context = [];
+  if (ft) {
+    const seen = new Set();
+    base.forEach(p => [...(p.influenced||[]), ...(p.influencedBy||[])].forEach(n => {
+      if (!baseSet.has(n) && !seen.has(n) && byName[n] != null) {
+        seen.add(n); context.push(DATA.philosophers[byName[n]]);
+      }
+    }));
+  }
+  const shown = base.concat(context);
+  const shownSet = new Set(shown.map(p=>p.name));
+
+  // Only edges that touch the emphasised set; context-to-context links would be noise.
+  const edges = [];
+  shown.forEach(p => (p.influenced||[]).forEach(t => {
+    if (shownSet.has(t) && (baseSet.has(p.name) || baseSet.has(t))) {
+      edges.push({ from:p.name, to:t, ctx: !(baseSet.has(p.name) && baseSet.has(t)) });
+    }
+  }));
+  return { base, baseSet, context, shown, edges, scope, ft, showIsolates };
+}
+
+function renderGraphStatus(sel) {
+  const shownN = sel.shown.length;
+  const parts = [`Showing ${shownN} of ${DATA.philosophers.length} philosophers and ${sel.edges.length} of ${TOTAL_EDGES} influence links.`];
+  if (sel.context.length) parts.push(`${sel.context.length} shown as context from other traditions.`);
+  // Only meaningful in the All scope; the Most connected scope excludes unconnected
+  // philosophers by definition, so claiming they were "hidden" would be misleading.
+  if (!sel.showIsolates && sel.scope==='all') {
+    const hidden = DATA.philosophers.filter(p => (!sel.ft || p.tradition===sel.ft) && (GRAPH_DEGREE[p.name]||0)===0).length;
+    if (hidden) parts.push(`${hidden} unconnected philosopher${hidden===1?'':'s'} hidden.`);
+  }
+  const el = $('#graph-status');
+  if (el) el.textContent = parts.join(' ');
+
+  const lg = $('#graph-legend');
+  if (!lg) return;
+  const trads = [...new Set(sel.base.map(p=>p.tradition).filter(Boolean))].sort();
+  let html = trads.map(t =>
+    `<span class="lg"><span class="lg-dot" style="background:${traditionColor(t)}"></span>${esc(t)}</span>`).join('');
+  if (sel.context.length) {
+    html += `<span class="lg lg-context"><span class="lg-dot" style="background:${CTX_COLOR}"></span>other traditions (context)</span>`;
+  }
+  lg.innerHTML = html;
+}
+
 function renderGraph() {
+  // The selection, status line and legend do not depend on vis, so compute them first.
+  // They stay truthful even while the deferred library is still loading.
+  const sel = graphSelection();
+  renderGraphStatus(sel);
+
   // vis-network is deferred, so it is not available while this script first runs.
   // Bail out politely instead of throwing; the script's load handler re-invokes us.
   if (!visReady()) {
@@ -971,39 +1183,65 @@ function renderGraph() {
       : 'Loading the influence map...');
     return;
   }
-  const scope = $('#graph-scope').value;
-  const ft = $('#graph-filter-tradition').value;
-  const degree = {};
-  DATA.philosophers.forEach(p => { degree[p.name] = (p.influenced||[]).length + (p.influencedBy||[]).length; });
 
-  let people = DATA.philosophers.filter(p => !ft || p.tradition===ft);
-  if (scope==='major') {
-    people = people.slice().sort((a,b)=>(degree[b.name]||0)-(degree[a.name]||0)).slice(0, 100);
-  }
-  const namesSet = new Set(people.map(p=>p.name));
-  const nodes = people.map(p => ({
-    id: p.name,
-    label: p.name.split(' of ')[0],
-    title: p.name + ' (' + yr(p.birth) + ')' + (p.tradition?' · '+p.tradition:''),
-    color: { background: traditionColor(p.tradition), border:'#1a1823' },
-    font: { color:'#e9e5dc', size:11 },
-    shape:'dot',
-    size: 6 + Math.min(18, (degree[p.name]||0)*1.3),
+  const nodes = sel.shown.map(p => {
+    const isCtx = !sel.baseSet.has(p.name);
+    return {
+      id: p.name,
+      label: p.name.split(' of ')[0],
+      title: p.name + ' (' + yr(p.birth) + ')' + (p.tradition?' · '+p.tradition:''),
+      value: Math.max(1, GRAPH_DEGREE[p.name]||0),
+      color: isCtx
+        ? { background: CTX_COLOR, border:'#1a1823' }
+        : { background: traditionColor(p.tradition), border:'#1a1823' },
+      font: { color: isCtx ? '#8d8699' : '#e9e5dc', size:12 },
+      shape:'dot',
+      opacity: isCtx ? 0.55 : 1,
+    };
+  });
+  const edges = sel.edges.map(e => ({
+    from:e.from, to:e.to,
+    arrows:{ to:{ enabled:true, scaleFactor:0.75 } },
+    width: e.ctx ? 0.8 : 1.3,
+    color: e.ctx
+      ? { color:'#4b4557', opacity:0.5, highlight:'#e5c158', hover:'#e5c158' }
+      : { color:'#7d7490', opacity:0.85, highlight:'#e5c158', hover:'#e5c158' },
   }));
-  const edges = [];
-  people.forEach(p => (p.influenced||[]).forEach(t => { if (namesSet.has(t)) edges.push({from:p.name, to:t, arrows:'to', color:{color:'#4b4557', opacity:0.6}}); }));
+
+  // Nodes that actually have a visible edge. Fit view targets these so a halo of
+  // unconnected dots can never dictate the zoom level.
+  const linked = new Set();
+  sel.edges.forEach(e => { linked.add(e.from); linked.add(e.to); });
+  GRAPH.connectedIds = [...linked];
+  GRAPH.allIds = nodes.map(n => n.id);
 
   const container = $('#graph-canvas');
   if (GRAPH.network) GRAPH.network.destroy();
   container.innerHTML = '';
   try {
     GRAPH.network = new vis.Network(container, {nodes, edges}, {
-      physics:{ barnesHut:{ gravitationalConstant:-4000, springLength:120, springConstant:0.03 }, stabilization:{ iterations:200 } },
-      interaction:{ hover:true, tooltipDelay:120 },
-      edges:{ smooth:{ type:'continuous' } },
+      physics:{
+        barnesHut:{ gravitationalConstant:-4000, springLength:120, springConstant:0.03 },
+        stabilization:{ enabled:true, iterations:200, fit:false },
+      },
+      // Degree drives both node size and label visibility: labels fade out when zoomed
+      // out, so a wall of overlapping text no longer forms.
+      // Degree drives font size too, so hubs stay labelled while minor nodes drop their
+      // labels when zoomed out. drawThreshold is the scaled px size below which a label
+      // is not drawn, which is what clears the wall of overlapping text.
+      nodes:{ scaling:{ min:8, max:30, label:{ enabled:true, min:11, max:30, drawThreshold:7, maxVisible:34 } } },
+      interaction:{ hover:true, tooltipDelay:120, dragView: !coarsePointer(), zoomView: !coarsePointer() },
+      edges:{ smooth:{ type:'continuous' }, hoverWidth: 1.4, selectionWidth: 1.6 },
     });
     GRAPH.network.on('click', params => {
       if (params.nodes && params.nodes.length) linkP(params.nodes[0]);
+    });
+    // Freeze the layout once it settles. Without this the simulation keeps ticking and
+    // the whole network drifts on every hover or drag.
+    GRAPH.network.once('stabilizationIterationsDone', () => {
+      if (!GRAPH.network) return;
+      GRAPH.network.setOptions({ physics:false });
+      fitGraph();
     });
     GRAPH.drawn = true;
   } catch (e) {
@@ -1013,6 +1251,15 @@ function renderGraph() {
     graphMessage('The influence map could not be drawn. Influences are still listed on each philosopher card.');
   }
 }
+// Fit the connected core; fall back to everything, and never throw on an empty graph.
+function fitGraph() {
+  if (!GRAPH.network) return;
+  const ids = GRAPH.connectedIds.length ? GRAPH.connectedIds : GRAPH.allIds;
+  try {
+    if (!ids.length) return;
+    GRAPH.network.fit({ nodes: ids, animation: !reduceMotion() });
+  } catch (e) { console.warn('graph fit failed', e); }
+}
 function traditionColor(t) {
   const m = { Greek:'#8aa5b8', Chinese:'#c46b52', Indian:'#b98ec4', Japanese:'#d49a5e', Korean:'#7ab8a8',
               Tibetan:'#9b88d6', Western:'#c9a66b', Roman:'#aa7b52', Hellenistic:'#6b9aa5' };
@@ -1020,12 +1267,15 @@ function traditionColor(t) {
 }
 $('#graph-scope').addEventListener('change', renderGraph);
 $('#graph-filter-tradition').addEventListener('change', renderGraph);
-$('#graph-fit').addEventListener('click', () => GRAPH.network && GRAPH.network.fit());
+$('#graph-isolates').addEventListener('change', renderGraph);
+$('#graph-fit').addEventListener('click', fitGraph);
 // The deferred vis-network script executes after this one. If the graph panel is
 // already showing (e.g. a cold load of #/home/graph), draw it once vis arrives.
+// The map panel is nested inside Explore > Philosophers, so "active" alone is not
+// enough: it must actually be on screen, or vis would measure a zero-size canvas.
 const graphPanelOpen = () => {
   const el = document.getElementById('respanel-graph');
-  return !!el && el.classList.contains('active');
+  return !!el && el.classList.contains('active') && el.offsetParent !== null;
 };
 const visScript = document.getElementById('vis-script');
 if (visScript) {
