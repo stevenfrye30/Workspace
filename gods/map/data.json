@@ -5045,9 +5045,7 @@
         "fathering-gods",
         "grain"
       ],
-      "parents": [
-        "anu-hurrian"
-      ],
+      "parents": [],
       "consorts": [],
       "children": [
         "teshub",
@@ -5058,7 +5056,7 @@
       "parallels": [
         "cronus"
       ],
-      "description": "Hurrian father-god who castrated his predecessor Anu — clearly influenced Hesiod's Cronus/Uranus story."
+      "description": "Hurrian-Hittite grain and earth deity, the 'father of the gods' who wrested divine kingship from Anu, who had preceded him, and was in turn overthrown by his successor Teshub. The Song of Going Forth frames this as a succession of kingship in heaven rather than an unambiguous line of biological descent."
     },
     {
       "id": "hebat",
@@ -6921,7 +6919,8 @@
         "britain"
       ],
       "parents": [
-        "llyr"
+        "llyr",
+        "penarddun"
       ],
       "consorts": [],
       "children": [
@@ -6947,7 +6946,8 @@
         "queenship"
       ],
       "parents": [
-        "llyr"
+        "llyr",
+        "penarddun"
       ],
       "consorts": [
         "matholwch"
@@ -7865,10 +7865,10 @@
       ],
       "parents": [],
       "consorts": [
-        "wangmu"
+        "xiwangmu"
       ],
       "children": [
-        "zhinü"
+        "zhinu"
       ],
       "archetype": null,
       "parallels": [],
@@ -16158,7 +16158,8 @@
         "patience"
       ],
       "parents": [
-        "llyr"
+        "llyr",
+        "penarddun"
       ],
       "consorts": [
         "rhiannon"
@@ -18493,7 +18494,7 @@
       ],
       "parents": [
         "yu-huang",
-        "wangmu"
+        "xiwangmu"
       ],
       "consorts": [
         "niulang"
@@ -27394,6 +27395,509 @@
       "parallels": [],
       "description": "Eighteenth Tirthankara of the present Jain time cycle.",
       "wiki_title": "Aranatha"
+    },
+    {
+      "id": "amaethon",
+      "name": "Amaethon",
+      "pantheon": "celtic-welsh",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "agriculture",
+        "son-of-don"
+      ],
+      "parents": [
+        "don"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Welsh god of agriculture, a son of the goddess Dôn in the Mabinogi tradition."
+    },
+    {
+      "id": "gofannon",
+      "name": "Gofannon",
+      "pantheon": "celtic-welsh",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "smithing",
+        "son-of-don"
+      ],
+      "parents": [
+        "don"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Welsh divine smith, a son of Dôn; cognate with the Irish smith-god Goibniu."
+    },
+    {
+      "id": "gilfaethwy",
+      "name": "Gilfaethwy",
+      "pantheon": "celtic-welsh",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "son-of-don"
+      ],
+      "parents": [
+        "don"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Son of Dôn and brother of Gwydion in the Fourth Branch of the Mabinogi."
+    },
+    {
+      "id": "blodeuwedd",
+      "name": "Blodeuwedd",
+      "pantheon": "celtic-welsh",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "flowers",
+        "owl",
+        "wife-of-lleu"
+      ],
+      "parents": [],
+      "consorts": [
+        "lleu"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Woman conjured from flowers by Math and Gwydion to be Lleu's wife; for her betrayal she was turned into an owl."
+    },
+    {
+      "id": "penarddun",
+      "name": "Penarddun",
+      "pantheon": "celtic-welsh",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "matriarch",
+        "wife-of-llyr"
+      ],
+      "parents": [],
+      "consorts": [
+        "llyr"
+      ],
+      "children": [
+        "bran",
+        "branwen",
+        "manawydan"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wife of Llŷr and mother of Brân, Branwen, and Manawydan; her wider parentage differs across Welsh sources."
+    },
+    {
+      "id": "tuoni",
+      "name": "Tuoni",
+      "pantheon": "finnish",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "death",
+        "tuonela"
+      ],
+      "parents": [],
+      "consorts": [
+        "tuonetar"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Ruler of Tuonela, the Finnish land of the dead, with his consort Tuonetar."
+    },
+    {
+      "id": "kyllikki",
+      "name": "Kyllikki",
+      "pantheon": "finnish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "wife-of-lemminkainen"
+      ],
+      "parents": [],
+      "consorts": [
+        "lemminkainen"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Maiden of Saari abducted and wed by Lemminkäinen in the Kalevala."
+    },
+    {
+      "id": "nyyrikki",
+      "name": "Nyyrikki",
+      "pantheon": "finnish",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "hunting",
+        "son-of-tapio"
+      ],
+      "parents": [
+        "tapio",
+        "mielikki"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Forest deity of the hunt, son of Tapio and Mielikki."
+    },
+    {
+      "id": "tuulikki",
+      "name": "Tuulikki",
+      "pantheon": "finnish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "forest-creatures",
+        "daughter-of-tapio"
+      ],
+      "parents": [
+        "tapio",
+        "mielikki"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Forest goddess who tends wild creatures, daughter of Tapio and Mielikki."
+    },
+    {
+      "id": "anu-hurrian",
+      "name": "Anu (Hurrian tradition)",
+      "pantheon": "hittite",
+      "category": "primordial",
+      "gender": "M",
+      "domains": [
+        "sky",
+        "divine-kingship"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sky god who held the kingship of heaven at the start of the Hurrian-Hittite succession myth before being overthrown by Kumarbi; this precedence is a sequence of divine rule, not a settled genealogy."
+    },
+    {
+      "id": "tashmishu",
+      "name": "Tashmishu",
+      "pantheon": "hittite",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "attendant",
+        "kumarbi-cycle"
+      ],
+      "parents": [
+        "kumarbi"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Divine attendant and brother-in-arms of the Storm God Teshub, brought forth in the Kumarbi cycle."
+    },
+    {
+      "id": "ullikummi",
+      "name": "Ullikummi",
+      "pantheon": "hittite",
+      "category": "monster",
+      "gender": "M",
+      "domains": [
+        "stone-being",
+        "challenger-of-teshub"
+      ],
+      "parents": [
+        "kumarbi"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Monstrous being of diorite stone that Kumarbi caused to grow to challenge Teshub; not born in the ordinary human sense."
+    },
+    {
+      "id": "sun-goddess-of-arinna",
+      "name": "Sun Goddess of Arinna",
+      "pantheon": "hittite",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "sun",
+        "kingship",
+        "state-protection"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Chief goddess of the Hittite state cult and protector of the king and land, named for her principal cult city of Arinna (the city itself being distinct from the deity). Conventionally called Arinniti, with the Hattian antecedent Wurušemu; paired with the Storm God and later identified in prose with the Hurrian Hebat."
+    },
+    {
+      "id": "age",
+      "name": "Age",
+      "pantheon": "fon",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "hunt",
+        "wilderness"
+      ],
+      "parents": [
+        "mawu",
+        "lisa"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Vodun of the hunt and wild animals, a child of the creator pair Mawu-Lisa."
+    },
+    {
+      "id": "agbe",
+      "name": "Agbe",
+      "pantheon": "fon",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "sea"
+      ],
+      "parents": [
+        "mawu",
+        "lisa"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Vodun of the sea, a child of Mawu-Lisa; genealogies of the sea-vodun vary across Fon tradition."
+    },
+    {
+      "id": "ayizan",
+      "name": "Ayizan",
+      "pantheon": "fon",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "earth",
+        "marketplace"
+      ],
+      "parents": [],
+      "consorts": [
+        "loko"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Vodun of the earth and the marketplace, consort of Loko."
+    },
+    {
+      "id": "dijun",
+      "name": "Dijun",
+      "pantheon": "chinese",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "high-god",
+        "husband-of-xihe"
+      ],
+      "parents": [],
+      "consorts": [
+        "xihe"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "High god of the eastern heavens, husband of the sun-mother Xihe; his traditions vary and are not a single fixed genealogy."
+    },
+    {
+      "id": "li-jing",
+      "name": "Li Jing",
+      "pantheon": "chinese",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "pagoda-bearer",
+        "father-of-nezha"
+      ],
+      "parents": [],
+      "consorts": [
+        "yin-shi"
+      ],
+      "children": [
+        "nezha"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "The Pagoda-Bearing Heavenly King, father of Nezha."
+    },
+    {
+      "id": "yin-shi",
+      "name": "Lady Yin",
+      "pantheon": "chinese",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "mother-of-nezha"
+      ],
+      "parents": [],
+      "consorts": [
+        "li-jing"
+      ],
+      "children": [
+        "nezha"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Wife of Li Jing and mother of Nezha."
+    },
+    {
+      "id": "niulang",
+      "name": "Niulang (the Cowherd)",
+      "pantheon": "chinese",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "cowherd",
+        "husband-of-zhinu"
+      ],
+      "parents": [],
+      "consorts": [
+        "zhinu"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The mortal cowherd of the Cowherd and Weaver Girl tale, husband of Zhinu."
+    },
+    {
+      "id": "tudi-po",
+      "name": "Tudi Po",
+      "pantheon": "chinese",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "earth",
+        "wife-of-tudi-gong"
+      ],
+      "parents": [],
+      "consorts": [
+        "tudi-gong"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Local earth-goddess, wife of the earth-god Tudi Gong."
+    },
+    {
+      "id": "haumia",
+      "name": "Haumia-tiketike",
+      "pantheon": "polynesian",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "wild-food",
+        "fern-root"
+      ],
+      "parents": [
+        "rangi",
+        "papa"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "In Māori tradition, atua of uncultivated food such as fern-root; a child of Ranginui and Papatūānuku."
+    },
+    {
+      "id": "tawhirimatea",
+      "name": "Tāwhirimātea",
+      "pantheon": "polynesian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "storms",
+        "winds"
+      ],
+      "parents": [
+        "rangi",
+        "papa"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "In Māori tradition, atua of storms and winds; the child of Rangi and Papa who opposed the separation of his parents."
+    },
+    {
+      "id": "hine-ahuone",
+      "name": "Hine-ahuone",
+      "pantheon": "polynesian",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "first-woman"
+      ],
+      "parents": [],
+      "consorts": [
+        "tane"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "In Māori tradition, the first woman, formed from earth by Tāne, who took her as consort."
+    },
+    {
+      "id": "makeatutara",
+      "name": "Makeatutara",
+      "pantheon": "polynesian",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "father-of-maui"
+      ],
+      "parents": [],
+      "consorts": [
+        "taranga"
+      ],
+      "children": [
+        "maui"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "In Māori tradition, the father of Māui."
+    },
+    {
+      "id": "taranga",
+      "name": "Taranga",
+      "pantheon": "polynesian",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "mother-of-maui"
+      ],
+      "parents": [],
+      "consorts": [
+        "makeatutara"
+      ],
+      "children": [
+        "maui"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "In Māori tradition, the mother of Māui, who wrapped her prematurely born son in her hair-knot and cast him to the sea."
     }
   ],
   "notable_mentions": [
