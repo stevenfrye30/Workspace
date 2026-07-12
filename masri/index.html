@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Masri — Egyptian Arabic reference desk</title>
+<!-- Inline SVG favicon (gold م on the site background). Declaring an icon stops the
+     browser's implicit /favicon.ico request, which 404s on GitHub Pages. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2312161f'/%3E%3Ctext x='32' y='46' font-family='Noto Naskh Arabic,Traditional Arabic,serif' font-size='42' fill='%23d9a441' text-anchor='middle'%3E%D9%85%3C/text%3E%3C/svg%3E">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Naskh+Arabic:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -16,7 +19,7 @@
     /* Display-settings knobs (overridden inline on <html> by the Aa panel; saved
        in localStorage 'masri-display'). Text sizes multiply base px via calc();
        Arabic size scales independently of general text size. */
-    --ui-scale:1; --ar-scale:1; --ar-color:var(--fg);
+    --ui-scale:1; --ar-scale:1.14; --ar-color:var(--fg);
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
   body{background:var(--bg);color:var(--fg);font-family:var(--ui);line-height:1.55;min-height:100vh}
@@ -139,7 +142,7 @@
   .sh-pform{display:flex;align-items:center;flex-wrap:wrap;gap:5px 10px;padding:5px 0}
   .sh-pform + .sh-pform{border-top:1px dashed var(--border)}
   .sh-who{width:100%;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-  .sh-pform .ar{font-family:var(--ar);font-size:20px;color:var(--fg);direction:rtl;unicode-bidi:isolate}
+  .sh-pform .ar{font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--fg);direction:rtl;unicode-bidi:isolate}
   .sh-pform .tr{color:var(--blue);font-size:12.5px;font-style:italic}
   .sh-copy{background:var(--surf2);border:1px solid var(--border);color:var(--muted);border-radius:6px;font-family:var(--ui);font-size:11px;padding:3px 9px;margin-left:auto;cursor:pointer;flex:0 0 auto}
   .sh-copy:hover{color:var(--fg);border-color:var(--gold)}
@@ -162,7 +165,7 @@
   .gres{display:block;width:100%;text-align:left;background:var(--card);border:1px solid var(--border);border-radius:8px;padding:9px 12px;margin-bottom:7px;cursor:pointer;font-family:var(--ui)}
   .gres:hover{border-color:var(--gold)}
   .gres .where{font-size:10px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
-  .gres .ar{font-family:var(--ar);font-size:18px;color:var(--fg);direction:rtl;unicode-bidi:isolate}
+  .gres .ar{font-family:var(--ar);font-size:calc(18px * var(--ar-scale));color:var(--fg);direction:rtl;unicode-bidi:isolate}
   .gres .tr{color:var(--blue);font-size:12px;font-style:italic;margin-right:8px}
   .gres .en{color:var(--fg);font-size:13px;margin-top:3px}
   .gres .snip{color:var(--muted);font-size:11.5px;margin-top:3px}
@@ -197,18 +200,18 @@
   .g-list{grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
 
   .letter{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px;text-align:center}
-  .letter .glyph{font-family:var(--ar);font-size:44px;color:var(--gold);line-height:1.1}
+  .letter .glyph{font-family:var(--ar);font-size:calc(44px * var(--ar-scale));color:var(--gold);line-height:1.1}
   .letter .lname{font-size:13px;font-weight:600;margin-top:2px}
   .letter .lsound{color:var(--blue);font-size:13px;margin-top:2px}
   .letter .forms{display:flex;justify-content:center;gap:6px;margin:10px 0 6px;direction:rtl}
   .letter .form{flex:1;background:var(--surf2);border-radius:6px;padding:6px 0}
-  .letter .form .fg{font-family:var(--ar);font-size:22px;color:var(--fg);line-height:1}
+  .letter .form .fg{font-family:var(--ar);font-size:calc(22px * var(--ar-scale));color:var(--fg);line-height:1}
   .letter .form .fl{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;margin-top:4px}
   .letter .lnote{font-size:11.5px;color:var(--muted);margin-top:6px;line-height:1.45}
 
   .cell{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px;text-align:center}
-  .cell .glyph{font-family:var(--ar);font-size:28px;color:var(--gold)}
-  .cell .digit{font-family:var(--ar);font-size:18px;color:var(--muted)}
+  .cell .glyph{font-family:var(--ar);font-size:calc(28px * var(--ar-scale));color:var(--gold)}
+  .cell .digit{font-family:var(--ar);font-size:calc(18px * var(--ar-scale));color:var(--muted)}
   .cell .tr{color:var(--blue);font-size:13px;margin-top:2px}
   .cell .en{color:var(--muted);font-size:12px}
 
@@ -229,8 +232,8 @@
   .snd-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:13px 14px}
   .snd-big{border-color:var(--gold)}
   .snd-head{display:flex;align-items:center;gap:12px;margin-bottom:8px}
-  .snd-glyph{font-family:var(--ar);font-size:38px;color:var(--gold);line-height:1;unicode-bidi:isolate}
-  .snd-big .snd-glyph{font-size:52px}
+  .snd-glyph{font-family:var(--ar);font-size:calc(38px * var(--ar-scale));color:var(--gold);line-height:1;unicode-bidi:isolate}
+  .snd-big .snd-glyph{font-size:calc(52px * var(--ar-scale))}
   .snd-hmeta{min-width:0}
   .snd-name{font-size:13px;font-weight:600;color:var(--fg)}
   .snd-line{font-size:calc(13px * var(--ui-scale));margin-top:2px}
@@ -238,7 +241,7 @@
   .snd-ipa{color:var(--muted);font-family:var(--ui)}
   .snd-sum{font-size:calc(13px * var(--ui-scale));color:var(--fg);line-height:1.5}
   .snd-ex{font-size:13px;color:var(--muted);margin-top:7px}
-  .snd-ex .ar{font-family:var(--ar);font-size:18px;color:var(--fg)}
+  .snd-ex .ar{font-family:var(--ar);font-size:calc(18px * var(--ar-scale));color:var(--fg)}
   .snd-ex .tr{color:var(--blue);font-style:italic;margin:0 3px}
   .snd-more{margin-top:8px}
   .snd-more summary{font-size:11.5px;color:var(--gold);cursor:pointer;font-weight:600;list-style:none}
@@ -260,13 +263,13 @@
   .snd-cmp{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
   .snd-cmprow{display:flex;align-items:center;gap:10px;margin-bottom:8px}
   .snd-cmpside{display:inline-flex;align-items:center;gap:6px}
-  .snd-cmpside .snd-glyph{font-size:30px}
+  .snd-cmpside .snd-glyph{font-size:calc(30px * var(--ar-scale))}
   .snd-cmpvs{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
   .snd-cmpnote{font-size:12.5px;color:var(--fg);line-height:1.5}
   .snd-cmpex{font-size:12px;color:var(--muted);margin-top:7px}
-  .snd-cmpex .ar{font-family:var(--ar);font-size:16px;color:var(--fg)}
+  .snd-cmpex .ar{font-family:var(--ar);font-size:calc(16px * var(--ar-scale));color:var(--fg)}
   .snd-cmpex .tr{color:var(--blue);font-style:italic}
-  @media (max-width:600px){ .snd-grid,.snd-cmpgrid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:46px} }
+  @media (max-width:600px){ .snd-grid,.snd-cmpgrid{grid-template-columns:1fr} .snd-big .snd-glyph{font-size:calc(46px * var(--ar-scale))} }
 
   /* ── alphabet (reading reference) ── */
   #p-alphabet h2{scroll-margin-top:66px}
@@ -279,13 +282,13 @@
   .alp-jump{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 22px}
   .alp-jbtn{background:var(--surf2);border:1px solid var(--border);color:var(--fg);border-radius:20px;font-family:var(--ui);font-size:12px;font-weight:600;padding:6px 12px;cursor:pointer;white-space:nowrap}
   .alp-jbtn:hover{border-color:var(--gold)}
-  .alp-glyph{font-family:var(--ar);font-size:36px;color:var(--gold);line-height:1;unicode-bidi:isolate}
+  .alp-glyph{font-family:var(--ar);font-size:calc(36px * var(--ar-scale));color:var(--gold);line-height:1;unicode-bidi:isolate}
   .alp-formdefs{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:6px 14px;margin:12px 0}
   .alp-fdef{font-size:13px;color:var(--muted)}
   .alp-fdef b{color:var(--fg)}
   .alp-jex{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:12px}
   .alp-jexcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:14px}
-  .alp-jexword{font-family:var(--ar);font-size:34px;color:var(--gold);direction:rtl;unicode-bidi:isolate;text-align:center}
+  .alp-jexword{font-family:var(--ar);font-size:calc(34px * var(--ar-scale));color:var(--gold);direction:rtl;unicode-bidi:isolate;text-align:center}
   .alp-jexmeta{text-align:center;font-size:13px;color:var(--muted);margin-top:4px}
   .alp-jexmeta .tr{color:var(--blue);font-style:italic}
   .alp-jexkind{font-size:12px;color:var(--fg);margin-top:8px;line-height:1.5}
@@ -293,11 +296,11 @@
   .alp-fam{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:10px;display:flex;flex-direction:column;gap:8px}
   .alp-famlet{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;align-items:center;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;cursor:pointer;text-align:left;font-family:var(--ui)}
   .alp-famlet:hover{border-color:var(--gold)}
-  .alp-famlet .alp-glyph{grid-row:span 3;font-size:32px}
+  .alp-famlet .alp-glyph{grid-row:span 3;font-size:calc(32px * var(--ar-scale))}
   .alp-famdots{font-size:11px;color:var(--muted)}
   .alp-famsnd{font-size:12px;color:var(--green);font-weight:600}
   .alp-famex{grid-column:2;font-size:11.5px;color:var(--muted)}
-  .alp-famex .ar{font-family:var(--ar);font-size:15px;color:var(--fg)}
+  .alp-famex .ar{font-family:var(--ar);font-size:calc(15px * var(--ar-scale));color:var(--fg)}
   .alp-famex .tr{color:var(--blue);font-style:italic}
   .alp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
   /* transliteration key — compact collapsed reference under the letter cards */
@@ -316,17 +319,17 @@
   .alp-chead{display:flex;align-items:center;gap:12px;margin-bottom:9px}
   .alp-cmeta{min-width:0}
   .alp-lname{font-size:13px;font-weight:600;color:var(--fg)}
-  .alp-lname .ar{font-family:var(--ar);color:var(--muted);font-size:13px;font-weight:400;margin-right:4px}
+  .alp-lname .ar{font-family:var(--ar);color:var(--muted);font-size:calc(13px * var(--ar-scale));font-weight:400;margin-right:4px}
   .alp-lsound{font-size:12.5px;color:var(--green);margin:2px 0 6px}
   .alp-badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;border:1px solid}
   .alp-badge-both{color:var(--green);border-color:var(--green)}
   .alp-badge-break{color:var(--gold);border-color:var(--gold)}
   .alp-forms{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px}
   .alp-form{flex:1 1 0;min-width:52px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:8px 4px;text-align:center}
-  .alp-fg{font-family:var(--ar);font-size:24px;color:var(--fg);unicode-bidi:isolate;line-height:1.1}
+  .alp-fg{font-family:var(--ar);font-size:calc(24px * var(--ar-scale));color:var(--fg);unicode-bidi:isolate;line-height:1.1}
   .alp-fl{font-size:9px;color:var(--muted);margin-top:5px}
   .alp-ex{font-size:13px;color:var(--muted)}
-  .alp-ex .ar{font-family:var(--ar);font-size:18px;color:var(--fg)}
+  .alp-ex .ar{font-family:var(--ar);font-size:calc(18px * var(--ar-scale));color:var(--fg)}
   .alp-ex .tr{color:var(--blue);font-style:italic;margin:0 3px}
   .alp-brk{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
   .alp-carriers{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-bottom:6px}
@@ -339,10 +342,10 @@
   .alp-dist{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px}
   .alp-distcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px}
   .alp-distpair{display:flex;align-items:center;gap:10px;margin-bottom:7px}
-  .alp-distpair .alp-glyph{font-size:30px}
+  .alp-distpair .alp-glyph{font-size:calc(30px * var(--ar-scale))}
   .alp-distnote{font-size:12.5px;color:var(--fg);line-height:1.5}
-  .alp-mark{font-size:26px;color:var(--gold)}
-  .alp-markdemo .ar{font-family:var(--ar);font-size:20px;color:var(--fg)}
+  .alp-mark{font-size:calc(26px * var(--ar-scale));color:var(--gold)}
+  .alp-markdemo .ar{font-family:var(--ar);font-size:calc(20px * var(--ar-scale));color:var(--fg)}
   .alp-markdemo .tr{color:var(--blue);font-style:italic}
   .alp-jbtn:focus-visible,.alp-famlet:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
   @media (max-width:600px){ .alp-grid,.alp-fams,.alp-jex,.alp-brk,.alp-carriers,.alp-spgrid,.alp-dist,.alp-formdefs{grid-template-columns:1fr} }
@@ -454,7 +457,7 @@
   .wb-in{background:var(--surf2);border:1px solid var(--border);border-radius:8px;color:var(--fg);font-family:var(--ui);font-size:15px;padding:10px 12px;outline:none;min-width:0}
   .wb-in:focus{border-color:var(--gold)}
   .wb-in::placeholder{color:var(--muted);font-style:italic;opacity:.7}
-  .wb-in.ar{font-family:var(--ar);font-size:20px}
+  .wb-in.ar{font-family:var(--ar);font-size:calc(20px * var(--ar-scale))}
   .wb-ltr{direction:ltr;text-align:left;font-family:var(--ui)}
   .wb-btns{display:flex;gap:10px;align-items:center;margin-top:2px;flex-wrap:wrap}
   .wb-clear{background:none;border:1px solid var(--border);border-radius:8px;color:var(--muted);cursor:pointer;font-family:var(--ui);font-size:13px;font-weight:600;padding:9px 16px}
@@ -474,22 +477,22 @@
   .wb-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
   .wb-head{text-align:center;padding-bottom:18px;border-bottom:1px solid var(--border);margin-bottom:18px}
   .wb-head .wb-letterslabel{margin-top:18px}
-  .wb-word{font-family:var(--ar);font-size:62px;color:var(--gold);line-height:1.15;direction:rtl;unicode-bidi:isolate;word-break:break-word}
+  .wb-word{font-family:var(--ar);font-size:calc(62px * var(--ar-scale));color:var(--gold);line-height:1.15;direction:rtl;unicode-bidi:isolate;word-break:break-word}
   .wb-letters{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:8px 10px}
-  .wb-letter{font-family:var(--ar);font-size:34px;color:var(--fg);unicode-bidi:isolate}
+  .wb-letter{font-family:var(--ar);font-size:calc(34px * var(--ar-scale));color:var(--fg);unicode-bidi:isolate}
   .wb-sep{color:var(--muted);font-size:22px}
   .wb-gap{width:28px}
   .wb-ld{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:16px}
   .wb-ld-group{display:flex;flex-wrap:wrap;gap:5px 10px;padding:8px 11px;background:var(--surf2);border:1px solid var(--border);border-radius:8px;max-width:100%}
   .wb-ld-item{font-size:12.5px;color:var(--muted);white-space:nowrap;line-height:1.6}
-  .wb-ld-ch{font-family:var(--ar);font-size:16px;color:var(--fg);unicode-bidi:isolate;margin-right:2px}
+  .wb-ld-ch{font-family:var(--ar);font-size:calc(16px * var(--ar-scale));color:var(--fg);unicode-bidi:isolate;margin-right:2px}
   .wb-details{display:grid;grid-template-columns:1fr 1fr;gap:14px 22px}
   .wb-drow.wb-full{grid-column:1 / -1}
   .wb-dval{font-size:16px;color:var(--fg);line-height:1.45}
   .wb-ipaval{color:var(--blue)}
   @media (max-width:600px){
-    .wb-word{font-size:46px}
-    .wb-letter{font-size:26px}
+    .wb-word{font-size:calc(46px * var(--ar-scale))}
+    .wb-letter{font-size:calc(26px * var(--ar-scale))}
     .wb-card{padding:18px 15px}
     .wb-details{grid-template-columns:1fr;gap:12px}
     .wb-ld{gap:8px}
@@ -633,6 +636,8 @@
   .tt-btn.small{font-size:11.5px;padding:5px 10px}
   .tt-passfull{background:var(--surf2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-top:12px;direction:rtl;font-family:var(--ar);font-size:calc(18px * var(--ar-scale));line-height:2;color:var(--muted)}
   .tt-passfullseg{margin-left:4px}
+  .tt-passprog{margin-top:12px;text-align:center;font-family:var(--ui);font-size:11.5px;color:var(--muted);letter-spacing:.02em}
+  .tt-passprog b{color:var(--fg);font-weight:600}
   .tt-passfullseg.cur{color:var(--fg);background:rgba(217,164,65,.15);border-radius:4px;padding:0 3px}
   /* passage column diff — stacked target/typed cells that wrap cleanly, RTL */
   .tt-diffcols{display:flex;flex-wrap:wrap;gap:4px;direction:rtl;justify-content:center;margin:8px 0}
@@ -2157,6 +2162,9 @@ function renderTableCards(arr){
   // Passage Typing state — session-only. `passage` = current passage object; `seg` =
   // current segment index; `custom`/`customLines` hold pasted text (never persisted).
   const P={ score:newScore(), passage:null, seg:0, done:false, custom:'', customLines:null, showTr:false, showEn:false };
+  // Passage session tally — counts this tab's finished passages, cleared segments and
+  // wrong attempts. Session-only: never saved, and reset by the filters that reset P.
+  const PS={ passages:0, segments:0, mistakes:0 };
   let reviewMode=null;       // {types:[...], score, last, item}
   let reviewPanel=false;     // summary overlay open?
 
@@ -2507,6 +2515,26 @@ function renderTableCards(arr){
       +`<div class="tt-difflegend"><span class="tt-dc ok"><span class="tt-dch">✓</span></span> match · <span class="tt-dc bad"><span class="tt-dsym">✗</span></span> wrong · <span class="tt-dc exp"><span class="tt-dsym">＋</span></span> missing · <span class="tt-dc gap"><span class="tt-dch">␣</span></span> space</div></div>`;
   }
   function passList(){ const arr=(M.passages && M.passages[passCat])||[]; return arr.filter(p=> passDiff==='all' || p.difficulty===passDiff); }
+  // Random pick from the CURRENT category + difficulty list only; avoids repeating the
+  // passage already on screen unless the filtered list has just one entry.
+  function randomPassage(){
+    const l=passList(); if(!l.length) return;
+    const pool = (l.length>1 && P.passage) ? l.filter(x=>x.id!==P.passage.id) : l;
+    P.passage = pool[Math.floor(Math.random()*pool.length)];
+    P.seg=0; P.done=false; P.score=newScore(); render();
+  }
+  function nextPassage(){
+    const l=passList(); if(!l.length) return;
+    const i=l.findIndex(x=>P.passage && x.id===P.passage.id);
+    P.passage = l[(i+1)%l.length]; P.seg=0; P.done=false; P.score=newScore(); render();
+  }
+  function passProgressInner(){
+    return `This session: <b>${PS.passages}</b> passage${PS.passages===1?'':'s'}`
+      + ` · <b>${PS.segments}</b> segment${PS.segments===1?'':'s'} · <b>${PS.mistakes}</b> mistake${PS.mistakes===1?'':'s'}`;
+  }
+  function passProgress(){ return `<div class="tt-passprog">${passProgressInner()}</div>`; }
+  // The card is not re-rendered on a wrong answer, so refresh the tally in place.
+  function updateProgress(){ const el=body.querySelector('.tt-passprog'); if(el) el.innerHTML=passProgressInner(); }
   function passCatPills(){
     return `<div class="tt-selgroup" role="group" aria-label="Passage category"><span class="tt-sellabel">Category</span><div class="tt-selopts">`
       + PASS_CATS.map(c=> c.available
@@ -2526,7 +2554,7 @@ function renderTableCards(arr){
     if(!P.passage || P.passage.id==='custom' || !list.some(x=>x.id===P.passage.id)){ P.passage=list[0]; P.seg=0; P.done=false; }
     const picker = `<div class="tt-sel"><div class="tt-selgroup"><label class="tt-sellabel" for="tt-passel">Passage</label><select id="tt-passel" class="tt-select">`
       + list.map(p=>`<option value="${esc(p.id)}"${p.id===P.passage.id?' selected':''}>${esc(p.title)} · ${esc(p.difficulty)}</option>`).join('')
-      + `</select></div></div>`;
+      + `</select><button type="button" class="tt-btn small" data-a="randpass">Random passage</button></div></div>`;
     renderSegmentCard(selRow + picker, P.passage.lines, P.passage);
   }
   function renderCustom(prefix){
@@ -2554,14 +2582,18 @@ function renderTableCards(arr){
     function wireExtras(){
       const psel=body.querySelector('#tt-passel'); if(psel) psel.addEventListener('change',()=>{ const np=passList().find(x=>x.id===psel.value); if(np){ P.passage=np; P.seg=0; P.done=false; P.score=newScore(); render(); } });
       const cc=body.querySelector('[data-a=clearcustom]'); if(cc) cc.addEventListener('click',()=>{ P.custom=''; P.customLines=null; P.passage=null; P.seg=0; P.score=newScore(); render(); });
+      const rp=body.querySelector('[data-a=randpass]'); if(rp) rp.addEventListener('click', randomPassage);
+      const np=body.querySelector('[data-a=nextpass]'); if(np) np.addEventListener('click', nextPassage);
     }
     if(P.seg>=n){
       body.innerHTML = prefix + `<div class="tt-card"><div class="tt-prompt">Passage complete</div>`
         + `<p class="note">You finished “${esc(p.title)}” — ${n} segment(s).</p>`
-        + `<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="restart">Practice again</button>${passCat!=='custom'?'<button type="button" class="tt-btn" data-a="nextpass">Another passage</button>':''}</div></div>`+scoreBar(P.score);
+        + passProgress()
+        + `<div class="tt-controls"><button type="button" class="tt-btn primary" data-a="restart">Practice again</button>`
+        + (passCat!=='custom'?'<button type="button" class="tt-btn" data-a="nextpass">Next passage</button><button type="button" class="tt-btn" data-a="randpass">Random passage</button>':'')
+        + `</div></div>`+scoreBar(P.score);
       wireCommon(); wireExtras();
       body.querySelector('[data-a=restart]').addEventListener('click',()=>{ P.seg=0; P.done=false; render(); });
-      const np=body.querySelector('[data-a=nextpass]'); if(np) np.addEventListener('click',()=>{ const l=passList(); const idx=l.findIndex(x=>x.id===p.id); P.passage=l[(idx+1)%l.length]; P.seg=0; P.done=false; P.score=newScore(); render(); });
       return;
     }
     const seg=segs[P.seg];
@@ -2580,6 +2612,7 @@ function renderTableCards(arr){
         + (hasEn?`<button type="button" class="tt-btn small" data-a="toggleen" aria-pressed="${P.showEn}">${P.showEn?'Hide English':'Show English'}</button>`:'')
         + `</div>`
       + (passDisplay==='full'?`<div class="tt-passfull" dir="rtl">`+segs.map((s,i)=>`<span class="tt-passfullseg${i===P.seg?' cur':''}">${esc(s.ar)}</span>`).join(' ')+`</div>`:'')
+      + passProgress()
       + `<label class="tt-prompt" for="tt-pi" style="margin:14px 0 0;display:block">Your answer (Arabic)</label>`
       + `<input id="tt-pi" class="tt-input seg" dir="rtl" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Type this Arabic segment">`
       + `<div class="tt-fb" id="tt-pf" role="status" aria-live="polite"></div>`
@@ -2593,11 +2626,11 @@ function renderTableCards(arr){
     inp.focus();
     const mKey=p.id+'#'+P.seg;
     function recordSeg(reason, typed){ record('passage', mKey, {target:seg.ar, title:p.title, category:passCat, difficulty:p.difficulty, seg:P.seg, passageId:p.id, lastTyped:typed||''}, reason); }
-    function advance(){ P.seg++; P.done=false; render(); }
+    function advance(){ if(P.seg+1>=n) PS.passages++; P.seg++; P.done=false; render(); }
     function check(){ if(P.done){ advance(); return; } const raw=inp.value.trim(); if(!raw) return;
-      if(passSegNorm(raw,exact)===passSegNorm(seg.ar,exact)){ bump(P.score,'correct'); P.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
-      else { bump(P.score,'wrong'); recordSeg('incorrect', passSegNorm(raw,exact)); fb.className='tt-fb no'; fb.innerHTML='Not quite — try again.'+renderDiffCols(passSegNorm(seg.ar,exact), passSegNorm(raw,exact)); inp.focus(); }
-      updateScore(P.score);
+      if(passSegNorm(raw,exact)===passSegNorm(seg.ar,exact)){ bump(P.score,'correct'); PS.segments++; P.done=true; fb.className='tt-fb ok'; fb.innerHTML='<span class="tag">✓</span> Correct'; checkBtn.textContent='Next'; }
+      else { bump(P.score,'wrong'); PS.mistakes++; recordSeg('incorrect', passSegNorm(raw,exact)); fb.className='tt-fb no'; fb.innerHTML='Not quite — try again.'+renderDiffCols(passSegNorm(seg.ar,exact), passSegNorm(raw,exact)); inp.focus(); }
+      updateScore(P.score); updateProgress();
     }
     checkBtn.addEventListener('click', check);
     inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } });
@@ -2790,7 +2823,7 @@ if(M.vocab){
       map:{smaller:'0.9',default:'1',larger:'1.12',xl:'1.28'} },
     { id:'ar',  label:'Arabic text size', def:'default',
       opts:[['default','Default'],['large','Large'],['xl','Extra large'],['max','Maximum']],
-      map:{default:'1',large:'1.18',xl:'1.36',max:'1.6'} },
+      map:{default:'1.14',large:'1.32',xl:'1.5',max:'1.75'} },
     { id:'fg',  label:'General text color', def:'default',
       opts:[['default','Default'],['contrast','High contrast'],['soft','Soft']] },
     { id:'arc', label:'Arabic text color', def:'default',

@@ -35,7 +35,7 @@ window.MASRI.passages = {
     { id:'eg-b2', title:'Ordering coffee', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'عايز قهوة لو سمحت.', tr:'ʿāyez ʾahwa law samaḥt.', en:"I'd like a coffee, please." },
       { ar:'بسكر شوية.', tr:'be-sokkar shwayya.', en:'With a little sugar.' },
-      { ar:'شكرا.', tr:'shukran.', en:'Thank you.' }
+      { ar:'شكراً.', tr:'shukran.', en:'Thank you.' }
     ]},
     { id:'eg-b3', title:'Asking for directions', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'فين المترو؟', tr:'fēn el-metro?', en:'Where is the metro?' },
@@ -83,7 +83,7 @@ window.MASRI.passages = {
     { id:'eg-b5', title:'Greetings and small talk', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'إزيك؟', tr:'ezzayyak?', en:'How are you?' },
       { ar:'أنا كويس الحمد لله.', tr:'ana kwayyes el-ḥamdu lellāh.', en:"I'm fine, thank God." },
-      { ar:'وانت عامل ايه؟', tr:'wenta ʿāmel ēh?', en:'And how are you doing?' }
+      { ar:'وإنت عامل إيه؟', tr:'wenta ʿāmel ēh?', en:'And how are you doing?' }
     ]},
     { id:'eg-b6', title:'Paying at a restaurant', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'الحساب لو سمحت.', tr:'el-ḥesāb law samaḥt.', en:'The bill, please.' },
@@ -93,7 +93,7 @@ window.MASRI.passages = {
     { id:'eg-b7', title:'Talking about the weather', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'النهارده حر.', tr:'en-naharda ḥarr.', en:'It is hot today.' },
       { ar:'بكرة هيكون أحسن.', tr:'bokra haykūn aḥsan.', en:'Tomorrow will be better.' },
-      { ar:'خد معاك ميه.', tr:'khod maʿāk mayya.', en:'Take water with you.' }
+      { ar:'خد معاك مية.', tr:'khod maʿāk mayya.', en:'Take water with you.' }
     ]},
     { id:'eg-b8', title:'Asking the time', difficulty:'beginner', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
       { ar:'الساعة كام؟', tr:'es-sāʿa kām?', en:'What time is it?' },
@@ -176,7 +176,7 @@ window.MASRI.passages = {
       { ar:'الجو كان لطيف والرحلة كانت ممتعة.', tr:'el-gaww kān laṭīf we-r-reḥla kānet momteʿa.', en:'The weather was pleasant and the trip was enjoyable.' }
     ]},
     { id:'eg-a4', title:'Sharing an opinion', difficulty:'advanced', variety:'Egyptian Arabic', source:'Original — written for Masri', lines:[
-      { ar:'في رأيي القراءة حاجة مهمة جدا.', tr:'fi raʾyi el-ʾerāya ḥāga mohemma gedan.', en:'In my opinion, reading is a very important thing.' },
+      { ar:'في رأيي القراية حاجة مهمة جدا.', tr:'fi raʾyi el-ʾerāya ḥāga mohemma gedan.', en:'In my opinion, reading is a very important thing.' },
       { ar:'بتفتح العقل وبتعلمنا حاجات كتير.', tr:'beteftaḥ el-ʿaʾl we-beteʿallemna ḥagāt ketīr.', en:'It opens the mind and teaches us many things.' },
       { ar:'أنا بحاول أقرا كل يوم شوية.', tr:'ana baḥāwel aʾra koll yōm shwayya.', en:'I try to read a little every day.' }
     ]},
