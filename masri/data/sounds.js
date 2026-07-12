@@ -38,7 +38,7 @@ window.MASRI.sounds = {
       { letter: "ذ", name: "dhāl", sym: "d / z", ipa: "/d/", ex_ar: "ذهب", ex: "dahab", ex_en: "gold",
         summary: "In many common Egyptian words this becomes <b>d</b>.",
         detail: "Some words use <b>z</b> instead — the outcome varies by word." },
-      { letter: "ظ", name: "ẓāʾ", sym: "ẓ / z", ipa: "/zˤ/", ex_ar: "ظرف", ex: "zarf", ex_en: "envelope",
+      { letter: "ظ", name: "ẓāʾ", sym: "ẓ / z", ipa: "/zˤ/", ex_ar: "ظرف", ex: "ẓarf", ex_en: "envelope",
         summary: "Commonly realized as a heavy (emphatic) <b>z</b> in Egyptian.",
         detail: "The formal letter name and transliteration are <i>ẓāʾ / ẓ</i>. It is also one of the emphatic consonants (see below)." }
     ]

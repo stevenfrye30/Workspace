@@ -60,7 +60,7 @@ window.MASRI.symbols = {
           { ar: "فيل",   tr: "fīl",    gloss: "elephant",  ipa: "/f/",  eng: "f",                     letter: "ف" },
           { ar: "ثوم",   tr: "tūm",    gloss: "garlic",    ipa: "/θ/",  eng: "th as in “thin”",       letter: "ث", masri: "Masri: often /t/ (sometimes /s/)" },
           { ar: "ذهب",   tr: "dahab",  gloss: "gold",      ipa: "/ð/",  eng: "th as in “this”",       letter: "ذ", masri: "Masri: often /d/ (sometimes /z/)" },
-          { ar: "ظرف",   tr: "zarf",   gloss: "envelope",  ipa: "/ðˤ/", eng: "no English equivalent", letter: "ظ", masri: "Masri: often /zˤ/ (heavy z); may merge with ض" },
+          { ar: "ظرف",   tr: "ẓarf",   gloss: "envelope",  ipa: "/ðˤ/", eng: "no English equivalent", letter: "ظ", masri: "Masri: often /zˤ/ (heavy z); may merge with ض" },
           { ar: "سمك",   tr: "samak",  gloss: "fish",      ipa: "/s/",  eng: "s",                     letter: "س" },
           { ar: "صباح",  tr: "ṣabāḥ",  gloss: "morning",   ipa: "/sˤ/", eng: "no English equivalent", letter: "ص" },
           { ar: "زيت",   tr: "zēt",    gloss: "oil",       ipa: "/z/",  eng: "z",                     letter: "ز" },
