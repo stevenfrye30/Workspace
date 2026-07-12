@@ -143,6 +143,26 @@ window.MASRI.typing = {
     statsCap: 200       // most-recent target stat records kept in localStorage
   },
 
+  // Shift layer — ONLY the characters Masri's own content actually needs. The unshifted
+  // chart cannot type أ, إ, آ, ؟ or ، , yet they appear 400+ times across the passages,
+  // phrases and dialogues, so a learner following the chart alone gets stuck immediately.
+  // Every mapping below was read from the real Windows layout (kbdara, KLID 00000401) via
+  // ToUnicodeEx, using the unshifted layer as a control — not from memory.
+  // Marks are shown on a dotted circle (◌) because a combining mark cannot stand alone.
+  shiftKeys: [
+    { code:"KeyH",      q:"H", ar:"أ", name:"alif + hamza above",  use:"أنا, أهلاً" },
+    { code:"KeyY",      q:"Y", ar:"إ", name:"alif + hamza below",  use:"إزيك, إيه" },
+    { code:"KeyN",      q:"N", ar:"آ", name:"alif madda",          use:"آسف" },
+    { code:"Slash",     q:"/", ar:"؟", name:"Arabic question mark", use:"إزيك؟" },
+    { code:"KeyK",      q:"K", ar:"،", name:"Arabic comma",         use:"لو سمحت، …" },
+    { code:"KeyQ",      q:"Q", ar:"َ", name:"fatḥa (a)",   mark:true },
+    { code:"KeyA",      q:"A", ar:"ِ", name:"kasra (i)",   mark:true },
+    { code:"KeyE",      q:"E", ar:"ُ", name:"ḍamma (u)",   mark:true },
+    { code:"Backquote", q:"`", ar:"ّ", name:"shadda (doubling)", mark:true },
+    { code:"KeyX",      q:"X", ar:"ْ", name:"sukūn (no vowel)",   mark:true },
+    { code:"KeyW",      q:"W", ar:"ً", name:"tanwīn (-an)",        mark:true }
+  ],
+
   layoutName: "Windows Arabic (101)",
   layoutNote: "Unshifted layer of the standard Windows Arabic (101) layout. The key positions match a physical US-QWERTY keyboard; the large glyph is what each key types when the Arabic layout is active.",
   rows: [

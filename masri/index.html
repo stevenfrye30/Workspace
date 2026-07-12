@@ -545,7 +545,15 @@
   .tt-score b{color:var(--fg)}
   /* keyboard */
   .tt-kbdbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-  .tt-kbwrap{overflow-x:auto;padding-bottom:6px}
+  /* The chart is wider than a phone. Wrap it so the scrollable edge is visible:
+     a fade on the right while more keys remain, plus a swipe hint on narrow screens. */
+  .tt-kbouter{position:relative}
+  .tt-kbouter::after{content:"";position:absolute;top:0;right:0;bottom:6px;width:34px;pointer-events:none;
+       background:linear-gradient(to right, rgba(18,22,31,0), var(--bg));opacity:0;transition:opacity .2s}
+  .tt-kbouter.scrollable::after{opacity:1}
+  .tt-kbhint{display:none;font-family:var(--ui);font-size:11.5px;color:var(--gold);margin:0 0 6px}
+  .tt-kbouter.scrollable .tt-kbhint{display:block}
+  .tt-kbwrap{overflow-x:auto;padding-bottom:6px;scrollbar-width:thin}
   .tt-kbd{display:inline-flex;flex-direction:column;gap:6px;min-width:640px}
   .tt-krow{display:flex;gap:6px;justify-content:flex-start}
   /* realistic physical-keyboard row stagger: the number row sits left of the Q row,
@@ -564,6 +572,15 @@
   .tt-key.correct{background:var(--green);border-color:var(--green)}
   .tt-key.correct .tt-q,.tt-key.correct .tt-ka{color:#0c1a12}
   .tt-key.wrong{background:#5a2f2f;border-color:#8a4a4a}
+  /* Shift-layer strip: reference only — these are keys to press, not buttons to click. */
+  .tt-shift{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 0}
+  .tt-shiftkey{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:6px 10px;
+       display:flex;flex-direction:column;align-items:center;gap:2px;min-width:74px}
+  .tt-shiftkey .tt-sk-combo{font-family:var(--ui);font-size:10px;color:var(--muted);white-space:nowrap}
+  .tt-shiftkey .tt-sk-ar{font-family:var(--ar);font-size:calc(22px * var(--ar-scale));color:var(--fg);
+       direction:rtl;unicode-bidi:isolate;line-height:1.3}
+  .tt-shiftkey .tt-sk-name{font-family:var(--ui);font-size:10px;color:var(--muted);text-align:center}
+  .tt-shiftkey .tt-sk-use{font-family:var(--ar);font-size:calc(13px * var(--ar-scale));color:var(--gold);direction:rtl;unicode-bidi:isolate}
   .tt-capture{outline:none}
   .tt-capture:focus-visible{outline:2px dashed var(--gold);outline-offset:3px}
   .tt-fbsub{font-size:calc(12px * var(--ui-scale));color:var(--muted);font-weight:400;margin-top:6px}
@@ -2546,13 +2563,40 @@ function renderTableCards(arr){
   // Mode 3: Keyboard (reference + physical-key quiz) --------------------------
   function keyboardHtml(highlight){
     const rows=(M.typing&&M.typing.rows)||[];
-    return `<div class="tt-kbwrap"><div class="tt-kbd" role="group" aria-label="Windows Arabic 101 layout">`
+    return `<div class="tt-kbouter" id="tt-kbouter">`
+      + `<p class="tt-kbhint" aria-hidden="true">Swipe sideways to see the whole keyboard →</p>`
+      + `<div class="tt-kbwrap"><div class="tt-kbd" role="group" aria-label="Windows Arabic 101 layout">`
       + rows.map(row=>`<div class="tt-krow">`+row.map(k=>{
           const cls=['tt-key']; if(k.digit)cls.push('digit'); if(kbView==='ar')cls.push('hideq');
           if(highlight&&highlight.code===k.code)cls.push(highlight.cls);
           return `<div class="${cls.join(' ')}" data-code="${k.code}"><span class="tt-q">${esc(k.q)}</span><span class="tt-ka">${esc(k.ar)}</span></div>`;
         }).join('')+`</div>`).join('')
-      +`</div></div>`;
+      +`</div></div></div>`;
+  }
+  // Flag the wrapper when the chart really is wider than the screen, so the fade and the
+  // swipe hint only appear when there is something off-screen to reach.
+  function markKbScroll(){
+    const outer=body.querySelector('#tt-kbouter'); if(!outer) return;
+    const wrap=outer.querySelector('.tt-kbwrap'); if(!wrap) return;
+    outer.classList.toggle('scrollable', wrap.scrollWidth > wrap.clientWidth + 2);
+  }
+  // The shift layer Masri actually needs. Reference only — nothing here is clickable.
+  function shiftHtml(){
+    const sk=(M.typing&&M.typing.shiftKeys)||[];
+    if(!sk.length) return '';
+    return `<div class="tt-prompt" style="margin:16px 0 6px">Shift characters</div>`
+      + `<p class="note" style="margin-bottom:8px">The chart above is the plain layer. These five characters and six marks need <b>Shift</b>, and Masri's own phrases use them constantly — <span class="ar" dir="rtl">أنا</span>, <span class="ar" dir="rtl">إزيك؟</span>, <span class="ar" dir="rtl">آسف</span>.</p>`
+      + `<div class="tt-shift" role="list" aria-label="Shift-layer characters">`
+      + sk.map(k=>{
+          const glyph = k.mark ? '\u25CC'+k.ar : k.ar;   // combining marks need a dotted circle
+          return `<div class="tt-shiftkey" role="listitem">`
+            + `<span class="tt-sk-combo">Shift + ${esc(k.q)}</span>`
+            + `<span class="tt-sk-ar" dir="rtl">${esc(glyph)}</span>`
+            + `<span class="tt-sk-name">${esc(k.name||'')}</span>`
+            + (k.use?`<span class="tt-sk-use" dir="rtl">${esc(k.use)}</span>`:'')
+            + `</div>`;
+        }).join('')
+      + `</div>`;
   }
   function renderKeyboard(){
     const layout=(M.typing&&M.typing.layoutName)||'Arabic keyboard';
@@ -2565,8 +2609,9 @@ function renderTableCards(arr){
         +`<button type="button" class="tt-btn ${kbView==='both'?'primary':''}" data-v="both" aria-pressed="${kbView==='both'}">English key + Arabic</button>`
         +`<button type="button" class="tt-btn ${kbView==='ar'?'primary':''}" data-v="ar" aria-pressed="${kbView==='ar'}">Arabic only</button></div>`
         +keyboardHtml(null)
-        +`<p class="note">${esc((M.typing&&M.typing.layoutNote)||'')} Shift-layer characters are not shown.</p>`;
-      body.innerHTML=h; wireCommon();
+        +`<p class="note">${esc((M.typing&&M.typing.layoutNote)||'')}</p>`
+        +shiftHtml();
+      body.innerHTML=h; wireCommon(); markKbScroll();
     } else {
       const quizItems=ALL_LETTERS.filter(l=>KEYMAP[l.ch]);
       if(!Q.deck) Q.deck=makeDeck(quizItems, x=>x&&x.ch);
@@ -2576,11 +2621,12 @@ function renderTableCards(arr){
         +`<div class="tt-target letter">${esc(t.ch)}</div>`
         +`<div class="tt-fb" id="tt-qf" role="status" aria-live="polite">Click the box below, then press the matching key on your keyboard.</div>`
         +`<div class="tt-capture" id="tt-qcap" tabindex="0" role="button" aria-label="Press the physical key for the shown letter">Press the key…</div>`
+        +`<p class="note" style="margin-top:8px">This exercise needs a <b>hardware keyboard</b> — it listens for a real key press, so it can't be done on a phone or tablet. On a touch device, use <b>Reference</b> above to learn the layout instead.</p>`
         +`<div class="tt-controls"><button type="button" class="tt-btn" data-a="skip">Skip</button>`
         +`<button type="button" class="tt-btn" data-a="reveal">Show answer</button>`
         +`<button type="button" class="tt-btn primary" data-a="next" hidden>Next</button></div></div>`
         +scoreBar(Q.score)+keyboardHtml(null);
-      body.innerHTML=h; wireCommon();
+      body.innerHTML=h; wireCommon(); markKbScroll();
       const cap=body.querySelector('#tt-qcap'), fb=body.querySelector('#tt-qf'), nextBtn=body.querySelector('[data-a=next]');
       cap.focus();
       const markKey=(code,cls)=>{ const el=body.querySelector('.tt-key[data-code="'+code+'"]'); if(el) el.classList.add(cls); };
