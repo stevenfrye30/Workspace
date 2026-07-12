@@ -114,7 +114,7 @@ window.MASRI.listening = {
     // ── Asking for help ────────────────────────────────────────
     { id:"help-01", topic:"help", arabic:"ممكن تساعدني؟", transliteration:"momken tesaʿedni?", english:"Can you help me?",
       promptEnglish:"Ask someone for help.", suggestedResponse:"أكيد، اتفضل", audio:"help-01.ogg", difficulty:1 },
-    { id:"help-02", topic:"help", arabic:"أنا تُهت", transliteration:"ana toht", english:"I’m lost",
+    { id:"help-02", topic:"help", arabic:"أنا تايه", transliteration:"ana tāyeh", english:"I’m lost",
       promptEnglish:"Tell someone you’re lost.", suggestedResponse:"متقلقش، أنا هساعدك", audio:"help-02.ogg", difficulty:1 },
     { id:"help-03", topic:"help", arabic:"ممكن تتكلم إنجليزي؟", transliteration:"momken tetkallem engelīzi?", english:"Can you speak English?",
       promptEnglish:"Ask if someone speaks English.", suggestedResponse:"شوية", audio:"help-03.ogg", difficulty:2 },
@@ -122,7 +122,7 @@ window.MASRI.listening = {
     // ── Saying you don’t understand ────────────────────────────
     { id:"clar-01", topic:"clarify", arabic:"مش فاهم", transliteration:"mesh fāhem", english:"I don’t understand (m)",
       promptEnglish:"Say you don’t understand.", suggestedResponse:"طيب، هوضّحلك", audio:"clar-01.ogg", difficulty:1 },
-    { id:"clar-02", topic:"clarify", arabic:"ممكن تعيد؟", transliteration:"momken teʿīd?", english:"Can you repeat that?",
+    { id:"clar-02", topic:"clarify", arabic:"ممكن تعيد تاني؟", transliteration:"momken teʿīd tāni?", english:"Can you repeat that?",
       promptEnglish:"Ask someone to repeat.", suggestedResponse:"أكيد", audio:"clar-02.ogg", difficulty:1 },
     { id:"clar-03", topic:"clarify", arabic:"على مهلك، لو سمحت", transliteration:"ʿala mahlak, law samaḥt", english:"Slower, please",
       promptEnglish:"Ask someone to speak more slowly.", suggestedResponse:"حاضر", audio:"clar-03.ogg", difficulty:2 }

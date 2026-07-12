@@ -73,14 +73,14 @@ to `true` in `data/listening.js` to activate playback.
 | File | Optional slow | Arabic | English |
 |---|---|---|---|
 | `help-01.ogg` | `help-01-slow.ogg` | ممكن تساعدني؟ | Can you help me? |
-| `help-02.ogg` | `help-02-slow.ogg` | أنا تُهت | I’m lost |
+| `help-02.ogg` | `help-02-slow.ogg` | أنا تايه | I’m lost (m) |
 | `help-03.ogg` | `help-03-slow.ogg` | ممكن تتكلم إنجليزي؟ | Can you speak English? |
 
 ### clarify
 | File | Optional slow | Arabic | English |
 |---|---|---|---|
 | `clar-01.ogg` | `clar-01-slow.ogg` | مش فاهم | I don’t understand (m) |
-| `clar-02.ogg` | `clar-02-slow.ogg` | ممكن تعيد؟ | Can you repeat that? |
+| `clar-02.ogg` | `clar-02-slow.ogg` | ممكن تعيد تاني؟ | Can you repeat that? |
 | `clar-03.ogg` | `clar-03-slow.ogg` | على مهلك، لو سمحت | Slower, please |
 
 ## Mini-dialogues (8)
