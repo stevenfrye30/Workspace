@@ -21250,7 +21250,7 @@
         "haya"
       ],
       "children": [
-        "ninlil-alt"
+        "ninlil"
       ],
       "archetype": "wisdom-god",
       "parallels": [
@@ -22465,14 +22465,15 @@
         "eastern-frontier",
         "falcon"
       ],
-      "parents": [],
-      "consorts": [
+      "parents": [
+        "sah",
         "sopdet"
       ],
+      "consorts": [],
       "children": [],
       "archetype": null,
       "parallels": [],
-      "description": "Falcon-god of the eastern Sinai frontier. Guardian of the eastern desert and the approach to Punt.",
+      "description": "Falcon-god of the eastern Sinai frontier. Guardian of the eastern desert and the approach to Punt. In the astral tradition he is the son of Sah (Orion) and Sopdet (Sirius).",
       "wiki_title": "Sopdu"
     },
     {
@@ -27510,7 +27511,11 @@
       "consorts": [
         "tuonetar"
       ],
-      "children": [],
+      "children": [
+        "kalma",
+        "kivutar",
+        "vammatar"
+      ],
       "archetype": null,
       "parallels": [],
       "description": "Ruler of Tuonela, the Finnish land of the dead, with his consort Tuonetar."
@@ -30645,6 +30650,477 @@
       "archetype": null,
       "parallels": [],
       "description": "In Sethian texts such as the Hypostasis of the Archons and the Thought of Norea, a revelatory heroine associated with the line of Seth who resists the archons and is aided by a luminous power; a human-associated salvific figure rather than a creator goddess or aeon."
+    },
+    {
+      "id": "sopdet",
+      "name": "Sopdet (Sothis)",
+      "pantheon": "egyptian",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "sirius",
+        "flood",
+        "stars"
+      ],
+      "parents": [],
+      "consorts": [
+        "sah"
+      ],
+      "children": [
+        "sopdu"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Deification of the star Sirius, whose heliacal rising heralded the Nile inundation. With Sah (Orion) she forms an astral couple, and their son is the falcon-god Sopdu. This astral family is distinct from the later syncretism that linked Sah with Osiris and Sopdet with Isis."
+    },
+    {
+      "id": "sah",
+      "name": "Sah (Orion)",
+      "pantheon": "egyptian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "orion",
+        "stars"
+      ],
+      "parents": [],
+      "consorts": [
+        "sopdet"
+      ],
+      "children": [
+        "sopdu"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Deification of the constellation Orion, 'father of the gods' among the stars; with Sopdet (Sirius) his consort, father of Sopdu. In later theology Sah was assimilated to Osiris, but here he is the older astral figure of the Pyramid Texts."
+    },
+    {
+      "id": "menhit",
+      "name": "Menhit",
+      "pantheon": "egyptian",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "lioness",
+        "war"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "heka"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Lioness war-goddess of Upper Egypt, worshipped at Esna where local theology made her, with the ram-god Khnum, a parent of the child-god Heka. Other regional traditions give Heka different mothers; she is also at times syncretised with Neith."
+    },
+    {
+      "id": "tjenenet",
+      "name": "Tjenenet",
+      "pantheon": "egyptian",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "childbirth",
+        "thebes"
+      ],
+      "parents": [],
+      "consorts": [
+        "montu"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A Theban goddess of childbirth and brewing associated with the war-god Montu at Armant. She is one of several consorts linked to Montu in Theban tradition, alongside Iunit and Raet-Tawy, and is not presented as his universal or sole consort."
+    },
+    {
+      "id": "aya",
+      "name": "Aya",
+      "pantheon": "mesopotamian",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "dawn",
+        "light"
+      ],
+      "parents": [],
+      "consorts": [
+        "utu"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Akkadian goddess of the dawn and consort of the sun-god Shamash (Sumerian Utu); the Sumerian form of this dawn-bride is Sherida, understood here as the same identity rather than a separate record."
+    },
+    {
+      "id": "bau",
+      "name": "Bau",
+      "pantheon": "mesopotamian",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "healing",
+        "mother-goddess"
+      ],
+      "parents": [],
+      "consorts": [
+        "ninurta"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A healing and mother goddess of the Lagash region, chiefly the consort of Ningirsu — whom this archive treats within the single Ninurta record — hence her placement as a consort of Ninurta. In later tradition Bau was increasingly identified with the healing goddess Gula, though the two have distinct origins."
+    },
+    {
+      "id": "gugalanna",
+      "name": "Gugalanna",
+      "pantheon": "mesopotamian",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "underworld",
+        "death"
+      ],
+      "parents": [],
+      "consorts": [
+        "ereshkigal"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "In the myth of Inanna's Descent, the husband of the underworld queen Ereshkigal whose funeral Inanna claims to attend. Scholars have debated an identification with the 'Bull of Heaven' slain in the Gilgamesh tradition, and with Ennugi; those equations are uncertain and no bull-genealogy is asserted here."
+    },
+    {
+      "id": "ningirida",
+      "name": "Ningirida",
+      "pantheon": "mesopotamian",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "consort-of-ninazu",
+        "underworld"
+      ],
+      "parents": [],
+      "consorts": [
+        "ninazu"
+      ],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Goddess of the netherworld family, consort of Ninazu and mother of Ningishzida; distinct from the similarly named reed-goddess Ningikuga."
+    },
+    {
+      "id": "kotoshironushi",
+      "name": "Kotoshironushi",
+      "pantheon": "japanese",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "oracles",
+        "sea",
+        "fishing"
+      ],
+      "parents": [
+        "okuninushi"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A son of Okuninushi and a kami of oracles and the sea; in the Kuni-yuzuri narrative he counsels the ceding of the land to the heavenly deities. Accounts differ between the Kojiki and Nihon Shoki over the details of that episode."
+    },
+    {
+      "id": "takemikazuchi",
+      "name": "Takemikazuchi",
+      "pantheon": "japanese",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "thunder",
+        "swords",
+        "martial"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A thunder- and sword-god born from the blood of the slain fire-kami, sent to pacify the Central Land; the tutelary deity of Kashima Shrine. He acts alongside — but is not identical to — Futsunushi in the land-subjugation narratives, with the Kojiki and Nihon Shoki weighting their roles differently."
+    },
+    {
+      "id": "futsunushi",
+      "name": "Futsunushi",
+      "pantheon": "japanese",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "swords",
+        "subjugation"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A sword-god and tutelary deity of Katori Shrine, prominent in the Nihon Shoki account of the pacification of the land, where he is paired with Takemikazuchi; the two are distinct kami rather than alternate names."
+    },
+    {
+      "id": "toyouke",
+      "name": "Toyouke",
+      "pantheon": "japanese",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "food",
+        "agriculture",
+        "grain"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Toyouke-Ōmikami, goddess of food, agriculture, and grain, enshrined at the Outer Shrine (Gekū) of Ise to provide sustenance for Amaterasu. She is distinct from the food-deities Ukemochi and Ōgetsuhime and from later syncretic identifications."
+    },
+    {
+      "id": "airmed",
+      "name": "Airmed",
+      "pantheon": "celtic-irish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "healing",
+        "herbs"
+      ],
+      "parents": [
+        "dian-cecht"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A healing goddess of the Tuatha Dé Danann, daughter of the physician Dian Cécht; after her brother Miach's death she sorted the healing herbs that grew from his grave until her grieving father scattered them."
+    },
+    {
+      "id": "miach",
+      "name": "Miach",
+      "pantheon": "celtic-irish",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "healing",
+        "surgery"
+      ],
+      "parents": [
+        "dian-cecht"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A healer of the Tuatha Dé Danann, son of Dian Cécht, who restored the severed arm of Nuada with living flesh, surpassing his father's silver replacement; Dian Cécht killed him in jealousy."
+    },
+    {
+      "id": "ethniu",
+      "name": "Ethniu",
+      "pantheon": "celtic-irish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "mother-of-lugh"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "lugh"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "Daughter of the Fomorian Balor and mother of the god Lugh (by Cian of the Tuatha Dé), through whom the prophecy that Balor would be slain by his grandson was fulfilled. Her name also appears as Ethliu or Eithne; the Balor and Cian ties are given in prose."
+    },
+    {
+      "id": "midir",
+      "name": "Midir",
+      "pantheon": "celtic-irish",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "otherworld",
+        "bri-leith"
+      ],
+      "parents": [
+        "dagda"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A lord of the Tuatha Dé Danann associated with the otherworld sídhe of Brí Léith, named as a son of the Dagda; a proud and wealthy figure of the wooing-tales."
+    },
+    {
+      "id": "kalma",
+      "name": "Kalma",
+      "pantheon": "finnish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "death",
+        "decay"
+      ],
+      "parents": [
+        "tuoni",
+        "tuonetar"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A goddess of death and the stench of decay in Finnish folk tradition, a daughter of Tuoni and Tuonetar who dwell in the underworld Tuonela; one of the death-realm's personifications rather than a Kalevala protagonist."
+    },
+    {
+      "id": "kivutar",
+      "name": "Kivutar",
+      "pantheon": "finnish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "pain",
+        "suffering"
+      ],
+      "parents": [
+        "tuoni",
+        "tuonetar"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A goddess of pain and suffering in Finnish folk poetry, a daughter of Tuoni and Tuonetar, invoked in healing charms to gather and carry away pain."
+    },
+    {
+      "id": "vammatar",
+      "name": "Vammatar",
+      "pantheon": "finnish",
+      "category": "minor",
+      "gender": "F",
+      "domains": [
+        "disease",
+        "injury"
+      ],
+      "parents": [
+        "tuoni",
+        "tuonetar"
+      ],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A goddess of disease, injury, and misfortune in Finnish folk tradition, a daughter of Tuoni and Tuonetar of Tuonela; a personification of affliction in the charm-poetry."
+    },
+    {
+      "id": "hvovi",
+      "name": "Hvovi",
+      "pantheon": "zoroastrian",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "avestan-tradition",
+        "matriarch"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "In Avestan tradition the wife of the prophet Zarathustra, of the Hvōgva family; a legendary human rather than a divinity. Later Zoroastrian traditions differ over Zarathustra's marriages and children."
+    },
+    {
+      "id": "vivanghvant",
+      "name": "Vivanghvant",
+      "pantheon": "zoroastrian",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "first-haoma-presser",
+        "legendary"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [
+        "yima"
+      ],
+      "archetype": null,
+      "parallels": [],
+      "description": "In the Avesta, the first mortal to press the sacred Haoma, and for that devotion rewarded with the son Yima; a legendary human progenitor, not a god."
+    },
+    {
+      "id": "tishtrya",
+      "name": "Tishtrya",
+      "pantheon": "zoroastrian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "sirius",
+        "rain",
+        "stars"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The yazata of the star Sirius, bringer of the rains, who does battle with the drought-demon Apaosha to release the waters; a divine being of the Avestan hymns."
+    },
+    {
+      "id": "rashnu",
+      "name": "Rashnu",
+      "pantheon": "zoroastrian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "justice",
+        "judgment"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The yazata of justice who, with Mithra and Sraosha, weighs the souls of the dead at the Chinvat Bridge; a divinity of righteous judgment."
+    },
+    {
+      "id": "atar",
+      "name": "Atar",
+      "pantheon": "zoroastrian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "fire",
+        "sacred-fire"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The divinity of fire in Zoroastrianism, the sacred flame of the rituals and son of Ahura Mazda in Avestan idiom; the fire-yazata is distinguished from ordinary physical fire, which is its visible token rather than a separate being."
+    },
+    {
+      "id": "haoma",
+      "name": "Haoma",
+      "pantheon": "zoroastrian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "sacred-plant",
+        "vitality",
+        "ritual"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The divine being Haoma, yazata of the sacred plant and of healing and vital force. The tradition distinguishes the god Haoma from the ritual plant and from the pressed sacred drink that bears the same name."
     }
   ],
   "notable_mentions": [
