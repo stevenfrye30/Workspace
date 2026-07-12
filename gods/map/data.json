@@ -646,6 +646,39 @@
       "peak_to": 1200,
       "color": "#c9a24a",
       "description": "Religious and cosmological traditions of Jainism, centred on the Tirthankaras, liberated teachers, exemplary ascetics, and cycles of cosmic history."
+    },
+    {
+      "id": "mande",
+      "name": "Mande",
+      "region": "West Africa (Mali / Guinea)",
+      "active_from": 1200,
+      "active_to": 2025,
+      "peak_from": 1235,
+      "peak_to": 1600,
+      "color": "#c07a3a",
+      "description": "Heroic epic tradition of the Mande peoples - Mandinka, Malinke, Bamana and their neighbours - centred on the Sundiata epic of the Mali Empire. Carried and still performed by jeliw (griots); no single telling is canonical, and versions differ substantially between performers and communities."
+    },
+    {
+      "id": "kyrgyz",
+      "name": "Kyrgyz",
+      "region": "Central Asia (Tian Shan)",
+      "active_from": 900,
+      "active_to": 2025,
+      "peak_from": 1600,
+      "peak_to": 1950,
+      "color": "#4f8fa0",
+      "description": "The Manas epic of the Kyrgyz, among the longest oral epics ever recorded, and its Semetey and Seytek cycles. Performed by manaschi in recensions that differ enormously in length and detail; the best known are those of Sagymbay Orozbakov and Sayakbay Karalaev. Islamic elements belong to the epic's later layers."
+    },
+    {
+      "id": "georgian",
+      "name": "Georgian",
+      "region": "Caucasus (Georgia)",
+      "active_from": -500,
+      "active_to": 2025,
+      "peak_from": 500,
+      "peak_to": 1900,
+      "color": "#6f9a68",
+      "description": "Kartvelian traditions of Georgia - Georgian, Svan, Khevsur, Pshav and Mingrelian - which differ substantially from one another and are not one uniform pantheon. Includes the Amirani cycle and the shrine religion of the eastern mountains, parts of which remain living practice."
     }
   ],
   "archetypes": [
@@ -40995,6 +41028,276 @@
       "archetype": null,
       "parallels": [],
       "description": "Moremi Ajasoro of Ile-Ife, who ended the raids by walking into them. The Ugbo were coming out of the forest against Ife and taking whatever they wanted, and no one would stand to them, because they came covered head to foot in raffia and grass and were taken for spirits and not men. Moremi went to the river and vowed to the spirit Esimirin that if she were shown how to save the city she would give whatever was asked of her. Then she let herself be taken. She was carried off among the captives and made much of, and she stayed with them and watched and learned what she had gone to learn - that under the raffia there were men, and that grass burns. She got away and came back to Ife and told them, and when the Ugbo came again the people met them with torches and the disguises went up and the raiders were seen for what they were, and it was finished. Then she went back to the river to pay, and what was asked of her was her only son, Oluorogbo. The traditions do not all end the same way: some say the boy was given and died, and some that he went up out of the world afterwards, or came back, and the Edi festival at Ife keeps the memory of the debt and the paying of it every year. The Ugbo are a forest people of the Ife region and are not the modern Igbo of southeastern Nigeria, with whom the name is often and wrongly confused."
+    },
+    {
+      "id": "sundiata",
+      "name": "Sundiata Keita",
+      "pantheon": "mande",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "the-rising",
+        "exile",
+        "Kirina"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The hero of the Mande epic, the boy who could not walk. His mother was mocked for it, and when she was refused a handful of baobab leaves and came back weeping, he called for the iron rods, and they bent under him like bowstrings; and he stood, and went out and pulled up the baobab whole and set it down at his mother's door so that she would never ask anyone for leaves again. He was driven into exile with her and wandered for years among the kings of the Sahel, and while he was gone Soumaoro Kanté of Sosso took the Mande country. He came back at the head of an alliance and broke him at Kirina, and out of that the Mali of the epic is made. A historical Sundiata almost certainly lies under this - a thirteenth-century ruler who founded Mali - but what is set down here is the epic and not a chronicle of him: the crippled childhood, the iron rods and the baobab belong to the tradition, which is sung and not written, and which no two jeliw tell alike. He is also called Sunjata, Son-Jara, Sundjata, and Mari Djata."
+    },
+    {
+      "id": "sogolon",
+      "name": "Sogolon Kedjou",
+      "pantheon": "mande",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "endurance",
+        "exile",
+        "the-buffalo-wraith"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sundiata's mother, and not the Buffalo Woman. The two are distinct and the epic is careful about it: Do Kamissa, the buffalo woman of Do, was an old woman cheated of her inheritance who took a buffalo's shape and ravaged the country - and when the hunters came for her she told them herself how she could be killed, on the condition that when the king offered them their reward they should refuse every beauty in Do and ask for the ugliest girl in it. That girl was Sogolon, hunchbacked and unlovely, and the tellings say variously that she carried the buffalo's wraith, or its power, or its inheritance, or was joined to it in spirit; but she is not Do Kamissa and no telling makes her so. What she does is her own. She bore the mockery of Sassouma Bérété for years and the shame of a son who could not walk; and it was her weeping, when she was refused the baobab leaves, that put him on his feet. She took her children into exile and kept them alive through the long wandering from court to court; and it was her death at Mema, and the ground he had to buy to bury her in, that freed him to go home. She is not entered here as anyone's mother. She is also called Sogolon Condé and Sogolon Kèdjou."
+    },
+    {
+      "id": "soumaoro",
+      "name": "Soumaoro Kanté",
+      "pantheon": "mande",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "sorcery",
+        "kingship",
+        "Kirina"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "King of Sosso, and the man Sundiata had to break. He took the Mande kingdoms one after another while Sundiata was in exile, and he ruled them hard; and the epic makes him a great sorcerer - he kept a chamber of fetishes with the heads of the kings he had killed in it, and a balafon no one else could play, and he could put on other shapes. He took Sundiata's griot Balla Fasséké and would not give him back. And he took Fakoli's wife, who was his own nephew's wife, and lost Fakoli to the other side for it, which cost him the war. At Kirina he was struck with an arrow tipped with the spur of a white cock, which was the one thing his power could not stand against, and his hold broke and he was gone. He is a man, and a king, and a sorcerer; sorcery is something he does and not something he is, and he is set down here as a human antagonist and not as a monster. A historical ruler of Sosso may lie under him, but the documentation is thin, and the epic is not his biography. He is also called Sumanguru Kanté and Sumaworo."
+    },
+    {
+      "id": "nana-triban",
+      "name": "Nana Triban",
+      "pantheon": "mande",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "intelligence",
+        "escape",
+        "the-secret"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sundiata's half-sister, and the one who found out how Soumaoro could be killed. When Sosso came against the Mande her brother Dankaran Touman sent her to Soumaoro to buy peace, and she was made his wife and kept at his court. She did not sit there. She worked on him and drew him out and got from him, little by little, the thing no one else had - the secret of his tana, the taboo his power rested on, and what could undo it. Then she got out. She came across country to Sundiata in exile with Balla Fasséké, and told him what she had, and the arrow that killed Soumaoro at Kirina was made on what she said. She is not a sister handed over in a bargain; she is the intelligence the war was won on, and the record rests on that."
+    },
+    {
+      "id": "balla-fasseke",
+      "name": "Balla Fasséké",
+      "pantheon": "mande",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "the-word",
+        "the-balafon",
+        "memory"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Sundiata's jeli - his griot, his voice and his memory - given to him as a boy so that the two should belong to each other. Soumaoro took him, and kept him, and it is in Sosso that the great scene happens: he found his way into the fetish chamber and to Soumaoro's balafon, which no one but the king might touch, and he played it, and played it so well that Soumaoro, coming in furious, could not kill him for it and kept him instead as his own praise-singer. He stayed in that house and used his eyes. He escaped with Nana Triban and came to Sundiata, and what the two of them carried between them was what brought Soumaoro down at Kirina. The tellings divide the discovery differently - some give the secret to Nana Triban, some to Balla Fasséké, some to the two of them together - and that variation is part of the tradition and is not resolved here. He is also written Bala Faséké Kouyaté."
+    },
+    {
+      "id": "fakoli",
+      "name": "Fakoli",
+      "pantheon": "mande",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "defection",
+        "war",
+        "Kirina"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Soumaoro's own nephew and his best general, and the man whose going over decided the war. He had served Sosso and fought its battles and was reckoned to have power of his own; and Soumaoro took his wife from him. That was the end of it. Fakoli left, and took his men with him, and went to Sundiata; and the alliance that beat Sosso at Kirina was built with him in it. The epic makes a great deal of what he was worth - a small man with an enormous head, who could eat what nine men ate and fight what nine men fought - and the point of the story is that Soumaoro's own act made an enemy of the one man he could not afford to lose. He is given various clan names in the tellings, Fakoli Koroma and Fakoli Doumbia among them, and the jeliw of different lines claim him differently."
+    },
+    {
+      "id": "manas",
+      "name": "Manas",
+      "pantheon": "kyrgyz",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "the-forty-tribes",
+        "the-Great-Campaign",
+        "kingship"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The hero of the Kyrgyz epic that bears his name, and the figure the whole tradition is built on. He is born to a childless couple late and comes into strength impossibly early; he gathers the scattered Kyrgyz and the forty tribes under one hand and brings them back to the Ala-Too; he takes the choson, the forty companions, and makes war on the Kitay and the Kalmak; and at the height of it he leads the Great Campaign east, as far as Beijing in the fullest tellings. He is wounded to death on the way back from it and dies at home, and his tomb is hidden or built false so that his enemies cannot find it. He is a legendary figure, not a documented king: no Manas can be securely identified in the historical record. And there is no one Manas: the epic is sung by manaschi, and the great recensions differ enormously - Sagymbay Orozbakov's and Sayakbay Karalaev's are not the same poem - so no single sequence of events can be given as the version. The Islamic colouring belongs to the later layers of transmission and not to every part of the poem."
+    },
+    {
+      "id": "kanikey",
+      "name": "Kanikey",
+      "pantheon": "kyrgyz",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "counsel",
+        "foresight",
+        "the-flight"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Manas's wife, and the reason there is a second book. She is not there to be married. She is the one with the judgement in that house: she equips the forty companions out of her own wealth when they go to war, she sees what Manas will not see about the men around him, and she says so - she warns him against the kinsmen who will betray him, and is not listened to. When he is dead and those same kinsmen come for what is left, she does the thing the whole rest of the epic depends on: she takes the infant Semetey and goes, out of the country and into Bukhara to her father's people, and keeps the boy alive there for years while the usurpers hold the land. The Semetey cycle exists because she ran. Also written Kanykei."
+    },
+    {
+      "id": "almambet",
+      "name": "Almambet",
+      "pantheon": "kyrgyz",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "sworn-brotherhood",
+        "exile",
+        "the-Great-Campaign"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The prince who came over. He is born among Manas's enemies - the recensions name his people differently, and the labels Kitay, Kalmak and Chinese are not used consistently across them, so the ethnic terms are best taken as the epic's rather than as ethnography - and he leaves them: he quarrels with his own father, refuses the faith and the loyalty he was born to, and comes to Manas, who takes him as a sworn brother. He becomes the best of the forty, and the most trusted, and the loneliest: he has no people to go back to, and the poem does not let him forget it. He leads the vanguard of the Great Campaign and dies in it. His conversion and his exile are given in the recensions with different weight and different detail, and are given here as theirs."
+    },
+    {
+      "id": "semetey",
+      "name": "Semetey",
+      "pantheon": "kyrgyz",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "return",
+        "vengeance",
+        "inheritance"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Manas's son by Kanikey, and the hero of the second of the three great cycles. He was carried out of the country as an infant when his father's kinsmen seized what Manas had held, and he grew up in Bukhara not knowing whose son he was, and was told at last; and he came back. He took his father's horse and his father's arms and his father's men where he could find them, put down the usurpers, and won back Talas and the inheritance; and he hunted down Kongurbay, whom his father had not finished with, and killed him. His own end is dark and the tellings differ - he vanishes, or is betrayed, or is taken away - and his son Seytek carries the third cycle. He is not a coda to his father. The Semetey is a poem in its own right and he is its hero. Also written Semetei."
+    },
+    {
+      "id": "kongurbay",
+      "name": "Kongurbay",
+      "pantheon": "kyrgyz",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "war",
+        "enmity",
+        "the-Great-Campaign"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "Manas's chief enemy, and a man - a khan of the Kitay in the epic's terms, a great warrior with a great horse, and no monster. He fights Manas across the length of the poem, is beaten and comes back, and commands the forces that meet the Great Campaign in the east. In the major recensions he has a hand in Manas's death: some give him the mortal wound outright, in the fighting or in an ambush on the road home. But the epic does not put it all on him, and the record should not either - the poem is at least as interested in the treachery of Manas's own kinsmen, who turn on him at home, and the tellings apportion the blame between the two differently. He outlives Manas and is hunted down at last by Semetey. Also written Konurbay and Qoñurbay."
+    },
+    {
+      "id": "amirani",
+      "name": "Amirani",
+      "pantheon": "georgian",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "defiance",
+        "the-chain",
+        "the-eagle"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The chained hero of the Georgian mountains, known across Kartvelian tradition - in Svaneti, in Khevsureti, in Mingrelia and in the Georgian lowlands - in tellings that do not agree with one another. He is born with extraordinary strength, and in most of them with something on his body that marks him: a sign, or teeth of iron, or a birth cut from his dying mother. He kills the devi and the giants and the serpents, and clears the country of them. And then he goes too far: he defies Ghmerti, God, and challenges him or breaks faith with him, and for that he is chained - to a rock, or inside a cave, in the high Caucasus, with an eagle at his liver or his heart. His dog lies by him and licks at the chain and wears it thin; and every year, on a certain day, the smiths of the country strike their anvils, and the chain is made whole again, and it begins over. Some tellings say he will get free at the end of things. The parallel with Prometheus is real and is worth noting, but he is not derived from Prometheus and is not a Greek import: the Caucasian tradition stands on its own. His parentage varies by region - in the Svan telling his mother is the goddess Dali, and that is the Svan telling and not every one."
+    },
+    {
+      "id": "dali",
+      "name": "Dali",
+      "pantheon": "georgian",
+      "category": "major",
+      "gender": "F",
+      "domains": [
+        "the-hunt",
+        "the-crags",
+        "the-game"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The goddess of the hunt in Svan tradition, and the owner of the animals that are hunted. She lives high on the crags where men cannot easily go, golden-haired, and the game on the mountain is hers and is not taken without her leave. She takes hunters as her lovers, and while a man has her favour he cannot miss and cannot fall; and the conditions are absolute - he must tell no one, he must not boast, he must not go to his wife while he is hers, he must not take more than she allows. Men who break them are thrown from the rock face, or lose their footing on a ledge they have crossed a hundred times, or simply do not come back. In the Svan telling she is the mother of Amirani, cut from her body by the hunter who fathered him. She is specifically Svan and is not presented here as a deity of all the Georgian regions; hunt-goddesses of related function are known elsewhere in the Caucasus, and she is not merged with them."
+    },
+    {
+      "id": "kopala",
+      "name": "Kopala",
+      "pantheon": "georgian",
+      "category": "major",
+      "gender": "M",
+      "domains": [
+        "the-devi",
+        "the-mace",
+        "the-shrines"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A ghvtis-shvili - a child of God, one of the divine beings the eastern Georgian mountain religion sets under Ghmerti and above men - and the great slayer of the devi. He is not a man who was raised to a god; he is of that order from the beginning, and the distinction matters. The devi held the land and the waters and the passes, and Kopala went against them with his mace, and broke them and drove them out and threw them down, and so made the country fit for people to live in; the tradition of Khevsureti and Pshavi is emphatic that men hold their ground because he cleared it. He has his own shrines in those mountains and his own festivals and his own priests, and the tradition is not dead: what is set down here is what is publicly published of it, and no more. His scope is Khevsur and Pshav and he is not a pan-Georgian deity."
+    },
+    {
+      "id": "iakhsar",
+      "name": "Iakhsar",
+      "pantheon": "georgian",
+      "category": "minor",
+      "gender": "M",
+      "domains": [
+        "the-devi",
+        "the-water",
+        "purification"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "A ghvtis-shvili of the Khevsur and Pshav mountains, of the same divine order as Kopala and his companion in the war on the devi - and not merely his companion. What is his own is the water. He went down after the devi into the lake, or the pool, into the element they held and men do not hold, and killed what was in it; and being down there he was caught, or defiled by it, and could not come out clean - and had to be brought up and purified before he could stand in his own shrine again. He has shrines of his own in that country and is invoked in his own right. He is entered as minor beside Kopala, who is the primary figure of the pair in the tradition and the one the devi-clearing is chiefly told of; that is a statement about their standing in the eastern mountain religion and not a judgement on him. Also written Iakhsari."
     }
   ],
   "notable_mentions": [
