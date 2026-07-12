@@ -21,6 +21,18 @@ window.MASRI.listening = {
   audioReady: false,
   audioBase: "audio/listening/",
 
+  // Per-clip availability. `audioReady` stays FALSE until all 78 native clips exist.
+  // Until then, only the filenames listed here are playable; every other clip stays
+  // visibly unavailable and is never requested (no 404s, no fake pronunciation).
+  //
+  // greet-03.ogg is NOT a verified Egyptian recording. It is a public-domain Wikimedia
+  // Commons clip of أهلا whose dialect is undocumented. It is used because it does not
+  // materially conflict with the Egyptian learning form Masri displays (ahlan!) — not
+  // because the two varieties are claimed to be identical.
+  // Provenance and license: audio/listening/CREDITS.md.
+  // Egyptian-specific phrases (إزيك؟, مش فاهم, …) must wait for native recordings.
+  audioAvailable: ["greet-03.ogg"],
+
   topics: [
     { id: "greetings",   label: "Greetings" },
     { id: "introducing", label: "Introducing yourself" },
