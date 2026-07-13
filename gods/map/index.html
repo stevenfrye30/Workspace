@@ -1344,101 +1344,10 @@ select:focus:not(:focus-visible),
 }
 .img-lightbox-close:hover { opacity:1; transform:rotate(90deg); }
 
-/* Embedded shrine — local revelation INSIDE the cosmology, not a detached
-   panel. When a node is selected, a small popover-style shrine is injected
-   directly into the node, anchored beneath it with an upward-pointing gold
-   notch. The figure is examined in place; the cosmology stays continuous
-   around it. Esc / × / re-clicking the node clears it. */
+/* The Tradition Tree node popup lives on the VIEWPORT (.gp-popup), not inside the
+   node: a node carries `opacity`, and an ancestor's opacity cannot be undone by a
+   descendant, which is what made the old in-node shrine card see-through. */
 .full-tree-node.selected { z-index:8; }
-.tn-shrine {
-  position:absolute;
-  top:calc(100% + 8px); left:50%;
-  transform:translateX(-50%);
-  width:max(220px, 100%);
-  max-width:min(280px, calc(100vw - 32px));
-  /* Subtle gold wash at top → panel2 below. Reads as illuminated from
-     above, not a uniform card. */
-  background:linear-gradient(180deg,
-    color-mix(in srgb, var(--gold) 5%, var(--panel)) 0%,
-    var(--panel) 35%,
-    var(--panel2) 100%);
-  border:1px solid var(--gold-soft);
-  border-radius:6px;
-  padding:12px 14px 11px;
-  z-index:9;
-  /* Layered umbra rather than a single hard drop — feels set into the
-     cosmology, not popped over it. */
-  box-shadow:
-    0 6px 18px rgba(0,0,0,0.45),
-    0 14px 44px rgba(0,0,0,0.30),
-    0 0 0 1px var(--gold-faint);
-  text-align:left;
-  cursor:default;
-}
-/* Notch pointing up at the parent node — gives the shrine the feel of
-   physically emerging from the figure, not floating beside it. */
-.tn-shrine::before,
-.tn-shrine::after {
-  content:''; position:absolute; left:50%; transform:translateX(-50%);
-  width:0; height:0;
-  border-left:7px solid transparent;
-  border-right:7px solid transparent;
-}
-.tn-shrine::before {
-  bottom:100%;
-  border-bottom:7px solid var(--gold-soft);
-}
-.tn-shrine::after {
-  bottom:calc(100% - 1px);
-  border-bottom:7px solid var(--panel);
-}
-.tn-shrine .ts-name {
-  font-size:14.5px; color:var(--gold); font-weight:bold;
-  letter-spacing:0.3px; line-height:1.25; margin-bottom:3px;
-}
-.tn-shrine .ts-meta {
-  font-size:10.5px; color:var(--muted); font-style:italic;
-  letter-spacing:0.2px;
-}
-.tn-shrine .ts-meta .ts-sep { opacity:0.5; margin:0 0.1em; }
-.tn-shrine .ts-arch {
-  font-size:11px; color:var(--gold-deep); font-style:italic;
-  font-variant:small-caps; letter-spacing:1.4px; margin-top:6px;
-}
-.tn-shrine .ts-domains {
-  font-size:11px; color:var(--cyan); margin-top:5px;
-  font-style:italic; opacity:0.85;
-  overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-}
-.tn-shrine .ts-desc {
-  font-size:11.5px; color:var(--ink); margin-top:7px;
-  opacity:0.85; line-height:1.5;
-  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical;
-  overflow:hidden;
-  text-align:left;
-}
-.tn-shrine .ts-actions {
-  display:flex; gap:5px; margin-top:9px; padding-top:9px;
-  border-top:1px solid var(--gold-faint);
-  align-items:center;
-}
-.tn-shrine .ts-btn {
-  background:var(--panel2); border:1px solid var(--line); color:var(--ink);
-  padding:6px 12px; border-radius:5px;
-  font-family:inherit; font-size:10.5px; letter-spacing:1.1px;
-  font-variant:small-caps; font-weight:bold;
-  cursor:pointer; transition:all .15s;
-}
-.tn-shrine .ts-btn:hover {
-  border-color:var(--gold-soft); color:var(--gold);
-  background:rgba(229,193,88,0.06);
-}
-.tn-shrine .ts-btn-close {
-  margin-left:auto;
-  width:26px; padding:6px 0;
-  font-size:15px; letter-spacing:0;
-  font-variant:normal; font-weight:normal;
-}
 
 /* Mixed gens (no clear ontological stratum) drop the lintel entirely;
    the inter-gen rule still marks the row boundary. The visual rhythm
@@ -1686,12 +1595,13 @@ select:focus:not(:focus-visible),
   .barebone-class-head .barebone-class-count { display:block; margin-top:2px; }
 }
 /* ============ Graph popup (shared: Tradition Tree + Relationship Web) ============
-   ROOT CAUSE of the transparent card: the old .tn-shrine was appended INSIDE
-   .full-tree-node, and that node carries `opacity` (0.86 for hero/minor/
-   deified-human, 0.45 under .lineage-active). An ancestor's `opacity` creates a
-   stacking context that a descendant CANNOT undo — `opacity:1` on the card was
-   powerless. That is why `major` figures (Muisa, Nkuba) looked solid and `hero`
-   figures (Mwindo, Shemwindo) did not.
+   The popup must NOT be appended inside .full-tree-node. That node carries
+   `opacity` (0.86 for hero/minor/deified-human, 0.45 under .lineage-active), and
+   an ancestor's `opacity` creates a stacking context a descendant CANNOT undo —
+   `opacity:1` on the card is powerless against it. An earlier in-node card was
+   transparent for exactly this reason, and only for some categories: `major`
+   figures (Muisa, Nkuba) looked solid while `hero` figures (Mwindo, Shemwindo)
+   did not.
 
    The fix is architectural, not a colour override: the popup is now a child of
    the VIEWPORT, outside the transformed/faded graph subtree entirely. It can
@@ -3993,12 +3903,11 @@ function wireFullTreeZoom() {
     e.preventDefault();
     ftApplyZoom(ftZoom * (e.deltaY < 0 ? 1.1 : 1/1.1));
   }, { passive:false });
-  // Drag empty space to pan; node/shrine clicks still select.
+  // Drag empty space to pan; node and popup clicks still select.
   let down = false, sx = 0, sy = 0, ox = 0, oy = 0;
   vp.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
-    if (e.target.closest('.full-tree-node') || e.target.closest('.tn-shrine')
-        || e.target.closest('.gp-popup')) return;
+    if (e.target.closest('.full-tree-node') || e.target.closest('.gp-popup')) return;
     down = true; sx = e.clientX; sy = e.clientY; ox = vp.scrollLeft; oy = vp.scrollTop;
     vp.classList.add('panning');
     try { vp.setPointerCapture(e.pointerId); } catch (_) {}
@@ -4721,27 +4630,11 @@ function renderFullTreeFromState(state) {
 
   // Event delegation (single listener on the container) — cheaper than per-node
   if (!inner.dataset.wired) {
-    // Click in Full Tree = SELECT (open shrine + persistent lineage trace)
-    // — not Focus. The user stays on the page; "Focus this figure" in the
-    // shrine is the explicit gesture for switching to Focus view.
+    // Click in Full Tree = SELECT (open the figure popup + persistent lineage
+    // trace) — not Focus. The user stays on the page; the popup's Focus button is
+    // the explicit gesture for switching to the Overview. The popup is a viewport
+    // child with its own delegated handler, so its buttons never reach this listener.
     inner.addEventListener('click', e => {
-      // Shrine buttons handle themselves
-      const tsBtn = e.target.closest('.ts-btn');
-      if (tsBtn) {
-        const action = tsBtn.dataset.action;
-        const gid = currentSelectedId;
-        if (action === 'focus' && gid) {
-          clearTreeSelection();
-          setFocus(gid); // existing setFocus flips Full Tree → Focus
-        } else if (action === 'details' && gid) {
-          openGod(gid);
-        } else if (action === 'close') {
-          clearTreeSelection();
-        }
-        return;
-      }
-      // Don't toggle node selection for clicks inside the shrine body
-      if (e.target.closest('.tn-shrine')) return;
       const node = e.target.closest('.full-tree-node');
       if (!node || !inner.contains(node)) return;
       const gid = node.dataset.gid;
@@ -4751,7 +4644,6 @@ function renderFullTreeFromState(state) {
     // Hover preview is ephemeral — disabled while a selection is locked.
     inner.addEventListener('mouseover', e => {
       if (currentSelectedId) return;
-      if (e.target.closest('.tn-shrine')) return;
       const node = e.target.closest('.full-tree-node');
       if (node && inner.contains(node)) highlightLineage(node.dataset.gid);
     });
@@ -4884,17 +4776,14 @@ let currentSelectedId = null;
 
 function selectTreeNode(godId) {
   if (!fullTreeState || !fullTreeState.byId[godId]) return;
-  // Clear any prior shrine first
-  removeShrineFromAllNodes();
+  closeNodeInspector();          // clear any popup left by a previous selection
   currentSelectedId = godId;
   const inner = document.getElementById('fullTreeInner');
   if (!inner) return;
   inner.querySelectorAll('.full-tree-node').forEach(el => {
     el.classList.toggle('selected', el.dataset.gid === godId);
   });
-  // Inject the shrine directly into the selected node — local revelation
-  // inside the cosmology, not a detached overlay panel.
-  // The popup is NOT appended to the node any more. The node carries `opacity`
+  // The popup is NOT appended to the node. The node carries `opacity`
   // (0.86 for hero/minor/deified-human; 0.45 when lineage-dimmed) and an
   // ancestor's opacity cannot be undone by a descendant — that is what made the
   // card see-through for some categories and not others. It now lives on the
@@ -4910,7 +4799,7 @@ function selectTreeNode(godId) {
 function clearTreeSelection() {
   if (currentSelectedId === null) return;
   currentSelectedId = null;
-  removeShrineFromAllNodes();
+  closeNodeInspector();
   const inner = document.getElementById('fullTreeInner');
   if (inner) {
     inner.querySelectorAll('.full-tree-node.selected').forEach(el => el.classList.remove('selected'));
@@ -4918,8 +4807,8 @@ function clearTreeSelection() {
   clearLineageHighlight();
 }
 
-function removeShrineFromAllNodes() {
-  document.querySelectorAll('.tn-shrine').forEach(el => el.remove());  // legacy safety
+// Closes the figure popup opened by a Tradition Tree selection.
+function closeNodeInspector() {
   gpClose();
 }
 
@@ -4928,38 +4817,6 @@ function removeShrineFromAllNodes() {
 function cssEscape(s) {
   if (window.CSS && window.CSS.escape) return CSS.escape(s);
   return String(s).replace(/[^a-zA-Z0-9_-]/g, c => '\\' + c);
-}
-
-function buildShrineEl(godId) {
-  const g = GODS_BY_ID[godId];
-  const shrine = document.createElement('div');
-  shrine.className = 'tn-shrine';
-  shrine.setAttribute('role', 'region');
-  shrine.setAttribute('aria-label', g.name + ' inspector');
-  if (!g) { shrine.textContent = 'Unknown figure'; return shrine; }
-  const p = PANTHEONS_BY_ID[g.pantheon];
-  const archObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
-  const eraText = (p && Number.isFinite(p.active_from) && Number.isFinite(p.active_to))
-    ? fmtYears(p.active_from, p.active_to) : '';
-  const catText = (g.category || '').replace(/-/g, ' ');
-  const domains = (g.domains || []).slice(0, 4).map(d => d.replace(/-/g,' ')).join(' · ');
-  const archHtml = archObj
-    ? `<div class="ts-arch">A figure of the ${escapeAttr(archObj.name)} archetype</div>` : '';
-  const domHtml = domains ? `<div class="ts-domains">${domains}</div>` : '';
-  const descHtml = g.description ? `<div class="ts-desc">${escapeAttr(g.description)}</div>` : '';
-  shrine.innerHTML = `
-    <div class="ts-name">${escapeAttr(g.name)}</div>
-    <div class="ts-meta">${escapeAttr(p ? p.name : g.pantheon)}${eraText ? ` <span class="ts-sep">·</span> ${eraText}` : ''}${catText ? ` <span class="ts-sep">·</span> ${catText}` : ''}</div>
-    ${archHtml}
-    ${domHtml}
-    ${descHtml}
-    <div class="ts-actions">
-      <button class="ts-btn" data-action="focus" type="button">Focus</button>
-      <button class="ts-btn" data-action="details" type="button">Details</button>
-      <button class="ts-btn ts-btn-close" data-action="close" type="button" aria-label="Close inspector">×</button>
-    </div>
-  `;
-  return shrine;
 }
 
 function highlightLineage(godId) {
