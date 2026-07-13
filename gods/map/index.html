@@ -1662,6 +1662,103 @@ select:focus:not(:focus-visible),
   .group-help { font-size:11px; }
   .barebone-class-head .barebone-class-count { display:block; margin-top:2px; }
 }
+/* ============ Graph popup (shared: Tradition Tree + Relationship Web) ============
+   ROOT CAUSE of the transparent card: the old .tn-shrine was appended INSIDE
+   .full-tree-node, and that node carries `opacity` (0.86 for hero/minor/
+   deified-human, 0.45 under .lineage-active). An ancestor's `opacity` creates a
+   stacking context that a descendant CANNOT undo — `opacity:1` on the card was
+   powerless. That is why `major` figures (Muisa, Nkuba) looked solid and `hero`
+   figures (Mwindo, Shemwindo) did not.
+
+   The fix is architectural, not a colour override: the popup is now a child of
+   the VIEWPORT, outside the transformed/faded graph subtree entirely. It can
+   never inherit node opacity, it never scales with zoom (so it never blurs),
+   and it always paints above every graph layer. */
+.gp-popup {
+  position:absolute;
+  z-index:80;                      /* above nodes (6), edges, labels, zoombar */
+  width:300px;
+  max-width:min(300px, calc(100vw - 28px));
+  background:var(--panel2);        /* SOLID. no rgba, no gradient, no color-mix */
+  border:1px solid var(--gold-soft);
+  border-radius:8px;
+  padding:12px 14px 11px;
+  text-align:left;
+  cursor:default;
+  opacity:1;
+  box-shadow:
+    0 6px 18px rgba(0,0,0,0.55),
+    0 18px 48px rgba(0,0,0,0.45),
+    0 0 0 1px rgba(0,0,0,0.35);
+  color:var(--ink);
+}
+.gp-popup .gp-name {
+  font-size:14px; font-weight:700; color:var(--gold);
+  line-height:1.3; margin:0 26px 3px 0;   /* clear of the close button */
+  word-break:break-word;
+}
+.gp-popup .gp-meta {
+  font-size:11px; color:var(--muted); line-height:1.5; margin-bottom:7px;
+}
+.gp-popup .gp-meta .gp-sep { opacity:0.55; margin:0 0.25em; }
+.gp-popup .gp-badge {
+  display:inline-block; font-size:9.5px; letter-spacing:0.8px; text-transform:uppercase;
+  border:1px solid var(--line); border-radius:4px; padding:1px 5px; margin-right:5px;
+  color:var(--muted);
+}
+.gp-popup .gp-badge.gp-root { border-color:var(--gold-soft); color:var(--gold); }
+.gp-popup .gp-domains {
+  font-size:10.5px; color:var(--muted); line-height:1.5; margin-bottom:7px;
+  padding-bottom:7px; border-bottom:1px solid var(--line);
+}
+.gp-popup .gp-desc {
+  font-size:11.5px; color:var(--ink); line-height:1.6; margin-bottom:10px;
+  max-height:8.4em; overflow:hidden;
+  display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical;
+}
+.gp-popup .gp-actions { display:flex; gap:7px; align-items:center; }
+.gp-popup .gp-btn {
+  background:var(--panel); color:var(--ink); border:1px solid var(--line);
+  border-radius:6px; padding:6px 11px; font-size:11.5px; cursor:pointer;
+  font-family:inherit; min-height:30px;
+}
+.gp-popup .gp-btn:hover { border-color:var(--gold); color:var(--gold); }
+.gp-popup .gp-btn:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.gp-popup .gp-btn-close {
+  position:absolute; top:6px; right:6px;
+  width:26px; height:26px; min-height:26px; padding:0;   /* clear hit area */
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; line-height:1; border-radius:6px;
+}
+@media (max-width: 760px) {
+  /* Opaque bottom sheet — never a cramped floating card, never translucent. */
+  .gp-popup {
+    position:fixed; left:8px; right:8px; bottom:8px; top:auto;
+    width:auto; max-width:none; z-index:150;
+    border-radius:12px; padding:14px 16px 13px;
+    box-shadow:0 -8px 40px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.4);
+  }
+  .gp-popup .gp-desc { -webkit-line-clamp:4; }
+  .gp-popup .gp-btn { min-height:40px; padding:9px 14px; font-size:12.5px; }
+  .gp-popup .gp-btn-close { width:34px; height:34px; min-height:34px; font-size:18px; }
+}
+
+/* Relationship Web: NETWORK ROOT is a distinct state from SELECTED FIGURE.
+   Never colour-alone — the root carries a text badge, the selection a ring. */
+.rw-node.rw-root::after {
+  content:'ROOT';
+  position:absolute; top:-8px; left:-6px;
+  background:var(--panel2); color:var(--gold);
+  border:1px solid var(--gold-soft); border-radius:8px;
+  font-size:8.5px; font-weight:700; letter-spacing:0.8px;
+  padding:1px 5px; line-height:1.4;
+}
+.rw-node.rw-selected {
+  border:2px solid var(--gold);
+  box-shadow:0 0 0 3px rgba(229,193,88,0.28);
+  z-index:7;
+}
+.rw-node.rw-selected .rw-nname { color:var(--gold); }
 </style>
 <link rel="stylesheet" href="../../_shared/hub-nav.css">
 </head>
@@ -1811,7 +1908,8 @@ select:focus:not(:focus-visible),
         <div class="rw-group">
           <button type="button" id="rwFull" class="rw-action rw-primary">Show Full Network</button>
           <button type="button" id="rwFit" class="rw-action">Fit to Screen</button>
-          <button type="button" id="rwCenter" class="rw-action">Center Focus</button>
+          <button type="button" id="rwRebuild" class="rw-action">Rebuild Around Selected</button>
+          <button type="button" id="rwCenter" class="rw-action">Center Selected</button>
           <button type="button" id="rwReset" class="rw-action">Reset View</button>
         </div>
         <p class="rw-note">
@@ -1821,6 +1919,7 @@ select:focus:not(:focus-visible),
       </div>
 
       <div class="rw-summary" id="rwSummary" role="status" aria-live="polite"></div>
+      <div class="rw-summary" id="rwSelInfo" role="status" aria-live="polite" style="margin-top:-6px;"></div>
 
       <div class="rw-viewport" id="rwViewport" tabindex="0"
            role="application" aria-label="Relationship network graph"
@@ -1836,6 +1935,8 @@ select:focus:not(:focus-visible),
         <span class="rw-lg"><span class="rw-lgline" style="border-top:2px dotted #9aa3bd;"></span> sibling</span>
         <span class="rw-lg"><span class="rw-lgline" style="border-top:3px double #6ea8e0;"></span> parallel (comparative)</span>
         <span class="rw-lg"><span class="rw-lgbox"></span> not catalogued</span>
+        <span class="rw-lg"><span class="rw-lgline" style="border-top:2px solid var(--gold);"></span> <strong>ROOT</strong> badge = the figure the network is built from</span>
+        <span class="rw-lg"><span class="rw-lgbox" style="border:2px solid var(--gold); border-radius:3px;"></span> thick ring = the selected figure (click any node to select; the map does not move)</span>
       </div>
     </div>
 
@@ -2399,6 +2500,9 @@ function wireModal() {
     if (e.key !== 'Escape') return;
     if (document.getElementById('imgLightboxBg').classList.contains('open')) {
       closeImgLightbox();
+    } else if (gpOpen) {
+      gpClose();
+      if (currentSelectedId) clearTreeSelection();
     } else if (currentSelectedId) {
       clearTreeSelection();
     } else {
@@ -2836,6 +2940,7 @@ function renderTreeSelect() {
 }
 
 function setTreeMode(mode) {
+  gpClose();               // switching views always closes the popup
   currentTreeMode = mode;  // 'focus' (Overview) | 'web' (Relationship Web) | 'full' (Tradition Tree)
   // Leaving Tradition Tree drops any selection state and inspector
   if (mode !== 'full') clearTreeSelection();
@@ -2959,6 +3064,13 @@ let rwState = {
 };
 let rwZoom = 1;
 let rwLastGraph = null;
+// NETWORK ROOT (the figure the graph is built from) is deliberately separate
+// from the SELECTED figure (the one highlighted and shown in the popup).
+// Clicking a node changes the selection only — coordinates, edges, zoom, pan,
+// filters, depth and direction are all preserved. The layout is rebuilt only on
+// an explicit "Rebuild Around Selected".
+let rwRootId = null;
+let rwSelectedId = null;
 const RW_CACHE = new Map();
 
 /* ---- normalized relationship model: built ONCE from DATA, never mutated ---- */
@@ -3294,9 +3406,9 @@ function rwRender(graph) {
     const deg = REL.degree[id] || 0;
     const cat = (g.category || '').replace(/-/g, ' ');
     nodeHtml.push(
-      `<button type="button" class="rw-node${isF ? ' rw-focus' : ''}" data-gid="${g.id}"
+      `<button type="button" class="rw-node${isF ? ' rw-focus rw-root' : ''}${id === rwSelectedId ? ' rw-selected' : ''}" data-gid="${g.id}"
         style="left:${p.x}px; top:${p.y}px; --node-color:${classColorForPantheon(g.pantheon)}"
-        aria-label="${escapeAttr(g.name)}, ${escapeAttr(cat)}, ${escapeAttr(pan ? pan.name : g.pantheon)}${isF ? '. Current focus' : '. Activate to set as focus'}">
+        aria-label="${escapeAttr(g.name)}, ${escapeAttr(cat)}, ${escapeAttr(pan ? pan.name : g.pantheon)}${isF ? '. Network root' : ''}${id === rwSelectedId ? '. Selected figure' : ''}. Activate to select">
         ${deg > RW_DEG_BADGE ? `<span class="rw-deg" aria-hidden="true">${deg}</span>` : ''}
         <span class="rw-nname">${escapeAttr(g.name)}</span>
         <span class="rw-ntrad">${escapeAttr(pan ? pan.name : g.pantheon)}</span>
@@ -3329,9 +3441,11 @@ function rwRender(graph) {
     (graph.capped ? ` · <strong>stopped at the ${RW_CAP}-figure safety limit</strong>` : ''),
     true);
 
+  if (!rwSelectedId || !graph.nodes.has(rwSelectedId)) rwSelectedId = graph.focusId;
   rwApplyZoom(1);
   if (total > RW_FIT_OVER) rwFit(); else rwCenterFocus();
   rwSyncControls();
+  rwUpdateSummarySelection();
 }
 
 function rwSetSummary(html, isHtml) {
@@ -3351,6 +3465,7 @@ function rwApplyZoom(z) {
   inner.style.transform = `scale(${z})`;
   sizer.style.width = Math.ceil(w * z) + 'px';
   sizer.style.height = Math.ceil(h * z) + 'px';
+  gpReposition();   // popup re-anchors; it never scales, so it never blurs
 }
 function rwFit() {
   const vp = document.getElementById('rwViewport');
@@ -3371,7 +3486,7 @@ function rwCenterFocus(keepScrollIfFits) {
   const vp = document.getElementById('rwViewport');
   const inner = document.getElementById('rwInner');
   if (!vp || !inner || !rwLastGraph) return;
-  const el = inner.querySelector('.rw-node.rw-focus');
+  const el = inner.querySelector('.rw-node.rw-selected') || inner.querySelector('.rw-node.rw-focus');
   if (!el) return;
   const x = (parseFloat(el.style.left) || 0) * rwZoom;
   const y = (parseFloat(el.style.top) || 0) * rwZoom;
@@ -3387,6 +3502,131 @@ function rwCenterFocus(keepScrollIfFits) {
 function rwReducedMotion() {
   return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
+
+
+/* ================= SHARED GRAPH POPUP =================
+   One popup, used by both Tradition Tree and Relationship Web.
+
+   It is appended to the VIEWPORT (the scroll container), never to a graph node.
+   That is the whole fix: a node carries `opacity` (0.86 for hero/minor/
+   deified-human, 0.45 when lineage-dimmed) and an ancestor's opacity cannot be
+   undone by a descendant. Living outside the node — and outside the scaled
+   #inner — the popup is immune to node opacity, immune to category filtering,
+   immune to lineage fading, never scales with zoom, and always paints on top.
+
+   Positioned in the viewport's CONTENT coordinate space, so it stays anchored
+   to its node while the graph is panned (panning must not close it).
+   ====================================================== */
+let gpOpen = null;   // { godId, vpId, nodeSel }
+
+function gpRemove() {
+  document.querySelectorAll('.gp-popup').forEach(el => el.remove());
+}
+
+function gpClose() {
+  gpRemove();
+  gpOpen = null;
+}
+
+function gpBuild(godId, opts) {
+  const g = GODS_BY_ID[godId];
+  const el = document.createElement('div');
+  el.className = 'gp-popup';
+  el.setAttribute('role', 'dialog');
+  el.setAttribute('aria-modal', 'false');   // not a trap: the graph stays usable
+  el.setAttribute('aria-label', (g ? g.name : godId) + ' — figure details');
+  if (!g) { el.textContent = 'Unknown figure'; return el; }
+
+  const p = PANTHEONS_BY_ID[g.pantheon];
+  const era = (p && Number.isFinite(p.active_from) && Number.isFinite(p.active_to))
+    ? fmtYears(p.active_from, p.active_to) : '';
+  const cat = (g.category || '').replace(/-/g, ' ');
+  const gsym = g.gender === 'M' ? 'male' : g.gender === 'F' ? 'female' : '';
+  const domains = (g.domains || []).slice(0, 4).map(d => d.replace(/-/g, ' ')).join(' · ');
+  const isRoot = !!(opts && opts.isRoot);
+
+  el.innerHTML = `
+    <button class="gp-btn gp-btn-close" data-gp="close" type="button" aria-label="Close details">×</button>
+    <div class="gp-name">${escapeAttr(g.name)}</div>
+    <div class="gp-meta">
+      ${isRoot ? '<span class="gp-badge gp-root">Network root</span>' : ''}
+      <span class="gp-badge">${escapeAttr(cat)}</span>
+      ${escapeAttr(p ? p.name : g.pantheon)}${era ? ` <span class="gp-sep">·</span> ${era}` : ''}${gsym ? ` <span class="gp-sep">·</span> ${gsym}` : ''}
+    </div>
+    ${domains ? `<div class="gp-domains">${escapeAttr(domains)}</div>` : ''}
+    ${g.description ? `<div class="gp-desc">${escapeAttr(g.description)}</div>` : ''}
+    <div class="gp-actions">
+      ${opts && opts.rebuildLabel ? `<button class="gp-btn" data-gp="rebuild" type="button">${opts.rebuildLabel}</button>` : ''}
+      <button class="gp-btn" data-gp="details" type="button">Details</button>
+    </div>`;
+  return el;
+}
+
+/* Place the popup beside/below its node, flipping at the edges and clamping
+   inside the viewport. Placement never depends on the figure's category. */
+function gpPosition(el, nodeEl, vp) {
+  if (!el || !nodeEl || !vp) return;
+  const nr = nodeEl.getBoundingClientRect();
+  const vr = vp.getBoundingClientRect();
+  const w = el.offsetWidth || 300;
+  const h = el.offsetHeight || 200;
+  const GAP = 10;
+
+  // node position in the viewport's CONTENT space (scrolls with the graph)
+  const nx = nr.left - vr.left + vp.scrollLeft;
+  const ny = nr.top  - vr.top  + vp.scrollTop;
+  const nw = nr.width, nh = nr.height;
+
+  const viewL = vp.scrollLeft, viewT = vp.scrollTop;
+  const viewR = viewL + vp.clientWidth, viewB = viewT + vp.clientHeight;
+
+  // prefer below-left-aligned; flip up if it would fall out of the bottom
+  let top = ny + nh + GAP;
+  if (top + h > viewB && ny - h - GAP >= viewT) top = ny - h - GAP;
+
+  // prefer aligned to the node's left edge; flip right-aligned near the right edge
+  let left = nx;
+  if (left + w > viewR - 4) left = nx + nw - w;
+
+  // final clamp so it can never clip outside the viewport
+  left = Math.max(viewL + 4, Math.min(left, viewR - w - 4));
+  top  = Math.max(viewT + 4, Math.min(top,  viewB - h - 4));
+
+  el.style.left = Math.round(left) + 'px';
+  el.style.top  = Math.round(top) + 'px';
+}
+
+function gpShow(godId, vpId, nodeSelector, opts) {
+  gpRemove();
+  const vp = document.getElementById(vpId);
+  if (!vp) return;
+  const nodeEl = vp.querySelector(nodeSelector);
+  if (!nodeEl) return;
+  const el = gpBuild(godId, opts || {});
+  vp.appendChild(el);                     // <-- sibling of the graph, not a child of a node
+  gpOpen = { godId, vpId, nodeSel: nodeSelector };
+  requestAnimationFrame(() => gpPosition(el, nodeEl, vp));
+
+  el.addEventListener('click', e => {
+    const act = e.target.closest('[data-gp]');
+    if (!act) return;
+    e.stopPropagation();
+    const a = act.dataset.gp;
+    if (a === 'close') gpClose();
+    else if (a === 'details') openGod(godId);
+    else if (a === 'rebuild') { rwRebuildAroundSelected(); }
+  });
+}
+
+// Re-anchor after a zoom change (node moved in screen space).
+function gpReposition() {
+  if (!gpOpen) return;
+  const vp = document.getElementById(gpOpen.vpId);
+  const el = vp && vp.querySelector('.gp-popup');
+  const nodeEl = vp && vp.querySelector(gpOpen.nodeSel);
+  if (el && nodeEl) gpPosition(el, nodeEl, vp);
+}
+/* ================= end shared graph popup ================= */
 
 /* ---------------------- controls ---------------------- */
 function rwSyncControls() {
@@ -3415,14 +3655,60 @@ function rwSyncControls() {
 }
 
 function rwRerender() {
-  if (!currentFocusId) return;
-  rwRender(rwGetGraph(currentFocusId, rwState));
+  if (!rwRootId) rwRootId = currentFocusId;
+  if (!rwRootId) return;
+  if (!rwSelectedId) rwSelectedId = rwRootId;
+  rwRender(rwGetGraph(rwRootId, rwState));   // cache key uses the ROOT, never the selection
+}
+
+// Selection-only update: no BFS, no layout, no fit, no cache invalidation.
+function rwSelect(godId, { pushHash = true } = {}) {
+  if (!GODS_BY_ID[godId]) return;
+  rwSelectedId = godId;
+  currentFocusId = godId;                 // Overview / details follow the selection
+  const inner = document.getElementById('rwInner');
+  if (inner) {
+    inner.querySelectorAll('.rw-node').forEach(el => {
+      el.classList.toggle('rw-selected', el.dataset.gid === godId);
+    });
+  }
+  const g = GODS_BY_ID[godId];
+  renderFocusView(g);                     // keep the Overview panel in step
+  const fSel = document.getElementById('focusSelect');
+  if (fSel && g.pantheon === (GODS_BY_ID[rwRootId] || g).pantheon) {
+    if (fSel.querySelector(`option[value="${cssEscape(godId)}"]`)) fSel.value = godId;
+  }
+  if (focusHistory[focusHistory.length - 1] !== godId) focusHistory.push(godId);
+  updateBackButton();
+  gpShow(godId, 'rwViewport', `.rw-node[data-gid="${cssEscape(godId)}"]`,
+         { isRoot: godId === rwRootId,
+           rebuildLabel: godId === rwRootId ? '' : 'Rebuild around this figure' });
+  rwUpdateSummarySelection();
+  if (pushHash) updateHash('god/' + godId);   // hash update must NOT rebuild the graph
+}
+
+function rwUpdateSummarySelection() {
+  const el = document.getElementById('rwSelInfo');
+  if (!el || !rwLastGraph) return;
+  const s = GODS_BY_ID[rwSelectedId], r = GODS_BY_ID[rwRootId];
+  el.textContent = (r && s)
+    ? `Root: ${r.name} · Selected: ${s.name}` : '';
+}
+
+// The ONLY action that recomputes layout.
+function rwRebuildAroundSelected() {
+  if (!rwSelectedId) return;
+  rwRootId = rwSelectedId;                 // keep filters, depth, direction, full-state
+  gpClose();
+  rwRerender();
+  rwFit();
 }
 
 function rwRequestFull() {
-  if (!currentFocusId) return;
+  if (!rwRootId) rwRootId = currentFocusId;
+  if (!rwRootId) return;
   const probe = { ...rwState, full: true, types: { ...rwState.types } };
-  const g = rwGetGraph(currentFocusId, probe);   // BFS is iterative + capped; safe to measure
+  const g = rwGetGraph(rwRootId || currentFocusId, probe);   // BFS is iterative + capped; safe to measure
   const n = g.nodes.size, tr = g.traditions.size;
 
   if (g.capped) {
@@ -3493,6 +3779,8 @@ function rwResetView() {
     full: false,
   };
   rwZoom = 1;
+  rwRootId = rwSelectedId || rwRootId || currentFocusId;
+  gpClose();
   rwRerender();
 }
 
@@ -3515,6 +3803,7 @@ function wireRelationshipWeb() {
   on('rwFull', () => { if (rwState.full) { rwState.full = false; rwRerender(); } else rwRequestFull(); });
   on('rwFit', rwFit);
   on('rwCenter', () => rwCenterFocus());
+  on('rwRebuild', rwRebuildAroundSelected);
   on('rwReset', rwResetView);
 
   const vp = document.getElementById('rwViewport');
@@ -3525,7 +3814,8 @@ function wireRelationshipWeb() {
     const n = e.target.closest('.rw-node');
     if (!n || n.classList.contains('rw-stub')) return;
     const gid = n.dataset.gid;
-    if (gid && gid !== currentFocusId) setFocus(gid);
+    // SELECTION ONLY. The graph is not rebuilt, not re-laid-out, not re-fitted.
+    if (gid) rwSelect(gid);
   });
   // Buttons already fire click on Enter/Space; this keeps Space from scrolling.
   vp.addEventListener('keydown', e => {
@@ -3643,8 +3933,17 @@ function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
 
   if (currentTreeMode === 'full') renderFullTree(g.pantheon);
   if (currentTreeMode === 'web') {
-    rwState.full = false;   // a new focus starts from the depth-limited view
-    rwRerender();
+    // Only rebuild when the figure is NOT in the visible network (e.g. Back to a
+    // figure outside it, or a fresh route). Otherwise just move the selection —
+    // the map stays put.
+    if (rwLastGraph && rwLastGraph.nodes.has(godId)) {
+      rwSelect(godId, { pushHash: false });
+    } else {
+      rwRootId = godId;
+      rwSelectedId = godId;
+      rwState.full = false;   // a brand-new root starts from the depth-limited view
+      rwRerender();
+    }
   }
 
   if (!skipHash) updateHash('god/' + godId);
@@ -4472,8 +4771,12 @@ function selectTreeNode(godId) {
   });
   // Inject the shrine directly into the selected node — local revelation
   // inside the cosmology, not a detached overlay panel.
-  const sel = inner.querySelector(`.full-tree-node[data-gid="${cssEscape(godId)}"]`);
-  if (sel) sel.appendChild(buildShrineEl(godId));
+  // The popup is NOT appended to the node any more. The node carries `opacity`
+  // (0.86 for hero/minor/deified-human; 0.45 when lineage-dimmed) and an
+  // ancestor's opacity cannot be undone by a descendant — that is what made the
+  // card see-through for some categories and not others. It now lives on the
+  // viewport, outside the faded, transformed subtree.
+  gpShow(godId, 'ftViewport', `.full-tree-node[data-gid="${cssEscape(godId)}"]`, {});
   highlightLineage(godId);
 }
 
@@ -4489,7 +4792,8 @@ function clearTreeSelection() {
 }
 
 function removeShrineFromAllNodes() {
-  document.querySelectorAll('.tn-shrine').forEach(el => el.remove());
+  document.querySelectorAll('.tn-shrine').forEach(el => el.remove());  // legacy safety
+  gpClose();
 }
 
 // Minimal CSS.escape fallback for older browsers — only escapes the chars we
