@@ -1417,6 +1417,33 @@ function renderTrails() {
 
 // ===== Reading Paths =====
 
+// ===== Comparison-table label resolution =====
+// The comparison tables sometimes write a philosopher's name in shorthand: they say
+// "Mill" and "James" where the records are "John Stuart Mill" and "William James".
+// This map exists only to reconcile that shorthand, and nothing else.
+//
+// It is not an alias system:
+//   - `name` remains the canonical primary key. byName is untouched.
+//   - It creates no alias routes: #/philosopher/Mill does not resolve, by design.
+//   - Search, Study, the graph, routing, schools, trails, reading paths, quotes,
+//     excerpts and biography auto-linking never consult it.
+//   - The visible table text is never rewritten. Only the click target is canonicalised,
+//     so the table keeps reading "Mill" while sending you to John Stuart Mill.
+const TABLE_PHILOSOPHER_LABELS = {
+  'Mill': 'John Stuart Mill',
+  'James': 'William James',
+};
+
+// Canonical name for a first-column table label, or null if the label names nobody we
+// hold. A label that is already canonical wins outright, so the map can never hijack a
+// real philosopher's name, and a mapping whose target is missing resolves to null rather
+// than producing a dead link.
+function resolveTablePhilosopherLabel(label) {
+  if (byName[label] != null) return label;
+  const canonical = TABLE_PHILOSOPHER_LABELS[label];
+  return (canonical && byName[canonical] != null) ? canonical : null;
+}
+
 // ===== Tables =====
 function renderTables() {
   $('#tables-body').innerHTML = (DATA.tables||[]).map(t => `
@@ -1426,10 +1453,14 @@ function renderTables() {
       <thead><tr>${t.cols.map(c=>`<th>${esc(c)}</th>`).join('')}</tr></thead>
       <tbody>
         ${t.rows.map(r=>`<tr>${r.map((c,i)=>{
-          // Only a first-column value we hold a philosopher record for becomes a link.
-          // The rest (groups like "Pyrrhonists", pairs like "Nussbaum / Sen") stay plain
-          // text, so nothing looks clickable that has nowhere to go.
-          if (i===0 && byName[c]!=null) return `<td class="who" data-name="${esc(c)}">${esc(c)}</td>`;
+          // Only a first-column value that names a philosopher we hold becomes a link,
+          // including the table's own shorthand ("Mill", "James"). The displayed text
+          // stays exactly as the table wrote it; only data-name carries the canonical
+          // record. The rest (groups like "Pyrrhonists", pairs like "Nussbaum / Sen",
+          // and people we simply do not hold yet) stay plain text, so nothing looks
+          // clickable that has nowhere to go.
+          const who = i===0 ? resolveTablePhilosopherLabel(c) : null;
+          if (who) return `<td class="who" data-name="${esc(who)}">${esc(c)}</td>`;
           return `<td>${esc(c)}</td>`;
         }).join('')}</tr>`).join('')}
       </tbody>
