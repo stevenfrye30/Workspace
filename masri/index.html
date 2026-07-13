@@ -1518,7 +1518,15 @@ function renderTableCards(arr){
   const QUALITY_HOLD = new Set(['/uː/']);   // plays the /u/ quality; a dedicated long /uː/ clip is still being sourced
   const NO_CLIP = new Set(['/aj/','/aw/']); // diphthongs: no single IPA reference clip
   const audioBase = (d.audio && d.audio.base) || 'audio/ipa/';
-  const audioReady = !!(d.audio && d.audio.ready);
+  // Every clip we ship is Ogg Vorbis. WebKit — Safari, and every browser on iOS — cannot
+  // decode it, so the buttons must present themselves as unavailable UP FRONT rather than
+  // looking playable and dying one click at a time. Detected, never assumed.
+  const canPlayOgg = (function(){
+    try { return !!document.createElement('audio').canPlayType('audio/ogg; codecs="vorbis"'); }
+    catch(e){ return false; }
+  })();
+  const audioReady = !!(d.audio && d.audio.ready) && canPlayOgg;
+  const audioBlockedByBrowser = !!(d.audio && d.audio.ready) && !canPlayOgg;
 
   function playBtnHtml(r){
     const ipa = esc(r.ipa);
@@ -1540,7 +1548,7 @@ function renderTableCards(arr){
       aria = `Hear phoneme ${ipa} — the formal IPA reference sound (not the Egyptian pronunciation of the word)`;
       title = `IPA reference sound ${ipa}`;
     }
-    if(!audioReady) return `<button type="button" class="sym-play unavailable" aria-disabled="true" aria-label="${ipa} — audio unavailable"><span class="sym-play-ico" aria-hidden="true">🔇</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
+    if(!audioReady) return `<button type="button" class="sym-play unavailable" data-ipa="${ipa}" aria-disabled="true" aria-label="${ipa} — audio unavailable"><span class="sym-play-ico" aria-hidden="true">🔇</span><span class="sym-play-lbl">Hear ${ipa}</span></button>`;
     return `<button type="button" class="sym-play" data-audio="${esc(src)}" data-ipa="${ipa}" aria-pressed="false" aria-label="${aria}" title="${title}"><span class="sym-play-ico" aria-hidden="true">►</span><span class="sym-play-lbl">Hear ${ipa}</span></button>${note}`;
   }
 
@@ -1573,9 +1581,11 @@ function renderTableCards(arr){
   // reference (see after the audio-status region).
   let h = `<p class="sym-copyhint">Tap any <b style="color:var(--green)">IPA symbol</b> or <b style="color:var(--gold)">Arabic letter</b> to copy it`
      + (audioReady ? `, or <b style="color:var(--gold)">Hear /…/</b> to play the reference sound for that row.` : `.`) + `</p>`;
+  if(audioBlockedByBrowser)
+    h += `<p class="note"><b>No audio in this browser.</b> The reference clips are Ogg Vorbis, which Safari and iOS browsers cannot play, so they are shown as unavailable here. They play in Chrome, Edge and Firefox. The chart itself is unaffected.</p>`;
   h += `<div class="sym-wrap">` + d.panels.map(panelHtml).join('') + `</div>`;
   h += `<div class="sym-audiostatus" id="sym-audiostatus" role="status" aria-live="polite"></div>`;
-  if(audioReady) h += `<p class="sym-refnote"><b>About the audio:</b> most clips are the phoneme’s formal <b>IPA reference sound</b> (not an Egyptian recording of the example word). The <b>long vowels</b> /iː/ and /aː/ instead play a native Arabic recording of the example word (كبير, باب) so you can hear the length in context; a dedicated long /uː/ clip is still being sourced, so /uː/ currently plays the /u/ quality (“length pending”). Where Egyptian (Masri) differs — ج, ق, ث, ذ, ظ, and the diphthongs — the small “Masri:” note beside the row is the sound Egyptians actually use. Diphthongs (/aj/, /aw/) are a vowel sequence, so the chart has no single clip for them. Audio: Wikimedia Commons — IPA phonetic samples (CC BY-SA 3.0 / Public Domain) and Shtooka Project example words (CC BY 3.0 US); see <a href="audio/ipa/CREDITS.md">full credits</a>.</p>`;
+  if(audioReady || audioBlockedByBrowser) h += `<p class="sym-refnote"><b>About the audio:</b> most clips are the phoneme’s formal <b>IPA reference sound</b> (not an Egyptian recording of the example word). The <b>long vowels</b> /iː/ and /aː/ instead play a native Arabic recording of the example word (كبير, باب) so you can hear the length in context; a dedicated long /uː/ clip is still being sourced, so /uː/ currently plays the /u/ quality (“length pending”). Where Egyptian (Masri) differs — ج, ق, ث, ذ, ظ, and the diphthongs — the small “Masri:” note beside the row is the sound Egyptians actually use. Diphthongs (/aj/, /aw/) are a vowel sequence, so the chart has no single clip for them. Audio: Wikimedia Commons — IPA phonetic samples (CC BY-SA 3.0 / Public Domain) and Shtooka Project example words (CC BY 3.0 US); see <a href="audio/ipa/CREDITS.md">full credits</a>.</p>`;
   panel.innerHTML = h;
 
   panel.querySelectorAll('.sym-ipa, .sym-ar').forEach(el =>
