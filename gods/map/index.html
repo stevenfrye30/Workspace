@@ -2978,7 +2978,32 @@ function setTreeMode(mode) {
     const g = GODS_BY_ID[currentFocusId];
     if (g) renderFullTree(g.pantheon);
   }
-  if (mode === 'web' && currentFocusId) rwRerender();
+  if (mode === 'web' && currentFocusId) rwEnterView();
+}
+
+// Called when the Relationship Web BECOMES the active view. It does exactly one of
+// two things, and nothing in between.
+function rwEnterView() {
+  if (!currentFocusId) return;
+
+  // (a) Focus changed outside the web since this session was last in sync.
+  //     The root is stale -> re-root around the focused figure. ONE rebuild.
+  if (currentFocusId !== rwSessionFocusId) {
+    rwRootId = currentFocusId;
+    rwSelectedId = currentFocusId;
+    rwState.full = false;   // same rule setFocus() already applies to a brand-new
+                            // root: a new root starts from the depth-limited view.
+    rwSessionFocusId = currentFocusId;
+    rwRerender();           // rwRender() fits when the graph warrants it
+    return;
+  }
+
+  // (b) Session is intact. Preserve root, selection, layout, zoom, pan, filters,
+  //     direction, depth and full-network state. Only draw if the graph is not
+  //     already sitting in the DOM (it survives display:none between views).
+  const inner = document.getElementById('rwInner');
+  const drawn = inner && (inner.querySelector('.rw-node') || inner.querySelector('.rw-empty'));
+  if (!drawn) rwRerender();
 }
 
 // Redraw connectors on resize when full tree is visible (debounced)
@@ -3080,6 +3105,22 @@ let rwLastGraph = null;
 // an explicit "Rebuild Around Selected".
 let rwRootId = null;
 let rwSelectedId = null;
+// INVARIANT: rwSessionFocusId is the globally-focused figure that the CURRENT
+// Relationship Web session is in sync with. It is written ONLY by the web itself
+// (rwSelect, an in-web re-root, or Rebuild Around Selected). Therefore:
+//
+//   currentFocusId === rwSessionFocusId  -> focus last changed INSIDE the web.
+//                                            The session is intentional: keep the
+//                                            root, the selection, the layout, the
+//                                            zoom and the pan exactly as they are.
+//   currentFocusId !== rwSessionFocusId  -> focus changed OUTSIDE the web (Overview,
+//                                            a route, an alias, Tradition Tree Focus).
+//                                            The root is stale: re-root once.
+//
+// This is why "root Zeus / selected Hera / Overview showing Hera" survives a view
+// round-trip — Hera was selected IN the web, so the session focus is Hera too, and
+// the naive `currentFocusId !== rwRootId` test would have wrongly rebuilt it.
+let rwSessionFocusId = null;
 const RW_CACHE = new Map();
 
 /* ---- normalized relationship model: built ONCE from DATA, never mutated ---- */
@@ -3702,6 +3743,7 @@ function rwSelect(godId, { pushHash = true } = {}) {
   if (!GODS_BY_ID[godId]) return;
   rwSelectedId = godId;
   currentFocusId = godId;                 // Overview / details follow the selection
+  rwSessionFocusId = godId;               // this focus change came FROM the web
   const inner = document.getElementById('rwInner');
   if (inner) {
     inner.querySelectorAll('.rw-node').forEach(el => {
@@ -3746,6 +3788,7 @@ function rwUpdateSummarySelection() {
 function rwRebuildAroundSelected() {
   if (!rwSelectedId) return;
   rwRootId = rwSelectedId;                 // keep filters, depth, direction, full-state
+  rwSessionFocusId = currentFocusId;       // the web itself re-rooted
   gpClose();
   rwRerender();
   rwFit();
@@ -3998,6 +4041,7 @@ function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
       rwRootId = godId;
       rwSelectedId = godId;
       rwState.full = false;   // a brand-new root starts from the depth-limited view
+      rwSessionFocusId = godId;   // the web re-rooted while it was the active view
       rwRerender();
     }
   }
