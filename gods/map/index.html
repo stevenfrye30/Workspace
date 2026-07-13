@@ -2264,6 +2264,26 @@ function wireSubtabs() {
 /* ---------- URL hash router ---------- */
 let suppressHashUpdate = false;
 
+// Legacy figure IDs retired when two duplicate identities were consolidated.
+// Old links (#god/anansi, #god/el) must keep working, so they resolve to the
+// surviving record. This is a redirect table, not an identity claim: the pairs
+// were the same figure twice, which is why one of each was retired.
+const GOD_ID_ALIASES = {
+  anansi: 'kwaku-anansi',
+  el: 'el-canaanite'
+};
+
+// Resolve a possibly-legacy figure ID to its canonical ID. Applied at every
+// point an external or persisted ID enters the interface, and always BEFORE
+// currentFocusId is set — so Relationship Web cache keys are built from the
+// canonical ID and no duplicate node can ever be created. Unknown IDs are
+// returned untouched, preserving the existing not-found behaviour.
+function resolveGodId(id) {
+  if (!id) return id;
+  if (GODS_BY_ID && GODS_BY_ID[id]) return id;   // a live ID always wins
+  return GOD_ID_ALIASES[id] || id;
+}
+
 function updateHash(newFragment) {
   if (suppressHashUpdate) return;
   const target = '#' + newFragment;
@@ -2285,14 +2305,21 @@ function applyHashFromURL() {
       if (document.getElementById('tab-' + id)) selectTab(id, { skipHash: true });
       else selectTab('overview', { skipHash: true });
       break;
-    case 'god':
-      if (GODS_BY_ID[id]) {
+    case 'god': {
+      const canonical = resolveGodId(id);
+      if (GODS_BY_ID[canonical]) {
+        // Rewrite a legacy URL in place — replaceState, so no extra history
+        // entry and no hashchange loop (a canonical ID resolves to itself).
+        if (canonical !== id) {
+          history.replaceState(null, '', '#god/' + canonical);
+        }
         selectTab('trees', { skipHash: true });
-        setFocus(id, false, { skipHash: true });
+        setFocus(canonical, false, { skipHash: true });
       } else {
         selectTab('overview', { skipHash: true });
       }
       break;
+    }
     case 'pantheon':
       if (PANTHEONS_BY_ID[id]) {
         selectTab('trees', { skipHash: true });
@@ -3587,6 +3614,7 @@ function loadTree(pantheonId, { skipHash = false } = {}) {
 }
 
 function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
+  godId = resolveGodId(godId);   // legacy IDs canonicalise before any state is set
   const g = GODS_BY_ID[godId];
   if (!g) return;
   if (focusHistory[focusHistory.length - 1] !== godId) {
