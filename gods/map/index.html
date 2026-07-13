@@ -14,6 +14,13 @@
 :root {
   --bg:#0a0b1a; --panel:#181d33; --panel2:#232844; --tint:#2c3155;
   --ink:#e8ddc3; --muted:#8a91b0;
+  /* The recede colour for de-emphasised captions, dangling-stub labels and
+     empty states. It was used in 13 rules but never declared, so each of those
+     colour declarations was invalid and got dropped: the elements fell back to
+     inheriting --ink and rendered at full foreground brightness. It resolves to
+     --muted, the palette's existing recede colour, which is what those rules
+     were written against. */
+  --dim:var(--muted);
   --gold:#e5c158; --gold-deep:#b8901f; --blood:#a03040; --blood-deep:#701828;
   --violet:#7a5ea8; --cyan:#5c9bc7; --silver:#c5c9d9;
   --line:#353a5a; --gold-soft:rgba(229,193,88,0.42); --gold-faint:rgba(229,193,88,0.12);
