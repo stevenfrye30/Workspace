@@ -3611,7 +3611,20 @@ function gpShow(godId, vpId, nodeSelector, opts) {
     if (!act) return;
     e.stopPropagation();
     const a = act.dataset.gp;
-    if (a === 'close') gpClose();
+    if (a === 'close') {
+      gpClose();
+      // A Tradition Tree popup IS that tree's selection affordance: dismissing it
+      // must also drop the selected node and its locked lineage trace. This is the
+      // exact cleanup Escape performs, reused rather than re-implemented.
+      //
+      // The Relationship Web popup is NOT a selection affordance — rwSelectedId,
+      // the selected ring, the root and the layout all outlive it — so the web's
+      // Close stays gpClose()-only.
+      //
+      // Origin comes from vpId, captured from gpShow's own arguments when this
+      // handler was created, so it stays correct no matter what the view does later.
+      if (vpId === 'ftViewport') clearTreeSelection();
+    }
     else if (a === 'details') openGod(godId);
     else if (a === 'rebuild') { rwRebuildAroundSelected(); }
     else if (a === 'focus') {
