@@ -125,7 +125,20 @@ h2::after {
 h3 { color:var(--accent2); font-weight:normal; margin-top:28px; margin-bottom:10px; letter-spacing:0.8px; font-size:17px; }
 p { margin:10px 0; }
 main p { line-height:1.7; }
-.card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:20px 24px; margin-bottom:16px; transition:border-color .25s ease, box-shadow .25s ease; }
+/* One visual shell for every Explore directory card. Background, border, box model,
+   transition and hover used to be redeclared on .phil-card, .card and .gloss-card with
+   near-identical values; they live here once. Each family keeps only what makes it
+   itself: radius, padding and its own inner typography. */
+.phil-card, .card, .gloss-card {
+  background:var(--panel); border:1px solid var(--line); box-sizing:border-box;
+  transition:border-color .25s ease, transform .2s ease, box-shadow .25s ease, background .25s ease;
+}
+.phil-card:hover, .phil-card:focus, .card.hover-card:hover, .gloss-card:hover {
+  border-color:var(--gold-soft); transform:translateY(-2px);
+  box-shadow:0 6px 18px rgba(0,0,0,0.32);
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+}
+.card { border-radius:10px; padding:15px 18px; margin-bottom:16px; }
 .grid { display:grid; gap:16px; }
 /* Flex-wrap rather than grid tracks so an incomplete final row centres itself
    instead of stranding a lone card at the left. Card-count agnostic.
@@ -138,9 +151,15 @@ main p { line-height:1.7; }
    what holds the four-then-three arrangement without hardcoding any branch. */
 .grid-branches > .branch-card { flex:1 0 min(220px, 100%); max-width:270px; }
 .grid-schools { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
-.hover-card { cursor:pointer; transition:transform .25s ease, border-color .25s ease, box-shadow .25s ease, background .25s ease; }
-.hover-card:hover { border-color:var(--gold-soft); transform:translateY(-3px); box-shadow:0 10px 28px rgba(0,0,0,0.28), 0 0 0 1px var(--gold-faint); background:linear-gradient(180deg, var(--panel2), var(--panel)); }
-.hover-card h3 { margin-top:0; color:var(--accent); }
+.hover-card { cursor:pointer; }
+.hover-card h3 { margin-top:0; color:var(--accent); font-size:16px; }
+/* The directory card is an entry point, not the school's page: the description is
+   clamped to two lines here and shown in full in the modal. Clamping is visual only,
+   so the underlying text is never altered or cut mid-word in the data. */
+.school-desc {
+  margin:6px 0; color:var(--muted); font-size:13px; line-height:1.5;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
 /* School and glossary cards are real links to their own modal routes, so they are
    reachable with Tab, open with Enter, and can be opened in a new tab. These rules
    strip the default anchor look; the card styling below supplies the rest. */
@@ -156,7 +175,7 @@ a.hover-card:focus-visible, a.gloss-card:focus-visible { outline:2px solid var(-
    area never goes silently blank. */
 .empty-state { grid-column:1 / -1; margin:0; padding:28px 6px; text-align:center; color:var(--muted); font-style:italic; }
 .result-count { color:var(--muted); font-size:13px; margin-left:auto; }
-.tags { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 .tag { background:var(--panel2); color:var(--muted); padding:4px 11px; border-radius:14px; font-size:12px; border:1px solid var(--line); transition:all .2s ease; }
 .tag.era { border-color:var(--warm); color:var(--warm); }
 .tag.tradition { border-color:var(--accent2); color:var(--accent2); }
@@ -168,9 +187,35 @@ a.hover-card:focus-visible, a.gloss-card:focus-visible { outline:2px solid var(-
 .filters input, .filters select { background:var(--panel2); color:var(--ink); border:1px solid var(--line); padding:9px 14px; border-radius:6px; font-family:inherit; font-size:13px; transition:border-color .2s ease, box-shadow .2s ease; }
 .filters input:focus, .filters select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--gold-faint); }
 .filters input { min-width:220px; }
+/* Secondary philosopher filters live in a native disclosure. Closed, they are out of the
+   layout AND out of the tab order, which is why this is <details> and not a CSS hide.
+   Search, tradition and sort stay in the open row above it. */
+#expanel-philosophers .filters { margin-bottom:10px; }
+.more-filters { margin-bottom:20px; }
+.more-filters > summary {
+  display:inline-flex; align-items:center; gap:7px; width:fit-content;
+  background:var(--panel2); border:1px solid var(--line); border-radius:6px;
+  padding:8px 14px; color:var(--muted); font-size:13px; cursor:pointer; list-style:none;
+  transition:border-color .2s ease, color .2s ease;
+}
+.more-filters > summary::-webkit-details-marker { display:none; }
+.more-filters > summary::before { content:'\25B8'; font-size:10px; transition:transform .2s ease; }
+.more-filters[open] > summary::before { transform:rotate(90deg); }
+.more-filters > summary:hover { border-color:var(--gold-soft); color:var(--ink); }
+/* The count in the summary text already states this; the tint is only reinforcement. */
+.more-filters.has-active > summary { border-color:var(--accent); color:var(--accent); }
+.more-filters > summary:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+/* Scoped to [open] on purpose. A bare `display:flex` here overrides the user-agent rule
+   that hides a closed <details>, which would leave the secondary selects visible and
+   still in the tab order. This keeps the native hiding intact. */
+.more-filters[open] > .more-filters-body {
+  display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+  margin-top:10px; padding:12px 14px;
+  border:1px solid var(--gold-faint); border-radius:6px; background:rgba(0,0,0,0.12);
+}
+.more-filters-body select { flex:0 1 auto; }
 .phil-grid { grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:14px; }
-.phil-card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:14px 18px; cursor:pointer; transition:border-color .25s ease, transform .2s ease, box-shadow .25s ease, background .25s ease; outline:none; }
-.phil-card:hover, .phil-card:focus { border-color:var(--gold-soft); transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.35); background:linear-gradient(180deg, var(--panel), var(--panel2)); }
+.phil-card { border-radius:8px; padding:14px 18px; cursor:pointer; outline:none; }
 .phil-card.selected { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset, 0 4px 14px rgba(229,193,88,0.15); }
 .phil-card .name { font-size:15px; color:var(--ink); font-weight:bold; letter-spacing:0.3px; }
 .phil-card .dates { color:var(--muted); font-size:12px; margin-top:3px; }
@@ -320,11 +365,15 @@ ul.clean li { margin:6px 0; }
 
 /* Glossary */
 .gloss-grid { grid-template-columns:repeat(auto-fill,minmax(290px,1fr)); gap:14px; }
-.gloss-card { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:16px 20px; cursor:pointer; transition:border-color .25s ease, transform .2s ease, box-shadow .25s ease, background .25s ease; }
-.gloss-card:hover { border-color:var(--gold-soft); transform:translateY(-2px); box-shadow:0 6px 18px rgba(0,0,0,0.3); background:linear-gradient(180deg, var(--panel), var(--panel2)); }
+.gloss-card { border-radius:8px; padding:14px 18px; cursor:pointer; }
 .gloss-card .term { color:var(--accent); font-weight:bold; font-size:15px; letter-spacing:0.3px; }
-.gloss-card .trad { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:8px; margin-top:2px; }
-.gloss-card .def { color:var(--ink); font-size:14px; line-height:1.6; }
+.gloss-card .trad { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1.2px; margin-bottom:6px; margin-top:2px; }
+/* Same reasoning as .school-desc: a three-line preview here, the whole definition in
+   the term modal. */
+.gloss-card .def {
+  color:var(--ink); font-size:14px; line-height:1.55;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
 
 /* Excerpts */
 .excerpt { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:22px 26px; margin-bottom:18px; border-left:3px solid var(--accent); transition:border-left-width .2s ease, padding-left .2s ease, box-shadow .25s ease; }
@@ -416,7 +465,9 @@ ul.clean li { margin:6px 0; }
      (.print-btn) stay hidden, since interactive controls are not useful on paper. */
   /* .study-controls replaces the .filters row that used to hold the Study mode select,
      so it inherits the same rule: the card prints, its controls do not. */
-  nav, header, .filters, .study-controls, #graph-canvas, .tl-wrap,
+  /* .more-filters holds the secondary philosopher filters, so it hides with the rest of
+     the controls; its contents must never reach paper whether it is open or closed. */
+  nav, header, .filters, .more-filters, .study-controls, #graph-canvas, .tl-wrap,
   .print-btn, .modal-bg { display:none !important; }
   body { background:#fff; color:#000; }
   main { max-width:none; padding:10px; }
@@ -480,14 +531,6 @@ ul.clean li { margin:6px 0; }
       <input type="text" id="phil-search" placeholder="Search by name… (press /)">
       <label class="sr-only" for="filter-tradition">Filter philosophers by tradition</label>
       <select id="filter-tradition"><option value="">All traditions</option></select>
-      <label class="sr-only" for="filter-era">Filter philosophers by era</label>
-      <select id="filter-era"><option value="">All eras</option></select>
-      <label class="sr-only" for="filter-region">Filter philosophers by region</label>
-      <select id="filter-region"><option value="">All regions</option></select>
-      <label class="sr-only" for="filter-school">Filter philosophers by school</label>
-      <select id="filter-school"><option value="">All schools</option></select>
-      <label class="sr-only" for="filter-branch">Filter philosophers by branch</label>
-      <select id="filter-branch"><option value="">All branches</option></select>
       <label class="sr-only" for="sort-by">Sort philosophers</label>
       <select id="sort-by">
         <option value="birth">Sort: chronological</option>
@@ -497,6 +540,19 @@ ul.clean li { margin:6px 0; }
       </select>
       <span id="phil-count" class="result-count" aria-live="polite"></span>
     </div>
+    <details class="more-filters" id="phil-more">
+      <summary><span id="phil-more-label">More filters</span></summary>
+      <div class="more-filters-body">
+        <label class="sr-only" for="filter-era">Filter philosophers by era</label>
+        <select id="filter-era"><option value="">All eras</option></select>
+        <label class="sr-only" for="filter-region">Filter philosophers by region</label>
+        <select id="filter-region"><option value="">All regions</option></select>
+        <label class="sr-only" for="filter-school">Filter philosophers by school</label>
+        <select id="filter-school"><option value="">All schools</option></select>
+        <label class="sr-only" for="filter-branch">Filter philosophers by branch</label>
+        <select id="filter-branch"><option value="">All branches</option></select>
+      </div>
+    </details>
     <div class="grid phil-grid" id="phil-grid" tabindex="0"></div>
   </div>
 
@@ -931,6 +987,16 @@ function populateFilters() {
 }
 
 let filteredList = []; let selectedIdx = 0;
+// The secondary filters are hidden when the disclosure is closed, so the summary has to
+// say whether any of them are narrowing the results. Search, tradition and sort are
+// always visible and are deliberately not counted.
+const MORE_FILTERS = ['#filter-era', '#filter-region', '#filter-school', '#filter-branch'];
+function updateMoreFilters() {
+  const n = MORE_FILTERS.filter(id => $(id).value).length;
+  $('#phil-more-label').textContent = n ? 'More filters · ' + n + ' active' : 'More filters';
+  $('#phil-more').classList.toggle('has-active', n > 0);
+}
+
 function renderPhilosophers() {
   const q = $('#phil-search').value.toLowerCase();
   const ft = $('#filter-tradition').value, fe = $('#filter-era').value;
@@ -950,6 +1016,7 @@ function renderPhilosophers() {
   };
   filteredList.sort(sorters[sortBy]);
   $('#phil-count').textContent = plural(filteredList.length, 'philosopher');
+  updateMoreFilters();
   selectedIdx = 0;
   if (!filteredList.length) {
     $('#phil-grid').innerHTML = '<p class="empty-state">No philosophers match these filters.</p>';
@@ -1070,7 +1137,7 @@ function renderSchools() {
   $('#schools-grid').innerHTML = list.map(s => `
     <a class="card hover-card" href="#/school/${encodeURIComponent(s.name)}" aria-label="${esc(s.name)}">
       <h3>${esc(s.name)}</h3>
-      <p style="margin:6px 0;color:var(--muted);font-size:13px">${esc(s.desc)}</p>
+      <p class="school-desc">${esc(s.desc)}</p>
       <div class="tags">
         ${s.era?`<span class="tag era">${esc(s.era)}</span>`:''}
         ${s.tradition?`<span class="tag tradition">${esc(s.tradition)}</span>`:''}
