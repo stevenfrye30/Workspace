@@ -1759,6 +1759,10 @@ select:focus:not(:focus-visible),
   z-index:7;
 }
 .rw-node.rw-selected .rw-nname { color:var(--gold); }
+.focus-center-card .fname-main:focus-visible,
+.focus-view:focus-visible {
+  outline:2px solid var(--gold); outline-offset:3px; border-radius:3px;
+}
 </style>
 <link rel="stylesheet" href="../../_shared/hub-nav.css">
 </head>
@@ -1859,7 +1863,7 @@ select:focus:not(:focus-visible),
       </div>
       <span class="cat-filter-count" id="catFilterCount"></span>
     </div>
-    <div class="focus-view" id="focusView"></div>
+    <div class="focus-view" id="focusView" tabindex="-1" aria-label="Figure overview"></div>
     <div class="full-tree-container" id="fullTreeView" style="display:none;">
       <div class="ft-zoombar" role="group" aria-label="Zoom controls">
         <button type="button" id="ftZoomOut" title="Zoom out" aria-label="Zoom out">&minus;</button>
@@ -2495,18 +2499,23 @@ function wireModal() {
     cycleGodImage(t, e.key === 'ArrowLeft' ? -1 : 1);
   });
 
-  // Esc closes lightbox first, then tree-inspector, then modal
+  // Escape closes exactly ONE layer: the topmost one that is currently open.
+  // Order follows the actual stacking order, not the order the features were built:
+  //   image lightbox (z-index 200) > Details modal (100) > figure popup (80) >
+  //   tree selection (no overlay).
+  // Previously the modal sat in the final `else`, so a popup underneath it was
+  // closed first and the modal was left open — backwards.
   document.addEventListener('keydown', e => {
     if (e.key !== 'Escape') return;
     if (document.getElementById('imgLightboxBg').classList.contains('open')) {
       closeImgLightbox();
+    } else if (document.getElementById('modalBg').classList.contains('open')) {
+      closeModal();                 // topmost: close the modal ONLY, leave the popup
     } else if (gpOpen) {
       gpClose();
       if (currentSelectedId) clearTreeSelection();
     } else if (currentSelectedId) {
       clearTreeSelection();
-    } else {
-      closeModal();
     }
   });
 
@@ -3631,7 +3640,17 @@ function gpShow(godId, vpId, nodeSelector, opts) {
     if (a === 'close') gpClose();
     else if (a === 'details') openGod(godId);
     else if (a === 'rebuild') { rwRebuildAroundSelected(); }
-    else if (a === 'focus') { gpClose(); setFocus(godId); }
+    else if (a === 'focus') {
+      gpClose();
+      setFocus(godId);
+      // setFocus() renders the Overview synchronously; wait one frame so the
+      // panel is laid out, then land the keyboard on the figure's heading.
+      requestAnimationFrame(() => {
+        const h = document.querySelector('#focusView .fname-main');
+        const target = (h && h.offsetParent !== null) ? h : document.getElementById('focusView');
+        if (target) target.focus();
+      });
+    }
   });
 }
 
@@ -3781,7 +3800,12 @@ function rwOpenConfirm(title, body, onGo) {
     if (rwConfirmLastFocus && rwConfirmLastFocus.focus) rwConfirmLastFocus.focus();
   };
   const onKey = e => {
-    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      e.stopPropagation();   // this dialog is topmost: do not also close a layer beneath it
+      close();
+      return;
+    }
     if (e.key !== 'Tab') return;
     const f = back.querySelectorAll('button');
     if (!f.length) return;
@@ -4061,7 +4085,7 @@ function renderFocusView(g) {
         <div class="focus-header">
           <div class="focus-header-text">
             <div class="fpantheon">${p ? p.name : g.pantheon}${p && Number.isFinite(p.active_from) && Number.isFinite(p.active_to) ? `<span class="fpantheon-era"> · ${fmtYears(p.active_from, p.active_to)}</span>` : ''}</div>
-            <h3 class="fname-main">${g.name}</h3>
+            <h3 class="fname-main" tabindex="-1">${g.name}</h3>
             ${epithets}
             <div class="fcat">${catLabel}</div>
             ${archetypeLine}
