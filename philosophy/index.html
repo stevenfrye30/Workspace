@@ -217,8 +217,22 @@ a.hover-card:focus-visible, a.gloss-card:focus-visible { outline:2px solid var(-
   display:grid; grid-template-columns:repeat(auto-fit, minmax(min(230px,100%), 1fr));
   gap:14px; max-width:1000px; margin:14px auto 0;
 }
-/* Same breathing room now that the Study heading and description are gone. */
-#flashcards .filters { margin-top:14px; }
+/* Study puts the activity first: the card, then the control that changes it, then the
+   quieter reset. A vertical centred stack, so the reading order, the DOM order and the
+   tab order are all the same. */
+.study-controls { display:flex; flex-direction:column; align-items:center; gap:10px; padding:0 20px 28px; }
+.study-controls select {
+  width:min(100%, 300px); background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+  padding:9px 14px; border-radius:6px; font-family:inherit; font-size:13px;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.study-controls select:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px var(--gold-faint); }
+.study-controls select:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+/* .print-btn floats right by default; inside the stack it has to sit centred and stay
+   the quietest thing on the page. */
+#fc-reset { float:none; margin-top:0; opacity:0.75; }
+#fc-reset:hover { opacity:1; }
+#fc-reset:focus-visible { outline:2px solid var(--accent); outline-offset:2px; opacity:1; }
 .res-card {
   display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
   min-height:104px; padding:16px 16px 14px; text-align:center; font-family:inherit; cursor:pointer;
@@ -346,7 +360,9 @@ ul.clean li { margin:6px 0; }
 .ct-table td.who:hover { color:var(--ink); }
 
 /* Flashcards */
-.fc-wrap { display:flex; flex-direction:column; align-items:center; padding:20px; }
+/* Top padding trimmed so the activity starts sooner under the navigation; no bottom
+   padding, so the only gap to the mode selector is the card's own 16px margin. */
+.fc-wrap { display:flex; flex-direction:column; align-items:center; padding:6px 20px 0; }
 .fc-card { background:var(--panel); border:1px solid var(--accent); border-radius:8px; padding:28px 32px; min-width:min(520px,100%); max-width:700px; text-align:center; margin-bottom:16px; }
 .fc-card .q { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:1px; }
 .fc-card .prompt { color:var(--ink); font-size:22px; margin:14px 0 24px; font-style:italic; }
@@ -398,7 +414,9 @@ ul.clean li { margin:6px 0; }
   /* .fc-wrap is no longer hidden: with the Study heading gone, hiding it made the whole
      printed page blank. The card prints; the mode/reset controls and the Next button
      (.print-btn) stay hidden, since interactive controls are not useful on paper. */
-  nav, header, .filters, #graph-canvas, .tl-wrap,
+  /* .study-controls replaces the .filters row that used to hold the Study mode select,
+     so it inherits the same rule: the card prints, its controls do not. */
+  nav, header, .filters, .study-controls, #graph-canvas, .tl-wrap,
   .print-btn, .modal-bg { display:none !important; }
   body { background:#fff; color:#000; }
   main { max-width:none; padding:10px; }
@@ -547,7 +565,9 @@ ul.clean li { margin:6px 0; }
 </section>
 
 <section id="flashcards" class="tab">
-  <div class="filters">
+  <div class="fc-wrap" id="fc-wrap"></div>
+  <div class="study-controls">
+    <label class="sr-only" for="fc-mode">Choose the kind of question</label>
     <select id="fc-mode">
       <option value="doctrine">Mode: Whose doctrine?</option>
       <option value="works">Mode: Whose major work?</option>
@@ -556,7 +576,6 @@ ul.clean li { margin:6px 0; }
     </select>
     <button class="print-btn" id="fc-reset">Reset score</button>
   </div>
-  <div class="fc-wrap" id="fc-wrap"></div>
 </section>
 
 <section id="resources" class="tab">
