@@ -3561,7 +3561,6 @@ function gpBuild(godId, opts) {
   const isRoot = !!(opts && opts.isRoot);
 
   el.innerHTML = `
-    <button class="gp-btn gp-btn-close" data-gp="close" type="button" aria-label="Close details">×</button>
     <div class="gp-name">${escapeAttr(g.name)}</div>
     <div class="gp-meta">
       ${isRoot ? '<span class="gp-badge gp-root">Network root</span>' : ''}
@@ -3571,9 +3570,11 @@ function gpBuild(godId, opts) {
     ${domains ? `<div class="gp-domains">${escapeAttr(domains)}</div>` : ''}
     ${g.description ? `<div class="gp-desc">${escapeAttr(g.description)}</div>` : ''}
     <div class="gp-actions">
+      ${opts && opts.focusAction ? `<button class="gp-btn" data-gp="focus" type="button" aria-label="Focus on ${escapeAttr(g.name)} and open the Overview">Focus</button>` : ''}
       ${opts && opts.rebuildLabel ? `<button class="gp-btn" data-gp="rebuild" type="button">${opts.rebuildLabel}</button>` : ''}
       <button class="gp-btn" data-gp="details" type="button">Details</button>
-    </div>`;
+    </div>
+    <button class="gp-btn gp-btn-close" data-gp="close" type="button" aria-label="Close details">×</button>`;
   return el;
 }
 
@@ -3630,6 +3631,7 @@ function gpShow(godId, vpId, nodeSelector, opts) {
     if (a === 'close') gpClose();
     else if (a === 'details') openGod(godId);
     else if (a === 'rebuild') { rwRebuildAroundSelected(); }
+    else if (a === 'focus') { gpClose(); setFocus(godId); }
   });
 }
 
@@ -4806,7 +4808,11 @@ function selectTreeNode(godId) {
   // ancestor's opacity cannot be undone by a descendant — that is what made the
   // card see-through for some categories and not others. It now lives on the
   // viewport, outside the faded, transformed subtree.
-  gpShow(godId, 'ftViewport', `.full-tree-node[data-gid="${cssEscape(godId)}"]`, {});
+  // Focus is offered from the Tradition Tree only. The Relationship Web popup
+  // already sets currentFocusId on selection and has its own Rebuild action, so
+  // a Focus button there would be redundant and ambiguous.
+  gpShow(godId, 'ftViewport', `.full-tree-node[data-gid="${cssEscape(godId)}"]`,
+         { focusAction: true });
   highlightLineage(godId);
 }
 
