@@ -949,6 +949,11 @@ main p { line-height:1.7; }
   .focus-controls select { min-width:160px; font-size:12px; padding:7px 10px; }
   .focus-controls button { padding:7px 12px; font-size:11.5px; letter-spacing:1px; }
   .focus-controls .count { font-size:11px; }
+  /* Three fixed-text buttons in a non-wrapping row: 331px of content, which the
+     page cannot hold below ~375px. Dropping the left margin and allowing the group
+     to wrap means its minimum width becomes the widest single button, so it can no
+     longer force the document wider than the viewport at any size. */
+  .tree-view-toggle { margin-left:0; flex-wrap:wrap; }
   .tree-view-toggle button { padding:7px 12px; font-size:11.5px; letter-spacing:1.2px; }
   nav button { padding:8px 14px; letter-spacing:1.5px; }
   .modal { padding:22px 22px; }
@@ -1457,6 +1462,17 @@ select:focus:not(:focus-visible),
 #loading .err-msg { color:var(--blood); max-width:360px; text-align:center; line-height:1.6; }
 #loading.fade-out { opacity:0; pointer-events:none; transition:opacity .35s ease; }
 @keyframes spin { to { transform:rotate(360deg); } }
+
+/* At phone widths the letter-spacing and padding are what push the row over.
+   Tightening them keeps all three buttons on one line at 360px; narrower still
+   (320px) the wrap rule above takes over and the page stays contained. */
+@media (max-width: 420px) {
+  /* Give the group its own line — otherwise it shares one with the Back button,
+     loses width, and wraps into two ragged rows. On its own line the tightened
+     buttons fit as a single row down to 320px. */
+  .tree-view-toggle { flex-basis:100%; justify-content:center; }
+  .tree-view-toggle button { padding:7px 9px; letter-spacing:0.6px; }
+}
 
 @media (max-width: 700px) {
   header h1 { font-size:22px; letter-spacing:4px; }
