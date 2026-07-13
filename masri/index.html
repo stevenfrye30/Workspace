@@ -3517,7 +3517,7 @@ function renderTableCards(arr){
   }
 
   function defAnnounce(msg){ const el=body.querySelector('#dfn-live'); if(el) el.textContent = msg; }
-  const livesWord = n => n===1 ? '1 village standing' : n+' villages standing';
+  const livesWord = n => n===1 ? '1 village' : n+' villages';
 
   function renderDefense(){
     const pool = defPool();
@@ -3633,7 +3633,7 @@ function renderTableCards(arr){
         D.count=0; D.phase='playing'; render();
         D.lastTs=0; D.nextSpawn=0;
         D.raf = requestAnimationFrame(defTick);
-        defAnnounce('Round started. ' + (D.queueLabel ? 'Practising recent misses. ' : '') + livesWord(D.lives) + '.');
+        defAnnounce('Round started. ' + (D.queueLabel ? 'Practising recent misses. ' : '') + livesWord(D.lives) + ' standing.');
       }, 400);
     };
     step();
@@ -3642,7 +3642,7 @@ function renderTableCards(arr){
   function defTogglePause(){
     if(D.phase==='playing'){
       D.phase='paused'; if(D.raf) cancelAnimationFrame(D.raf); D.raf=0; clearTimers();
-      render(); defAnnounce('Paused. ' + D.resolved + ' of ' + DROUND + ' resolved, ' + livesWord(D.lives) + ' left.');
+      render(); defAnnounce('Paused. ' + D.resolved + ' of ' + DROUND + ' resolved, ' + livesWord(D.lives) + ' still standing.');
     } else if(D.phase==='paused'){
       D.phase='playing'; D.lastTs=0; D.raf=requestAnimationFrame(defTick);
       render(); defAnnounce('Resumed.');
@@ -3913,31 +3913,40 @@ function renderTableCards(arr){
     D.streak = 0;
     D.missed.push(e.t);
 
-    // the victim: the nearest living occupant of this village
+    // THE VICTIM IS CLAIMED NOW, NOT WHEN THE BITE ANIMATION ENDS.
+    // The bite is a 380ms timer. If two zombies reached the same village inside that
+    // window they used to pick the SAME victim, and the second one landed after the
+    // village had already fallen — so it consumed nothing. Arrivals therefore cost
+    // between 0 and 1 occupants at random, which made the whole round a coin flip
+    // (idling won 44% of measured rounds). Claiming the victim and decrementing the
+    // village synchronously on arrival makes the cost exactly one occupant per zombie,
+    // every time. The timer below is now purely the animation.
     const living = npcsOf(v.id);
     const victim = living.length
       ? living.reduce((a,b)=> Math.hypot(a.x-e.x,a.y-e.y) <= Math.hypot(b.x-e.x,b.y-e.y) ? a : b)
       : null;
-
-    e.attacking = true;
-    if(e.el) e.el.classList.add('attacking');
     if(victim){
+      victim.alive = false;                       // claimed: no other zombie can take it
+      v.occupants = Math.max(0, v.occupants - 1);
       victim.x = (victim.x + e.x)/2; victim.y = (victim.y + e.y)/2;   // grabbed
       if(victim.el){ victim.el.classList.add('panic'); place(victim.el, victim.x, victim.y); }
     }
+    const fell = (v.occupants <= 0 && v.alive);
+    if(fell) destroyVillage(v);
+    syncVillages();
+
+    e.attacking = true;
+    if(e.el) e.el.classList.add('attacking');
     const bite = RM ? 260 : 380;
     dTimeout(()=>{
       const idx = D.enemies.indexOf(e);
       if(victim){
-        victim.alive = false;
         if(victim.el){ victim.el.classList.remove('panic'); victim.el.classList.add('eaten');
                        const el = victim.el; dTimeout(()=>el.remove(), 320); victim.el = null; }
         splat(victim.x, victim.y);
-        v.occupants = Math.max(0, v.occupants - 1);
       }
       flashField();
       if(v.el){ v.el.classList.add('struck'); dTimeout(()=>{ if(v.el) v.el.classList.remove('struck'); }, 460); }
-      if(v.occupants <= 0 && v.alive){ destroyVillage(v); }
       paintVillage(v); syncVillages();
       const fb = body.querySelector('#dfn-fb');
       D.fbCls='no';
@@ -3949,7 +3958,7 @@ function renderTableCards(arr){
       defAnnounce(e.t.ar + ' reached ' + v.name + '. '
         + (v.alive ? v.occupants + ' of ' + OCCUPANTS + ' still safe there. '
                    : v.name + ' has been destroyed. ')
-        + livesWord(D.lives) + ' remaining.');
+        + livesWord(D.lives) + ' still standing.');
       if(idx >= 0) removeEnemy(e, idx, false);
       syncStats();
       if(!livingVillages().length){ endRound(); return; }
@@ -4182,7 +4191,7 @@ function renderTableCards(arr){
     return `<div class="tt-card"><div class="tt-prompt">${cleared?'Wave survived':'Every village has fallen'}</div>`
       + `<p class="note">${cleared
           ? `All ${DROUND} zombies came. ${D.defeated} destroyed, ${missed.length} got through. `
-            + `${D.lives} of ${DLIVES} village${D.lives===1?'':'s'} still standing.`
+            + `${D.lives===DLIVES ? 'All ' + DLIVES : D.lives + ' of ' + DLIVES} village${DLIVES===1?'':'s'} still standing.`
           : `Every village fell after ${D.spawned} of ${DROUND} zombies — the round ended early, so the remaining ${Math.max(0,DROUND-D.spawned)} never appeared. ${D.defeated} destroyed, ${missed.length} got through.`}</p>`
       + `<div class="dfn-res">`
         + `<div>Score<b>${D.score}</b></div>`
