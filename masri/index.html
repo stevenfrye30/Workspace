@@ -761,17 +761,20 @@
   .dfn-route{fill:none;stroke:var(--border);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;opacity:.85}
   .dfn-scen{fill:var(--card);stroke:var(--border);stroke-width:.4}
   .dfn-gate{position:absolute;transform:translate(-50%,-50%);font-size:13px;line-height:1;z-index:1;opacity:.75}
-  /* Villages: healthy → damaged → destroyed. State is shown by TEXT + icon + border,
-     never by colour alone. */
-  .dfn-vil{position:absolute;transform:translate(-50%,-50%);z-index:2;display:flex;flex-direction:column;align-items:center;gap:1px;
-           background:var(--card);border:1px solid var(--green);border-radius:10px;padding:3px 7px;white-space:nowrap}
-  .dfn-vil .vic{font-size:19px;line-height:1}
-  .dfn-vil .vin{font-family:var(--ui);font-size:9.5px;color:var(--muted);letter-spacing:.03em}
-  .dfn-vil .vip{font-family:var(--ui);font-size:10px;font-weight:600;color:var(--green)}
-  .dfn-vil.damaged{border-color:var(--gold)} .dfn-vil.damaged .vip{color:var(--gold)}
-  .dfn-vil.dead{border-color:#e06666;opacity:.75} .dfn-vil.dead .vip{color:#e06666}
-  .dfn-vil.struck{animation:dfnstruck .45s ease-out}
-  @keyframes dfnstruck{ 0%,100%{transform:translate(-50%,-50%)} 25%{transform:translate(-54%,-50%)} 75%{transform:translate(-46%,-50%)} }
+  /* The SAFE ZONE — one fenced compound at the far end of the maze. Its state is shown
+     by TEXT + icon + border, never by colour alone. */
+  .dfn-safe{position:absolute;transform:translate(-50%,-50%);z-index:1;border:2px dashed var(--green);
+            border-radius:10px;background:rgba(106,168,120,.07);pointer-events:none}
+  .dfn-safe.damaged{border-color:var(--gold);background:rgba(217,164,65,.07)}
+  .dfn-safe.critical{border-color:#e06666;background:rgba(224,102,102,.10)}
+  .dfn-safe.dead{border-style:solid;border-color:#e06666;background:rgba(224,102,102,.16)}
+  .dfn-safe.struck{animation:dfnstruck .45s ease-out}
+  @keyframes dfnstruck{ 0%,100%{transform:translate(-50%,-50%)} 25%{transform:translate(-52%,-50%)} 75%{transform:translate(-48%,-50%)} }
+  /* Its gate — the one place a zombie can attack. */
+  .dfn-sgate{position:absolute;transform:translate(-50%,-50%);z-index:2;font-size:17px;line-height:1}
+  .dfn-slabel{position:absolute;z-index:2;font-family:var(--ui);font-size:9.5px;
+              font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--green);white-space:nowrap}
+  .dfn-slabel.damaged{color:var(--gold)} .dfn-slabel.critical,.dfn-slabel.dead{color:#e06666}
   /* Villagers and animals. One shared loop moves them; no timer per NPC. */
   .dfn-npc{position:absolute;font-size:15px;line-height:1;z-index:2;will-change:transform;pointer-events:none}
   .dfn-npc.panic{animation:dfnpanic .3s linear infinite}
@@ -786,14 +789,18 @@
   .dfn-enemy{position:absolute;display:flex;flex-direction:column;align-items:center;gap:2px;z-index:5;will-change:transform}
   .dfn-enemy.attacking .dfn-emoji{animation:dfnbite .28s linear infinite}
   @keyframes dfnbite{ 0%,100%{transform:scale(1)} 50%{transform:scale(1.3)} }
-  /* Village roster chips in the HUD. */
+  /* ONE safe-zone status chip in the HUD (replaces the three village chips). */
   .dfn-vils{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 10px}
   .dfn-vchip{background:var(--surf2);border:1px solid var(--green);border-radius:20px;padding:4px 11px;font-family:var(--ui);font-size:11.5px;color:var(--muted);white-space:nowrap}
   .dfn-vchip b{color:var(--green);font-weight:600;margin-left:4px}
   .dfn-vchip.damaged{border-color:var(--gold)} .dfn-vchip.damaged b{color:var(--gold)}
+  .dfn-vchip.critical{border-color:#e06666} .dfn-vchip.critical b{color:#e06666}
   .dfn-vchip.dead{border-color:#e06666;text-decoration:line-through} .dfn-vchip.dead b{color:#e06666}
+  /* A zombie on the FINAL STRAIGHTAWAY: outlined + a warning caret, never colour alone. */
+  .dfn-enemy.near .dfn-ar{border-color:#e06666;box-shadow:0 0 0 2px #e06666}
+  .dfn-enemy.near .dfn-ar::before{content:"\26A0 ";font-size:11px}
   @media (prefers-reduced-motion: reduce){
-    .dfn-npc.panic,.dfn-enemy.attacking .dfn-emoji,.dfn-vil.struck{animation:none}
+    .dfn-npc.panic,.dfn-enemy.attacking .dfn-emoji,.dfn-safe.struck{animation:none}
     .dfn-splat{animation:dfnsplatrm 1s ease-out forwards}
     @keyframes dfnsplatrm{ from{opacity:1} to{opacity:0} }
   }
@@ -801,12 +808,11 @@
   .dfn-emoji{font-size:22px;line-height:1}
   /* Phones: give the board a TALLER box. x and y are mapped independently from the
      measured element, so a different aspect simply spreads the map out — no distortion
-     of routes, zones or collisions — and the villages stop colliding with their NPCs. */
+     of routes, zones or collisions — and the safe zone stops crowding its occupants. */
   @media (max-width:600px){
     .dfn-field{aspect-ratio:100/88}
     .dfn-emoji{font-size:18px} .dfn-npc{font-size:12px}
-    .dfn-vil{padding:2px 5px;gap:0} .dfn-vil .vic{font-size:15px}
-    .dfn-vil .vin{font-size:8.5px} .dfn-vil .vip{font-size:9px}
+    .dfn-sgate{font-size:14px} .dfn-slabel{font-size:8px}
     .dfn-gate{font-size:11px}
   }
   /* Prefix highlight: border + weight + a caret, never colour alone. */
@@ -3108,7 +3114,7 @@ function renderTableCards(arr){
   //          wall is a MISS, not a submission, so it never counts against accuracy.
   const DCFG = (M.typing && M.typing.defense) || {};
   const DEMOJI = DCFG.emoji || ['👾'];
-  const DROUND = DCFG.round || 15, DLIVES = DCFG.lives || 3;
+  const DROUND = DCFG.round || 15;
   const DSPEEDS = DCFG.speeds || { normal:{label:'Normal',cross:18,gap:2.4,mult:1.25} };
   const DSCORE = DCFG.score || { base:100, streakBonus:10 };
   const DEF_MODES = [ {id:'letters',label:'Letters'}, {id:'words',label:'Words'} ];
@@ -3299,24 +3305,45 @@ function renderTableCards(arr){
     return base;
   }
 
-  // ── VILLAGE MAP (phase one) ───────────────────────────────────────────────
+  // ── THE COURSE ────────────────────────────────────────────────────────────
   // A fixed node/edge network in a 100 x 62 coordinate space (the field's aspect ratio),
-  // NOT free-form pathfinding: routes gate→village are breadth-first searched ONCE at
+  // NOT free-form pathfinding: routes gate→safe zone are breadth-first searched ONCE at
   // load and cached, so a frame never does graph work. Every position is a percentage,
   // so the board scales instead of scrolling on a phone.
   const VCFG = DCFG.village || {};
   const MAP_W = 100, MAP_H = 62;
+
+  // ── THE MAZE ──────────────────────────────────────────────────────────────
+  // One course, read left → right: three gates on the far side, winding corridors that
+  // branch and merge, one MERGE point, then a short FINAL STRAIGHTAWAY into the safe
+  // zone. Every zombie ends at the same place, so the direction of danger is obvious
+  // without explanation. This is a fixed node/edge network — routes are BFS'd once at
+  // load and cached; nothing pathfinds per frame.
   const NODES = {
-    g1:{x:3,  y:8,  gate:true},  g2:{x:50, y:3,  gate:true},
-    g3:{x:97, y:20, gate:true},  g4:{x:52, y:59, gate:true},
-    j1:{x:24, y:12}, j2:{x:50, y:20}, j3:{x:72, y:22},
-    j4:{x:26, y:46}, j5:{x:52, y:40}, j6:{x:86, y:38},
-    v1:{x:14, y:30, vil:'v1'}, v2:{x:82, y:9,  vil:'v2'}, v3:{x:76, y:53, vil:'v3'}
+    // gates (far side)
+    g1:{x:3,  y:9,  gate:true}, g2:{x:3,  y:31, gate:true}, g3:{x:3,  y:53, gate:true},
+    // first turns
+    a1:{x:14, y:14}, a2:{x:13, y:31}, a3:{x:14, y:48},
+    // outer branches — the corridors zig-zag rather than run straight
+    b1:{x:24, y:6},  b2:{x:25, y:22}, b3:{x:25, y:41}, b4:{x:24, y:56},
+    // middle maze
+    c1:{x:36, y:13}, c2:{x:37, y:31}, c3:{x:36, y:50},
+    d1:{x:47, y:6},  d2:{x:48, y:22}, d3:{x:48, y:41}, d4:{x:47, y:56},
+    // the merges
+    m1:{x:58, y:14}, m2:{x:58, y:48},
+    mm:{x:68, y:31, merge:true},
+    // final straightaway
+    s1:{x:78, y:31, straight:true},
+    sz:{x:91, y:31, safe:true}    // inset from the edge so an occupant emoji can't clip
   };
   const EDGES = [
-    ['g1','j1'], ['j1','v1'], ['j1','j2'], ['g2','j2'], ['j2','j3'], ['j2','j5'],
-    ['j3','v2'], ['j3','j6'], ['g3','j6'], ['j6','v2'], ['j6','v3'], ['j5','j3'],
-    ['g4','j5'], ['j5','j4'], ['j4','v1'], ['j5','v3'], ['j4','j2']
+    ['g1','a1'], ['g2','a2'], ['g3','a3'],
+    ['a1','b1'], ['a1','b2'], ['a2','b2'], ['a2','b3'], ['a3','b3'], ['a3','b4'],
+    ['b1','c1'], ['b2','c1'], ['b2','c2'], ['b3','c2'], ['b3','c3'], ['b4','c3'],
+    ['c1','d1'], ['c1','d2'], ['c2','d2'], ['c2','d3'], ['c3','d3'], ['c3','d4'],
+    ['d1','m1'], ['d2','m1'], ['d3','m2'], ['d4','m2'],
+    ['m1','mm'], ['m2','mm'],
+    ['mm','s1'], ['s1','sz']
   ];
   const ADJ = (function(){
     const a = {}; Object.keys(NODES).forEach(k => a[k] = []);
@@ -3324,13 +3351,13 @@ function renderTableCards(arr){
     return a;
   })();
   const GATES = Object.keys(NODES).filter(k => NODES[k].gate);
-  const VNODES = { v1:'v1', v2:'v2', v3:'v3' };
-  // BFS once per (from,to). Cached — a retarget mid-route is a map lookup, not a search.
+  const SAFE_NODE = 'sz', STRAIGHT_NODE = 's1';
+
+  // BFS once per (from,to), cached. Only one destination now, so this runs 3 times.
   const ROUTES = {};
-  function routeKey(a,b){ return a+'>'+b; }
   function findRoute(from, to){
-    const k = routeKey(from,to);
-    if(ROUTES[k]) return ROUTES[k];
+    const k = from + '>' + to;
+    if(ROUTES[k] !== undefined) return ROUTES[k];
     const prev = { [from]: null }, q = [from];
     while(q.length){
       const cur = q.shift();
@@ -3345,30 +3372,29 @@ function renderTableCards(arr){
   const dist = (a,b) => Math.hypot(NODES[a].x-NODES[b].x, NODES[a].y-NODES[b].y);
   function routeLen(path){ let L=0; for(let i=1;i<path.length;i++) L += dist(path[i-1], path[i]); return L; }
 
-  const VILLAGE_DEFS = VCFG.villages || [
-    { id:'v1', name:'Bahari',  icon:'🏘️' },
-    { id:'v2', name:'Qibli',   icon:'🏡' },
-    { id:'v3', name:'Wahaat',  icon:'🕌' }
-  ];
+  // ── THE SAFE ZONE ─────────────────────────────────────────────────────────
+  const SAFE = { x: NODES.sz.x, y: NODES.sz.y, w: 13, h: 30 };   // map units
   const NPC_KINDS = VCFG.npcs || [
     { e:'🧍', kind:'villager' }, { e:'🧕', kind:'villager' }, { e:'👨‍🌾', kind:'villager' },
-    { e:'🐐', kind:'animal' },   { e:'🐕', kind:'animal' },   { e:'🐔', kind:'animal' },
-    { e:'🐄', kind:'animal' }
+    { e:'🧒', kind:'villager' }, { e:'🐐', kind:'animal' },   { e:'🐕', kind:'animal' },
+    { e:'🐔', kind:'animal' },   { e:'🐄', kind:'animal' }
   ];
-  const OCCUPANTS = VCFG.occupants || 5;     // per village
-  const WANDER_R  = VCFG.wanderRadius || 6;  // NPCs never leave their own village zone
-  const PANIC_R   = VCFG.panicRadius  || 13; // how close a zombie must be to scare them
-  const REACH_R   = VCFG.reachRadius  || 2.5;// zombie "arrives" at the village
+  // 12 occupants against a 15-zombie wave. Tested at 15: any single kill guaranteed a
+  // win, so weak play could never lose and "1 of 15 saved" still read as "defended".
+  // At 12, letting ~4 through costs a third of them and letting 12 through loses the
+  // round — so weak play can genuinely fail while a beginner still has a real chance.
+  const POP      = VCFG.population || 13;    // occupants inside the safe zone
+  const PANIC_R  = VCFG.panicRadius || 16;   // a zombie this close scares the occupants
 
   // Game state. Session-only: nothing here is ever persisted.
-  // D.lives = villages STILL STANDING. Keeping the name means endRound(), defAdvice()
-  // and the whole 1.3 result pipeline keep working untouched.
-  const D = { phase:'setup', enemies:[], spawned:0, resolved:0, lives:DLIVES, score:0,
+  // D.lives = OCCUPANTS STILL ALIVE in the safe zone. Keeping the field name means
+  // endRound(), defAdvice() and the whole 1.3 result pipeline keep working untouched.
+  const D = { phase:'setup', enemies:[], spawned:0, resolved:0, lives:0, score:0,
               streak:0, best:0, correct:0, wrong:0, defeated:0, missed:[], deck:null,
               queue:null, queueLabel:'', raf:0, lastTs:0, nextSpawn:0, fb:'', fbCls:'',
               timers:new Set(), count:0, composing:false, trackW:0,
               phase2:'', wait:0, last:[], nearMiss:[], missCount:{},
-              clock:0, records:[], villages:[], npcs:[], mapW:0, mapH:0, lastGate:'' };
+              clock:0, records:[], safe:null, npcs:[], mapW:0, mapH:0, lastGate:'', warned:false };
 
   // ONE media-query object, read from a cached boolean — not re-queried per frame.
   const RM_MQ = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
@@ -3406,41 +3432,43 @@ function renderTableCards(arr){
     D.enemies=[];
   }
   function defResetState(){
-    D.phase='setup'; D.spawned=0; D.resolved=0; D.lives=DLIVES; D.score=0; D.streak=0;
+    D.phase='setup'; D.spawned=0; D.resolved=0; D.lives=POP; D.score=0; D.streak=0;
     D.best=0; D.correct=0; D.wrong=0; D.defeated=0; D.missed=[]; D.queue=null;
     D.queueLabel=''; D.fb=''; D.fbCls=''; D.nextSpawn=0; D.composing=false;
     D.phase2=''; D.wait=0; D.last=[]; D.nearMiss=[]; D.missCount={};
     D.clock=0; D.records=[]; D.lastGate='';
-    buildVillages();
+    buildSafeZone();
   }
   function defStop(){ defAbort(); defResetState(); }
 
-  // ── VILLAGES + NPCs ───────────────────────────────────────────────────────
-  // Occupants are the "lives" of a village: lose them all and the village falls.
-  // NPCs wander only inside their own village zone (never across the map) and are
-  // moved by the SAME rAF loop as the zombies — no timer per NPC.
-  function buildVillages(){
+  // ── SAFE ZONE + OCCUPANTS ─────────────────────────────────────────────────
+  // One protected compound. Its occupants ARE the lives: lose them all and the round is
+  // over. They wander only inside the fence and are moved by the SAME rAF loop as the
+  // zombies — no timer per occupant.
+  function buildSafeZone(){
     D.npcs = [];
-    D.villages = VILLAGE_DEFS.map(def => {
-      const nd = NODES[def.id];
-      const v = { id:def.id, name:def.name, icon:def.icon, x:nd.x, y:nd.y,
-                  occupants:OCCUPANTS, alive:true, el:null, struckAt:0 };
-      for(let i=0;i<OCCUPANTS;i++){
-        const k = NPC_KINDS[(i + VILLAGE_DEFS.indexOf(def)*2) % NPC_KINDS.length];
-        const a = (i / OCCUPANTS) * Math.PI * 2;
-        const r = WANDER_R * (0.45 + 0.5 * ((i*7)%5)/5);
-        D.npcs.push({ id:def.id+'-n'+i, vid:def.id, emoji:k.e, kind:k.kind, alive:true, el:null,
-                      hx:nd.x, hy:nd.y,                       // home = village centre
-                      x:nd.x + Math.cos(a)*r, y:nd.y + Math.sin(a)*r,
-                      ph:a, sp:0.55 + ((i*13)%7)/14, panic:false });
-      }
-      return v;
-    });
-    D.lives = D.villages.length;
+    D.safe = { pop: POP, cap: POP, el: null, gateEl: null, labelEl: null };
+    for(let i=0;i<POP;i++){
+      const k = NPC_KINDS[i % NPC_KINDS.length];
+      // a loose grid inside the fence, so they read as a crowd rather than a pile
+      const cols = 4, cx = i % cols, cy = Math.floor(i / cols);
+      const x = SAFE.x - SAFE.w/2 + 2.5 + cx * ((SAFE.w - 5) / (cols - 1));
+      const y = SAFE.y - SAFE.h/2 + 4 + cy * 6.5;
+      D.npcs.push({ id:'n'+i, emoji:k.e, kind:k.kind, alive:true, el:null,
+                    hx:x, hy:y, x:x, y:y, ph:(i*1.7) % 6.28,
+                    sp:0.5 + ((i*13)%7)/16, panic:false });
+    }
+    D.lives = POP;                       // D.lives = occupants left (see the note above)
   }
-  const livingVillages = () => D.villages.filter(v => v.alive);
-  function villageOf(id){ return D.villages.find(v => v.id===id); }
-  function npcsOf(id){ return D.npcs.filter(nn => nn.vid===id && nn.alive); }
+  const livingNpcs = () => D.npcs.filter(nn => nn.alive);
+  function safeState(){
+    const p = D.safe ? D.safe.pop : 0, c = D.safe ? D.safe.cap : POP;
+    if(p <= 0) return 'dead';
+    if(p <= Math.ceil(c * 0.25)) return 'critical';
+    if(p <= Math.ceil(c * 0.60)) return 'damaged';
+    return '';
+  }
+  const SAFE_WORD = { '':'holding', damaged:'damaged', critical:'critical', dead:'overrun' };
 
   // ── coordinate helpers: map units (0..100 x, 0..62 y) → pixels ─────────────
   function measureMap(){
@@ -3454,21 +3482,32 @@ function renderTableCards(arr){
     el.style.transform = 'translate3d(' + Math.round(px(x)) + 'px,' + Math.round(py(y)) + 'px,0) translate(-50%,-50%)';
   }
   function placeAll(){
-    D.villages.forEach(v => place(v.el, v.x, v.y));
+    if(D.safe){
+      const sz = D.safe;
+      if(sz.el){ sz.el.style.width = Math.round(px(SAFE.w)) + 'px';
+                 sz.el.style.height = Math.round(py(SAFE.h)) + 'px';
+                 place(sz.el, SAFE.x, SAFE.y); }
+      place(sz.gateEl, SAFE.x - SAFE.w/2, SAFE.y);
+      // right-anchored: centring it would push half the label off the board on a phone
+      if(sz.labelEl) sz.labelEl.style.transform =
+        'translate3d(' + Math.round(px(SAFE.x + SAFE.w/2)) + 'px,'
+                       + Math.round(py(SAFE.y - SAFE.h/2 - 3)) + 'px,0) translate(-100%,-50%)';
+    }
     D.npcs.forEach(nn => place(nn.el, nn.x, nn.y));
     D.enemies.forEach(placeEnemy);
   }
 
-  // Static scenery + routes, drawn once as SVG. Decorative only — it never overlaps the
-  // Arabic labels, which live in DOM above it.
+  // Static scenery + corridors, drawn once as SVG. Decorative only — it never overlaps
+  // the Arabic labels, which live in DOM above it.
   function mapSvg(){
     const line = ([u,v]) => `<line x1="${NODES[u].x}" y1="${NODES[u].y}" x2="${NODES[v].x}" y2="${NODES[v].y}" class="dfn-route"/>`;
-    const rocks = [[38,8],[64,12],[18,20],[92,28],[36,32],[62,32],[10,44],[44,54],[68,44],[90,50],[28,4],[8,56]];
+    const walls = [[19,31],[31,6],[31,56],[42,22],[42,41],[53,14],[53,48],[30,31],[64,6],[64,56],[19,6],[19,56]];
     return `<svg class="dfn-svg" viewBox="0 0 ${MAP_W} ${MAP_H}" preserveAspectRatio="none" aria-hidden="true">`
       + EDGES.map(line).join('')
-      + rocks.map(([x,y],i) => i%2
-          ? `<circle cx="${x}" cy="${y}" r="1.9" class="dfn-scen"/>`
-          : `<rect x="${x-1.7}" y="${y-1.7}" width="3.4" height="3.4" rx="0.8" class="dfn-scen"/>`).join('')
+      + `<line x1="${NODES.s1.x}" y1="${NODES.s1.y}" x2="${NODES.sz.x}" y2="${NODES.sz.y}" class="dfn-route final"/>`
+      + walls.map(([x,y],i) => i%2
+          ? `<rect x="${x-2.2}" y="${y-2.2}" width="4.4" height="4.4" rx="0.9" class="dfn-scen"/>`
+          : `<circle cx="${x}" cy="${y}" r="2.2" class="dfn-scen"/>`).join('')
       + `</svg>`;
   }
   function mountMap(){
@@ -3478,37 +3517,43 @@ function renderTableCards(arr){
     GATES.forEach(g => {
       const d = document.createElement('div');
       d.className = 'dfn-gate'; d.textContent = '🚪';
-      d.style.left = '0'; d.style.top = '0';
+      d.style.left='0'; d.style.top='0';
       f.appendChild(d); place(d, NODES[g].x, NODES[g].y);
     });
-    D.villages.forEach(v => {
-      const d = document.createElement('div');
-      d.className = 'dfn-vil'; d.dataset.v = v.id; d.style.left='0'; d.style.top='0';
-      f.appendChild(d); v.el = d; paintVillage(v); place(d, v.x, v.y);
-    });
+    const zone = document.createElement('div');
+    zone.className = 'dfn-safe'; zone.style.left='0'; zone.style.top='0';
+    f.appendChild(zone); D.safe.el = zone;
+    const gate = document.createElement('div');
+    gate.className = 'dfn-sgate'; gate.textContent = '🚧'; gate.style.left='0'; gate.style.top='0';
+    f.appendChild(gate); D.safe.gateEl = gate;
+    const lab = document.createElement('div');
+    lab.className = 'dfn-slabel'; lab.style.left='0'; lab.style.top='0';
+    f.appendChild(lab); D.safe.labelEl = lab;
     D.npcs.forEach(nn => {
       const d = document.createElement('div');
       d.className = 'dfn-npc'; d.textContent = nn.emoji; d.style.left='0'; d.style.top='0';
-      f.appendChild(d); nn.el = d; place(d, nn.x, nn.y);
+      f.appendChild(d); nn.el = d;
     });
+    paintSafe(); placeAll();
     D.enemies.forEach(mountEnemy);
   }
-  function paintVillage(v){
-    if(!v.el) return;
-    const state = !v.alive ? 'dead' : (v.occupants <= Math.ceil(OCCUPANTS/2) ? 'damaged' : '');
-    v.el.className = 'dfn-vil' + (state ? ' ' + state : '');
-    v.el.innerHTML = `<span class="vic">${v.alive ? v.icon : '🔥'}</span>`
-      + `<span class="vin">${esc(v.name)}</span>`
-      + `<span class="vip">${v.alive ? v.occupants + '/' + OCCUPANTS : 'destroyed'}</span>`;
+  function paintSafe(){
+    const st = safeState();
+    if(D.safe && D.safe.el) D.safe.el.className = 'dfn-safe' + (st ? ' ' + st : '');
+    if(D.safe && D.safe.labelEl){
+      D.safe.labelEl.className = 'dfn-slabel' + (st ? ' ' + st : '');
+      D.safe.labelEl.textContent = 'Safe zone · ' + D.safe.pop + '/' + D.safe.cap;
+    }
   }
-  function syncVillages(){
-    const row = body.querySelector('#dfn-vils'); if(!row) return;
-    row.innerHTML = D.villages.map(v => {
-      const st = !v.alive ? 'dead' : (v.occupants <= Math.ceil(OCCUPANTS/2) ? 'damaged' : '');
-      return `<span class="dfn-vchip${st?' '+st:''}">${esc(v.name)}<b>`
-        + (v.alive ? v.occupants + '/' + OCCUPANTS + ' safe' : 'destroyed') + `</b></span>`;
-    }).join('');
+  // ONE compact status chip (was three village chips).
+  function syncSafe(){
+    const row = body.querySelector('#dfn-vils'); if(!row || !D.safe) return;
+    const st = safeState();
+    row.innerHTML = `<span class="dfn-vchip${st?' '+st:''}">Safe zone<b>`
+      + (D.safe.pop > 0 ? D.safe.pop + ' of ' + D.safe.cap + ' safe · ' + SAFE_WORD[st] : 'overrun')
+      + `</b></span>`;
   }
+
   function defNewRound(queue, label){
     defAbort(); defResetState();
     D.queue = (queue && queue.length) ? queue : null;
@@ -3517,7 +3562,7 @@ function renderTableCards(arr){
   }
 
   function defAnnounce(msg){ const el=body.querySelector('#dfn-live'); if(el) el.textContent = msg; }
-  const livesWord = n => n===1 ? '1 village' : n+' villages';
+  const livesWord = n => n===1 ? '1 occupant' : n+' occupants';
 
   function renderDefense(){
     const pool = defPool();
@@ -3545,14 +3590,16 @@ function renderTableCards(arr){
       + `<div class="tt-card">`
       + `<div class="dfn-stats" role="group" aria-label="Game state">`
         + `<span class="dfn-stat">Score<b>${D.score}</b></span>`
-        + `<span class="dfn-stat lives">Villages<b>${D.lives} of ${DLIVES}</b></span>`
+        + `<span class="dfn-stat lives">Occupants<b>${D.lives} of ${POP}</b></span>`
         + `<span class="dfn-stat">Streak<b>${D.streak}</b></span>`
         + `<span class="dfn-stat">Wave<b>${D.resolved} / ${DROUND}</b></span>`
+        + `<span class="dfn-stat">Destroyed<b>${D.defeated}</b></span>`
+        + `<span class="dfn-stat">Got through<b>${D.missed.length}</b></span>`
         + `<span class="dfn-stat phase${D.phase2?' on':''}" id="dfn-phase">${esc(D.phase2||'')}</span>`
       + `</div>`
-      + `<div class="dfn-vils" id="dfn-vils" role="group" aria-label="Villages"></div>`
+      + `<div class="dfn-vils" id="dfn-vils" role="group" aria-label="Safe zone status"></div>`
       + `<div class="dfn-field" id="dfn-field" aria-hidden="true">`
-        + (live ? '' : `<div class="dfn-empty">Zombies enter from the gates around the edge and walk the paths toward your three villages. Type a zombie's Arabic target and press Enter to destroy it. One that gets through takes a villager or an animal — a village falls when it has no one left, and you lose only when all three are gone.</div>`)
+        + (live ? '' : `<div class="dfn-empty">Zombies enter from the gates on the left and wind through the maze toward the safe zone on the right. Type a zombie's Arabic target and press Enter to destroy it before it reaches the gate. Every zombie that gets through takes one villager or animal — you lose when no one is left to protect.</div>`)
         + (D.phase==='count' ? `<div class="dfn-count" id="dfn-count">Ready</div>` : '')
       + `</div>`
       + `<div id="dfn-live" class="sr-only" role="status" aria-live="polite"></div>`
@@ -3568,7 +3615,7 @@ function renderTableCards(arr){
             : `<button type="button" class="tt-btn primary" data-a="dstart"${pool.length?'':' disabled aria-disabled="true"'}>Start round</button>`
               + (recentMisses.length ? `<button type="button" class="tt-btn" data-a="drecent">Practice recent misses (${recentMisses.length})</button>` : ''))
       + `</div>`
-      + `<p class="dfn-note">${DROUND} zombies · ${DLIVES} villages · ${OCCUPANTS} people & animals each · ${esc(DSPEEDS[defSpeed].label)} speed · `
+      + `<p class="dfn-note">${DROUND} zombies · one safe zone · ${POP} people & animals to protect · ${esc(DSPEEDS[defSpeed].label)} speed · `
         + `<b>${esc(defMode==='words' ? 'Words' : 'Letters')}</b>`
         + ` · <b>${esc((defMode==='words'
               ? (DEF_WORD_CATS.find(c=>c.id===defWordCat)||{}).label
@@ -3580,9 +3627,9 @@ function renderTableCards(arr){
         + `<b>${pool.length}</b> unique target${pool.length===1?'':'s'} available`
         + (pool.length && pool.length < DROUND ? ` — fewer than ${DROUND}, so targets will repeat (spaced apart where possible).` : '.')
         + (pool.length ? '' : ' <b>No targets in this set yet</b> — play a round to collect recent misses, or pick another set.')
-        + ` The first zombies rush one gate together, then threats come from every gate. `
+        + ` The first zombies rush one gate together, then threats come from every gate. A zombie on the final straightaway is outlined and flagged — that is your last chance. `
         + `Score = (${DSCORE.base} + ${DSCORE.streakBonus} × current streak) × ${DSPEEDS[defSpeed].mult}. `
-        + `A wrong Enter costs your streak, not a villager. Escape clears the box. `
+        + `A wrong Enter costs your streak, not an occupant. Escape clears the box. `
         + `Defense shows recent misses and slower targets a little more often.`
         + (recentMisses.length && !live ? ` <b>Recent misses</b> are the last targets that got through, saved across rounds — not only this round's.` : '')
       + `</p>`
@@ -3611,7 +3658,7 @@ function renderTableCards(arr){
       if(canType) inp.focus();
     }
     if(live){ mountMap(); measureTrack(); }
-    syncVillages();
+    syncSafe();
   }
 
   // Start: short "Ready / 3 / 2 / 1 / Defend" countdown, then spawning begins. The
@@ -3633,7 +3680,7 @@ function renderTableCards(arr){
         D.count=0; D.phase='playing'; render();
         D.lastTs=0; D.nextSpawn=0;
         D.raf = requestAnimationFrame(defTick);
-        defAnnounce('Round started. ' + (D.queueLabel ? 'Practising recent misses. ' : '') + livesWord(D.lives) + ' standing.');
+        defAnnounce('The wave has begun. ' + (D.queueLabel ? 'Practising recent misses. ' : '') + livesWord(D.lives) + ' to protect.');
       }, 400);
     };
     step();
@@ -3642,7 +3689,7 @@ function renderTableCards(arr){
   function defTogglePause(){
     if(D.phase==='playing'){
       D.phase='paused'; if(D.raf) cancelAnimationFrame(D.raf); D.raf=0; clearTimers();
-      render(); defAnnounce('Paused. ' + D.resolved + ' of ' + DROUND + ' resolved, ' + livesWord(D.lives) + ' still standing.');
+      render(); defAnnounce('Paused. ' + D.resolved + ' of ' + DROUND + ' resolved, ' + livesWord(D.lives) + ' still safe.');
     } else if(D.phase==='paused'){
       D.phase='playing'; D.lastTs=0; D.raf=requestAnimationFrame(defTick);
       render(); defAnnounce('Resumed.');
@@ -3688,7 +3735,7 @@ function renderTableCards(arr){
   const MAX_WAIT = DCFG.maxSpawnWaitSec || 2.5;
 
   // GATE + ROUTE. A zombie enters at an outer gate and walks the node network to a
-  // LIVING village. Gates rotate so threats arrive from different directions; the
+  // safe zone. Gates rotate so threats arrive from different corridors; the
   // opening rush deliberately comes from one gate so a beginner sees what to do.
   function pickGate(){
     const opts = GATES.filter(g => g !== D.lastGate);
@@ -3697,32 +3744,24 @@ function renderTableCards(arr){
       : opts[Math.floor(Math.random() * opts.length)] || GATES[0];
     D.lastGate = g; return g;
   }
-  function pickVillage(){
-    const live = livingVillages();
-    if(!live.length) return null;
-    // Prefer the village with the most left to lose, so pressure spreads instead of
-    // dog-piling one village; ties broken randomly.
-    const max = Math.max(...live.map(v => v.occupants));
-    const top = live.filter(v => v.occupants === max);
-    return top[Math.floor(Math.random() * top.length)];
-  }
+  // There is exactly ONE destination now, so retargeting is gone: a zombie is given its
+  // route at the gate and walks it to the safe zone. Every route ends s1 → sz, the final
+  // straightaway.
   function assignRoute(e, fromNode){
-    const v = pickVillage();
-    if(!v) return false;
-    const path = findRoute(fromNode, v.id);
+    const path = findRoute(fromNode, SAFE_NODE);
     if(!path) return false;
-    e.vid = v.id; e.path = path; e.seg = 0; e.segT = 0;
+    e.path = path; e.seg = 0; e.segT = 0;
     e.len = routeLen(path);
     e.speed = e.len / (DSPEEDS[defSpeed].cross || 18);   // every route takes ~`cross` seconds
     return true;
   }
   function spawnEnemy(){
     const t = nextTarget(); if(!t) return true;
-    if(!livingVillages().length) return true;
+    if(!D.safe || D.safe.pop <= 0) return true;
     const gate = pickGate();
     const e = { key:'e'+(D.spawned), t, el:null, gate,
                 emoji:DEMOJI[Math.floor(Math.random()*DEMOJI.length)],
-                x:NODES[gate].x, y:NODES[gate].y, attacking:false };
+                x:NODES[gate].x, y:NODES[gate].y, attacking:false, onFinal:false };
     if(!assignRoute(e, gate)) return true;
     D.wait = 0;
     // 1.3 — one record per spawned target; resolved on defeat or wall hit.
@@ -3778,7 +3817,7 @@ function renderTableCards(arr){
       }
     }
     // ZOMBIES — walk the node route. Nothing pathfinds here: the route was resolved at
-    // spawn (or on retarget) from the cached BFS table.
+    // spawn from the cached BFS table.
     for(let i=D.enemies.length-1;i>=0;i--){
       const e=D.enemies[i];
       if(e.attacking) continue;                  // mid-attack: frozen on its victim
@@ -3786,49 +3825,50 @@ function renderTableCards(arr){
       placeEnemy(e);
     }
     stepNpcs(dt);
-    if(!livingVillages().length){ endRound(); return; }              // all villages fell
+    if(D.safe.pop <= 0){ endRound(); return; }                       // safe zone overrun
     if(D.spawned>=DROUND && D.enemies.length===0){ endRound(); return; }  // wave survived
     D.raf = requestAnimationFrame(defTick);
   }
 
-  // One zombie step along its polyline. Returns false when it reached its village and
+  // One zombie step along its polyline. Returns false when it reached the safe zone and
   // was resolved (so the caller must not touch it again).
   function stepEnemy(e, dt){
     let move = e.speed * dt;
     while(move > 0){
       const a = NODES[e.path[e.seg]], b = NODES[e.path[e.seg+1]];
-      if(!b){ arriveAtVillage(e); return false; }
+      if(!b){ arriveAtSafeZone(e); return false; }
       const segLen = Math.hypot(b.x-a.x, b.y-a.y) || 0.001;
       const remain = (1 - e.segT) * segLen;
       if(move < remain){
         e.segT += move / segLen; move = 0;
       } else {
         move -= remain; e.seg++; e.segT = 0;
-        if(e.seg >= e.path.length-1){ arriveAtVillage(e); return false; }
+        if(e.seg >= e.path.length-1){ arriveAtSafeZone(e); return false; }
       }
     }
     const a = NODES[e.path[e.seg]], b = NODES[e.path[e.seg+1]];
     e.x = a.x + (b.x-a.x) * e.segT;
     e.y = a.y + (b.y-a.y) * e.segT;
-    // Its village fell while it was walking → pick a new one from where it stands.
-    const tv = villageOf(e.vid);
-    if(tv && !tv.alive) retarget(e);
+    // FINAL STRAIGHTAWAY: it has left the maze and is on the last run at the safe zone.
+    // Marked once — an outline + a warning caret on the label (never colour alone), one
+    // live announcement, and the occupants start to panic.
+    const onFinal = (e.path[e.seg] === STRAIGHT_NODE);
+    if(onFinal && !e.onFinal){
+      e.onFinal = true;
+      if(e.el) e.el.classList.add('near');
+      if(!D.warned){ D.warned = true; defAnnounce('A zombie is on the final approach to the safe zone.'); }
+    }
     return true;
   }
-  function retarget(e){
-    const from = e.path[Math.max(0, e.seg)];      // nearest node behind it
-    const idx = D.enemies.indexOf(e);
-    if(!assignRoute(e, from)){                     // nothing left to attack
-      if(idx>=0) removeEnemy(e, idx, false);
-      return;
-    }
-    e.x = NODES[from].x; e.y = NODES[from].y;      // snap to the node, then continue
-  }
 
-  // NPCs — local wander inside the village zone; flee when a zombie is close. Simple
+  // Occupants — local wander inside the fence; back away when a zombie is close. Simple
   // steering, not an AI: a sine drift plus a repulsion vector, clamped to the zone.
+  // Occupants drift a few steps around their spot and back away from the gate when a
+  // zombie is close. They are CLAMPED INSIDE THE FENCE — they never enter the maze.
   function stepNpcs(dt){
     const zs = D.enemies;
+    const x0 = SAFE.x - SAFE.w/2 + 1.5, x1 = SAFE.x + SAFE.w/2 - 1.5;
+    const y0 = SAFE.y - SAFE.h/2 + 1.5, y1 = SAFE.y + SAFE.h/2 - 1.5;
     for(let i=0;i<D.npcs.length;i++){
       const nn = D.npcs[i];
       if(!nn.alive) continue;
@@ -3844,20 +3884,18 @@ function renderTableCards(arr){
         }
       }
       if(scared){
-        const sp = nn.sp * (VCFG.fleeSpeed || 9);
+        const sp = nn.sp * (VCFG.fleeSpeed || 7);   // huddle away from the gate
         nn.x += fx * sp * dt; nn.y += fy * sp * dt;
       } else if(!RM){
-        nn.ph += dt * nn.sp;                       // gentle idle drift
-        nn.x += Math.cos(nn.ph) * nn.sp * 1.6 * dt;
-        nn.y += Math.sin(nn.ph * 0.7) * nn.sp * 1.2 * dt;
+        nn.ph += dt * nn.sp;                        // gentle idle drift
+        nn.x += Math.cos(nn.ph) * nn.sp * 1.3 * dt;
+        nn.y += Math.sin(nn.ph * 0.7) * nn.sp * 1.0 * dt;
+        const bx = nn.hx - nn.x, by = nn.hy - nn.y;  // and a light pull back to its spot
+        nn.x += bx * 0.4 * dt; nn.y += by * 0.4 * dt;
       }
-      // clamp inside its own village zone — an NPC never wanders the map
-      const dx = nn.x - nn.hx, dy = nn.y - nn.hy;
-      const d = Math.hypot(dx, dy);
-      const lim = WANDER_R * (scared ? 1.5 : 1);
-      if(d > lim){ nn.x = nn.hx + dx/d*lim; nn.y = nn.hy + dy/d*lim; }
-      nn.x = Math.max(2, Math.min(MAP_W-2, nn.x));
-      nn.y = Math.max(2, Math.min(MAP_H-2, nn.y));
+      // hard clamp to the fence — an occupant can never leave the safe zone
+      nn.x = Math.max(x0, Math.min(x1, nn.x));
+      nn.y = Math.max(y0, Math.min(y1, nn.y));
       if(nn.el){
         if(scared !== nn.panic){ nn.el.classList.toggle('panic', scared); nn.panic = scared; }
         place(nn.el, nn.x, nn.y);
@@ -3885,18 +3923,13 @@ function renderTableCards(arr){
     field.appendChild(f);
     dTimeout(()=>f.remove(), RM ? 700 : 650);
   }
-  // A zombie reached its village. This is the old hitWall: the SAME miss accounting,
-  // the SAME persisted stat fields (outcome 'wall', st.wallHits) so 1.3 statistics and
-  // stored records stay schema-compatible — only the fiction and the presentation change.
-  function arriveAtVillage(e){
+  // A zombie reached the safe-zone gate. This is the old hitWall: the SAME miss
+  // accounting and the SAME persisted stat fields (outcome 'wall', st.wallHits), so 1.3
+  // statistics and stored records stay schema-compatible — only the fiction changed.
+  function arriveAtSafeZone(e){
     const i = D.enemies.indexOf(e); if(i < 0) return;
-    const v = villageOf(e.vid);
-    // Its village fell in the very frame it arrived: it must go looking for another one,
-    // not evaporate — otherwise a zombie could cost the player nothing at all.
-    if(!v || !v.alive){
-      if(livingVillages().length) retarget(e); else removeEnemy(e, i, false);
-      return;
-    }
+    const sz = D.safe;
+    if(!sz || sz.pop <= 0){ removeEnemy(e, i, false); return; }   // wave already lost
 
     // NEAR MISS: a nonempty prefix of THIS target was already typed — a speed problem,
     // not a recognition problem. Unchanged from 1.3.
@@ -3913,27 +3946,24 @@ function renderTableCards(arr){
     D.streak = 0;
     D.missed.push(e.t);
 
-    // THE VICTIM IS CLAIMED NOW, NOT WHEN THE BITE ANIMATION ENDS.
-    // The bite is a 380ms timer. If two zombies reached the same village inside that
-    // window they used to pick the SAME victim, and the second one landed after the
-    // village had already fallen — so it consumed nothing. Arrivals therefore cost
-    // between 0 and 1 occupants at random, which made the whole round a coin flip
-    // (idling won 44% of measured rounds). Claiming the victim and decrementing the
-    // village synchronously on arrival makes the cost exactly one occupant per zombie,
-    // every time. The timer below is now purely the animation.
-    const living = npcsOf(v.id);
+    // THE VICTIM IS CLAIMED SYNCHRONOUSLY, NOT WHEN THE BITE ANIMATION ENDS.
+    // The bite is a 380ms timer. If two zombies land inside that window they must not be
+    // able to take the SAME occupant — claiming the victim and decrementing the
+    // population right here makes every arrival cost exactly one occupant, always.
+    // (The old three-village build had this race; it made a round a coin flip.)
+    const living = livingNpcs();
     const victim = living.length
       ? living.reduce((a,b)=> Math.hypot(a.x-e.x,a.y-e.y) <= Math.hypot(b.x-e.x,b.y-e.y) ? a : b)
       : null;
     if(victim){
       victim.alive = false;                       // claimed: no other zombie can take it
-      v.occupants = Math.max(0, v.occupants - 1);
-      victim.x = (victim.x + e.x)/2; victim.y = (victim.y + e.y)/2;   // grabbed
+      sz.pop = Math.max(0, sz.pop - 1);
+      D.lives = sz.pop;
+      victim.x = (victim.x + e.x)/2; victim.y = (victim.y + e.y)/2;   // dragged to the gate
       if(victim.el){ victim.el.classList.add('panic'); place(victim.el, victim.x, victim.y); }
     }
-    const fell = (v.occupants <= 0 && v.alive);
-    if(fell) destroyVillage(v);
-    syncVillages();
+    const st = safeState();
+    paintSafe(); syncSafe();
 
     e.attacking = true;
     if(e.el) e.el.classList.add('attacking');
@@ -3946,34 +3976,26 @@ function renderTableCards(arr){
         splat(victim.x, victim.y);
       }
       flashField();
-      if(v.el){ v.el.classList.add('struck'); dTimeout(()=>{ if(v.el) v.el.classList.remove('struck'); }, 460); }
-      paintVillage(v); syncVillages();
+      if(sz.el){ sz.el.classList.add('struck'); dTimeout(()=>{ if(sz.el) sz.el.classList.remove('struck'); }, 460); }
+      paintSafe(); syncSafe();
       const fb = body.querySelector('#dfn-fb');
       D.fbCls='no';
-      D.fb = arSpan(e.t.ar) + ' got through — ' + esc(v.name)
-           + (v.alive ? ' lost ' + (victim ? (victim.kind==='animal' ? 'an animal' : 'a villager') : 'ground')
-                        + ' · ' + v.occupants + ' left'
-                      : ' has fallen');
+      D.fb = arSpan(e.t.ar) + ' got through — '
+           + (sz.pop > 0
+               ? (victim ? (victim.kind==='animal' ? 'an animal' : 'a villager') + ' taken · ' : '')
+                 + sz.pop + ' occupant' + (sz.pop===1?'':'s') + ' remain' + (sz.pop===1?'s':'')
+               : 'no one is left to protect');
       if(fb){ fb.className='tt-fb no'; fb.innerHTML=D.fb; }
-      defAnnounce(e.t.ar + ' reached ' + v.name + '. '
-        + (v.alive ? v.occupants + ' of ' + OCCUPANTS + ' still safe there. '
-                   : v.name + ' has been destroyed. ')
-        + livesWord(D.lives) + ' still standing.');
+      defAnnounce(e.t.ar + ' reached the safe zone. '
+        + (sz.pop > 0
+            ? sz.pop + ' of ' + sz.cap + ' occupants left'
+              + (st==='critical' ? '. The safe zone is critical.' : '.')
+            : 'The safe zone has fallen.'));
       if(idx >= 0) removeEnemy(e, idx, false);
       syncStats();
-      if(!livingVillages().length){ endRound(); return; }
+      if(sz.pop <= 0){ endRound(); return; }
       if(D.phase==='playing' && D.spawned>=DROUND && D.enemies.length===0) endRound();
     }, bite);
-  }
-  function destroyVillage(v){
-    v.alive = false; v.occupants = 0;
-    D.lives = livingVillages().length;       // "lives" = villages still standing
-    npcsOf(v.id).forEach(nn => {             // the rest scatter and are gone
-      nn.alive = false;
-      if(nn.el){ const el = nn.el; el.classList.add('eaten'); dTimeout(()=>el.remove(), 320); nn.el = null; }
-    });
-    // any zombie still walking to it now needs a new destination
-    D.enemies.slice().forEach(z => { if(z.vid===v.id && !z.attacking) retarget(z); });
   }
   // Stylised, game-like hit: a red flash + a bone/dust puff. Never realistic gore.
   function splat(x, y){
@@ -4072,7 +4094,8 @@ function renderTableCards(arr){
   // Update the stat chips in place — a full re-render mid-round would drop the enemies.
   function syncStats(){
     const s=body.querySelectorAll('.dfn-stat b');
-    if(s.length>=4){ s[0].textContent=D.score; s[1].textContent=D.lives+' of '+DLIVES; s[2].textContent=D.streak; s[3].textContent=D.resolved+' / '+DROUND; }
+    if(s.length>=6){ s[0].textContent=D.score; s[1].textContent=D.lives+' of '+POP; s[2].textContent=D.streak;
+                     s[3].textContent=D.resolved+' / '+DROUND; s[4].textContent=D.defeated; s[5].textContent=D.missed.length; }
   }
 
   function endRound(){
@@ -4095,7 +4118,7 @@ function renderTableCards(arr){
     const subs = D.correct + D.wrong;
     const cleared = D.spawned>=DROUND && D.lives>0;
     const adv = defAdvice();
-    defAnnounce((cleared?'Wave survived. ':'Every village has fallen. ')
+    defAnnounce((cleared?'Safe zone defended. ':'The safe zone has fallen. ')
       + `Score ${D.score}. ${D.defeated} destroyed, ${D.missed.length} got through, `
       + `${subs? Math.round(D.correct/subs*100):0} percent typing accuracy.`
       + (adv.rec ? ' Suggested next: ' + adv.rec.label + '.' : '')
@@ -4122,12 +4145,12 @@ function renderTableCards(arr){
     if(worst.length){
       const names = worst.slice(0,3).map(id=>{ const m = D.missed.find(t=>t.id===id); return m ? m.ar : ''; }).filter(Boolean);
       if(names.length) lines.push({ h:'Needs practice', ar:names.join(' · '),
-        t:(names.length===1?' got through to a village.':' got through to a village most often.') });
+        t:(names.length===1?' got through to the safe zone.':' got through to the safe zone most often.') });
     }
     if(recogMisses) lines.push({ h:'Recognition', t:'You let ' + recogMisses + ' zombie' + (recogMisses===1?'':'s')
-      + ' reach a village without starting ' + (recogMisses===1?'it':'them') + '.' });
+      + ' reach the safe zone without starting ' + (recogMisses===1?'it':'them') + '.' });
     if(speedMisses) lines.push({ h:'Typing speed', t:speedMisses + ' zombie' + (speedMisses===1?'':'s')
-      + ' reached a village after you had already started typing ' + (speedMisses===1?'it':'them')
+      + ' reached the safe zone after you had already started typing ' + (speedMisses===1?'it':'them')
       + '. Recognition is fine — the typing needs to be quicker.' });
     if(D.wrong >= 3) lines.push({ h:'Accuracy', t:'Wrong submissions interrupted your streak ' + D.wrong + ' times.' });
 
@@ -4136,11 +4159,11 @@ function renderTableCards(arr){
       ? (DEF_WORD_CATS.find(c=>c.id===defWordCat) || {}).label
       : (DEF_LETTER_SETS.find(c=>c.id===defLetterSet) || {}).label;
     if(D.missed.length >= 3)
-      rec = { a:'dmissed', label:'Practice missed targets', why:'Three or more zombies got through to a village.' };
+      rec = { a:'dmissed', label:'Practice missed targets', why:'Three or more zombies got through to the safe zone.' };
     else if(speedMisses >= 2 && acc >= 0.8 && defSpeed !== 'slow')
       rec = { a:'dslower', label:'Try a slower speed', why:'You knew the targets but ran out of time.' };
     else if(recogMisses >= 2)
-      rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'Zombies reached a village before you recognized them.' };
+      rec = { a:'dagain', label:'Practice ' + (setLabel||'this set') + ' again', why:'Zombies reached the safe zone before you recognized them.' };
     else if(D.wrong >= 3)
       rec = { a:'dagain', label:'Replay for accuracy', why:'Wrong submissions kept breaking your streak.' };
     else if(cleared && D.wrong===0 && defSpeed==='slow')
@@ -4167,7 +4190,7 @@ function renderTableCards(arr){
     if(SESS.rounds >= 2 && SESS.msCount >= 5){
       if(acc >= 85 && SESS.missed >= 3) take = 'You recognize most targets correctly — the misses are costing you on speed, not knowledge.';
       else if(acc < 70) take = 'Wrong submissions are the main leak. Slow down and read the target before typing.';
-      else if(SESS.missed === 0) take = 'No zombie has reached a village this session. Consider a faster speed or a harder set.';
+      else if(SESS.missed === 0) take = 'No zombie has reached the safe zone this session. Consider a faster speed or a harder set.';
     }
     return `<div class="dfn-session"><b>Session so far</b> <span class="note">(this browser session only — a refresh clears it)</span>`
       + `<div class="dfn-sessgrid">`
@@ -4188,11 +4211,12 @@ function renderTableCards(arr){
     const missed = D.missed;
     const cleared = D.spawned>=DROUND && D.lives>0;
     const adv = defAdvice();
-    return `<div class="tt-card"><div class="tt-prompt">${cleared?'Wave survived':'Every village has fallen'}</div>`
+    return `<div class="tt-card"><div class="tt-prompt">${cleared?'Safe zone defended':'The safe zone has fallen'}</div>`
       + `<p class="note">${cleared
           ? `All ${DROUND} zombies came. ${D.defeated} destroyed, ${missed.length} got through. `
-            + `${D.lives===DLIVES ? 'All ' + DLIVES : D.lives + ' of ' + DLIVES} village${DLIVES===1?'':'s'} still standing.`
-          : `Every village fell after ${D.spawned} of ${DROUND} zombies — the round ended early, so the remaining ${Math.max(0,DROUND-D.spawned)} never appeared. ${D.defeated} destroyed, ${missed.length} got through.`}</p>`
+            + `${D.lives===POP ? 'Everyone survived — all ' + POP + ' occupants saved.'
+                               : D.lives + ' of ' + POP + ' occupants saved.'}`
+          : `No one was left to protect. The safe zone was overrun after ${D.spawned} of ${DROUND} zombies — the round ended early, so the remaining ${Math.max(0,DROUND-D.spawned)} never appeared. ${D.defeated} destroyed, ${missed.length} got through.`}</p>`
       + `<div class="dfn-res">`
         + `<div>Score<b>${D.score}</b></div>`
         + `<div>Typing accuracy<b>${acc}%</b></div>`
@@ -4204,7 +4228,7 @@ function renderTableCards(arr){
         + `<div>Mode<b>${esc(defMode==='words'?'Words':'Letters')}</b></div>`
         + `<div>Speed<b>${esc(DSPEEDS[defSpeed].label)}</b></div>`
       + `</div>`
-      + `<p class="note">Typing accuracy counts Enter presses only (${D.correct} correct of ${subs}). A zombie reaching a village is a missed target, not a wrong answer.</p>`
+      + `<p class="note">Typing accuracy counts Enter presses only (${D.correct} correct of ${subs}). A zombie reaching the safe zone is a missed target, not a wrong answer.</p>`
       + (missed.length ? `<div class="tt-prompt" style="margin-top:10px">Targets that got through</div>`
           + `<div class="dfn-miss">` + missed.map(t=>`<span class="dfn-missitem">${arSpan(t.ar)}<span class="tr">${esc(t.tr||'')}</span><br>${esc(t.en||'')}</span>`).join('') + `</div>` : '')
       + (adv.lines.length ? `<div class="dfn-advice">` + adv.lines.map(l =>
