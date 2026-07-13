@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <title>Gods — A Comparative Archive</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="An early comparative archive of pantheons — gods set beside one another across time and place. Family trees, a timeline, cross-cultural archetypes, and notable mentions.">
-<meta property="og:title" content="Gods — A Comparative Archive of Pantheons">
-<meta property="og:description" content="A growing personal archive: pantheons across cultures set beside one another, with family trees, a timeline, archetypes, and notable mentions. Coverage is uneven by design.">
+<meta name="description" content="An early comparative archive of traditions — gods set beside one another across time and place. Family trees, a timeline, cross-cultural archetypes, and notable mentions.">
+<meta property="og:title" content="Gods — A Comparative Archive of Traditions">
+<meta property="og:description" content="A growing personal archive: traditions across cultures set beside one another, with family trees, a timeline, archetypes, and notable mentions. Coverage is uneven by design.">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='30' fill='%230a0b1a' stroke='%23e5c158' stroke-width='2'/%3E%3Ctext x='32' y='44' font-family='Georgia' font-size='38' fill='%23e5c158' text-anchor='middle'%3E%E2%98%89%3C/text%3E%3C/svg%3E">
@@ -1654,6 +1654,14 @@ select:focus:not(:focus-visible),
   .rw-viewport { height:min(60vh, 520px); min-height:320px; }
   .rw-legend { font-size:11px; }
 }
+.group-help {
+  margin:0 0 12px; font-size:11.5px; font-style:italic; color:var(--dim);
+}
+.pantheon-view-controls select[data-grouped="false"] ~ .group-help { display:none; }
+@media (max-width: 760px) {
+  .group-help { font-size:11px; }
+  .barebone-class-head .barebone-class-count { display:block; margin-top:2px; }
+}
 </style>
 <link rel="stylesheet" href="../../_shared/hub-nav.css">
 </head>
@@ -1671,8 +1679,8 @@ select:focus:not(:focus-visible),
 </header>
 
 <nav role="tablist" aria-label="Main sections">
-  <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="tab-overview">Pantheons</button>
-  <button class="tab-btn" data-tab="trees" role="tab" aria-selected="false" aria-controls="tab-trees">Family Trees</button>
+  <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="tab-overview">Traditions</button>
+  <button class="tab-btn" data-tab="trees" role="tab" aria-selected="false" aria-controls="tab-trees">Relationships</button>
   <button class="tab-btn" data-tab="timeline" role="tab" aria-selected="false" aria-controls="tab-timeline">Timeline</button>
   <button class="tab-btn" data-tab="archetypes" role="tab" aria-selected="false" aria-controls="tab-archetypes">Archetypes</button>
   <button class="tab-btn" data-tab="more" role="tab" aria-selected="false" aria-controls="tab-more">More</button>
@@ -1682,48 +1690,51 @@ select:focus:not(:focus-visible),
 
 <section id="tab-overview" class="tab active" role="tabpanel" aria-labelledby="tab-btn-overview">
   <div class="tab-head">
-    <h2>Pantheons</h2>
+    <h2>Traditions</h2>
     <p class="intro">
       Many traditions set beside one another — from Aboriginal Australian
       Dreamings and the reconstructed sky-fathers of the Proto-Indo-European
-      steppe through to living religions. Click a pantheon to open its
-      family tree. Abrahamic entries list angels, prophets, and opposing
+      steppe through to living religions. Click a tradition to open its
+      relationships. Abrahamic entries list angels, prophets, and opposing
       figures for cross-cultural comparison only. Coverage is uneven by design.
     </p>
   </div>
   <div class="pantheon-view-controls">
     <div class="control-group">
       <label for="pantheonSort">Sort</label>
-      <select id="pantheonSort" title="Sort order of the pantheons">
+      <select id="pantheonSort" title="Sort order of the traditions">
         <option value="era">Era (earliest first)</option>
         <option value="size">Size (most figures)</option>
         <option value="alpha">Alphabetical</option>
-        <option value="class">By class</option>
+        <option value="class">By group</option>
       </select>
     </div>
     <span class="total-count" id="pantheonTotalCount"></span>
   </div>
-  <div class="pantheon-legend" id="pantheonLegend" aria-label="Pantheon classes"></div>
+  <div class="pantheon-legend" id="pantheonLegend" aria-label="Tradition groups"></div>
+  <p class="group-help" id="groupHelp">Groups are browsing categories. Each tradition remains distinct.</p>
   <div id="pantheonGroups"></div>
 </section>
 
 <section id="tab-trees" class="tab" role="tabpanel">
   <div class="tab-head">
-    <h2>Family Trees</h2>
+    <h2>Relationships</h2>
     <p class="intro">
-      Genealogy as a way of reading a tradition — parents above, siblings and
-      consorts beside, children below, the same archetypal role across other
-      cultures at the bottom. Some traditions kept extensive divine families;
+      Three ways to read a figure. <strong>Overview</strong> lays out its immediate
+      family as cards. <strong>Relationship Web</strong> draws the network around it —
+      parents, children, siblings, consorts, and optionally the comparative parallels
+      that cross traditions. <strong>Tradition Tree</strong> shows a whole tradition
+      arranged by recorded parentage. Some traditions kept extensive divine families;
       others passed mythic relation through ritual rather than lineage, and read
       thinner here by design. Click any connected figure to follow the line.
     </p>
   </div>
   <div class="focus-container">
     <div class="focus-controls">
-      <label>Pantheon</label>
-      <select id="treeSelect"></select>
-      <label>Figure</label>
-      <select id="focusSelect"></select>
+      <label for="treeSelect">Tradition</label>
+      <select id="treeSelect" aria-label="Choose a tradition"></select>
+      <label for="focusSelect">Figure</label>
+      <select id="focusSelect" aria-label="Choose a figure"></select>
       <button id="focusBack" disabled>← Back</button>
       <div class="tree-view-toggle" role="group" aria-label="Figure view">
         <button id="viewFocusBtn" class="active" aria-pressed="true">Overview</button>
@@ -2179,6 +2190,7 @@ function init() {
 
   wirePantheonViewControls();
   wireCategoryFilter();
+  validateTraditionGroups();
   renderPantheonGrid();
   renderTreeSelect();
   renderTimeline();
@@ -2487,17 +2499,25 @@ function formatStubName(id) {
 }
 
 /* ---------- Pantheons tab ---------- */
+// Browsing groups. These are NAVIGATION CATEGORIES, not claims that the
+// traditions inside them share a pantheon, a people, or a mythology. Each
+// tradition stays entirely distinct; grouping exists so 65 shelves can be
+// found. Every tradition must appear exactly once — validateTraditionGroups()
+// enforces that at runtime and reports any tradition added later without a home.
 const PANTHEON_GROUPS = [
   { id:'mediterranean', name:'Ancient Mediterranean & Classical',
     ids:['pie','greek','roman','etruscan','thracian'] },
   { id:'near-east', name:'Ancient Near East & North Africa',
     ids:['egyptian','mesopotamian','canaanite','hittite','zoroastrian','arabian'] },
   { id:'europe', name:'Pagan Europe',
-    ids:['norse','celtic-irish','celtic-welsh','slavic','baltic','finnish','sami','armenian'] },
+    ids:['norse','celtic-irish','celtic-welsh','slavic','baltic','finnish','sami'] },
+  { id:'caucasus', name:'Caucasus',
+    ids:['armenian','georgian','nart'] },
   { id:'asia', name:'Asia',
-    ids:['hindu','jain','chinese','japanese','korean','vietnamese','tagalog','tibetan-bon','tengri','ainu'] },
+    ids:['hindu','jain','tamil','chinese','japanese','korean','vietnamese','tagalog',
+         'tibetan-bon','tengri','mongol','kyrgyz','ainu'] },
   { id:'africa', name:'Sub-Saharan Africa',
-    ids:['yoruba','akan','fon','zulu'] },
+    ids:['yoruba','akan','fon','zulu','mande','nyanga'] },
   { id:'americas', name:'Indigenous Americas',
     ids:['aztec','mayan','inca','taino','lakota','navajo','iroquois','pacific-nw','guarani','mapuche'] },
   { id:'arctic-oceania', name:'Arctic & Oceania',
@@ -2510,6 +2530,35 @@ const PANTHEON_GROUPS = [
     ids:['deified-humans'] },
 ];
 
+// Runtime integrity check. The 'Other' fallback below still catches anything
+// missed, so a future tradition can never vanish from the UI — but this makes
+// the omission loud instead of silent.
+function validateTraditionGroups() {
+  if (!DATA || !DATA.pantheons) return null;
+  const live = DATA.pantheons.map(p => p.id);
+  const liveSet = new Set(live);
+  const seen = new Map();
+  const dupes = [], ghosts = [];
+  PANTHEON_GROUPS.forEach(g => g.ids.forEach(id => {
+    if (seen.has(id)) dupes.push(id + ' (in ' + seen.get(id) + ' and ' + g.id + ')');
+    else seen.set(id, g.id);
+    if (!liveSet.has(id)) ghosts.push(id + ' (listed in ' + g.id + ')');
+  }));
+  const ungrouped = live.filter(id => !seen.has(id));
+  const report = {
+    traditions: live.length,
+    grouped: live.filter(id => seen.has(id)).length,
+    ungrouped, dupes, ghosts,
+    ok: ungrouped.length === 0 && dupes.length === 0 && ghosts.length === 0,
+  };
+  if (!report.ok) {
+    if (ungrouped.length) console.warn('[Gods] Traditions with no browsing group (shown under "Other"):', ungrouped);
+    if (dupes.length)     console.warn('[Gods] Traditions in more than one group:', dupes);
+    if (ghosts.length)    console.warn('[Gods] Group lists a tradition that does not exist:', ghosts);
+  }
+  return report;
+}
+
 // One signature color per class — a categorical palette spread around the wheel
 // at mid-high lightness so each reads on the dark navy. Identity is never
 // color-alone: the pantheon name sits beside every dot and the legend maps the
@@ -2518,6 +2567,7 @@ const CLASS_COLORS = {
   'mediterranean':  '#e0b23f', // gold
   'near-east':      '#d97b34', // burnt orange
   'europe':         '#5fa85a', // green
+  'caucasus':       '#7ad0b0', // mint  (min distance 62.7 from every other class colour)
   'asia':           '#d64541', // crimson
   'africa':         '#a267cc', // violet
   'americas':       '#1fa88f', // teal
@@ -2652,7 +2702,7 @@ function renderPantheonBarebone(counts) {
       const chips = members.map(p => barebonChipHtml(p, counts[p.id] || 0)).join('');
       return `
         <section class="barebone-class">
-          <h3 class="barebone-class-head"><span class="barebone-class-swatch" style="--class-color:${CLASS_COLORS[grp.id] || CLASS_COLORS.other}" aria-hidden="true"></span>${grp.name}<span class="barebone-class-count">${members.length}</span></h3>
+          <h3 class="barebone-class-head"><span class="barebone-class-swatch" style="--class-color:${CLASS_COLORS[grp.id] || CLASS_COLORS.other}" aria-hidden="true"></span>${grp.name}<span class="barebone-class-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${members.reduce((n, p) => n + (counts[p.id] || 0), 0)} records</span></h3>
           <div class="pantheon-chip-row barebone-flat">${chips}</div>
         </section>`;
     }).join('');
@@ -3555,7 +3605,7 @@ function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
   fSel.innerHTML = pgods.map(x => `<option value="${x.id}">${x.name}</option>`).join('');
   fSel.value = godId;
 
-  document.getElementById('treeCount').textContent = `${pgods.length} in pantheon`;
+  document.getElementById('treeCount').textContent = `${pgods.length} figures in this tradition`;
 
   // Clicking a god from Tradition Tree → flip back to Overview.
   // Relationship Web keeps its mode AND its filters: focus moves inside the graph.
