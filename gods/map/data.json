@@ -1509,7 +1509,7 @@
       "archetype": null,
       "parallels": [
         "saturn",
-        "el"
+        "el-canaanite"
       ],
       "description": "Youngest Titan; overthrew Uranus and ruled the Golden Age. Swallowed his children to prevent being overthrown, until Zeus escaped.",
       "wiki_title": "Cronus"
@@ -3177,7 +3177,7 @@
       "archetype": null,
       "parallels": [
         "cronus",
-        "el"
+        "el-canaanite"
       ],
       "description": "Pre-Olympian king of a Golden Age in Italy; conflated with Cronus. The Saturnalia festival reversed social order in his honor.",
       "wiki_title": "Saturn (mythology)"
@@ -4847,7 +4847,7 @@
         "anu",
         "dyeus"
       ],
-      "description": "Supreme Canaanite patriarch-god. Later identified in early Israelite religion with YHWH ('El Shaddai', 'El Elyon').",
+      "description": "Supreme Canaanite patriarch-god, father of the gods and head of the pantheon at Ugarit; consort of Athirat and father of Baal, Anat, Mot, Yam, Shahar and Shalim. Later identified in early Israelite religion with YHWH ('El Shaddai', 'El Elyon'). The word 'el is also the ordinary Northwest Semitic word for a god, and it is cognate with forms across the Semitic languages; this record catalogues the individual Canaanite deity and does not claim that every generic or later use of the word names this one being.",
       "wiki_title": "El (deity)"
     },
     {
@@ -5465,7 +5465,7 @@
       "parallels": [
         "hermes",
         "eshu",
-        "anansi",
+        "kwaku-anansi",
         "prometheus"
       ],
       "description": "Jötunn-born trickster counted among the Aesir. Mother (by Svadilfari) of Odin's steed Sleipnir. Instigates Ragnarök.",
@@ -8368,7 +8368,7 @@
       "parallels": [
         "hermes",
         "loki",
-        "anansi"
+        "kwaku-anansi"
       ],
       "description": "Messenger between humans and orishas. Trickster at crossroads. Offerings to Eshu precede those to any other orisha.",
       "wiki_title": "Eshu"
@@ -9831,7 +9831,7 @@
     },
     {
       "id": "emperor-ojin",
-      "name": "Ōjin / Hachiman",
+      "name": "Ōjin (deification)",
       "pantheon": "deified-humans",
       "category": "deified-human",
       "gender": "M",
@@ -11171,7 +11171,7 @@
       "archetype": "trickster",
       "parallels": [
         "coyote",
-        "anansi",
+        "kwaku-anansi",
         "loki"
       ],
       "description": "Spider-trickster. Named things to give them being; both culture-bringer and danger."
@@ -16298,29 +16298,6 @@
       "description": "Daughter of Sky-Woman; mother of the Twins. Died giving birth to Flint, who clawed out her side."
     },
     {
-      "id": "anansi",
-      "name": "Anansi",
-      "pantheon": "yoruba",
-      "category": "major",
-      "gender": "M",
-      "domains": [
-        "trickster",
-        "storyteller",
-        "spider"
-      ],
-      "parents": [],
-      "consorts": [],
-      "children": [],
-      "archetype": "trickster",
-      "parallels": [
-        "eshu",
-        "hermes",
-        "loki",
-        "iktomi"
-      ],
-      "description": "Spider-trickster of the Akan and broader West African traditions. Folk tales traveled to the Americas; became the trickster of Caribbean and African-American folklore."
-    },
-    {
       "id": "kotoamatsukami",
       "name": "Kotoamatsukami",
       "pantheon": "japanese",
@@ -16338,25 +16315,6 @@
       "archetype": null,
       "parallels": [],
       "description": "The 'separate heavenly deities' — first five kami who appeared at the beginning."
-    },
-    {
-      "id": "el",
-      "name": "El (Semitic supreme)",
-      "pantheon": "canaanite",
-      "category": "primordial",
-      "gender": "M",
-      "domains": [
-        "root-of-semitic-high-god"
-      ],
-      "parents": [],
-      "consorts": [],
-      "children": [],
-      "archetype": null,
-      "parallels": [
-        "el-canaanite",
-        "yhwh"
-      ],
-      "description": "Semitic root-word for 'god'. Cognate across Canaanite El, early Israelite Elohim, Arabian Il, and later Allāh."
     },
     {
       "id": "lugalbanda",
@@ -19426,11 +19384,10 @@
       "children": [],
       "archetype": "trickster",
       "parallels": [
-        "anansi",
         "eshu",
         "loki"
       ],
-      "description": "Son of Nyame. Bought all the world's stories from his father. Ancestor of storytelling itself; survived slavery as Aunt Nancy and Brer Rabbit."
+      "description": "The spider-trickster of the Akan, and the great figure of the anansesem, the spider-tales. Kwaku is the Akan day-name of a man born on a Wednesday, and it is his name and not a second person. He is the son of Nyame, the sky-god, and the cycle everyone knows is how he bought all the world's stories from his father, who set him a price no one could pay - the python, the hornets, the leopard, the dwarf - and he took them all by trickery, and the stories have been his ever since. He is not a Yoruba figure and is not entered as one. He went with the Akan into the Caribbean and the Americas and is still told of there as Anancy and as Aunt Nancy, and the tales survived the crossing when very little else did."
     },
     {
       "id": "bia",
@@ -42490,6 +42447,44 @@
       "archetype": null,
       "parallels": [],
       "description": "The Ballad of Mulan is a poem of a few hundred characters and it is where she begins, and it is not a life; there is no secure history behind her and none is claimed. In the ballad the conscription lists come round and her father's name is on them and he is old and there is no grown son in the house, so she buys a horse and goes in his place. She serves ten years or twelve. She is not found out. And when it is over and the Khan offers her office and reward, she asks instead for a camel to carry her home, and goes back, and puts on her old clothes and does her hair, and comes out to her comrades, who had campaigned beside her for a decade and had not known. That is the poem and that is her decision, and everything else is later: the Ming plays and the Qing novels gave her a surname and a suicide and a betrothal and a rebellion, the operas gave her more, and the films of the last century gave her others again, and none of them is the original and none is treated here as the canonical one."
+    },
+    {
+      "id": "ismene",
+      "name": "Ismene",
+      "pantheon": "greek",
+      "category": "hero",
+      "gender": "F",
+      "domains": [
+        "refusal",
+        "loyalty",
+        "the-trial"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "siblings": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The sister of Antigone in Sophocles, and she is not entered as somebody's sister. She is entered because the play turns twice on what she does. First she refuses: Antigone comes to her in the dark before the play has properly begun and asks her to help bury their brother against the edict, and Ismene will not, and says what the audience is thinking - that they are women and the law is the law and the dead do not need them dead as well. She does not help perform the burial, and this record does not say she did. Then, when Antigone has been taken and is standing before Creon, Ismene comes and claims a share of the guilt she did not earn, and asks to die with her sister; and Antigone, who has nothing left to give her, refuses her even that, and will not let her have any part of it. Between the refusal and the confession lies the whole argument of the play about what obedience is worth. This is Sophocles' Ismene; the older mythography gives her other ends, and the tellings do not agree, and no single biography of her is asserted here."
+    },
+    {
+      "id": "telegonus",
+      "name": "Telegonus",
+      "pantheon": "greek",
+      "category": "hero",
+      "gender": "M",
+      "domains": [
+        "the-spear",
+        "recognition",
+        "patricide"
+      ],
+      "parents": [],
+      "consorts": [],
+      "children": [],
+      "siblings": [],
+      "archetype": null,
+      "parallels": [],
+      "description": "The son Circe bore to Odysseus, and the man who killed him. His story belonged to the Telegony, an epic of the cycle that is lost: no copy of it survives, and what is known comes through an ancient summary of the poem and through scattered later notice, so the narrative is reported here as the tradition preserves it and not as a text anyone can read. Grown, he goes looking for the father he has never seen, and the sea puts him ashore on Ithaca without his knowing where he is; and he raids the place for food, as raiders do, and an old man comes out to drive him off, and they fight, and he runs him through with a spear whose point is the spine of a stingray. Only afterwards does he learn whose blood is on it. That is why he is entered: the death of Odysseus, who came through the war and the sea and the suitors, is caused by this man's own hand. What follows - that he carried the body home to Circe, and that the households were joined - belongs to the same lost poem and is given the same weight, which is to say not much."
     }
   ],
   "notable_mentions": [
