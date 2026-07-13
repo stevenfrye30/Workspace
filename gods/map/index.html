@@ -1508,6 +1508,152 @@ select:focus:not(:focus-visible),
   .grandparent-chip { font-size:10px; padding:2px 8px; }
   .side-expand-btn { padding:6px 10px; font-size:10px; letter-spacing:0.5px; }
 }
+/* ================= Relationship Web (Batch A) ================= */
+.rw-controls {
+  display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px;
+  padding:12px 14px; margin-bottom:10px;
+  background:var(--panel); border:1px solid var(--line); border-radius:10px;
+}
+.rw-group { display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.rw-group + .rw-group { border-left:1px solid var(--line); padding-left:14px; }
+.rw-group > .rw-legend-label {
+  font-size:10.5px; letter-spacing:1.4px; text-transform:uppercase;
+  color:var(--dim); margin-right:2px;
+}
+.rw-controls button {
+  background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+  border-radius:7px; padding:6px 11px; font-size:12px; cursor:pointer;
+  font-family:inherit; min-height:32px;
+}
+.rw-controls button:hover { border-color:var(--gold); }
+.rw-controls button[aria-pressed="true"] {
+  background:var(--gold); color:#0a0b1a; border-color:var(--gold); font-weight:600;
+}
+.rw-controls button:focus-visible,
+.rw-node:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.rw-controls button:disabled { opacity:0.4; cursor:not-allowed; }
+.rw-controls button.rw-action { background:transparent; }
+.rw-controls button.rw-primary { border-color:var(--gold); color:var(--gold); }
+.rw-controls select {
+  background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+  border-radius:7px; padding:6px 8px; font-size:12px; font-family:inherit; min-height:32px;
+}
+/* type toggles carry a leading shape so meaning is never colour-only */
+.rw-type::before {
+  content:''; display:inline-block; width:14px; height:0; vertical-align:middle;
+  margin-right:6px; border-top-width:2px; border-top-style:solid; border-color:currentColor;
+}
+.rw-type[data-rel="parents"]::before,
+.rw-type[data-rel="children"]::before { border-top-style:solid; }
+.rw-type[data-rel="consorts"]::before { border-top-style:dashed; }
+.rw-type[data-rel="siblings"]::before { border-top-style:dotted; }
+.rw-type[data-rel="parallels"]::before { border-top-style:double; border-top-width:3px; }
+
+.rw-note { font-size:11.5px; color:var(--dim); font-style:italic; flex-basis:100%; }
+.rw-summary {
+  font-size:12px; color:var(--dim); padding:6px 2px 10px;
+}
+.rw-summary strong { color:var(--ink); font-weight:600; }
+
+.rw-viewport {
+  position:relative; overflow:auto; background:var(--bg);
+  border:1px solid var(--line); border-radius:10px;
+  height:min(70vh, 720px); min-height:360px;
+  touch-action:pan-x pan-y;
+}
+.rw-viewport.panning { cursor:grabbing; }
+.rw-sizer { position:relative; }
+.rw-inner { position:relative; transform-origin:0 0; }
+.rw-edges { position:absolute; inset:0; pointer-events:none; overflow:visible; }
+
+.rw-node {
+  position:absolute; box-sizing:border-box;
+  width:132px; min-height:44px; padding:6px 8px;
+  background:var(--panel); border:1px solid var(--line);
+  border-left:3px solid var(--node-color, var(--line));
+  border-radius:8px; cursor:pointer; text-align:left;
+  font-family:inherit; color:var(--ink); font-size:12px; line-height:1.25;
+  display:flex; flex-direction:column; justify-content:center; gap:2px;
+}
+.rw-node:hover { border-color:var(--gold); z-index:5; }
+.rw-node .rw-nname { font-weight:600; font-size:12.5px; }
+.rw-node .rw-ntrad { font-size:9.5px; letter-spacing:0.6px; text-transform:uppercase; color:var(--dim); }
+.rw-node .rw-ncat  { font-size:9.5px; color:var(--dim); }
+.rw-node.rw-focus {
+  width:154px; min-height:54px;
+  border:2px solid var(--gold); border-left:4px solid var(--gold);
+  background:var(--panel2); z-index:6;
+}
+.rw-node.rw-focus .rw-nname { font-size:14px; color:var(--gold); }
+.rw-node .rw-deg {
+  position:absolute; top:-8px; right:-8px;
+  background:var(--gold); color:#0a0b1a; font-size:9.5px; font-weight:700;
+  border-radius:9px; padding:1px 6px; line-height:1.5;
+}
+/* dangling stub — hollow, dashed, not interactive */
+.rw-node.rw-stub {
+  background:transparent; border:1px dashed var(--dim); border-left:1px dashed var(--dim);
+  color:var(--dim); cursor:default; opacity:0.75;
+}
+.rw-node.rw-stub:hover { border-color:var(--dim); }
+.rw-node.rw-stub .rw-ntrad { font-style:italic; }
+
+.rw-band-label {
+  position:absolute; font-size:10px; letter-spacing:1.5px; text-transform:uppercase;
+  color:var(--dim); white-space:nowrap; pointer-events:none;
+}
+.rw-band-rule {
+  position:absolute; height:1px; background:var(--line); opacity:0.4; pointer-events:none;
+}
+.rw-legend {
+  display:flex; flex-wrap:wrap; gap:6px 18px; align-items:center;
+  padding:10px 14px; margin-top:10px;
+  background:var(--panel); border:1px solid var(--line); border-radius:10px;
+  font-size:11.5px; color:var(--dim);
+}
+.rw-legend .rw-lg { display:flex; align-items:center; gap:7px; }
+.rw-legend .rw-lgline { display:inline-block; width:26px; height:0; border-top-width:2px; }
+.rw-legend .rw-lgbox {
+  display:inline-block; width:16px; height:11px; border:1px dashed var(--dim); border-radius:3px;
+}
+.rw-empty {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:12px; text-align:center; padding:40px 22px; color:var(--dim); font-size:13px;
+  max-width:520px; margin:0 auto; line-height:1.6;
+}
+.rw-empty .rw-empty-strong { color:var(--ink); font-size:14px; }
+/* confirmation dialog for very large networks */
+.rw-confirm-backdrop {
+  position:fixed; inset:0; background:rgba(5,6,15,0.72);
+  display:flex; align-items:center; justify-content:center; z-index:200; padding:20px;
+}
+.rw-confirm {
+  background:var(--panel); border:1px solid var(--gold); border-radius:12px;
+  padding:24px; max-width:460px; color:var(--ink); font-size:13.5px; line-height:1.6;
+}
+.rw-confirm h3 { margin:0 0 10px; font-size:16px; color:var(--gold); }
+.rw-confirm .rw-confirm-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:18px; }
+.rw-confirm button {
+  background:var(--panel2); color:var(--ink); border:1px solid var(--line);
+  border-radius:7px; padding:9px 16px; font-size:13px; cursor:pointer; font-family:inherit;
+}
+.rw-confirm button.rw-go { border-color:var(--gold); color:var(--gold); }
+.rw-confirm button:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.rw-sr {
+  position:absolute; width:1px; height:1px; padding:0; margin:-1px;
+  overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rw-inner, .rw-node { transition:none !important; animation:none !important; }
+}
+@media (max-width: 760px) {
+  .rw-controls { gap:8px 10px; padding:10px; }
+  .rw-group + .rw-group { border-left:0; padding-left:0; }
+  .rw-group { flex-basis:100%; }
+  .rw-controls button, .rw-controls select { min-height:40px; padding:8px 12px; font-size:12.5px; }
+  .rw-viewport { height:min(60vh, 520px); min-height:320px; }
+  .rw-legend { font-size:11px; }
+}
 </style>
 <link rel="stylesheet" href="../../_shared/hub-nav.css">
 </head>
@@ -1579,9 +1725,10 @@ select:focus:not(:focus-visible),
       <label>Figure</label>
       <select id="focusSelect"></select>
       <button id="focusBack" disabled>← Back</button>
-      <div class="tree-view-toggle">
-        <button id="viewFocusBtn" class="active">Focus</button>
-        <button id="viewFullBtn">Full descent</button>
+      <div class="tree-view-toggle" role="group" aria-label="Figure view">
+        <button id="viewFocusBtn" class="active" aria-pressed="true">Overview</button>
+        <button id="viewWebBtn" aria-pressed="false">Relationship Web</button>
+        <button id="viewFullBtn" aria-pressed="false">Tradition Tree</button>
       </div>
       <span class="count" id="treeCount"></span>
     </div>
@@ -1623,8 +1770,64 @@ select:focus:not(:focus-visible),
     <div class="full-tree-legend" id="fullTreeLegend" style="display:none;">
       <span><span class="tl-line" style="background:var(--gold);"></span> parent → child</span>
       <span><span class="tl-line" style="background:var(--blood); border-top:1px dashed var(--blood);"></span> consort</span>
-      <span style="margin-left:auto; font-style:italic;">Click any figure to return to Focus view.</span>
+      <span style="margin-left:auto; font-style:italic;">Click any figure to return to Overview.</span>
+      <span style="flex-basis:100%; font-style:italic; opacity:0.85;">Shows the selected tradition arranged by recorded parentage. Some cross-tradition and non-parental relationships are not shown here.</span>
     </div>
+    <div class="rel-web-container" id="relWebView" style="display:none;">
+      <div class="rw-controls" role="group" aria-label="Relationship Web controls">
+        <div class="rw-group">
+          <span class="rw-legend-label">Direction</span>
+          <button type="button" class="rw-dir" data-dir="ancestors" aria-pressed="false">Ancestors</button>
+          <button type="button" class="rw-dir" data-dir="descendants" aria-pressed="false">Descendants</button>
+          <button type="button" class="rw-dir" data-dir="both" aria-pressed="true">Both</button>
+        </div>
+        <div class="rw-group">
+          <label class="rw-legend-label" for="rwDepth">Depth</label>
+          <select id="rwDepth" aria-label="Parent and child traversal depth">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="rw-group">
+          <span class="rw-legend-label">Show</span>
+          <button type="button" class="rw-type" data-rel="parents"   aria-pressed="true">Parents</button>
+          <button type="button" class="rw-type" data-rel="children"  aria-pressed="true">Children</button>
+          <button type="button" class="rw-type" data-rel="consorts"  aria-pressed="true">Consorts</button>
+          <button type="button" class="rw-type" data-rel="siblings"  aria-pressed="true">Siblings</button>
+          <button type="button" class="rw-type" data-rel="parallels" aria-pressed="false">Parallels</button>
+        </div>
+        <div class="rw-group">
+          <button type="button" id="rwFull" class="rw-action rw-primary">Show Full Network</button>
+          <button type="button" id="rwFit" class="rw-action">Fit to Screen</button>
+          <button type="button" id="rwCenter" class="rw-action">Center Focus</button>
+          <button type="button" id="rwReset" class="rw-action">Reset View</button>
+        </div>
+        <p class="rw-note">
+          Parallels are comparative connections drawn between traditions, not kinship. They are
+          off by default because they link the archive's largest network.
+        </p>
+      </div>
+
+      <div class="rw-summary" id="rwSummary" role="status" aria-live="polite"></div>
+
+      <div class="rw-viewport" id="rwViewport" tabindex="0"
+           role="application" aria-label="Relationship network graph"
+           aria-describedby="rwSummary">
+        <div class="rw-sizer" id="rwSizer">
+          <div class="rw-inner" id="rwInner"></div>
+        </div>
+      </div>
+
+      <div class="rw-legend" id="rwLegend" aria-label="Graph legend">
+        <span class="rw-lg"><span class="rw-lgline" style="border-top:2px solid var(--gold);"></span> parent → child (arrow points to the child)</span>
+        <span class="rw-lg"><span class="rw-lgline" style="border-top:2px dashed #d98aa8;"></span> consort</span>
+        <span class="rw-lg"><span class="rw-lgline" style="border-top:2px dotted #9aa3bd;"></span> sibling</span>
+        <span class="rw-lg"><span class="rw-lgline" style="border-top:3px double #6ea8e0;"></span> parallel (comparative)</span>
+        <span class="rw-lg"><span class="rw-lgbox"></span> not catalogued</span>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -1986,6 +2189,7 @@ function init() {
   wireSubtabs();
   wireModal();
   wireFullTreeZoom();
+  wireRelationshipWeb();
   wireHashRouter();
 
   // Initialize Family Trees tab to Zeus (won't update hash since skipHash)
@@ -2550,24 +2754,40 @@ function renderTreeSelect() {
   });
 
   document.getElementById('viewFocusBtn').addEventListener('click', () => setTreeMode('focus'));
+  document.getElementById('viewWebBtn').addEventListener('click', () => setTreeMode('web'));
   document.getElementById('viewFullBtn').addEventListener('click', () => setTreeMode('full'));
 }
 
 function setTreeMode(mode) {
-  currentTreeMode = mode;
-  // Leaving Full Tree drops any selection state and inspector
+  currentTreeMode = mode;  // 'focus' (Overview) | 'web' (Relationship Web) | 'full' (Tradition Tree)
+  // Leaving Tradition Tree drops any selection state and inspector
   if (mode !== 'full') clearTreeSelection();
-  document.getElementById('viewFocusBtn').classList.toggle('active', mode === 'focus');
-  document.getElementById('viewFullBtn').classList.toggle('active', mode === 'full');
-  document.getElementById('focusView').style.display = mode === 'focus' ? '' : 'none';
-  document.getElementById('fullTreeView').style.display = mode === 'full' ? 'block' : 'none';
-  document.getElementById('fullTreeLegend').style.display = mode === 'full' ? '' : 'none';
-  const filters = document.getElementById('fullTreeFilters');
-  if (filters) filters.style.display = mode === 'full' ? '' : 'none';
+
+  const btn = (id, on) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.toggle('active', on);
+    el.setAttribute('aria-pressed', on ? 'true' : 'false');
+  };
+  btn('viewFocusBtn', mode === 'focus');
+  btn('viewWebBtn',   mode === 'web');
+  btn('viewFullBtn',  mode === 'full');
+
+  const show = (id, on, disp) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = on ? (disp || '') : 'none';
+  };
+  show('focusView',      mode === 'focus');
+  show('relWebView',     mode === 'web', 'block');
+  show('fullTreeView',   mode === 'full', 'block');
+  show('fullTreeLegend', mode === 'full');
+  show('fullTreeFilters', mode === 'full');
+
   if (mode === 'full' && currentFocusId) {
     const g = GODS_BY_ID[currentFocusId];
     if (g) renderFullTree(g.pantheon);
   }
+  if (mode === 'web' && currentFocusId) rwRerender();
 }
 
 // Redraw connectors on resize when full tree is visible (debounced)
@@ -2637,6 +2857,640 @@ function ftSyncZoom() {
   else ftApplyZoom(ftZoom);
 }
 
+
+/* =====================================================================
+   RELATIONSHIP WEB  (Batch A)
+   Figure-centred graph. Reads the five relationship arrays; never writes.
+   Substrate: absolutely-positioned HTML nodes + one SVG edge layer,
+   scaled by CSS transform (same approach as Tradition Tree). No library.
+   ===================================================================== */
+
+const RW_CAP = 1000;          // hard runaway safeguard (measured max is 905)
+const RW_CONFIRM_OVER = 300;  // above this, ask first
+const RW_FIT_OVER = 60;       // above this, auto fit-to-screen on render
+const RW_DEG_BADGE = 40;      // show relationship-count badge above this
+const RW_MIN = 0.2, RW_MAX = 2;
+
+const RW_TYPES = ['parents', 'children', 'consorts', 'siblings', 'parallels'];
+const RW_UND = { consorts: 'consorts', siblings: 'siblings', parallels: 'parallels' };
+
+let rwState = {
+  dir: 'both',
+  depth: 1,
+  types: { parents: true, children: true, consorts: true, siblings: true, parallels: false },
+  full: false,
+};
+let rwZoom = 1;
+let rwLastGraph = null;
+const RW_CACHE = new Map();
+
+/* ---- normalized relationship model: built ONCE from DATA, never mutated ---- */
+let REL = null;
+function buildRelModel() {
+  const pc = new Set();                       // "parent|child" normalized edges
+  const und = { consorts: new Set(), siblings: new Set(), parallels: new Set() };
+  const parentsOf = {}, childrenOf = {}, undAdj = { consorts:{}, siblings:{}, parallels:{} };
+  const push = (o, k, v) => { (o[k] || (o[k] = new Set())).add(v); };
+
+  DATA.gods.forEach(g => {
+    const a = g.id;
+    // A parent→child edge exists if EITHER side records it. One edge either way.
+    (g.children || []).forEach(c => { if (GODS_BY_ID[c]) pc.add(a + '|' + c); });
+    (g.parents  || []).forEach(p => { if (GODS_BY_ID[p]) pc.add(p + '|' + a); });
+    Object.keys(und).forEach(f => {
+      (g[f] || []).forEach(t => {
+        if (!GODS_BY_ID[t]) return;
+        const key = a < t ? a + '|' + t : t + '|' + a;   // undirected, deduped
+        und[f].add(key);
+      });
+    });
+  });
+  pc.forEach(k => {
+    const [p, c] = k.split('|');
+    push(childrenOf, p, c); push(parentsOf, c, p);
+  });
+  Object.keys(und).forEach(f => und[f].forEach(k => {
+    const [a, b] = k.split('|');
+    push(undAdj[f], a, b); push(undAdj[f], b, a);
+  }));
+
+  // normalized degree, for the high-degree badge
+  const degree = {};
+  const bump = id => { degree[id] = (degree[id] || 0) + 1; };
+  pc.forEach(k => { const [p, c] = k.split('|'); bump(p); bump(c); });
+  Object.keys(und).forEach(f => und[f].forEach(k => { const [a, b] = k.split('|'); bump(a); bump(b); }));
+
+  REL = { pc, und, parentsOf, childrenOf, undAdj, degree };
+}
+const rwNbr = (map, id) => (map[id] ? Array.from(map[id]) : []);
+
+/* ---- traversal: ITERATIVE BFS with a visited set. Never recursive. ---- */
+function rwBuildGraph(focusId, st) {
+  if (!REL) buildRelModel();
+  const t = st.types;
+  const up = t.parents && (st.dir === 'both' || st.dir === 'ancestors');
+  const dn = t.children && (st.dir === 'both' || st.dir === 'descendants');
+  const undOn = Object.keys(RW_UND).filter(f => t[f]);
+
+  const nodes = new Map();   // id -> { rank, core }
+  let capped = false;
+
+  if (st.full) {
+    // Full connected component through every ENABLED type, until exhausted.
+    const q = [focusId];
+    nodes.set(focusId, { rank: 0, core: true });
+    while (q.length) {
+      const x = q.shift();
+      const nb = [];
+      if (t.parents)  nb.push(...rwNbr(REL.parentsOf, x));
+      if (t.children) nb.push(...rwNbr(REL.childrenOf, x));
+      undOn.forEach(f => nb.push(...rwNbr(REL.undAdj[f], x)));
+      for (const n of nb) {
+        if (nodes.has(n)) continue;
+        if (nodes.size >= RW_CAP) { capped = true; break; }
+        nodes.set(n, { rank: 0, core: true });
+        q.push(n);
+      }
+      if (capped) break;
+    }
+  } else {
+    // CORE: parent/child BFS to depth. rank = signed generation from focus.
+    const q = [[focusId, 0, 0]];
+    nodes.set(focusId, { rank: 0, core: true });
+    while (q.length) {
+      const [x, d, rank] = q.shift();
+      if (d >= st.depth) continue;
+      const step = [];
+      if (up) rwNbr(REL.parentsOf, x).forEach(p => step.push([p, rank - 1]));
+      if (dn) rwNbr(REL.childrenOf, x).forEach(c => step.push([c, rank + 1]));
+      for (const [n, r] of step) {
+        if (nodes.has(n)) continue;
+        if (nodes.size >= RW_CAP) { capped = true; break; }
+        nodes.set(n, { rank: r, core: true });
+        q.push([n, d + 1, r]);
+      }
+      if (capped) break;
+    }
+    // ADJUNCT: direct consorts / siblings / parallels of core nodes.
+    // Added as terminal nodes — never expanded further (no recursive sib/consort).
+    const coreIds = Array.from(nodes.keys());
+    for (const x of coreIds) {
+      const rank = nodes.get(x).rank;
+      for (const f of undOn) {
+        for (const n of rwNbr(REL.undAdj[f], x)) {
+          if (nodes.has(n)) continue;
+          if (nodes.size >= RW_CAP) { capped = true; break; }
+          nodes.set(n, { rank, core: false });
+        }
+        if (capped) break;
+      }
+      if (capped) break;
+    }
+  }
+
+  // EDGES: every enabled edge whose BOTH ends are visible. One edge per pair.
+  const ids = nodes;
+  const edges = [];
+  if (t.parents || t.children) {
+    REL.pc.forEach(k => {
+      const i = k.indexOf('|'), p = k.slice(0, i), c = k.slice(i + 1);
+      if (ids.has(p) && ids.has(c)) edges.push({ a: p, b: c, rel: 'parent', dir: true });
+    });
+  }
+  Object.keys(RW_UND).forEach(f => {
+    if (!t[f]) return;
+    const rel = f === 'consorts' ? 'consort' : f === 'siblings' ? 'sibling' : 'parallel';
+    REL.und[f].forEach(k => {
+      const i = k.indexOf('|'), a = k.slice(0, i), b = k.slice(i + 1);
+      if (ids.has(a) && ids.has(b)) edges.push({ a, b, rel, dir: false });
+    });
+  });
+
+  // STUBS: uncatalogued targets directly referenced by a VISIBLE node.
+  // Never queued, never expanded, never counted toward the cap.
+  const stubs = new Map();
+  const stubFields = ['parents', 'children', 'consorts', 'siblings'].filter(f => {
+    if (f === 'parents')  return t.parents;
+    if (f === 'children') return t.children;
+    return t[f];
+  });
+  nodes.forEach((_, id) => {
+    const g = GODS_BY_ID[id];
+    if (!g) return;
+    stubFields.forEach(f => (g[f] || []).forEach(target => {
+      if (GODS_BY_ID[target]) return;
+      const sid = 'stub:' + target;
+      if (!stubs.has(sid)) stubs.set(sid, { id: target, rank: nodes.get(id).rank, from: [] });
+      stubs.get(sid).from.push({ from: id, rel: f === 'parents' ? 'parent-up' : f === 'children' ? 'parent' : (f === 'consorts' ? 'consort' : 'sibling') });
+    }));
+  });
+
+  const traditions = new Set();
+  nodes.forEach((_, id) => traditions.add(GODS_BY_ID[id].pantheon));
+
+  return { focusId, nodes, edges, stubs, capped, traditions, st: JSON.parse(JSON.stringify(st)) };
+}
+
+function rwCacheKey(focusId, st) {
+  return [focusId, st.dir, st.depth, st.full ? 'F' : 'd',
+          RW_TYPES.map(k => (st.types[k] ? '1' : '0')).join('')].join('~');
+}
+function rwGetGraph(focusId, st) {
+  const key = rwCacheKey(focusId, st);
+  if (RW_CACHE.has(key)) return RW_CACHE.get(key);
+  const g = rwBuildGraph(focusId, st);
+  if (RW_CACHE.size > 40) RW_CACHE.clear();   // bounded
+  RW_CACHE.set(key, g);
+  return g;
+}
+
+/* ---------------------- layout ---------------------- */
+const RW_NW = 132, RW_NH = 52, RW_FW = 154, RW_GAPX = 22, RW_GAPY = 78, RW_PAD = 40;
+
+function rwLayout(graph) {
+  const multi = graph.traditions.size > 1 && graph.st.full;
+  const bands = new Map();   // key -> [ids]
+  const bandLabel = new Map();
+
+  const add = (key, id) => { (bands.get(key) || bands.set(key, []).get(key)).push(id); };
+
+  if (multi) {
+    // Cross-tradition network: cluster by tradition. Generation is meaningless here.
+    graph.nodes.forEach((_, id) => add(GODS_BY_ID[id].pantheon, id));
+    bands.forEach((_, k) => {
+      const p = PANTHEONS_BY_ID[k];
+      bandLabel.set(k, p ? p.name : k);
+    });
+  } else {
+    // Family network: signed generation bands (ancestors above, descendants below).
+    graph.nodes.forEach((n, id) => add(String(n.rank), id));
+    bands.forEach((_, k) => {
+      const r = Number(k);
+      bandLabel.set(k, r === 0 ? 'Focus' : r < 0 ? (r === -1 ? 'Parents' : Math.abs(r) + ' generations up')
+                                                 : (r === 1 ? 'Children' : r + ' generations down'));
+    });
+  }
+  // stubs sit in a band beside the node that referenced them
+  graph.stubs.forEach((s, sid) => {
+    const key = multi ? (GODS_BY_ID[s.from[0].from] ? GODS_BY_ID[s.from[0].from].pantheon : 'other') : String(s.rank);
+    add(key, sid);
+  });
+
+  // order bands: focus tradition first (multi) / numeric ascending (family)
+  let keys = Array.from(bands.keys());
+  if (multi) {
+    const home = GODS_BY_ID[graph.focusId].pantheon;
+    keys.sort((a, b) => (a === home ? -1 : b === home ? 1 : bands.get(b).length - bands.get(a).length));
+  } else {
+    keys.sort((a, b) => Number(a) - Number(b));
+  }
+
+  const pos = new Map();
+  let y = RW_PAD, maxW = 0;
+  keys.forEach(k => {
+    const row = bands.get(k);
+    // focused node first in its band so it is easy to spot
+    row.sort((a, b) => (a === graph.focusId ? -1 : b === graph.focusId ? 1 : 0));
+    const perRow = Math.max(1, Math.min(row.length, Math.ceil(Math.sqrt(row.length) * 2.4)));
+    const lines = Math.ceil(row.length / perRow);
+    for (let i = 0; i < row.length; i++) {
+      const li = Math.floor(i / perRow), ci = i % perRow;
+      const count = Math.min(perRow, row.length - li * perRow);
+      const rowW = count * RW_NW + (count - 1) * RW_GAPX;
+      const x0 = RW_PAD + 150 + Math.max(0, (0 - rowW) / 2);
+      const x = x0 + ci * (RW_NW + RW_GAPX);
+      const yy = y + li * (RW_NH + 16);
+      pos.set(row[i], { x, y: yy, band: k });
+      maxW = Math.max(maxW, x + RW_FW);
+    }
+    y += lines * (RW_NH + 16) + RW_GAPY;
+  });
+
+  return { pos, bands, bandLabel, keys, multi, width: maxW + RW_PAD, height: y + RW_PAD };
+}
+
+/* ---------------------- render ---------------------- */
+function rwEdgePath(A, B, rel) {
+  const ax = A.x + (A.w / 2), bx = B.x + (B.w / 2);
+  const ay = A.y + A.h, by = B.y;                 // default: A above B
+  if (rel === 'parent') {
+    const y1 = A.y + A.h / 2, y2 = B.y + B.h / 2;
+    if (B.y > A.y + A.h - 1) {
+      const dy = by - ay;
+      return `M ${ax} ${ay} C ${ax} ${ay + dy * 0.4}, ${bx} ${by - dy * 0.4}, ${bx} ${by}`;
+    }
+    return `M ${ax} ${y1} C ${(ax + bx) / 2} ${y1}, ${(ax + bx) / 2} ${y2}, ${bx} ${y2}`;
+  }
+  // side relations: gentle arc between mid-heights
+  const y1 = A.y + A.h / 2, y2 = B.y + B.h / 2;
+  const mx = (ax + bx) / 2, my = (y1 + y2) / 2 - Math.min(60, Math.abs(bx - ax) * 0.22 + 18);
+  return `M ${ax} ${y1} Q ${mx} ${my}, ${bx} ${y2}`;
+}
+
+const RW_STYLE = {
+  parent:   { stroke: '#c9a227', width: 1.5, dash: '',            marker: 'url(#rwArrow)' },
+  consort:  { stroke: '#d98aa8', width: 1.4, dash: '7,5',         marker: '' },
+  sibling:  { stroke: '#9aa3bd', width: 1.4, dash: '1.5,4',       marker: '' },
+  parallel: { stroke: '#6ea8e0', width: 1.4, dash: '1,3,7,3',     marker: '' },
+  stub:     { stroke: '#5a6180', width: 1,   dash: '3,4',         marker: '' },
+};
+
+function rwRender(graph) {
+  const inner = document.getElementById('rwInner');
+  const sizer = document.getElementById('rwSizer');
+  if (!inner || !sizer) return;
+  rwLastGraph = graph;
+
+  const focusG = GODS_BY_ID[graph.focusId];
+  const total = graph.nodes.size;
+
+  // ---- empty / isolated state ----
+  if (total === 1 && graph.stubs.size === 0) {
+    inner.style.transform = 'none';
+    inner.innerHTML = `
+      <div class="rw-empty">
+        <div class="rw-empty-strong">${escapeAttr(focusG.name)}</div>
+        <div>No catalogued relationships are currently recorded for this figure.</div>
+        <div>This does not mean the tradition describes the figure as unrelated.
+             The archive may not yet contain structured relationship data.</div>
+      </div>`;
+    sizer.style.width = ''; sizer.style.height = '';
+    rwSetSummary(`Relationship network for ${focusG.name}: no catalogued relationships recorded.`);
+    return;
+  }
+
+  const L = rwLayout(graph);
+  const box = id => {
+    const p = L.pos.get(id);
+    const isF = id === graph.focusId;
+    return { x: p.x, y: p.y, w: isF ? RW_FW : RW_NW, h: isF ? 56 : RW_NH };
+  };
+
+  // ---- edges (one SVG, built once as a string; no per-edge listeners) ----
+  const paths = [];
+  graph.edges.forEach(e => {
+    const A = box(e.a), B = box(e.b);
+    const s = RW_STYLE[e.rel];
+    // parent edges: always draw from the parent downward
+    const from = e.rel === 'parent' ? A : (A.y <= B.y ? A : B);
+    const to   = e.rel === 'parent' ? B : (A.y <= B.y ? B : A);
+    paths.push(`<path d="${rwEdgePath(from, to, e.rel)}" class="rw-edge rw-edge-${e.rel}"
+      stroke="${s.stroke}" stroke-width="${s.width}" fill="none" opacity="0.7"
+      ${s.dash ? `stroke-dasharray="${s.dash}"` : ''} ${s.marker ? `marker-end="${s.marker}"` : ''}
+      stroke-linecap="round"/>`);
+  });
+  graph.stubs.forEach((s, sid) => {
+    const B = box(sid);
+    s.from.forEach(f => {
+      if (!L.pos.has(f.from)) return;
+      const A = box(f.from);
+      const st = RW_STYLE.stub;
+      paths.push(`<path d="${rwEdgePath(A.y <= B.y ? A : B, A.y <= B.y ? B : A, 'consort')}"
+        class="rw-edge rw-edge-stub" stroke="${st.stroke}" stroke-width="${st.width}"
+        fill="none" opacity="0.5" stroke-dasharray="${st.dash}"/>`);
+    });
+  });
+
+  const svg = `<svg class="rw-edges" width="${L.width}" height="${L.height}"
+      viewBox="0 0 ${L.width} ${L.height}" aria-hidden="true" focusable="false">
+      <defs>
+        <marker id="rwArrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#c9a227"/>
+        </marker>
+      </defs>${paths.join('')}</svg>`;
+
+  // ---- band labels ----
+  const labels = L.keys.map(k => {
+    const first = L.bands.get(k).map(id => L.pos.get(id)).sort((a, b) => a.y - b.y)[0];
+    if (!first) return '';
+    return `<div class="rw-band-label" style="left:${RW_PAD}px; top:${first.y + 16}px;">${escapeAttr(L.bandLabel.get(k) || '')}</div>`;
+  }).join('');
+
+  // ---- nodes ----
+  const nodeHtml = [];
+  graph.nodes.forEach((n, id) => {
+    const g = GODS_BY_ID[id];
+    const p = L.pos.get(id);
+    const pan = PANTHEONS_BY_ID[g.pantheon];
+    const isF = id === graph.focusId;
+    const deg = REL.degree[id] || 0;
+    const cat = (g.category || '').replace(/-/g, ' ');
+    nodeHtml.push(
+      `<button type="button" class="rw-node${isF ? ' rw-focus' : ''}" data-gid="${g.id}"
+        style="left:${p.x}px; top:${p.y}px; --node-color:${classColorForPantheon(g.pantheon)}"
+        aria-label="${escapeAttr(g.name)}, ${escapeAttr(cat)}, ${escapeAttr(pan ? pan.name : g.pantheon)}${isF ? '. Current focus' : '. Activate to set as focus'}">
+        ${deg > RW_DEG_BADGE ? `<span class="rw-deg" aria-hidden="true">${deg}</span>` : ''}
+        <span class="rw-nname">${escapeAttr(g.name)}</span>
+        <span class="rw-ntrad">${escapeAttr(pan ? pan.name : g.pantheon)}</span>
+        <span class="rw-ncat">${escapeAttr(cat)}</span>
+      </button>`);
+  });
+  graph.stubs.forEach((s, sid) => {
+    const p = L.pos.get(sid);
+    if (!p) return;
+    nodeHtml.push(
+      `<div class="rw-node rw-stub" style="left:${p.x}px; top:${p.y}px;"
+        role="img" aria-label="${escapeAttr(formatStubName(s.id))}. Not catalogued in this archive.">
+        <span class="rw-nname">${escapeAttr(formatStubName(s.id))}</span>
+        <span class="rw-ntrad">Not catalogued</span>
+      </div>`);
+  });
+
+  inner.innerHTML = svg + labels + nodeHtml.join('');
+  inner.style.width = L.width + 'px';
+  inner.style.height = L.height + 'px';
+
+  // ---- summary (also the accessible description) ----
+  const tradN = graph.traditions.size;
+  const stubN = graph.stubs.size;
+  rwSetSummary(
+    `Relationship network for ${focusG.name}, showing <strong>${total}</strong> ` +
+    `figure${total === 1 ? '' : 's'} and <strong>${graph.edges.length}</strong> connection${graph.edges.length === 1 ? '' : 's'}` +
+    (tradN > 1 ? ` across <strong>${tradN}</strong> traditions` : '') +
+    (stubN ? ` · ${stubN} referenced figure${stubN === 1 ? '' : 's'} not yet catalogued` : '') +
+    (graph.capped ? ` · <strong>stopped at the ${RW_CAP}-figure safety limit</strong>` : ''),
+    true);
+
+  rwApplyZoom(1);
+  if (total > RW_FIT_OVER) rwFit(); else rwCenterFocus();
+  rwSyncControls();
+}
+
+function rwSetSummary(html, isHtml) {
+  const el = document.getElementById('rwSummary');
+  if (el) el[isHtml ? 'innerHTML' : 'textContent'] = html;
+}
+
+/* ---------------------- zoom / pan / fit ---------------------- */
+function rwApplyZoom(z) {
+  z = Math.max(RW_MIN, Math.min(RW_MAX, z));
+  rwZoom = z;
+  const inner = document.getElementById('rwInner');
+  const sizer = document.getElementById('rwSizer');
+  if (!inner || !sizer) return;
+  const w = parseFloat(inner.style.width) || inner.scrollWidth;
+  const h = parseFloat(inner.style.height) || inner.scrollHeight;
+  inner.style.transform = `scale(${z})`;
+  sizer.style.width = Math.ceil(w * z) + 'px';
+  sizer.style.height = Math.ceil(h * z) + 'px';
+}
+function rwFit() {
+  const vp = document.getElementById('rwViewport');
+  const inner = document.getElementById('rwInner');
+  if (!vp || !inner) return;
+  requestAnimationFrame(() => {
+    const w = parseFloat(inner.style.width) || inner.scrollWidth;
+    const h = parseFloat(inner.style.height) || inner.scrollHeight;
+    if (!w || !h) return;
+    const pad = 24;
+    const z = Math.min((vp.clientWidth - pad) / w, (vp.clientHeight - pad) / h, 1);
+    rwApplyZoom(Math.max(RW_MIN, z));
+    vp.scrollTo(0, 0);
+    rwCenterFocus(true);
+  });
+}
+function rwCenterFocus(keepScrollIfFits) {
+  const vp = document.getElementById('rwViewport');
+  const inner = document.getElementById('rwInner');
+  if (!vp || !inner || !rwLastGraph) return;
+  const el = inner.querySelector('.rw-node.rw-focus');
+  if (!el) return;
+  const x = (parseFloat(el.style.left) || 0) * rwZoom;
+  const y = (parseFloat(el.style.top) || 0) * rwZoom;
+  const sw = parseFloat(document.getElementById('rwSizer').style.width) || 0;
+  const sh = parseFloat(document.getElementById('rwSizer').style.height) || 0;
+  if (keepScrollIfFits && sw <= vp.clientWidth && sh <= vp.clientHeight) return;
+  vp.scrollTo({
+    left: Math.max(0, x - vp.clientWidth / 2 + (RW_FW * rwZoom) / 2),
+    top:  Math.max(0, y - vp.clientHeight / 2 + (56 * rwZoom) / 2),
+    behavior: rwReducedMotion() ? 'auto' : 'smooth',
+  });
+}
+function rwReducedMotion() {
+  return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
+/* ---------------------- controls ---------------------- */
+function rwSyncControls() {
+  document.querySelectorAll('.rw-dir').forEach(b =>
+    b.setAttribute('aria-pressed', b.dataset.dir === rwState.dir ? 'true' : 'false'));
+  const dep = document.getElementById('rwDepth');
+  if (dep) { dep.value = String(rwState.depth); dep.disabled = rwState.full; }
+  document.querySelectorAll('.rw-type').forEach(b =>
+    b.setAttribute('aria-pressed', rwState.types[b.dataset.rel] ? 'true' : 'false'));
+
+  // Siblings: de-emphasise when no sibling link is reachable in this network
+  const sibBtn = document.querySelector('.rw-type[data-rel="siblings"]');
+  if (sibBtn && rwLastGraph) {
+    const g = GODS_BY_ID[rwLastGraph.focusId];
+    const any = REL && REL.undAdj.siblings[g.id];
+    const inGraph = rwLastGraph.edges.some(e => e.rel === 'sibling');
+    const off = !any && !inGraph;
+    sibBtn.disabled = off;
+    sibBtn.title = off ? 'No sibling relationships are recorded around this figure' : '';
+  }
+  const fullBtn = document.getElementById('rwFull');
+  if (fullBtn) {
+    fullBtn.setAttribute('aria-pressed', rwState.full ? 'true' : 'false');
+    fullBtn.textContent = rwState.full ? 'Full Network shown' : 'Show Full Network';
+  }
+}
+
+function rwRerender() {
+  if (!currentFocusId) return;
+  rwRender(rwGetGraph(currentFocusId, rwState));
+}
+
+function rwRequestFull() {
+  if (!currentFocusId) return;
+  const probe = { ...rwState, full: true, types: { ...rwState.types } };
+  const g = rwGetGraph(currentFocusId, probe);   // BFS is iterative + capped; safe to measure
+  const n = g.nodes.size, tr = g.traditions.size;
+
+  if (g.capped) {
+    rwOpenConfirm(
+      'Network too large to draw',
+      `Traversal reached the ${RW_CAP}-figure safety limit before the network closed. ` +
+      `This is a safeguard against runaway data, not a normal limit. ` +
+      `Try turning off Parallels, which link the archive's largest network.`,
+      null);
+    return;
+  }
+  if (n > RW_CONFIRM_OVER) {
+    const narrow = window.matchMedia && window.matchMedia('(max-width: 760px)').matches;
+    rwOpenConfirm(
+      'Show the full network?',
+      `This figure connects to ${n} records across ${tr} tradition${tr === 1 ? '' : 's'}. ` +
+      `Show the full network?` + (narrow ? ' A graph this size is easier to explore on a larger screen.' : ''),
+      () => { rwState.full = true; rwRerender(); });
+    return;
+  }
+  rwState.full = true;
+  rwRerender();
+}
+
+let rwConfirmLastFocus = null;
+function rwOpenConfirm(title, body, onGo) {
+  rwConfirmLastFocus = document.activeElement;
+  const back = document.createElement('div');
+  back.className = 'rw-confirm-backdrop';
+  back.innerHTML = `
+    <div class="rw-confirm" role="dialog" aria-modal="true" aria-labelledby="rwCfTitle" aria-describedby="rwCfBody">
+      <h3 id="rwCfTitle">${escapeAttr(title)}</h3>
+      <div id="rwCfBody">${escapeAttr(body)}</div>
+      <div class="rw-confirm-actions">
+        <button type="button" data-act="cancel">${onGo ? 'Cancel' : 'Close'}</button>
+        ${onGo ? '<button type="button" class="rw-go" data-act="go">Show full network</button>' : ''}
+      </div>
+    </div>`;
+  const close = () => {
+    back.remove();
+    document.removeEventListener('keydown', onKey, true);
+    if (rwConfirmLastFocus && rwConfirmLastFocus.focus) rwConfirmLastFocus.focus();
+  };
+  const onKey = e => {
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key !== 'Tab') return;
+    const f = back.querySelectorAll('button');
+    if (!f.length) return;
+    const first = f[0], last = f[f.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  };
+  back.addEventListener('click', e => {
+    const act = e.target.dataset && e.target.dataset.act;
+    if (e.target === back || act === 'cancel') { close(); return; }
+    if (act === 'go') { close(); if (onGo) onGo(); }
+  });
+  document.addEventListener('keydown', onKey, true);
+  document.body.appendChild(back);
+  const go = back.querySelector('[data-act="go"]') || back.querySelector('[data-act="cancel"]');
+  if (go) go.focus();
+}
+
+function rwResetView() {
+  rwState = {
+    dir: 'both', depth: 1,
+    types: { parents: true, children: true, consorts: true, siblings: true, parallels: false },
+    full: false,
+  };
+  rwZoom = 1;
+  rwRerender();
+}
+
+function wireRelationshipWeb() {
+  document.querySelectorAll('.rw-dir').forEach(b => b.addEventListener('click', () => {
+    rwState.dir = b.dataset.dir; rwState.full = false; rwRerender();
+  }));
+  const dep = document.getElementById('rwDepth');
+  if (dep) dep.addEventListener('change', () => {
+    rwState.depth = Math.max(1, Math.min(3, parseInt(dep.value, 10) || 1));
+    rwState.full = false; rwRerender();
+  });
+  document.querySelectorAll('.rw-type').forEach(b => b.addEventListener('click', () => {
+    const k = b.dataset.rel;
+    rwState.types[k] = !rwState.types[k];
+    // turning a type off can strand nodes, so the model is rebuilt — but it is cached
+    rwRerender();
+  }));
+  const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
+  on('rwFull', () => { if (rwState.full) { rwState.full = false; rwRerender(); } else rwRequestFull(); });
+  on('rwFit', rwFit);
+  on('rwCenter', () => rwCenterFocus());
+  on('rwReset', rwResetView);
+
+  const vp = document.getElementById('rwViewport');
+  if (!vp) return;
+
+  // ONE delegated listener for every node — never one per node or per edge.
+  vp.addEventListener('click', e => {
+    const n = e.target.closest('.rw-node');
+    if (!n || n.classList.contains('rw-stub')) return;
+    const gid = n.dataset.gid;
+    if (gid && gid !== currentFocusId) setFocus(gid);
+  });
+  // Buttons already fire click on Enter/Space; this keeps Space from scrolling.
+  vp.addEventListener('keydown', e => {
+    if (e.key !== ' ' && e.key !== 'Spacebar') return;
+    const n = e.target.closest && e.target.closest('.rw-node');
+    if (n && !n.classList.contains('rw-stub')) e.preventDefault();
+  });
+
+  // Ctrl/Cmd + wheel zooms. Plain wheel scrolls the page as usual (no hijack).
+  vp.addEventListener('wheel', e => {
+    if (!(e.ctrlKey || e.metaKey)) return;
+    e.preventDefault();
+    rwApplyZoom(rwZoom * (e.deltaY < 0 ? 1.1 : 1 / 1.1));
+  }, { passive: false });
+
+  // Drag empty space to pan; touch pan handled natively by touch-action.
+  let down = false, sx = 0, sy = 0, ox = 0, oy = 0;
+  vp.addEventListener('pointerdown', e => {
+    if (e.button !== 0) return;
+    if (e.target.closest('.rw-node')) return;
+    down = true; sx = e.clientX; sy = e.clientY; ox = vp.scrollLeft; oy = vp.scrollTop;
+    vp.classList.add('panning');
+    try { vp.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  vp.addEventListener('pointermove', e => {
+    if (!down) return;
+    vp.scrollLeft = ox - (e.clientX - sx);
+    vp.scrollTop = oy - (e.clientY - sy);
+  });
+  const endPan = () => { down = false; vp.classList.remove('panning'); };
+  vp.addEventListener('pointerup', endPan);
+  vp.addEventListener('pointercancel', endPan);
+}
+
+let rwResizeTimer = null;
+window.addEventListener('resize', () => {
+  if (currentTreeMode !== 'web' || !rwLastGraph) return;
+  clearTimeout(rwResizeTimer);
+  rwResizeTimer = setTimeout(() => rwApplyZoom(rwZoom), 140);
+});
+/* =================== end Relationship Web =================== */
+
 function wireFullTreeZoom() {
   const vp = document.getElementById('ftViewport');
   const on = (id, fn) => { const el = document.getElementById(id); if (el) el.addEventListener('click', fn); };
@@ -2703,13 +3557,17 @@ function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
 
   document.getElementById('treeCount').textContent = `${pgods.length} in pantheon`;
 
-  // Clicking a god from full tree → flip back to focus
+  // Clicking a god from Tradition Tree → flip back to Overview.
+  // Relationship Web keeps its mode AND its filters: focus moves inside the graph.
   if (currentTreeMode === 'full') setTreeMode('focus');
 
   renderFocusView(g);
 
-  // Keep full tree data current for quick toggle
   if (currentTreeMode === 'full') renderFullTree(g.pantheon);
+  if (currentTreeMode === 'web') {
+    rwState.full = false;   // a new focus starts from the depth-limited view
+    rwRerender();
+  }
 
   if (!skipHash) updateHash('god/' + godId);
 }
