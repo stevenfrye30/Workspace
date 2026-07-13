@@ -3324,6 +3324,21 @@ const RW_STYLE = {
   stub:     { stroke: '#5a6180', width: 1,   dash: '3,4',         marker: '' },
 };
 
+// Single source of truth for a catalogued node's accessible name. The render
+// path and the selection path both call this, so they can never drift apart —
+// and because the name is REBUILT from state rather than appended to, repeated
+// selection cannot accumulate duplicate suffixes.
+// Dangling stubs are NOT passed through here: they are role="img", carry no
+// data-gid, and keep their own "Not catalogued in this archive" label.
+function rwNodeAria(g, isRoot, isSelected) {
+  const pan = PANTHEONS_BY_ID[g.pantheon];
+  const cat = (g.category || '').replace(/-/g, ' ');
+  return `${g.name}, ${cat}, ${pan ? pan.name : g.pantheon}`
+       + (isRoot ? '. Network root' : '')
+       + (isSelected ? '. Selected figure' : '')
+       + '. Activate to select';
+}
+
 function rwRender(graph) {
   const inner = document.getElementById('rwInner');
   const sizer = document.getElementById('rwSizer');
@@ -3408,7 +3423,7 @@ function rwRender(graph) {
     nodeHtml.push(
       `<button type="button" class="rw-node${isF ? ' rw-focus rw-root' : ''}${id === rwSelectedId ? ' rw-selected' : ''}" data-gid="${g.id}"
         style="left:${p.x}px; top:${p.y}px; --node-color:${classColorForPantheon(g.pantheon)}"
-        aria-label="${escapeAttr(g.name)}, ${escapeAttr(cat)}, ${escapeAttr(pan ? pan.name : g.pantheon)}${isF ? '. Network root' : ''}${id === rwSelectedId ? '. Selected figure' : ''}. Activate to select">
+        aria-label="${escapeAttr(rwNodeAria(g, isF, id === rwSelectedId))}">
         ${deg > RW_DEG_BADGE ? `<span class="rw-deg" aria-hidden="true">${deg}</span>` : ''}
         <span class="rw-nname">${escapeAttr(g.name)}</span>
         <span class="rw-ntrad">${escapeAttr(pan ? pan.name : g.pantheon)}</span>
@@ -3669,7 +3684,18 @@ function rwSelect(godId, { pushHash = true } = {}) {
   const inner = document.getElementById('rwInner');
   if (inner) {
     inner.querySelectorAll('.rw-node').forEach(el => {
-      el.classList.toggle('rw-selected', el.dataset.gid === godId);
+      const gid = el.dataset.gid;
+      // Dangling stubs share the .rw-node class but have no data-gid and their
+      // own aria-label. Skip them entirely.
+      if (!gid) return;
+      const isSelected = gid === godId;
+      const isRoot = gid === rwRootId;
+      // Class AND accessible name are driven from the same state, so selection
+      // is never conveyed by visual styling alone.
+      el.classList.toggle('rw-selected', isSelected);
+      el.classList.toggle('rw-root', isRoot);
+      const gx = GODS_BY_ID[gid];
+      if (gx) el.setAttribute('aria-label', rwNodeAria(gx, isRoot, isSelected));
     });
   }
   const g = GODS_BY_ID[godId];
