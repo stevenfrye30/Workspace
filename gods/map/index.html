@@ -2355,7 +2355,9 @@ function applyHashFromURL() {
           history.replaceState(null, '', '#god/' + canonical);
         }
         selectTab('trees', { skipHash: true });
-        setFocus(canonical, false, { skipHash: true });
+        // fromRoute: this is generic route application, not an explicit node
+        // activation, so it restores the selection WITHOUT opening a popup.
+        setFocus(canonical, false, { skipHash: true, fromRoute: true });
       } else {
         selectTab('overview', { skipHash: true });
       }
@@ -2378,16 +2380,47 @@ function applyHashFromURL() {
   }
 }
 
+// ONE route application per navigation.
+//
+// Both listeners are genuinely needed, so neither can simply be deleted:
+//   * popstate  fires on every history traversal (Back / Forward).
+//   * hashchange fires on a direct hash edit. Current Chromium ALSO fires popstate
+//     for a fragment navigation, but engines differ, and the app itself only ever
+//     uses pushState/replaceState (which never fire hashchange) — so hashchange is
+//     the only guaranteed signal for a hash typed or linked from outside.
+//
+// The overlap is the traversal case, where BOTH fire for the SAME transition and
+// applyHashFromURL() therefore ran twice. Measured order for one Back:
+//     popstate  ->  (microtasks drain)  ->  hashchange  ->  (next task)
+// so a microtask cannot bridge the two events, but a next-task callback can. The
+// token below is set by popstate, keyed to the exact href it handled, and released
+// on the next task — i.e. AFTER the paired hashchange has been dispatched.
+//
+// It cannot suppress a legitimate later navigation: it lives for one task turn and
+// only matches the identical href. A hashchange with no preceding popstate (an engine
+// that does not fire popstate for fragment navigation) still applies normally.
+let routeHandledHref = null;
+
+function applyRouteOnce() {
+  suppressHashUpdate = true;
+  applyHashFromURL();
+  suppressHashUpdate = false;
+}
+
 function wireHashRouter() {
   window.addEventListener('popstate', () => {
-    suppressHashUpdate = true;
-    applyHashFromURL();
-    suppressHashUpdate = false;
+    applyRouteOnce();
+    // Record the href AFTER applying, not before: an alias route rewrites the URL in
+    // place while it is being applied (#god/anansi -> #god/kwaku-anansi via
+    // replaceState), and the paired hashchange then reports the REWRITTEN href.
+    // Capturing it afterwards makes the token match in both the plain and alias cases.
+    routeHandledHref = location.href;
+    setTimeout(() => { routeHandledHref = null; }, 0);   // released after the paired hashchange
   });
   window.addEventListener('hashchange', () => {
-    suppressHashUpdate = true;
-    applyHashFromURL();
-    suppressHashUpdate = false;
+    // Same transition the popstate above already applied — do not apply it twice.
+    if (routeHandledHref === location.href) return;
+    applyRouteOnce();
   });
 }
 
@@ -3724,7 +3757,7 @@ function rwRerender() {
 }
 
 // Selection-only update: no BFS, no layout, no fit, no cache invalidation.
-function rwSelect(godId, { pushHash = true } = {}) {
+function rwSelect(godId, { pushHash = true, silent = false } = {}) {
   if (!GODS_BY_ID[godId]) return;
   rwSelectedId = godId;
   currentFocusId = godId;                 // Overview / details follow the selection
@@ -3754,9 +3787,15 @@ function rwSelect(godId, { pushHash = true } = {}) {
   }
   if (focusHistory[focusHistory.length - 1] !== godId) focusHistory.push(godId);
   updateBackButton();
-  gpShow(godId, 'rwViewport', `.rw-node[data-gid="${cssEscape(godId)}"]`,
-         { isRoot: godId === rwRootId,
-           rebuildLabel: godId === rwRootId ? '' : 'Rebuild around this figure' });
+  if (silent) {
+    // Route-driven selection: no popup. Close any popup left anchored to the
+    // previously selected node, so nothing stale survives the navigation.
+    gpClose();
+  } else {
+    gpShow(godId, 'rwViewport', `.rw-node[data-gid="${cssEscape(godId)}"]`,
+           { isRoot: godId === rwRootId,
+             rebuildLabel: godId === rwRootId ? '' : 'Rebuild around this figure' });
+  }
   rwUpdateSummarySelection();
   if (pushHash) updateHash('god/' + godId);   // hash update must NOT rebuild the graph
 }
@@ -3986,7 +4025,7 @@ function loadTree(pantheonId, { skipHash = false } = {}) {
   if (pick) { focusHistory = []; updateBackButton(); setFocus(pick.id, false, { skipHash }); }
 }
 
-function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
+function setFocus(godId, pushHistory = true, { skipHash = false, fromRoute = false } = {}) {
   godId = resolveGodId(godId);   // legacy IDs canonicalise before any state is set
   const g = GODS_BY_ID[godId];
   if (!g) return;
@@ -4020,7 +4059,10 @@ function setFocus(godId, pushHistory = true, { skipHash = false } = {}) {
     // figure outside it, or a fresh route). Otherwise just move the selection —
     // the map stays put.
     if (rwLastGraph && rwLastGraph.nodes.has(godId)) {
-      rwSelect(godId, { pushHash: false });
+      // A popup is transient UI belonging to an explicit node activation. Route
+      // navigation (Back / Forward / a typed hash) restores the SELECTION — ring,
+      // accessible label, summary — but must not resurrect the popup.
+      rwSelect(godId, { pushHash: false, silent: fromRoute });
     } else {
       rwRootId = godId;
       rwSelectedId = godId;
