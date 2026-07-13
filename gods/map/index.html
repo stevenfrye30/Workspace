@@ -1740,7 +1740,7 @@ select:focus:not(:focus-visible),
   }
   .gp-popup .gp-desc { -webkit-line-clamp:4; }
   .gp-popup .gp-btn { min-height:40px; padding:9px 14px; font-size:12.5px; }
-  .gp-popup .gp-btn-close { width:34px; height:34px; min-height:34px; font-size:18px; }
+  .gp-popup .gp-btn-close { width:44px; height:44px; min-height:44px; font-size:19px; }
 }
 
 /* Relationship Web: NETWORK ROOT is a distinct state from SELECTED FIGURE.
@@ -3835,7 +3835,10 @@ function wireRelationshipWeb() {
   let down = false, sx = 0, sy = 0, ox = 0, oy = 0;
   vp.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
-    if (e.target.closest('.rw-node')) return;
+    // The popup is a CHILD of the viewport. Without this guard the pan handler
+    // calls setPointerCapture() on pointerdown over the popup, the pointer is
+    // redirected to the viewport, and the popup's buttons never get their click.
+    if (e.target.closest('.rw-node') || e.target.closest('.gp-popup')) return;
     down = true; sx = e.clientX; sy = e.clientY; ox = vp.scrollLeft; oy = vp.scrollTop;
     vp.classList.add('panning');
     try { vp.setPointerCapture(e.pointerId); } catch (_) {}
@@ -3876,7 +3879,8 @@ function wireFullTreeZoom() {
   let down = false, sx = 0, sy = 0, ox = 0, oy = 0;
   vp.addEventListener('pointerdown', e => {
     if (e.button !== 0) return;
-    if (e.target.closest('.full-tree-node') || e.target.closest('.tn-shrine')) return;
+    if (e.target.closest('.full-tree-node') || e.target.closest('.tn-shrine')
+        || e.target.closest('.gp-popup')) return;
     down = true; sx = e.clientX; sy = e.clientY; ox = vp.scrollLeft; oy = vp.scrollTop;
     vp.classList.add('panning');
     try { vp.setPointerCapture(e.pointerId); } catch (_) {}
