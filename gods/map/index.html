@@ -1670,6 +1670,9 @@ select:focus:not(:focus-visible),
     width:auto; max-width:none; z-index:150;
     border-radius:12px; padding:14px 16px 13px;
     box-shadow:0 -8px 40px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.4);
+    /* Short landscape viewports: keep the sheet inside the screen and let long
+       content scroll inside it rather than growing off the top. */
+    max-height:calc(100vh - 16px); overflow-y:auto;
   }
   .gp-popup .gp-desc { -webkit-line-clamp:4; }
   .gp-popup .gp-btn { min-height:40px; padding:9px 14px; font-size:12.5px; }
@@ -2969,6 +2972,7 @@ function ftApplyZoom(z) {
   sizer.style.height = Math.ceil(natH * z) + 'px';
   const ro = document.getElementById('ftZoomReadout');
   if (ro) ro.textContent = Math.round(z * 100) + '%';
+  gpReposition();   // same as rwApplyZoom: the node moved in screen space, so re-anchor
 }
 
 // "Fit" button — scale the whole tree (both dimensions) into view.
@@ -3517,6 +3521,16 @@ function rwReducedMotion() {
    ====================================================== */
 let gpOpen = null;   // { godId, vpId, nodeSel }
 
+// The popup has TWO layouts and exactly one switch between them.
+//   > 760px : an absolutely-positioned card anchored to the node, placed by gpPosition().
+//  <= 760px : a fixed bottom sheet whose geometry lives entirely in the @media rule
+//             for .gp-popup (left/right/bottom/top:auto).
+// Keep this in step with that @media rule — it is the only place the breakpoint is named.
+const GP_SHEET_BREAKPOINT = 760;
+function gpIsSheet() {
+  return window.matchMedia('(max-width: ' + GP_SHEET_BREAKPOINT + 'px)').matches;
+}
+
 function gpRemove() {
   document.querySelectorAll('.gp-popup').forEach(el => el.remove());
 }
@@ -3564,7 +3578,23 @@ function gpBuild(godId, opts) {
 /* Place the popup beside/below its node, flipping at the edges and clamping
    inside the viewport. Placement never depends on the figure's category. */
 function gpPosition(el, nodeEl, vp) {
-  if (!el || !nodeEl || !vp) return;
+  if (!el) return;
+
+  // SHEET MODE. The CSS is the source of truth for the bottom sheet, and inline styles
+  // outrank a stylesheet — so a graph-space `left`/`top` written here does not merely
+  // get ignored, it DEFEATS the sheet: inline `left:1520px` beats `left:8px` while the
+  // rule's `right:8px` still applies, collapsing the sheet to a ~34px strip far off
+  // screen; inline `top` beats `top:auto` and stretches it to full height. The fix is
+  // to write nothing and clear anything desktop left behind, so the @media rule wins.
+  if (gpIsSheet()) {
+    el.style.left = '';
+    el.style.top = '';
+    el.style.right = '';
+    el.style.bottom = '';
+    return;
+  }
+
+  if (!nodeEl || !vp) return;
   const nr = nodeEl.getBoundingClientRect();
   const vr = vp.getBoundingClientRect();
   const w = el.offsetWidth || 300;
@@ -3640,6 +3670,15 @@ function gpShow(godId, vpId, nodeSelector, opts) {
     }
   });
 }
+
+// Crossing GP_SHEET_BREAKPOINT swaps which layout owns the popup, so the positioner
+// must run again on resize: it clears the desktop inline coordinates on the way down
+// and recalculates them on the way back up. Debounced; a no-op while no popup is open.
+let gpResizeTimer = null;
+window.addEventListener('resize', () => {
+  clearTimeout(gpResizeTimer);
+  gpResizeTimer = setTimeout(gpReposition, 120);
+});
 
 // Re-anchor after a zoom change (node moved in screen space).
 function gpReposition() {
