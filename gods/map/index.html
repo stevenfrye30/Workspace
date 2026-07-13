@@ -2204,7 +2204,7 @@ function init() {
   wireRelationshipWeb();
   wireHashRouter();
 
-  // Initialize Family Trees tab to Zeus (won't update hash since skipHash)
+  // Initialize the Relationships tab to Zeus (won't update hash since skipHash)
   if (DATA.pantheons.length) {
     loadTree(DATA.pantheons.find(p => p.id === 'greek')?.id || DATA.pantheons[0].id, { skipHash: true });
   }
@@ -2803,7 +2803,7 @@ function fmtYears(from, to) {
   return `${fmtYear(from)} – ${fmtYear(to)}`;
 }
 
-/* ---------- Family Trees (focus view + full tree) ---------- */
+/* ---------- Relationships (Overview / Relationship Web / Tradition Tree) ---------- */
 let focusHistory = [];
 let currentFocusId = null;
 let currentTreeMode = 'focus'; // 'focus' | 'full'
