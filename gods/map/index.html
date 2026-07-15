@@ -743,8 +743,9 @@ main p { line-height:1.7; }
 .focus-center-card .god-glyph { font-size:50px; }
 .focus-center-card .fdetails-btn {
   margin-top:14px; background:none; border:1px solid var(--gold-soft); color:var(--gold);
-  padding:6px 14px; border-radius:16px; cursor:pointer; font-family:inherit; font-size:11px;
+  padding:10px 18px; border-radius:16px; cursor:pointer; font-family:inherit; font-size:11px;
   letter-spacing:1.2px; font-variant:small-caps; transition:all .15s;
+  min-height:44px; display:inline-flex; align-items:center;
 }
 .focus-center-card .fdetails-btn:hover { background:var(--gold); color:var(--bg); }
 
@@ -778,8 +779,9 @@ main p { line-height:1.7; }
 .side-expand-btn:hover { color:var(--gold); border-color:var(--gold-soft); background:rgba(229,193,88,0.04); }
 .focus-parallel-chip {
   background:var(--panel2); border:1px solid var(--line); color:var(--ink);
-  padding:5px 13px; border-radius:14px; font-size:12px; cursor:pointer;
+  padding:7px 14px; border-radius:14px; font-size:12px; cursor:pointer;
   transition:all .2s;
+  min-height:44px; display:inline-flex; align-items:center;
 }
 .focus-parallel-chip:hover { border-color:var(--gold); color:var(--gold); transform:translateY(-1px); }
 .focus-parallel-chip .pan { color:var(--muted); font-size:10px; font-style:italic; margin-left:5px; }
@@ -791,13 +793,14 @@ main p { line-height:1.7; }
 .focus-id-card .fid-meta { color:var(--gold-deep); font-size:12px; font-variant:small-caps; letter-spacing:1.8px; font-weight:bold; margin-bottom:6px; }
 .focus-id-card .fid-meta .fid-sep { opacity:0.5; margin:0 6px; }
 .focus-id-card .fname-main { font-size:26px; margin:0 0 4px; }
-.focus-id-card .farchetype { margin:8px 0 0; }
+.focus-id-card .farchetype { margin:6px 0 0; display:flex; align-items:center; flex-wrap:wrap; gap:6px; min-height:44px; }
 .focus-id-card .farchetype-link {
-  background:none; border:none; padding:0; font:inherit; cursor:pointer;
+  background:none; border:none; font:inherit; cursor:pointer;
   color:var(--gold); font-weight:600; letter-spacing:0.3px;
-  border-bottom:1px dotted rgba(229,193,88,0.45);
+  text-decoration:underline dotted rgba(229,193,88,0.55); text-underline-offset:3px;
+  display:inline-flex; align-items:center; min-height:44px; padding:0 6px;
 }
-.focus-id-card .farchetype-link:hover, .focus-id-card .farchetype-link:focus-visible { color:var(--ink); border-bottom-color:var(--ink); outline:none; }
+.focus-id-card .farchetype-link:hover, .focus-id-card .farchetype-link:focus-visible { color:var(--ink); text-decoration-color:var(--ink); outline:none; }
 .focus-id-card .fdomains { display:block; margin:12px 0 0; }
 .focus-id-card .fdomains-chips { display:flex; flex-wrap:wrap; gap:6px; }
 .fdesc-wrap { margin-top:12px; }
@@ -807,8 +810,9 @@ main p { line-height:1.7; }
 }
 .focus-id-card .fdesc.expanded { -webkit-line-clamp:unset; display:block; overflow:visible; }
 .fdesc-toggle {
-  margin-top:6px; background:none; border:none; color:var(--gold); cursor:pointer;
-  font-family:inherit; font-size:12px; letter-spacing:0.5px; padding:4px 2px; text-decoration:underline;
+  margin-top:4px; background:none; border:none; color:var(--gold); cursor:pointer;
+  font-family:inherit; font-size:12px; letter-spacing:0.5px; padding:11px 6px; text-decoration:underline;
+  min-height:44px; display:inline-flex; align-items:center;
 }
 .fdesc-toggle:hover { color:var(--ink); }
 .fdesc-toggle:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
@@ -831,8 +835,9 @@ main p { line-height:1.7; }
 .rel-panel-body:not(.rel-expanded) .rel-hidden { display:none; }
 .rel-show-all {
   background:transparent; border:1px dashed var(--line); color:var(--muted);
-  padding:7px 12px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:11px;
-  letter-spacing:1px; font-variant:small-caps; margin-top:8px; min-height:36px;
+  padding:7px 14px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:11px;
+  letter-spacing:1px; font-variant:small-caps; margin-top:8px;
+  min-height:44px; display:inline-flex; align-items:center;
 }
 .rel-show-all:hover, .rel-show-all:focus-visible { color:var(--gold); border-color:var(--gold-soft); background:rgba(229,193,88,0.04); outline:none; }
 .rel-panel-children .children-block.children-collapsed:not(.children-expanded) {
