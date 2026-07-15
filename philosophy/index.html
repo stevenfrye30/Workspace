@@ -26,28 +26,25 @@ body {
   color:var(--ink); line-height:1.65;
 }
 header {
-  padding:38px 28px 30px;
+  padding:9px 28px 8px;
   background:linear-gradient(180deg,#2a2218 0%, #1b1710 100%);
   border-bottom:1px solid var(--gold-faint);
   position:relative;
   text-align:center;
 }
-header::before, header::after {
-  content:''; position:absolute; left:28px; right:28px; height:1px;
+header::after {
+  content:''; position:absolute; left:28px; right:28px; bottom:-1px; height:1px;
   background:linear-gradient(90deg, transparent, var(--accent), transparent);
+  opacity:0.5;
 }
-header::before { top:6px; }
-header::after { bottom:-1px; opacity:0.5; }
 header h1 {
-  /* Fluid so the enlarged title cannot overflow narrow screens. */
-  margin:0; font-size:clamp(24px, 6.5vw, 38px); letter-spacing:clamp(3px, 1.6vw, 10px);
+  /* Fluid so the title cannot overflow narrow screens. Compact: identity without a tall band. */
+  margin:0; font-size:clamp(20px, 4vw, 28px); letter-spacing:clamp(2px, 0.8vw, 4px);
   color:var(--accent); font-weight:normal; font-variant:small-caps;
-  text-shadow:0 0 28px rgba(229,193,88,0.16);
+  text-shadow:0 0 24px rgba(229,193,88,0.16);
 }
-header h1::before { content:'𓋹'; color:var(--accent); margin-right:clamp(10px, 2.4vw, 26px); font-size:0.9em; opacity:0.55; }
-header h1::after  { content:'𓂀'; color:var(--accent); margin-left:clamp(10px, 2.4vw, 26px);  font-size:0.9em; opacity:0.55; }
-/* The title is the Home control. The decorative symbols stay on the h1, outside the
-   link, so they are not part of the interactive target. */
+/* The title is the Home control. The decorative flanking symbols were removed to
+   reclaim vertical space; the title alone carries the identity. */
 header h1 a {
   color:inherit; text-decoration:none; cursor:pointer;
   border-bottom:1px solid transparent;
@@ -73,46 +70,70 @@ nav button.active { color:#0d0a07; background:linear-gradient(180deg, var(--acce
 main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
 .tab { display:none; }
 .tab.active { display:block; }
-/* ===== Home: compact branch portals ===== */
+/* ===== Home: doorway to the whole Center ===== */
 #home { max-width:1120px; margin:0 auto; }
-#branches-grid { gap:14px; }
+.home-section { margin:0 0 30px; }
+.home-section:last-child { margin-bottom:6px; }
+.home-h {
+  color:var(--accent2); font-weight:normal; font-variant:small-caps;
+  letter-spacing:2px; font-size:15px; margin:0 0 14px; text-align:center;
+}
+/* Branches wrapper caps its width so four cards fill row one and three centre on row two. */
+#branches-wrap { max-width:820px; margin:0 auto; }
+#branches-grid { gap:12px; }
+/* ---- Seven branch buttons: compact, symbol-free, arrow-free, colour-accented ---- */
 .branch-card {
   position:relative; overflow:hidden;
-  /* Centre the whole content group (symbol, name, question, arrow) as one unit rather
-     than anchoring the arrow to the bottom, which made the cards read as top-heavy. */
-  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px;
-  min-height:140px; text-align:center; font-family:inherit;
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:7px;
+  min-height:92px; text-align:center; font-family:inherit;
   background:linear-gradient(180deg, var(--panel), var(--panel2));
-  border:1px solid var(--line); border-radius:12px;
-  padding:16px 18px 14px; cursor:pointer;
+  border:1px solid var(--line); border-left:3px solid var(--bc, var(--accent));
+  border-radius:10px;
+  padding:12px 14px; cursor:pointer;
   transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
-/* thin accent line along the top edge */
-.branch-card::before {
-  content:''; position:absolute; top:0; left:0; right:0; height:2px;
-  background:linear-gradient(90deg, transparent, var(--accent), transparent);
-  opacity:0.35; transition:opacity .2s ease;
-}
-.branch-card .branch-head { display:flex; align-items:center; justify-content:center; gap:9px; }
-.branch-card .branch-mark { color:var(--accent); font-size:17px; opacity:0.5; line-height:1; transition:opacity .2s ease; }
 .branch-card .branch-name {
-  color:var(--accent); font-size:17px; letter-spacing:1.4px;
+  color:var(--ink); font-size:15px; letter-spacing:1px;
   font-variant:small-caps; line-height:1.2;
 }
-.branch-card .branch-q { color:var(--muted); font-size:13.5px; line-height:1.5; }
-.branch-card .branch-go {
-  align-self:center; color:var(--accent); margin-top:2px;
-  font-size:16px; opacity:0.35; transition:transform .2s ease, opacity .2s ease;
-}
+.branch-card .branch-q { color:var(--muted); font-size:12.5px; line-height:1.45; }
 .branch-card:hover {
-  border-color:var(--gold-soft); transform:translateY(-2px);
-  box-shadow:0 8px 22px rgba(0,0,0,0.26);
-  background:linear-gradient(180deg, var(--panel2), var(--panel));
+  transform:translateY(-2px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.26);
+  background:linear-gradient(180deg, color-mix(in srgb, var(--bc, var(--accent)) 14%, var(--panel)), var(--panel2));
+  border-color:var(--bc, var(--gold-soft));
 }
-.branch-card:hover::before { opacity:0.75; }
-.branch-card:hover .branch-mark { opacity:0.85; }
-.branch-card:hover .branch-go { transform:translateX(4px); opacity:0.9; }
-.branch-card:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+.branch-card:focus-visible { outline:2px solid var(--bc, var(--accent)); outline-offset:3px; }
+/* Seven restrained accents, harmonious with the warm/gold palette. Colour is decorative:
+   the branch NAME text carries the identity, so accents are never the only signal. */
+.branch-card:nth-child(1) { --bc:#e5c158; }
+.branch-card:nth-child(2) { --bc:#7fb0c9; }
+.branch-card:nth-child(3) { --bc:#cf9074; }
+.branch-card:nth-child(4) { --bc:#9db08a; }
+.branch-card:nth-child(5) { --bc:#b195c9; }
+.branch-card:nth-child(6) { --bc:#cf897f; }
+.branch-card:nth-child(7) { --bc:#6fb3a6; }
+/* ---- Discover / Connect / Learn: secondary destination cards ---- */
+.dest-grid { display:flex; flex-wrap:wrap; justify-content:center; gap:12px; }
+.dest-card {
+  flex:1 1 180px; max-width:240px; box-sizing:border-box;
+  display:flex; flex-direction:column; gap:3px;
+  background:var(--panel); border:1px solid var(--line); border-radius:9px;
+  padding:12px 15px; text-decoration:none; cursor:pointer;
+  transition:transform .2s ease, border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.dest-card .dest-name { color:var(--accent); font-size:14.5px; letter-spacing:0.4px; }
+.dest-card .dest-sub { color:var(--muted); font-size:12px; line-height:1.4; }
+.dest-card:hover {
+  transform:translateY(-2px); border-color:var(--gold-soft);
+  box-shadow:0 6px 16px rgba(0,0,0,0.26);
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+}
+.dest-card:focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+@media (prefers-reduced-motion: reduce) {
+  .branch-card, .dest-card { transition:border-color .2s ease, background .2s ease; }
+  .branch-card:hover, .dest-card:hover { transform:none; }
+}
 h2 {
   color:var(--accent); font-weight:normal; letter-spacing:3px; font-variant:small-caps;
   border-bottom:none; padding-bottom:14px; position:relative; font-size:24px; margin-top:0;
@@ -147,9 +168,9 @@ main p { line-height:1.7; }
   display:flex; flex-wrap:wrap; justify-content:center;
   grid-template-columns:none;
 }
-/* flex-shrink:0 so a fifth card cannot squeeze onto a row below its basis; this is
-   what holds the four-then-three arrangement without hardcoding any branch. */
-.grid-branches > .branch-card { flex:1 0 min(220px, 100%); max-width:270px; }
+/* The 820px #branches-wrap cap holds the four-then-three arrangement: four ~175px cards
+   fill row one, a fifth wraps. min(175px,46%) lets two cards share a phone row. */
+.grid-branches > .branch-card { flex:1 1 min(175px, 46%); max-width:210px; }
 .grid-schools { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); }
 .hover-card { cursor:pointer; }
 .hover-card h3 { margin-top:0; color:var(--accent); font-size:16px; }
@@ -505,15 +526,42 @@ ul.clean li { margin:6px 0; }
 <header>
   <h1><a href="#/home" id="home-title" aria-label="Return to Philosophy home">Philosophy</a></h1>
 </header>
-<nav id="nav">
-  <button data-tab="explore">Explore</button>
-  <button data-tab="flashcards">Study</button>
-  <button data-tab="resources">Resources</button>
-</nav>
 <main>
 
 <section id="home" class="tab active">
-  <div class="grid grid-branches" id="branches-grid"></div>
+  <section class="home-section" id="branches" aria-labelledby="home-branches-h">
+    <h2 class="home-h" id="home-branches-h">Seven Branches</h2>
+    <div id="branches-wrap">
+      <div class="grid grid-branches" id="branches-grid"></div>
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="home-discover-h">
+    <h2 class="home-h" id="home-discover-h">Discover</h2>
+    <div class="dest-grid">
+      <a class="dest-card" href="#/explore/philosophers"><span class="dest-name">Philosophers</span><span class="dest-sub">Browse the 259-thinker archive</span></a>
+      <a class="dest-card" href="#/explore/schools"><span class="dest-name">Schools</span><span class="dest-sub">Traditions and movements</span></a>
+      <a class="dest-card" href="#/explore/glossary"><span class="dest-name">Glossary</span><span class="dest-sub">Key terms across traditions</span></a>
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="home-connect-h">
+    <h2 class="home-h" id="home-connect-h">Connect</h2>
+    <div class="dest-grid">
+      <a class="dest-card" href="#/explore/map"><span class="dest-name">Influence Map</span><span class="dest-sub">See who shaped whom</span></a>
+      <a class="dest-card" href="#/explore/ideas/compare"><span class="dest-name">Compare</span><span class="dest-sub">Positions side by side</span></a>
+      <a class="dest-card" href="#/explore/ideas/trails"><span class="dest-name">Thematic Trails</span><span class="dest-sub">Follow a question across time</span></a>
+    </div>
+  </section>
+
+  <section class="home-section" aria-labelledby="home-learn-h">
+    <h2 class="home-h" id="home-learn-h">Learn</h2>
+    <div class="dest-grid">
+      <a class="dest-card" href="#/flashcards"><span class="dest-name">Study</span><span class="dest-sub">Test yourself with flashcards</span></a>
+      <a class="dest-card" href="#branches" id="dest-readingpaths"><span class="dest-name">Reading Paths</span><span class="dest-sub">A guided path inside every branch — pick one above</span></a>
+      <a class="dest-card" href="#/resources"><span class="dest-name">Resources</span><span class="dest-sub">Texts, references, and study guidance</span></a>
+    </div>
+  </section>
 </section>
 
 <section id="explore" class="tab">
@@ -932,9 +980,6 @@ function bindAutoLinks(root) {
 }
 
 // ===== Branches =====
-// Marks are keyed by position, not by branch name, so the grid stays card-count and
-// name agnostic. Extra branches simply cycle through the set.
-const BRANCH_MARKS = ['𓊽','𓂀','𓋹','𓏛','𓎟','𓉐','𓁐'];
 // The shortest question a branch already carries is its punchiest. Selected at render
 // time so no branch data has to change.
 function shortestQuestion(b) {
@@ -945,12 +990,8 @@ function shortestQuestion(b) {
 function renderBranches() {
   $('#branches-grid').innerHTML = DATA.branches.map((b,i) => `
     <button class="branch-card" data-i="${i}">
-      <span class="branch-head">
-        <span class="branch-mark" aria-hidden="true">${BRANCH_MARKS[i % BRANCH_MARKS.length]}</span>
-        <span class="branch-name">${esc(b.name)}</span>
-      </span>
+      <span class="branch-name">${esc(b.name)}</span>
       <span class="branch-q">${esc(shortestQuestion(b))}</span>
-      <span class="branch-go" aria-hidden="true">&#8594;</span>
     </button>
   `).join('');
   $$('#branches-grid .branch-card').forEach(el => el.addEventListener('click', () => linkB(DATA.branches[+el.dataset.i].name)));
