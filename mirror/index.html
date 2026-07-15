@@ -249,6 +249,28 @@
                    background: var(--panel); border: 1px dashed var(--line); border-radius: 4px;
                    text-align: center; }
 
+  /* Weekly Review + Long View — narrative lines inside plain cards (the .p class is
+     otherwise only styled within .insight) */
+  #weeklyReview .p, #longViewDetail .p, #onThisDay .p { font-size: 0.9rem; color: var(--ink); margin: 5px 0; line-height: 1.5; }
+  #weeklyReview .p strong, #longViewDetail .p strong, #onThisDay .p strong { color: var(--ink); }
+  #weeklyReview .prompt { font-size: 0.92rem; }
+
+  /* Long View — month calendar heatmap of Daily Cards */
+  .lv-nav { display: flex; gap: 4px; align-items: center; margin-bottom: 12px; }
+  .lv-cal { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .lv-dow { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.06em;
+            color: var(--dim); text-align: center; padding-bottom: 2px; }
+  .lv-cell { position: relative; border: 1px solid var(--line); border-radius: 4px;
+             min-height: 38px; padding: 4px 5px; background: var(--panel); }
+  .lv-cell .d { font-size: 0.7rem; color: var(--dim); font-family: ui-monospace, monospace; }
+  .lv-cell.has { cursor: pointer; }
+  .lv-cell.has:hover { border-color: var(--accent); }
+  .lv-cell.today { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .lv-cell.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent) inset; }
+  .lv-cell.blank { border: 0; background: transparent; }
+  .lv-legend { display: flex; gap: 6px; align-items: center; margin-top: 8px; color: var(--dim); flex-wrap: wrap; }
+  .lv-legend .sw { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
+
   footer.foot { text-align: center; color: var(--dim); font-size: 0.78rem; padding: 20px;
                 border-top: 1px solid var(--line); margin-top: 40px; }
   footer.foot a { color: var(--accent); }
@@ -349,6 +371,36 @@
       <button class="chip" id="qtDateToday">Today</button>
       <button class="chip" id="qtDateYesterday">Yesterday</button>
       <input type="date" id="qtDatePick" style="width:148px">
+    </div>
+  </div>
+
+  <div class="section" id="dailyCardSection" style="margin-bottom:22px">
+    <div class="section-head">
+      <h2>Daily card</h2>
+      <span class="act tiny" id="dcSaved" style="color:var(--accent2)"></span>
+    </div>
+    <div class="lede" style="margin-bottom:14px">A small record of today. Every field is optional — even a single line is worth keeping. The point is showing up, not filling it all in.</div>
+    <div class="card">
+      <div class="meta">Mood</div>
+      <div class="dot-row" id="dcMoodRow"></div>
+      <div class="meta" style="margin-top:10px">Energy</div>
+      <div class="dot-row" id="dcEnergyRow"></div>
+
+      <div class="form" style="margin:12px 0 0;background:transparent;border:0;padding:0">
+        <label>Sleep hours<input type="number" id="dcSleepHours" min="0" max="24" step="0.25"></label>
+        <label>Sleep quality (1–5)<input type="number" id="dcSleepQuality" min="1" max="5" step="1"></label>
+      </div>
+
+      <div style="margin-top:12px"><input type="text" id="dcBodyNote" class="grow" placeholder="Body — how did it feel? (optional)"></div>
+      <div style="margin-top:8px"><input type="text" id="dcFoodNote" class="grow" placeholder="Food — what stood out? (optional)"></div>
+      <div style="margin-top:8px"><input type="text" id="dcMoneyNote" class="grow" placeholder="Money — anything notable? (optional)"></div>
+      <div style="margin-top:8px"><input type="text" id="dcSocialNote" class="grow" placeholder="People — who did today involve? (optional)"></div>
+
+      <div style="margin-top:12px"><textarea id="dcOneSentence" placeholder="What happened today?"></textarea></div>
+      <div style="margin-top:8px"><input type="text" id="dcTags" class="grow" placeholder="tags (comma-separated, e.g. work, rest, travel)"></div>
+
+      <div style="margin-top:14px"><button class="primary" id="dcSave">Save today</button></div>
+      <div class="tiny" id="dcCount" style="color:var(--dim);margin-top:12px"></div>
     </div>
   </div>
 
@@ -924,6 +976,31 @@
 
   <div id="reflectInsights">
   <div class="section">
+    <div class="section-head"><h2>Weekly review</h2><span class="act tiny" id="weeklyReviewStatus"></span></div>
+    <div id="weeklyReview"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>The long view</h2><span class="act tiny" id="longViewCoverage"></span></div>
+    <div class="lv-nav">
+      <button class="mini-btn" id="lvPrev" title="Previous month">◂</button>
+      <span class="mini-btn" id="lvMonth" style="cursor:default"></span>
+      <button class="mini-btn" id="lvNext" title="Next month">▸</button>
+    </div>
+    <div id="longViewCal" class="lv-cal"></div>
+    <div class="lv-legend tiny">
+      <span>Tint = mood (deeper = higher)</span>
+      <span class="sw" style="background:color-mix(in srgb, var(--accent2) 30%, transparent)"></span>
+      <span class="sw" style="background:color-mix(in srgb, var(--accent2) 58%, transparent)"></span>
+      <span class="sw" style="background:color-mix(in srgb, var(--accent2) 88%, transparent)"></span>
+      <span style="margin-left:6px">faint = logged, no mood</span>
+    </div>
+    <div id="longViewDetail"></div>
+    <div class="section-head" style="margin-top:22px"><h2>On this day</h2></div>
+    <div id="onThisDay"></div>
+  </div>
+
+  <div class="section">
     <div class="section-head"><h2>Today's snapshot</h2><span class="act tiny" id="reflectDateLabel"></span></div>
     <div id="reflectToday" class="insight-grid"></div>
   </div>
@@ -989,9 +1066,27 @@
 const STORAGE_KEY = 'mirror_v1';
 const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
-const SCHEMA_VERSION = 5;
+const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
+const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
+const SCHEMA_VERSION = 7;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
+
+/* Every array of dated records in the state tree. Used to (1) stamp provenance on new
+   records and (2) build the human-readable mirror-data.md. Strings/config objects are
+   never listed here, so the provenance stamper only ever touches real records. */
+const RECORD_ARRAYS = [
+  ['identity','reflections'], ['identity','pulse'], ['identity','journal'],
+  ['body','food'], ['body','water'], ['body','sleep'], ['body','exercise'],
+  ['body','symptoms'], ['body','customFoods'], ['body','meals'],
+  ['mind','books'], ['mind','ideas'], ['mind','questions'], ['mind','quotes'],
+  ['money','categories'], ['money','expenses'], ['money','subscriptions'],
+  ['money','netWorth'], ['money','goals'],
+  ['relationships','people'], ['relationships','followUps'],
+  ['relationships','giftIdeas'], ['relationships','birthdays'],
+  ['daily','cards'],
+];
+function nowISO(){ return new Date().toISOString(); }
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
@@ -1000,6 +1095,7 @@ const defaultState = () => ({
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
+  daily: { cards: [] },
   home: { widgets: ['glance','pulse','water','sleep','exercise','journal'] }
 });
 function getTargets() { return Object.assign({}, DEFAULT_TARGETS, state.body.targets || {}); }
@@ -1034,6 +1130,26 @@ function migrate(s) {
   }
   // v4 -> v5: add customizable home (state.home.widgets); shallow-merge backfills it.
   if (v < 5) { v = 5; }
+  // v5 -> v6: provenance. Every record gets a `source`; pre-v6 records are stamped
+  // `legacy` and intentionally get NO entered_at — their true entry time is unknown,
+  // and a made-up timestamp would be a lie in a record meant to be trusted for decades.
+  if (v < 6) {
+    for (const [a, b] of RECORD_ARRAYS) {
+      const arr = s[a] && s[a][b];
+      if (!Array.isArray(arr)) continue;
+      for (const el of arr) {
+        if (el && typeof el === 'object' && !el._src) el._src = 'legacy';
+      }
+    }
+    v = 6;
+  }
+  // v6 -> v7: add daily.cards[] (the Daily Card — Mirror's heartbeat). Shallow-merge in
+  // loadState already backfills it; this is the explicit, defensive guarantee.
+  if (v < 7) {
+    s.daily = s.daily || { cards: [] };
+    if (!Array.isArray(s.daily.cards)) s.daily.cards = [];
+    v = 7;
+  }
   s.__v = SCHEMA_VERSION;
   return s;
 }
@@ -1048,8 +1164,35 @@ function loadState() {
     return s;
   } catch { return defaultState(); }
 }
+/* Stamp provenance on any record that doesn't have it yet. Runs on every save, so a
+   record added anywhere in the app is stamped within a second of its creation — no need
+   to touch the dozens of individual .push() sites. New records get `_src: 'manual'` with a
+   real `_at`; `legacy`/`import` records keep the `_src` the migration/importer gave them. */
+function stampNewRecords() {
+  let added = 0;
+  for (const [a, b] of RECORD_ARRAYS) {
+    const arr = state[a] && state[a][b];
+    if (!Array.isArray(arr)) continue;
+    for (const el of arr) {
+      // _src / _at are underscore-prefixed metadata so they never collide with a domain
+      // field (e.g. mind.ideas already has its own `source` = the idea's origin).
+      if (el && typeof el === 'object' && !el._src) {
+        el._src = 'manual';
+        el._at = nowISO();
+        added++;
+      }
+    }
+  }
+  return added;
+}
+function bumpChangesSinceRepo() {
+  const n = Number(localStorage.getItem(CHANGES_KEY) || 0) + 1;
+  try { localStorage.setItem(CHANGES_KEY, String(n)); } catch {}
+}
 function saveState() {
   state.__v = SCHEMA_VERSION;
+  stampNewRecords();
+  bumpChangesSinceRepo();
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   } catch (err) {
@@ -1139,6 +1282,17 @@ function showBanner(html, isWarn) {
 function hideBanner() { document.getElementById('backupBanner').classList.remove('show'); }
 function checkBackupReminder() {
   if (isEmptyState(state)) return;
+  // First priority: a stale forever-copy with real changes piled up behind it.
+  const lastRepo = Number(localStorage.getItem(LAST_REPO_KEY) || 0);
+  const changes = Number(localStorage.getItem(CHANGES_KEY) || 0);
+  const repoDays = lastRepo ? Math.floor((Date.now() - lastRepo) / 86400000) : 999;
+  if (changes >= 30 || (changes > 0 && repoDays >= 14)) {
+    showBanner(lastRepo
+      ? `<strong>${changes} change${changes===1?'':'s'}</strong> since your last forever-copy (${repoDays} days ago). Open <strong>Repo</strong> to update it, then commit.`
+      : `You haven't saved a forever-copy yet. Open <strong>Repo</strong> to save <code>mirror-data.json</code> + <code>mirror-data.md</code> and commit them.`, false);
+    return;
+  }
+  // Otherwise fall back to the lighter weekly file-backup nudge.
   const last = Number(localStorage.getItem(LAST_EXPORT_KEY) || 0);
   const days = last ? Math.floor((Date.now() - last) / 86400000) : 999;
   if (days >= 7) {
@@ -1195,14 +1349,146 @@ document.getElementById('resetBtn').onclick = () => {
 document.getElementById('snapsBtn').onclick = openSnapshotsModal;
 
 /* ----- Repo backup: whole-app forever-copy committed to git (same pattern as birthdays) ----- */
-function downloadRepoCopy() {
-  const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
+
+/* Human-readable companion to mirror-data.json. The JSON is lossless and is what the app
+   restores from; this Markdown is the copy a human (or future-you) can read in 50 years
+   with no app at all. Durable/qualitative content (values, reflections, journal, books,
+   quotes, people, birthdays, goals, net worth) is written in full; high-volume logs
+   (food, sleep, water, exercise, expenses) are summarised with a count + recent entries. */
+function buildDataMarkdown() {
+  const s = state, L = [], p = (x='') => L.push(x);
+  const len = path => { const a = path.split('.').reduce((o,k)=>o&&o[k], s); return Array.isArray(a)?a.length:0; };
+  const byDateDesc = (a,b) => String(b.date||'').localeCompare(String(a.date||''));
+  const recent = (arr,k=14) => (arr||[]).slice().sort(byDateDesc).slice(0,k);
+
+  p(`# Mirror — life record`); p('');
+  p(`_Saved ${todayStr()} · schema v${SCHEMA_VERSION} · human-readable companion to **mirror-data.json** (the lossless copy the app restores from)._`); p('');
+
+  p(`## At a glance`); p('');
+  [['Daily cards','daily.cards'], ['Journal entries','identity.journal'],
+   ['Reflections','identity.reflections'], ['Pulse check-ins','identity.pulse'],
+   ['Food entries','body.food'], ['Sleep nights','body.sleep'],
+   ['Exercise sessions','body.exercise'], ['Expenses','money.expenses'],
+   ['Net-worth snapshots','money.netWorth'], ['People','relationships.people'],
+   ['Birthdays','relationships.birthdays'], ['Books','mind.books']
+  ].forEach(([k,path]) => p(`- **${k}:** ${len(path)}`));
+  p('');
+
+  /* Daily Cards — Mirror's heartbeat. Included in FULL (newest first): this is the core
+     longitudinal record, so the Markdown must be genuinely readable without the app. */
+  if (s.daily?.cards?.length) {
+    p(`## Daily Cards`); p('');
+    p(`### Daily record`);
+    s.daily.cards.slice().sort(byDateDesc).forEach(c => {
+      const head = [
+        c.mood != null ? `mood ${c.mood}` : null,
+        c.energy != null ? `energy ${c.energy}` : null,
+        c.sleep_hours != null ? `sleep ${c.sleep_hours}h` : null,
+        c.sleep_quality != null ? `quality ${c.sleep_quality}/5` : null,
+        (c.tags && c.tags.length) ? `tags: ${c.tags.join(', ')}` : null,
+      ].filter(Boolean).join(', ');
+      p(`- **${c.date}**${head ? ` — ${head}` : ''}`);
+      if (c.one_sentence) p(`  - Today: ${c.one_sentence}`);
+      if (c.body_note)    p(`  - Body: ${c.body_note}`);
+      if (c.food_note)    p(`  - Food: ${c.food_note}`);
+      if (c.money_note)   p(`  - Money: ${c.money_note}`);
+      if (c.social_note)  p(`  - Social: ${c.social_note}`);
+    });
+    p('');
+  }
+
+  /* Identity */
+  p(`## Identity`);
+  if (s.identity.values?.length) { p(''); p(`**Values:** ${s.identity.values.join(' · ')}`); }
+  if (s.identity.season) { p(''); p(`**Current season:** ${s.identity.season}`); }
+  if (s.identity.reflections?.length) {
+    p(''); p(`### Reflections`);
+    s.identity.reflections.slice().sort(byDateDesc).forEach(r => {
+      p(''); p(`**${r.date||''} · ${r.period||''}**  `);
+      if (r.prompt) p(`_${r.prompt}_  `);
+      p(r.answer || '');
+    });
+  }
+  if (s.identity.journal?.length) {
+    p(''); p(`### Journal`);
+    s.identity.journal.slice().sort(byDateDesc).forEach(j => {
+      p(''); p(`**${j.date||''}${j.title?` — ${j.title}`:''}**${j.tags?.length?`  _[${j.tags.join(', ')}]_`:''}  `);
+      p(j.text || '');
+    });
+  }
+  if (s.identity.pulse?.length) {
+    p(''); p(`### Pulse — recent ${Math.min(14, s.identity.pulse.length)} of ${s.identity.pulse.length}`);
+    recent(s.identity.pulse).forEach(x => p(`- ${x.date}: mood ${x.mood??'–'}, energy ${x.energy??'–'}${x.note?` — ${x.note}`:''}`));
+  }
+
+  /* Body */
+  p(''); p(`## Body`);
+  const t = s.body.targets || {};
+  p(''); p(`**Daily targets:** ${t.kcal||'–'} kcal · ${t.protein_g||'–'} g protein · ${t.water_oz||'–'} oz water`);
+  if (s.body.symptoms?.length) { p(''); p(`### Symptoms & notes`); s.body.symptoms.slice().sort(byDateDesc).forEach(x => p(`- ${x.date}: ${x.note}`)); }
+  if (s.body.customFoods?.length) { p(''); p(`### Your foods`); s.body.customFoods.forEach(f => p(`- **${f.name}**`)); }
+  if (s.body.meals?.length) { p(''); p(`### Saved meals`); s.body.meals.forEach(m => p(`- **${m.name}** (${(m.items||[]).length} items)`)); }
+  [['Food','food', x=>`${x.foodName||x.name||x.foodId||'?'} · ${x.grams||'?'} g`],
+   ['Sleep','sleep', x=>`${x.hours}h · quality ${x.quality||'–'}`],
+   ['Exercise','exercise', x=>`${x.type} · ${x.minutes} min`],
+   ['Water','water', x=>`${x.oz} oz`]
+  ].forEach(([label,key,fmt]) => {
+    const arr = s.body[key]; if (!arr?.length) return;
+    p(''); p(`### ${label} — recent ${Math.min(14, arr.length)} of ${arr.length}`);
+    recent(arr).forEach(x => p(`- ${x.date}: ${fmt(x)}`));
+  });
+
+  /* Money */
+  p(''); p(`## Money`);
+  if (s.money.goals?.length) { p(''); p(`### Goals`); s.money.goals.forEach(g => p(`- **${g.name}** — ${fmt$(g.saved||0)} / ${fmt$(g.target||0)}${g.by?` by ${g.by}`:''}`)); }
+  if (s.money.netWorth?.length) { p(''); p(`### Net worth — all snapshots`); s.money.netWorth.slice().sort(byDateDesc).forEach(w => p(`- ${w.date}: ${fmt$((w.assets||0)-(w.liabilities||0))} (assets ${fmt$(w.assets||0)}, liabilities ${fmt$(w.liabilities||0)})`)); }
+  if (s.money.subscriptions?.length) { p(''); p(`### Subscriptions`); s.money.subscriptions.forEach(x => p(`- ${x.name} — ${fmt$(x.amount||0)}/${x.cadence||'mo'}`)); }
+  if (s.money.expenses?.length) {
+    const catName = new Map((s.money.categories||[]).map(c => [c.id, c.name]));
+    p(''); p(`### Expenses — recent 20 of ${s.money.expenses.length}`);
+    recent(s.money.expenses, 20).forEach(x => p(`- ${x.date}: ${fmt$(x.amount||0)} · ${catName.get(x.categoryId)||'uncategorized'}${x.note?` — ${x.note}`:''}`));
+  }
+
+  /* Mind */
+  p(''); p(`## Mind`);
+  if (s.mind.books?.length) { p(''); p(`### Books`); s.mind.books.forEach(b => p(`- **${b.title}**${b.author?` — ${b.author}`:''} _(${b.status||'?'})_`)); }
+  if (s.mind.ideas?.length) { p(''); p(`### Ideas`); s.mind.ideas.slice().sort(byDateDesc).forEach(x => p(`- ${x.text}${x.source?` — _${x.source}_`:''}`)); }
+  if (s.mind.questions?.length) { p(''); p(`### Open questions`); s.mind.questions.forEach(x => p(`- ${x.q}${x.status&&x.status!=='open'?` (${x.status})`:''}`)); }
+  if (s.mind.quotes?.length) { p(''); p(`### Quotes`); s.mind.quotes.forEach(x => { p(''); p(`> ${x.text}`); p(`> — ${x.source||'?'}${x.why?` · ${x.why}`:''}`); }); }
+
+  /* Relationships */
+  p(''); p(`## Relationships`);
+  const ppl = new Map((s.relationships.people||[]).map(x => [x.id, x.name]));
+  if (s.relationships.people?.length) { p(''); p(`### People`); s.relationships.people.forEach(x => p(`- **${x.name}**${x.relation?` (${x.relation})`:''}${x.tier?` · tier ${x.tier}`:''}`)); }
+  if (s.relationships.birthdays?.length) {
+    const fb = (typeof fmtBirthday === 'function') ? fmtBirthday : (b => `${b.month||'?'}/${b.day||'?'}`);
+    p(''); p(`### Birthdays`);
+    s.relationships.birthdays.forEach(b => p(`- **${b.name}**${b.relation?` (${b.relation})`:''} — ${fb(b)}${b.deceased?' · in memoriam':''}${b.note?` — ${b.note}`:''}`));
+  }
+  const openFu = (s.relationships.followUps||[]).filter(f => !f.done);
+  if (openFu.length) { p(''); p(`### Open follow-ups`); openFu.forEach(f => p(`- ${ppl.get(f.personId)||'?'}: ${f.what}${f.due?` (due ${f.due})`:''}`)); }
+  if (s.relationships.giftIdeas?.length) { p(''); p(`### Gift ideas`); s.relationships.giftIdeas.forEach(g => p(`- ${ppl.get(g.personId)||'?'}: ${g.idea}${g.occasion?` (${g.occasion})`:''}`)); }
+
+  p(''); p(`---`);
+  p(`_Generated by Mirror. Each record carries provenance \`_src\` (manual / import / legacy) and, where known, an \`_at\` entry timestamp. See **SCHEMA.md** for the full field reference._`);
+  return L.join('\n');
+}
+
+function saveBlob(name, text, mime) {
+  const url = URL.createObjectURL(new Blob([text], {type: mime}));
   const a = document.createElement('a');
-  a.href = url; a.download = 'mirror-data.json';
+  a.href = url; a.download = name;
   document.body.appendChild(a); a.click(); a.remove();
-  URL.revokeObjectURL(url);
-  localStorage.setItem(LAST_EXPORT_KEY, String(Date.now()));
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+function downloadRepoCopy() {
+  // Two files: the lossless JSON the app restores from, and its human-readable companion.
+  saveBlob('mirror-data.json', JSON.stringify(state, null, 2), 'application/json');
+  saveBlob('mirror-data.md', buildDataMarkdown(), 'text/markdown');
+  const stamp = String(Date.now());
+  localStorage.setItem(LAST_EXPORT_KEY, stamp);
+  localStorage.setItem(LAST_REPO_KEY, stamp);
+  localStorage.setItem(CHANGES_KEY, '0');   // the forever-copy is now current
   hideBanner();
 }
 async function restoreFromRepo() {
@@ -1217,22 +1503,36 @@ async function restoreFromRepo() {
     const d = defaultState();
     for (const k of Object.keys(d)) state[k] = Object.assign(d[k], state[k] || {});
     saveState(); renderAll();
+    // The in-browser data now matches the committed copy — mark it in sync.
+    localStorage.setItem(CHANGES_KEY, '0');
+    localStorage.setItem(LAST_REPO_KEY, String(Date.now()));
     closeModal();
     showBanner('Restored from the repo copy.', false);
   } catch (e) {
     alert('Could not load mirror-data.json from the repo. Make sure it has been committed next to index.html (in the mirror/ folder).');
   }
 }
+function repoStatusLine() {
+  const last = Number(localStorage.getItem(LAST_REPO_KEY) || 0);
+  const changes = Number(localStorage.getItem(CHANGES_KEY) || 0);
+  if (!last) return `<strong>No forever-copy saved yet.</strong> Save one now and commit it.`;
+  const days = Math.floor((Date.now() - last) / 86400000);
+  const when = days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+  if (!changes) return `Forever-copy last saved <strong>${when}</strong> — up to date.`;
+  return `Forever-copy last saved <strong>${when}</strong> · <strong>${changes}</strong> change${changes===1?'':'s'} since then.`;
+}
 function openRepoModal() {
   modalBox.innerHTML = `<h3>Repo backup — your forever-copy</h3>
-    <div class="sub">Your data lives only in this browser. Save it as <code>mirror-data.json</code> and commit that file next to this page in git — it then outlives any cleared cache, lost laptop, or browser. Restore rebuilds everything from the committed copy.</div>
+    <div class="sub">Your data lives only in this browser. Save the forever-copy and commit those files next to this page in git — they then outlive any cleared cache, lost laptop, or browser. Restore rebuilds everything from the committed copy.</div>
+    <div class="prompt" style="margin-bottom:14px">${repoStatusLine()}</div>
+    <div class="sub" style="margin-bottom:14px">Saves two files: <code>mirror-data.json</code> (lossless — what Restore reads) and <code>mirror-data.md</code> (human-readable, openable in 50 years with no app). Commit both.</div>
     <div class="actions" style="flex-wrap:wrap">
-      <button class="primary" id="repoSave">Save mirror-data.json</button>
+      <button class="primary" id="repoSave">Save forever-copy</button>
       <button class="ghost" id="repoRestore">Restore from repo</button>
       <button class="ghost" id="repoClose">Close</button>
     </div>`;
   overlay.classList.add('open');
-  document.getElementById('repoSave').onclick = () => { downloadRepoCopy(); closeModal(); showBanner('Saved <strong>mirror-data.json</strong> — commit it to the repo to make it your forever-copy.', false); };
+  document.getElementById('repoSave').onclick = () => { downloadRepoCopy(); closeModal(); showBanner('Saved <strong>mirror-data.json</strong> + <strong>mirror-data.md</strong> — commit both to the repo to update your forever-copy.', false); };
   document.getElementById('repoRestore').onclick = restoreFromRepo;
   document.getElementById('repoClose').onclick = closeModal;
 }
@@ -3222,6 +3522,8 @@ function renderReflectCloser() {
 }
 
 function renderReflect() {
+  renderWeeklyReview();
+  renderLongView();
   renderReflectToday();
   renderReflectPatterns();
   renderReflectAlignment();
@@ -3289,7 +3591,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -3454,6 +3756,309 @@ document.getElementById('qtJournalAdd').onclick = () => {
   document.getElementById('qtJournal').value = '';
   saveState(); renderAll();
 };
+
+/* =============================================================
+   DAILY CARD — Mirror's heartbeat: one raw record per local day.
+   Stores observations only; never conclusions. One card per date
+   (saving upserts). Provenance (_src/_at) is added centrally by
+   saveState() — do not stamp it here.
+   ============================================================= */
+function lastNDays(n) { const out = [], t = todayStr(); for (let i = 0; i < n; i++) out.push(shiftDate(t, -i)); return out; }
+
+function buildDcDots(rowId, value) {
+  const row = document.getElementById(rowId); if (!row) return;
+  row.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const b = document.createElement('button');
+    b.textContent = i; b.dataset.val = i;
+    if (value === i) b.classList.add('on');
+    b.onclick = () => {
+      const wasOn = b.classList.contains('on');
+      row.querySelectorAll('button').forEach(x => x.classList.remove('on'));
+      if (!wasOn) b.classList.add('on');   // click the lit dot again to clear — the field is optional
+    };
+    row.appendChild(b);
+  }
+}
+function readDcDot(rowId) {
+  const on = document.querySelector('#' + rowId + ' button.on');
+  return on ? Number(on.dataset.val) : null;
+}
+function dailyCardStats() {
+  const cards = (state.daily && state.daily.cards) || [];
+  const week = new Set(lastNDays(7));
+  return { total: cards.length, inWeek: cards.filter(c => week.has(c.date)).length };
+}
+function renderDailyCardStatus() {
+  const el = document.getElementById('dcCount'); if (!el) return;
+  const { total, inWeek } = dailyCardStats();
+  el.textContent = `Daily cards: ${total} total · logged ${inWeek} of the last 7 days`;
+}
+function renderDailyCard() {
+  if (!document.getElementById('dailyCardSection')) return;
+  const date = qtLogDate;
+  const card = ((state.daily && state.daily.cards) || []).find(c => c.date === date) || null;
+  buildDcDots('dcMoodRow', card ? card.mood : null);
+  buildDcDots('dcEnergyRow', card ? card.energy : null);
+  const set = (id, val) => { const el = document.getElementById(id); if (el && document.activeElement !== el) el.value = (val == null ? '' : val); };
+  set('dcSleepHours',   card ? card.sleep_hours : '');
+  set('dcSleepQuality', card ? card.sleep_quality : '');
+  set('dcBodyNote',     card ? card.body_note : '');
+  set('dcFoodNote',     card ? card.food_note : '');
+  set('dcMoneyNote',    card ? card.money_note : '');
+  set('dcSocialNote',   card ? card.social_note : '');
+  set('dcOneSentence',  card ? card.one_sentence : '');
+  set('dcTags',         card ? (card.tags || []).join(', ') : '');
+  const btn = document.getElementById('dcSave');
+  if (btn) btn.textContent = (date === todayStr() ? 'Save today' : 'Save ' + fmtDate(date));
+  const saved = document.getElementById('dcSaved');
+  if (saved) saved.textContent = card ? 'Saved — editing updates this day' : '';
+  renderDailyCardStatus();
+}
+document.getElementById('dcSave').onclick = () => {
+  const date = qtLogDate;
+  const num = id => { const v = document.getElementById(id).value; return v === '' ? null : Number(v); };
+  const txt = id => document.getElementById(id).value.trim();
+  const fields = {
+    mood:          readDcDot('dcMoodRow'),
+    energy:        readDcDot('dcEnergyRow'),
+    sleep_hours:   num('dcSleepHours'),
+    sleep_quality: num('dcSleepQuality'),
+    body_note:     txt('dcBodyNote'),
+    food_note:     txt('dcFoodNote'),
+    money_note:    txt('dcMoneyNote'),
+    social_note:   txt('dcSocialNote'),
+    one_sentence:  txt('dcOneSentence'),
+    tags:          parseTags(document.getElementById('dcTags').value),
+  };
+  state.daily = state.daily || { cards: [] };
+  state.daily.cards = state.daily.cards || [];
+  const existing = state.daily.cards.find(c => c.date === date);
+  if (existing) Object.assign(existing, fields);                  // upsert — one card per local date
+  else state.daily.cards.push({ id: uid(), date, ...fields });    // _src/_at stamped by saveState()
+  saveState();
+  renderDailyCard();
+  const saved = document.getElementById('dcSaved');
+  if (saved) saved.textContent = (date === todayStr() ? 'Saved today.' : 'Saved for ' + fmtDate(date) + '.');
+  if (document.getElementById('weeklyReview')) renderWeeklyReview();
+};
+
+/* =============================================================
+   WEEKLY REVIEW — derived from the last 7 days of Daily Cards.
+   Nothing here is stored; it is recomputed every render. Language
+   stays tentative ("Mirror noticed…", "Possible theme…") and never
+   forces a conclusion from sparse data.
+   ============================================================= */
+function weeklyCards() {
+  const days = new Set(lastNDays(7));
+  return ((state.daily && state.daily.cards) || [])
+    .filter(c => days.has(c.date))
+    .slice().sort((a, b) => a.date.localeCompare(b.date));
+}
+function avgOf(cards, key) {
+  const vals = cards.map(c => c[key]).filter(v => typeof v === 'number' && !isNaN(v));
+  if (!vals.length) return null;
+  return vals.reduce((s, v) => s + v, 0) / vals.length;
+}
+function renderWeeklyReview() {
+  const host = document.getElementById('weeklyReview'); if (!host) return;
+  const statusEl = document.getElementById('weeklyReviewStatus');
+  const cards = weeklyCards();
+  const n = cards.length;
+  if (statusEl) statusEl.textContent = `Logged ${n} of the last 7 days`;
+
+  if (n === 0) {
+    host.innerHTML = `<div class="reflect-empty">No daily cards in the last 7 days yet. Save a few from the Today tab and Mirror will reflect the week back to you here — gently, without keeping score.</div>`;
+    return;
+  }
+
+  const f1 = v => v == null ? '—' : (Math.round(v * 10) / 10).toString();
+  const mood = avgOf(cards, 'mood'), energy = avgOf(cards, 'energy'),
+        sleep = avgOf(cards, 'sleep_hours'), sq = avgOf(cards, 'sleep_quality');
+
+  // tags
+  const tally = {};
+  cards.forEach(c => (c.tags || []).forEach(t => { const k = (t || '').trim().toLowerCase(); if (k) tally[k] = (tally[k] || 0) + 1; }));
+  const topTags = Object.entries(tally).sort((a, b) => b[1] - a[1]);
+  const repeatedTags = topTags.filter(([, c]) => c >= 2).slice(0, 3);
+  const commonTagsText = topTags.length ? topTags.slice(0, 3).map(([t, c]) => `${t}${c > 1 ? ` ×${c}` : ''}`).join(', ') : '—';
+
+  // notable notes — verbatim, not summarized; show up to 3 non-empty per field
+  const noteLine = (label, key) => {
+    const xs = cards.map(c => (c[key] || '').trim()).filter(Boolean);
+    return `<div class="p"><strong>${label}:</strong> ${xs.length ? escapeHtml(xs.slice(0, 3).join(' · ')) : '<span style="color:var(--dim)">none noted</span>'}</div>`;
+  };
+
+  // best / hardest day — only when there are at least two days with BOTH mood and energy
+  const qualifying = cards.filter(c => typeof c.mood === 'number' && typeof c.energy === 'number');
+  let bestHardest;
+  if (qualifying.length >= 2) {
+    const score = c => c.mood + c.energy;
+    const sorted = qualifying.slice().sort((a, b) => score(b) - score(a));
+    const best = sorted[0], hard = sorted[sorted.length - 1];
+    if (best.date !== hard.date && score(best) !== score(hard)) {
+      const day = (lbl, c) => `<div class="p"><strong>${lbl}:</strong> ${fmtDate(c.date)} (mood ${c.mood}, energy ${c.energy})${c.one_sentence ? ` — ${escapeHtml(c.one_sentence)}` : ''}</div>`;
+      bestHardest = day('Best day', best) + day('Hardest day', hard);
+    } else {
+      bestHardest = `<div class="p" style="color:var(--dim)">The logged days were close — not enough variation to name a best and hardest day.</div>`;
+    }
+  } else {
+    bestHardest = `<div class="p" style="color:var(--dim)">Log mood and energy on a couple of days to see your best and hardest day.</div>`;
+  }
+
+  const theme = repeatedTags.length
+    ? `<div class="p"><strong>Possible theme:</strong> ${repeatedTags.map(([t, c]) => `${escapeHtml(t)} (${c} days)`).join(', ')} — a hint to notice, not a conclusion.</div>`
+    : '';
+
+  let question;
+  if (sleep != null && sleep < 7) question = 'What would help you get a little more rest next week?';
+  else if (repeatedTags.length) question = `"${repeatedTags[0][0]}" came up a few times. What is one small thing that would help with that next week?`;
+  else question = 'What helped you feel more steady on your better days?';
+
+  const partial = n < 7
+    ? `Mirror has ${n} daily card${n !== 1 ? 's' : ''} from the last 7 days, so this is a partial review.`
+    : `Mirror has a card for each of the last 7 days.`;
+
+  host.innerHTML = `
+    <div class="card">
+      <div class="p" style="margin-bottom:8px">${partial}</div>
+      <div class="p"><strong>Cards logged:</strong> ${n}/7</div>
+      <div class="p"><strong>Average mood:</strong> ${f1(mood)}${mood == null ? ' <span style="color:var(--dim)">(not logged)</span>' : ''} · <strong>energy:</strong> ${f1(energy)}${energy == null ? ' <span style="color:var(--dim)">(not logged)</span>' : ''}</div>
+      <div class="p"><strong>Sleep:</strong> ${sleep == null ? '<span style="color:var(--dim)">not logged</span>' : `${f1(sleep)} hours on logged days`}${sq != null ? ` · quality ${f1(sq)}/5` : ''}</div>
+      <div class="p"><strong>Most common tags:</strong> ${escapeHtml(commonTagsText)}</div>
+      ${theme}
+      ${noteLine('Body notes', 'body_note')}
+      ${noteLine('Food notes', 'food_note')}
+      ${noteLine('Money notes', 'money_note')}
+      ${noteLine('Social notes', 'social_note')}
+      ${bestHardest}
+      <div class="prompt" style="margin-top:12px">Question for next week: ${escapeHtml(question)}</div>
+    </div>`;
+}
+
+/* =============================================================
+   THE LONG VIEW — a month calendar heatmap of Daily Cards plus
+   "on this day" resurfacing. Entirely derived from daily.cards;
+   reads, never writes. Tint = mood so the chain of days is visible
+   — the payoff that makes consistency worth it.
+   ============================================================= */
+let lvMonth = todayStr().slice(0, 7);   // YYYY-MM currently shown
+let lvSelected = null;                   // a date string when a day is opened
+
+function cardsByDate() {
+  const m = new Map();
+  ((state.daily && state.daily.cards) || []).forEach(c => m.set(c.date, c));
+  return m;
+}
+function dailyCardHeadline(c) {
+  return [
+    typeof c.mood === 'number' ? `mood ${c.mood}` : null,
+    typeof c.energy === 'number' ? `energy ${c.energy}` : null,
+    typeof c.sleep_hours === 'number' ? `sleep ${c.sleep_hours}h` : null,
+    typeof c.sleep_quality === 'number' ? `quality ${c.sleep_quality}/5` : null,
+    (c.tags && c.tags.length) ? `tags: ${c.tags.join(', ')}` : null,
+  ].filter(Boolean).join(' · ');
+}
+function dailyCardCardHTML(c, withOpen) {
+  const rows = [];
+  if (c.one_sentence) rows.push(`<div class="p"><strong>Today:</strong> ${escapeHtml(c.one_sentence)}</div>`);
+  if (c.body_note)    rows.push(`<div class="p"><strong>Body:</strong> ${escapeHtml(c.body_note)}</div>`);
+  if (c.food_note)    rows.push(`<div class="p"><strong>Food:</strong> ${escapeHtml(c.food_note)}</div>`);
+  if (c.money_note)   rows.push(`<div class="p"><strong>Money:</strong> ${escapeHtml(c.money_note)}</div>`);
+  if (c.social_note)  rows.push(`<div class="p"><strong>People:</strong> ${escapeHtml(c.social_note)}</div>`);
+  const head = dailyCardHeadline(c);
+  return `<div class="card" style="margin-top:12px">
+    <div class="row"><div class="meta">${fmtDate(c.date)}</div>${withOpen ? `<button class="ghost" id="lvOpenInToday">Open in Today</button>` : ''}</div>
+    ${head ? `<div class="tiny" style="color:var(--dim);margin:2px 0 6px">${escapeHtml(head)}</div>` : ''}
+    ${rows.length ? rows.join('') : '<div class="tiny" style="color:var(--dim)">No notes for this day.</div>'}
+  </div>`;
+}
+function renderLongView() {
+  const cal = document.getElementById('longViewCal'); if (!cal) return;
+  const byDate = cardsByDate();
+
+  // coverage line — neutral, never a streak/shame framing
+  const cov = document.getElementById('longViewCoverage');
+  if (cov) {
+    const total = ((state.daily && state.daily.cards) || []).length;
+    const last30 = new Set(lastNDays(30));
+    const recent = ((state.daily && state.daily.cards) || []).filter(c => last30.has(c.date)).length;
+    cov.textContent = total ? `${total} card${total !== 1 ? 's' : ''} · ${recent} in the last 30 days` : 'no cards yet';
+  }
+
+  const lbl = document.getElementById('lvMonth'); if (lbl) lbl.textContent = monthLabel(lvMonth);
+  const [Y, M] = lvMonth.split('-').map(Number);
+  const startDow = new Date(Y, M - 1, 1).getDay();   // 0 = Sun
+  const daysInMonth = new Date(Y, M, 0).getDate();
+  const today = todayStr();
+  const dows = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+  let html = dows.map(d => `<div class="lv-dow">${d}</div>`).join('');
+  for (let i = 0; i < startDow; i++) html += `<div class="lv-cell blank"></div>`;
+  for (let day = 1; day <= daysInMonth; day++) {
+    const ds = `${Y}-${String(M).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const card = byDate.get(ds);
+    let style = '';
+    if (card) {
+      if (typeof card.mood === 'number') style = `background:color-mix(in srgb, var(--accent2) ${15 + card.mood * 15}%, transparent)`;
+      else style = 'background:color-mix(in srgb, var(--accent) 12%, transparent)';
+    }
+    const cls = ['lv-cell'];
+    if (card) cls.push('has');
+    if (ds === today) cls.push('today');
+    if (ds === lvSelected) cls.push('sel');
+    const title = card
+      ? `${ds}${typeof card.mood === 'number' ? ` · mood ${card.mood}` : ''}${typeof card.energy === 'number' ? `, energy ${card.energy}` : ''}`
+      : ds;
+    html += `<div class="${cls.join(' ')}" data-lvday="${ds}" style="${style}" title="${title}"><span class="d">${day}</span></div>`;
+  }
+  cal.innerHTML = html;
+  cal.querySelectorAll('[data-lvday]').forEach(el => {
+    if (byDate.get(el.dataset.lvday)) el.onclick = () => { lvSelected = el.dataset.lvday; renderLongView(); };
+  });
+
+  renderLongViewDetail(byDate);
+  renderOnThisDay(byDate);
+}
+function renderLongViewDetail(byDate) {
+  const el = document.getElementById('longViewDetail'); if (!el) return;
+  const c = lvSelected && byDate.get(lvSelected);
+  if (!c) { el.innerHTML = ''; return; }
+  el.innerHTML = dailyCardCardHTML(c, true);
+  const open = document.getElementById('lvOpenInToday');
+  if (open) open.onclick = () => {
+    setQtLogDate(lvSelected);
+    const tab = document.querySelector('.tab-btn[data-tab="today"]');
+    if (tab) tab.click();
+  };
+}
+function renderOnThisDay(byDate) {
+  const el = document.getElementById('onThisDay'); if (!el) return;
+  const t = new Date();
+  const mmdd = `-${String(t.getMonth() + 1).padStart(2, '0')}-${String(t.getDate()).padStart(2, '0')}`;
+  const yNow = t.getFullYear();
+  const all = (state.daily && state.daily.cards) || [];
+  const matches = all
+    .filter(c => c.date.slice(4) === mmdd && Number(c.date.slice(0, 4)) < yNow)
+    .sort((a, b) => b.date.localeCompare(a.date));
+
+  if (matches.length) {
+    el.innerHTML = matches.map(c => {
+      const yrs = yNow - Number(c.date.slice(0, 4));
+      return `<div class="p" style="color:var(--dim);margin:6px 0 2px">${yrs} year${yrs !== 1 ? 's' : ''} ago</div>` + dailyCardCardHTML(c, false);
+    }).join('');
+    return;
+  }
+  if (!all.length) {
+    el.innerHTML = `<div class="reflect-empty">No daily cards yet. As the years pass, this is where past versions of today will return to you.</div>`;
+    return;
+  }
+  const oldest = all.map(c => c.date).sort()[0];
+  const days = Math.max(0, daysBetween(oldest, todayStr()));
+  el.innerHTML = `<div class="reflect-empty">Nothing from a year ago yet — your record began ${days} day${days !== 1 ? 's' : ''} ago. Come back as Mirror grows, and this day will begin to echo.</div>`;
+}
+document.getElementById('lvPrev').onclick = () => { lvMonth = shiftMonth(lvMonth, -1); lvSelected = null; renderLongView(); };
+document.getElementById('lvNext').onclick = () => { lvMonth = shiftMonth(lvMonth, 1); lvSelected = null; renderLongView(); };
 
 /* =============================================================
    TIMELINE — chronological cross-room history
