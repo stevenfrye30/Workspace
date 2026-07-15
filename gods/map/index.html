@@ -52,7 +52,7 @@ body {
   color:var(--ink); line-height:1.6; min-height:100vh;
 }
 header {
-  padding:30px 28px 22px; text-align:center;
+  padding:14px 28px 12px;
   background:linear-gradient(180deg, #0e1024 0%, #0a0b1a 100%);
   border-bottom:3px double var(--gold-soft); position:relative;
 }
@@ -60,19 +60,30 @@ header::before, header::after {
   content:''; position:absolute; left:28px; right:28px; height:1px;
   background:linear-gradient(90deg, transparent, var(--gold), transparent);
 }
-header::before { top:8px; }
+header::before { top:5px; }
 header::after  { bottom:-1px; opacity:0.45; }
+/* Title and global search share one row on wide screens; stack on phones. */
+.header-bar {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:24px; flex-wrap:wrap; max-width:1400px; margin:0 auto;
+}
+.header-title { flex:0 0 auto; }
 header h1 {
-  margin:0; font-size:32px; letter-spacing:8px; font-weight:normal;
-  color:var(--gold); font-variant:small-caps;
+  margin:0; font-size:28px; letter-spacing:2px; font-weight:normal;
+  color:var(--gold);
   text-shadow:0 1px 0 #000, 0 0 28px rgba(229,193,88,0.18);
 }
-header h1::before { content:'☾'; color:var(--silver); margin-right:22px; font-size:0.9em; opacity:0.9; }
-header h1::after  { content:'☉'; color:var(--gold); margin-left:22px; font-size:0.9em; opacity:0.9; }
-header p {
-  margin:8px 0 0; color:var(--muted); font-style:italic; font-size:13px; letter-spacing:1.2px;
+header h1::before { content:'☾'; color:var(--silver); margin-right:14px; font-size:0.85em; opacity:0.9; }
+header h1::after  { content:'☉'; color:var(--gold); margin-left:14px; font-size:0.85em; opacity:0.9; }
+/* Search sits inside the header bar (reuses #godsSearch, no rebuild). */
+header .gods-search { margin:0; padding:0; flex:0 1 400px; max-width:440px; min-width:240px; width:auto; }
+header .gods-search-results { left:0; right:0; }
+@media (max-width:760px) {
+  header { padding:12px 16px 10px; }
+  .header-bar { flex-direction:column; align-items:stretch; gap:10px; text-align:center; }
+  .header-title { text-align:center; }
+  header .gods-search { flex:1 1 auto; max-width:none; min-width:0; }
 }
-header p::before { content:'❋  '; color:var(--gold-deep); font-style:normal; }
 header p::after  { content:'  ❋'; color:var(--gold-deep); font-style:normal; }
 nav {
   display:flex; gap:8px; padding:14px 28px; background:#07081a;
@@ -450,7 +461,7 @@ main p { line-height:1.7; }
   gap:22px; align-items:start; margin-top:8px;
 }
 .focus-side { min-width:0; }
-.focus-side h4 {
+.focus-side .focus-side-label {
   margin:0 0 10px; font-variant:small-caps; letter-spacing:2px;
   color:var(--cyan); font-size:12px; font-weight:normal; text-align:center;
 }
@@ -938,7 +949,7 @@ main p { line-height:1.7; }
 
 @media (max-width: 840px) {
   .focus-main-row { grid-template-columns:1fr; }
-  .focus-side h4 { margin-top:20px; }
+  .focus-side .focus-side-label { margin-top:20px; }
   .archetype-grid { grid-template-columns:1fr; }
   .pantheon-group-grid { grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); }
   .focus-center-card { padding:18px 20px; }
@@ -1775,24 +1786,27 @@ select:focus:not(:focus-visible),
   <div id="loadingMsg">Opening the archive…</div>
 </div>
 <header>
-  <h1>GODS</h1>
-  <p>A comparative archive — pantheons set beside one another</p>
-</header>
-
-<div class="gods-search" id="godsSearch">
-  <label for="godsSearchInput" class="visually-hidden">Search all figures across every tradition</label>
-  <div class="gods-search-field">
-    <span class="gods-search-icon" aria-hidden="true">&#9906;</span>
-    <input id="godsSearchInput" type="search" class="gods-search-input"
-           placeholder="Search all figures" autocomplete="off" spellcheck="false"
-           role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
-           aria-expanded="false" aria-controls="godsSearchResults">
-    <button type="button" id="godsSearchClear" class="gods-search-clear" aria-label="Clear search" hidden>&times;</button>
+  <div class="header-bar">
+    <div class="header-title">
+      <h1>Gods</h1>
+      <p class="visually-hidden">A comparative archive of mythological and religious traditions.</p>
+    </div>
+    <div class="gods-search" id="godsSearch">
+      <label for="godsSearchInput" class="visually-hidden">Search all figures across every tradition</label>
+      <div class="gods-search-field">
+        <span class="gods-search-icon" aria-hidden="true">&#9906;</span>
+        <input id="godsSearchInput" type="search" class="gods-search-input"
+               placeholder="Search all figures" autocomplete="off" spellcheck="false"
+               role="combobox" aria-autocomplete="list" aria-haspopup="listbox"
+               aria-expanded="false" aria-controls="godsSearchResults">
+        <button type="button" id="godsSearchClear" class="gods-search-clear" aria-label="Clear search" hidden>&times;</button>
+      </div>
+      <div id="godsSearchResults" class="gods-search-results" role="listbox"
+           aria-label="Figure search results" hidden></div>
+      <div id="godsSearchStatus" class="visually-hidden" role="status" aria-live="polite"></div>
+    </div>
   </div>
-  <div id="godsSearchResults" class="gods-search-results" role="listbox"
-       aria-label="Figure search results" hidden></div>
-  <div id="godsSearchStatus" class="visually-hidden" role="status" aria-live="polite"></div>
-</div>
+</header>
 
 <nav role="tablist" aria-label="Main sections">
   <button class="tab-btn active" data-tab="overview" role="tab" aria-selected="true" aria-controls="tab-overview">Traditions</button>
@@ -1834,10 +1848,10 @@ select:focus:not(:focus-visible),
 
 <section id="tab-trees" class="tab" role="tabpanel">
   <div class="tab-head">
-    <h2>Relationships</h2>
+    <h2 class="visually-hidden">Relationships</h2>
     <p class="intro">
-      Three ways to read a figure. <strong>Overview</strong> lays out its immediate
-      family as cards. <strong>Relationship Web</strong> draws the network around it —
+      Three ways to read a figure. <strong>Focus</strong> lays out its immediate
+      family as cards. <strong>Web</strong> draws the network around it —
       parents, children, siblings, consorts, and optionally the comparative parallels
       that cross traditions. <strong>Tradition Tree</strong> shows a whole tradition
       arranged by recorded parentage. Some traditions kept extensive divine families;
@@ -1853,8 +1867,8 @@ select:focus:not(:focus-visible),
       <select id="focusSelect" aria-label="Choose a figure"></select>
       <button id="focusBack" disabled>← Back</button>
       <div class="tree-view-toggle" role="group" aria-label="Figure view">
-        <button id="viewFocusBtn" class="active" aria-pressed="true">Overview</button>
-        <button id="viewWebBtn" aria-pressed="false">Relationship Web</button>
+        <button id="viewFocusBtn" class="active" aria-pressed="true">Focus</button>
+        <button id="viewWebBtn" aria-pressed="false">Web</button>
         <button id="viewFullBtn" aria-pressed="false">Tradition Tree</button>
       </div>
       <span class="count" id="treeCount"></span>
@@ -3920,7 +3934,7 @@ function gpBuild(godId, opts) {
     ${domains ? `<div class="gp-domains">${escapeAttr(domains)}</div>` : ''}
     ${g.description ? `<div class="gp-desc">${escapeAttr(g.description)}</div>` : ''}
     <div class="gp-actions">
-      ${opts && opts.focusAction ? `<button class="gp-btn" data-gp="focus" type="button" aria-label="Focus on ${escapeAttr(g.name)} and open the Overview">Focus</button>` : ''}
+      ${opts && opts.focusAction ? `<button class="gp-btn" data-gp="focus" type="button" aria-label="Focus on ${escapeAttr(g.name)} and open its Focus view">Focus</button>` : ''}
       ${opts && opts.rebuildLabel ? `<button class="gp-btn" data-gp="rebuild" type="button">${opts.rebuildLabel}</button>` : ''}
       <button class="gp-btn" data-gp="details" type="button">Details</button>
     </div>
@@ -4514,7 +4528,7 @@ function renderFocusView(g) {
 
     <div class="focus-main-row" style="margin-top:22px;">
       <div class="focus-side">
-        <h4>Siblings</h4>
+        <div class="focus-side-label">Siblings</div>
         <div class="focus-side-list">${siblingCards}</div>
       </div>
       <div class="focus-center-card" style="--pantheon-color:${pColor}">
@@ -4533,7 +4547,7 @@ function renderFocusView(g) {
         <button class="fdetails-btn" onclick="openGod('${g.id}')">Full details</button>
       </div>
       <div class="focus-side">
-        <h4>Consorts</h4>
+        <div class="focus-side-label">Consorts</div>
         <div class="focus-side-list">${consortCards}</div>
       </div>
     </div>
