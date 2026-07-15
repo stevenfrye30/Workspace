@@ -295,8 +295,17 @@ main p { line-height:1.7; }
   gap:6px; padding:12px 20px 20px;
 }
 .barebone-flat .pantheon-chip {
-  width:100%; justify-content:flex-start; padding:6px 12px 6px 11px;
+  width:100%; justify-content:flex-start; gap:8px; padding:8px 13px; min-height:44px;
+  border:2px solid var(--region-color, var(--line));
+  border-left-width:5px;
+  background:var(--panel);
 }
+.barebone-flat .pantheon-chip:hover, .barebone-flat .pantheon-chip:focus-visible {
+  border-color:var(--region-color, var(--gold-soft));
+  background:linear-gradient(180deg, var(--panel), var(--panel2));
+  transform:translateY(-1px); outline:none;
+}
+.barebone-flat .pantheon-chip:focus-visible { box-shadow:0 0 0 2px var(--gold); }
 .barebone-flat .pantheon-chip .chip-name {
   flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
 }
@@ -316,23 +325,83 @@ main p { line-height:1.7; }
 .barebone-class + .barebone-class .barebone-class-head {
   border-top:1px solid rgba(229,193,88,0.10); padding-top:16px; margin-top:6px;
 }
-/* Class legend — maps the chip dot colors to class names */
-.pantheon-legend {
-  display:flex; flex-wrap:wrap; gap:7px 16px;
-  padding:14px 22px 2px; margin:0;
+/* ============ Traditions landing (Phase 2 atlas) ============ */
+.trad-head { display:flex; align-items:center; justify-content:space-between; gap:16px 20px; flex-wrap:wrap; margin:0 0 6px; }
+.trad-head h2 { margin:0; padding-bottom:6px; flex:0 0 auto; }
+.trad-head h2::after { bottom:0; }
+.trad-sort { display:flex; align-items:center; gap:8px; }
+.trad-sort label { font-size:11px; letter-spacing:1px; font-variant:small-caps; color:var(--muted); }
+.trad-sort select {
+  background:var(--panel); border:1px solid var(--line); color:var(--ink);
+  border-radius:8px; padding:9px 12px; min-height:44px; font-family:inherit; font-size:13px; cursor:pointer;
 }
-.pantheon-legend .legend-item {
-  display:inline-flex; align-items:center; gap:7px;
-  color:var(--muted); font-size:11.5px; letter-spacing:0.6px;
-  font-variant:small-caps;
+.trad-sort select:hover { border-color:var(--gold-soft); }
+.trad-note { margin:0 0 8px; color:var(--muted); font-size:12.5px; font-style:italic; }
+.trad-total { font-style:normal; opacity:0.8; margin-left:8px; }
+.trad-about { margin:0 0 10px; font-size:12.5px; }
+.trad-about summary { cursor:pointer; color:var(--muted); font-variant:small-caps; letter-spacing:1px; padding:4px 0; width:max-content; }
+.trad-about summary:hover, .trad-about summary:focus-visible { color:var(--gold); }
+.trad-about-body { margin:6px 0 2px; padding-left:18px; color:var(--muted); line-height:1.6; }
+.trad-about-body li { margin:3px 0; }
+
+.trad-atlas {
+  display:grid; grid-template-columns:minmax(210px, 280px) 1fr; gap:16px;
+  margin:14px 0 8px; align-items:start;
 }
-.pantheon-legend .legend-dot,
+.trad-legend-panel, .trad-map-panel {
+  background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;
+}
+.trad-panel-head {
+  display:flex; justify-content:space-between; align-items:center; gap:8px;
+  padding:9px 14px; font-size:11.5px; letter-spacing:1px; font-variant:small-caps;
+  color:var(--muted); border-bottom:1px solid var(--line); background:#0d0f22;
+}
+.trad-panel-note { opacity:0.72; font-style:italic; text-transform:none; letter-spacing:0.3px; }
+.region-all {
+  background:transparent; border:1px solid var(--line); color:var(--muted);
+  border-radius:6px; padding:4px 9px; min-height:30px; font-size:10.5px; cursor:pointer;
+  font-family:inherit; letter-spacing:0.5px;
+}
+.region-all:hover, .region-all:focus-visible { color:var(--gold); border-color:var(--gold-soft); outline:none; }
+
+.region-legend { display:flex; flex-direction:column; gap:6px; padding:12px; }
+.region-row {
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  width:100%; min-height:44px; padding:8px 12px;
+  border:1px solid var(--line); border-left:5px solid var(--region-color, var(--gold));
+  border-radius:8px; background:var(--panel); color:var(--ink);
+  font-family:inherit; font-size:13px; cursor:pointer; text-align:left;
+  transition:border-color .14s, background .14s;
+}
+.region-row:hover, .region-row.region-hi { background:var(--panel2); border-color:var(--region-color, var(--gold-soft)); }
+.region-row.active { background:var(--panel2); border-color:var(--region-color, var(--gold)); box-shadow:inset 3px 0 0 var(--region-color, var(--gold)); }
+.region-row.active .region-row-name::before { content:'\2713\00a0'; color:var(--region-color, var(--gold)); }
+.region-row:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+.region-row-name { overflow:hidden; text-overflow:ellipsis; }
+.region-row-count { color:var(--muted); font-variant:small-caps; font-size:11px; letter-spacing:1px; flex-shrink:0; }
+
+.region-map { padding:10px 12px; }
+.region-map-svg { display:block; width:100%; height:auto; }
+.map-zone { cursor:pointer; }
+.map-zone rect { transition:fill-opacity .14s, stroke-width .14s; }
+.map-zone:hover rect, .map-zone.region-hi rect { fill-opacity:0.42 !important; stroke-width:2.4 !important; }
+.map-zone.active rect { fill-opacity:0.52 !important; stroke-width:2.6 !important; }
+.map-zone-label { fill:var(--ink); font-size:8px; font-family:inherit; letter-spacing:0.2px; pointer-events:none; }
+.map-zone-count { fill:var(--gold); font-size:8.5px; font-weight:bold; font-family:inherit; pointer-events:none; }
+.map-caption { fill:var(--muted); font-size:7.5px; font-style:italic; font-family:inherit; }
+
+/* legacy legend + group swatch (group dividers still used in Group mode) */
+.pantheon-legend { display:flex; flex-wrap:wrap; gap:7px 16px; padding:14px 22px 2px; margin:0; }
+.pantheon-legend .legend-item { display:inline-flex; align-items:center; gap:7px; color:var(--muted); font-size:11.5px; letter-spacing:0.6px; font-variant:small-caps; }
+.pantheon-legend .legend-dot {
+  width:10px; height:10px; border-radius:50%; flex-shrink:0; display:inline-block;
+  background:var(--class-color, var(--gold)); box-shadow:0 0 6px var(--class-color, var(--gold));
+}
 .barebone-class-swatch {
-  width:10px; height:10px; border-radius:50%; flex-shrink:0;
-  display:inline-block;
+  width:16px; height:4px; border-radius:2px; flex-shrink:0; display:inline-block;
   background:var(--class-color, var(--gold));
-  box-shadow:0 0 6px var(--class-color, var(--gold));
 }
+@media (max-width:900px) { .trad-atlas { grid-template-columns:1fr; } }
 /* Pantheon detail card — action button to jump into the family tree */
 .modal-actions { margin-top:22px; }
 .modal-tree-btn {
@@ -1819,30 +1888,41 @@ select:focus:not(:focus-visible),
 <main>
 
 <section id="tab-overview" class="tab active" role="tabpanel" aria-labelledby="tab-btn-overview">
-  <div class="tab-head">
+  <div class="trad-head">
     <h2>Traditions</h2>
-    <p class="intro">
-      Many traditions set beside one another — from Aboriginal Australian
-      Dreamings and the reconstructed sky-fathers of the Proto-Indo-European
-      steppe through to living religions. Click a tradition to open its
-      relationships. Abrahamic entries list angels, prophets, and opposing
-      figures for cross-cultural comparison only. Coverage is uneven by design.
-    </p>
-  </div>
-  <div class="pantheon-view-controls">
-    <div class="control-group">
+    <div class="trad-sort">
       <label for="pantheonSort">Sort</label>
       <select id="pantheonSort" title="Sort order of the traditions">
         <option value="era">Era (earliest first)</option>
         <option value="size">Size (most figures)</option>
-        <option value="alpha">Alphabetical</option>
-        <option value="class">By group</option>
+        <option value="alpha">A–Z</option>
+        <option value="class">Group</option>
       </select>
     </div>
-    <span class="total-count" id="pantheonTotalCount"></span>
   </div>
-  <div class="pantheon-legend" id="pantheonLegend" aria-label="Tradition groups"></div>
-  <p class="group-help" id="groupHelp">Groups are browsing categories. Each tradition remains distinct.</p>
+  <p class="trad-note">Coverage is uneven by design. <span class="trad-total" id="pantheonTotalCount"></span></p>
+  <details class="trad-about">
+    <summary>About this archive</summary>
+    <ul class="trad-about-body">
+      <li>Coverage is uneven by design — some traditions are richly catalogued, others barely.</li>
+      <li>Regional groups and the map are browsing aids, not scholarly taxonomies. Traditions stay distinct even when grouped together, and the schematic map is approximate — it does not show precise historical or cultural boundaries.</li>
+      <li>Abrahamic entries include angels, prophets, and opposing figures for cross-cultural comparison, not only deities.</li>
+    </ul>
+  </details>
+  <div class="trad-atlas">
+    <div class="trad-legend-panel">
+      <div class="trad-panel-head">
+        <span>Browse by region</span>
+        <button type="button" id="regionAll" class="region-all" hidden>All regions</button>
+      </div>
+      <div class="region-legend" id="pantheonLegend" role="group" aria-label="Browse traditions by region"></div>
+    </div>
+    <div class="trad-map-panel">
+      <div class="trad-panel-head"><span>Schematic map</span><span class="trad-panel-note">broad regions, approximate</span></div>
+      <div class="region-map" id="regionMap"></div>
+    </div>
+  </div>
+  <div class="region-status visually-hidden" id="regionStatus" role="status" aria-live="polite"></div>
   <div id="pantheonGroups"></div>
 </section>
 
@@ -2323,6 +2403,7 @@ function init() {
   DATA.gods.forEach(g => GODS_BY_ID[g.id] = g);
 
   wirePantheonViewControls();
+  wireRegionFilter();
   wireCategoryFilter();
   validateTraditionGroups();
   renderPantheonGrid();
@@ -3025,7 +3106,32 @@ PANTHEON_GROUPS.forEach(g => g.ids.forEach(id => { _classOfPantheon[id] = g.id; 
 function classIdForPantheon(pid) { return _classOfPantheon[pid] || 'other'; }
 function classColorForPantheon(pid) { return CLASS_COLORS[classIdForPantheon(pid)] || CLASS_COLORS.other; }
 
+// Region display names (browsing groups), and the schematic-map layout. These are
+// presentation only — no tradition assignment or data.json value is touched. The
+// map is intentionally approximate: 8 broad geographic zones plus a bottom band
+// for non-geographic groups (Abrahamic, Diaspora, Elevated Humans).
+const REGION_NAMES = Object.fromEntries(PANTHEON_GROUPS.map(g => [g.id, g.name]).concat([['other', 'Other']]));
+const REGION_LAYOUT = {
+  'americas':       { x:8,   y:44,  w:78,  h:156, short:'Americas' },
+  'europe':         { x:150, y:40,  w:66,  h:44,  short:'Europe' },
+  'caucasus':       { x:222, y:40,  w:52,  h:44,  short:'Caucasus' },
+  'mediterranean':  { x:150, y:92,  w:58,  h:46,  short:'Classical' },
+  'near-east':      { x:214, y:92,  w:60,  h:46,  short:'Near East' },
+  'africa':         { x:150, y:146, w:82,  h:54,  short:'Africa' },
+  'asia':           { x:282, y:40,  w:108, h:98,  short:'Asia' },
+  'arctic-oceania': { x:282, y:146, w:108, h:54,  short:'Arctic & Oceania' },
+  'abrahamic':      { x:8,   y:212, w:120, h:30,  short:'Abrahamic', tr:true },
+  'diaspora':       { x:140, y:212, w:118, h:30,  short:'Diaspora', tr:true },
+  'human':          { x:268, y:212, w:124, h:30,  short:'Elevated Humans', tr:true },
+};
+function regionCounts() {
+  const rc = {};
+  DATA.pantheons.forEach(p => { const c = classIdForPantheon(p.id); rc[c] = (rc[c] || 0) + 1; });
+  return rc;
+}
+
 let pantheonSortMode = 'era'; // 'era' | 'size' | 'alpha' | 'class'
+let activeRegion = null;      // null = all regions; otherwise a browsing-group id (filter only)
 
 function pantheonCounts() {
   const counts = {};
@@ -3106,54 +3212,134 @@ function renderPantheonGrid() {
   if (totalEl) totalEl.textContent = `${totalTrads} traditions · ${totalFigs} figures`;
 
   renderPantheonLegend();
+  renderRegionMap();
   renderPantheonBarebone(counts);
   wirePantheonClicks();
+  const allBtn = document.getElementById('regionAll');
+  if (allBtn) allBtn.hidden = !activeRegion;
 }
 
-// Class legend — one swatch per class present in the data, mapping the chip
-// dot colors back to their class names.
+// Regional browsing key — one bordered, keyboard-reachable button per group.
+// Region colour lives on the border (not a dot); a ✓ marks the active filter so
+// selection never depends on colour alone. Clicking filters the card grid.
 function renderPantheonLegend() {
   const el = document.getElementById('pantheonLegend');
   if (!el) return;
-  const present = new Set(DATA.pantheons.map(p => classIdForPantheon(p.id)));
-  el.innerHTML = allPantheonGroups()
-    .filter(g => present.has(g.id))
-    .map(g => `<span class="legend-item"><span class="legend-dot" style="--class-color:${CLASS_COLORS[g.id] || CLASS_COLORS.other}"></span>${g.name}</span>`)
-    .join('');
+  const rc = regionCounts();
+  el.innerHTML = allPantheonGroups().map(g => {
+    const color = CLASS_COLORS[g.id] || CLASS_COLORS.other;
+    const on = activeRegion === g.id;
+    return `<button type="button" class="region-row${on ? ' active' : ''}" data-region="${g.id}"
+              style="--region-color:${color}" aria-pressed="${on ? 'true' : 'false'}"
+              title="${escapeAttr(g.name)} — ${rc[g.id] || 0} traditions">
+              <span class="region-row-name">${g.name}</span>
+              <span class="region-row-count">${rc[g.id] || 0}</span>
+            </button>`;
+  }).join('');
 }
 
-// A single bare pantheon chip — name + figure count, colored dot. Clicking it
-// opens the pantheon detail card (openPantheonModal).
+// Inline schematic SVG. Non-precise by design: broad zones keyed to the same
+// region colours as the legend, with a bottom band for non-geographic groups.
+// Zones cross-highlight with the legend and, on pointer, invoke the same filter;
+// keyboard users drive the whole feature from the legend buttons above.
+function renderRegionMap() {
+  const el = document.getElementById('regionMap');
+  if (!el) return;
+  const rc = regionCounts();
+  const geo = [], tr = [];
+  allPantheonGroups().forEach(g => {
+    const L = REGION_LAYOUT[g.id];
+    if (L) (L.tr ? tr : geo).push({ g, L });
+  });
+  const zone = ({ g, L }) => {
+    const color = CLASS_COLORS[g.id] || CLASS_COLORS.other;
+    const cx = L.x + L.w / 2, cy = L.y + L.h / 2;
+    const on = activeRegion === g.id;
+    return `<g class="map-zone${on ? ' active' : ''}" data-region="${g.id}">`
+      + `<title>${escapeAttr(g.name)} — ${rc[g.id] || 0} traditions</title>`
+      + `<rect x="${L.x}" y="${L.y}" width="${L.w}" height="${L.h}" rx="8" fill="${color}" fill-opacity="0.22" stroke="${color}" stroke-width="1.5"/>`
+      + `<text x="${cx}" y="${cy - 1}" text-anchor="middle" class="map-zone-label">${escapeAttr(L.short)}</text>`
+      + `<text x="${cx}" y="${cy + 11}" text-anchor="middle" class="map-zone-count">${rc[g.id] || 0}</text>`
+      + `</g>`;
+  };
+  el.innerHTML =
+    `<svg viewBox="0 0 400 248" role="img" aria-labelledby="mapTitle mapDesc" class="region-map-svg">`
+    + `<title id="mapTitle">Broad cultural regions represented in the archive</title>`
+    + `<desc id="mapDesc">A schematic browsing map. Regions are approximate and do not represent precise historical or cultural boundaries.</desc>`
+    + geo.map(zone).join('')
+    + `<line x1="8" y1="206" x2="392" y2="206" stroke="#353a5a" stroke-width="1"/>`
+    + `<text x="10" y="203" class="map-caption">Transregional &amp; comparative</text>`
+    + tr.map(zone).join('')
+    + `</svg>`;
+}
+
+// A single tradition card — region-bordered, name + figure count, no dot. Region
+// name rides in the accessible label (never colour alone). Click path unchanged:
+// it still opens the pantheon detail card via openPantheonModal.
 function barebonChipHtml(p, count) {
+  const region = classIdForPantheon(p.id);
+  const rname = REGION_NAMES[region] || '';
   return `
-    <button type="button" class="pantheon-chip" style="--pantheon-color:${classColorForPantheon(p.id)}" data-pid="${p.id}" title="${escapeAttr(p.description)}" aria-label="Open ${escapeAttr(p.name)} details">
-      <span class="chip-dot" aria-hidden="true"></span>
+    <button type="button" class="pantheon-chip" style="--region-color:${classColorForPantheon(p.id)}" data-pid="${p.id}" title="${escapeAttr(p.description)}" aria-label="Open ${escapeAttr(p.name)} — ${escapeAttr(rname)} region, ${count} figures">
       <span class="chip-name">${p.name}</span>
       <span class="chip-count">${count}</span>
     </button>`;
 }
 
-// Barebone view — maximally compact, never collapsible. By default one big flat
-// grid of every pantheon (ordered by the Sort dropdown); when Sort is "By class"
-// the same chips sit under lightweight, non-collapsible class labels.
+// Card grid. Sort controls ordering; the region filter controls which cards show.
+// In Group mode the legend/map stay fixed above and the cards sit under lightweight
+// muted dividers (section labels, not a second legend).
 function renderPantheonBarebone(counts) {
   const container = document.getElementById('pantheonGroups');
+  const inRegion = p => !activeRegion || classIdForPantheon(p.id) === activeRegion;
   if (pantheonSortMode === 'class') {
-    container.innerHTML = allPantheonGroups().map(grp => {
-      const members = sortPantheons(grp.ids.map(id => PANTHEONS_BY_ID[id]).filter(Boolean), counts);
-      if (!members.length) return '';
-      const chips = members.map(p => barebonChipHtml(p, counts[p.id] || 0)).join('');
-      return `
+    container.innerHTML = allPantheonGroups()
+      .filter(grp => !activeRegion || grp.id === activeRegion)
+      .map(grp => {
+        const members = sortPantheons(grp.ids.map(id => PANTHEONS_BY_ID[id]).filter(Boolean), counts);
+        if (!members.length) return '';
+        const chips = members.map(p => barebonChipHtml(p, counts[p.id] || 0)).join('');
+        return `
         <section class="barebone-class">
           <h3 class="barebone-class-head"><span class="barebone-class-swatch" style="--class-color:${CLASS_COLORS[grp.id] || CLASS_COLORS.other}" aria-hidden="true"></span>${grp.name}<span class="barebone-class-count">${members.length} tradition${members.length === 1 ? '' : 's'} · ${members.reduce((n, p) => n + (counts[p.id] || 0), 0)} records</span></h3>
           <div class="pantheon-chip-row barebone-flat">${chips}</div>
         </section>`;
-    }).join('');
+      }).join('');
   } else {
-    const all = sortPantheons(DATA.pantheons.slice(), counts);
+    const all = sortPantheons(DATA.pantheons.filter(inRegion), counts);
     const chips = all.map(p => barebonChipHtml(p, counts[p.id] || 0)).join('');
     container.innerHTML = `<div class="pantheon-chip-row barebone-flat">${chips}</div>`;
   }
+}
+
+// Region filter — separate from sort. Toggling a region re-renders the grid; the
+// active region survives sort changes. Wired once via delegation (no listener churn).
+function filterRegion(id) {
+  activeRegion = (activeRegion === id) ? null : id;
+  renderPantheonGrid();
+  const st = document.getElementById('regionStatus');
+  if (st) st.textContent = activeRegion
+    ? `Showing ${REGION_NAMES[activeRegion] || activeRegion} region only`
+    : 'Showing all regions';
+}
+function setRegionHighlight(id) {
+  document.querySelectorAll('#tab-overview [data-region]').forEach(el =>
+    el.classList.toggle('region-hi', !!id && el.dataset.region === id));
+}
+function wireRegionFilter() {
+  const root = document.getElementById('tab-overview');
+  if (!root) return;
+  root.addEventListener('click', e => {
+    if (e.target.closest('#regionAll')) {
+      if (activeRegion) { activeRegion = null; renderPantheonGrid();
+        const st = document.getElementById('regionStatus'); if (st) st.textContent = 'Showing all regions'; }
+      return;
+    }
+    const rgn = e.target.closest('[data-region]');
+    if (rgn) filterRegion(rgn.dataset.region);
+  });
+  root.addEventListener('mouseover', e => { const r = e.target.closest('[data-region]'); if (r) setRegionHighlight(r.dataset.region); });
+  root.addEventListener('mouseout',  e => { const r = e.target.closest('[data-region]'); if (r) setRegionHighlight(null); });
 }
 
 // Pantheon detail card — reuses the shared modal. Shows region, era, figure
