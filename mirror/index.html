@@ -271,6 +271,179 @@
   .lv-legend { display: flex; gap: 6px; align-items: center; margin-top: 8px; color: var(--dim); flex-wrap: wrap; }
   .lv-legend .sw { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
 
+  /* =========================================================
+     Category colors — six permanent, distinct hues. One name per
+     category, re-themed for dark. Used on hexagons, headings,
+     completion bars, completion dots and calendar markers. Never
+     the *only* signal — labels, outlines, icons and status text
+     always accompany them (see .hex-state, .cal legend, aria-labels).
+     ========================================================= */
+  :root {
+    --cat-body:#c15f3c; --cat-health:#4f9668; --cat-mind:#4a72b0;
+    --cat-relationships:#c0588a; --cat-money:#a97f27; --cat-identity:#8763bd;
+  }
+  body.theme-dark {
+    --cat-body:#e08a63; --cat-health:#74bd8a; --cat-mind:#7da3d8;
+    --cat-relationships:#df84ac; --cat-money:#d3aa52; --cat-identity:#ad8cdb;
+  }
+
+  /* ---- Home: the hexagram doorway ---- */
+  #view-home { max-width: 760px; }
+  .home-intro { text-align:center; color:var(--dim); font-style:italic; font-size:0.96rem; margin-bottom:6px; }
+  .hex-field {
+    display: grid;
+    grid-template-columns: 1fr 1.32fr 1fr;
+    gap: 10px 6px;
+    grid-template-areas:
+      "identity .     relationships"
+      "body     today mind"
+      "health   .     money";
+    align-items: center; justify-content: center;
+    max-width: 620px; margin: 18px auto 0;
+  }
+  .hexcell-identity{grid-area:identity} .hexcell-relationships{grid-area:relationships}
+  .hexcell-body{grid-area:body} .hexcell-mind{grid-area:mind}
+  .hexcell-health{grid-area:health} .hexcell-money{grid-area:money}
+  .today-wrap { grid-area: today; position: relative; }
+
+  /* Hexagon button — two clipped layers give it a colored "border":
+     ::before is the ring, .hex-inner (inset) is the fill. */
+  .hex {
+    --ring: color-mix(in srgb, var(--c, var(--accent)) 42%, var(--dim));
+    --fill: var(--panel);
+    position: relative; width: 100%; aspect-ratio: 1 / 0.9;
+    border: 0; padding: 0; background: transparent; cursor: pointer;
+    font-family: inherit; color: var(--ink);
+    transition: transform .14s ease;
+  }
+  .hex::before {
+    content: ''; position: absolute; inset: 0;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: var(--ring);
+  }
+  .hex .hex-inner {
+    position: absolute; inset: 3px;
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: var(--fill);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; text-align: center; padding: 4px;
+  }
+  .hex .hex-name { font-size: 0.98rem; font-weight: 600; letter-spacing: 0.01em; }
+  .hex .hex-state { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--dim); }
+  .hex .hex-mark { font-size: 0.8rem; line-height: 1; color: var(--c); height: 0.8rem; }
+  .hex:hover { transform: translateY(-2px) scale(1.02); }
+  .hex:focus-visible { outline: 3px solid var(--c, var(--accent)); outline-offset: 2px; border-radius: 4px; }
+
+  /* Category hexagon states */
+  .hex-cat.is-started { --ring: var(--c); }
+  .hex-cat.is-started .hex-inner { background: color-mix(in srgb, var(--c) 9%, var(--panel)); }
+  .hex-cat.is-started .hex-state { color: var(--c); font-weight: 600; }
+  .hex-cat.is-complete { --ring: var(--c); --fill: var(--c); }
+  .hex-cat.is-complete .hex-name,
+  .hex-cat.is-complete .hex-state { color: #fff; }
+  .hex-cat.is-complete .hex-mark { color: #fff; }
+
+  /* Center Today hexagon — always dominant */
+  .hex-today { --c: var(--accent); aspect-ratio: 1 / 0.92; }
+  .hex-today .hex-inner { gap: 3px; }
+  .hex-today .ht-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim); }
+  .hex-today .ht-date { font-size: 1.02rem; font-weight: 600; color: var(--ink); font-family: ui-monospace, monospace; line-height: 1.15; }
+  .hex-today .ht-status { font-size: 0.64rem; color: var(--dim); }
+  .hex-today.is-day-complete { --ring: var(--accent2); }
+  .hex-today.is-day-complete .hex-inner { box-shadow: 0 0 22px -4px color-mix(in srgb, var(--accent2) 60%, transparent) inset; }
+  .hex-today.is-day-complete .ht-status { color: var(--accent2); font-weight: 600; }
+
+  /* Calendar button clipped to the Today hexagon's upper-right edge */
+  .cal-btn {
+    position: absolute; top: 4%; right: 3%; z-index: 3;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: var(--panel); border: 1px solid var(--line); color: var(--accent);
+    cursor: pointer; font-size: 0.95rem; line-height: 1; box-shadow: var(--shadow);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .cal-btn:hover { border-color: var(--accent); }
+  .cal-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+
+  @media (max-width: 560px) {
+    .hex-field {
+      grid-template-columns: 1fr 1fr;
+      grid-template-areas:
+        "today    today"
+        "identity relationships"
+        "body     mind"
+        "health   money";
+      max-width: 420px;
+    }
+    .hex-today { aspect-ratio: 1 / 0.62; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hex { transition: none; }
+    .hex:hover { transform: none; }
+  }
+
+  /* ---- Per-view back-to-home + completion bar ---- */
+  .view-top { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .backhome { background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+              padding: 5px 13px; border-radius: 14px; font-family: inherit; font-size: 0.8rem; cursor: pointer; }
+  .backhome:hover { border-color: var(--accent); }
+  .backhome:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .view h1 { --cc: var(--accent); }
+  .view h1 .cat-mark { display:inline-block; width:12px; height:12px; border-radius:3px; background:var(--cc);
+                       margin-right:9px; vertical-align:middle; }
+
+  .complete-bar { display:flex; align-items:center; gap:12px; flex-wrap:wrap;
+                  margin:34px 0 6px; padding:14px 16px; border:1px solid var(--line);
+                  border-left:5px solid var(--cc); border-radius:6px; background:var(--panel); box-shadow:var(--shadow); }
+  .complete-bar .cb-status { flex:1; min-width:180px; font-size:0.9rem; }
+  .complete-bar .cb-status .cb-dot { display:inline-block; width:10px; height:10px; border-radius:50%;
+                                     margin-right:7px; vertical-align:middle; border:1.5px solid var(--cc); }
+  .complete-bar .cb-status .cb-dot.on { background:var(--cc); }
+  .complete-bar .cb-status .cb-dot.part { background:repeating-linear-gradient(45deg,var(--cc),var(--cc) 2px,transparent 2px,transparent 4px); }
+  .complete-bar button.cb-complete { background:var(--cc); color:#fff; border:0; padding:8px 18px;
+                                     border-radius:5px; font-family:inherit; font-size:0.9rem; cursor:pointer; }
+  .complete-bar button.cb-complete:hover { filter:brightness(1.05); }
+  .complete-bar button.cb-complete:focus-visible,
+  .complete-bar button.cb-minor:focus-visible { outline:2px solid var(--cc); outline-offset:2px; }
+  .complete-bar button.cb-minor { background:transparent; color:var(--dim); border:1px solid var(--line);
+                                  padding:6px 12px; border-radius:5px; font-family:inherit; font-size:0.78rem; cursor:pointer; }
+  .complete-bar button.cb-minor:hover { color:var(--ink); border-color:var(--cc); }
+
+  /* Today view — completion overview of the six categories */
+  .today-cats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:8px; margin-top:8px; }
+  .tc-cell { display:flex; align-items:center; gap:9px; padding:10px 12px; border:1px solid var(--line);
+             border-left:4px solid var(--tcc); border-radius:5px; background:var(--panel); cursor:pointer;
+             font-family:inherit; color:var(--ink); text-align:left; width:100%; }
+  .tc-cell:hover { border-color:var(--tcc); }
+  .tc-cell .tc-ring { width:15px; height:15px; border-radius:50%; border:2px solid var(--tcc); flex:none; }
+  .tc-cell.done .tc-ring { background:var(--tcc); }
+  .tc-cell.part .tc-ring { background:repeating-linear-gradient(45deg,var(--tcc),var(--tcc) 3px,transparent 3px,transparent 6px); }
+  .tc-cell .tc-name { font-weight:600; font-size:0.9rem; }
+  .tc-cell .tc-st { font-size:0.66rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--dim); }
+
+  /* ---- Calendar view ---- */
+  .cal-head { display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+  .cal-grid { display:grid; grid-template-columns:repeat(7,1fr); gap:5px; }
+  .cal-dow { font-size:0.64rem; text-transform:uppercase; letter-spacing:0.06em; color:var(--dim); text-align:center; padding-bottom:2px; }
+  .cal-cell { position:relative; border:1px solid var(--line); border-radius:5px; min-height:66px;
+              padding:5px 6px; background:var(--panel); }
+  .cal-cell.blank { border:0; background:transparent; }
+  .cal-cell.today { border-color:var(--accent); box-shadow:0 0 0 1px var(--accent) inset; }
+  .cal-cell .dn { font-size:0.72rem; color:var(--dim); font-family:ui-monospace,monospace; }
+  .cal-cell.today .dn { color:var(--accent); font-weight:700; }
+  .cal-dots { display:flex; flex-wrap:wrap; gap:3px; margin-top:6px; }
+  .cal-dot { width:9px; height:9px; border-radius:50%; border:1.5px solid var(--cd); background:transparent; }
+  .cal-dot.on { background:var(--cd); }
+  .cal-ev { margin-top:4px; font-size:0.64rem; color:var(--accent); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cal-legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin-top:14px; font-size:0.78rem; color:var(--dim); }
+  .cal-legend .lg { display:flex; align-items:center; gap:6px; }
+  .cal-legend .lg .sw { width:11px; height:11px; border-radius:50%; background:var(--cd); }
+  .integration-note { margin-top:22px; padding:14px 16px; border:1px dashed var(--line); border-radius:6px;
+                      background:var(--panel); font-size:0.86rem; color:var(--dim); }
+  .integration-note strong { color:var(--ink); }
+  .integration-note .badge { display:inline-block; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.06em;
+                             padding:2px 8px; border-radius:10px; border:1px solid var(--warn); color:var(--warn); margin-left:6px; }
+  @media (max-width: 560px) { .cal-cell { min-height:54px; } .cal-cell .dn { font-size:0.66rem; } }
+
   footer.foot { text-align: center; color: var(--dim); font-size: 0.78rem; padding: 20px;
                 border-top: 1px solid var(--line); margin-top: 40px; }
   footer.foot a { color: var(--accent); }
@@ -329,16 +502,7 @@
 </nav>
 
 <nav class="topnav">
-  <span class="brand">mirror</span>
-  <div class="tabs">
-    <button class="tab-btn active" data-tab="today">Today</button>
-    <button class="tab-btn" data-tab="identity">Identity</button>
-    <button class="tab-btn" data-tab="body">Body</button>
-    <button class="tab-btn" data-tab="mind">Mind</button>
-    <button class="tab-btn" data-tab="money">Money</button>
-    <button class="tab-btn" data-tab="relationships">Relationships</button>
-    <button class="tab-btn" data-tab="reflect">Reflect</button>
-  </div>
+  <button class="brand" data-goto="home" title="Home" style="background:none;border:0;cursor:pointer;font-family:inherit">mirror</button>
   <span class="spacer"></span>
   <button class="mini-btn" id="themeBtn" title="Toggle theme">☾</button>
   <button class="mini-btn" id="exportBtn" title="Download a backup of all your data as JSON">Back up</button>
@@ -359,11 +523,108 @@
   <div class="modal" id="modalBox"></div>
 </div>
 
-<!-- ============== IDENTITY ============== -->
+<!-- ============== HOME — the hexagram doorway ============== -->
+<section class="view active" id="view-home">
+  <p class="home-intro">Your mirror — a doorway to each part of the day.</p>
+  <div class="hex-field" id="hexField" role="group" aria-label="Mirror home — Today and the six life areas">
+
+    <button class="hex hex-cat hexcell-identity" data-goto="identity" data-cat="identity" style="--c:var(--cat-identity)">
+      <span class="hex-inner"><span class="hex-name">Identity</span><span class="hex-state">—</span><span class="hex-mark"></span></span>
+    </button>
+    <button class="hex hex-cat hexcell-relationships" data-goto="relationships" data-cat="relationships" style="--c:var(--cat-relationships)">
+      <span class="hex-inner"><span class="hex-name">Relationships</span><span class="hex-state">—</span><span class="hex-mark"></span></span>
+    </button>
+    <button class="hex hex-cat hexcell-body" data-goto="body" data-cat="body" style="--c:var(--cat-body)">
+      <span class="hex-inner"><span class="hex-name">Body</span><span class="hex-state">—</span><span class="hex-mark"></span></span>
+    </button>
+
+    <div class="today-wrap">
+      <button class="hex hex-today" id="hexToday" data-goto="today" aria-label="Today — open the daily check-in">
+        <span class="hex-inner">
+          <span class="ht-label">Today</span>
+          <span class="ht-date" id="hexTodayDate"></span>
+          <span class="ht-status" id="hexTodayStatus"></span>
+        </span>
+      </button>
+      <button class="cal-btn" data-goto="calendar" aria-label="Open the monthly calendar" title="Calendar">🗓</button>
+    </div>
+
+    <button class="hex hex-cat hexcell-mind" data-goto="mind" data-cat="mind" style="--c:var(--cat-mind)">
+      <span class="hex-inner"><span class="hex-name">Mind</span><span class="hex-state">—</span><span class="hex-mark"></span></span>
+    </button>
+    <button class="hex hex-cat hexcell-health" data-goto="health" data-cat="health" style="--c:var(--cat-health)">
+      <span class="hex-inner"><span class="hex-name">Health</span><span class="hex-state">—</span><span class="hex-mark"></span></span>
+    </button>
+    <button class="hex hex-cat hexcell-money" data-goto="money" data-cat="money" style="--c:var(--cat-money)">
+      <span class="hex-inner"><span class="hex-name">Money</span><span class="hex-state">—</span><span class="hex-mark"></span></span>
+    </button>
+  </div>
+</section>
+
+<!-- ============== CALENDAR ============== -->
+<section class="view" id="view-calendar">
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1>Calendar</h1>
+  <div class="lede">This month at a glance — the current day, your Mirror completion history, and (later) your real events.</div>
+  <div class="cal-head">
+    <button class="mini-btn" id="calPrev" title="Previous month" aria-label="Previous month">◂</button>
+    <span class="mini-btn" id="calMonth" style="cursor:default"></span>
+    <button class="mini-btn" id="calNext" title="Next month" aria-label="Next month">▸</button>
+    <span class="spacer"></span>
+    <button class="mini-btn" id="calToday">This month</button>
+  </div>
+  <div class="cal-grid" id="calGrid" role="grid" aria-label="Month calendar"></div>
+  <div class="cal-legend" id="calLegend"></div>
+  <div class="integration-note" id="calIntegration"></div>
+</section>
+
+<!-- ============== BODY (subjective) ============== -->
+<section class="view" id="view-body">
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1><span class="cat-mark"></span>Body</h1>
+  <div class="lede">How your body feels today — the lived, felt experience. Measurable logs (food, water, sleep, exercise) live in <button class="link-to" data-goto="health" style="background:none;border:0;color:var(--cat-health);cursor:pointer;font:inherit;padding:0">Health</button>.</div>
+
+  <div class="section">
+    <div class="section-head"><h2>Today's body check-in</h2><span class="act tiny" id="bodyCheckinStatus"></span></div>
+    <div class="card">
+      <div class="lede" style="margin-bottom:12px">Quick reads on how you feel. All optional — a single note is enough.</div>
+      <div class="meta">Energy (1 low – 5 high)</div>
+      <div class="dot-row" id="bcEnergyRow"></div>
+      <div class="meta" style="margin-top:10px">Fatigue (1 none – 5 heavy)</div>
+      <div class="dot-row" id="bcFatigueRow"></div>
+      <div class="meta" style="margin-top:10px">Soreness / pain (1 none – 5 strong)</div>
+      <div class="dot-row" id="bcSorenessRow"></div>
+      <div class="meta" style="margin-top:10px">Physical comfort (1 poor – 5 great)</div>
+      <div class="dot-row" id="bcComfortRow"></div>
+      <div style="margin-top:12px"><input type="text" id="bcNote" class="grow" placeholder="How does your body feel today? sleep, hygiene, appearance, senses… (optional)"></div>
+      <div style="margin-top:12px"><button class="primary" id="bcSave">Save body check-in</button></div>
+    </div>
+    <div id="bodyCheckinHistory" style="margin-top:16px"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Symptoms &amp; notes</h2><span class="act tiny">Free-text, sparse, high-value context.</span></div>
+    <div class="form">
+      <label>Date<input type="date" id="symDate"></label>
+      <input type="text" id="symNote" class="grow" placeholder="headache, stiff back, low energy, etc.">
+      <button class="primary" id="symAdd">Add</button>
+    </div>
+    <div id="symLog"></div>
+  </div>
+
+  <div id="complete-body"></div>
+</section>
+
 <!-- ============== TODAY (quick entry) ============== -->
-<section class="view active" id="view-today">
+<section class="view" id="view-today">
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
   <h1>Today</h1>
-  <div class="lede">Quick check-in — pick the day, then log. Defaults to today.</div>
+  <div class="lede">The daily intersection of all six areas — not a seventh category. Check in below, and confirm each area from inside it.</div>
+
+  <div class="section" style="margin-bottom:22px">
+    <div class="section-head"><h2>Today's completion</h2><span class="act tiny" id="todayCompletionStatus"></span></div>
+    <div class="today-cats" id="todayCats"></div>
+  </div>
 
   <div class="section" style="margin-bottom:18px">
     <div class="chip-row" style="align-items:center">
@@ -406,6 +667,7 @@
 
   <div class="section" style="margin-bottom:14px">
     <div class="chip-row" style="justify-content:flex-end">
+      <button class="mini-btn" data-goto="reflect">Patterns &amp; timeline →</button>
       <button class="mini-btn" id="homeCustomize">✎ Customize home</button>
     </div>
   </div>
@@ -497,8 +759,9 @@
 </section>
 
 <section class="view" id="view-identity">
-  <h1>Identity</h1>
-  <div class="lede">Who you are when no one is watching, what you're trying to become, and how you're actually feeling today.</div>
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1><span class="cat-mark"></span>Identity</h1>
+  <div class="lede">The larger story — who you are and who you're becoming. Values, roles, purpose, spirituality, growth.</div>
 
   <div class="section">
     <div class="section-head"><h2>Values</h2><span class="act tiny">The handful you want to be measured by.</span></div>
@@ -561,12 +824,20 @@
     <div style="margin-top:8px"><button class="primary" id="jrAdd">Add entry</button></div>
     <div id="journalList" style="margin-top:16px"></div>
   </div>
+
+  <div id="complete-identity"></div>
 </section>
 
-<!-- ============== BODY ============== -->
-<section class="view" id="view-body">
-  <h1>Body</h1>
-  <div class="lede">What you take in and how your body is doing. Food draws from your NutriLens library.</div>
+<!-- ============== HEALTH (measurable) ============== -->
+<section class="view" id="view-health">
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1><span class="cat-mark"></span>Health</h1>
+  <div class="lede">Measurable physical care — what you eat and drink, how you move, and how it sequences across the day. Subjective feel lives in <button class="link-to" data-goto="body" style="background:none;border:0;color:var(--cat-body);cursor:pointer;font:inherit;padding:0">Body</button>.</div>
+
+  <div class="section">
+    <div class="section-head"><h2>Today's timeline</h2><span class="act tiny" id="healthTlDate"></span></div>
+    <div id="healthTimeline"></div>
+  </div>
 
   <details class="group" open>
     <summary>Today &amp; trends</summary>
@@ -621,7 +892,7 @@
   </details>
 
   <details class="group" open>
-    <summary>Food</summary>
+    <summary>NutriLens — food &amp; drink</summary>
 
   <div class="section">
     <div class="section-head"><h2>Log food</h2>
@@ -691,19 +962,33 @@
   </details>
 
   <details class="group" open>
-    <summary>Body measures</summary>
+    <summary>Hydration</summary>
+
+  <div class="section">
+    <div class="section-head"><h2>Hydration</h2><span class="act tiny" id="hydrTotal"></span></div>
+    <div class="chip-row" style="margin-bottom:8px">
+      <span class="lbl">Quick add</span>
+      <button class="chip" data-hydr="8">+8 oz</button>
+      <button class="chip" data-hydr="12">+12 oz</button>
+      <button class="chip" data-hydr="16">+16 oz</button>
+      <button class="chip" data-hydr="24">+24 oz</button>
+    </div>
+    <div class="form">
+      <label>Date<input type="date" id="waterDate"></label>
+      <label>Ounces<input type="number" id="waterOz" min="1" step="1" placeholder="custom"></label>
+      <label>Time<input type="time" id="waterTime"></label>
+      <button class="primary" id="waterAdd">Add</button>
+    </div>
+    <div class="bar" style="margin-bottom:6px"><div class="fill" id="hydrBar" style="width:0%"></div></div>
+    <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-bottom:8px"></div>
+    <div id="waterLog"></div>
+  </div>
+  </details>
+
+  <details class="group" open>
+    <summary>Sleep &amp; movement</summary>
 
   <div class="two-col">
-    <div class="section">
-      <div class="section-head"><h2>Water</h2></div>
-      <div class="form">
-        <label>Date<input type="date" id="waterDate"></label>
-        <label>Ounces<input type="number" id="waterOz" min="1" step="1"></label>
-        <button class="primary" id="waterAdd">Add</button>
-      </div>
-      <div id="waterLog"></div>
-    </div>
-
     <div class="section">
       <div class="section-head"><h2>Sleep</h2></div>
       <div class="form">
@@ -716,33 +1001,38 @@
     </div>
 
     <div class="section">
-      <div class="section-head"><h2>Exercise</h2></div>
+      <div class="section-head"><h2>Movement &amp; exercise</h2></div>
       <div class="form">
         <label>Date<input type="date" id="exDate"></label>
-        <label>Type<input type="text" id="exType" placeholder="run, lift, walk"></label>
+        <label>Type<input type="text" id="exType" placeholder="walk, run, yoga, lift"></label>
+        <label>Time<input type="time" id="exTime"></label>
         <label>Minutes<input type="number" id="exMinutes" min="1" step="1"></label>
+      </div>
+      <div class="form">
+        <label>Distance<input type="number" id="exDistance" min="0" step="0.1" placeholder="mi"></label>
+        <label>Intensity<select id="exIntensity">
+          <option value="">—</option>
+          <option value="easy">easy</option>
+          <option value="moderate">moderate</option>
+          <option value="hard">hard</option>
+        </select></label>
+        <input type="text" id="exNote" class="grow" placeholder="location / how it felt (optional)">
         <button class="primary" id="exAdd">Add</button>
       </div>
+      <div class="tiny" style="color:var(--dim);margin:-6px 0 10px">Duration, distance, intensity and notes are all optional. Structured so a fitness-tracker import (steps, heart rate, workouts) can slot in later.</div>
       <div id="exLog"></div>
-    </div>
-
-    <div class="section">
-      <div class="section-head"><h2>Symptoms / notes</h2></div>
-      <div class="form">
-        <label>Date<input type="date" id="symDate"></label>
-        <input type="text" id="symNote" class="grow" placeholder="headache, stomach, low mood, etc.">
-        <button class="primary" id="symAdd">Add</button>
-      </div>
-      <div id="symLog"></div>
     </div>
   </div>
   </details>
+
+  <div id="complete-health"></div>
 </section>
 
 <!-- ============== MIND ============== -->
 <section class="view" id="view-mind">
-  <h1>Mind</h1>
-  <div class="lede">What you're reading, thinking about, and still wondering. The shape of your attention.</div>
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1><span class="cat-mark"></span>Mind</h1>
+  <div class="lede">Your current mental and emotional experience — mood, focus, thoughts, learning, and what you're still wondering.</div>
 
   <div class="section">
     <div class="section-head">
@@ -803,12 +1093,15 @@
     </div>
     <div id="quoteList"></div>
   </div>
+
+  <div id="complete-mind"></div>
 </section>
 
 <!-- ============== MONEY ============== -->
 <section class="view" id="view-money">
-  <h1>Money</h1>
-  <div class="lede">What's coming in, going out, and where you're headed.</div>
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1><span class="cat-mark"></span>Money</h1>
+  <div class="lede">Your practical financial life — what's coming in, going out, owed, saved, and where you're headed.</div>
 
   <div class="section">
     <div class="section-head">
@@ -876,11 +1169,14 @@
     </div>
     <div id="goalList"></div>
   </div>
+
+  <div id="complete-money"></div>
 </section>
 
 <!-- ============== RELATIONSHIPS ============== -->
 <section class="view" id="view-relationships">
-  <h1>Relationships</h1>
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
+  <h1><span class="cat-mark"></span>Relationships</h1>
   <div class="lede">The people who make up your life. Who matters, what you promised, who you haven't talked to in too long.</div>
 
   <div class="section">
@@ -962,10 +1258,13 @@
       <div id="giList"></div>
     </div>
   </div>
+
+  <div id="complete-relationships"></div>
 </section>
 
 <!-- ============== REFLECT ============== -->
 <section class="view" id="view-reflect">
+  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button><button class="backhome" data-goto="today">‹ Today</button></div>
   <h1>Reflect</h1>
   <div class="lede">Where your rooms speak to each other. What the data says about the person you're actually being.</div>
 
@@ -1068,7 +1367,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 7;
+const SCHEMA_VERSION = 8;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -1078,7 +1377,7 @@ const FOODS_URL = '../nutrilens/foods.json';
 const RECORD_ARRAYS = [
   ['identity','reflections'], ['identity','pulse'], ['identity','journal'],
   ['body','food'], ['body','water'], ['body','sleep'], ['body','exercise'],
-  ['body','symptoms'], ['body','customFoods'], ['body','meals'],
+  ['body','symptoms'], ['body','customFoods'], ['body','meals'], ['body','checkins'],
   ['mind','books'], ['mind','ideas'], ['mind','questions'], ['mind','quotes'],
   ['money','categories'], ['money','expenses'], ['money','subscriptions'],
   ['money','netWorth'], ['money','goals'],
@@ -1091,11 +1390,17 @@ function nowISO(){ return new Date().toISOString(); }
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
-  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [] },
+  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
   daily: { cards: [] },
+  // completion: per local date, which of the six categories are 'started' or 'complete'.
+  //   { "2026-07-15": { body:"complete", mind:"started", ... } }. Absent = not started.
+  completion: {},
+  // calendar: integration boundary. events[] is reserved for real events; integration
+  //   holds provider config. Google Calendar sync is NOT implemented (see SCHEMA §Calendar).
+  calendar: { events: [], integration: { provider: 'google', connected: false, lastSync: null } },
   home: { widgets: ['glance','pulse','water','sleep','exercise','journal'] }
 });
 function getTargets() { return Object.assign({}, DEFAULT_TARGETS, state.body.targets || {}); }
@@ -1149,6 +1454,23 @@ function migrate(s) {
     s.daily = s.daily || { cards: [] };
     if (!Array.isArray(s.daily.cards)) s.daily.cards = [];
     v = 7;
+  }
+  // v7 -> v8: home-screen redesign. Adds daily category completion (state.completion,
+  // keyed by local date), subjective Body check-ins (state.body.checkins[]), and the
+  // calendar integration boundary (state.calendar). Nothing existing is reshaped or
+  // renamed — the measurable logs stay under body.food/water/sleep/exercise for
+  // backward-compatible history; the Health category simply surfaces them.
+  if (v < 8) {
+    s.completion = (s.completion && typeof s.completion === 'object') ? s.completion : {};
+    s.body = s.body || {};
+    if (!Array.isArray(s.body.checkins)) s.body.checkins = [];
+    if (!s.calendar || typeof s.calendar !== 'object') {
+      s.calendar = { events: [], integration: { provider: 'google', connected: false, lastSync: null } };
+    } else {
+      if (!Array.isArray(s.calendar.events)) s.calendar.events = [];
+      s.calendar.integration = s.calendar.integration || { provider: 'google', connected: false, lastSync: null };
+    }
+    v = 8;
   }
   s.__v = SCHEMA_VERSION;
   return s;
@@ -1250,16 +1572,75 @@ document.getElementById('themeBtn').onclick = () => {
   localStorage.setItem('mirror_theme', document.body.classList.contains('theme-dark') ? 'dark' : 'light');
 };
 
-/* ----- Tabs ----- */
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-' + btn.dataset.tab).classList.add('active');
-    if (btn.dataset.tab === 'today') renderTodayTab();
-    if (btn.dataset.tab === 'reflect') renderReflect();
-  };
+/* =============================================================
+   CATEGORIES + DAILY COMPLETION
+   Six permanent life areas. Completion is stored per LOCAL date in
+   state.completion — three states per category: not started, started,
+   complete. "Complete for Today" is confirmed from inside a category;
+   opening or editing it never changes the state on its own.
+   ============================================================= */
+const CATEGORIES = [
+  { key:'body',          label:'Body',          color:'var(--cat-body)' },
+  { key:'mind',          label:'Mind',          color:'var(--cat-mind)' },
+  { key:'health',        label:'Health',        color:'var(--cat-health)' },
+  { key:'relationships', label:'Relationships', color:'var(--cat-relationships)' },
+  { key:'money',         label:'Money',         color:'var(--cat-money)' },
+  { key:'identity',      label:'Identity',      color:'var(--cat-identity)' },
+];
+const CAT_KEYS = CATEGORIES.map(c => c.key);
+const catMeta = k => CATEGORIES.find(c => c.key === k);
+
+function completionFor(date){ return (state.completion && state.completion[date]) || {}; }
+function catState(cat, date){ return completionFor(date)[cat] || 'none'; }   // 'none' | 'started' | 'complete'
+function setCatState(cat, date, st){
+  state.completion = state.completion || {};
+  const day = state.completion[date] || (state.completion[date] = {});
+  if (st === 'none') { delete day[cat]; if (!Object.keys(day).length) delete state.completion[date]; }
+  else day[cat] = st;
+  saveState();
+  refreshCompletionUI();
+}
+function allCompleteToday(){ const d = todayStr(); return CAT_KEYS.every(k => catState(k, d) === 'complete'); }
+function completedCount(date){ return CAT_KEYS.filter(k => catState(k, date) === 'complete').length; }
+function refreshCompletionUI(){ renderCompletionBars(); renderTodayCats(); renderHomeHex(); }
+
+/* =============================================================
+   NAVIGATION — the home hexagram is the primary nav. Hash routing
+   gives real browser Back/Forward. Any [data-goto="view"] element
+   navigates (event-delegated, so it covers hexes, back buttons,
+   the brand, the calendar button and future links).
+   ============================================================= */
+const VIEWS = ['home','today','calendar','identity','body','health','mind','money','relationships','reflect'];
+const VIEW_TITLES = { home:'Mirror', today:'Today · Mirror', calendar:'Calendar · Mirror',
+  identity:'Identity · Mirror', body:'Body · Mirror', health:'Health · Mirror', mind:'Mind · Mirror',
+  money:'Money · Mirror', relationships:'Relationships · Mirror', reflect:'Reflect · Mirror' };
+function applyView(name){
+  if (!VIEWS.includes(name)) name = 'home';
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const el = document.getElementById('view-' + name);
+  if (el) el.classList.add('active');
+  document.title = VIEW_TITLES[name] || 'Mirror';
+  window.scrollTo(0, 0);
+  runViewRender(name);
+}
+function runViewRender(name){
+  if (name === 'home') renderHomeHex();
+  else if (name === 'today') renderTodayTab();
+  else if (name === 'calendar') renderCalendarView();
+  else if (name === 'reflect') renderReflect();
+  else if (name === 'body') { renderBodyCheckin(); simpleLog('symptoms','symLog', r => escapeHtml(r.note)); }
+  else if (name === 'health') { renderHealthTimeline(); renderHydration(); }
+  if (['body','mind','health','relationships','money','identity'].includes(name)) renderCompletionBars();
+}
+function navTo(name){
+  if (!VIEWS.includes(name)) name = 'home';
+  if (location.hash.slice(1) === name) applyView(name);   // same hash: no event fires, apply directly
+  else location.hash = name;                              // triggers hashchange -> applyView
+}
+window.addEventListener('hashchange', () => applyView(location.hash.slice(1) || 'home'));
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-goto]');
+  if (b) { e.preventDefault(); navTo(b.dataset.goto); }
 });
 
 /* Reflect sub-mode toggle: Insights | Timeline (Timeline folded in from its old tab) */
@@ -2406,15 +2787,49 @@ function simpleLog(key, containerId, renderRow) {
     openEditModal(cfg.title, '', cfg.fields, r, vals => { Object.assign(r, vals); after(); });
   });
 }
-document.getElementById('waterAdd').onclick = () => {
-  const oz = Number(document.getElementById('waterOz').value);
+/* ----- Hydration: quick-add, timestamped entries, daily total vs target ----- */
+function waterTime(r){
+  if (r.t) return r.t;
+  if (r._at) { const d = new Date(r._at); if (!isNaN(d)) return d.toLocaleTimeString([], { hour:'numeric', minute:'2-digit' }); }
+  return '';
+}
+function logWater(oz, t){
   const date = document.getElementById('waterDate').value || todayStr();
   if (!oz) return;
-  state.body.water.push({ id: uid(), date, oz });
-  saveState(); document.getElementById('waterOz').value='';
-  simpleLog('water','waterLog', r => `${r.oz} oz`);
-  renderToday();
+  state.body.water.push({ id: uid(), date, oz: Number(oz), t: t || '' });
+  saveState();
+  renderHydration(); renderToday(); renderHealthTimeline();
+}
+function renderHydration(){
+  const date = todayStr();
+  const T = getTargets();
+  const total = (state.body.water || []).filter(w => w.date === date).reduce((s, w) => s + Number(w.oz || 0), 0);
+  const totalEl = document.getElementById('hydrTotal'); if (totalEl) totalEl.textContent = total ? `${total} oz today` : '';
+  const bar = document.getElementById('hydrBar');
+  if (bar) { const pct = T.water_oz ? Math.min(100, (total / T.water_oz) * 100) : 0; bar.style.width = pct + '%'; bar.classList.toggle('over', T.water_oz > 0 && total > T.water_oz); }
+  const note = document.getElementById('hydrTargetNote');
+  if (note) note.textContent = T.water_oz ? `${total} of ${T.water_oz} oz daily target${total >= T.water_oz ? ' — reached' : ''}` : `${total} oz today`;
+  const el = document.getElementById('waterLog'); if (!el) return;
+  const rows = (state.body.water || []).slice()
+    .sort((a, b) => b.date.localeCompare(a.date) || String(b._at || '').localeCompare(String(a._at || ''))).slice(0, 24);
+  if (!rows.length) { el.innerHTML = '<div class="empty">No water logged yet.</div>'; return; }
+  el.innerHTML = rows.map(r => `<div class="card mini"><div class="row">
+    <span>${fmtDate(r.date)}${waterTime(r) ? ` · ${escapeHtml(waterTime(r))}` : ''} — ${r.oz} oz</span>
+    <span style="white-space:nowrap"><button class="x" data-id="${r.id}" aria-label="Delete water entry">×</button></span></div></div>`).join('');
+  el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
+    state.body.water = state.body.water.filter(x => x.id !== b.dataset.id);
+    saveState(); renderHydration(); renderToday(); renderHealthTimeline();
+  });
+}
+document.getElementById('waterAdd').onclick = () => {
+  const oz = Number(document.getElementById('waterOz').value);
+  const t = document.getElementById('waterTime').value || '';
+  if (!oz) return;
+  logWater(oz, t);
+  document.getElementById('waterOz').value = ''; document.getElementById('waterTime').value = '';
 };
+document.querySelectorAll('[data-hydr]').forEach(b => b.onclick = () => logWater(Number(b.dataset.hydr), ''));
+
 document.getElementById('sleepAdd').onclick = () => {
   const hours = Number(document.getElementById('sleepHours').value);
   const quality = Number(document.getElementById('sleepQuality').value);
@@ -2424,16 +2839,35 @@ document.getElementById('sleepAdd').onclick = () => {
   saveState();
   document.getElementById('sleepHours').value=''; document.getElementById('sleepQuality').value='';
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
+  renderHealthTimeline();
 };
+function exSummary(r){
+  const lead = [];
+  if (r.time) lead.push(escapeHtml(r.time));
+  if (r.type) lead.push(escapeHtml(r.type));
+  const meta = [];
+  if (r.minutes) meta.push(`${r.minutes} min`);
+  if (r.distance) meta.push(`${r.distance} mi`);
+  if (r.intensity) meta.push(escapeHtml(r.intensity));
+  let s = lead.join(' ') + (meta.length ? ` · ${meta.join(' · ')}` : '');
+  if (r.note) s += ` — ${escapeHtml(r.note)}`;
+  return s;
+}
 document.getElementById('exAdd').onclick = () => {
   const type = document.getElementById('exType').value.trim();
-  const minutes = Number(document.getElementById('exMinutes').value);
+  const minutes = Number(document.getElementById('exMinutes').value) || null;
   const date = document.getElementById('exDate').value || todayStr();
-  if (!type || !minutes) return;
-  state.body.exercise.push({ id: uid(), date, type, minutes });
+  const time = document.getElementById('exTime').value || '';
+  const distance = Number(document.getElementById('exDistance').value) || null;
+  const intensity = document.getElementById('exIntensity').value || '';
+  const note = document.getElementById('exNote').value.trim();
+  if (!type) return;
+  state.body.exercise.push({ id: uid(), date, type, minutes, time, distance, intensity, note });
   saveState();
-  document.getElementById('exType').value=''; document.getElementById('exMinutes').value='';
-  simpleLog('exercise','exLog', r => `${r.type} · ${r.minutes} min`);
+  ['exType','exMinutes','exTime','exDistance','exNote'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  document.getElementById('exIntensity').value = '';
+  simpleLog('exercise','exLog', exSummary);
+  renderHealthTimeline();
 };
 document.getElementById('symAdd').onclick = () => {
   const note = document.getElementById('symNote').value.trim();
@@ -4028,8 +4462,7 @@ function renderLongViewDetail(byDate) {
   const open = document.getElementById('lvOpenInToday');
   if (open) open.onclick = () => {
     setQtLogDate(lvSelected);
-    const tab = document.querySelector('.tab-btn[data-tab="today"]');
-    if (tab) tab.click();
+    navTo('today');
   };
 }
 function renderOnThisDay(byDate) {
@@ -4339,13 +4772,220 @@ async function restoreBirthdaysFromRepo() {
 document.getElementById('bExport').onclick = exportBirthdays;
 document.getElementById('bRestore').onclick = restoreBirthdaysFromRepo;
 
+/* =============================================================
+   HOME HEXAGRAM + COMPLETION + CALENDAR + HEALTH TIMELINE + BODY
+   ============================================================= */
+function renderHomeHex(){
+  const d = todayStr();
+  document.querySelectorAll('.hex-cat').forEach(h => {
+    const cat = h.dataset.cat, st = catState(cat, d);
+    h.classList.toggle('is-complete', st === 'complete');
+    h.classList.toggle('is-started', st === 'started');
+    const label = st === 'complete' ? 'Complete' : st === 'started' ? 'Started' : 'Not started';
+    const stateEl = h.querySelector('.hex-state'), markEl = h.querySelector('.hex-mark');
+    if (stateEl) stateEl.textContent = label;
+    if (markEl) markEl.textContent = st === 'complete' ? '✓' : st === 'started' ? '•' : '';
+    const name = catMeta(cat) ? catMeta(cat).label : cat;
+    h.setAttribute('aria-label', `${name} — ${label.toLowerCase()}. Open ${name}.`);
+  });
+  const dateEl = document.getElementById('hexTodayDate');
+  const dt = new Date(d + 'T00:00');
+  const dateTxt = dt.toLocaleDateString(undefined, { month: 'numeric', day: 'numeric', year: 'numeric' });
+  if (dateEl) dateEl.textContent = dateTxt;
+  const done = completedCount(d), all = done === 6;
+  const statusEl = document.getElementById('hexTodayStatus');
+  if (statusEl) statusEl.textContent = all ? '✓ all six complete' : `${done} of 6 complete`;
+  const todayHex = document.getElementById('hexToday');
+  if (todayHex) {
+    todayHex.classList.toggle('is-day-complete', all);
+    todayHex.setAttribute('aria-label', all
+      ? `Today, ${dateTxt} — daily check-in complete. Open Today.`
+      : `Today, ${dateTxt} — ${done} of 6 areas complete. Open Today.`);
+  }
+}
+
+function renderTodayCats(){
+  const host = document.getElementById('todayCats'); if (!host) return;
+  const d = todayStr();
+  host.innerHTML = CATEGORIES.map(c => {
+    const st = catState(c.key, d);
+    const cls = st === 'complete' ? 'done' : st === 'started' ? 'part' : '';
+    const label = st === 'complete' ? 'Complete' : st === 'started' ? 'Started' : 'Not started';
+    return `<button class="tc-cell ${cls}" data-goto="${c.key}" style="--tcc:${c.color}" aria-label="${c.label} — ${label.toLowerCase()}. Open ${c.label}.">
+      <span class="tc-ring"></span>
+      <span><span class="tc-name">${c.label}</span><br><span class="tc-st">${label}</span></span>
+    </button>`;
+  }).join('');
+  const done = completedCount(d);
+  const status = document.getElementById('todayCompletionStatus');
+  if (status) status.textContent = done === 6 ? 'All six complete for today' : `${done} of 6 complete`;
+}
+
+function completeBarHTML(cat){
+  const c = catMeta(cat), d = todayStr(), st = catState(cat, d);
+  const dotCls = st === 'complete' ? 'on' : st === 'started' ? 'part' : '';
+  const statusText = st === 'complete' ? 'Completed for today.'
+    : st === 'started' ? 'Started — not yet confirmed complete.' : 'Not started today.';
+  const btns = st === 'complete'
+    ? `<button class="cb-minor" data-cbset="started" data-cbcat="${cat}">Reopen</button>
+       <button class="cb-minor" data-cbset="none" data-cbcat="${cat}">Mark incomplete</button>`
+    : `<button class="cb-complete" data-cbset="complete" data-cbcat="${cat}">Complete for Today</button>
+       ${st === 'started'
+         ? `<button class="cb-minor" data-cbset="none" data-cbcat="${cat}">Clear</button>`
+         : `<button class="cb-minor" data-cbset="started" data-cbcat="${cat}">Mark as started</button>`}`;
+  return `<div class="complete-bar" style="--cc:${c.color}">
+    <div class="cb-status"><span class="cb-dot ${dotCls}"></span>${statusText}
+      <div class="tiny" style="color:var(--dim);margin-top:4px">“I've reviewed and recorded what matters in ${c.label} today.” Editing later won't undo this.</div></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">${btns}</div>
+  </div>`;
+}
+function renderCompletionBars(){
+  ['body','mind','health','relationships','money','identity'].forEach(cat => {
+    const host = document.getElementById('complete-' + cat);
+    if (host) host.innerHTML = completeBarHTML(cat);
+    // colour each category heading's little square to match
+    const h1 = document.querySelector('#view-' + cat + ' h1');
+    if (h1) h1.style.setProperty('--cc', catMeta(cat).color);
+  });
+  document.querySelectorAll('[data-cbset]').forEach(b =>
+    b.onclick = () => setCatState(b.dataset.cbcat, todayStr(), b.dataset.cbset));
+}
+
+/* ----- Body: subjective daily check-in (one per local date, upsert) ----- */
+const bcDraft = { energy: null, fatigue: null, soreness: null, comfort: null };
+function buildBcDots(rowId, key){
+  const row = document.getElementById(rowId); if (!row) return;
+  row.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = i;
+    if (bcDraft[key] === i) b.classList.add('on');
+    b.setAttribute('aria-label', `${key} ${i} of 5`);
+    b.onclick = () => { bcDraft[key] = bcDraft[key] === i ? null : i; buildBcDots(rowId, key); };
+    row.appendChild(b);
+  }
+}
+function renderBodyCheckin(){
+  if (!document.getElementById('bcEnergyRow')) return;
+  const date = todayStr();
+  const rec = (state.body.checkins || []).find(c => c.date === date);
+  bcDraft.energy   = rec ? (rec.energy ?? null) : null;
+  bcDraft.fatigue  = rec ? (rec.fatigue ?? null) : null;
+  bcDraft.soreness = rec ? (rec.soreness ?? null) : null;
+  bcDraft.comfort  = rec ? (rec.comfort ?? null) : null;
+  buildBcDots('bcEnergyRow', 'energy');   buildBcDots('bcFatigueRow', 'fatigue');
+  buildBcDots('bcSorenessRow', 'soreness'); buildBcDots('bcComfortRow', 'comfort');
+  const noteEl = document.getElementById('bcNote');
+  if (noteEl && document.activeElement !== noteEl) noteEl.value = rec ? (rec.note || '') : '';
+  const status = document.getElementById('bodyCheckinStatus');
+  if (status) status.textContent = rec ? 'Saved — editing updates today' : '';
+  const host = document.getElementById('bodyCheckinHistory');
+  if (host) {
+    const rows = (state.body.checkins || []).slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 10);
+    host.innerHTML = rows.map(r => {
+      const bits = [];
+      if (r.energy) bits.push(`energy ${r.energy}`);
+      if (r.fatigue) bits.push(`fatigue ${r.fatigue}`);
+      if (r.soreness) bits.push(`soreness ${r.soreness}`);
+      if (r.comfort) bits.push(`comfort ${r.comfort}`);
+      return `<div class="card mini"><div class="row"><span>${fmtDate(r.date)} — ${bits.join(' · ') || 'note only'}${r.note ? `: ${escapeHtml(r.note)}` : ''}</span></div></div>`;
+    }).join('');
+  }
+}
+document.getElementById('bcSave').onclick = () => {
+  const date = todayStr();
+  const note = document.getElementById('bcNote').value.trim();
+  const fields = { energy: bcDraft.energy, fatigue: bcDraft.fatigue, soreness: bcDraft.soreness, comfort: bcDraft.comfort, note };
+  state.body.checkins = state.body.checkins || [];
+  const ex = state.body.checkins.find(c => c.date === date);
+  if (ex) Object.assign(ex, fields);
+  else state.body.checkins.push({ id: uid(), date, ...fields });
+  saveState(); renderBodyCheckin();
+  const status = document.getElementById('bodyCheckinStatus'); if (status) status.textContent = 'Saved.';
+};
+
+/* ----- Health: unified daily timeline (water, meals, movement, notes) ----- */
+function healthEventTime(r){
+  if (r.time) return r.time;
+  if (r.t) return r.t;
+  if (r._at) { const d = new Date(r._at); if (!isNaN(d)) return d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); }
+  return '';
+}
+function timeSortKey(r){
+  if (r.time) return r.time;
+  if (r.t) return r.t;
+  if (r._at) { const d = new Date(r._at); if (!isNaN(d)) return d.toTimeString().slice(0, 5); }
+  return '~~';   // undated entries sort to the end of the day
+}
+function renderHealthTimeline(){
+  const host = document.getElementById('healthTimeline'); if (!host) return;
+  const date = todayStr();
+  const lbl = document.getElementById('healthTlDate'); if (lbl) lbl.textContent = fmtDate(date);
+  const ev = [];
+  (state.body.water || []).filter(w => w.date === date).forEach(w =>
+    ev.push({ t: timeSortKey(w), time: healthEventTime(w), label: `${w.oz} oz water` }));
+  (state.body.food || []).filter(f => f.date === date).forEach(f => {
+    const nn = entryN(f); const kcal = nn ? Math.round((nn.kcal || 0) * f.grams / 100) : null;
+    ev.push({ t: timeSortKey(f), time: healthEventTime(f), label: `${escapeHtml(f.foodName || 'food')} · ${f.grams} g${kcal != null ? ` · ${kcal} kcal` : ''}` });
+  });
+  (state.body.exercise || []).filter(e => e.date === date).forEach(e =>
+    ev.push({ t: timeSortKey(e), time: healthEventTime(e), label: exSummary(e) }));
+  (state.body.symptoms || []).filter(s => s.date === date).forEach(s =>
+    ev.push({ t: timeSortKey(s), time: healthEventTime(s), label: `note — ${escapeHtml(s.note)}` }));
+  if (!ev.length) { host.innerHTML = '<div class="empty">Nothing logged today yet. Water, meals, movement and notes appear here in the order they happened.</div>'; return; }
+  ev.sort((a, b) => String(a.t).localeCompare(String(b.t)));
+  host.innerHTML = ev.map(e => `<div class="card mini"><div class="row">
+    <span><strong style="font-family:ui-monospace,monospace;color:var(--dim)">${escapeHtml(e.time || '—')}</strong> &nbsp; ${e.label}</span></div></div>`).join('');
+}
+
+/* ----- Calendar: month grid + completion dots + integration boundary ----- */
+let calMonth = null;   // { y, m } — m is 0-based
+function calInit(){ if (!calMonth) { const d = new Date(); calMonth = { y: d.getFullYear(), m: d.getMonth() }; } }
+function renderCalendarView(){
+  calInit();
+  const grid = document.getElementById('calGrid'); if (!grid) return;
+  const { y, m } = calMonth;
+  const first = new Date(y, m, 1);
+  const startDow = first.getDay();
+  const daysIn = new Date(y, m + 1, 0).getDate();
+  const monthLbl = document.getElementById('calMonth');
+  if (monthLbl) monthLbl.textContent = first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+  const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const today = todayStr();
+  let html = dow.map(d => `<div class="cal-dow">${d}</div>`).join('');
+  for (let i = 0; i < startDow; i++) html += `<div class="cal-cell blank"></div>`;
+  for (let day = 1; day <= daysIn; day++) {
+    const ds = `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    const comp = completionFor(ds);
+    const dots = CATEGORIES.map(c =>
+      `<span class="cal-dot ${comp[c.key] === 'complete' ? 'on' : ''}" style="--cd:${c.color}"></span>`).join('');
+    const evs = ((state.calendar && state.calendar.events) || []).filter(e => e.date === ds);
+    const evLine = evs.length
+      ? `<div class="cal-ev" title="${escapeHtml(evs.map(e => e.title).join(', '))}">${escapeHtml(evs[0].title)}${evs.length > 1 ? ` +${evs.length - 1}` : ''}</div>` : '';
+    const doneN = CATEGORIES.filter(c => comp[c.key] === 'complete').length;
+    html += `<div class="cal-cell ${ds === today ? 'today' : ''}" role="gridcell" aria-label="${first.toLocaleDateString(undefined, { month: 'long' })} ${day} — ${doneN} of 6 areas complete"><div class="dn">${day}</div><div class="cal-dots">${dots}</div>${evLine}</div>`;
+  }
+  grid.innerHTML = html;
+  const legend = document.getElementById('calLegend');
+  if (legend) legend.innerHTML = CATEGORIES.map(c =>
+    `<span class="lg"><span class="sw" style="--cd:${c.color}"></span>${c.label}</span>`).join('')
+    + `<span class="lg" style="color:var(--dim)">Filled dot = completed that day</span>`;
+  const intg = document.getElementById('calIntegration');
+  if (intg) intg.innerHTML = `<strong>Google Calendar</strong><span class="badge">Not connected</span>
+    <div style="margin-top:8px">Real event sync is <strong>not implemented yet</strong>. This calendar currently shows the current day and your Mirror completion history (the six dots) — all stored locally. Nothing is fetched from or sent to Google.</div>
+    <div style="margin-top:8px">The data boundary is already in place: events would live in <code>state.calendar.events[]</code> and provider config in <code>state.calendar.integration</code>. Enabling sync needs a Google Cloud OAuth client ID, the Calendar API turned on, a consent screen, and a GIS token flow — documented in <code>SCHEMA.md</code> under “Calendar”.</div>`;
+}
+document.getElementById('calPrev').onclick = () => { calInit(); if (--calMonth.m < 0) { calMonth.m = 11; calMonth.y--; } renderCalendarView(); };
+document.getElementById('calNext').onclick = () => { calInit(); if (++calMonth.m > 11) { calMonth.m = 0; calMonth.y++; } renderCalendarView(); };
+document.getElementById('calToday').onclick = () => { const d = new Date(); calMonth = { y: d.getFullYear(), m: d.getMonth() }; renderCalendarView(); };
+
 function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal();
   renderFoodLog(); renderNutrients(); renderToday(); renderTrend();
   renderRecentFoods(); renderPinnedFoods(); renderCustomFoods(); renderMeals();
-  simpleLog('water','waterLog', r => `${r.oz} oz`);
+  renderHydration();
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
-  simpleLog('exercise','exLog', r => `${r.type} · ${r.minutes} min`);
+  simpleLog('exercise','exLog', exSummary);
   simpleLog('symptoms','symLog', r => escapeHtml(r.note));
   renderBudget(); renderExpenses(); renderSubs(); renderNetWorth(); renderGoals();
   renderPeople(); refreshPersonSelects(); renderFollowUps(); renderGiftIdeas();
@@ -4353,6 +4993,8 @@ function renderAll() {
   renderBooks(); renderIdeas(); renderQuestions(); renderQuotes();
   renderReflect();   // keep Body/Today, Trend, chips and Reflect fresh after import/restore/reset
   renderTimeline();
+  renderHealthTimeline(); renderBodyCheckin();
+  refreshCompletionUI();  // completion bars + Today cats + home hexagons
   renderTodaySummary();   // summary only — does not clobber an in-progress pulse selection
 }
 
@@ -4364,7 +5006,8 @@ function renderAll() {
 loadFoods().then(() => { renderFoodLog(); renderNutrients(); renderToday(); renderTrend(); renderRecentFoods(); renderPinnedFoods(); renderTodaySummary(); });
 renderToday();
 renderAll();
-renderTodayTab();             // build the Today tab (summary + pulse dots) at load
+renderTodayTab();             // pre-build the Today tab (summary + pulse dots)
+applyView(location.hash.slice(1) || 'home');   // land on the hexagram home (or a deep-linked view)
 takeSnapshot('app open');     // automatic undo point each session
 checkBackupReminder();        // nudge to download a file backup if it's been a week
 </script>

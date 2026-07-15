@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **7** (field `__v` in the data).
+Current schema version: **8** (field `__v` in the data).
 
 ---
 
@@ -82,14 +82,27 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 - **journal[]** — `{ id, date, title, text, tags: string[], _src, _at }`
 
 ### body
+> **UI note (v8):** the measurable logs below are surfaced in the **Health** category of the
+> app; the **Body** category surfaces the subjective `checkins[]` plus `symptoms[]`. The
+> storage namespace stays `body.*` for all of them so pre-v8 history is never moved or
+> renamed — the split is a presentation choice, not a data migration.
+
 - **targets** — `{ kcal, protein_g, water_oz }`. Config, not a record. Current goals only.
 - **food[]** — `{ id, date, foodId, foodName, grams, _src, _at }`. Macros are *not*
   stored per-entry — they're looked up from the NutriLens library by `foodId` at read time,
   so a library correction retroactively fixes history. `grams` is the raw observation.
-- **water[]** — `{ id, date, oz, ... }`
+- **water[]** — `{ id, date, oz, t?, ... }`. `t` = optional `HH:MM` time of day; when absent
+  the entry's `_at` supplies the timestamp shown in the Health timeline. Hydration keeps every
+  timestamped entry (never a single daily total) so the sequence across the day is preserved.
 - **sleep[]** — `{ id, date, hours, quality: 1–5, ... }`
-- **exercise[]** — `{ id, date, type, minutes, ... }`
+- **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?, ... }`.
+  All fields except `type`/`date` optional. Shaped so a future fitness-tracker import (steps,
+  heart rate, workouts, active minutes) can add fields without reshaping existing records.
 - **symptoms[]** — `{ id, date, note, ... }`. Free-text, sparse, high-value context.
+- **checkins[]** *(v8)* — `{ id, date, energy: 1–5?, fatigue: 1–5?, soreness: 1–5?,
+  comfort: 1–5?, note, _src, _at }`. The subjective daily **Body** check-in — how the body
+  *feels* (energy, fatigue, soreness/pain, physical comfort), distinct from the measurable
+  Health logs. One record per local `date` (saving **upserts**).
 - **customFoods[]** — `{ id, name, category, ...macros per 100 g }`. Definitions you authored.
 - **meals[]** — `{ id, name, items: [{ foodId, foodName, grams }] }`. Reusable bundles.
 
@@ -114,8 +127,44 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 - **birthdays[]** — `{ id, name, relation, month, day?, year?, deceased, passedYear?, note, ... }`.
   The standalone forever-register (also exportable on its own as `birthdays.json`/`.md`).
 
+### completion *(v8)* — the daily doorway
+The home screen is a hexagram: a central **Today** hexagon ringed by the six life areas
+(Body, Mind, Health, Relationships, Money, Identity). Each area is confirmed complete for a
+day from *inside* that area ("Complete for Today"). Opening an area, or entering data, never
+completes it — completion is an explicit act meaning *"I've reviewed and recorded what
+matters in this area today,"* not *"I had a perfect day."*
+
+- **completion** — an object keyed by **local date**, each value a per-category state map:
+  `{ "2026-07-15": { body: "complete", mind: "started", health: "complete", ... } }`.
+  Per category the value is `"started"` or `"complete"`; **absent = not started**. Three
+  states surface as: not started (muted, outlined), started (colored outline + dot/tint),
+  complete (filled with the category color + ✓). When all six read `"complete"` for the
+  current date, Today shows a subtle completed state (ring + glow + check). Completion is
+  stored by the date it was confirmed on, persists across refreshes, and a new local date
+  begins fresh while past dates are preserved (the Calendar renders that history as six
+  colored dots per day). Editing an area's data later never clears its completion; a less
+  prominent "Mark incomplete" is the only thing that does.
+
+**Category colors** (permanent, used on the hexagon, heading accent, completion dots and
+calendar markers; never the *only* signal): Body = terracotta, Mind = blue, Health = green,
+Relationships = rose, Money = amber, Identity = violet. Defined as CSS variables
+(`--cat-*`), re-toned for dark mode.
+
+### calendar *(v8)* — integration boundary
+- **calendar** — `{ events: [], integration: { provider: "google", connected: false,
+  lastSync: null } }`. The monthly Calendar view currently renders **only local data**: the
+  current day and the `completion` history (six dots per day). `events[]` is a reserved,
+  documented boundary for real events; nothing is fetched from or sent to any service.
+
+  > **Google Calendar sync is NOT implemented.** It is intentionally deferred. Turning it on
+  > would require: a Google Cloud **OAuth client ID**, the **Calendar API** enabled, an OAuth
+  > **consent screen**, a browser **token flow** (Google Identity Services), then reading
+  > events into `calendar.events[]` (shape suggestion: `{ id, date, title, start, end,
+  > source: "google", _src, _at }`) and a two-way sync/refresh strategy. The UI and data
+  > boundary are built so this can be added without reshaping anything.
+
 ### home
-- **widgets** — `string[]`. Which Today-tab cards are shown. UI config, not a record.
+- **widgets** — `string[]`. Which Today-view cards are shown. UI config, not a record.
 
 ---
 
@@ -142,6 +191,15 @@ means**. So:
   day, one card per date (upsert). Added the **Weekly Review** (derived from the last 7 days,
   never stored). Daily Cards are written in full into `mirror-data.md`. Adds the section but
   reshapes/renames nothing existing.
+- **v8** → **home-screen redesign.** The app's front door became a hexagram (central Today +
+  six category hexagons + a calendar button). Three new stores, **nothing existing reshaped
+  or renamed**: `completion` (per-local-date category start/complete states, drives the
+  hexagons, the Today center and the Calendar history dots); `body.checkins[]` (subjective
+  daily Body check-in — energy/fatigue/soreness/comfort/note, upsert per date); and
+  `calendar` (`events[]` + `integration` — the monthly Calendar view and its Google Calendar
+  boundary, **sync not implemented**). The measurable logs stay under `body.*`; the Health
+  category surfaces them, the Body category surfaces `checkins`/`symptoms`. `exercise[]`
+  gained optional `time`/`distance`/`intensity`/`note`; `water[]` gained optional `t`.
 
 ---
 
