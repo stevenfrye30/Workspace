@@ -786,6 +786,70 @@ main p { line-height:1.7; }
 .focus-parallel-chip.missing { opacity:0.4; cursor:default; }
 .focus-parallel-chip.missing:hover { border-color:var(--line); color:var(--muted); transform:none; }
 
+/* ============ Focus v2 — compact identity card + responsive relationship grid ============ */
+.focus-id-card { max-width:680px; margin:0 auto; padding:22px 26px 20px; }
+.focus-id-card .fid-meta { color:var(--gold-deep); font-size:12px; font-variant:small-caps; letter-spacing:1.8px; font-weight:bold; margin-bottom:6px; }
+.focus-id-card .fid-meta .fid-sep { opacity:0.5; margin:0 6px; }
+.focus-id-card .fname-main { font-size:26px; margin:0 0 4px; }
+.focus-id-card .farchetype { margin:8px 0 0; }
+.focus-id-card .farchetype-link {
+  background:none; border:none; padding:0; font:inherit; cursor:pointer;
+  color:var(--gold); font-weight:600; letter-spacing:0.3px;
+  border-bottom:1px dotted rgba(229,193,88,0.45);
+}
+.focus-id-card .farchetype-link:hover, .focus-id-card .farchetype-link:focus-visible { color:var(--ink); border-bottom-color:var(--ink); outline:none; }
+.focus-id-card .fdomains { display:block; margin:12px 0 0; }
+.focus-id-card .fdomains-chips { display:flex; flex-wrap:wrap; gap:6px; }
+.fdesc-wrap { margin-top:12px; }
+.focus-id-card .fdesc {
+  color:var(--ink); font-size:13.5px; line-height:1.6;
+  display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden;
+}
+.focus-id-card .fdesc.expanded { -webkit-line-clamp:unset; display:block; overflow:visible; }
+.fdesc-toggle {
+  margin-top:6px; background:none; border:none; color:var(--gold); cursor:pointer;
+  font-family:inherit; font-size:12px; letter-spacing:0.5px; padding:4px 2px; text-decoration:underline;
+}
+.fdesc-toggle:hover { color:var(--ink); }
+.fdesc-toggle:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
+
+.focus-rel-grid {
+  display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr));
+  gap:14px; align-items:start; margin-top:18px;
+}
+.rel-panel { background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:12px 14px; min-width:0; }
+.rel-panel-children, .rel-panel-parallels { margin-top:14px; }
+.rel-panel-head {
+  margin:0 0 10px; font-variant:small-caps; letter-spacing:1.6px; color:var(--cyan);
+  font-size:12.5px; font-weight:normal; display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;
+}
+.rel-panel-head .rel-count { color:var(--muted); font-size:11px; font-weight:bold; }
+.rel-panel-head .rel-caveat { color:var(--muted); font-size:10px; font-style:italic; font-variant:normal; letter-spacing:0.2px; opacity:0.85; margin-left:auto; }
+.rel-panel-body.rel-list { display:flex; flex-direction:column; gap:8px; }
+.rel-panel-body.focus-children { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:10px; }
+.rel-panel-body.focus-parallels { justify-content:flex-start; }
+.rel-panel-body:not(.rel-expanded) .rel-hidden { display:none; }
+.rel-show-all {
+  background:transparent; border:1px dashed var(--line); color:var(--muted);
+  padding:7px 12px; border-radius:6px; cursor:pointer; font-family:inherit; font-size:11px;
+  letter-spacing:1px; font-variant:small-caps; margin-top:8px; min-height:36px;
+}
+.rel-show-all:hover, .rel-show-all:focus-visible { color:var(--gold); border-color:var(--gold-soft); background:rgba(229,193,88,0.04); outline:none; }
+.rel-panel-children .children-block.children-collapsed:not(.children-expanded) {
+  max-height:300px; overflow:hidden;
+  -webkit-mask-image:linear-gradient(180deg, #000 72%, transparent);
+  mask-image:linear-gradient(180deg, #000 72%, transparent);
+}
+.focus-family-empty {
+  text-align:center; color:var(--muted); font-style:italic; padding:18px; font-size:13px;
+  border:1px dashed var(--line); border-radius:10px; margin-top:18px;
+}
+@media (max-width:760px) {
+  .focus-id-card { padding:18px 18px 16px; }
+  .focus-id-card .fname-main { font-size:23px; }
+  .focus-rel-grid { grid-template-columns:1fr; gap:12px; }
+}
+
 .gender-symbol { font-size:12px; margin-left:5px; opacity:0.7; }
 
 /* Full-tree category filter strip */
@@ -4653,101 +4717,169 @@ function renderSideCappedList(ids, emptyMsg) {
   return `${shown}${hidden}<button type="button" class="side-expand-btn" onclick="expandSideList(this)">+ ${ids.length - SIDE_LIST_CAP} more</button>`;
 }
 
-function renderGrandparentsRow(g) {
-  // Collect grandparents via parents' parents (dedup by id, skip self)
+// Grandparents are DERIVED, never stored: parents' parents, through canonical
+// parent records only. Dangling parents contribute no branch; a grandparent id
+// may itself be dangling and is shown with the honest "not yet catalogued" card.
+function gpIdsFor(g) {
   const seen = new Set([g.id]);
-  const gpIds = [];
+  const gp = [];
   (g.parents || []).forEach(pid => {
     const parent = GODS_BY_ID[pid];
-    if (!parent) return;
+    if (!parent) return;                       // derive only through a canonical parent
     (parent.parents || []).forEach(gpid => {
-      if (seen.has(gpid)) return;
-      seen.add(gpid);
-      gpIds.push(gpid);
+      if (!seen.has(gpid)) { seen.add(gpid); gp.push(gpid); }
     });
   });
-  if (!gpIds.length) return '';
-  const chips = gpIds.map(id => {
-    const gp = GODS_BY_ID[id];
-    if (gp) return `<span class="grandparent-chip" onclick="setFocus('${id}')" role="button" tabindex="0" aria-label="Focus on ${escapeAttr(gp.name)}">${gp.name}</span>`;
-    return `<span class="grandparent-chip missing" title="Not yet catalogued">${formatStubName(id)}</span>`;
-  }).join('');
-  return `
-    <div class="focus-section-label grandparents-label">Grandparents</div>
-    <div class="focus-row grandparents-row">${chips}</div>
-  `;
+  return gp;
+}
+
+// Inject a class into the ROOT element of an item's HTML (first class attribute
+// only — String.replace with a non-global pattern replaces the first match).
+function relInjectClass(html, cls) { return html.replace('class="', `class="${cls} `); }
+
+// Shared overflow: show the first `cap`, keep the rest in the DOM but hidden, and
+// return a toggle button. Nothing is ever dropped or made inaccessible.
+function relOverflow(itemHtmls, cap, moreLabel) {
+  if (itemHtmls.length <= cap) return { body: itemHtmls.join(''), control: '' };
+  const shown = itemHtmls.slice(0, cap).join('');
+  const hidden = itemHtmls.slice(cap).map(h => relInjectClass(h, 'rel-hidden')).join('');
+  const more = moreLabel || `Show all ${itemHtmls.length}`;
+  const control = `<button type="button" class="rel-show-all" aria-expanded="false" data-more="${escapeAttr(more)}" data-less="Show fewer" onclick="relShowAll(this)">${more}</button>`;
+  return { body: shown + hidden, control };
+}
+function relShowAll(btn) {
+  const body = btn.previousElementSibling;
+  if (!body) return;
+  const exp = btn.getAttribute('aria-expanded') === 'true';
+  body.classList.toggle('rel-expanded', !exp);
+  btn.setAttribute('aria-expanded', String(!exp));
+  btn.textContent = exp ? btn.dataset.more : btn.dataset.less;
+}
+// Children keep their co-parent grouping, so overflow collapses the whole block by
+// height (all rows stay in the DOM) rather than hiding individual cards.
+function relShowAllBlock(btn) {
+  const body = btn.previousElementSibling;
+  if (!body) return;
+  const exp = btn.getAttribute('aria-expanded') === 'true';
+  body.classList.toggle('children-expanded', !exp);
+  btn.setAttribute('aria-expanded', String(!exp));
+  btn.textContent = exp ? btn.dataset.more : btn.dataset.less;
+}
+function toggleFocusDesc(btn) {
+  const t = document.getElementById('focusDesc');
+  if (!t) return;
+  const exp = t.classList.toggle('expanded');
+  btn.setAttribute('aria-expanded', String(exp));
+  btn.textContent = exp ? 'Read less' : 'Read more';
+}
+
+// A small relationship panel (parents / grandparents / siblings / consorts).
+// Empty groups are omitted entirely — no oversized blank boxes.
+function relPanelSmall(title, ids, opts) {
+  opts = opts || {};
+  if (!ids || !ids.length) return '';
+  const items = ids.map(id => relCard(id, 'side'));
+  const { body, control } = relOverflow(items, 6);
+  const caveat = opts.caveat ? `<span class="rel-caveat">${opts.caveat}</span>` : '';
+  return `<section class="rel-panel">
+      <h4 class="rel-panel-head">${title} <span class="rel-count">${ids.length}</span>${caveat}</h4>
+      <div class="rel-panel-body rel-list">${body}</div>${control}
+    </section>`;
+}
+
+function relPanelChildren(g, ids) {
+  if (!ids || !ids.length) return '';
+  const inner = renderChildrenGrouped(g, ids);   // renders ALL children, grouped by co-parent
+  const capped = ids.length > 6;
+  const control = capped
+    ? `<button type="button" class="rel-show-all" aria-expanded="false" data-more="Show all ${ids.length} children" data-less="Show fewer" onclick="relShowAllBlock(this)">Show all ${ids.length} children</button>`
+    : '';
+  return `<section class="rel-panel rel-panel-children">
+      <h4 class="rel-panel-head">Children <span class="rel-count">${ids.length}</span></h4>
+      <div class="rel-panel-body children-block${capped ? ' children-collapsed' : ''}">${inner}</div>${control}
+    </section>`;
+}
+
+function relPanelParallels(ids) {
+  if (!ids || !ids.length) return '';
+  const chips = ids.map(id => {
+    const pg = GODS_BY_ID[id];
+    if (!pg) return `<span class="focus-parallel-chip missing" title="Not yet catalogued">${formatStubName(id)}</span>`;
+    const pp = PANTHEONS_BY_ID[pg.pantheon];
+    return `<span class="focus-parallel-chip" onclick="setFocus('${id}')">${pg.name}<span class="pan">${pp ? pp.name : ''}</span></span>`;
+  });
+  const { body, control } = relOverflow(chips, 12);
+  return `<section class="rel-panel rel-panel-parallels">
+      <h4 class="rel-panel-head">Cross-cultural parallels <span class="rel-count">${ids.length}</span><span class="rel-caveat">comparative, not family</span></h4>
+      <div class="rel-panel-body focus-parallels">${body}</div>${control}
+    </section>`;
 }
 
 function renderFocusView(g) {
   const p = PANTHEONS_BY_ID[g.pantheon];
   const pColor = p ? p.color : 'var(--gold)';
 
-  const grandparentsHtml = renderGrandparentsRow(g);
-  const parentCards = (g.parents || []).map(id => relCard(id, 'small')).join('') || emptyNote('None recorded');
-
-  const siblingCards = renderSideCappedList(g.siblings, 'None recorded');
-  const consortCards = renderSideCappedList(g.consorts, 'None recorded');
-
-  const childrenIds = g.children || [];
-  const childrenHtml = renderChildrenGrouped(g, childrenIds);
-
-  const parallelChips = (g.parallels || []).map(id => {
-    const pg = GODS_BY_ID[id];
-    if (!pg) return `<span class="focus-parallel-chip missing" title="Not yet catalogued">${formatStubName(id)}</span>`;
-    const pp = PANTHEONS_BY_ID[pg.pantheon];
-    return `<span class="focus-parallel-chip" onclick="setFocus('${id}')">${pg.name}<span class="pan">${pp ? pp.name : ''}</span></span>`;
-  }).join('');
-
+  // Identity card fields
+  const trad = p ? p.name : g.pantheon;
+  const catLabel = (g.category || '').replace(/-/g, ' ');
   const epithets = g.epithets && g.epithets.length ? `<div class="fepithets">"${g.epithets.join(' · ')}"</div>` : '';
-  const domains = (g.domains || []).length
-    ? `<div class="fdomains">${g.domains.map(d => `<span class="fdom-tag">${d.replace(/-/g,' ')}</span>`).join('')}</div>` : '';
-  const catLabel = `${(g.category || '').replace(/-/g,' ')}${genderSymbol(g.gender)}`;
   const archObj = g.archetype ? DATA.archetypes.find(a => a.id === g.archetype) : null;
   const archetypeLine = archObj
-    ? `<div class="farchetype">A figure of the <span class="farchetype-link" role="link" tabindex="0" onclick="followArchetype('${g.archetype}')">${archObj.name}</span> archetype.</div>`
+    ? `<div class="farchetype">Archetype: <button type="button" class="farchetype-link" onclick="followArchetype('${g.archetype}')">${archObj.name}</button></div>`
     : '';
+  let domainsHtml = '';
+  if ((g.domains || []).length) {
+    const chips = g.domains.map(d => `<span class="fdom-tag">${d.replace(/-/g, ' ')}</span>`);
+    const { body, control } = relOverflow(chips, 6, `+${chips.length - 6} more`);
+    domainsHtml = `<div class="fdomains"><div class="rel-panel-body fdomains-chips">${body}</div>${control}</div>`;
+  }
+
+  // Relationship groups (empty ones are omitted)
+  const gpIds = gpIdsFor(g);
+  const parentsPanel = relPanelSmall('Parents', g.parents || []);
+  const grandparentsPanel = relPanelSmall('Grandparents', gpIds, { caveat: 'via recorded parents' });
+  const siblingsPanel = relPanelSmall('Siblings', g.siblings || []);
+  const consortsPanel = relPanelSmall('Consorts', g.consorts || []);
+  const childrenPanel = relPanelChildren(g, g.children || []);
+  const parallelsPanel = relPanelParallels(g.parallels || []);
+
+  const hasFamily = (g.parents || []).length || gpIds.length || (g.siblings || []).length
+    || (g.consorts || []).length || (g.children || []).length;
+  const gridPanels = parentsPanel + grandparentsPanel + siblingsPanel + consortsPanel;
+  const familyHtml = hasFamily
+    ? `${gridPanels ? `<div class="focus-rel-grid">${gridPanels}</div>` : ''}${childrenPanel}`
+    : `<div class="focus-family-empty">No family relationships recorded.</div>`;
 
   document.getElementById('focusView').innerHTML = `
-    ${grandparentsHtml}
-    <div class="focus-section-label">Parents</div>
-    <div class="focus-row">${parentCards}</div>
-
-    <div class="focus-main-row" style="margin-top:22px;">
-      <div class="focus-side">
-        <div class="focus-side-label">Siblings</div>
-        <div class="focus-side-list">${siblingCards}</div>
-      </div>
-      <div class="focus-center-card" style="--pantheon-color:${pColor}">
+    <div class="focus-v2">
+      <section class="focus-center-card focus-id-card" style="--pantheon-color:${pColor}">
         <div class="focus-header">
           <div class="focus-header-text">
-            <div class="fpantheon">${p ? p.name : g.pantheon}${p && Number.isFinite(p.active_from) && Number.isFinite(p.active_to) ? `<span class="fpantheon-era"> · ${fmtYears(p.active_from, p.active_to)}</span>` : ''}</div>
+            <div class="fid-meta">${trad}<span class="fid-sep">·</span>${catLabel}${genderSymbol(g.gender)}</div>
             <h3 class="fname-main" tabindex="-1">${g.name}</h3>
             ${epithets}
-            <div class="fcat">${catLabel}</div>
             ${archetypeLine}
           </div>
           ${godImageHtml(g)}
         </div>
-        ${domains}
-        <div class="fdesc">${g.description || ''}</div>
+        ${domainsHtml}
+        ${g.description ? `<div class="fdesc-wrap">
+          <p class="fdesc" id="focusDesc">${g.description}</p>
+          <button type="button" class="fdesc-toggle" id="focusDescToggle" hidden aria-expanded="false" onclick="toggleFocusDesc(this)">Read more</button>
+        </div>` : ''}
         <button class="fdetails-btn" onclick="openGod('${g.id}')">Full details</button>
-      </div>
-      <div class="focus-side">
-        <div class="focus-side-label">Consorts</div>
-        <div class="focus-side-list">${consortCards}</div>
-      </div>
+      </section>
+      ${familyHtml}
+      ${parallelsPanel}
     </div>
-
-    <div class="focus-section-label">Children${childrenIds.length ? ` (${childrenIds.length})` : ''}</div>
-    ${childrenHtml}
-
-    ${parallelChips ? `
-      <div class="focus-section-label">Cross-Cultural Parallels</div>
-      <div class="focus-parallels">${parallelChips}</div>
-    ` : ''}
   `;
 
-  // Scroll the focus-view into top of its container on navigation (but not page jump)
+  // Reveal the Read-more control only when the description is actually clamped.
+  const dEl = document.getElementById('focusDesc');
+  const dBtn = document.getElementById('focusDescToggle');
+  if (dEl && dBtn && dEl.scrollHeight > dEl.clientHeight + 2) dBtn.hidden = false;
+
+  // Scroll the focus-view to the top of its container on navigation (no page jump).
   const fv = document.getElementById('focusView');
   fv.scrollTop = 0;
 }
@@ -4790,7 +4922,9 @@ function emptyNote(text) {
 function renderChildrenGrouped(focus, childrenIds) {
   if (!childrenIds.length) return emptyNote('None recorded');
 
-  const CHILD_LIMIT_TOTAL = 48;
+  // No silent truncation: every child is rendered into the DOM. The Focus panel
+  // collapses the block by height and reveals it with "Show all N children".
+  const CHILD_LIMIT_TOTAL = Infinity;
   const UNKNOWN = '__unknown__';
 
   // Partition by which OTHER parent the child shares (or unknown)
