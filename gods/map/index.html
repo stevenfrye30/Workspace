@@ -3944,35 +3944,64 @@ function gpPosition(el, nodeEl, vp) {
     el.style.top = '';
     el.style.right = '';
     el.style.bottom = '';
+    // Clear any desktop oversize caps so the @media sheet's own max-height wins.
+    el.style.maxHeight = '';
+    el.style.maxWidth = '';
+    el.style.overflowY = '';
     return;
   }
 
   if (!nodeEl || !vp) return;
   const nr = nodeEl.getBoundingClientRect();
   const vr = vp.getBoundingClientRect();
-  const w = el.offsetWidth || 300;
-  const h = el.offsetHeight || 200;
   const GAP = 10;
+  const MARGIN = 10;
 
   // node position in the viewport's CONTENT space (scrolls with the graph)
   const nx = nr.left - vr.left + vp.scrollLeft;
   const ny = nr.top  - vr.top  + vp.scrollTop;
   const nw = nr.width, nh = nr.height;
 
-  const viewL = vp.scrollLeft, viewT = vp.scrollTop;
-  const viewR = viewL + vp.clientWidth, viewB = viewT + vp.clientHeight;
+  // Clamp to the BROWSER WINDOW, expressed in the pane's CONTENT space (which is
+  // what el.style.left/top use here — the card is position:absolute inside the
+  // scrolled pane). window y=0 maps to content `scrollTop - vr.top`, and so on.
+  //
+  // The old clamp used the pane's own client box (scrollTop + clientHeight). When
+  // the pane runs below the fold — or, in the extreme, sits entirely below it
+  // (a below-the-fold node in a tall graph, then a shrink to a short viewport) —
+  // that box does not coincide with what's on screen, and the card landed off the
+  // visible window. Mapping the window itself into content space fixes every case
+  // while keeping the card glued to its node during a pan (still content-space).
+  const visL = vp.scrollLeft - vr.left;
+  const visT = vp.scrollTop  - vr.top;
+  const visR = vp.scrollLeft - vr.left + window.innerWidth;
+  const visB = vp.scrollTop  - vr.top  + window.innerHeight;
 
-  // prefer below-left-aligned; flip up if it would fall out of the bottom
+  // OVERSIZED handling: if the card cannot fit the visible region, cap it and let
+  // it scroll internally so its header + close button stay on-screen. Caps are
+  // cleared when it fits, so a later, larger viewport is never left constrained.
+  const availW = visR - visL - 2 * MARGIN;
+  const availH = visB - visT - 2 * MARGIN;
+  let w = el.offsetWidth || 300;
+  let h = el.offsetHeight || 200;
+  if (availW > 40 && w > availW) { el.style.maxWidth = availW + 'px'; w = availW; }
+  else { el.style.maxWidth = ''; }
+  if (availH > 40 && h > availH) { el.style.maxHeight = availH + 'px'; el.style.overflowY = 'auto'; h = availH; }
+  else { el.style.maxHeight = ''; el.style.overflowY = ''; }
+
+  // prefer below-left-aligned; flip up if it would fall out of the visible bottom
   let top = ny + nh + GAP;
-  if (top + h > viewB && ny - h - GAP >= viewT) top = ny - h - GAP;
+  if (top + h > visB - MARGIN && ny - h - GAP >= visT + MARGIN) top = ny - h - GAP;
 
   // prefer aligned to the node's left edge; flip right-aligned near the right edge
   let left = nx;
-  if (left + w > viewR - 4) left = nx + nw - w;
+  if (left + w > visR - MARGIN) left = nx + nw - w;
 
-  // final clamp so it can never clip outside the viewport
-  left = Math.max(viewL + 4, Math.min(left, viewR - w - 4));
-  top  = Math.max(viewT + 4, Math.min(top,  viewB - h - 4));
+  // final clamp to the VISIBLE region — never outside the browser window. When the
+  // card is taller than the region, the lower bound wins first, then the upper
+  // bound pins the top so the header + close stay visible (bottom may then scroll).
+  left = Math.max(visL + MARGIN, Math.min(left, visR - w - MARGIN));
+  top  = Math.max(visT + MARGIN, Math.min(top,  visB - h - MARGIN));
 
   el.style.left = Math.round(left) + 'px';
   el.style.top  = Math.round(top) + 'px';
@@ -4032,14 +4061,31 @@ window.addEventListener('resize', () => {
   clearTimeout(gpResizeTimer);
   gpResizeTimer = setTimeout(gpReposition, 120);
 });
+// orientationchange fires its own event; on some engines the viewport metrics
+// only settle a frame or two later, so gpReposition's second pass covers it.
+window.addEventListener('orientationchange', () => {
+  clearTimeout(gpResizeTimer);
+  gpResizeTimer = setTimeout(gpReposition, 120);
+});
 
-// Re-anchor after a zoom change (node moved in screen space).
+// Re-anchor after a resize / rotation / zoom change (the node moved in screen
+// space, or the visible region shrank). Position immediately, then AGAIN on the
+// next frame: a resize handler can fire mid-reflow — before viewport-relative CSS
+// like the pane's min(60vh) height has settled — and a single measurement would
+// clamp against stale bounds. The second, post-layout pass corrects that. Cheap,
+// self-limiting (no rescheduling), and a no-op while no popup is open.
 function gpReposition() {
   if (!gpOpen) return;
   const vp = document.getElementById(gpOpen.vpId);
   const el = vp && vp.querySelector('.gp-popup');
   const nodeEl = vp && vp.querySelector(gpOpen.nodeSel);
-  if (el && nodeEl) gpPosition(el, nodeEl, vp);
+  if (!el || !nodeEl) return;
+  gpPosition(el, nodeEl, vp);
+  requestAnimationFrame(() => {
+    const el2 = vp.querySelector('.gp-popup');
+    const node2 = vp.querySelector(gpOpen.nodeSel);
+    if (el2 && node2) gpPosition(el2, node2, vp);
+  });
 }
 /* ================= end shared graph popup ================= */
 
