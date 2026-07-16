@@ -134,6 +134,42 @@ main { padding:24px 28px 48px; max-width:1400px; margin:0 auto; }
   .branch-card, .dest-card { transition:border-color .2s ease, background .2s ease; }
   .branch-card:hover, .dest-card:hover { transform:none; }
 }
+/* ===== Branch page (Phase 2): full-page destination, stacked sections ===== */
+#branch-page { max-width:880px; margin:0 auto; }
+.branch-page-inner { border-top:3px solid var(--bc, var(--accent)); padding-top:18px; }
+.branch-back {
+  display:inline-block; color:var(--muted); text-decoration:none; font-size:13px;
+  letter-spacing:0.4px; margin-bottom:12px; border-bottom:1px solid transparent;
+  transition:color .2s ease, border-color .2s ease;
+}
+.branch-back:hover { color:var(--accent); border-bottom-color:var(--gold-soft); }
+.branch-back:focus-visible { outline:2px solid var(--accent); outline-offset:3px; border-radius:3px; }
+.branch-page-title {
+  color:var(--bc, var(--accent)); font-variant:small-caps; letter-spacing:2px;
+  font-size:26px; font-weight:normal; margin:0 0 8px;
+}
+.branch-page-title:focus-visible { outline:2px solid var(--bc, var(--accent)); outline-offset:4px; border-radius:3px; }
+.branch-page-desc { color:var(--ink); max-width:65ch; line-height:1.7; margin:0 0 6px; }
+.branch-page-count { color:var(--muted); font-size:13px; margin:0 0 6px; }
+#branch-page .section-label { margin-top:30px; }
+.branch-qs { font-size:15px; }
+.branch-qs li { margin:7px 0; }
+.branch-concepts { display:flex; flex-direction:column; gap:8px; }
+.branch-concept {
+  background:var(--panel); border:1px solid var(--line); border-radius:8px;
+  border-left:3px solid var(--bc, var(--accent)); padding:10px 14px;
+}
+.branch-concept b { color:var(--accent); }
+.branch-path-intro { color:var(--muted); font-size:13px; font-style:italic; margin:0 0 10px; }
+.branch-path li { margin:8px 0; line-height:1.55; }
+.branch-preview { margin-top:4px; }
+.branch-viewall {
+  display:inline-block; margin-top:14px; color:var(--bc, var(--accent)); text-decoration:none;
+  font-size:14px; letter-spacing:0.4px; border:1px solid var(--bc, var(--line));
+  border-radius:16px; padding:7px 16px; transition:background .2s ease, color .2s ease;
+}
+.branch-viewall:hover { background:color-mix(in srgb, var(--bc, var(--accent)) 16%, var(--panel)); }
+.branch-viewall:focus-visible { outline:2px solid var(--bc, var(--accent)); outline-offset:3px; }
 h2 {
   color:var(--accent); font-weight:normal; letter-spacing:3px; font-variant:small-caps;
   border-bottom:none; padding-bottom:14px; position:relative; font-size:24px; margin-top:0;
@@ -690,6 +726,10 @@ ul.clean li { margin:6px 0; }
   </div>
 </section>
 
+<section id="branch" class="tab" aria-labelledby="branch-page-title">
+  <div id="branch-page"></div>
+</section>
+
 </main>
 
 <div class="modal-bg" id="modal-bg"><div class="modal" id="modal-content"></div></div>
@@ -735,7 +775,7 @@ const EX_PANEL_ID   = { philosophers:'expanel-philosophers', map:'respanel-graph
                         ideas:'expanel-ideas' };
 // Ideas holds the two thinking tools that used to sit in the Library tab.
 const IDEA_VIEWS    = ['trails','compare'];
-const ENTITY_ROUTES = ['philosopher','branch','school','term'];
+const ENTITY_ROUTES = ['philosopher','school','term'];
 // Workspace and Library were both removed as features. Neither is in KNOWN_TABS, so
 // '#/workspace' and any unmapped '#/library/<sub>' fall through to the 'home' default
 // and are rewritten to '#/home'. No data is deleted for either.
@@ -743,7 +783,9 @@ const KNOWN_TABS    = ['home','explore','flashcards','resources'];
 
 // Live navigation state. closeModal and the '/' shortcut read this so a modal always
 // returns to the exact view it was opened from, rather than one hardcoded route.
-const NAV = { tab:'home', ex:'philosophers', idea:'trails' };
+const NAV = { tab:'home', ex:'philosophers', idea:'trails', branch:null };
+// The document title on any non-branch route; a branch page prepends its own name.
+const BASE_TITLE = document.title;
 
 function setExPanel(name) {
   if (!EX_PANELS.includes(name)) name = 'philosophers';
@@ -804,12 +846,19 @@ function setTab(name) {
   const title = document.getElementById('home-title');
   if (title) title.classList.toggle('home-active', name==='home');
   $$('main > .tab').forEach(t => t.classList.toggle('active', t.id===name));
+  document.title = BASE_TITLE;
   window.scrollTo(0,0);
 }
 // The canonical hash for whatever is on screen right now.
 function currentPath() {
+  if (NAV.tab === 'branch') return '#/branch/' + encodeURIComponent(NAV.branch);
   if (NAV.tab === 'explore') {
-    return NAV.ex === 'ideas' ? '#/explore/ideas/' + NAV.idea : '#/explore/' + NAV.ex;
+    if (NAV.ex === 'ideas') return '#/explore/ideas/' + NAV.idea;
+    if (NAV.ex === 'philosophers') {
+      const fb = $('#filter-branch').value;
+      return fb ? '#/explore/philosophers/branch/' + encodeURIComponent(fb) : '#/explore/philosophers';
+    }
+    return '#/explore/' + NAV.ex;
   }
   return '#/' + NAV.tab;
 }
@@ -873,9 +922,6 @@ function handleHash() {
     if (p0[0]==='philosopher') {
       const p = DATA.philosophers[byName[arg]];
       if (p) showPhilosopher(p);
-    } else if (p0[0]==='branch') {
-      const i = DATA.branches.findIndex(b => b.name===arg);
-      if (i>=0) showBranch(i);
     } else if (p0[0]==='school') {
       const s = DATA.schools.find(x => x.name===arg);
       if (s) showSchool(s);
@@ -883,6 +929,18 @@ function handleHash() {
       const g = DATA.glossary.find(x => x.term===arg);
       if (g) showTerm(g);
     }
+    return;
+  }
+
+  // Branch is a full page, not a modal: #/branch/<name> renders #branch and activates it.
+  if (p0[0]==='branch') {
+    const name = p0[1] ? decodeURIComponent(p0[1]) : '';
+    const i = DATA.branches.findIndex(b => b.name===name);
+    if (i < 0) { location.hash = '#/home'; return; }
+    closeModal(true);
+    renderBranchPage(i);
+    const canon = currentPath();
+    if (location.hash !== canon) history.replaceState(null, '', canon);
     return;
   }
 
@@ -899,6 +957,15 @@ function handleHash() {
   if (tab === 'explore') {
     setExPanel(parts[1] || 'philosophers');
     if (NAV.ex === 'ideas') setIdeaView(parts[2] || 'trails');
+    // Shareable branch filter: #/explore/philosophers/branch/<name>. An unknown branch
+    // (or the ordinary /explore/philosophers route) clears any stale branch filter.
+    else if (NAV.ex === 'philosophers') {
+      const fb = $('#filter-branch');
+      const wantBranch = (parts[2]==='branch' && parts[3]) ? decodeURIComponent(parts[3]) : '';
+      fb.value = DATA.branches.some(b => b.name===wantBranch) ? wantBranch : '';
+      renderPhilosophers();
+      if (fb.value) { const pc = $('#phil-count'); if (pc) { pc.setAttribute('tabindex','-1'); pc.focus(); } }
+    }
   }
   // Rewrite the address bar to the canonical path for whatever is now on screen, so
   // '#/explore' reads as '#/explore/philosophers' and shared links are unambiguous.
@@ -919,9 +986,9 @@ function linkT(n) { location.hash = '#/term/' + encodeURIComponent(n); }
 function openModal() { $('#modal-bg').classList.add('open'); }
 function closeModal(silent) {
   $('#modal-bg').classList.remove('open');
-  if (!silent && /#\/(philosopher|branch|school|term)\//.test(location.hash)) {
+  if (!silent && /#\/(philosopher|school|term)\//.test(location.hash)) {
     // Return to the exact view the modal was opened from: Directory, Influence Map,
-    // Quotes, Excerpts, Schools, Glossary or a Library panel.
+    // Schools, Glossary, a Library panel, or a branch page (currentPath knows it).
     history.replaceState(null, '', currentPath());
   }
 }
@@ -996,31 +1063,74 @@ function renderBranches() {
   `).join('');
   $$('#branches-grid .branch-card').forEach(el => el.addEventListener('click', () => linkB(DATA.branches[+el.dataset.i].name)));
 }
-function showBranch(i) {
+// Stable branch-name -> accent, matching the Phase 1 homepage seven-branch palette by
+// position. Keyed by name so the branch page never depends on DOM nth-child order.
+const BRANCH_ACCENTS = {
+  'Metaphysics':'#e5c158', 'Epistemology':'#7fb0c9', 'Ethics':'#cf9074',
+  'Logic':'#9db08a', 'Axiology':'#b195c9', 'Political Philosophy':'#cf897f',
+  'Aesthetics':'#6fb3a6',
+};
+// Only concepts with an EXACT current Glossary entry get a link (case-insensitive).
+// No fuzzy or synonym matching: an unmatched concept stays plain text.
+const GLOSSARY_BY_LOWER = {};
+DATA.glossary.forEach(g => { GLOSSARY_BY_LOWER[g.term.toLowerCase()] = g.term; });
+const BRANCH_PREVIEW_MAX = 24;
+
+function renderBranchPage(i) {
   const b = DATA.branches[i];
+  const accent = BRANCH_ACCENTS[b.name] || 'var(--accent)';
   const tagged = DATA.philosophers.filter(p => (p.branches||[]).includes(b.name));
   tagged.sort((a,x)=>(a.birth==null?9999:a.birth)-(x.birth==null?9999:x.birth));
   const path = (DATA.reading_paths||[]).find(p => p.branch===b.name);
-  $('#modal-content').innerHTML = `
-    <button class="close">&times;</button>
-    <h2>${esc(b.name)}</h2>
-    <p>${esc(b.desc)}</p>
-    <div class="section-label">Core Questions</div>
-    <ul class="clean">${b.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ul>
-    <div class="section-label">Key Concepts</div>
-    <ul class="clean">${b.concepts.map(c => `<li><b>${esc(c.term)}:</b> ${esc(c.def)}</li>`).join('')}</ul>
-    ${path ? `<div class="section-label">Reading Path</div><ol class="clean">${path.stops.map(s=>`<li><span class="auto-link" data-p="${esc(s.who)}">${esc(s.who)}</span> — <i>${esc(s.what)}</i></li>`).join('')}</ol>` : ''}
-    ${tagged.length
-      ? `<div class="section-label">All Tagged Philosophers (${tagged.length})</div>
-         <div class="chip-row">${tagged.map(p => `<span class="chip" data-name="${esc(p.name)}">${esc(p.name)}${philosopherCompactYear(p)?`<span class="year">${philosopherCompactYear(p)}</span>`:''}</span>`).join('')}</div>`
-      : `<div class="section-label">Tagged Philosophers</div>
-         <p class="branch-empty">No philosophers are directly assigned to this branch yet, so it reads as an overview: use the questions, concepts and reading path above. Figures in this area are also tagged under the branches they are filed within.</p>`}
-  `;
-  const mc = $('#modal-content');
-  mc.querySelector('.close').addEventListener('click', closeModal);
-  mc.querySelectorAll('.chip').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
-  bindAutoLinks(mc);
-  openModal();
+
+  const concepts = b.concepts.map(c => {
+    const gt = GLOSSARY_BY_LOWER[c.term.toLowerCase()];
+    const term = gt
+      ? `<span class="gloss-link" data-g="${esc(gt)}">${esc(c.term)}</span>`
+      : `${esc(c.term)}`;
+    return `<div class="branch-concept"><b>${term}</b> — ${esc(c.def)}</div>`;
+  }).join('');
+
+  const preview = tagged.slice(0, BRANCH_PREVIEW_MAX);
+  const viewAll = tagged.length > BRANCH_PREVIEW_MAX
+    ? `<a class="branch-viewall" href="#/explore/philosophers/branch/${encodeURIComponent(b.name)}">View all ${tagged.length} →</a>`
+    : '';
+  const taggedBlock = tagged.length
+    ? `<div class="section-label">All Tagged Philosophers (${tagged.length})</div>
+       <div class="chip-row branch-preview">${preview.map(p => `<span class="chip" data-name="${esc(p.name)}">${esc(p.name)}${philosopherCompactYear(p)?`<span class="year">${philosopherCompactYear(p)}</span>`:''}</span>`).join('')}</div>
+       ${viewAll}`
+    : `<div class="section-label">Tagged Philosophers</div>
+       <p class="branch-empty">No philosophers are directly assigned to this branch yet, so it reads as an overview: use the questions, concepts and reading path above. Figures in this area are also tagged under the branches they are filed within.</p>`;
+
+  $('#branch-page').innerHTML = `
+    <div class="branch-page-inner" style="--bc:${accent}">
+      <a class="branch-back" href="#/home">← All branches</a>
+      <h2 class="branch-page-title" id="branch-page-title" tabindex="-1">${esc(b.name)}</h2>
+      <p class="branch-page-desc">${esc(b.desc)}</p>
+      ${tagged.length ? `<p class="branch-page-count">${tagged.length} tagged philosophers</p>` : ''}
+      <div class="section-label">Core Questions</div>
+      <ul class="clean branch-qs">${b.questions.map(q => `<li>${esc(q)}</li>`).join('')}</ul>
+      <div class="section-label">Key Concepts</div>
+      <div class="branch-concepts">${concepts}</div>
+      ${path ? `<div class="section-label">Reading Path</div>
+        <p class="branch-path-intro">A suggested sequence — read these in order for a guided introduction to the branch.</p>
+        <ol class="clean branch-path">${path.stops.map(s=>`<li><span class="auto-link" data-p="${esc(s.who)}">${esc(s.who)}</span> — <i>${esc(s.what)}</i></li>`).join('')}</ol>` : ''}
+      ${taggedBlock}
+    </div>`;
+
+  // Activate the branch page as the visible section (branch is not a KNOWN_TAB).
+  NAV.tab = 'branch'; NAV.branch = b.name;
+  $$('main > .tab').forEach(t => t.classList.toggle('active', t.id==='branch'));
+  const title = document.getElementById('home-title');
+  if (title) title.classList.remove('home-active');
+  document.title = b.name + ' · ' + BASE_TITLE;
+
+  const bp = $('#branch-page');
+  bp.querySelectorAll('.chip').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
+  bindAutoLinks(bp);
+  window.scrollTo(0,0);
+  const heading = document.getElementById('branch-page-title');
+  if (heading) heading.focus();
 }
 
 // ===== Philosophers =====
