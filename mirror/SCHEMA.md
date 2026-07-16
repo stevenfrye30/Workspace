@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **8** (field `__v` in the data).
+Current schema version: **9** (field `__v` in the data).
 
 ---
 
@@ -150,18 +150,65 @@ calendar markers; never the *only* signal): Body = terracotta, Mind = blue, Heal
 Relationships = rose, Money = amber, Identity = violet. Defined as CSS variables
 (`--cat-*`), re-toned for dark mode.
 
-### calendar *(v8)* — integration boundary
-- **calendar** — `{ events: [], integration: { provider: "google", connected: false,
-  lastSync: null } }`. The monthly Calendar view currently renders **only local data**: the
-  current day and the `completion` history (six dots per day). `events[]` is a reserved,
-  documented boundary for real events; nothing is fetched from or sent to any service.
+### calendar *(v9)* — Google Calendar integration config
+- **calendar** — `{ events: [], integration: {...} }`. `events[]` stays an **empty reserved
+  array** (Google events are never persisted here — see below). `integration` holds only
+  **non-sensitive** settings, safe to include in a backup:
+  - `provider` — `"google"`.
+  - `connected` — always **runtime-only**; reset to `false` on every load. A saved `true`
+    would be meaningless because the access token never survives a page refresh.
+  - `lastSync` — epoch-ms of the last successful event fetch (display only).
+  - `selectedCalendarIds` — `string[]` of Google calendar ids the user chose to show.
+  - `showEvents` — `bool` display toggle.
+  - `maxPerDay` — how many events to show per month-cell before "+N more".
 
-  > **Google Calendar sync is NOT implemented.** It is intentionally deferred. Turning it on
-  > would require: a Google Cloud **OAuth client ID**, the **Calendar API** enabled, an OAuth
-  > **consent screen**, a browser **token flow** (Google Identity Services), then reading
-  > events into `calendar.events[]` (shape suggestion: `{ id, date, title, start, end,
-  > source: "google", _src, _at }`) and a two-way sync/refresh strategy. The UI and data
-  > boundary are built so this can be added without reshaping anything.
+  **What is deliberately NOT stored anywhere persistent** (in-memory only; gone on refresh):
+  the OAuth **access token** + expiry, the fetched **calendar list**, the connected
+  **account/email**, and the per-month **event cache**. `scrubCalendarSecrets()` runs before
+  every `saveState()`/export/forever-copy write and strips any token-like field, so no token
+  or event data can reach `localStorage`, an exported backup, or `mirror-data.json`.
+
+  The **OAuth Client ID** is stored in its own device-local key `mirror_gcal_client_id`
+  (outside `state`), so it is **not** included in exports or the forever-copy. Client IDs are
+  public by design, but keeping it out of committed files keeps the archive clean.
+
+#### Google Calendar setup (what you must configure in Google Cloud Console)
+This is a **read-only** integration (scope `https://www.googleapis.com/auth/calendar.readonly`).
+It uses the browser **Google Identity Services token client** — no client secret, no backend,
+no redirect URI. To turn it on:
+
+1. **Create or select a project** at <https://console.cloud.google.com>.
+2. **Enable the Google Calendar API** (APIs & Services → Library → "Google Calendar API" →
+   Enable).
+3. **Configure the OAuth consent screen** (APIs & Services → OAuth consent screen). User type
+   **External** is fine for personal use. Fill app name + your email.
+4. While the app is in **Testing** mode, add your Google account under **Test users**. (Apps in
+   testing are limited to test users and tokens expire after 7 days — fine for personal use.
+   Publishing/verification is only needed to share it beyond test users.)
+5. **Create an OAuth 2.0 Client ID** (APIs & Services → Credentials → Create credentials →
+   OAuth client ID) with **Application type = Web application**.
+6. Under **Authorized JavaScript origins** add:
+   - `https://stevenfrye30.github.io` (the live site)
+   - `http://localhost:<port>` and/or `http://127.0.0.1:<port>` for local development.
+7. **Redirect URIs are not required** for the GIS token/popup flow used here — leave them
+   blank. (Redirect URIs only matter for the older authorization-code/redirect flow.)
+8. **Copy the Client ID** (looks like `xxxx.apps.googleusercontent.com`) and paste it into
+   Mirror: Calendar view → Google Calendar panel → **Configure Client ID**. It is stored only
+   on that device.
+9. **Scope requested:** `calendar.readonly` only — Mirror can view events but can never create,
+   edit, or delete anything. It does not request full calendar access.
+10. **Verification implications:** for the owner + added test users, no Google verification is
+    needed. Google verification is only required if the app leaves testing and is used by
+    people who aren't listed test users.
+
+**CSP note:** Mirror ships no Content-Security-Policy meta tag. The integration loads Google's
+official sign-in script from `https://accounts.google.com/gsi/client` (only on demand, when the
+user clicks Connect) and makes REST calls to `https://www.googleapis.com`. If a CSP is ever
+added, it must allow `script-src https://accounts.google.com` and
+`connect-src https://www.googleapis.com https://oauth2.googleapis.com`.
+
+**Refresh honesty:** because the token lives only in memory, a page refresh disconnects the
+session. The UI says so and offers Reconnect — no token is written to disk to avoid this.
 
 ### home
 - **widgets** — `string[]`. Which Today-view cards are shown. UI config, not a record.
@@ -200,6 +247,17 @@ means**. So:
   boundary, **sync not implemented**). The measurable logs stay under `body.*`; the Health
   category surfaces them, the Body category surfaces `checkins`/`symptoms`. `exercise[]`
   gained optional `time`/`distance`/`intensity`/`note`; `water[]` gained optional `t`.
+- **v9** → **Google Calendar read-only integration (Phase 1).** Extends
+  `calendar.integration` with **non-sensitive** config only: `selectedCalendarIds`,
+  `showEvents`, `maxPerDay` (plus existing `provider`/`connected`/`lastSync`). **No token,
+  authorization code, refresh token, or event data is ever persisted** — those are in-memory
+  only; `scrubCalendarSecrets()` strips any token-like field before every save/export. The
+  OAuth Client ID lives in a device-local key (`mirror_gcal_client_id`), outside `state`, so
+  it is excluded from backups and the forever-copy. `connected` is reset to `false` on load
+  (runtime-only). Preserves all v8 data; reshapes/renames nothing. Google events are external
+  display data, kept structurally separate from `completion`, category data, Daily Cards, and
+  Health/Body logs. Not implemented in this phase (deferred): create/edit/delete, background
+  sync, two-way sync, writing Mirror data into Google.
 
 ---
 

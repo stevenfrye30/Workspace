@@ -447,6 +447,63 @@
                              padding:2px 8px; border-radius:10px; border:1px solid var(--warn); color:var(--warn); margin-left:6px; }
   @media (max-width: 560px) { .cal-cell { min-height:54px; } .cal-cell .dn { font-size:0.66rem; } }
 
+  /* ---- Google Calendar integration (read-only) ---- */
+  .gcal-panel { margin-top:22px; padding:14px 16px; border:1px solid var(--line); border-radius:6px; background:var(--panel); font-size:0.86rem; }
+  .gcal-panel .gc-head { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .gcal-panel .gc-head strong { color:var(--ink); font-size:0.95rem; }
+  .gcal-badge { display:inline-block; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.06em;
+                padding:2px 8px; border-radius:10px; border:1px solid var(--dim); color:var(--dim); }
+  .gcal-badge.off { border-color:var(--warn); color:var(--warn); }
+  .gcal-badge.on { border-color:var(--accent2); color:var(--accent2); }
+  .gcal-badge.ro { border-color:var(--dim); color:var(--dim); }
+  .gcal-panel .gc-body { margin-top:10px; color:var(--dim); line-height:1.5; }
+  .gcal-panel .gc-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+  .gcal-panel .gc-msg { margin-top:10px; font-size:0.82rem; }
+  .gcal-panel .gc-msg.err { color:var(--warn); }
+  .gcal-panel .gc-msg.ok { color:var(--accent2); }
+  .gcal-panel .gc-cals { margin-top:12px; display:flex; flex-direction:column; gap:5px; }
+  .gcal-panel .gc-cal { display:flex; align-items:center; gap:8px; font-size:0.85rem; color:var(--ink); }
+  .gcal-panel .gc-cal .sw { width:11px; height:11px; border-radius:3px; border:1px solid var(--line); flex:none; }
+  .gcal-spin { display:inline-block; width:13px; height:13px; border:2px solid var(--line); border-top-color:var(--accent);
+               border-radius:50%; animation:gcspin .8s linear infinite; vertical-align:-2px; margin-right:6px; }
+  @keyframes gcspin { to { transform:rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) { .gcal-spin { animation:none; } }
+
+  /* Google events inside month cells — a layer distinct from the six completion dots */
+  .cal-events { margin-top:5px; display:flex; flex-direction:column; gap:2px; }
+  .cal-gev { display:flex; align-items:center; gap:4px; font-size:0.63rem; line-height:1.25; color:var(--ink);
+             background:var(--panel2); border-left:3px solid var(--gcol,var(--dim)); border-radius:3px;
+             padding:1px 4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer;
+             font-family:-apple-system,'Segoe UI',system-ui,sans-serif; }
+  .cal-gev .gt { color:var(--dim); font-variant-numeric:tabular-nums; }
+  .cal-gev.allday { border-left-style:double; }
+  .cal-more { font-size:0.62rem; color:var(--accent); cursor:pointer; background:none; border:0; padding:1px 4px; text-align:left; font-family:inherit; }
+  .cal-more:hover { text-decoration:underline; }
+  .cal-cell.clickable { cursor:pointer; }
+  .cal-cell.clickable:hover { border-color:var(--accent); }
+  .cal-cell:focus-visible { outline:2px solid var(--accent); outline-offset:1px; }
+
+  /* Today view — Google events section (kept separate from logs/completion) */
+  #todayEventsSection .te-list { display:flex; flex-direction:column; gap:6px; }
+  .te-item { display:flex; gap:10px; align-items:baseline; padding:9px 12px; border:1px solid var(--line);
+             border-left:3px solid var(--gcol,var(--dim)); border-radius:5px; background:var(--panel);
+             font-family:-apple-system,'Segoe UI',system-ui,sans-serif; }
+  .te-item .te-time { font-size:0.8rem; color:var(--dim); font-variant-numeric:tabular-nums; white-space:nowrap; min-width:66px; }
+  .te-item .te-main { flex:1; min-width:0; }
+  .te-item .te-title { font-size:0.92rem; color:var(--ink); }
+  .te-item .te-sub { font-size:0.74rem; color:var(--dim); margin-top:1px; }
+  .te-item .te-link { font-size:0.74rem; color:var(--accent); white-space:nowrap; }
+  #todayEventsSection .te-note { font-size:0.78rem; color:var(--dim); }
+
+  /* Day-detail modal event rows */
+  .dd-day { font-size:0.8rem; color:var(--dim); margin-bottom:10px; }
+  .dd-comp { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; }
+  .dd-comp .dc { display:flex; align-items:center; gap:6px; font-size:0.78rem; }
+  .dd-comp .dc .sw { width:11px; height:11px; border-radius:50%; border:1.5px solid var(--dcol); }
+  .dd-comp .dc.done .sw { background:var(--dcol); }
+  .dd-events { display:flex; flex-direction:column; gap:7px; }
+  .dd-empty { color:var(--dim); font-style:italic; font-size:0.85rem; padding:6px 0; }
+
   footer.foot { text-align: center; color: var(--dim); font-size: 0.78rem; padding: 20px;
                 border-top: 1px solid var(--line); margin-top: 40px; }
   footer.foot a { color: var(--accent); }
@@ -578,7 +635,7 @@
   </div>
   <div class="cal-grid" id="calGrid" role="grid" aria-label="Month calendar"></div>
   <div class="cal-legend" id="calLegend"></div>
-  <div class="integration-note" id="calIntegration"></div>
+  <div id="calIntegration"></div>
 </section>
 
 <!-- ============== BODY (subjective) ============== -->
@@ -627,6 +684,11 @@
   <div class="section" style="margin-bottom:22px">
     <div class="section-head"><h2>Today's completion</h2><span class="act tiny" id="todayCompletionStatus"></span></div>
     <div class="today-cats" id="todayCats"></div>
+  </div>
+
+  <div class="section" id="todayEventsSection" style="margin-bottom:22px; display:none">
+    <div class="section-head"><h2>Today's calendar</h2><span class="act tiny" id="todayEventsStatus"></span></div>
+    <div id="todayEvents" class="te-list"></div>
   </div>
 
   <div class="section" style="margin-bottom:18px">
@@ -1370,7 +1432,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 9;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -1401,9 +1463,15 @@ const defaultState = () => ({
   // completion: per local date, which of the six categories are 'started' or 'complete'.
   //   { "2026-07-15": { body:"complete", mind:"started", ... } }. Absent = not started.
   completion: {},
-  // calendar: integration boundary. events[] is reserved for real events; integration
-  //   holds provider config. Google Calendar sync is NOT implemented (see SCHEMA §Calendar).
-  calendar: { events: [], integration: { provider: 'google', connected: false, lastSync: null } },
+  // calendar: Google Calendar integration config (v9). Only NON-SENSITIVE settings live
+  //   here (safe to back up): selected calendar ids, display prefs, last-sync time.
+  //   Access tokens + fetched events are NEVER stored here — they are in-memory only
+  //   (see the GCAL module). events[] stays an empty reserved array. `connected` is
+  //   runtime-only (reset to false on load; a saved token can't survive a refresh).
+  calendar: { events: [], integration: {
+    provider: 'google', connected: false, lastSync: null,
+    selectedCalendarIds: [], showEvents: true, maxPerDay: 3
+  } },
   home: { widgets: ['glance','pulse','water','sleep','exercise','journal'] }
 });
 function getTargets() { return Object.assign({}, DEFAULT_TARGETS, state.body.targets || {}); }
@@ -1475,6 +1543,24 @@ function migrate(s) {
     }
     v = 8;
   }
+  // v8 -> v9: Google Calendar read-only integration config. Adds NON-SENSITIVE settings
+  // to calendar.integration (selectedCalendarIds, showEvents, maxPerDay). No token, code,
+  // or event cache is ever persisted — those are in-memory only. Preserves all v8 data.
+  if (v < 9) {
+    s.calendar = s.calendar || {};
+    if (!Array.isArray(s.calendar.events)) s.calendar.events = [];
+    const ig = s.calendar.integration = s.calendar.integration || {};
+    ig.provider = ig.provider || 'google';
+    ig.connected = false;                                   // runtime-only; never trust a persisted 'true'
+    if (!('lastSync' in ig)) ig.lastSync = null;
+    if (!Array.isArray(ig.selectedCalendarIds)) ig.selectedCalendarIds = [];
+    if (typeof ig.showEvents !== 'boolean') ig.showEvents = true;
+    if (typeof ig.maxPerDay !== 'number') ig.maxPerDay = 3;
+    // SECURITY: strip anything token-like that might have leaked into a saved blob.
+    ['accessToken','access_token','token','code','refreshToken','refresh_token','id_token','expiresAt']
+      .forEach(k => delete ig[k]);
+    v = 9;
+  }
   s.__v = SCHEMA_VERSION;
   return s;
 }
@@ -1514,9 +1600,20 @@ function bumpChangesSinceRepo() {
   const n = Number(localStorage.getItem(CHANGES_KEY) || 0) + 1;
   try { localStorage.setItem(CHANGES_KEY, String(n)); } catch {}
 }
+/* Belt-and-braces: guarantee no Google token/code/event data can ever be written into the
+   persisted state, exported backups, or the forever-copy. Tokens + fetched events live only
+   in memory (the GCAL module); this strips anything token-like from calendar.integration and
+   ensures calendar.events stays empty before any serialization. */
+function scrubCalendarSecrets() {
+  const ig = state.calendar && state.calendar.integration;
+  if (ig) ['accessToken','access_token','token','code','refreshToken','refresh_token','id_token','expiresAt']
+    .forEach(k => delete ig[k]);
+  if (state.calendar && Array.isArray(state.calendar.events)) state.calendar.events = [];
+}
 function saveState() {
   state.__v = SCHEMA_VERSION;
   stampNewRecords();
+  scrubCalendarSecrets();
   bumpChangesSinceRepo();
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -1628,8 +1725,8 @@ function applyView(name){
 }
 function runViewRender(name){
   if (name === 'home') renderHomeHex();
-  else if (name === 'today') renderTodayTab();
-  else if (name === 'calendar') renderCalendarView();
+  else if (name === 'today') { renderTodayTab(); gcalEnsureTodayMonth(); }
+  else if (name === 'calendar') { renderCalendarView(); gcalEnsureMonth(); }
   else if (name === 'reflect') renderReflect();
   else if (name === 'body') { renderBodyCheckin(); simpleLog('symptoms','symLog', r => escapeHtml(r.note)); }
   else if (name === 'health') { renderHealthTimeline(); renderHydration(); }
@@ -1694,6 +1791,7 @@ document.getElementById('backupDismiss').onclick = () => {
 
 /* ----- Export / Import / Reset ----- */
 function doExport() {
+  scrubCalendarSecrets();   // never export a Google token / event cache (they're in-memory only anyway)
   const blob = new Blob([JSON.stringify(state, null, 2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -1866,6 +1964,7 @@ function saveBlob(name, text, mime) {
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
 function downloadRepoCopy() {
+  scrubCalendarSecrets();   // the forever-copy must never contain a Google token / event cache
   // Two files: the lossless JSON the app restores from, and its human-readable companion.
   saveBlob('mirror-data.json', JSON.stringify(state, null, 2), 'application/json');
   saveBlob('mirror-data.md', buildDataMarkdown(), 'text/markdown');
@@ -1927,7 +2026,12 @@ const overlay = document.getElementById('modalOverlay');
 const modalBox = document.getElementById('modalBox');
 function closeModal() { overlay.classList.remove('open'); modalBox.innerHTML = ''; }
 overlay.onclick = (e) => { if (e.target === overlay) closeModal(); };
-document.addEventListener('keydown', e => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeModal(); });
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && overlay.classList.contains('open')) {
+    closeModal();
+    if (ddLastTrigger && ddLastTrigger.focus) { try { ddLastTrigger.focus(); } catch {} ddLastTrigger = null; }
+  }
+});
 
 // Generic edit form. fields: [{key,label,type,options?,min?,step?}]. onSave(values) returns nothing.
 function openEditModal(title, sub, fields, values, onSave) {
@@ -4028,7 +4132,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); renderTodayEvents(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -4942,6 +5046,269 @@ function renderHealthTimeline(){
 }
 
 /* ----- Calendar: month grid + completion dots + integration boundary ----- */
+/* ============================================================
+   GOOGLE CALENDAR — read-only integration (Phase 1)
+   User-initiated OAuth via Google Identity Services (token model),
+   then REST reads of calendarList + events. SECURITY MODEL:
+   NOTHING sensitive is persisted. The access token, its expiry, the
+   fetched calendar list, the connected account, and the per-month
+   event cache all live in memory only and vanish on refresh (by
+   design — the UI says so). Persisted in state.calendar.integration
+   (safe, backed up): selected calendar ids + display prefs + last
+   sync time. The OAuth client id is device-local in its own
+   localStorage key and is deliberately kept OUT of exports.
+   ============================================================ */
+const GCAL_SCOPE = 'https://www.googleapis.com/auth/calendar.readonly';
+const GCAL_GIS_SRC = 'https://accounts.google.com/gsi/client';
+const GCAL_API = 'https://www.googleapis.com/calendar/v3';
+const GCAL_CLIENT_KEY = 'mirror_gcal_client_id';   // device-local; never in state / exports
+const GCAL_FRESH_MS = 5 * 60 * 1000;               // per-month cache freshness
+
+const gcal = {
+  token: null, tokenExpiry: 0,      // in-memory only — never persisted
+  tokenClient: null, gisLoaded: false,
+  calendars: [],                    // [{id,name,color,primary}] in-memory
+  email: null,                      // connected account (primary calendar id) in-memory
+  cache: {},                        // { 'YYYY-MM': {fetchedAt, events:[], failed:[]} } session cache
+  busy: false, lastError: null, lastNote: null,
+};
+function gcalClientId(){ try { return (localStorage.getItem(GCAL_CLIENT_KEY) || '').trim(); } catch { return ''; } }
+function gcalSetClientId(v){ try { v = (v||'').trim(); if (v) localStorage.setItem(GCAL_CLIENT_KEY, v); else localStorage.removeItem(GCAL_CLIENT_KEY); } catch {} }
+function gcalConnected(){ return !!gcal.token && Date.now() < gcal.tokenExpiry; }
+function gcalIntegration(){ state.calendar = state.calendar || {}; return (state.calendar.integration = state.calendar.integration || {}); }
+function safeUrl(u){ return /^https:\/\//i.test(String(u||'')) ? String(u) : ''; }
+
+function loadGis(){
+  return new Promise((resolve, reject) => {
+    if (window.google && google.accounts && google.accounts.oauth2) { gcal.gisLoaded = true; return resolve(); }
+    const done = () => (window.google && google.accounts && google.accounts.oauth2) ? (gcal.gisLoaded = true, resolve()) : reject(new Error('Google sign-in loaded but is unavailable.'));
+    const existing = document.querySelector(`script[data-gis="1"]`);
+    if (existing) { existing.addEventListener('load', done); existing.addEventListener('error', () => reject(new Error('Could not load Google sign-in.'))); return; }
+    const sc = document.createElement('script');
+    sc.src = GCAL_GIS_SRC; sc.async = true; sc.defer = true; sc.setAttribute('data-gis', '1');
+    sc.onload = done;
+    sc.onerror = () => reject(new Error('Could not load Google sign-in (network blocked or offline).'));
+    document.head.appendChild(sc);
+  });
+}
+async function gcalConnect(){
+  const cid = gcalClientId();
+  if (!cid) { gcal.lastError = 'Add your Google OAuth Client ID first (Configure).'; renderGcalPanel(); openGcalConfig(); return; }
+  gcal.busy = true; gcal.lastError = null; gcal.lastNote = 'Opening Google sign-in…'; renderGcalPanel();
+  try { await loadGis(); }
+  catch (e) { gcal.busy = false; gcal.lastNote = null; gcal.lastError = e.message; renderGcalPanel(); return; }
+  try {
+    gcal.tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: cid, scope: GCAL_SCOPE,
+      callback: (resp) => gcalOnToken(resp),
+      error_callback: (err) => gcalOnAuthError(err),
+    });
+    gcal.tokenClient.requestAccessToken({ prompt: gcalConnected() ? '' : 'consent' });
+  } catch (e) {
+    gcal.busy = false; gcal.lastNote = null;
+    gcal.lastError = 'Could not start Google authorization — check that the Client ID is valid.';
+    renderGcalPanel();
+  }
+}
+function gcalOnToken(resp){
+  if (resp && resp.error) return gcalOnAuthError(resp);
+  if (!resp || !resp.access_token) { gcal.busy = false; gcal.lastNote = null; gcal.lastError = 'Authorization returned no access token.'; renderGcalPanel(); return; }
+  gcal.token = resp.access_token;
+  gcal.tokenExpiry = Date.now() + ((Number(resp.expires_in) || 3600) - 60) * 1000;
+  gcal.lastError = null; gcal.lastNote = 'Connected — loading your calendars…';
+  renderGcalPanel();
+  gcalAfterConnect();
+}
+function gcalOnAuthError(err){
+  gcal.busy = false; gcal.lastNote = null;
+  const type = String((err && (err.type || err.error)) || '');
+  if (/popup_closed|closed/i.test(type)) gcal.lastError = 'Sign-in was cancelled (popup closed).';
+  else if (/popup_failed|popup_open|blocked/i.test(type)) gcal.lastError = 'The sign-in popup was blocked. Allow popups for this site, then Connect again.';
+  else if (/access_denied|denied/i.test(type)) gcal.lastError = 'Access was not granted.';
+  else if (/invalid_client|client/i.test(type)) gcal.lastError = 'The Client ID looks invalid, or this origin is not authorized in Google Cloud.';
+  else gcal.lastError = 'Google authorization failed' + (type ? ` (${type})` : '') + '.';
+  renderGcalPanel();
+}
+async function gcalAfterConnect(){
+  try {
+    await gcalFetchCalendarList();
+    const ig = gcalIntegration();
+    const known = new Set(gcal.calendars.map(c => c.id));
+    ig.selectedCalendarIds = (ig.selectedCalendarIds || []).filter(id => known.has(id));
+    if (!ig.selectedCalendarIds.length) {
+      const prim = gcal.calendars.find(c => c.primary) || gcal.calendars[0];
+      ig.selectedCalendarIds = prim ? [prim.id] : [];
+    }
+    saveState();
+    gcal.busy = false; gcal.lastNote = null; renderGcalPanel();
+    await gcalRefreshVisible(true);
+    renderTodayEvents();
+  } catch (e) {
+    gcal.busy = false; gcal.lastNote = null;
+    if (e && e.status === 401) { gcal.token = null; gcal.tokenExpiry = 0; }
+    gcal.lastError = gcalErrMsg(e); renderGcalPanel();
+  }
+}
+function gcalDisconnect(){
+  const tok = gcal.token;
+  if (tok && window.google && google.accounts && google.accounts.oauth2 && google.accounts.oauth2.revoke) {
+    try { google.accounts.oauth2.revoke(tok, () => {}); } catch {}
+  }
+  gcal.token = null; gcal.tokenExpiry = 0; gcal.cache = {}; gcal.calendars = [];
+  gcal.email = null; gcal.lastError = null; gcal.busy = false; gcal.lastNote = null;
+  const ig = gcalIntegration(); ig.connected = false;   // keep selectedCalendarIds + prefs for next connect
+  saveState();
+  renderGcalPanel(); renderCalendarView(); renderTodayEvents();
+}
+
+/* ---- REST layer ---- */
+function gcalErrMsg(e){ return (e && e.message) || 'Something went wrong talking to Google.'; }
+function gcal403msg(body){
+  const reason = body && body.error && body.error.errors && body.error.errors[0] && body.error.errors[0].reason || '';
+  if (/accessNotConfigured|apiNotActivated/i.test(reason)) return 'The Google Calendar API is not enabled for this Cloud project — enable it in Google Cloud Console.';
+  if (/rateLimit|quota/i.test(reason)) return 'Google quota / rate limit reached — wait a moment and Refresh.';
+  if (/insufficient|forbidden/i.test(reason)) return 'This calendar can’t be read with read-only permission.';
+  return 'Google denied the request (403).';
+}
+async function gcalApi(path, params){
+  if (!gcalConnected()) throw { status: 401, message: 'Not connected to Google.' };
+  const qs = params ? '?' + new URLSearchParams(params).toString() : '';
+  let res;
+  try { res = await fetch(GCAL_API + path + qs, { headers: { Authorization: 'Bearer ' + gcal.token } }); }
+  catch (e) { throw { status: 0, message: 'Network error reaching Google Calendar.' }; }
+  if (res.status === 401) { gcal.token = null; gcal.tokenExpiry = 0; throw { status: 401, message: 'Your Google session expired — reconnect.' }; }
+  if (res.status === 403) { let b = {}; try { b = await res.json(); } catch {} throw { status: 403, message: gcal403msg(b) }; }
+  if (res.status === 404) throw { status: 404, message: 'That calendar was not found.' };
+  if (res.status === 429) throw { status: 429, message: 'Google rate-limited the request — wait a moment and Refresh.' };
+  if (!res.ok) throw { status: res.status, message: 'Google Calendar API error (' + res.status + ').' };
+  return res.json();
+}
+async function gcalFetchCalendarList(){
+  const data = await gcalApi('/users/me/calendarList', { minAccessRole: 'reader', maxResults: '250' });
+  gcal.calendars = (data.items || []).map(c => ({
+    id: c.id, name: (c.summaryOverride || c.summary || c.id),
+    color: c.backgroundColor || '#7a6f5e', primary: !!c.primary,
+  }));
+  const prim = gcal.calendars.find(c => c.primary);
+  gcal.email = prim ? prim.id : (gcal.email || null);
+}
+function ymKey(y, m){ return `${y}-${String(m + 1).padStart(2, '0')}`; }
+async function gcalFetchMonth(y, m, force){
+  const key = ymKey(y, m);
+  if (!force && gcal.cache[key] && (Date.now() - gcal.cache[key].fetchedAt < GCAL_FRESH_MS)) return gcal.cache[key];
+  const ig = gcalIntegration();
+  const calIds = (ig.selectedCalendarIds || []).filter(id => gcal.calendars.some(c => c.id === id));
+  const timeMin = new Date(y, m, 1).toISOString();          // local month start (absolute instant)
+  const timeMax = new Date(y, m + 1, 1).toISOString();      // local next-month start (exclusive)
+  const all = [], failed = [];
+  for (const calId of calIds) {
+    try {
+      let pageToken = null, guard = 0;
+      do {
+        const params = { timeMin, timeMax, singleEvents: 'true', orderBy: 'startTime', maxResults: '250', showDeleted: 'false' };
+        if (pageToken) params.pageToken = pageToken;
+        const data = await gcalApi('/calendars/' + encodeURIComponent(calId) + '/events', params);
+        (data.items || []).forEach(ev => { const n = normalizeGEvent(ev, calId); if (n) all.push(n); });
+        pageToken = data.nextPageToken; guard++;
+      } while (pageToken && guard < 12);
+    } catch (e) {
+      if (e && e.status === 401) throw e;                  // token dead — bubble up to force reconnect
+      failed.push({ calId, msg: gcalErrMsg(e) });          // partial failure: one calendar couldn't load
+    }
+  }
+  const entry = { fetchedAt: Date.now(), events: all, failed };
+  gcal.cache[key] = entry;
+  ig.lastSync = entry.fetchedAt; saveState();
+  return entry;
+}
+/* Normalize a raw Google event into a safe, minimal display record (no full API blob,
+   no descriptions retained). Cancelled instances are dropped. */
+function normalizeGEvent(ev, calId){
+  if (!ev || ev.status === 'cancelled') return null;
+  const cal = gcal.calendars.find(c => c.id === calId) || {};
+  const allDay = !!(ev.start && ev.start.date && !ev.start.dateTime);
+  return {
+    provider: 'google', calendarId: calId, calendarName: cal.name || calId, calendarColor: cal.color || '#7a6f5e',
+    eventId: ev.id, title: ((ev.summary || '').trim()) || '(no title)',
+    start: allDay ? ev.start.date : (ev.start && ev.start.dateTime),
+    end:   allDay ? (ev.end && ev.end.date) : (ev.end && ev.end.dateTime),
+    allDay, location: ev.location || '', htmlLink: ev.htmlLink || '', status: ev.status || 'confirmed',
+    fetchedAt: Date.now(),
+  };
+}
+function startOfDay(d){ return new Date(d.getFullYear(), d.getMonth(), d.getDate()); }
+/* Local calendar dates a Google event touches (handles all-day exclusive end, multi-day,
+   and timed-across-midnight). Uses the viewer's local time — no UTC date drift. */
+function eventLocalDates(ev){
+  const out = []; let cur, last;
+  if (ev.allDay) {
+    cur = startOfDay(new Date(ev.start + 'T00:00'));
+    const endEx = ev.end ? new Date(ev.end + 'T00:00') : new Date(cur.getTime() + 86400000);
+    last = startOfDay(new Date(endEx.getTime() - 1));      // end.date is exclusive
+    if (last < cur) last = new Date(cur);
+  } else {
+    const sd = new Date(ev.start), ed = ev.end ? new Date(ev.end) : new Date(ev.start);
+    cur = startOfDay(sd);
+    last = startOfDay(new Date(Math.max(ed.getTime() - 1, sd.getTime())));  // exclude an exact-midnight end
+  }
+  let guard = 0;
+  while (cur <= last && guard < 62) { out.push(toLocalISO(cur)); cur = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate() + 1); guard++; }
+  return out.length ? out : [toLocalISO(new Date(ev.start))];
+}
+function gcalTimeLabel(ev){ if (ev.allDay) return 'all-day'; const s = new Date(ev.start); return isNaN(s) ? '' : s.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }); }
+/* Build { 'YYYY-MM-DD': [events] } for a cache entry, honoring selection + showEvents. */
+function gcalEventsByDate(entry){
+  const map = {};
+  if (!entry) return map;
+  const ig = gcalIntegration();
+  if (ig.showEvents === false) return map;
+  const selected = new Set(ig.selectedCalendarIds || []);
+  entry.events.forEach(ev => {
+    if (selected.size && !selected.has(ev.calendarId)) return;
+    eventLocalDates(ev).forEach(ds => { (map[ds] = map[ds] || []).push(ev); });
+  });
+  Object.values(map).forEach(list => list.sort((a, b) => (a.allDay ? 0 : 1) - (b.allDay ? 0 : 1) || String(a.start).localeCompare(String(b.start))));
+  return map;
+}
+function gcalVisibleMonthEvents(){
+  calInit(); return gcalEventsByDate(gcal.cache[ymKey(calMonth.y, calMonth.m)]);
+}
+/* Surface per-calendar failures (a calendar that couldn't load) that gcalFetchMonth collects
+   without throwing. If every selected calendar failed, show a prominent error; otherwise a
+   softer partial-failure note. */
+function gcalReportFailures(entry){
+  if (!entry || !entry.failed || !entry.failed.length) return;
+  const selCount = (gcalIntegration().selectedCalendarIds || []).filter(id => gcal.calendars.some(c => c.id === id)).length;
+  const first = entry.failed[0].msg;
+  if (entry.failed.length >= selCount && !entry.events.length) gcal.lastError = first;   // all selected failed
+  else gcal.lastNote = `Couldn't load ${entry.failed.length} of ${selCount} calendar${selCount === 1 ? '' : 's'} — ${first}`;
+}
+/* Fetch the visible month if connected and stale/forced, then re-render. */
+async function gcalRefreshVisible(force){
+  if (!gcalConnected()) { renderCalendarView(); renderGcalPanel(); return; }
+  calInit(); const { y, m } = calMonth;
+  gcal.busy = true; gcal.lastError = null; gcal.lastNote = null; renderGcalPanel();
+  try { const entry = await gcalFetchMonth(y, m, force); gcalReportFailures(entry); }
+  catch (e) { if (e && e.status === 401) { gcal.token = null; gcal.tokenExpiry = 0; } gcal.lastError = gcalErrMsg(e); }
+  gcal.busy = false;
+  renderCalendarView(); renderGcalPanel(); renderTodayEvents();
+}
+function gcalEnsureMonth(force){
+  if (!gcalConnected() || gcalIntegration().showEvents === false) return;
+  calInit(); const key = ymKey(calMonth.y, calMonth.m); const entry = gcal.cache[key];
+  if (!force && entry && (Date.now() - entry.fetchedAt < GCAL_FRESH_MS)) return;
+  gcalRefreshVisible(force);
+}
+/* Ensure the current REAL month (for Today's events) is fetched. */
+async function gcalEnsureTodayMonth(force){
+  if (!gcalConnected() || gcalIntegration().showEvents === false) return;
+  const d = new Date(), key = ymKey(d.getFullYear(), d.getMonth()), entry = gcal.cache[key];
+  if (!force && entry && (Date.now() - entry.fetchedAt < GCAL_FRESH_MS)) return;
+  try { const e2 = await gcalFetchMonth(d.getFullYear(), d.getMonth(), force); gcalReportFailures(e2); }
+  catch (e) { if (e && e.status === 401) { gcal.token = null; gcal.tokenExpiry = 0; } gcal.lastError = gcalErrMsg(e); }
+  renderTodayEvents(); renderGcalPanel();
+}
+
 let calMonth = null;   // { y, m } — m is 0-based
 function calInit(){ if (!calMonth) { const d = new Date(); calMonth = { y: d.getFullYear(), m: d.getMonth() }; } }
 function renderCalendarView(){
@@ -4955,6 +5322,8 @@ function renderCalendarView(){
   if (monthLbl) monthLbl.textContent = first.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
   const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
   const today = todayStr();
+  const evByDate = gcalEventsByDate(gcal.cache[ymKey(y, m)]);   // Google events for this month (in-memory cache)
+  const maxPer = Math.max(1, gcalIntegration().maxPerDay || 3);
   let html = dow.map(d => `<div class="cal-dow">${d}</div>`).join('');
   for (let i = 0; i < startDow; i++) html += `<div class="cal-cell blank"></div>`;
   for (let day = 1; day <= daysIn; day++) {
@@ -4962,25 +5331,172 @@ function renderCalendarView(){
     const comp = completionFor(ds);
     const dots = CATEGORIES.map(c =>
       `<span class="cal-dot ${comp[c.key] === 'complete' ? 'on' : ''}" style="--cd:${c.color}"></span>`).join('');
-    const evs = ((state.calendar && state.calendar.events) || []).filter(e => e.date === ds);
-    const evLine = evs.length
-      ? `<div class="cal-ev" title="${escapeHtml(evs.map(e => e.title).join(', '))}">${escapeHtml(evs[0].title)}${evs.length > 1 ? ` +${evs.length - 1}` : ''}</div>` : '';
+    const evs = evByDate[ds] || [];
+    let evHtml = '';
+    if (evs.length) {
+      const shown = evs.slice(0, maxPer).map(ev => {
+        const isStart = eventLocalDates(ev)[0] === ds;
+        const tl = ev.allDay ? '' : (isStart ? gcalTimeLabel(ev) : '→');
+        return `<div class="cal-gev ${ev.allDay ? 'allday' : ''}" style="--gcol:${escapeHtml(ev.calendarColor)}" title="${escapeHtml((ev.allDay ? 'all-day · ' : (tl ? tl + ' · ' : '')) + ev.title + ' — ' + ev.calendarName)}">${tl ? `<span class="gt">${escapeHtml(tl)}</span> ` : ''}${escapeHtml(ev.title)}</div>`;
+      }).join('');
+      const more = evs.length > maxPer ? `<button class="cal-more" data-more="${ds}">+${evs.length - maxPer} more</button>` : '';
+      evHtml = `<div class="cal-events">${shown}${more}</div>`;
+    }
     const doneN = CATEGORIES.filter(c => comp[c.key] === 'complete').length;
-    html += `<div class="cal-cell ${ds === today ? 'today' : ''}" role="gridcell" aria-label="${first.toLocaleDateString(undefined, { month: 'long' })} ${day} — ${doneN} of 6 areas complete"><div class="dn">${day}</div><div class="cal-dots">${dots}</div>${evLine}</div>`;
+    const evAria = evs.length ? `, ${evs.length} calendar event${evs.length === 1 ? '' : 's'}` : '';
+    html += `<div class="cal-cell clickable ${ds === today ? 'today' : ''}" role="gridcell" tabindex="0" data-date="${ds}" aria-label="${first.toLocaleDateString(undefined, { month: 'long' })} ${day} — ${doneN} of 6 areas complete${evAria}. Open day detail."><div class="dn">${day}</div><div class="cal-dots">${dots}</div>${evHtml}</div>`;
   }
   grid.innerHTML = html;
+  grid.onclick = (e) => {
+    const more = e.target.closest('[data-more]'); if (more) { openDayDetail(more.dataset.more, more); return; }
+    const cell = e.target.closest('.cal-cell[data-date]'); if (cell) openDayDetail(cell.dataset.date, cell);
+  };
+  grid.onkeydown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') { const cell = e.target.closest('.cal-cell[data-date]'); if (cell) { e.preventDefault(); openDayDetail(cell.dataset.date, cell); } }
+  };
   const legend = document.getElementById('calLegend');
   if (legend) legend.innerHTML = CATEGORIES.map(c =>
     `<span class="lg"><span class="sw" style="--cd:${c.color}"></span>${c.label}</span>`).join('')
-    + `<span class="lg" style="color:var(--dim)">Filled dot = completed that day</span>`;
-  const intg = document.getElementById('calIntegration');
-  if (intg) intg.innerHTML = `<strong>Google Calendar</strong><span class="badge">Not connected</span>
-    <div style="margin-top:8px">Real event sync is <strong>not implemented yet</strong>. This calendar currently shows the current day and your Mirror completion history (the six dots) — all stored locally. Nothing is fetched from or sent to Google.</div>
-    <div style="margin-top:8px">The data boundary is already in place: events would live in <code>state.calendar.events[]</code> and provider config in <code>state.calendar.integration</code>. Enabling sync needs a Google Cloud OAuth client ID, the Calendar API turned on, a consent screen, and a GIS token flow — documented in <code>SCHEMA.md</code> under “Calendar”.</div>`;
+    + `<span class="lg" style="color:var(--dim)">Filled dot = completed that day</span>`
+    + (gcalConnected() ? `<span class="lg" style="color:var(--dim)">Bars = Google events (their own colors)</span>` : '');
+  renderGcalPanel();
 }
-document.getElementById('calPrev').onclick = () => { calInit(); if (--calMonth.m < 0) { calMonth.m = 11; calMonth.y--; } renderCalendarView(); };
-document.getElementById('calNext').onclick = () => { calInit(); if (++calMonth.m > 11) { calMonth.m = 0; calMonth.y++; } renderCalendarView(); };
-document.getElementById('calToday').onclick = () => { const d = new Date(); calMonth = { y: d.getFullYear(), m: d.getMonth() }; renderCalendarView(); };
+document.getElementById('calPrev').onclick = () => { calInit(); if (--calMonth.m < 0) { calMonth.m = 11; calMonth.y--; } renderCalendarView(); gcalEnsureMonth(); };
+document.getElementById('calNext').onclick = () => { calInit(); if (++calMonth.m > 11) { calMonth.m = 0; calMonth.y++; } renderCalendarView(); gcalEnsureMonth(); };
+document.getElementById('calToday').onclick = () => { const d = new Date(); calMonth = { y: d.getFullYear(), m: d.getMonth() }; renderCalendarView(); gcalEnsureMonth(); };
+
+/* ---- Google Calendar: integration panel, config modal, Today events, day detail ---- */
+function renderGcalPanel(){
+  const el = document.getElementById('calIntegration'); if (!el) return;
+  const ig = gcalIntegration();
+  const cid = gcalClientId();
+  const err = gcal.lastError ? `<div class="gc-msg err" role="alert">${escapeHtml(gcal.lastError)}</div>` : '';
+  const note = gcal.lastNote ? `<div class="gc-msg" aria-live="polite">${escapeHtml(gcal.lastNote)}</div>` : '';
+  const lastSync = ig.lastSync ? new Date(ig.lastSync).toLocaleString() : null;
+
+  if (gcalConnected()) {
+    const cals = gcal.calendars.map(c => {
+      const on = (ig.selectedCalendarIds || []).includes(c.id);
+      return `<label class="gc-cal"><input type="checkbox" class="gc-calbox" data-cid="${escapeHtml(c.id)}" ${on ? 'checked' : ''}>
+        <span class="sw" style="background:${escapeHtml(c.color)}"></span>${escapeHtml(c.name)}${c.primary ? ' <span class="tiny" style="color:var(--dim)">(primary)</span>' : ''}</label>`;
+    }).join('');
+    el.className = 'gcal-panel';
+    el.innerHTML = `<div class="gc-head"><strong>Google Calendar</strong>
+        <span class="gcal-badge on">Connected</span><span class="gcal-badge ro">Read-only</span></div>
+      <div class="gc-body">${gcal.email ? `Signed in as <strong>${escapeHtml(gcal.email)}</strong>. ` : ''}Events are requested directly from Google in your browser and shown here — Mirror never edits your calendar.
+        ${lastSync ? `<div class="tiny" style="margin-top:4px">Last refreshed ${escapeHtml(lastSync)}${gcal.busy ? ' · <span class="gcal-spin"></span>refreshing…' : ''}</div>` : (gcal.busy ? '<div class="tiny" style="margin-top:4px"><span class="gcal-spin"></span>loading…</div>' : '')}
+      </div>
+      <div class="gc-cals" role="group" aria-label="Calendars to show">${cals || '<span class="tiny" style="color:var(--dim)">No calendars found.</span>'}</div>
+      <label class="gc-cal" style="margin-top:8px"><input type="checkbox" id="gcShowEvents" ${ig.showEvents !== false ? 'checked' : ''}> Show events on the Mirror calendar</label>
+      <div class="gc-actions">
+        <button class="mini-btn" id="gcRefresh" ${gcal.busy ? 'disabled' : ''}>↻ Refresh</button>
+        <button class="mini-btn danger" id="gcDisconnect">Disconnect</button>
+      </div>${err}${note}`;
+    document.getElementById('gcRefresh').onclick = () => { gcal.cache = {}; gcalRefreshVisible(true); gcalEnsureTodayMonth(true); };
+    document.getElementById('gcDisconnect').onclick = gcalDisconnect;
+    const se = document.getElementById('gcShowEvents');
+    if (se) se.onchange = () => { ig.showEvents = se.checked; saveState(); renderCalendarView(); renderTodayEvents(); };
+    el.querySelectorAll('.gc-calbox').forEach(b => b.onchange = () => {
+      const set = new Set(ig.selectedCalendarIds || []);
+      if (b.checked) set.add(b.dataset.cid); else set.delete(b.dataset.cid);
+      ig.selectedCalendarIds = [...set]; saveState();
+      gcal.cache = {};                              // selection changed — refetch so a newly-added calendar's events load
+      gcalRefreshVisible(true); gcalEnsureTodayMonth(true);
+    });
+  } else {
+    el.className = 'gcal-panel';
+    el.innerHTML = `<div class="gc-head"><strong>Google Calendar</strong><span class="gcal-badge off">Not connected</span><span class="gcal-badge ro">Read-only</span></div>
+      <div class="gc-body">Connect your Google Calendar to see your real events alongside your Mirror completion history. Access is <strong>read-only</strong> — Mirror can view events but never create, edit, or delete anything. Events are fetched directly from Google in your browser; nothing is sent to any Mirror server (there isn't one).
+        ${cid ? '' : '<div class="tiny" style="margin-top:6px;color:var(--warn)">No OAuth Client ID set yet — configure it first (one-time setup).</div>'}
+        ${lastSync ? `<div class="tiny" style="margin-top:4px">Previously connected · last refreshed ${escapeHtml(lastSync)}. A page refresh drops the session, so reconnect to reload events.</div>` : ''}
+      </div>
+      <div class="gc-actions">
+        <button class="primary" id="gcConnect" ${gcal.busy ? 'disabled' : ''}>${gcal.busy ? '<span class="gcal-spin"></span>Connecting…' : 'Connect Google Calendar'}</button>
+        <button class="mini-btn" id="gcConfig">${cid ? 'Change Client ID' : 'Configure Client ID'}</button>
+        <a class="mini-btn" href="SCHEMA.md" target="_blank" rel="noopener">Setup guide</a>
+      </div>${err}${note}`;
+    document.getElementById('gcConnect').onclick = gcalConnect;
+    document.getElementById('gcConfig').onclick = openGcalConfig;
+  }
+}
+function openGcalConfig(){
+  const cid = gcalClientId();
+  modalBox.innerHTML = `<h3>Google Calendar — Client ID</h3>
+    <div class="sub">Paste the OAuth 2.0 <strong>Web application</strong> Client ID from Google Cloud Console. It is public (safe in the browser) and is stored only on this device — never in your backups or the forever-copy. Full steps are in <code>SCHEMA.md</code> → “Google Calendar setup”.</div>
+    <div class="field"><label>OAuth Client ID</label>
+      <input type="text" id="gcCidInput" placeholder="xxxxxxxx.apps.googleusercontent.com" value="${escapeHtml(cid)}" autocomplete="off" spellcheck="false"></div>
+    <div class="sub">Add <code>https://stevenfrye30.github.io</code> to the client's <strong>Authorized JavaScript origins</strong>. Scope requested: <code>calendar.readonly</code> (view only).</div>
+    <div class="actions"><button class="ghost" id="gcCidClear">Clear</button><button class="ghost" id="gcCidCancel">Cancel</button><button class="primary" id="gcCidSave">Save</button></div>`;
+  overlay.classList.add('open');
+  const input = document.getElementById('gcCidInput'); if (input) input.focus();
+  document.getElementById('gcCidCancel').onclick = closeModal;
+  document.getElementById('gcCidClear').onclick = () => { gcalSetClientId(''); closeModal(); gcal.lastError = null; renderGcalPanel(); };
+  document.getElementById('gcCidSave').onclick = () => {
+    const v = document.getElementById('gcCidInput').value.trim();
+    gcalSetClientId(v); closeModal(); gcal.lastError = null; renderGcalPanel();
+  };
+}
+function renderTodayEvents(){
+  const section = document.getElementById('todayEventsSection'); if (!section) return;
+  const list = document.getElementById('todayEvents');
+  const status = document.getElementById('todayEventsStatus');
+  if (!gcalConnected() || gcalIntegration().showEvents === false) { section.style.display = 'none'; if (list) list.innerHTML = ''; return; }
+  section.style.display = '';
+  const today = todayStr();
+  const map = gcalEventsByDate(gcal.cache[ymKey(new Date().getFullYear(), new Date().getMonth())]);
+  const evs = (map[today] || []).slice().sort((a, b) => (a.allDay ? 0 : 1) - (b.allDay ? 0 : 1) || String(a.start).localeCompare(String(b.start)));
+  if (status) status.textContent = gcal.busy ? 'refreshing…' : (evs.length ? `${evs.length} event${evs.length === 1 ? '' : 's'}` : '');
+  if (!evs.length) { list.innerHTML = `<div class="te-note">${gcal.busy ? 'Loading your calendar…' : 'No Google Calendar events today.'}</div>`; return; }
+  list.innerHTML = evs.map(ev => {
+    const time = ev.allDay ? 'All day' : gcalTimeLabel(ev);
+    const link = safeUrl(ev.htmlLink);
+    const sub = [ev.calendarName, ev.location].filter(Boolean).map(escapeHtml).join(' · ');
+    return `<div class="te-item" style="--gcol:${escapeHtml(ev.calendarColor)}">
+      <span class="te-time">${escapeHtml(time)}</span>
+      <span class="te-main"><span class="te-title">${escapeHtml(ev.title)}</span>${sub ? `<div class="te-sub">${sub}</div>` : ''}</span>
+      ${link ? `<a class="te-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" aria-label="Open “${escapeHtml(ev.title)}” in Google Calendar">Open ↗</a>` : ''}
+    </div>`;
+  }).join('');
+}
+let ddLastTrigger = null;
+function openDayDetail(ds, trigger){
+  ddLastTrigger = trigger || null;
+  const d = new Date(ds + 'T00:00');
+  const comp = completionFor(ds);
+  const compHtml = CATEGORIES.map(c => {
+    const done = comp[c.key] === 'complete', started = comp[c.key] === 'started';
+    return `<span class="dc ${done ? 'done' : ''}" style="--dcol:${c.color}"><span class="sw"></span>${c.label}: ${done ? 'complete' : started ? 'started' : '—'}</span>`;
+  }).join('');
+  const map = gcalEventsByDate(gcal.cache[ymKey(d.getFullYear(), d.getMonth())]);
+  const evs = (map[ds] || []).slice().sort((a, b) => (a.allDay ? 0 : 1) - (b.allDay ? 0 : 1) || String(a.start).localeCompare(String(b.start)));
+  let evHtml;
+  if (!gcalConnected()) evHtml = `<div class="dd-empty">Connect Google Calendar to see events here.</div>`;
+  else if (!evs.length) evHtml = `<div class="dd-empty">No Google Calendar events this day.</div>`;
+  else evHtml = evs.map(ev => {
+    const isStart = eventLocalDates(ev)[0] === ds;
+    const time = ev.allDay ? 'All day' : (isStart ? gcalTimeLabel(ev) : 'continues');
+    const link = safeUrl(ev.htmlLink);
+    const sub = [ev.calendarName, ev.location].filter(Boolean).map(escapeHtml).join(' · ');
+    return `<div class="te-item" style="--gcol:${escapeHtml(ev.calendarColor)}">
+      <span class="te-time">${escapeHtml(time)}</span>
+      <span class="te-main"><span class="te-title">${escapeHtml(ev.title)}</span>${sub ? `<div class="te-sub">${sub}</div>` : ''}</span>
+      ${link ? `<a class="te-link" href="${escapeHtml(link)}" target="_blank" rel="noopener noreferrer" aria-label="Open “${escapeHtml(ev.title)}” in Google Calendar">Open ↗</a>` : ''}
+    </div>`;
+  }).join('');
+  const isToday = ds === todayStr();
+  modalBox.innerHTML = `<h3>${escapeHtml(d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }))}</h3>
+    <div class="dd-day">Mirror completion</div>
+    <div class="dd-comp">${compHtml}</div>
+    <div class="dd-day">Google Calendar${gcal.busy ? ' · <span class="gcal-spin"></span>refreshing' : ''}</div>
+    <div class="dd-events">${evHtml}</div>
+    <div class="actions" style="margin-top:16px">${isToday ? `<button class="primary" id="ddToday">Go to Today</button>` : ''}<button class="ghost" id="ddClose">Close</button></div>`;
+  overlay.classList.add('open');
+  const closeBtn = document.getElementById('ddClose');
+  const restore = () => { closeModal(); if (ddLastTrigger && ddLastTrigger.focus) { try { ddLastTrigger.focus(); } catch {} } };
+  closeBtn.onclick = restore;
+  const tbtn = document.getElementById('ddToday'); if (tbtn) tbtn.onclick = () => { closeModal(); navTo('today'); };
+  closeBtn.focus();
+}
 
 function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal();
@@ -4998,6 +5514,7 @@ function renderAll() {
   renderTimeline();
   renderHealthTimeline(); renderBodyCheckin();
   refreshCompletionUI();  // completion bars + Today cats + home hexagons
+  renderTodayEvents();    // Google events (hidden unless connected)
   renderTodaySummary();   // summary only — does not clobber an in-progress pulse selection
 }
 
