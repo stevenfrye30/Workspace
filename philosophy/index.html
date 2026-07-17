@@ -232,6 +232,27 @@ a.hover-card:focus-visible, a.gloss-card:focus-visible { outline:2px solid var(-
    area never goes silently blank. */
 .empty-state { grid-column:1 / -1; margin:0; padding:28px 6px; text-align:center; color:var(--muted); font-style:italic; }
 .result-count { color:var(--muted); font-size:13px; margin-left:auto; }
+/* Phase 3: clear-filters control sits beside the summary; hidden until something is active. */
+.clear-filters {
+  background:var(--panel2); color:var(--muted); border:1px solid var(--line);
+  border-radius:14px; padding:6px 14px; font-family:inherit; font-size:12px;
+  letter-spacing:0.3px; cursor:pointer; transition:color .2s ease, border-color .2s ease, background .2s ease;
+}
+.clear-filters:hover { color:var(--accent); border-color:var(--gold-soft); }
+.clear-filters:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+/* Branch/school tags rendered as real buttons need the base tag look without button chrome. */
+button.tag { font-family:inherit; line-height:1.4; }
+.tag.branch:focus-visible, .tag-school:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+.tag-school { border-color:var(--accent2); color:var(--accent2); cursor:pointer; }
+.tag-school:hover { background:rgba(127,176,201,0.12); color:var(--ink); }
+/* Phase 3: tidy the philosopher filter row on narrow phones — search takes its own line,
+   the selects and controls wrap beneath it instead of forming one cramped strip. */
+@media (max-width: 480px) {
+  #expanel-philosophers .filters { gap:8px; }
+  #expanel-philosophers .filters input#phil-search { flex:1 1 100%; min-width:0; }
+  #expanel-philosophers .filters select { flex:1 1 auto; min-width:0; }
+  #expanel-philosophers .result-count { margin-left:0; }
+}
 .tags { display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
 .tag { background:var(--panel2); color:var(--muted); padding:4px 11px; border-radius:14px; font-size:12px; border:1px solid var(--line); transition:all .2s ease; }
 .tag.era { border-color:var(--warm); color:var(--warm); }
@@ -623,6 +644,7 @@ ul.clean li { margin:6px 0; }
         <option value="era">Sort: era</option>
       </select>
       <span id="phil-count" class="result-count" aria-live="polite"></span>
+      <button type="button" id="clear-filters" class="clear-filters" hidden>Clear filters</button>
     </div>
     <details class="more-filters" id="phil-more">
       <summary><span id="phil-more-label">More filters</span></summary>
@@ -762,6 +784,9 @@ function philosopherCompactYear(p) {
 
 const byName = {};
 DATA.philosophers.forEach((p,i) => { byName[p.name] = i; });
+// Curated school names, so a philosopher's `school` links to a real school page only when
+// one exists (many `school` values are free-text and have no first-class school entry).
+const SCHOOL_NAMES = new Set(DATA.schools.map(s => s.name));
 
 // ===== Tabs & hash routing =====
 // Explore holds the philosopher collection (Directory + Influence Map + Quotes +
@@ -1162,8 +1187,31 @@ function updateMoreFilters() {
   $('#phil-more').classList.toggle('has-active', n > 0);
 }
 
+// Phase 3: describe the current archive state in prose, e.g. "152 philosophers tagged
+// Metaphysics" or '12 philosophers matching "Kant"'. Falls back to the bare count.
+function archiveSummary(n, f) {
+  const base = plural(n, 'philosopher');
+  const parts = [];
+  if (f.qraw) parts.push('matching "' + f.qraw + '"');
+  if (f.fb) parts.push('tagged ' + f.fb);
+  if (f.ft) parts.push('tradition ' + f.ft);
+  if (f.fe) parts.push('era ' + f.fe);
+  if (f.fr) parts.push('region ' + f.fr);
+  if (f.fs) parts.push('school ' + f.fs);
+  return parts.length ? base + ' ' + parts.join(', ') : base;
+}
+// Reset every philosopher control to its default and return to the ordinary archive route.
+function clearFilters() {
+  $('#phil-search').value = '';
+  ['#filter-tradition','#filter-era','#filter-region','#filter-school','#filter-branch'].forEach(id => $(id).value = '');
+  $('#sort-by').value = 'birth';
+  const target = '#/explore/philosophers';
+  if (location.hash === target) renderPhilosophers();  // same route: re-render directly
+  else location.hash = target;                          // handleHash re-renders + drops the branch route
+}
 function renderPhilosophers() {
   const q = $('#phil-search').value.toLowerCase();
+  const qraw = $('#phil-search').value.trim();
   const ft = $('#filter-tradition').value, fe = $('#filter-era').value;
   const fr = $('#filter-region').value, fs = $('#filter-school').value, fb = $('#filter-branch').value;
   const sortBy = $('#sort-by').value;
@@ -1180,7 +1228,9 @@ function renderPhilosophers() {
     era:(a,b)=>((a.era||'').localeCompare(b.era||''))||((a.birth==null?9999:a.birth)-(b.birth==null?9999:b.birth)),
   };
   filteredList.sort(sorters[sortBy]);
-  $('#phil-count').textContent = plural(filteredList.length, 'philosopher');
+  $('#phil-count').textContent = archiveSummary(filteredList.length, {qraw, ft, fe, fr, fs, fb});
+  const clr = $('#clear-filters');
+  if (clr) clr.hidden = !(q || ft || fe || fr || fs || fb || sortBy !== 'birth');
   updateMoreFilters();
   selectedIdx = 0;
   if (!filteredList.length) {
@@ -1251,7 +1301,7 @@ function showPhilosopher(p) {
     '<p style="color:var(--muted);font-style:italic">No extended biography. See SEP link below.</p>';
   const works = (p.works||[]).length ? `<div class="section-label">Key Works</div><ul class="works">${p.works.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>` : '';
   const schools = (p.schools||[]).length ? `<div class="section-label">Schools / Movements</div><div class="chip-row">${p.schools.map(s=>`<span class="chip" data-s="${esc(s)}">${esc(s)}</span>`).join('')}</div>` : '';
-  const branches = (p.branches||[]).length ? `<div class="section-label">Branches</div><div class="chip-row">${p.branches.map(b=>`<span class="tag branch" data-b="${esc(b)}">${esc(b)}</span>`).join('')}</div>` : '';
+  const branches = (p.branches||[]).length ? `<div class="section-label">Branches</div><div class="chip-row">${p.branches.map(b=>`<button type="button" class="tag branch" data-b="${esc(b)}">${esc(b)}</button>`).join('')}</div>` : '';
   const infBy = (p.influencedBy||[]).length ? `<div class="section-label">Influenced By</div><div class="chip-row">${p.influencedBy.map(n=>`<span class="chip" data-name="${esc(n)}">${esc(n)}</span>`).join('')}</div>` : '';
   const infd = (p.influenced||[]).length ? `<div class="section-label">Influenced</div><div class="chip-row">${p.influenced.map(n=>`<span class="chip" data-name="${esc(n)}">${esc(n)}</span>`).join('')}</div>` : '';
   const myExcerpts = philExcerpts(p);
@@ -1268,7 +1318,9 @@ function showPhilosopher(p) {
       ${p.era?`<span class="tag era">${esc(p.era)}</span>`:''}
       ${p.tradition?`<span class="tag tradition">${esc(p.tradition)}</span>`:''}
       ${p.regionLabel?`<span class="tag">${esc(p.regionLabel)}</span>`:(p.region?`<span class="tag">${esc(p.region)}</span>`:'')}
-      ${p.school?`<span class="tag">${esc(p.school)}</span>`:''}
+      ${p.school ? (SCHOOL_NAMES.has(p.school)
+          ? `<button type="button" class="tag tag-school" data-school="${esc(p.school)}">${esc(p.school)}</button>`
+          : `<span class="tag">${esc(p.school)}</span>`) : ''}
     </div>
     <div class="bio">${bioHtml}</div>
     ${works}${schools}${branches}${infBy}${infd}${excerpts}${quotes}
@@ -1279,6 +1331,7 @@ function showPhilosopher(p) {
   mc.querySelectorAll('.chip[data-name]').forEach(el => el.addEventListener('click', () => linkP(el.dataset.name)));
   mc.querySelectorAll('.chip[data-s]').forEach(el => el.addEventListener('click', () => linkS(el.dataset.s)));
   mc.querySelectorAll('.tag.branch').forEach(el => el.addEventListener('click', () => linkB(el.dataset.b)));
+  mc.querySelectorAll('.tag-school').forEach(el => el.addEventListener('click', () => linkS(el.dataset.school)));
   bindAutoLinks(mc);
   openModal();
 }
@@ -1964,6 +2017,7 @@ function showResourceArea(slugId) {
 ['#phil-search','#filter-tradition','#filter-era','#filter-region','#filter-school','#filter-branch','#sort-by'].forEach(id => {
   $(id).addEventListener(id.includes('search')?'input':'change', renderPhilosophers);
 });
+$('#clear-filters').addEventListener('click', clearFilters);
 $('#school-search').addEventListener('input', renderSchools);
 $('#filter-school-tradition').addEventListener('change', renderSchools);
 $('#gloss-search').addEventListener('input', renderGlossary);
