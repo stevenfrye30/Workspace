@@ -2433,6 +2433,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
   padding-top: 4px;
 }
 </style>
+<link rel="stylesheet" href="./css/ipa.css">
 </head>
 <body>
 <header id="sm-header">
@@ -2451,6 +2452,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
      Rhyme is the composition pipeline (Endings → Finder → Bars → Vault).
      Sound Map has no sub-nav — it stays a standalone experiential mode. -->
 <nav id="sub-nav-phonology" class="sub-nav" role="tablist" aria-label="Phonology modes">
+  <button class="sub-tab-btn" type="button" data-sub-tab="ipa" id="subtab-ipa" role="tab" aria-selected="false" aria-controls="panel-ipa">IPA</button>
   <button class="sub-tab-btn active" type="button" data-sub-tab="comparison" role="tab" aria-selected="true">Comparison</button>
   <button class="sub-tab-btn" type="button" data-sub-tab="coverage" role="tab" aria-selected="false">Coverage</button>
   <button class="sub-tab-btn" type="button" data-sub-tab="practice" role="tab" aria-selected="false">Practice</button>
@@ -2687,6 +2689,56 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
         </div>
       </header>
       <div class="prac-stage" id="prac-stage"><!-- active exercise renders here --></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════
+     IPA  (interactive International Phonetic Alphabet chart —
+     raw symbols, their sounds, and articulation. Built by
+     js/ui_ipa.js from js/ipa_data.js; audio via js/ipa_synth.js
+     + smSpeak. Leftmost Phonology sub-tab.)
+     ══════════════════════════════════════════════════════════ -->
+<div id="panel-ipa" role="tabpanel" aria-labelledby="subtab-ipa">
+  <div class="ipa-scroll">
+    <header class="comp-hero">
+      <div class="comp-hero-eyebrow">Sound Lab · Reference</div>
+      <h2 class="comp-hero-title">The IPA Chart</h2>
+      <p class="comp-hero-sub">The International Phonetic Alphabet — one symbol per sound. Click any symbol to see how it's made, read its full name, and hear it where we honestly can.</p>
+    </header>
+    <div class="ipa-toolbar">
+      <div class="ipa-mode-toggle" id="ipa-mode-toggle" role="group" aria-label="View mode">
+        <button type="button" data-mode="explore" class="ipa-mode-opt on" aria-pressed="true">Explore</button>
+        <button type="button" data-mode="learn" class="ipa-mode-opt" aria-pressed="false">Learn</button>
+      </div>
+      <input class="ipa-search" id="ipa-search" type="search" aria-label="Search symbols" placeholder="Search: symbol, name, place, manner, language… (e.g. uvular, nasal, θ)" />
+      <div class="ipa-audio-toggle" id="ipa-audio-toggle" role="group" aria-label="Preferred audio source" title="Which source plays first when you pick a symbol">
+        <span class="ipa-audio-label">Prefer</span>
+        <button type="button" data-pref="word" class="ipa-audio-opt" aria-pressed="true">Example word</button>
+        <button type="button" data-pref="synth" class="ipa-audio-opt" aria-pressed="false">Synthesis</button>
+      </div>
+    </div>
+    <div class="ipa-filters" id="ipa-filters" role="group" aria-label="Filter the chart">
+      <span class="ipa-filters-label">Show</span>
+      <button type="button" data-cat="all" class="ipa-filt on" aria-pressed="true">All</button>
+      <button type="button" data-cat="cons" class="ipa-filt" aria-pressed="false">Consonants</button>
+      <button type="button" data-cat="vowel" class="ipa-filt" aria-pressed="false">Vowels</button>
+      <button type="button" data-cat="other" class="ipa-filt" aria-pressed="false">Other</button>
+      <button type="button" data-cat="nonpulm" class="ipa-filt" aria-pressed="false">Non-pulmonic</button>
+      <button type="button" data-cat="supra" class="ipa-filt" aria-pressed="false">Suprasegmentals</button>
+      <button type="button" data-cat="diacritic" class="ipa-filt" aria-pressed="false">Diacritics</button>
+      <span class="ipa-filters-sep" aria-hidden="true"></span>
+      <button type="button" data-voice="voiceless" class="ipa-filt ipa-filt-v" aria-pressed="false">Voiceless</button>
+      <button type="button" data-voice="voiced" class="ipa-filt ipa-filt-v" aria-pressed="false">Voiced</button>
+    </div>
+    <div class="ipa-layout">
+      <div class="ipa-main">
+        <div class="ipa-charts" id="ipa-charts"></div>
+        <div class="ipa-learn" id="ipa-learn" style="display:none"></div>
+      </div>
+      <aside class="ipa-detail" id="ipa-detail" aria-label="Selected symbol">
+        <div class="ipa-detail-inner" id="ipa-detail-body"></div>
+      </aside>
     </div>
   </div>
 </div>
@@ -2988,6 +3040,11 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 <script src="./js/performance.js"></script>
 <script src="./js/ui_performance.js"></script>
 <script src="./js/ui_compact.js"></script>
+<!-- Phonology → IPA interactive chart (data → synth → UI). ipa_data.js reads
+     SM_PHON_EXAMPLE from data/phonetics.js above for hybrid audio. -->
+<script src="./js/ipa_data.js"></script>
+<script src="./js/ipa_synth.js"></script>
+<script src="./js/ui_ipa.js"></script>
 <script>
 // ══════════════════════════════════
 //  NAVIGATION MIGRATION
@@ -3020,7 +3077,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
 //  file and may invoke setTab() before the tab-switching block executes.
 //  Keeping these constants/lets here avoids a TDZ error in that path.)
 // ══════════════════════════════════
-const PHONOLOGY_SUBS = ["comparison", "coverage", "practice"];
+const PHONOLOGY_SUBS = ["ipa", "comparison", "coverage", "practice"];
 const RHYME_SUBS = ["endings", "finder", "bars", "vault"];
 const PHONOLOGY_DEFAULT = "comparison";  // the codex centerpiece
 const RHYME_DEFAULT = "endings";          // start of the composition pipeline
@@ -11947,7 +12004,7 @@ document.getElementById("bb-input").addEventListener("keydown", e => {
 // right after the panel-promotion migration — see the WORKSPACE STATE block.)
 
 function activatePanel(id) {
-  ["panel-sound","panel-coverage","panel-comparison","panel-practice","panel-endings","panel-rhyme","panel-rap"].forEach(pid => {
+  ["panel-sound","panel-ipa","panel-coverage","panel-comparison","panel-practice","panel-endings","panel-rhyme","panel-rap"].forEach(pid => {
     const el = document.getElementById(pid);
     if (el) el.classList.toggle("active", pid === id);
   });
@@ -11962,7 +12019,12 @@ function applyPhonologySub(sub) {
     b.classList.toggle("active", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
   });
-  if (sub === "comparison") {
+  if (sub === "ipa") {
+    activatePanel("panel-ipa");
+    if (typeof SOUND !== "undefined" && SOUND.ipaBuild) {
+      try { SOUND.ipaBuild(); } catch(_) {}
+    }
+  } else if (sub === "comparison") {
     activatePanel("panel-comparison");
   } else if (sub === "coverage") {
     activatePanel("panel-coverage");
@@ -12078,7 +12140,7 @@ document.querySelectorAll("#sub-nav-phonology .sub-tab-btn, #sub-nav-rhyme .sub-
   // VALID accepts new canonical names + every legacy id setTab() can remap.
   const VALID = new Set([
     "sound", "sound-map", "phonology", "rhyme",
-    "comparison", "coverage", "endings", "finder", "bars", "vault",
+    "ipa", "comparison", "coverage", "endings", "finder", "bars", "vault",
     "chart", "flow", "rap", "bar-builder"
   ]);
   const validUrl = VALID.has(fromUrl) ? fromUrl : null;
