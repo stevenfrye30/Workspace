@@ -2701,43 +2701,16 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
      ══════════════════════════════════════════════════════════ -->
 <div id="panel-ipa" role="tabpanel" aria-labelledby="subtab-ipa">
   <div class="ipa-scroll">
-    <header class="comp-hero">
-      <div class="comp-hero-eyebrow">Sound Lab · Reference</div>
-      <h2 class="comp-hero-title">The IPA Chart</h2>
-      <p class="comp-hero-sub">The International Phonetic Alphabet — one symbol per sound. Click any symbol to see how it's made, read its full name, and hear it where we honestly can.</p>
+    <header class="ipa-head">
+      <h2 class="ipa-title">IPA</h2>
+      <p class="ipa-tagline">Click a symbol to hear it and see how it&rsquo;s made.</p>
     </header>
-    <div class="ipa-toolbar">
-      <div class="ipa-mode-toggle" id="ipa-mode-toggle" role="group" aria-label="View mode">
-        <button type="button" data-mode="explore" class="ipa-mode-opt on" aria-pressed="true">Explore</button>
-        <button type="button" data-mode="learn" class="ipa-mode-opt" aria-pressed="false">Learn</button>
-      </div>
-      <input class="ipa-search" id="ipa-search" type="search" aria-label="Search symbols" placeholder="Search: symbol, name, place, manner, language… (e.g. uvular, nasal, θ)" />
-      <div class="ipa-audio-toggle" id="ipa-audio-toggle" role="group" aria-label="Preferred audio source" title="Which source plays first when you pick a symbol">
-        <span class="ipa-audio-label">Prefer</span>
-        <button type="button" data-pref="word" class="ipa-audio-opt" aria-pressed="true">Example word</button>
-        <button type="button" data-pref="synth" class="ipa-audio-opt" aria-pressed="false">Synthesis</button>
-      </div>
-    </div>
-    <div class="ipa-filters" id="ipa-filters" role="group" aria-label="Filter the chart">
-      <span class="ipa-filters-label">Show</span>
-      <button type="button" data-cat="all" class="ipa-filt on" aria-pressed="true">All</button>
-      <button type="button" data-cat="cons" class="ipa-filt" aria-pressed="false">Consonants</button>
-      <button type="button" data-cat="affricate" class="ipa-filt" aria-pressed="false">Affricates</button>
-      <button type="button" data-cat="vowel" class="ipa-filt" aria-pressed="false">Vowels</button>
-      <button type="button" data-cat="other" class="ipa-filt" aria-pressed="false">Other</button>
-      <button type="button" data-cat="nonpulm" class="ipa-filt" aria-pressed="false">Non-pulmonic</button>
-      <button type="button" data-cat="supra" class="ipa-filt" aria-pressed="false">Suprasegmentals</button>
-      <button type="button" data-cat="diacritic" class="ipa-filt" aria-pressed="false">Diacritics</button>
-      <span class="ipa-filters-sep" aria-hidden="true"></span>
-      <button type="button" data-voice="voiceless" class="ipa-filt ipa-filt-v" aria-pressed="false">Voiceless</button>
-      <button type="button" data-voice="voiced" class="ipa-filt ipa-filt-v" aria-pressed="false">Voiced</button>
-    </div>
-    <div class="ipa-layout">
+    <input class="ipa-search" id="ipa-search" type="search" aria-label="Search symbols or sounds" placeholder="Search symbols or sounds — try &ldquo;sh&rdquo;, &ldquo;rolled r&rdquo;, or &ldquo;uvular&rdquo;" />
+    <div class="ipa-layout" id="ipa-layout">
       <div class="ipa-main">
         <div class="ipa-charts" id="ipa-charts"></div>
-        <div class="ipa-learn" id="ipa-learn" style="display:none"></div>
       </div>
-      <aside class="ipa-detail" id="ipa-detail" aria-label="Selected symbol">
+      <aside class="ipa-detail" id="ipa-detail" role="region" aria-label="Selected symbol" hidden>
         <div class="ipa-detail-inner" id="ipa-detail-body"></div>
       </aside>
     </div>

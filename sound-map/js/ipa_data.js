@@ -401,6 +401,9 @@
   const base = (o) => Object.assign({
     recording: null,   // future human-recorded audio — see README/architecture
     secondary: null, note: null, related: [],
+    friendly: null,    // plain-English display name (e.g. Voiceless “th”)
+    plain: null,       // simpler one-sentence how-to for the compact card
+    alias: null,       // extra search terms (["th"], ["rolled r"], …)
   }, o);
 
   Object.keys(CONS_CELLS).forEach((key) => {
@@ -548,6 +551,38 @@
       info.related = v ? relatedVowel(v) : [];
     }
     else if (info.kind === "affricate") info.related = relatedAffricate(info);
+  });
+
+  // ── Friendly names / plain how-to / search aliases ────────────────────
+  // Layered on top of the formal data: a familiar name most people already
+  // know, an optional simpler one-sentence how-to for the compact card, and
+  // plain-English search terms. The formal name/how-to are always preserved
+  // (shown under “More details”); these just make the front door approachable.
+  const FRIENDLY = {
+    "θ": { friendly: "Voiceless “th”", alias: ["th"], plain: "Rest your tongue lightly against your upper teeth and blow air through — no voice." },
+    "ð": { friendly: "Voiced “th”", alias: ["th"], plain: "Tongue lightly against your upper teeth, blow air through — and switch your voice on so it buzzes." },
+    "ʃ": { friendly: "“sh”", alias: ["sh"], plain: "Bunch your tongue near the roof of your mouth, round your lips a little, and hiss — the ‘sh’ in ‘ship’." },
+    "ʒ": { friendly: "“zh” as in “measure”", alias: ["zh"], plain: "Make an ‘sh’, but switch your voice on so it buzzes — the sound in the middle of ‘measure’." },
+    "ŋ": { friendly: "“ng”", alias: ["ng"] },
+    "t͡ʃ": { friendly: "“ch”", alias: ["ch"] },
+    "d͡ʒ": { friendly: "“j” as in “judge”", alias: ["j sound", "dj"] },
+    "t͡s": { friendly: "“ts”", alias: ["ts"] },
+    "ɹ": { friendly: "English “r”", alias: ["english r", "r sound"] },
+    "r": { friendly: "Rolled “r”", alias: ["rolled r", "roll", "trilled r", "rr"] },
+    "ʔ": { friendly: "Glottal stop", alias: ["glottal stop", "uh oh", "uh-oh"] },
+    "j": { friendly: "“y” as in “yes”", alias: ["y sound"] },
+    "ʍ": { friendly: "“wh” as in Scots “whine”", alias: ["wh"] },
+    "ə": { friendly: "Schwa — the “uh” vowel", alias: ["schwa", "uh"] },
+    "i": { friendly: "“ee” as in “see”", alias: ["ee"] },
+    "u": { friendly: "“oo” as in “food”", alias: ["oo"] },
+  };
+  Object.keys(FRIENDLY).forEach((sym) => {
+    const info = INFO[sym];
+    if (!info) return;
+    const f = FRIENDLY[sym];
+    if (f.friendly) info.friendly = f.friendly;
+    if (f.plain) info.plain = f.plain;
+    if (f.alias) info.alias = f.alias;
   });
 
   function describe(sym) { return INFO[sym] ? INFO[sym].name : null; }
