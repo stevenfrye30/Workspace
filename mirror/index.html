@@ -621,6 +621,68 @@
   .nut .dvbar > span { display: block; height: 100%; background: var(--cat-health); }
   .nut .dvbar > span.over { background: var(--warn); }
   .nut .dv { font-size: 0.64rem; color: var(--dim); font-family: ui-monospace, monospace; margin-top: 3px; }
+
+  /* ============ Health view density (scoped) ============ */
+  #view-health { padding-top: 18px; }
+  /* compact header row */
+  .health-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .health-head .backhome { margin: 0; }
+  .health-head h1 { font-size: 1.3rem; margin: 0; display: flex; align-items: center; gap: 8px; }
+  .health-head-meta { margin-left: auto; color: var(--dim); font-size: 0.82rem; white-space: nowrap; }
+  /* tighter rhythm than the global 40px/26px */
+  #view-health .group { margin: 0 0 14px; }
+  #view-health .group > summary { padding: 6px 0; margin-bottom: 12px; }
+  #view-health .section { margin-bottom: 14px; }
+  #view-health .section:last-child { margin-bottom: 0; }
+  #view-health .section-head { margin-bottom: 8px; padding-bottom: 5px; }
+  #view-health .form { margin-bottom: 8px; }
+
+  /* daily summary strip */
+  .health-summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+                    gap: 8px; margin-bottom: 14px; }
+  @media (max-width: 460px) { .health-summary { grid-template-columns: 1fr 1fr; } }
+  .hs-cell { background: var(--panel); border: 1px solid var(--line); border-left: 3px solid var(--cat-health);
+             border-radius: 8px; padding: 8px 12px; min-width: 0; }
+  .hs-cell .k { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); }
+  .hs-cell .v { font-size: 1.12rem; font-weight: 600; font-family: ui-monospace, monospace; color: var(--ink);
+                line-height: 1.15; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .hs-cell .v .u { font-size: 0.64rem; color: var(--dim); margin-left: 2px; }
+  .hs-cell .v .sub { font-size: 0.72rem; color: var(--dim); font-weight: 400; }
+  .hs-cell.hs-edit-cell { display: flex; align-items: center; justify-content: center; border-left-color: var(--line); }
+  .hs-edit { background: none; border: 0; color: var(--dim); cursor: pointer; font: inherit; font-size: 0.8rem; }
+  .hs-edit:hover { color: var(--cat-health); }
+
+  /* quick-add internal density */
+  #view-health .quick-add { gap: 12px; }
+  .qa-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+  .qa-head-right { display: flex; gap: 8px; align-items: center; }
+  #view-health .qa-main #foodResults { margin-top: 2px; }
+  #view-health .qa-main #foodSelected { margin: 2px 0; }
+  #view-health .qa-main .chip-row { margin: 4px 0; }
+  .qa-hint { color: var(--dim); margin-top: 4px; cursor: default; }
+
+  /* sub-heading inside a compact section (e.g. Food log, Saved meals) */
+  .hsub { margin-top: 12px; }
+  .hsub-head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .hsub-head h3 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em;
+                  color: var(--dim); font-weight: 700; margin: 0; }
+  .hsub-head .act { color: var(--dim); font-size: 0.74rem; }
+  table.log.compact th, table.log.compact td { padding: 5px 8px; }
+
+  /* nested collapsibles (Build a meal / Your foods) — light text toggles, not full section bars */
+  .subgroup { margin: 8px 0 0; }
+  .subgroup > summary { cursor: pointer; list-style: none; user-select: none; display: inline-flex;
+    align-items: center; gap: 6px; font-size: 0.74rem; font-weight: 600; color: var(--accent); padding: 4px 0; }
+  .subgroup > summary::-webkit-details-marker { display: none; }
+  .subgroup > summary::before { content: '▸'; font-size: 0.72rem; color: var(--dim); transition: transform .15s; }
+  .subgroup[open] > summary::before { transform: rotate(90deg); }
+  .subgroup > summary:hover { color: var(--ink); }
+
+  /* live value shown inside a collapsible section header (Hydration/Movement/Sleep) */
+  .group > summary .sumval { text-transform: none; letter-spacing: 0; font-weight: 400;
+    color: var(--dim); font-size: 0.78rem; }
+  .group > summary .sumval:not(:empty) { margin-left: 4px; }
+  .group > summary .sumval:not(:empty)::before { content: '· '; }
 </style>
 <link rel="stylesheet" href="../_shared/hub-nav.css">
 </head>
@@ -963,30 +1025,29 @@
 
 <!-- ============== HEALTH (measurable) ============== -->
 <section class="view" id="view-health">
-  <div class="view-top"><button class="backhome" data-goto="home">‹ Home</button></div>
-  <h1><span class="cat-mark"></span>Health</h1>
-  <div class="lede">Measurable physical care — what you eat and drink, how you move, and how it sequences across the day. Subjective feel lives in <button class="link-to" data-goto="body" style="background:none;border:0;color:var(--cat-body);cursor:pointer;font:inherit;padding:0">Body</button>.</div>
-
-  <div class="section">
-    <div class="section-head"><h2>Today's timeline</h2><span class="act tiny" id="healthTlDate"></span></div>
-    <div id="healthTimeline"></div>
+  <div class="health-head">
+    <button class="backhome" data-goto="home">‹ Home</button>
+    <h1><span class="cat-mark"></span>Health</h1>
+    <span class="health-head-meta" id="healthHeadMeta"></span>
   </div>
 
-  <!-- ===== Quick-add + live preview ===== -->
-  <details class="group" open>
-    <summary>Log food</summary>
+  <!-- compact daily summary strip -->
+  <div class="health-summary" id="healthSummary"></div>
 
-  <div class="section">
-    <div class="section-head"><h2>Quick add</h2>
-      <span style="display:flex;gap:12px;align-items:center">
-        <span class="act tiny" id="foodLoadStatus" role="status" aria-live="polite">loading library…</span>
+  <!-- ===== FOOD — quick add · recent/pinned · preview · today's log ===== -->
+  <details class="group" open>
+    <summary>Food</summary>
+
+    <div class="qa-head">
+      <span class="act tiny" id="foodLoadStatus" role="status" aria-live="polite">loading library…</span>
+      <span class="qa-head-right">
         <button class="mini-btn" id="foodExportBtn" title="Download food log as CSV">Export CSV</button>
       </span>
     </div>
     <div class="quick-add" id="quickAdd">
       <div class="qa-main">
         <div class="form">
-          <label style="flex:1;min-width:220px">Food
+          <label style="flex:1;min-width:200px">Food
             <input type="text" id="foodSearch" placeholder="Search food (e.g. egg, oats)…" class="grow" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="foodResults">
           </label>
           <label>Grams<input type="number" id="foodGrams" min="1" step="1" placeholder="100"></label>
@@ -994,144 +1055,128 @@
           <button class="primary" id="foodAdd" disabled>Add</button>
         </div>
         <div id="foodResults" class="search-results" role="listbox" style="display:none"></div>
-        <div id="foodSelected" class="tiny" style="color:var(--dim);margin:4px 0"></div>
+        <div id="foodSelected" class="tiny" style="color:var(--dim)"></div>
         <div id="foodPortions" class="chip-row" style="display:none"></div>
         <div id="pinnedFoods" class="chip-row" style="display:none"></div>
         <div id="recentFoods" class="chip-row" style="display:none"></div>
-        <div class="tiny" style="color:var(--dim);margin-top:6px">Type to search · <b>↑ ↓</b> to choose · <b>Enter</b> to pick, then <b>Enter</b> again to log · <b>⚡</b> on a chip logs its default serving instantly.</div>
+        <div class="qa-hint tiny" title="Type to search. ↑↓ choose · Enter picks then logs · ⚡ on a chip logs its default serving.">↑↓ select · Enter log · ⚡ quick log</div>
       </div>
       <div id="entryPreview" class="entry-preview" style="display:none"></div>
     </div>
-  </div>
+
+    <div class="hsub">
+      <div class="hsub-head"><h3>Food log</h3><span class="act tiny" id="foodLogDate"></span></div>
+      <table class="log compact" id="foodLog"><thead><tr><th>Food</th><th class="num">Grams</th><th class="num">kcal</th><th></th></tr></thead><tbody></tbody></table>
+    </div>
   </details>
 
-  <!-- ===== Today totals + macro bar ===== -->
+  <!-- ===== MEALS — saved first; builder & your foods collapsed ===== -->
   <details class="group" open>
-    <summary>Today</summary>
+    <summary>Meals</summary>
 
-  <div class="section">
-    <div class="section-head">
-      <h2>Today's nutrition</h2>
-      <span style="display:flex;gap:12px;align-items:center">
-        <span class="act tiny" id="todayDateLabel"></span>
-        <button class="mini-btn" id="targetsEditBtn" title="Edit daily targets">✎ targets</button>
-      </span>
-    </div>
-    <div class="today-grid" id="todaySummary"></div>
-    <div id="targetsForm" class="form" style="display:none;margin-top:10px">
-      <label>kcal<input type="number" id="tgtKcal" min="500" step="50"></label>
-      <label>protein g<input type="number" id="tgtProtein" min="10" step="5"></label>
-      <label>water oz<input type="number" id="tgtWater" min="8" step="8"></label>
-      <button class="primary" id="targetsSave">Save</button>
-      <button class="ghost" id="targetsCancel">Cancel</button>
-    </div>
-    <div class="macro-split" id="macroSplit"></div>
-  </div>
-  </details>
-
-  <!-- ===== Food log ===== -->
-  <details class="group" open>
-    <summary>Today's food log</summary>
-
-  <div class="section">
-    <table class="log" id="foodLog"><thead><tr><th>Date</th><th>Food</th><th class="num">Grams</th><th class="num">kcal</th><th></th></tr></thead><tbody></tbody></table>
-  </div>
-  </details>
-
-  <!-- ===== Meals (first-class) + your foods ===== -->
-  <details class="group" open>
-    <summary>Meals &amp; your foods</summary>
-
-  <div class="section">
-    <div class="section-head"><h2>Build a meal</h2><span class="act tiny">Bundle foods you eat together and log them in one tap.</span></div>
-    <div class="form">
-      <label style="flex:1;min-width:200px">Add food
-        <input type="text" id="mealSearch" placeholder="Search NutriLens or your custom foods" class="grow" autocomplete="off">
-      </label>
-      <label>Grams<input type="number" id="mealGrams" min="1" step="1" placeholder="100"></label>
-      <button class="primary" id="mealItemAdd" disabled>Add to meal</button>
-    </div>
-    <div id="mealResults" class="search-results" style="display:none"></div>
-    <div id="mealSelected" class="tiny" style="color:var(--dim);margin:4px 0 8px"></div>
-    <div id="mealDraft"></div>
-    <div class="form" id="mealSaveRow" style="display:none">
-      <input type="text" id="mealName" class="grow" placeholder="Meal name (e.g. My breakfast bowl)">
-      <button class="primary" id="mealSave">Save meal</button>
-      <button class="ghost" id="mealClear">Clear</button>
-    </div>
-  </div>
-
-  <div class="section">
-    <div class="section-head">
-      <h2>Saved meals</h2>
-      <span style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-        <button class="mini-btn" id="mealFromToday" title="Turn everything logged on the Quick-add date into a reusable meal">＋ Save a day's log as a meal</button>
-        <label class="act tiny" style="color:var(--dim)">Log on <input type="date" id="mealLogDate" style="width:130px"></label>
-      </span>
+    <div class="hsub-head">
+      <h3 style="margin-right:auto">Saved meals</h3>
+      <button class="mini-btn" id="mealFromToday" title="Turn everything logged on the Quick-add date into a reusable meal">＋ Save a day's log</button>
+      <label class="act tiny" style="color:var(--dim)">Log on <input type="date" id="mealLogDate" style="width:130px"></label>
     </div>
     <div id="mealList"></div>
-  </div>
 
-  <div class="section">
-    <div class="section-head"><h2>Your foods</h2><span class="act tiny">Custom foods & recipes — searchable like any food.</span></div>
-    <div class="form">
-      <input type="text" id="cfName" class="grow" placeholder="Name (e.g. My protein shake)">
-      <label>Serving<input type="text" id="cfServLabel" placeholder="1 shake"></label>
-      <label>Serving grams<input type="number" id="cfServGrams" min="1" step="1" placeholder="300"></label>
-    </div>
-    <div class="form">
-      <label>kcal<input type="number" id="cfKcal" min="0" step="1"></label>
-      <label>protein g<input type="number" id="cfProtein" min="0" step="0.1"></label>
-      <label>fat g<input type="number" id="cfFat" min="0" step="0.1"></label>
-      <label>carbs g<input type="number" id="cfCarbs" min="0" step="0.1"></label>
-      <label>fiber g<input type="number" id="cfFiber" min="0" step="0.1"></label>
-      <button class="primary" id="cfAdd">Save food</button>
-    </div>
-    <div class="tiny" style="color:var(--dim);margin:-6px 0 12px">Enter the numbers for one serving. Mirror stores them per 100 g so logging any amount works. Macros only — micronutrients show as 0 for custom foods.</div>
-    <div id="customFoodList"></div>
-  </div>
+    <details class="subgroup">
+      <summary>Build a meal</summary>
+      <div class="form" style="margin-top:8px">
+        <label style="flex:1;min-width:180px">Add food
+          <input type="text" id="mealSearch" placeholder="Search foods" class="grow" autocomplete="off">
+        </label>
+        <label>Grams<input type="number" id="mealGrams" min="1" step="1" placeholder="100"></label>
+        <button class="primary" id="mealItemAdd" disabled>Add</button>
+      </div>
+      <div id="mealResults" class="search-results" style="display:none"></div>
+      <div id="mealSelected" class="tiny" style="color:var(--dim);margin:4px 0"></div>
+      <div id="mealDraft"></div>
+      <div class="form" id="mealSaveRow" style="display:none">
+        <input type="text" id="mealName" class="grow" placeholder="Meal name (e.g. My breakfast bowl)">
+        <button class="primary" id="mealSave">Save meal</button>
+        <button class="ghost" id="mealClear">Clear</button>
+      </div>
+    </details>
+
+    <details class="subgroup">
+      <summary>Your foods</summary>
+      <div class="form" style="margin-top:8px">
+        <input type="text" id="cfName" class="grow" placeholder="Name (e.g. My protein shake)">
+        <label>Serving<input type="text" id="cfServLabel" placeholder="1 shake"></label>
+        <label>Serving grams<input type="number" id="cfServGrams" min="1" step="1" placeholder="300"></label>
+      </div>
+      <div class="form">
+        <label>kcal<input type="number" id="cfKcal" min="0" step="1"></label>
+        <label>protein g<input type="number" id="cfProtein" min="0" step="0.1"></label>
+        <label>fat g<input type="number" id="cfFat" min="0" step="0.1"></label>
+        <label>carbs g<input type="number" id="cfCarbs" min="0" step="0.1"></label>
+        <label>fiber g<input type="number" id="cfFiber" min="0" step="0.1"></label>
+        <button class="primary" id="cfAdd">Save food</button>
+      </div>
+      <div class="tiny" style="color:var(--dim);margin:2px 0 10px">Enter the numbers for one serving; stored per 100 g so any amount works. Macros only — micronutrients show as 0.</div>
+      <div id="customFoodList"></div>
+    </details>
   </details>
 
-  <!-- ===== %DV nutrition (grouped) + trend ===== -->
-  <details class="group" open>
+  <!-- ===== NUTRITION DETAIL (collapsed) ===== -->
+  <details class="group">
     <summary>Nutrition detail</summary>
 
-  <div class="section">
-    <div class="section-head">
-      <h2>Nutrient overview</h2>
-      <div class="range-tabs">
-        <button class="mini-btn active" data-range="day">Day</button>
-        <button class="mini-btn" data-range="week">Week</button>
-        <button class="mini-btn" data-range="month">Month</button>
-        <button class="mini-btn" data-range="year">Year</button>
+    <div class="section">
+      <div class="section-head">
+        <h2>Today's nutrition</h2>
+        <span style="display:flex;gap:12px;align-items:center">
+          <span class="act tiny" id="todayDateLabel"></span>
+          <button class="mini-btn" id="targetsEditBtn" title="Edit daily targets">✎ targets</button>
+        </span>
       </div>
+      <div class="today-grid" id="todaySummary"></div>
+      <div id="targetsForm" class="form" style="display:none;margin-top:10px">
+        <label>kcal<input type="number" id="tgtKcal" min="500" step="50"></label>
+        <label>protein g<input type="number" id="tgtProtein" min="10" step="5"></label>
+        <label>water oz<input type="number" id="tgtWater" min="8" step="8"></label>
+        <button class="primary" id="targetsSave">Save</button>
+        <button class="ghost" id="targetsCancel">Cancel</button>
+      </div>
+      <div class="macro-split" id="macroSplit"></div>
     </div>
-    <div id="nutrientSummary"></div>
-    <div class="tiny" id="nutrientNote" style="margin-top:8px;color:var(--dim)"></div>
-  </div>
 
-  <div class="section">
-    <div class="section-head">
-      <h2>Trend</h2>
-      <div class="range-tabs">
-        <button class="mini-btn active" data-trend="7">7d</button>
-        <button class="mini-btn" data-trend="30">30d</button>
+    <div class="section">
+      <div class="section-head">
+        <h2>Nutrient overview</h2>
+        <div class="range-tabs">
+          <button class="mini-btn active" data-range="day">Day</button>
+          <button class="mini-btn" data-range="week">Week</button>
+          <button class="mini-btn" data-range="month">Month</button>
+          <button class="mini-btn" data-range="year">Year</button>
+        </div>
+      </div>
+      <div id="nutrientSummary"></div>
+      <div class="tiny" id="nutrientNote" style="margin-top:8px;color:var(--dim)"></div>
+    </div>
+
+    <div class="section">
+      <div class="section-head">
+        <h2>Trend</h2>
+        <div class="range-tabs">
+          <button class="mini-btn active" data-trend="7">7d</button>
+          <button class="mini-btn" data-trend="30">30d</button>
+        </div>
+      </div>
+      <div id="trendChart" class="trend-chart"></div>
+      <div class="trend-legend tiny">
+        <span><span class="dot" style="background:var(--accent)"></span>kcal</span>
+        <span><span class="dot" style="background:var(--accent2)"></span>protein</span>
+        <span style="color:var(--dim)">— dashed = 100% of target</span>
       </div>
     </div>
-    <div id="trendChart" class="trend-chart"></div>
-    <div class="trend-legend tiny">
-      <span><span class="dot" style="background:var(--accent)"></span>kcal</span>
-      <span><span class="dot" style="background:var(--accent2)"></span>protein</span>
-      <span style="color:var(--dim)">— dashed = 100% of target</span>
-    </div>
-  </div>
   </details>
 
-  <details class="group" open>
-    <summary>Hydration</summary>
-
-  <div class="section">
-    <div class="section-head"><h2>Hydration</h2><span class="act tiny" id="hydrTotal"></span></div>
+  <!-- ===== HYDRATION (collapsed) ===== -->
+  <details class="group">
+    <summary>Hydration <span class="sumval" id="hydrSummary"></span></summary>
     <div class="chip-row" style="margin-bottom:8px">
       <span class="lbl">Quick add</span>
       <button class="chip" data-hydr="8">+8 oz</button>
@@ -1147,48 +1192,50 @@
     </div>
     <div class="bar" style="margin-bottom:6px"><div class="fill" id="hydrBar" style="width:0%"></div></div>
     <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-bottom:8px"></div>
+    <span class="act tiny" id="hydrTotal" style="display:none"></span>
     <div id="waterLog"></div>
-  </div>
   </details>
 
-  <details class="group" open>
-    <summary>Sleep &amp; movement</summary>
-
-  <div class="two-col">
-    <div class="section">
-      <div class="section-head"><h2>Sleep</h2></div>
-      <div class="form">
-        <label>Date<input type="date" id="sleepDate"></label>
-        <label>Hours<input type="number" id="sleepHours" min="0" max="24" step="0.25"></label>
-        <label>Quality (1–5)<input type="number" id="sleepQuality" min="1" max="5" step="1"></label>
-        <button class="primary" id="sleepAdd">Add</button>
-      </div>
-      <div id="sleepLog"></div>
+  <!-- ===== MOVEMENT (collapsed) ===== -->
+  <details class="group">
+    <summary>Movement <span class="sumval" id="moveSummary"></span></summary>
+    <div class="form">
+      <label>Date<input type="date" id="exDate"></label>
+      <label>Type<input type="text" id="exType" placeholder="walk, run, yoga, lift"></label>
+      <label>Time<input type="time" id="exTime"></label>
+      <label>Minutes<input type="number" id="exMinutes" min="1" step="1"></label>
     </div>
-
-    <div class="section">
-      <div class="section-head"><h2>Movement &amp; exercise</h2></div>
-      <div class="form">
-        <label>Date<input type="date" id="exDate"></label>
-        <label>Type<input type="text" id="exType" placeholder="walk, run, yoga, lift"></label>
-        <label>Time<input type="time" id="exTime"></label>
-        <label>Minutes<input type="number" id="exMinutes" min="1" step="1"></label>
-      </div>
-      <div class="form">
-        <label>Distance<input type="number" id="exDistance" min="0" step="0.1" placeholder="mi"></label>
-        <label>Intensity<select id="exIntensity">
-          <option value="">—</option>
-          <option value="easy">easy</option>
-          <option value="moderate">moderate</option>
-          <option value="hard">hard</option>
-        </select></label>
-        <input type="text" id="exNote" class="grow" placeholder="location / how it felt (optional)">
-        <button class="primary" id="exAdd">Add</button>
-      </div>
-      <div class="tiny" style="color:var(--dim);margin:-6px 0 10px">Duration, distance, intensity and notes are all optional. Structured so a fitness-tracker import (steps, heart rate, workouts) can slot in later.</div>
-      <div id="exLog"></div>
+    <div class="form">
+      <label>Distance<input type="number" id="exDistance" min="0" step="0.1" placeholder="mi"></label>
+      <label>Intensity<select id="exIntensity">
+        <option value="">—</option>
+        <option value="easy">easy</option>
+        <option value="moderate">moderate</option>
+        <option value="hard">hard</option>
+      </select></label>
+      <input type="text" id="exNote" class="grow" placeholder="location / how it felt (optional)">
+      <button class="primary" id="exAdd">Add</button>
     </div>
-  </div>
+    <div class="tiny" style="color:var(--dim);margin:-2px 0 10px">Duration, distance, intensity and notes are all optional.</div>
+    <div id="exLog"></div>
+  </details>
+
+  <!-- ===== SLEEP (collapsed) ===== -->
+  <details class="group">
+    <summary>Sleep <span class="sumval" id="sleepSummary"></span></summary>
+    <div class="form">
+      <label>Date<input type="date" id="sleepDate"></label>
+      <label>Hours<input type="number" id="sleepHours" min="0" max="24" step="0.25"></label>
+      <label>Quality (1–5)<input type="number" id="sleepQuality" min="1" max="5" step="1"></label>
+      <button class="primary" id="sleepAdd">Add</button>
+    </div>
+    <div id="sleepLog"></div>
+  </details>
+
+  <!-- ===== TODAY'S TIMELINE (collapsed, moved to bottom) ===== -->
+  <details class="group">
+    <summary>Today's timeline <span class="sumval" id="healthTlDate"></span></summary>
+    <div id="healthTimeline"></div>
   </details>
 
   <div id="complete-health"></div>
@@ -2558,7 +2605,7 @@ function clearFoodEntry() {
 // One shared refresh for every surface that reacts to a food change.
 function refreshFoodUI() {
   renderFoodLog(); renderNutrients(); renderToday(); renderMacroSplit();
-  renderTrend(); renderRecentFoods(); renderPinnedFoods();
+  renderTrend(); renderRecentFoods(); renderPinnedFoods(); renderHealthSummary();
 }
 function flashFoodStatus(msg) {
   const st = document.getElementById('foodLoadStatus'); if (!st) return;
@@ -2901,15 +2948,21 @@ function editMeal(id) {
   document.getElementById('mealSearch').scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
+// The food log is scoped to the Quick-add date (one day at a time), so the date shows once in
+// the heading rather than on every row. Change the date field to review/backfill another day.
+function foodLogDay() { const el = document.getElementById('foodDate'); return (el && el.value) || todayStr(); }
 function renderFoodLog() {
   const tbody = document.querySelector('#foodLog tbody');
-  const rows = state.body.food.slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0, 50);
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="5" class="empty">No food logged yet.</td></tr>'; return; }
+  const day = foodLogDay();
+  const dl = document.getElementById('foodLogDate'); if (dl) dl.textContent = fmtDate(day);
+  const rows = state.body.food.filter(e => e.date === day)
+    .slice().sort((a,b)=> String(b._at||'').localeCompare(String(a._at||'')));
+  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">Nothing logged for this day yet.</td></tr>'; return; }
   tbody.innerHTML = rows.map(r => {
     const nn = entryN(r);
     const kcal = nn ? ((nn.kcal || 0) * r.grams / 100).toFixed(0) : '—';
     const pinned = isPinned(r.foodId);
-    return `<tr><td>${fmtDate(r.date)}</td><td>${escapeHtml(r.foodName)}</td>
+    return `<tr><td>${escapeHtml(r.foodName)}</td>
       <td class="num">${r.grams}</td><td class="num">${kcal}</td>
       <td style="white-space:nowrap">
         <button class="pin-btn${pinned ? ' on' : ''}" data-pin="${r.foodId}" title="${pinned ? 'Unpin' : 'Pin this food'}">${pinned ? '★' : '☆'}</button>
@@ -2929,6 +2982,39 @@ function renderFoodLog() {
       {key:'grams',label:'Grams',type:'number',min:1,step:1},
     ], r, vals => { Object.assign(r, vals); refreshFood(); });
   });
+}
+
+// Compact always-visible daily strip + the header date + the live values shown in each collapsed
+// section header (Hydration/Movement/Sleep). Reads today's food/water/exercise/sleep; derive-only.
+function renderHealthSummary() {
+  const today = todayStr();
+  let kcal = 0, protein = 0;
+  for (const e of state.body.food) {
+    if (e.date !== today) continue;
+    const nn = entryN(e); if (!nn) continue;
+    const f = e.grams / 100;
+    kcal += (nn.kcal || 0) * f; protein += (nn.protein_g || 0) * f;
+  }
+  const water = (state.body.water || []).filter(w => w.date === today).reduce((s,w) => s + Number(w.oz||0), 0);
+  const exToday = (state.body.exercise || []).filter(e => e.date === today);
+  const exMin = exToday.reduce((s,e) => s + (Number(e.minutes) || 0), 0);
+  const exType = (exToday.find(e => e.type) || {}).type || '';
+  const sleepToday = (state.body.sleep || []).filter(s => s.date === today).slice(-1)[0];
+  const T = getTargets();
+  const dash = '<span style="color:var(--dim)">—</span>';
+  const cell = (k, inner) => `<div class="hs-cell"><div class="k">${k}</div><div class="v">${inner}</div></div>`;
+  const strip = document.getElementById('healthSummary');
+  if (strip) strip.innerHTML = [
+    cell('Calories', `${Math.round(kcal).toLocaleString()}<span class="u">kcal</span>`),
+    cell('Protein', `${Math.round(protein)}<span class="u">g</span>`),
+    cell('Water', `${water}<span class="sub"> / ${T.water_oz}</span><span class="u">oz</span>`),
+    cell('Movement', exMin ? `${exMin}<span class="u">min</span>${exType ? `<span class="sub"> ${escapeHtml(exType)}</span>` : ''}` : dash),
+    cell('Sleep', sleepToday ? `${sleepToday.hours}<span class="u">h</span>${sleepToday.quality ? `<span class="sub"> q${sleepToday.quality}</span>` : ''}` : dash),
+  ].join('');
+  const meta = document.getElementById('healthHeadMeta'); if (meta) meta.textContent = fmtDate(today);
+  const hs = document.getElementById('hydrSummary'); if (hs) hs.textContent = `${water} / ${T.water_oz} oz`;
+  const mv = document.getElementById('moveSummary'); if (mv) mv.textContent = exMin ? `${exMin} min${exType ? ' ' + exType : ''}` : 'nothing logged';
+  const sl = document.getElementById('sleepSummary'); if (sl) sl.textContent = sleepToday ? `${sleepToday.hours} h${sleepToday.quality ? ` · quality ${sleepToday.quality}/5` : ''}` : 'nothing logged';
 }
 
 function renderToday() {
@@ -3213,7 +3299,7 @@ function simpleLog(key, containerId, renderRow) {
     <span>${fmtDate(r.date)} — ${renderRow(r)}</span>
     <span style="white-space:nowrap"><button class="edit-btn" data-edit="${r.id}">edit</button>
     <button class="x" data-id="${r.id}">×</button></span></div></div>`).join('');
-  const after = () => { saveState(); simpleLog(key, containerId, renderRow); if (key === 'water') renderToday(); };
+  const after = () => { saveState(); simpleLog(key, containerId, renderRow); if (key === 'water') renderToday(); renderHealthSummary(); };
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.body[key] = state.body[key].filter(x => x.id !== b.dataset.id); after();
   });
@@ -3234,7 +3320,7 @@ function logWater(oz, t){
   if (!oz) return;
   state.body.water.push({ id: uid(), date, oz: Number(oz), t: t || '' });
   saveState();
-  renderHydration(); renderToday(); renderHealthTimeline();
+  renderHydration(); renderToday(); renderHealthTimeline(); renderHealthSummary();
 }
 function renderHydration(){
   const date = todayStr();
@@ -3254,7 +3340,7 @@ function renderHydration(){
     <span style="white-space:nowrap"><button class="x" data-id="${r.id}" aria-label="Delete water entry">×</button></span></div></div>`).join('');
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.body.water = state.body.water.filter(x => x.id !== b.dataset.id);
-    saveState(); renderHydration(); renderToday(); renderHealthTimeline();
+    saveState(); renderHydration(); renderToday(); renderHealthTimeline(); renderHealthSummary();
   });
 }
 document.getElementById('waterAdd').onclick = () => {
@@ -3275,7 +3361,7 @@ document.getElementById('sleepAdd').onclick = () => {
   saveState();
   document.getElementById('sleepHours').value=''; document.getElementById('sleepQuality').value='';
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
-  renderHealthTimeline();
+  renderHealthTimeline(); renderHealthSummary();
 };
 function exSummary(r){
   const lead = [];
@@ -3303,7 +3389,7 @@ document.getElementById('exAdd').onclick = () => {
   ['exType','exMinutes','exTime','exDistance','exNote'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('exIntensity').value = '';
   simpleLog('exercise','exLog', exSummary);
-  renderHealthTimeline();
+  renderHealthTimeline(); renderHealthSummary();
 };
 document.getElementById('symAdd').onclick = () => {
   const note = document.getElementById('symNote').value.trim();
@@ -5831,7 +5917,7 @@ function renderAll() {
   renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal();
   renderFoodLog(); renderNutrients(); renderToday(); renderMacroSplit(); renderTrend();
   renderRecentFoods(); renderPinnedFoods(); renderCustomFoods(); renderMeals();
-  renderHydration();
+  renderHydration(); renderHealthSummary();
   simpleLog('sleep','sleepLog', r => `${r.hours}h · quality ${r.quality||'–'}`);
   simpleLog('exercise','exLog', exSummary);
   simpleLog('symptoms','symLog', r => escapeHtml(r.note));
@@ -5851,6 +5937,8 @@ function renderAll() {
 ['foodDate','waterDate','sleepDate','exDate','symDate','expDate','nwDate','refDate','idDate','mealLogDate','jrDate'].forEach(id => {
   const el = document.getElementById(id); if (el) el.value = todayStr();
 });
+// The food log is scoped to the Quick-add date — re-render it when that date changes.
+document.getElementById('foodDate').addEventListener('change', () => { renderFoodLog(); });
 
 loadFoods().then(() => { refreshFoodUI(); renderCustomFoods(); renderMeals(); renderTodaySummary(); });
 renderToday();
