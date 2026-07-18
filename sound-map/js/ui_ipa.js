@@ -56,6 +56,7 @@
     { title: "Voicing pairs", note: "Same mouth position — the only change is whether the vocal folds vibrate. Rest a hand on your throat and feel the buzz switch on.", syms: ["p", "b", "t", "d", "k", "ɡ", "f", "v", "s", "z"] },
     { title: "Places of articulation", note: "All stops, but the closure moves steadily back through the mouth: lips → ridge → palate → soft palate → throat.", syms: ["p", "t", "c", "k", "q", "ʔ"] },
     { title: "Manners of articulation", note: "All at the alveolar ridge, but the airflow is shaped differently each time.", syms: ["t", "n", "s", "ɾ", "r", "l", "ɹ"] },
+    { title: "Affricates", note: "A stop released into a fricative, fused into a single sound — English ‘ch’ and ‘j’ are the everyday examples.", syms: ["t͡ʃ", "d͡ʒ", "t͡s", "d͡z"] },
     { title: "Basic vowels", note: "The corners and centre of the vowel space — the anchors everything else is measured against.", syms: ["i", "u", "ɑ", "a", "ə"] },
     { title: "Sounds English lacks", note: "Common across the world's languages, unfamiliar to most English speakers.", syms: ["y", "ø", "ɲ", "x", "ʁ", "ɕ"] },
     { title: "Beyond the lungs", note: "Non-pulmonic sounds — made with the tongue or larynx instead of the breath.", syms: ["ǀ", "ǃ", "ɓ", "ɗ", "kʼ"] },
@@ -75,12 +76,14 @@
 
   // ── Category / helpers ────────────────────────────────────────────────
   const CAT_LABEL = {
-    cons: "Pulmonic consonant", vowel: "Vowel", click: "Click · non-pulmonic",
+    cons: "Pulmonic consonant", vowel: "Vowel", affricate: "Affricate",
+    click: "Click · non-pulmonic",
     implosive: "Implosive · non-pulmonic", ejective: "Ejective · non-pulmonic",
     other: "Other symbol", supra: "Suprasegmental", diacritic: "Diacritic",
   };
   const catOf = (info) => (["click", "implosive", "ejective"].includes(info.kind) ? "nonpulm" :
     info.kind === "cons" ? "cons" : info.kind === "vowel" ? "vowel" :
+    info.kind === "affricate" ? "affricate" :
     info.kind === "other" ? "other" : info.kind === "supra" ? "supra" : "diacritic");
 
   // Full-text search haystack per symbol.
@@ -161,6 +164,14 @@
       if (info.voice != null) rows += R("Voicing", info.voice ? "voiced" : "voiceless");
       if (a) { rows += R("Active", a.active); if (a.passive !== "—") rows += R("Passive", a.passive); }
       rows += R("Airflow", info.oral === false ? "nasal (through the nose)" : info.lateral ? "lateral (over the sides)" : "oral (central)");
+      rows += R("Airstream", info.airstream);
+      return rows;
+    }
+    if (info.kind === "affricate") {
+      let rows = R("Type", "affricate (stop released into a fricative)");
+      rows += R("Place", P.placeLabel(info.place));
+      if (info.voice != null) rows += R("Voicing", info.voice ? "voiced" : "voiceless");
+      rows += R("Airflow", "oral (central)");
       rows += R("Airstream", info.airstream);
       return rows;
     }
@@ -388,6 +399,16 @@
     return row;
   }
 
+  function buildAffricates() {
+    const P = IPA();
+    const wrap = el("section", "ipa-block");
+    wrap.dataset.cat = "affricate";
+    wrap.appendChild(el("h3", "ipa-h3", "Affricates"));
+    wrap.appendChild(el("p", "ipa-sub", P.GROUP_NOTES.affricate));
+    wrap.appendChild(chipRow(P.AFFRICATES, (e) => e.sym, (e) => e.name));
+    return wrap;
+  }
+
   function buildOther() {
     const P = IPA();
     const wrap = el("section", "ipa-block");
@@ -537,6 +558,7 @@
     if (!charts) return;
 
     charts.appendChild(buildConsonants());
+    charts.appendChild(buildAffricates());
     charts.appendChild(buildVowels());
     charts.appendChild(buildOther());
     charts.appendChild(buildNonPulmonic());

@@ -174,6 +174,21 @@
     { sym: "sʼ", place: "alveolar", manner: "fricative", name: "Alveolar ejective fricative", lang: "Amharic, Tlingit" },
   ];
 
+  // ── Affricates (a stop released into a fricative) ─────────────────────
+  // Not a row on the modern official chart — affricates are written as a
+  // stop + fricative joined by a tie bar (t͡ʃ). Included here because they're
+  // the sounds English speakers most often hunt for. `parts` names the two
+  // component letters; `place` is the fricative's place (drives diagram/synth).
+  const AFFRICATES = [
+    { sym: "t͡ʃ", place: "postalveolar", voice: 0, parts: ["t", "ʃ"], name: "Voiceless post-alveolar affricate", example: "church" },
+    { sym: "d͡ʒ", place: "postalveolar", voice: 1, parts: ["d", "ʒ"], name: "Voiced post-alveolar affricate", example: "judge" },
+    { sym: "t͡s", place: "alveolar", voice: 0, parts: ["t", "s"], name: "Voiceless alveolar affricate", example: "cats", exApprox: 1, lang: "clearer as German ⟨z⟩ ‘Zeit’; in English only word-finally (‘cats’)" },
+    { sym: "d͡z", place: "alveolar", voice: 1, parts: ["d", "z"], name: "Voiced alveolar affricate", example: "adds" },
+    { sym: "t͡ɕ", place: "palatal", voice: 0, parts: ["t", "ɕ"], name: "Voiceless alveolo-palatal affricate", lang: "Mandarin pinyin ⟨j⟩, Polish ⟨ć⟩" },
+    { sym: "d͡ʑ", place: "palatal", voice: 1, parts: ["d", "ʑ"], name: "Voiced alveolo-palatal affricate", lang: "Polish ⟨dź⟩, Japanese ⟨じ⟩" },
+    { sym: "p͡f", place: "labiodental", voice: 0, parts: ["p", "f"], name: "Voiceless labiodental affricate", lang: "German ⟨Pferd⟩" },
+  ];
+
   // ── Other symbols (co-articulated / non-grid) ─────────────────────────
   const OTHER = [
     { sym: "ʍ", place: "velar", secondary: "bilabial", voice: 0, name: "Voiceless labial–velar fricative", lang: "Scots / conservative English ⟨wh⟩" },
@@ -256,6 +271,7 @@
     click: "Clicks use a velaric (mouth) airstream — the tongue pulls air inward, so they don't need the lungs. Shown here are the five click ‘places’; each can be voiced, nasalized, etc. with a companion letter.",
     implosive: "Implosives use a glottalic ingressive airstream — the larynx pulls down while voicing, so air flows slightly inward. Only the voiced series has dedicated letters.",
     ejective: "Ejectives use a glottalic egressive airstream — the closed glottis pushes air out. There is no fixed list: any voiceless obstruent + the ejective mark ◌ʼ (e.g. pʼ, tʼ, kʼ, sʼ, tʃʼ). The four below are just common examples.",
+    affricate: "An affricate is a single sound that begins as a stop and releases into a fricative at the same place — written with two letters joined by a tie bar (t͡ʃ). English ⟨ch⟩ and ⟨j⟩ are affricates; the chart proper leaves them off because they're combinations, but they behave as one unit.",
     other: "Sounds that don't fit a single place×manner cell — co-articulated (two places at once) or otherwise off-grid.",
     vowel: "Vowels are plotted on the IPA quadrilateral by tongue height (top = close/high) and backness (left = front). Where two share a spot, the left is unrounded and the right is rounded. Note: there's no separate letter for an open central unrounded vowel — that's written [ä] (centralized [a]).",
     supra: "Marks for stress, length, and phrasing. They shape or organize sounds rather than being sounds themselves — so they don't play in isolation.",
@@ -325,6 +341,10 @@
     w: "Round the lips and raise the back of the tongue toward the soft palate at the same time, voicing — the ‘w’ in ‘we’.",
     "ʍ": "As for [w] — lips rounded, tongue back raised — but with voiceless friction instead of voicing (a breathy ‘wh’).",
     "ɥ": "Round the lips as for [w] while raising the tongue toward the hard palate as for [j] — French ⟨huit⟩.",
+    "t͡ʃ": "Start in the [t] position, then release it slowly into [ʃ] so the stop melts straight into the hush — the ‘ch’ in ‘church’.",
+    "d͡ʒ": "The voiced twin of [t͡ʃ]: a [d] releasing into [ʒ] with the vocal folds buzzing throughout — the ‘j’ in ‘judge’, the ‘dg’ in ‘bridge’.",
+    "t͡s": "Release a [t] straight into an [s], with no vowel in between — the ‘ts’ ending ‘cats’, or German ⟨z⟩ in ‘Zeit’.",
+    "d͡z": "The voiced twin of [t͡s]: a [d] running into a [z] — the ‘dds’ in ‘adds’.",
   };
 
   function howToCons(info) {
@@ -355,6 +375,10 @@
     const B = { front: "pushed forward", central: "in the centre", back: "pulled back" };
     const lips = v.rounded ? "rounded" : "spread / relaxed (unrounded)";
     return `Hold the tongue ${H[v.height]} and ${B[v.backness]}, with the lips ${lips}. Voice it steadily, with no obstruction or friction.`;
+  }
+  function howToAffricate(info) {
+    const p = PLACE_WORD[info.place] || info.place;
+    return `Make a ${p} stop, then release it gradually into the matching ${p} fricative so the two fuse into one sound. ${info.voice ? "Vibrate the vocal folds throughout (voiced)." : "Keep the vocal folds silent (voiceless)."}`;
   }
 
   // Carrier for combining marks so they're visible alone: ◌̥ not a floating ̥.
@@ -429,6 +453,16 @@
       oral: true, lateral: e.sym === "ɺ", howto: HOWTO_OVERRIDE[e.sym] || null, audio: true,
     });
   });
+  AFFRICATES.forEach((e) => {
+    INFO[e.sym] = base({
+      sym: e.sym, kind: "affricate", place: e.place || null, manner: "affricate",
+      voice: e.voice, zone: e.place || null, parts: e.parts || [],
+      name: e.name, example: e.example || null, exApprox: e.exApprox ? 1 : 0,
+      lang: e.lang || null, airstream: "pulmonic egressive",
+      oral: true, lateral: false,
+      howto: HOWTO_OVERRIDE[e.sym] || howToAffricate(e), audio: true,
+    });
+  });
   SUPRAS.forEach((e) => {
     INFO[e.sym] = base({
       sym: e.sym, kind: "supra", place: null, manner: "suprasegmental",
@@ -490,6 +524,13 @@
     });
     return dedupeRel(out, v.sym).slice(0, 6);
   }
+  function relatedAffricate(info) {
+    const out = [];
+    (info.parts || []).forEach((s, i) => { if (INFO[s]) out.push({ sym: s, rel: i === 0 ? "the stop" : "the fricative" }); });
+    const twin = Object.values(INFO).find((o) => o.kind === "affricate" && o.place === info.place && o.voice !== info.voice);
+    if (twin) out.push({ sym: twin.sym, rel: info.voice ? "voiceless pair" : "voiced pair" });
+    return dedupeRel(out, info.sym).slice(0, 6);
+  }
   function dedupeRel(list, self) {
     const seen = new Set([self]);
     const out = [];
@@ -506,6 +547,7 @@
       const v = VOWELS.find((x) => x.sym === info.sym);
       info.related = v ? relatedVowel(v) : [];
     }
+    else if (info.kind === "affricate") info.related = relatedAffricate(info);
   });
 
   function describe(sym) { return INFO[sym] ? INFO[sym].name : null; }
@@ -513,7 +555,7 @@
   SOUND.IPA = {
     PLACES, MANNERS, CONS_CELLS,
     HEIGHTS, BACKNESS, VOWELS,
-    CLICKS, IMPLOSIVES, EJECTIVES, OTHER,
+    CLICKS, IMPLOSIVES, EJECTIVES, AFFRICATES, OTHER,
     SUPRAS, DIA_GROUPS, GROUP_NOTES,
     INFO, describe, carrier,
     PLACE_ARTIC, MANNER_CONSTR,

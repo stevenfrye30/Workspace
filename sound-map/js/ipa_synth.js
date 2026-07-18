@@ -198,6 +198,18 @@
     const src = glottis(t0, dur, 130, 0.85);
     const filt = bp(PLACE_F2[info.place] || 1600, 2); src.out.connect(filt); filt.connect(master);
   }
+  // Affricate = a stop burst that opens straight into a fricative at the same
+  // place. Illustrative, like the other obstruents — labelled "approximate".
+  function playAffricate(info, t0) {
+    const closure = 0.05;
+    const sp = PLACE_SPECTRUM[info.place] || { freq: 3000, q: 2.5 };
+    if (info.voice) { const v = glottis(t0, closure + 0.26, 110, 0.24); const vlp = lp(320); v.out.connect(vlp); vlp.connect(master); }
+    const burst = noise(t0 + closure, 0.03, 0.75);
+    const bf = bp(sp.freq, Math.max(1.4, sp.q)); burst.out.connect(bf); bf.connect(master);
+    const fr = noise(t0 + closure + 0.028, 0.24, info.voice ? 0.4 : 0.6);
+    const ff = bp(sp.freq, sp.q); fr.out.connect(ff); ff.connect(master);
+    if (info.voice) { const v2 = glottis(t0 + closure + 0.028, 0.24, 120, 0.28); const v2lp = lp(500); v2.out.connect(v2lp); v2lp.connect(master); }
+  }
 
   function play(sym, info) {
     info = info || (SOUND.IPA && SOUND.IPA.INFO[sym]);
@@ -211,6 +223,7 @@
       case "nasal": playNasal(info, t0); break;
       case "tap": playTap(info, t0); break;
       case "fricative": playFricative(info, t0); break;
+      case "affricate": playAffricate(info, t0); break;
       case "lateral-fricative": playLateralFric(info, t0); break;
       case "approximant":
       case "lateral-approximant": playApprox(info, t0); break;
