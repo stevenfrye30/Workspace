@@ -6,7 +6,12 @@
    consistent with its (already multi-file) deploy model.
    ═══════════════════════════════════════════════════════════════════════ */
 
-.ipa-scroll{overflow-y:auto;flex:1;padding:22px 26px 60px}
+/* The scroll region. #panel-ipa.active is a constrained flex column (see the
+   shared panel rule in index.html), so flex:1 + min-height:0 lets this fill
+   the panel and scroll internally instead of overflowing the fixed-height
+   app shell. overflow-x:hidden keeps wide children (the consonant grid, which
+   scrolls inside its own .ipa-tablescroll) from creating a page-level bar. */
+.ipa-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:22px 26px 60px}
 
 /* ── Toolbar: mode toggle + search + audio preference ─────────────────── */
 .ipa-toolbar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin:10px 0 8px}

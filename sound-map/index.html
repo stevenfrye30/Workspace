@@ -11,8 +11,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 #sm-header .sub { font-size: 12px; color: var(--muted); font-style: italic; flex: 1; }
 #sm-header a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; padding: 5px 12px; border: 1px solid var(--bdr); border-radius: var(--radius); }
 #sm-header a:hover { color: var(--gold); border-color: var(--gold); }
-#panel-sound, #panel-coverage, #panel-comparison, #panel-practice, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; display: none; flex-direction: column; overflow: hidden; }
-#panel-sound.active, #panel-coverage.active, #panel-comparison.active, #panel-practice.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
+#panel-sound, #panel-ipa, #panel-coverage, #panel-comparison, #panel-practice, #panel-endings, #panel-rhyme, #panel-rap { flex: 1; min-height: 0; display: none; flex-direction: column; overflow: hidden; }
+#panel-sound.active, #panel-ipa.active, #panel-coverage.active, #panel-comparison.active, #panel-practice.active, #panel-endings.active, #panel-rhyme.active, #panel-rap.active { display: flex; }
 
 /* ════════════════════ FLOW LAB (nested sub-tabs) ════════════════════ */
 #fl-tab-nav{display:flex;background:var(--surf2);border-bottom:1px solid var(--bdr);flex-shrink:0;padding:0 14px;gap:2px;align-items:flex-end}
