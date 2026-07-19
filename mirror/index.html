@@ -291,18 +291,18 @@
   }
 
   /* ---- Home: the hexagram doorway ---- */
-  #view-home { max-width: 760px; }
-  .home-intro { text-align:center; color:var(--dim); font-style:italic; font-size:0.96rem; margin-bottom:6px; }
+  #view-home { max-width: 760px; padding-top: 20px; }
+  .home-intro { text-align:center; color:var(--dim); font-style:italic; font-size:0.92rem; margin-bottom:2px; }
   .hex-field {
     display: grid;
-    grid-template-columns: 1fr 1.32fr 1fr;
-    gap: 10px 6px;
+    grid-template-columns: 1fr 1.3fr 1fr;
+    gap: 6px 6px;
     grid-template-areas:
       "identity .     relationships"
       "body     today mind"
       "health   .     money";
     align-items: center; justify-content: center;
-    max-width: 620px; margin: 18px auto 0;
+    max-width: 540px; margin: 8px auto 0;
   }
   .hexcell-identity{grid-area:identity} .hexcell-relationships{grid-area:relationships}
   .hexcell-body{grid-area:body} .hexcell-mind{grid-area:mind}
@@ -314,7 +314,7 @@
   .hex {
     --ring: color-mix(in srgb, var(--c, var(--accent)) 42%, var(--dim));
     --fill: var(--panel);
-    position: relative; width: 100%; aspect-ratio: 1 / 0.9;
+    position: relative; width: 100%; aspect-ratio: 1 / 0.82;
     border: 0; padding: 0; background: transparent; cursor: pointer;
     font-family: inherit; color: var(--ink);
     transition: transform .14s ease;
@@ -347,7 +347,7 @@
   .hex-cat.is-complete .hex-mark { color: #fff; }
 
   /* Center Today hexagon — always dominant */
-  .hex-today { --c: var(--accent); aspect-ratio: 1 / 0.92; }
+  .hex-today { --c: var(--accent); aspect-ratio: 1 / 0.86; }
   .hex-today .hex-inner { gap: 3px; }
   .hex-today .ht-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--dim); }
   .hex-today .ht-date { font-size: 1.02rem; font-weight: 600; color: var(--ink); font-family: ui-monospace, monospace; line-height: 1.15; }
@@ -358,13 +358,13 @@
 
   /* Calendar button clipped to the Today hexagon's upper-right edge */
   .cal-btn {
-    position: absolute; top: 4%; right: 3%; z-index: 3;
-    width: 34px; height: 34px; border-radius: 50%;
-    background: var(--panel); border: 1px solid var(--line); color: var(--accent);
-    cursor: pointer; font-size: 0.95rem; line-height: 1; box-shadow: var(--shadow);
+    position: absolute; top: 12%; right: 10%; z-index: 3;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: var(--panel); border: 1.5px solid var(--accent); color: var(--accent);
+    cursor: pointer; font-size: 0.9rem; line-height: 1; box-shadow: 0 2px 8px -2px rgba(0,0,0,.3);
     display: flex; align-items: center; justify-content: center;
   }
-  .cal-btn:hover { border-color: var(--accent); }
+  .cal-btn:hover { background: var(--accent); color: #fff; }
   .cal-btn:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
 
   @media (max-width: 560px) {
@@ -796,6 +796,175 @@
     .wb-complete { margin-left: 0; width: 100%; }
     .feed-row .fr-type { min-width: 54px; }
   }
+
+  /* ============ Health Dayboard — one green room ============ */
+  :root {
+    /* the Health colour family, all derived from the home-screen Health hexagon (--cat-health) */
+    --h-soft: color-mix(in srgb, var(--cat-health) 8%, var(--panel));
+    --h-pale: color-mix(in srgb, var(--cat-health) 15%, var(--panel));
+    --h-line: color-mix(in srgb, var(--cat-health) 30%, var(--line));
+    --h-glow: color-mix(in srgb, var(--cat-health) 42%, transparent);
+    /* restrained related secondary accents — one family, no rainbow */
+    --h-food:  var(--cat-health);
+    --h-water: #3d97a6;
+    --h-move:  #7d9e3c;
+    --h-sleep: #8189ad;
+    --h-nutri: color-mix(in srgb, var(--cat-health) 60%, #123524);
+    --h-activity: #6f8a72;
+  }
+  body.theme-dark { --h-water: #5cb6c4; --h-move: #a0c063; --h-sleep: #9aa3c6; --h-activity: #8ba58e; }
+
+  /* --- Room header: pale-green band + filled mini-hexagon --- */
+  #view-health .wb-head { background: var(--h-soft); border: 1px solid var(--h-line);
+    border-radius: 12px; padding: 10px 14px; margin-bottom: 14px; }
+  #view-health .wb-head h1 { font-size: 1.15rem; text-transform: none; letter-spacing: 0.02em; color: var(--h-dark, var(--ink)); }
+  .hx-mark { width: 20px; height: 18px; display: inline-block; flex: none; background: var(--cat-health);
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%); }
+  .hx-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--cat-health); }
+  #view-health .hdate button:hover { border-color: var(--cat-health); color: var(--cat-health); }
+  #view-health .hdate .hdate-today { background: var(--cat-health); color: #fff; border-color: var(--cat-health); }
+
+  /* --- Completion: quiet 3-state + secondary popover --- */
+  .wb-complete .wc-status .dot.st-none { background: var(--line); box-shadow: inset 0 0 0 1px var(--dim); }
+  .wb-complete .wc-status .dot.st-started { background: linear-gradient(90deg, var(--cat-health) 50%, transparent 50%); box-shadow: inset 0 0 0 1px var(--cat-health); }
+  .wb-complete .wc-status .dot.st-complete { background: var(--cat-health); }
+  .wc-menu-wrap { position: relative; display: inline-flex; }
+  .wc-menu-btn { background: none; border: 0; color: var(--dim); cursor: pointer; font: inherit; font-size: 1rem; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+  .wc-menu-btn:hover { color: var(--ink); background: var(--h-pale); }
+  .wc-menu { position: absolute; top: 100%; right: 0; margin-top: 6px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 4px; z-index: 30; min-width: 150px; }
+  .wc-menu[hidden] { display: none; }
+  .wc-menu button { display: block; width: 100%; text-align: left; background: none; border: 0; color: var(--ink);
+    cursor: pointer; font: inherit; font-size: 0.8rem; padding: 6px 10px; border-radius: 6px; }
+  .wc-menu button:hover { background: var(--h-pale); }
+
+  /* --- Health Today panel --- */
+  .health-today { background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 14px 14px; margin-bottom: 14px; }
+  .ht-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 4px; }
+  .ht-head .ht-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--dim); }
+  .ht-head .ht-count { font-size: 0.78rem; color: var(--cat-health); font-weight: 600; }
+  .ht-markers { display: flex; gap: 5px; margin: 6px 0 12px; }
+  .ht-markers .hxm { width: 15px; height: 14px; clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+    background: var(--line); transition: background .35s ease; }
+  .ht-markers .hxm.on { background: var(--mk, var(--cat-health)); }
+  .ht-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+  @media (max-width: 620px) { .ht-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 380px) { .ht-grid { grid-template-columns: repeat(2, 1fr); } }
+  .ht-cell { text-align: left; background: var(--panel2); border: 1px solid var(--line);
+    border-top: 2px solid var(--ac, var(--cat-health)); border-radius: 9px; padding: 8px 10px; cursor: pointer;
+    font: inherit; min-width: 0; transition: transform .12s ease, box-shadow .2s ease, border-color .2s ease; }
+  .ht-cell:hover { transform: translateY(-1px); box-shadow: 0 3px 10px -4px var(--h-glow); }
+  .ht-cell:focus-visible { outline: 2px solid var(--ac, var(--cat-health)); outline-offset: 2px; }
+  .ht-cell.unrecorded { border-top-color: var(--line); background: var(--panel); opacity: .86; }
+  .ht-cell .k { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--dim); display: flex; align-items: center; gap: 5px; }
+  .ht-cell .k .kd { width: 7px; height: 7px; border-radius: 2px; background: var(--ac, var(--cat-health)); flex: none; }
+  .ht-cell.unrecorded .k .kd { background: var(--line); }
+  .ht-cell .v { font-size: 1.05rem; font-weight: 600; font-family: ui-monospace, monospace; color: var(--ink);
+    line-height: 1.15; margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ht-cell .v .u { font-size: 0.6rem; color: var(--dim); margin-left: 2px; }
+  .ht-cell .v .sub { font-size: 0.68rem; color: var(--dim); font-weight: 400; }
+  .ht-cell.unrecorded .v { color: var(--dim); font-weight: 400; font-size: 0.82rem; }
+  .val-pulse { animation: valPulse .6s ease; }
+  @keyframes valPulse { 0% { color: var(--cat-health); } 40% { color: var(--cat-health); transform: scale(1.06); } 100% { transform: scale(1); } }
+
+  /* --- Food workspace + logging feedback --- */
+  #view-health .wb-hd h2 .h-kcal { font-size: 0.76rem; color: var(--dim); font-weight: 400; font-family: ui-monospace, monospace; }
+  #view-health #foodAdd { background: var(--cat-health); border-color: var(--cat-health); }
+  #view-health .search-results .r.active { background: var(--h-pale); color: var(--cat-health); }
+  #view-health .chip-row .chip { background: var(--h-soft); border-color: var(--h-line); transition: border-color .15s, background .15s; }
+  #view-health .chip-row .chip:hover { background: var(--h-pale); }
+  #view-health .chip-row .chip .qlog:hover { color: var(--cat-health); }
+  .rtag.t-food { color: var(--h-food); } .rtag.t-meal { color: var(--h-nutri); }
+
+  /* --- Food log as a daily stream (replaces the table) --- */
+  .food-stream { display: flex; flex-direction: column; }
+  .fs-empty { color: var(--dim); font-size: 0.85rem; padding: 4px 0; }
+  .fs-row { display: grid; grid-template-columns: 62px 1fr auto auto 28px; align-items: center; gap: 10px;
+    padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .fs-row:last-child { border-bottom: 0; }
+  .fs-row.just-added { animation: rowIn .5s ease; }
+  @keyframes rowIn { from { background: var(--h-pale); } to { background: transparent; } }
+  .fs-row .fs-time { font-family: ui-monospace, monospace; color: var(--dim); font-size: 0.74rem; }
+  .fs-row .fs-name { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .fs-row .fs-g { font-family: ui-monospace, monospace; color: var(--dim); font-size: 0.82rem; white-space: nowrap; }
+  .fs-row .fs-kcal { font-family: ui-monospace, monospace; font-weight: 600; white-space: nowrap; }
+  .fs-menu-wrap { position: relative; justify-self: end; }
+  .fs-menu-btn { background: none; border: 0; color: var(--dim); cursor: pointer; font-size: 1.1rem; line-height: 1; padding: 2px 6px; border-radius: 6px; }
+  .fs-menu-btn:hover { color: var(--ink); background: var(--h-pale); }
+  .fs-menu { position: absolute; top: 100%; right: 0; margin-top: 4px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 8px; box-shadow: 0 8px 28px rgba(0,0,0,.22); padding: 4px; z-index: 20; min-width: 130px; }
+  .fs-menu[hidden] { display: none; }
+  .fs-menu button { display: block; width: 100%; text-align: left; background: none; border: 0; color: var(--ink);
+    cursor: pointer; font: inherit; font-size: 0.8rem; padding: 6px 10px; border-radius: 6px; }
+  .fs-menu button:hover { background: var(--h-pale); }
+  .fs-meal { display: block; font-size: 0.66rem; color: var(--h-nutri); }
+  @media (max-width: 560px) {
+    .fs-row { grid-template-columns: 1fr auto 28px; grid-template-areas: "name kcal menu" "meta meta menu"; row-gap: 2px; }
+    .fs-row .fs-name { grid-area: name; }
+    .fs-row .fs-kcal { grid-area: kcal; }
+    .fs-menu-wrap { grid-area: menu; align-self: start; }
+    .fs-row .fs-time, .fs-row .fs-g { grid-area: meta; display: inline; font-size: 0.72rem; }
+    .fs-row .fs-time::after { content: ' · '; }
+  }
+
+  /* --- Meal action bar --- */
+  #view-health .meal-actions #openMealBuilder { border-color: var(--h-line); color: var(--cat-health); }
+
+  /* --- Daily Care rail: three consistent mini-cards --- */
+  .care-card { background: var(--panel2); border: 1px solid var(--line); border-left: 3px solid var(--ac, var(--cat-health));
+    border-radius: 9px; padding: 10px 12px; }
+  .care-card + .care-card { margin-top: 10px; }
+  .care-hd { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .care-hd .care-name { font-size: 0.64rem; text-transform: uppercase; letter-spacing: 0.09em; color: var(--dim); font-weight: 700; display: flex; align-items: center; gap: 6px; }
+  .care-hd .care-name .cd { width: 8px; height: 8px; border-radius: 2px; background: var(--ac, var(--cat-health)); }
+  .care-val { font-size: 0.98rem; font-weight: 600; margin-top: 4px; }
+  .care-val.empty { font-size: 0.82rem; font-weight: 400; color: var(--dim); }
+  .care-bar { height: 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 5px; overflow: hidden; margin: 8px 0; }
+  .care-bar .fill { height: 100%; background: var(--ac, var(--cat-health)); transition: width .4s ease; }
+  .care-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; align-items: center; }
+  .care-actions .chip { cursor: pointer; background: var(--panel); }
+  .care-act { background: var(--panel); border: 1px solid var(--h-line); color: var(--cat-health); cursor: pointer;
+    font: inherit; font-size: 0.76rem; border-radius: 8px; padding: 4px 11px; }
+  .care-act:hover { background: var(--h-pale); }
+  .care-detail[hidden] { display: none; }
+  .care-detail { margin-top: 10px; }
+
+  /* --- Nutrition Overview: denser cards + insight --- */
+  .nov-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  @media (max-width: 420px) { .nov-grid { grid-template-columns: repeat(3, 1fr); } }
+  .nov-cell { background: var(--panel2); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; min-width: 0; }
+  .nov-cell .k { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.07em; color: var(--dim); }
+  .nov-cell .v { font-size: 1.05rem; font-weight: 600; font-family: ui-monospace, monospace; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .nov-cell .v .u, .nov-cell .v .sub { font-size: 0.62rem; color: var(--dim); font-weight: 400; }
+  .nov-cell .minibar { height: 4px; background: var(--panel); border-radius: 2px; overflow: hidden; margin-top: 6px; }
+  .nov-cell .minibar > span { display: block; height: 100%; background: var(--cat-health); }
+  .nov-insight { margin-top: 12px; font-size: 0.8rem; color: var(--ink); background: var(--h-soft);
+    border: 1px solid var(--h-line); border-radius: 8px; padding: 8px 11px; }
+  .nov-insight b { color: var(--cat-health); }
+
+  /* --- Your Day ribbon accents (health family) --- */
+  #view-health .feed-row .fr-type.ft-food { color: var(--h-food); }
+  #view-health .feed-row .fr-type.ft-water { color: var(--h-water); }
+  #view-health .feed-row .fr-type.ft-move { color: var(--h-move); }
+  #view-health .feed-row .fr-type.ft-sleep { color: var(--h-sleep); }
+  #view-health .feed-row.just-added { animation: rowIn .5s ease; }
+
+  /* --- Nutrition tab underline uses Health green (already) + subtle transition --- */
+  .npanel { animation: panelIn .18s ease; }
+  @keyframes panelIn { from { opacity: 0; } to { opacity: 1; } }
+  .trend-empty.compact { padding: 20px 10px; }
+
+  /* --- Modal Health accent --- */
+  #mealBuilderOverlay .modal h3, #customFoodOverlay .modal h3 { color: var(--cat-health);
+    border-bottom: 2px solid var(--h-line); padding-bottom: 8px; }
+  .modal-overlay.open .modal { animation: modalIn .16s ease; }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  @media (prefers-reduced-motion: reduce) {
+    .val-pulse, .fs-row.just-added, #view-health .feed-row.just-added, .npanel, .modal-overlay.open .modal { animation: none; }
+    .ht-cell, .care-bar .fill, .ht-markers .hxm { transition: none; }
+  }
 </style>
 <link rel="stylesheet" href="../_shared/hub-nav.css">
 </head>
@@ -1141,7 +1310,7 @@
   <!-- ===== Workbench header: back · title · shared date · completion ===== -->
   <div class="wb-head">
     <button class="backhome" data-goto="home">‹ Home</button>
-    <h1><span class="cat-mark"></span>Health</h1>
+    <h1><span class="hx-mark" aria-hidden="true"></span><span class="hx-title">Health</span></h1>
     <span class="hdate" role="group" aria-label="Selected Health date">
       <button id="healthPrev" aria-label="Previous day" title="Previous day">‹</button>
       <span class="hdate-lbl" id="healthDateLbl" aria-live="polite"></span>
@@ -1151,15 +1320,15 @@
     <span class="wb-complete" id="healthComplete"></span>
   </div>
 
-  <!-- ===== interactive daily summary strip (shortcuts) ===== -->
-  <div class="health-summary" id="healthSummary"></div>
+  <!-- ===== Health Today panel (derived areas-recorded + shortcuts) ===== -->
+  <div id="healthSummary"></div>
 
   <!-- ===== two-column workbench ===== -->
   <div class="wb">
     <!-- MAIN COLUMN: combined entry + log + meal actions + nutrition tabs -->
     <div class="wb-main">
       <div class="wb-card">
-        <div class="wb-hd"><h2>Today</h2>
+        <div class="wb-hd"><h2>Food <span class="h-kcal" id="foodKcalHead"></span></h2>
           <span style="display:flex;gap:10px;align-items:center">
             <span class="act tiny" id="foodLoadStatus" role="status" aria-live="polite">loading library…</span>
             <button class="mini-btn" id="foodExportBtn" title="Download food log as CSV">Export CSV</button>
@@ -1187,7 +1356,7 @@
 
         <div class="hsub">
           <div class="wb-sub" id="foodLogDate"></div>
-          <table class="log compact" id="foodLog"><thead><tr><th>Food</th><th class="num">Grams</th><th class="num">kcal</th><th></th></tr></thead><tbody></tbody></table>
+          <div class="food-stream" id="foodLog"></div>
         </div>
 
         <div class="meal-actions">
@@ -1209,7 +1378,9 @@
 
         <div class="npanel" id="npOverview" role="tabpanel" aria-labelledby="ntab-overview" tabindex="0">
           <span class="act tiny" id="todayDateLabel" style="display:block;margin-bottom:6px"></span>
-          <div class="today-grid" id="todaySummary"></div>
+          <div id="todaySummary"></div>
+          <div class="macro-split" id="macroSplit"></div>
+          <div id="novInsight"></div>
           <div id="targetsForm" class="form" style="display:none;margin-top:10px">
             <label>kcal<input type="number" id="tgtKcal" min="500" step="50"></label>
             <label>protein g<input type="number" id="tgtProtein" min="10" step="5"></label>
@@ -1217,7 +1388,6 @@
             <button class="primary" id="targetsSave">Save</button>
             <button class="ghost" id="targetsCancel">Cancel</button>
           </div>
-          <div class="macro-split" id="macroSplit"></div>
         </div>
 
         <div class="npanel" id="npNutrients" role="tabpanel" aria-labelledby="ntab-nutrients" tabindex="0" hidden>
@@ -1246,24 +1416,22 @@
       </div>
     </div>
 
-    <!-- QUICK HEALTH RAIL -->
+    <!-- DAILY CARE RAIL — three coordinated mini-cards -->
     <div class="wb-rail">
       <div class="wb-card">
-        <div class="wb-hd"><h2>Quick health</h2></div>
+        <div class="wb-hd"><h2>Daily care</h2></div>
 
-        <div class="rail-item">
-          <div class="rail-hd">
-            <span class="rail-name">Water</span>
-            <span class="rail-val" id="railWaterVal"></span>
-          </div>
-          <div class="rail-chips">
+        <div class="care-card" style="--ac:var(--h-water)">
+          <div class="care-hd"><span class="care-name"><span class="cd"></span>Water</span>
+            <span class="rail-val" id="railWaterVal"></span></div>
+          <div class="care-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
+          <div class="care-actions">
             <button class="chip" data-hydr="8">+8</button>
             <button class="chip" data-hydr="12">+12</button>
             <button class="chip" data-hydr="16">+16</button>
-            <button class="rail-act" id="waterMore" aria-expanded="false" aria-controls="waterDetail">More</button>
+            <button class="care-act" id="waterMore" aria-expanded="false" aria-controls="waterDetail">Custom</button>
           </div>
-          <div class="bar rail-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
-          <div class="rail-detail" id="waterDetail" hidden>
+          <div class="care-detail" id="waterDetail" hidden>
             <div class="form" style="margin-top:8px">
               <label>Ounces<input type="number" id="waterOz" min="1" step="1" placeholder="custom"></label>
               <label>Time<input type="time" id="waterTime"></label>
@@ -1275,13 +1443,11 @@
           </div>
         </div>
 
-        <div class="rail-item">
-          <div class="rail-hd">
-            <span class="rail-name">Movement</span>
-            <button class="rail-act" id="moveToggle" aria-expanded="false" aria-controls="moveDetail">Log activity</button>
-          </div>
-          <div class="rail-val" id="railMoveVal" style="margin-top:4px"></div>
-          <div class="rail-detail" id="moveDetail" hidden>
+        <div class="care-card" style="--ac:var(--h-move)">
+          <div class="care-hd"><span class="care-name"><span class="cd"></span>Movement</span></div>
+          <div class="care-val" id="railMoveVal"></div>
+          <div class="care-actions"><button class="care-act" id="moveToggle" aria-expanded="false" aria-controls="moveDetail">Log movement</button></div>
+          <div class="care-detail" id="moveDetail" hidden>
             <div class="form" style="margin-top:8px">
               <label>Type<input type="text" id="exType" placeholder="walk, run, yoga, lift"></label>
               <label>Time<input type="time" id="exTime"></label>
@@ -1304,13 +1470,11 @@
           </div>
         </div>
 
-        <div class="rail-item">
-          <div class="rail-hd">
-            <span class="rail-name">Sleep</span>
-            <button class="rail-act" id="sleepToggle" aria-expanded="false" aria-controls="sleepDetail">Log sleep</button>
-          </div>
-          <div class="rail-val" id="railSleepVal" style="margin-top:4px"></div>
-          <div class="rail-detail" id="sleepDetail" hidden>
+        <div class="care-card" style="--ac:var(--h-sleep)">
+          <div class="care-hd"><span class="care-name"><span class="cd"></span>Sleep</span></div>
+          <div class="care-val" id="railSleepVal"></div>
+          <div class="care-actions"><button class="care-act" id="sleepToggle" aria-expanded="false" aria-controls="sleepDetail">Log sleep</button></div>
+          <div class="care-detail" id="sleepDetail" hidden>
             <div class="form" style="margin-top:8px">
               <label>Hours<input type="number" id="sleepHours" min="0" max="24" step="0.25"></label>
               <label>Quality (1–5)<input type="number" id="sleepQuality" min="1" max="5" step="1"></label>
@@ -1323,9 +1487,9 @@
     </div>
   </div>
 
-  <!-- ===== unified activity feed (selected date) ===== -->
+  <!-- ===== Your Day ribbon (selected date) ===== -->
   <div class="wb-card">
-    <div class="wb-hd"><h2>Activity</h2><span class="act tiny" id="healthTlDate"></span></div>
+    <div class="wb-hd"><h2>Your day</h2><span class="act tiny" id="healthTlDate"></span></div>
     <div id="healthTimeline"></div>
   </div>
 
@@ -2790,7 +2954,8 @@ function quickLogFood(id) {
   const f = foodsIndex && foodsIndex.byId.get(id); if (!f) return;
   const grams = (f.portions && f.portions[0] && f.portions[0].grams) || 100;
   const date = healthDate();
-  state.body.food.push({ id: uid(), date, foodId: f.id, foodName: f.name,
+  _lastLogId = uid();
+  state.body.food.push({ id: _lastLogId, date, foodId: f.id, foodName: f.name,
     category: f.category, grams, n: snapshotNutrients(f) });
   saveState(); refreshFoodUI();
   flashFoodStatus(`logged ${f.name} · ${grams} g`);
@@ -2899,8 +3064,9 @@ document.getElementById('foodAdd').onclick = () => {
   const grams = Number(document.getElementById('foodGrams').value);
   if (!(grams > 0)) { flashFoodStatus('enter a gram amount above 0'); return; }
   const name = selectedFood.name;
+  _lastLogId = uid();
   state.body.food.push({
-    id: uid(), date: healthDate(), foodId: selectedFood.id, foodName: selectedFood.name,
+    id: _lastLogId, date: healthDate(), foodId: selectedFood.id, foodName: selectedFood.name,
     category: selectedFood.category, grams, n: snapshotNutrients(selectedFood)
   });
   saveState();
@@ -3111,7 +3277,8 @@ function logMeal(id) {
   const date = healthDate();
   m.items.forEach(it => {
     const snap = it.n ? { ...it.n } : snapshotNutrients(foodsIndex?.byId.get(it.foodId) || { n: {} });
-    state.body.food.push({ id: uid(), date, foodId: it.foodId, foodName: it.foodName,
+    _lastLogId = uid();
+    state.body.food.push({ id: _lastLogId, date, foodId: it.foodId, foodName: it.foodName,
       category: it.category || '', grams: it.grams, n: snap, mealName: m.name });
   });
   saveState();
@@ -3131,33 +3298,53 @@ function editMeal(id) {
 // The food log is scoped to the Quick-add date (one day at a time), so the date shows once in
 // the heading rather than on every row. Change the date field to review/backfill another day.
 function foodLogDay() { return healthDate(); }
+let _lastLogId = null;   // the just-logged record id, for a one-shot highlight
+function closeAllFsMenus(){
+  document.querySelectorAll('.fs-menu').forEach(m => m.hidden = true);
+  document.querySelectorAll('[data-fmenu]').forEach(b => b.setAttribute('aria-expanded','false'));
+}
+// The selected-day food log rendered as a compact daily STREAM (time · food · grams · kcal · ⋯).
 function renderFoodLog() {
-  const tbody = document.querySelector('#foodLog tbody');
+  const host = document.getElementById('foodLog');
   const day = foodLogDay();
   const dl = document.getElementById('foodLogDate'); if (dl) dl.textContent = `Food log · ${fmtDate(day)}`;
   const rows = state.body.food.filter(e => e.date === day)
     .slice().sort((a,b)=> String(b._at||'').localeCompare(String(a._at||'')));
-  if (!rows.length) { tbody.innerHTML = '<tr><td colspan="4" class="empty">No food logged for this date yet.</td></tr>'; return; }
-  tbody.innerHTML = rows.map(r => {
+  const head = document.getElementById('foodKcalHead');
+  const totKcal = rows.reduce((s,r) => { const nn = entryN(r); return s + (nn ? (nn.kcal||0)*r.grams/100 : 0); }, 0);
+  if (head) head.textContent = rows.length ? `${Math.round(totKcal).toLocaleString()} kcal logged` : 'Nothing logged yet';
+  if (!rows.length) { host.innerHTML = '<div class="fs-empty">No food logged yet.</div>'; return; }
+  host.innerHTML = rows.map(r => {
     const nn = entryN(r);
-    const kcal = nn ? ((nn.kcal || 0) * r.grams / 100).toFixed(0) : '—';
-    const pinned = isPinned(r.foodId);
-    const mealTag = r.mealName ? `<span class="meal-tag" title="From meal “${escapeHtml(r.mealName)}”">${escapeHtml(r.mealName)}</span>` : '';
-    return `<tr><td>${escapeHtml(r.foodName)}${mealTag}</td>
-      <td class="num">${r.grams}</td><td class="num">${kcal}</td>
-      <td style="white-space:nowrap">
-        <button class="pin-btn${pinned ? ' on' : ''}" data-pin="${r.foodId}" title="${pinned ? 'Unpin' : 'Pin this food'}">${pinned ? '★' : '☆'}</button>
-        <button class="edit-btn" data-edit="${r.id}">edit</button>
-        <button class="x" data-id="${r.id}">×</button>
-      </td></tr>`;
+    const kcal = nn ? Math.round((nn.kcal || 0) * r.grams / 100) : null;
+    const time = healthEventTime(r) || '—';
+    const meal = r.mealName ? `<span class="fs-meal">${escapeHtml(r.mealName)}</span>` : '';
+    const flash = r.id === _lastLogId ? ' just-added' : '';
+    return `<div class="fs-row${flash}">
+      <span class="fs-time">${escapeHtml(time)}</span>
+      <span class="fs-name">${escapeHtml(r.foodName)}${meal}</span>
+      <span class="fs-g">${r.grams} g</span>
+      <span class="fs-kcal">${kcal == null ? '—' : kcal + ' kcal'}</span>
+      <span class="fs-menu-wrap"><button class="fs-menu-btn" data-fmenu="${r.id}" aria-haspopup="true" aria-expanded="false" aria-label="Actions for ${escapeHtml(r.foodName)}">⋯</button>
+        <div class="fs-menu" id="fsmenu-${r.id}" hidden role="menu">
+          <button data-fpin="${r.foodId}" role="menuitem">${isPinned(r.foodId) ? 'Unpin food' : 'Pin food'}</button>
+          <button data-fedit="${r.id}" role="menuitem">Edit</button>
+          <button data-fdel="${r.id}" role="menuitem">Delete</button>
+        </div></span></div>`;
   }).join('');
   const refreshFood = () => { saveState(); refreshFoodUI(); };
-  tbody.querySelectorAll('button.x').forEach(b => b.onclick = () => {
-    state.body.food = state.body.food.filter(x => x.id !== b.dataset.id); refreshFood();
+  host.querySelectorAll('[data-fmenu]').forEach(b => b.onclick = e => {
+    e.stopPropagation();
+    const menu = document.getElementById('fsmenu-' + b.dataset.fmenu);
+    const willOpen = menu.hidden; closeAllFsMenus();
+    menu.hidden = !willOpen; b.setAttribute('aria-expanded', String(willOpen));
   });
-  tbody.querySelectorAll('button.pin-btn').forEach(b => b.onclick = () => togglePin(Number(b.dataset.pin)));
-  tbody.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => {
-    const r = state.body.food.find(x => x.id === b.dataset.edit);
+  host.querySelectorAll('[data-fpin]').forEach(b => b.onclick = () => togglePin(Number(b.dataset.fpin)));
+  host.querySelectorAll('[data-fdel]').forEach(b => b.onclick = () => {
+    state.body.food = state.body.food.filter(x => x.id !== b.dataset.fdel); refreshFood();
+  });
+  host.querySelectorAll('[data-fedit]').forEach(b => b.onclick = () => {
+    const r = state.body.food.find(x => x.id === b.dataset.fedit);
     openEditModal('Edit food entry', r.foodName, [
       {key:'date',label:'Date',type:'date'},
       {key:'grams',label:'Grams',type:'number',min:1,step:1},
@@ -3180,22 +3367,33 @@ function renderHealthDateNav(){
   if (lbl) lbl.textContent = (isToday ? 'Today · ' : '') + fmtDate(d);
   const t = document.getElementById('healthToday'); if (t) t.hidden = isToday;
 }
-// Compact header completion — all four states preserved (start / complete / reopen / incomplete),
-// applied to the SELECTED date so the workspace stays coherent when reviewing another day.
+// Simplified header completion — a quiet 3-state status (○ / ◐ / ●) + one primary action
+// (Complete / Reopen); the less-used state changes live in a compact ⋯ popover. All four states +
+// date-specific behaviour preserved. Explicit completion stays manual — logging never auto-completes.
 function renderHealthCompleteHeader(){
   const host = document.getElementById('healthComplete'); if (!host) return;
   const d = healthDate(), st = catState('health', d);
   const cls = st === 'complete' ? 'is-complete' : st === 'started' ? 'is-started' : '';
-  const txt = st === 'complete' ? 'Completed' : st === 'started' ? 'Started' : 'Not started';
+  const dotCls = st === 'complete' ? 'st-complete' : st === 'started' ? 'st-started' : 'st-none';
+  const txt = st === 'complete' ? 'Completed' : st === 'started' ? 'In progress' : 'Not started';
   const tip = `“I've reviewed and recorded what matters in Health on ${fmtDate(d)}.” Editing later won't undo this.`;
-  const btns = st === 'complete'
-    ? `<button class="wc-main is-done" data-hcset="started" title="${escapeHtml(tip)}">✓ Completed</button>
-       <button class="wc-minor" data-hcset="none">Mark incomplete</button>`
-    : `<button class="wc-main" data-hcset="complete" title="${escapeHtml(tip)}">Complete ${d === todayStr() ? 'today' : 'day'}</button>
-       ${st === 'started' ? `<button class="wc-minor" data-hcset="none">Clear</button>`
-                          : `<button class="wc-minor" data-hcset="started">Mark started</button>`}`;
-  host.innerHTML = `<span class="wc-status ${cls}" role="status" aria-label="Health ${txt} for ${escapeHtml(fmtDate(d))}"><span class="dot"></span>${txt}</span>${btns}`;
+  const primary = st === 'complete'
+    ? `<button class="wc-main is-done" data-hcset="started" title="${escapeHtml(tip)}">Reopen</button>`
+    : `<button class="wc-main" data-hcset="complete" title="${escapeHtml(tip)}">Complete</button>`;
+  // secondary state changes, tucked away
+  const menu = st === 'complete'
+    ? `<button data-hcset="none" role="menuitem">Mark incomplete</button>`
+    : st === 'started'
+      ? `<button data-hcset="none" role="menuitem">Clear “in progress”</button>`
+      : `<button data-hcset="started" role="menuitem">Mark in progress</button>`;
+  host.innerHTML = `<span class="wc-status ${cls}" role="status" aria-label="Health ${txt} for ${escapeHtml(fmtDate(d))}"><span class="dot ${dotCls}"></span>${txt}</span>${primary}
+    <span class="wc-menu-wrap">
+      <button class="wc-menu-btn" id="wcMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="More completion options">⋯</button>
+      <div class="wc-menu" id="wcMenu" hidden role="menu">${menu}</div>
+    </span>`;
   host.querySelectorAll('[data-hcset]').forEach(b => b.onclick = () => setCatState('health', healthDate(), b.dataset.hcset));
+  const mb = document.getElementById('wcMenuBtn'), mn = document.getElementById('wcMenu');
+  if (mb && mn) mb.onclick = e => { e.stopPropagation(); const open = mn.hidden; mn.hidden = !open; mb.setAttribute('aria-expanded', String(open)); };
 }
 // The one coordinator. Called by every Health handler + on date change.
 function refreshHealthWorkspace(){
@@ -3205,13 +3403,17 @@ function refreshHealthWorkspace(){
   renderFoodLog();
   renderRecentFoods(); renderPinnedFoods(); renderMealChips();
   renderHydration();
-  simpleLog('sleep', 'sleepLog', r => `${r.hours}h · quality ${r.quality || '–'}`);
-  simpleLog('exercise', 'exLog', exSummary);
+  // rail history is scoped to the selected date (agrees with summary, feed and food log)
+  simpleLog('sleep', 'sleepLog', r => `${r.hours}h · quality ${r.quality || '–'}`, healthDate());
+  simpleLog('exercise', 'exLog', exSummary, healthDate());
   renderNutritionActive();
   renderMeals(); renderCustomFoods();
   renderHealthTimeline();
+  _lastLogId = null;   // consume the one-shot "just added" highlight after a full render pass
 }
-// Interactive daily strip (shortcut cells) + the rail's live values — all on the shared date.
+// Health Today panel — five life areas for the selected date, a derived "N of 5 recorded" count,
+// five hexagonal progress markers, and clickable segments. Also fills the Daily Care rail values.
+let _htPrevVals = {};   // last-rendered display values, for a one-shot value pulse
 function renderHealthSummary(){
   const day = healthDate();
   let kcal = 0, protein = 0;
@@ -3227,23 +3429,43 @@ function renderHealthSummary(){
   const exType = (exDay.find(e => e.type) || {}).type || '';
   const sleepDay = (state.body.sleep || []).filter(s => s.date === day).slice(-1)[0];
   const T = getTargets();
-  const dash = '<span style="color:var(--dim)">—</span>';
-  const cell = (k, inner, jump, label) =>
-    `<button type="button" class="hs-cell" data-hsjump="${jump}" aria-label="${escapeHtml(label)}"><div class="k">${k}</div><div class="v">${inner}</div></button>`;
-  const strip = document.getElementById('healthSummary');
-  if (strip) {
-    strip.innerHTML = [
-      cell('Calories', `${Math.round(kcal).toLocaleString()}<span class="u">kcal</span>`, 'nutrition', `Calories ${Math.round(kcal)}; open Nutrition overview`),
-      cell('Protein', `${Math.round(protein)}<span class="u">g</span>`, 'nutrition', `Protein ${Math.round(protein)} grams; open Nutrition overview`),
-      cell('Water', `${water}<span class="sub"> / ${T.water_oz}</span><span class="u">oz</span>`, 'water', `Water ${water} of ${T.water_oz} ounces; open hydration`),
-      cell('Movement', exMin ? `${exMin}<span class="u">min</span>${exType ? `<span class="sub"> ${escapeHtml(exType)}</span>` : ''}` : dash, 'move', exMin ? `Movement ${exMin} minutes; open movement logger` : 'No movement logged; open movement logger'),
-      cell('Sleep', sleepDay ? `${sleepDay.hours}<span class="u">h</span>${sleepDay.quality ? `<span class="sub"> q${sleepDay.quality}</span>` : ''}` : dash, 'sleep', sleepDay ? `Sleep ${sleepDay.hours} hours; open sleep logger` : 'No sleep logged; open sleep logger'),
-    ].join('');
-    strip.querySelectorAll('[data-hsjump]').forEach(b => b.onclick = () => healthSummaryJump(b.dataset.hsjump));
+  // five areas, each recorded (has data) or not — the count is derived, never stored
+  const areas = [
+    { key:'food',  label:'Food',     ac:'var(--h-food)',  rec: kcal > 0,        jump:'nutrition',
+      val: kcal > 0 ? `${Math.round(kcal).toLocaleString()}<span class="u">kcal</span>` : 'Nothing yet' },
+    { key:'prot',  label:'Protein',  ac:'var(--h-nutri)', rec: protein > 0,     jump:'nutrition',
+      val: protein > 0 ? `${Math.round(protein)}<span class="u">g</span>` : 'Nothing yet' },
+    { key:'water', label:'Water',    ac:'var(--h-water)', rec: water > 0,       jump:'water',
+      val: `${water}<span class="sub"> / ${T.water_oz}</span><span class="u">oz</span>` },
+    { key:'move',  label:'Movement', ac:'var(--h-move)',  rec: exMin > 0,       jump:'move',
+      val: exMin > 0 ? `${exMin}<span class="u">min</span>${exType ? `<span class="sub"> ${escapeHtml(exType)}</span>` : ''}` : 'Not recorded' },
+    { key:'sleep', label:'Sleep',    ac:'var(--h-sleep)', rec: !!sleepDay,      jump:'sleep',
+      val: sleepDay ? `${sleepDay.hours}<span class="u">h</span>${sleepDay.quality ? `<span class="sub"> q${sleepDay.quality}</span>` : ''}` : 'Not recorded' },
+  ];
+  const recN = areas.filter(a => a.rec).length;
+  const markers = areas.map(a => `<span class="hxm${a.rec ? ' on' : ''}" style="--mk:${a.ac}" aria-hidden="true"></span>`).join('');
+  const cells = areas.map(a => {
+    const pulse = (_htPrevVals[a.key] !== undefined && _htPrevVals[a.key] !== a.val && a.rec) ? ' val-pulse' : '';
+    const aria = `${a.label}: ${a.rec ? (a.val.replace(/<[^>]+>/g, ' ').replace(/\s+/g,' ').trim()) : 'not recorded'}`;
+    return `<button type="button" class="ht-cell${a.rec ? '' : ' unrecorded'}" style="--ac:${a.ac}" data-hsjump="${a.jump}" aria-label="${escapeHtml(aria)}; open">
+      <div class="k"><span class="kd"></span>${a.label}</div><div class="v${pulse}">${a.val}</div></button>`;
+  }).join('');
+  const panel = document.getElementById('healthSummary');
+  if (panel) {
+    panel.innerHTML = `<div class="health-today">
+      <div class="ht-head"><span class="ht-title">Health today</span>
+        <span class="ht-count" role="status">${recN} of 5 recorded</span></div>
+      <div class="ht-markers" aria-hidden="true">${markers}</div>
+      <div class="ht-grid">${cells}</div></div>`;
+    panel.querySelectorAll('[data-hsjump]').forEach(b => b.onclick = () => healthSummaryJump(b.dataset.hsjump));
   }
+  areas.forEach(a => _htPrevVals[a.key] = a.val);
+  // Daily Care rail values (consistent empty states)
   const rw = document.getElementById('railWaterVal'); if (rw) rw.textContent = `${water} / ${T.water_oz} oz`;
-  const rm = document.getElementById('railMoveVal'); if (rm) rm.textContent = exMin ? `${exMin} min${exType ? ' · ' + exType : ''}` : 'Nothing logged';
-  const rs = document.getElementById('railSleepVal'); if (rs) rs.textContent = sleepDay ? `${sleepDay.hours} h · quality ${sleepDay.quality || '–'}/5` : 'Nothing logged';
+  const rm = document.getElementById('railMoveVal');
+  if (rm) { rm.textContent = exMin ? `${exMin} min${exType ? ' · ' + exType : ''}` : 'Nothing recorded yet'; rm.classList.toggle('empty', !exMin); }
+  const rs = document.getElementById('railSleepVal');
+  if (rs) { rs.textContent = sleepDay ? `${sleepDay.hours} h · quality ${sleepDay.quality || '–'}/5` : 'Nothing recorded yet'; rs.classList.toggle('empty', !sleepDay); }
 }
 function healthSummaryJump(kind){
   if (kind === 'nutrition') { setNutritionTab('overview'); const t = document.getElementById('ntab-overview'); if (t) { t.scrollIntoView({ behavior:'smooth', block:'nearest' }); t.focus(); } }
@@ -3322,22 +3544,40 @@ function renderToday() {
     kcal += (nn.kcal || 0) * factor;
     protein += (nn.protein_g || 0) * factor;
   }
-  const water = state.body.water.filter(w => w.date === today).reduce((s,w) => s + Number(w.oz||0), 0);
   const T = getTargets();
-  const tile = (label, value, unit, target) => {
+  // Nutrition Overview: deeper context vs personal targets (Water lives in Health Today + Daily Care)
+  const cellTgt = (label, value, unit, target) => {
     const pct = target ? Math.min(100, (value/target)*100) : 0;
-    const v = value < 10 ? value.toFixed(1) : Math.round(value);
-    return `<div class="today-tile">
-      <div class="k">${label}</div>
-      <div class="v">${v}<span class="u">${unit}</span></div>
-      ${target ? `<div class="target">of ${target} ${unit}</div><div class="bar"><div class="fill" style="width:${pct}%"></div></div>` : ''}
-    </div>`;
+    const v = value < 10 ? value.toFixed(1) : Math.round(value).toLocaleString();
+    return `<div class="nov-cell"><div class="k">${label}</div>
+      <div class="v">${v}<span class="sub"> / ${target}</span><span class="u">${unit}</span></div>
+      <div class="minibar"><span style="width:${pct}%"></span></div></div>`;
   };
   el.innerHTML =
-    tile('kcal', kcal, 'kcal', T.kcal) +
-    tile('protein', protein, 'g', T.protein_g) +
-    tile('water', water, 'oz', T.water_oz) +
-    `<div class="today-tile"><div class="k">entries</div><div class="v">${entries}</div><div class="target">food items today</div></div>`;
+    cellTgt('Calories', kcal, 'kcal', T.kcal) +
+    cellTgt('Protein', protein, 'g', T.protein_g) +
+    `<div class="nov-cell"><div class="k">Entries</div><div class="v">${entries}<span class="u">logged</span></div>
+      <div class="minibar"><span style="width:${entries ? 100 : 0}%"></span></div></div>`;
+  el.className = 'nov-grid';
+  renderNovInsight(kcal, protein, entries, today, T);
+}
+// One neutral, derived, factual insight — descriptive not prescriptive, never medical or moralising.
+function renderNovInsight(kcal, protein, entries, day, T){
+  const host = document.getElementById('novInsight'); if (!host) return;
+  let msg = '';
+  if (!entries) msg = 'No food logged for this date.';
+  else {
+    const bits = [];
+    const pPct = T.protein_g ? Math.round(protein / T.protein_g * 100) : 0;
+    bits.push(`Protein is <b>${pPct}%</b> of your ${T.protein_g} g target.`);
+    // fibre check across the day's entries
+    let fiber = 0;
+    for (const e of state.body.food) { if (e.date !== day) continue; const nn = entryN(e); if (nn) fiber += (nn.fiber_g||0)*e.grams/100; }
+    if (fiber < 1) bits.push('No fiber recorded yet.');
+    else bits.push(`<b>${Math.round(fiber)} g</b> fiber so far.`);
+    msg = bits.join(' ');
+  }
+  host.innerHTML = `<div class="nov-insight">${msg}</div>`;
 }
 document.getElementById('targetsEditBtn').onclick = () => {
   const t = getTargets();
@@ -3415,7 +3655,7 @@ function renderTrend() {
 
   const hasAny = days.some(d => totals[d].kcal > 0 || totals[d].protein > 0);
   if (!hasAny) {
-    host.innerHTML = `<div class="trend-empty">No food logged in the last ${trendDays} days yet.</div>`;
+    host.innerHTML = `<div class="trend-empty compact">No food logged in the last ${trendDays} days.</div>`;
     return;
   }
 
@@ -3583,15 +3823,17 @@ const SIMPLE_EDIT = {
   exercise: { title: 'Edit exercise', fields: [ {key:'date',label:'Date',type:'date'}, {key:'type',label:'Type',type:'text'}, {key:'minutes',label:'Minutes',type:'number',min:1,step:1} ] },
   symptoms: { title: 'Edit note',     fields: [ {key:'date',label:'Date',type:'date'}, {key:'note',label:'Note',type:'text'} ] },
 };
-function simpleLog(key, containerId, renderRow) {
-  const el = document.getElementById(containerId);
-  const rows = state.body[key].slice().sort((a,b)=>b.date.localeCompare(a.date)).slice(0, 20);
-  if (!rows.length) { el.innerHTML = '<div class="empty">Nothing logged yet.</div>'; return; }
+function simpleLog(key, containerId, renderRow, filterDate) {
+  const el = document.getElementById(containerId); if (!el) return;
+  let rows = state.body[key].slice();
+  if (filterDate) rows = rows.filter(r => r.date === filterDate);   // rail logger = this day only
+  rows = rows.sort((a,b)=>b.date.localeCompare(a.date) || String(b._at||'').localeCompare(String(a._at||''))).slice(0, 20);
+  if (!rows.length) { el.innerHTML = ''; return; }   // conditional density — no empty box in the rail
   el.innerHTML = rows.map(r => `<div class="card mini"><div class="row">
-    <span>${fmtDate(r.date)} — ${renderRow(r)}</span>
+    <span>${filterDate ? '' : fmtDate(r.date) + ' — '}${renderRow(r)}</span>
     <span style="white-space:nowrap"><button class="edit-btn" data-edit="${r.id}">edit</button>
     <button class="x" data-id="${r.id}">×</button></span></div></div>`).join('');
-  const after = () => { saveState(); simpleLog(key, containerId, renderRow); refreshHealthWorkspace(); };
+  const after = () => { saveState(); simpleLog(key, containerId, renderRow, filterDate); refreshHealthWorkspace(); };
   el.querySelectorAll('button.x').forEach(b => b.onclick = () => {
     state.body[key] = state.body[key].filter(x => x.id !== b.dataset.id); after();
   });
@@ -3610,7 +3852,8 @@ function waterTime(r){
 function logWater(oz, t){
   const date = healthDate();
   if (!oz) return;
-  state.body.water.push({ id: uid(), date, oz: Number(oz), t: t || '' });
+  _lastLogId = uid();
+  state.body.water.push({ id: _lastLogId, date, oz: Number(oz), t: t || '' });
   saveState();
   refreshHealthWorkspace();
 }
@@ -3649,7 +3892,8 @@ document.getElementById('sleepAdd').onclick = () => {
   const quality = Number(document.getElementById('sleepQuality').value);
   const date = healthDate();
   if (!hours) return;
-  state.body.sleep.push({ id: uid(), date, hours, quality });
+  _lastLogId = uid();
+  state.body.sleep.push({ id: _lastLogId, date, hours, quality });
   saveState();
   document.getElementById('sleepHours').value=''; document.getElementById('sleepQuality').value='';
   refreshHealthWorkspace();
@@ -3675,7 +3919,8 @@ document.getElementById('exAdd').onclick = () => {
   const intensity = document.getElementById('exIntensity').value || '';
   const note = document.getElementById('exNote').value.trim();
   if (!type) return;
-  state.body.exercise.push({ id: uid(), date, type, minutes, time, distance, intensity, note });
+  _lastLogId = uid();
+  state.body.exercise.push({ id: _lastLogId, date, type, minutes, time, distance, intensity, note });
   saveState();
   ['exType','exMinutes','exTime','exDistance','exNote'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('exIntensity').value = '';
@@ -5737,21 +5982,21 @@ function renderHealthTimeline(){
   const lbl = document.getElementById('healthTlDate'); if (lbl) lbl.textContent = fmtDate(date);
   const ev = [];
   (state.body.water || []).filter(w => w.date === date).forEach(w =>
-    ev.push({ t: timeSortKey(w), time: healthEventTime(w), type: 'water', tcls: 'ft-water', label: `${w.oz} oz` }));
+    ev.push({ id: w.id, t: timeSortKey(w), time: healthEventTime(w), type: 'water', tcls: 'ft-water', label: `${w.oz} oz` }));
   (state.body.food || []).filter(f => f.date === date).forEach(f => {
     const nn = entryN(f); const kcal = nn ? Math.round((nn.kcal || 0) * f.grams / 100) : null;
-    ev.push({ t: timeSortKey(f), time: healthEventTime(f), type: 'food', tcls: 'ft-food',
+    ev.push({ id: f.id, t: timeSortKey(f), time: healthEventTime(f), type: 'food', tcls: 'ft-food',
       label: `${escapeHtml(f.foodName || 'food')} · ${f.grams} g${kcal != null ? ` · ${kcal} kcal` : ''}${f.mealName ? ` <span class="meal-tag">${escapeHtml(f.mealName)}</span>` : ''}` });
   });
   (state.body.exercise || []).filter(e => e.date === date).forEach(e =>
-    ev.push({ t: timeSortKey(e), time: healthEventTime(e), type: 'move', tcls: 'ft-move', label: exSummary(e) || 'activity' }));
+    ev.push({ id: e.id, t: timeSortKey(e), time: healthEventTime(e), type: 'move', tcls: 'ft-move', label: exSummary(e) || 'activity' }));
   (state.body.sleep || []).filter(s => s.date === date).forEach(s =>
-    ev.push({ t: timeSortKey(s), time: healthEventTime(s), type: 'sleep', tcls: 'ft-sleep', label: `${s.hours} h · quality ${s.quality || '–'}/5` }));
+    ev.push({ id: s.id, t: timeSortKey(s), time: healthEventTime(s), type: 'sleep', tcls: 'ft-sleep', label: `${s.hours} h · quality ${s.quality || '–'}/5` }));
   (state.body.symptoms || []).filter(s => s.date === date).forEach(s =>
-    ev.push({ t: timeSortKey(s), time: healthEventTime(s), type: 'note', tcls: 'ft-note', label: escapeHtml(s.note) }));
-  if (!ev.length) { host.innerHTML = '<div class="empty">No activity for this date yet.</div>'; return; }
+    ev.push({ id: s.id, t: timeSortKey(s), time: healthEventTime(s), type: 'note', tcls: 'ft-note', label: escapeHtml(s.note) }));
+  if (!ev.length) { host.innerHTML = '<div class="fs-empty">Your Health activity will appear here as you log it.</div>'; return; }
   ev.sort((a, b) => String(a.t).localeCompare(String(b.t)));
-  host.innerHTML = ev.map(e => `<div class="feed-row">
+  host.innerHTML = ev.map(e => `<div class="feed-row${e.id === _lastLogId ? ' just-added' : ''}">
     <span class="fr-time">${escapeHtml(e.time || '—')}</span>
     <span class="fr-type ${e.tcls}">${e.type}</span>
     <span class="fr-main">${e.label}</span></div>`).join('');
@@ -6279,6 +6524,13 @@ function setupHealthWorkbench(){
     ['mealBuilderOverlay','customFoodOverlay'].forEach(id => {
       const ov = document.getElementById(id); if (ov && ov.classList.contains('open')) closeHealthModal(id);
     });
+    closeAllFsMenus(); const wm = document.getElementById('wcMenu'); if (wm) wm.hidden = true;
+  });
+  // click-away closes the row overflow menus and the completion popover
+  document.addEventListener('click', e => {
+    if (!e.target.closest('.fs-menu-wrap')) closeAllFsMenus();
+    const wm = document.getElementById('wcMenu');
+    if (wm && !e.target.closest('.wc-menu-wrap')) { wm.hidden = true; const mb = document.getElementById('wcMenuBtn'); if (mb) mb.setAttribute('aria-expanded','false'); }
   });
 }
 setupHealthWorkbench();
