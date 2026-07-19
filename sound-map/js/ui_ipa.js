@@ -67,15 +67,6 @@
     other: "Other symbol", supra: "Suprasegmental", diacritic: "Diacritic",
   };
 
-  // Full-text search haystack per symbol (includes plain-English aliases).
-  function haystack(info) {
-    const P = IPA();
-    return [info.sym, info.friendly, info.name, info.place && P.placeLabel(info.place), info.manner && P.mannerLabel(info.manner),
-      info.voice === 1 ? "voiced" : info.voice === 0 ? "voiceless" : "", info.airstream,
-      info.lang, info.example, info.height, info.backness, (info.alias || []).join(" ")]
-      .filter(Boolean).join(" ").toLowerCase();
-  }
-
   // ── Sagittal diagram (consonants / other / affricates) ────────────────
   const ZONE_XY = {
     bilabial: [200, 98], labiodental: [196, 106], dental: [186, 90],
@@ -456,30 +447,6 @@
     return details;
   }
 
-  // ── Search ────────────────────────────────────────────────────────────
-  function applySearch() {
-    const charts = document.getElementById("ipa-charts");
-    const search = document.getElementById("ipa-search");
-    if (!charts || !search) return;
-    const q = search.value.trim().toLowerCase();
-    let moreMatch = false;
-    charts.querySelectorAll(".ipa-sym[data-sym], .ipa-chip[data-sym]").forEach((node) => {
-      const isChip = node.classList.contains("ipa-chip");
-      if (!isChip && node.closest(".ipa-chip")) return; // inner chip glyph
-      const info = IPA().INFO[node.dataset.sym];
-      const hit = !q || (info ? haystack(info).includes(q) : node.dataset.sym.toLowerCase().includes(q));
-      if (isChip) node.style.display = hit ? "" : "none";
-      else { node.style.opacity = hit ? "" : "0.12"; node.style.pointerEvents = hit ? "" : "none"; }
-      if (hit && q && node.closest("#ipa-more")) moreMatch = true;
-    });
-    // Reveal the collapsed section while a search surfaces things inside it.
-    const more = document.getElementById("ipa-more");
-    if (more) {
-      if (q && moreMatch) more.open = true;
-      else if (!q) more.open = false;
-    }
-  }
-
   // ── Keyboard navigation within the consonant grid ─────────────────────
   function gridKeydown(e) {
     if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(e.key)) return;
@@ -524,9 +491,6 @@
     };
     charts.addEventListener("click", onPick);
     charts.addEventListener("keydown", gridKeydown);
-
-    const search = document.getElementById("ipa-search");
-    if (search) search.addEventListener("input", applySearch);
 
     built = true;
   }

@@ -10,13 +10,10 @@
    the panel and scroll internally instead of overflowing the app shell. */
 .ipa-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;padding:26px 30px 64px}
 
-/* ── Header + search ──────────────────────────────────────────────────── */
-.ipa-head{margin:2px 0 18px}
+/* ── Header ────────────────────────────────────────────────────────────── */
+.ipa-head{margin:2px 0 12px}
 .ipa-title{font-size:30px;font-weight:700;letter-spacing:.01em;color:var(--text);margin:0}
 .ipa-tagline{color:var(--muted);font-size:13.5px;margin:5px 0 0}
-.ipa-search{display:block;width:100%;max-width:540px;background:var(--surf2);border:1px solid var(--bdr);color:var(--text);padding:11px 15px;border-radius:12px;font-family:inherit;font-size:14px;outline:none;transition:border-color .15s,box-shadow .18s;margin-bottom:24px}
-.ipa-search::placeholder{color:var(--muted)}
-.ipa-search:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,200,64,.14)}
 
 /* ── Layout: chart uses full width until a symbol is selected ──────────── */
 .ipa-layout{display:grid;grid-template-columns:1fr;gap:28px;align-items:start}
