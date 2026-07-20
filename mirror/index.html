@@ -27,9 +27,16 @@
             flex-wrap: wrap; position: sticky; top: 0; z-index: 50; }
   .topnav .brand { font-size: 1.15rem; font-weight: 600; color: var(--accent);
                    letter-spacing: 0.08em; text-transform: lowercase; margin-right: 10px;
-                   /* clear the fixed workspace ← Hub pill (top-left, shared nav) so the
-                      brand-as-home button isn't visually clipped or click-blocked */
-                   margin-left: 84px; }
+                   margin-left: 0; }
+  /* Standalone-safe hub furniture: the shared "← Hub" pill lives in ../_shared/hub-nav.css,
+     which is <link>ed AFTER this <style>. When Mirror runs inside the workspace hub that file
+     loads and its rules win — the pill shows (display:inline-flex) and the brand clears it.
+     Self-hosted or opened as a plain file, the stylesheet 404s: the pill stays hidden and the
+     brand needs no offset. No hub assumptions bleed into a standalone copy. */
+  .ws-hub-nav { display: none; }
+  html.has-hub .topnav .brand {
+    /* clear the fixed ← Hub pill (top-left) so the brand-as-home button isn't clipped */
+    margin-left: 84px; }
   .topnav .brand::before { content: "⌾ "; opacity: 0.7; }
   .topnav .tabs { display: flex; gap: 4px; flex-wrap: wrap; }
   .tab-btn { background: transparent; color: var(--dim); border: 1px solid transparent;
@@ -190,6 +197,17 @@
   /* Welcome empty state */
   .empty { color: var(--dim); font-style: italic; padding: 30px 10px; text-align: center;
            font-size: 0.9rem; }
+
+  /* First-run welcome (home doorway; shown only while the record is empty + undismissed) */
+  .welcome-card { max-width: 560px; margin: 4px auto 22px; padding: 20px 24px;
+                  background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
+                  box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .welcome-card h2 { font-size: 1.25rem; font-weight: 600; color: var(--accent);
+                     margin: 0 0 10px; letter-spacing: 0.01em; }
+  .welcome-card p { font-size: 0.95rem; line-height: 1.55; color: var(--ink); margin: 0 0 12px; }
+  .welcome-card .welcome-fine { font-size: 0.85rem; color: var(--dim); }
+  .welcome-card code { font-size: 0.85em; background: var(--panel2); padding: 1px 5px; border-radius: 4px; }
+  .welcome-actions { margin-top: 4px; }
 
   /* Two column layouts */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -966,7 +984,7 @@
     .ht-cell, .care-bar .fill, .ht-markers .hxm { transition: none; }
   }
 </style>
-<link rel="stylesheet" href="../_shared/hub-nav.css">
+<link rel="stylesheet" href="../_shared/hub-nav.css" onload="document.documentElement.classList.add('has-hub')">
 </head>
 <body>
 <nav class="ws-hub-nav" aria-label="Workspace navigation">
@@ -978,7 +996,7 @@
   <span class="spacer"></span>
   <button class="mini-btn" id="themeBtn" title="Toggle theme">☾</button>
   <button class="mini-btn" id="exportBtn" title="Download a backup of all your data as JSON">Back up</button>
-  <button class="mini-btn" id="repoBtn" title="Save/restore a committed repo copy — your forever backup">Repo</button>
+  <button class="mini-btn" id="repoBtn" title="Save/restore your forever-copy — the permanent record you keep somewhere safe">Forever-copy</button>
   <button class="mini-btn" id="importBtn" title="Restore data from a backup file">Import</button>
   <input type="file" id="importFile" accept="application/json" style="display:none">
   <button class="mini-btn" id="snapsBtn" title="Restore an automatic in-browser snapshot">Snapshots</button>
@@ -998,6 +1016,22 @@
 <!-- ============== HOME — the hexagram doorway ============== -->
 <section class="view active" id="view-home">
   <p class="home-intro">Your mirror — a doorway to each part of the day.</p>
+  <div class="welcome-card" id="welcomeCard" hidden>
+    <h2>Welcome to your mirror</h2>
+    <p>This is a private record of your life — body, mind, health, relationships, money, and
+       who you're becoming. It lives <strong>only in this browser, on this device</strong>.
+       Nothing is sent anywhere, and no one but you can see it.</p>
+    <p>Because it's yours alone, <em>you</em> keep it safe: every so often, open
+       <strong>Forever-copy</strong> in the top bar and save the file somewhere permanent — a
+       private drive, a folder you back up, wherever your lasting records live. That copy is
+       what carries your record across browsers and across years.</p>
+    <p class="welcome-fine">A couple of parts are optional and off until you set them up —
+       a read-only Google Calendar and a food-nutrition library. The
+       <code>README</code> beside this page explains both. Everything else works right now.</p>
+    <div class="welcome-actions">
+      <button class="primary" id="welcomeBegin">Begin</button>
+    </div>
+  </div>
   <div class="hex-field" id="hexField" role="group" aria-label="Mirror home — Today and the six life areas">
 
     <button class="hex hex-cat hexcell-identity" data-goto="identity" data-cat="identity" style="--c:var(--cat-identity)">
@@ -1744,10 +1778,10 @@
 
   <div class="section">
     <div class="section-head"><h2>Kept forever</h2><span class="act tiny">localStorage isn't forever — the repo file is.</span></div>
-    <div class="lede" style="margin-bottom:10px">Export downloads <code>birthdays.json</code> (the durable copy to commit next to this page) and a readable <code>birthdays.md</code>. Restore rebuilds the register from the committed file — so a cleared browser loses nothing.</div>
+    <div class="lede" style="margin-bottom:10px">Export downloads <code>birthdays.json</code> (a durable copy to keep somewhere safe) and a readable <code>birthdays.md</code>. Restore rebuilds the register from a file you pick — so a cleared browser loses nothing.</div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <button class="primary" id="bExport">Export birthdays</button>
-      <button class="ghost" id="bRestore">Restore from repo</button>
+      <button class="ghost" id="bRestore">Restore from a file…</button>
     </div>
   </div>
 
@@ -2220,8 +2254,8 @@ function checkBackupReminder() {
   const repoDays = lastRepo ? Math.floor((Date.now() - lastRepo) / 86400000) : 999;
   if (changes >= 30 || (changes > 0 && repoDays >= 14)) {
     showBanner(lastRepo
-      ? `<strong>${changes} change${changes===1?'':'s'}</strong> since your last forever-copy (${repoDays} days ago). Open <strong>Repo</strong> to update it, then commit.`
-      : `You haven't saved a forever-copy yet. Open <strong>Repo</strong> to save <code>mirror-data.json</code> + <code>mirror-data.md</code> and commit them.`, false);
+      ? `<strong>${changes} change${changes===1?'':'s'}</strong> since your last forever-copy (${repoDays} days ago). Open <strong>Forever-copy</strong> to update it, then keep it somewhere permanent.`
+      : `You haven't saved a forever-copy yet. Open <strong>Forever-copy</strong> to save <code>mirror-data.json</code> + <code>mirror-data.md</code> and keep them safe.`, false);
     return;
   }
   // Otherwise fall back to the lighter weekly file-backup nudge.
@@ -2281,7 +2315,7 @@ document.getElementById('resetBtn').onclick = () => {
 };
 document.getElementById('snapsBtn').onclick = openSnapshotsModal;
 
-/* ----- Repo backup: whole-app forever-copy committed to git (same pattern as birthdays) ----- */
+/* ----- Forever-copy: whole-app durable backup you keep somewhere permanent (same pattern as birthdays) ----- */
 
 /* Human-readable companion to mirror-data.json. The JSON is lossless and is what the app
    restores from; this Markdown is the copy a human (or future-you) can read in 50 years
@@ -2425,49 +2459,35 @@ function downloadRepoCopy() {
   localStorage.setItem(CHANGES_KEY, '0');   // the forever-copy is now current
   hideBanner();
 }
-async function restoreFromRepo() {
-  if (!confirm('Replace current data with the committed repo copy (mirror-data.json)? Your current data is snapshotted first, so you can undo via Snapshots.')) return;
-  try {
-    const res = await fetch('mirror-data.json?t=' + Date.now());
-    if (!res.ok) throw new Error('not found');
-    const obj = await res.json();
-    if (!obj.identity || !obj.body) throw new Error('Not a Mirror data file');
-    takeSnapshot('before repo restore');
-    state = migrate(obj);
-    const d = defaultState();
-    for (const k of Object.keys(d)) state[k] = Object.assign(d[k], state[k] || {});
-    saveState(); renderAll();
-    // The in-browser data now matches the committed copy — mark it in sync.
-    localStorage.setItem(CHANGES_KEY, '0');
-    localStorage.setItem(LAST_REPO_KEY, String(Date.now()));
-    closeModal();
-    showBanner('Restored from the repo copy.', false);
-  } catch (e) {
-    alert('Could not load mirror-data.json from the repo. Make sure it has been committed next to index.html (in the mirror/ folder).');
-  }
+// Restore is always from a file YOU pick — Mirror never fetches data from its own
+// hosting directory. That keeps a self-hosted copy from ever serving one person's
+// forever-copy to whoever opens the page. The picker reuses the Import flow below.
+function restoreForeverCopy() {
+  closeModal();
+  document.getElementById('importFile').click();
 }
 function repoStatusLine() {
   const last = Number(localStorage.getItem(LAST_REPO_KEY) || 0);
   const changes = Number(localStorage.getItem(CHANGES_KEY) || 0);
-  if (!last) return `<strong>No forever-copy saved yet.</strong> Save one now and commit it.`;
+  if (!last) return `<strong>No forever-copy saved yet.</strong> Save one now and keep it somewhere permanent.`;
   const days = Math.floor((Date.now() - last) / 86400000);
   const when = days === 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
   if (!changes) return `Forever-copy last saved <strong>${when}</strong> — up to date.`;
   return `Forever-copy last saved <strong>${when}</strong> · <strong>${changes}</strong> change${changes===1?'':'s'} since then.`;
 }
 function openRepoModal() {
-  modalBox.innerHTML = `<h3>Repo backup — your forever-copy</h3>
-    <div class="sub">Your data lives only in this browser. Save the forever-copy and commit those files next to this page in git — they then outlive any cleared cache, lost laptop, or browser. Restore rebuilds everything from the committed copy.</div>
+  modalBox.innerHTML = `<h3>Your forever-copy</h3>
+    <div class="sub">Your data lives only in this browser. Save your forever-copy and keep those two files somewhere permanent — a private git repo, a cloud drive, an external disk. They then outlive any cleared cache, lost laptop, or new browser. Restoring reads a file <em>you</em> pick; Mirror never loads data from wherever it's hosted.</div>
     <div class="prompt" style="margin-bottom:14px">${repoStatusLine()}</div>
-    <div class="sub" style="margin-bottom:14px">Saves two files: <code>mirror-data.json</code> (lossless — what Restore reads) and <code>mirror-data.md</code> (human-readable, openable in 50 years with no app). Commit both.</div>
+    <div class="sub" style="margin-bottom:14px">Saves two files: <code>mirror-data.json</code> (lossless — what Restore reads) and <code>mirror-data.md</code> (human-readable, openable in 50 years with no app). Keep both together.</div>
     <div class="actions" style="flex-wrap:wrap">
       <button class="primary" id="repoSave">Save forever-copy</button>
-      <button class="ghost" id="repoRestore">Restore from repo</button>
+      <button class="ghost" id="repoRestore">Restore from a file…</button>
       <button class="ghost" id="repoClose">Close</button>
     </div>`;
   overlay.classList.add('open');
-  document.getElementById('repoSave').onclick = () => { downloadRepoCopy(); closeModal(); showBanner('Saved <strong>mirror-data.json</strong> + <strong>mirror-data.md</strong> — commit both to the repo to update your forever-copy.', false); };
-  document.getElementById('repoRestore').onclick = restoreFromRepo;
+  document.getElementById('repoSave').onclick = () => { downloadRepoCopy(); closeModal(); showBanner('Saved <strong>mirror-data.json</strong> + <strong>mirror-data.md</strong> — keep both somewhere permanent to update your forever-copy.', false); };
+  document.getElementById('repoRestore').onclick = restoreForeverCopy;
   document.getElementById('repoClose').onclick = closeModal;
 }
 document.getElementById('repoBtn').onclick = openRepoModal;
@@ -2763,7 +2783,9 @@ async function loadFoods() {
     // NutriLens unavailable — still let custom foods work and keep history readable via snapshots.
     foodsIndex = foodsIndex || { list: [], byId: new Map() };
     indexCustomFoods();
-    document.getElementById('foodLoadStatus').textContent = 'NutriLens library unavailable — your custom foods still work';
+    // Standalone / self-hosted copies won't have the optional food library beside them.
+    // That's fine: custom foods work without it. Keep the message brand-neutral + actionable.
+    document.getElementById('foodLoadStatus').textContent = 'Food library not loaded — you can still log your own custom foods (see README to add the optional library).';
   }
 }
 // Make custom foods resolvable everywhere the NutriLens index is used (same numeric-id shape).
@@ -2847,7 +2869,13 @@ function renderFoodResults(q) {
   const rows = meals.concat(foods);
   foodResultRows = rows; foodHi = rows.length ? 0 : -1;
   if (!rows.length) {
-    box.innerHTML = '<div class="r tiny">no matches</div>'; box.style.display = 'block';
+    // Distinguish "nothing matched" from "there's no library to match against" (self-hosted
+    // copy with no foods.json) — the latter is not an error, just points to custom foods.
+    const noLibrary = !foodsIndex.list || foodsIndex.list.length === 0;
+    box.innerHTML = noLibrary
+      ? '<div class="r tiny">No food library loaded — add your own in “Your foods” below, or add the optional food library (see README).</div>'
+      : '<div class="r tiny">no matches</div>';
+    box.style.display = 'block';
     search.setAttribute('aria-expanded', 'true'); search.removeAttribute('aria-activedescendant'); return;
   }
   const custom = new Set((state.body.customFoods || []).map(c => c.id));
@@ -5804,26 +5832,34 @@ function exportBirthdays() {
   bdayDownload('birthdays.md', md, 'text/markdown');
 }
 
-async function restoreBirthdaysFromRepo() {
-  if (!confirm('Load birthdays from the committed repo file (birthdays.json)? New people are added; matching ones are updated.')) return;
-  try {
-    const res = await fetch('birthdays.json?t=' + Date.now());
-    if (!res.ok) throw new Error('not found');
-    const data = await res.json();
-    const incoming = Array.isArray(data) ? data : (data.birthdays || []);
-    if (!incoming.length) { alert('The repo file has no birthdays in it.'); return; }
-    takeSnapshot('restore birthdays from repo');
-    if (!state.relationships.birthdays) state.relationships.birthdays = [];
-    const byId = new Map(state.relationships.birthdays.map(b => [b.id, b]));
-    incoming.forEach(b => {
-      if (b.id && byId.has(b.id)) Object.assign(byId.get(b.id), b);
-      else state.relationships.birthdays.push(b);
-    });
-    saveState(); renderBirthdays();
-    alert(`Loaded. The register now holds ${state.relationships.birthdays.length} people.`);
-  } catch (e) {
-    alert('Could not load birthdays.json. Make sure it has been committed next to this page (in the mirror/ folder).');
-  }
+// Load a birthdays.json YOU pick (merge by id) — never fetched from the hosting
+// directory, so a self-hosted copy can't leak one person's register to visitors.
+function restoreBirthdaysFromRepo() {
+  const inp = document.createElement('input');
+  inp.type = 'file'; inp.accept = 'application/json';
+  inp.onchange = () => {
+    const f = inp.files[0]; if (!f) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const data = JSON.parse(reader.result);
+        const incoming = Array.isArray(data) ? data : (data.birthdays || []);
+        if (!incoming.length) { alert('That file has no birthdays in it.'); return; }
+        if (!confirm(`Load ${incoming.length} birthday${incoming.length===1?'':'s'} from this file? New people are added; matching ones are updated.`)) return;
+        takeSnapshot('restore birthdays from file');
+        if (!state.relationships.birthdays) state.relationships.birthdays = [];
+        const byId = new Map(state.relationships.birthdays.map(b => [b.id, b]));
+        incoming.forEach(b => {
+          if (b.id && byId.has(b.id)) Object.assign(byId.get(b.id), b);
+          else state.relationships.birthdays.push(b);
+        });
+        saveState(); renderBirthdays();
+        alert(`Loaded. The register now holds ${state.relationships.birthdays.length} people.`);
+      } catch (e) { alert('Could not read that birthdays file: ' + e.message); }
+    };
+    reader.readAsText(f);
+  };
+  inp.click();
 }
 
 document.getElementById('bExport').onclick = exportBirthdays;
@@ -5859,7 +5895,21 @@ function renderHomeHex(){
       ? `Today, ${dateTxt} — daily check-in complete. Open Today.`
       : `Today, ${dateTxt} — ${done} of 6 areas complete. Open Today.`);
   }
+  renderWelcome();
 }
+
+// First-run greeting: only while the record is still empty AND the person hasn't dismissed it.
+// Adding any data (or clicking Begin) makes it fall away on its own. Not tied to any host.
+const WELCOMED_KEY = 'mirror_welcomed';
+function renderWelcome(){
+  const card = document.getElementById('welcomeCard');
+  if (!card) return;
+  card.hidden = !(isEmptyState(state) && !localStorage.getItem(WELCOMED_KEY));
+}
+(() => {
+  const b = document.getElementById('welcomeBegin');
+  if (b) b.onclick = () => { localStorage.setItem(WELCOMED_KEY, '1'); renderWelcome(); };
+})();
 
 function renderTodayCats(){
   const host = document.getElementById('todayCats'); if (!host) return;

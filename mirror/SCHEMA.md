@@ -17,14 +17,23 @@ Mirror is local-first. Your data has three homes, in increasing order of permane
 |---|---|---|
 | Browser localStorage | `mirror_v1` | Lost on cache clear / new device. The working copy. |
 | In-browser snapshots | `mirror_backups` (last 12) | Undo safety only. Same browser. |
-| **Forever-copy in git** | `mirror-data.json` + `mirror-data.md` | **The permanent record.** Survives everything once committed. |
+| **Forever-copy you keep** | `mirror-data.json` + `mirror-data.md` | **The permanent record.** Survives everything, once you keep it somewhere permanent. |
 
 **The forever-copy is the archive.** Everything else is scratch. The discipline that makes
-Mirror a multi-decade dataset instead of an app is: *save the forever-copy and commit it.*
-Mirror counts edits since the last forever-copy (`mirror_changes_since_repo`) and nags you
-in the Repo dialog and the top banner when they pile up.
+Mirror a multi-decade dataset instead of an app is: *save the forever-copy and keep it
+somewhere permanent* — a private git repo, a cloud drive, an external disk; wherever you keep
+things that must outlive a laptop. Mirror counts edits since the last forever-copy
+(`mirror_changes_since_repo`) and nags you in the Forever-copy dialog and the top banner when
+they pile up.
 
-- `mirror-data.json` — **lossless.** Every record, every field. This is what **Restore** reads.
+**Restore always reads a file _you_ pick.** Mirror never fetches data from the directory it's
+served from. This matters for a self-hosted / shared deployment: the hosting directory holds
+only the *app*, never anyone's data, so opening the page can never load one person's record
+into another person's browser. Your data reaches a new browser only when *you* hand it the
+file.
+
+- `mirror-data.json` — **lossless.** Every record, every field. This is what **Restore** reads
+  (from a file you choose).
 - `mirror-data.md` — **human-readable companion.** Openable in 50 years with no app at all.
   **Daily Cards** (the heartbeat) and durable/qualitative content (values, reflections,
   journal, books, quotes, people, birthdays, goals, net worth) are written in full;
