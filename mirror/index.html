@@ -272,8 +272,16 @@
 
   /* Weekly Review + Long View — narrative lines inside plain cards (the .p class is
      otherwise only styled within .insight) */
-  #weeklyReview .p, #longViewDetail .p, #onThisDay .p { font-size: 0.9rem; color: var(--ink); margin: 5px 0; line-height: 1.5; }
-  #weeklyReview .p strong, #longViewDetail .p strong, #onThisDay .p strong { color: var(--ink); }
+  #weeklyReview .p, #longViewDetail .p, #onThisDay .p, #decisionsReview .p { font-size: 0.9rem; color: var(--ink); margin: 5px 0; line-height: 1.5; }
+  #weeklyReview .p strong, #longViewDetail .p strong, #onThisDay .p strong, #decisionsReview .p strong { color: var(--ink); }
+  /* Decision review — small domain tag + outcome pills */
+  .dec-tag { display: inline-block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
+             padding: 1px 7px; border-radius: 999px; border: 1px solid var(--c, var(--line));
+             color: var(--c, var(--dim)); vertical-align: middle; }
+  .dec-pill { display: inline-block; font-size: 0.72rem; padding: 1px 7px; border-radius: 999px;
+              background: var(--panel2); color: var(--dim); margin-right: 4px; }
+  .dec-pill.better { color: var(--accent2); } .dec-pill.worse { color: var(--warn); }
+  .dec-due { border-left-color: var(--warn) !important; }
   #weeklyReview .prompt { font-size: 0.92rem; }
 
   /* Long View — month calendar heatmap of Daily Cards */
@@ -1176,6 +1184,44 @@
     </div>
   </div>
 
+  <div class="section" id="decisionSection" style="margin-bottom:22px">
+    <div class="section-head">
+      <h2>Decision</h2>
+      <span class="act tiny" id="decSaved" style="color:var(--accent2)"></span>
+    </div>
+    <div class="lede" style="margin-bottom:14px">A choice you're weighing or just made. Note what you expect and how sure you are — later, Reflect will ask how it turned out, and over time show whether your judgment is well-calibrated. Only a title is required.</div>
+    <div class="card">
+      <div><input type="text" id="decTitle" class="grow" placeholder="The decision — e.g. “Take the Farwell Ave apartment”"></div>
+      <div class="chip-row" style="margin-top:10px;align-items:center;gap:14px;flex-wrap:wrap">
+        <label class="tiny" style="color:var(--dim)">Area
+          <select id="decDomain" style="margin-left:6px">
+            <option value="">—</option>
+            <option value="body">Body</option>
+            <option value="mind">Mind</option>
+            <option value="health">Health</option>
+            <option value="relationships">Relationships</option>
+            <option value="money">Money</option>
+            <option value="identity">Identity</option>
+          </select>
+        </label>
+        <label class="tiny" style="color:var(--dim)">Revisit on
+          <input type="date" id="decReviewOn" style="width:148px;margin-left:6px">
+        </label>
+      </div>
+      <div class="meta" style="margin-top:12px">How sure are you this is the right call? (optional)</div>
+      <div class="dot-row" id="decConfidenceRow"></div>
+      <div style="margin-top:12px"><input type="text" id="decExpected" class="grow" placeholder="What do you expect to happen? (your prediction)"></div>
+      <details class="subgroup" style="margin-top:10px">
+        <summary>More — context &amp; reasoning</summary>
+        <div style="margin-top:10px"><input type="text" id="decContext" class="grow" placeholder="What prompted this? (optional)"></div>
+        <div style="margin-top:8px"><textarea id="decOptions" placeholder="Other options you considered (optional)"></textarea></div>
+        <div style="margin-top:8px"><textarea id="decReasoning" placeholder="Your reasoning — why this choice (optional)"></textarea></div>
+      </details>
+      <div style="margin-top:14px"><button class="primary" id="decSave">Log decision</button></div>
+      <div class="tiny" id="decCount" style="color:var(--dim);margin-top:12px"></div>
+    </div>
+  </div>
+
   <div class="section" style="margin-bottom:14px">
     <div class="chip-row" style="justify-content:flex-end">
       <button class="mini-btn" data-goto="reflect">Patterns &amp; timeline →</button>
@@ -1829,6 +1875,11 @@
     <div id="weeklyReview"></div>
   </div>
 
+  <div class="section" id="decisionsReviewSection">
+    <div class="section-head"><h2>Decisions</h2><span class="act tiny" id="decisionsStatus"></span></div>
+    <div id="decisionsReview"></div>
+  </div>
+
   <div class="section">
     <div class="section-head"><h2>The long view</h2><span class="act tiny" id="longViewCoverage"></span></div>
     <div class="lv-nav">
@@ -1917,7 +1968,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 9;
+const SCHEMA_VERSION = 10;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -1933,7 +1984,7 @@ const RECORD_ARRAYS = [
   ['money','netWorth'], ['money','goals'],
   ['relationships','people'], ['relationships','followUps'],
   ['relationships','giftIdeas'], ['relationships','birthdays'],
-  ['daily','cards'],
+  ['daily','cards'], ['decisions','items'],
 ];
 function nowISO(){ return new Date().toISOString(); }
 
@@ -1945,6 +1996,10 @@ const defaultState = () => ({
   money:    { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
   daily: { cards: [] },
+  // decisions: the judgment log (v10). Each item is a two-phase record — a choice + its
+  //   PREDICTION when made, and (later, upserted into the same item) how it actually turned
+  //   out. Verdicts are never stored; calibration is derived on read from confidence x result.
+  decisions: { items: [] },
   // completion: per local date, which of the six categories are 'started' or 'complete'.
   //   { "2026-07-15": { body:"complete", mind:"started", ... } }. Absent = not started.
   completion: {},
@@ -2045,6 +2100,14 @@ function migrate(s) {
     ['accessToken','access_token','token','code','refreshToken','refresh_token','id_token','expiresAt']
       .forEach(k => delete ig[k]);
     v = 9;
+  }
+  // v9 -> v10: add the decisions store (the judgment log). Shallow-merge in loadState already
+  // backfills state.decisions from defaultState; this is the explicit, defensive guarantee.
+  // Nothing existing is reshaped or renamed.
+  if (v < 10) {
+    if (!s.decisions || typeof s.decisions !== 'object') s.decisions = { items: [] };
+    if (!Array.isArray(s.decisions.items)) s.decisions.items = [];
+    v = 10;
   }
   s.__v = SCHEMA_VERSION;
   return s;
@@ -2332,7 +2395,7 @@ function buildDataMarkdown() {
   p(`_Saved ${todayStr()} · schema v${SCHEMA_VERSION} · human-readable companion to **mirror-data.json** (the lossless copy the app restores from)._`); p('');
 
   p(`## At a glance`); p('');
-  [['Daily cards','daily.cards'], ['Journal entries','identity.journal'],
+  [['Daily cards','daily.cards'], ['Decisions','decisions.items'], ['Journal entries','identity.journal'],
    ['Reflections','identity.reflections'], ['Pulse check-ins','identity.pulse'],
    ['Food entries','body.food'], ['Sleep nights','body.sleep'],
    ['Exercise sessions','body.exercise'], ['Expenses','money.expenses'],
@@ -2360,6 +2423,32 @@ function buildDataMarkdown() {
       if (c.food_note)    p(`  - Food: ${c.food_note}`);
       if (c.money_note)   p(`  - Money: ${c.money_note}`);
       if (c.social_note)  p(`  - Social: ${c.social_note}`);
+    });
+    p('');
+  }
+
+  /* Decisions — the judgment log. Durable/qualitative, so written in FULL (newest first),
+     both phases: the choice + prediction, and how it turned out once reviewed. */
+  if (s.decisions?.items?.length) {
+    p(`## Decisions`); p('');
+    const RES = { better: 'better than expected', as_expected: 'about as expected', worse: 'worse than expected' };
+    const SAME = { yes: 'would choose again', no: "wouldn't choose again", unsure: 'unsure if would repeat' };
+    s.decisions.items.slice().sort(byDateDesc).forEach(d => {
+      const head = [d.domain ? d.domain : null, d.confidence != null ? `confidence ${d.confidence}/5` : null]
+        .filter(Boolean).join(', ');
+      p(`- **${d.date}** — ${d.title || '(untitled)'}${head ? ` (${head})` : ''}`);
+      if (d.expected)  p(`  - Expected: ${d.expected}`);
+      if (d.context)   p(`  - Context: ${d.context}`);
+      if (d.options)   p(`  - Options considered: ${d.options}`);
+      if (d.reasoning) p(`  - Reasoning: ${d.reasoning}`);
+      if (decisionReviewed(d)) {
+        const parts = [d.result ? (RES[d.result] || d.result) : null, d.same_again ? (SAME[d.same_again] || d.same_again) : null].filter(Boolean).join('; ');
+        p(`  - Outcome${d.reviewed_on ? ` (reviewed ${d.reviewed_on})` : ''}: ${parts || 'reviewed'}`);
+        if (d.outcome) p(`  - What happened: ${d.outcome}`);
+        if (d.lessons) p(`  - Lesson: ${d.lessons}`);
+      } else if (d.review_on) {
+        p(`  - Awaiting review (revisit ${d.review_on})`);
+      }
     });
     p('');
   }
@@ -5042,6 +5131,7 @@ function renderReflectCloser() {
 
 function renderReflect() {
   renderWeeklyReview();
+  renderDecisionsReview();
   renderLongView();
   renderReflectToday();
   renderReflectPatterns();
@@ -5110,7 +5200,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); renderTodayEvents(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); renderDecisionCapture(); renderTodayEvents(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -5361,6 +5451,198 @@ document.getElementById('dcSave').onclick = () => {
   if (saved) saved.textContent = (date === todayStr() ? 'Saved today.' : 'Saved for ' + fmtDate(date) + '.');
   if (document.getElementById('weeklyReview')) renderWeeklyReview();
 };
+
+/* =============================================================
+   DECISION LOG — the judgment record (v10). Capture lives here on
+   Today; review + calibration live in Reflect. A decision is a
+   TWO-PHASE record: the choice + its prediction now, and (later,
+   upserted into the same item) how it turned out. We store the
+   prediction, never a verdict — calibration is derived on read.
+   ============================================================= */
+const DEC_DOMAINS = ['body','mind','health','relationships','money','identity'];
+function decisionItems() { return (state.decisions && state.decisions.items) || []; }
+// A decision is "reviewed" once any phase-2 field has been filled in.
+function decisionReviewed(d) { return !!(d && (d.result || d.same_again || d.outcome || d.reviewed_on)); }
+function decisionCounts() {
+  const items = decisionItems();
+  const reviewed = items.filter(decisionReviewed).length;
+  return { total: items.length, reviewed, open: items.length - reviewed };
+}
+function renderDecisionCapture() {
+  const row = document.getElementById('decConfidenceRow'); if (!row) return;
+  if (!row.children.length) buildDcDots('decConfidenceRow', null);   // build once; keep any in-progress pick
+  const el = document.getElementById('decCount');
+  if (el) {
+    const { total, open } = decisionCounts();
+    el.textContent = total
+      ? `${total} decision${total===1?'':'s'} logged · ${open} awaiting review`
+      : 'No decisions logged yet.';
+  }
+}
+document.getElementById('decSave').onclick = () => {
+  const titleEl = document.getElementById('decTitle');
+  const title = titleEl.value.trim();
+  const saved = document.getElementById('decSaved');
+  if (!title) { if (saved) saved.textContent = 'A title is needed to log a decision.'; titleEl.focus(); return; }
+  const txt = id => document.getElementById(id).value.trim();
+  const item = {
+    id: uid(),
+    date: qtLogDate,                         // the day the decision was made (backfillable like the rest of Today)
+    title,
+    domain: document.getElementById('decDomain').value || '',
+    context: txt('decContext'),
+    options: txt('decOptions'),
+    reasoning: txt('decReasoning'),
+    confidence: readDcDot('decConfidenceRow'),
+    expected: txt('decExpected'),
+    review_on: document.getElementById('decReviewOn').value || null,
+    // phase-2 (result / same_again / lessons / reviewed_on) is absent until reviewed in Reflect
+  };
+  state.decisions = state.decisions || { items: [] };
+  state.decisions.items = state.decisions.items || [];
+  state.decisions.items.push(item);          // _src/_at stamped centrally by saveState()
+  saveState();
+  ['decTitle','decContext','decOptions','decReasoning','decExpected'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('decDomain').value = '';
+  document.getElementById('decReviewOn').value = '';
+  buildDcDots('decConfidenceRow', null);
+  renderDecisionCapture();
+  if (saved) { saved.textContent = 'Logged. Reflect will ask how it turned out.'; setTimeout(() => { if (saved && saved.textContent.startsWith('Logged')) saved.textContent = ''; }, 4000); }
+  if (typeof renderDecisionsReview === 'function') renderDecisionsReview();
+};
+
+/* ----- Decision REVIEW + CALIBRATION (lives in Reflect) ----- */
+const DEC_RESULT_LABEL = { better: 'Better than expected', as_expected: 'About as expected', worse: 'Worse than expected' };
+const DEC_SAME_LABEL = { yes: 'Would choose again', no: "Wouldn't choose again", unsure: 'Unsure if would repeat' };
+function decDomainLabel(domain) { const m = domain && catMeta ? catMeta(domain) : null; return m ? m.label : ''; }
+
+// Calibration is DERIVED here, never stored — confidence vs. how things actually turned out.
+function decisionCalibration() {
+  const rev = decisionItems().filter(decisionReviewed);
+  const withResult = rev.filter(d => d.result);
+  const withConf = withResult.filter(d => d.confidence != null);
+  const ok = d => d.result === 'better' || d.result === 'as_expected';
+  const high = withConf.filter(d => d.confidence >= 4);
+  const low  = withConf.filter(d => d.confidence <= 2);
+  const same = rev.filter(d => d.same_again);
+  return {
+    reviewed: rev.length, resN: withResult.length, okAll: withResult.filter(ok).length,
+    highN: high.length, highOk: high.filter(ok).length,
+    lowN: low.length, lowOk: low.filter(ok).length,
+    sameN: same.length, sameYes: same.filter(d => d.same_again === 'yes').length,
+  };
+}
+function decisionCalibrationHTML() {
+  const c = decisionCalibration();
+  if (c.reviewed < 3) {
+    return `<div class="p" style="color:var(--dim)">Once you've reviewed a few decisions, this is where Mirror shows whether your confidence tracks how things actually turn out — from your own record, gently, never as a score.</div>`;
+  }
+  const lines = [];
+  if (c.resN) lines.push(`<div class="p"><strong>${c.okAll} of ${c.resN}</strong> reviewed decisions turned out as expected or better.</div>`);
+  if (c.highN >= 2) lines.push(`<div class="p">Of the ${c.highN} you were most sure of (confidence 4–5), <strong>${c.highOk}</strong> turned out as expected or better.</div>`);
+  if (c.lowN >= 2) lines.push(`<div class="p">Of the ${c.lowN} you were unsure of (1–2), <strong>${c.lowOk}</strong> did.</div>`);
+  if (c.sameN >= 2) lines.push(`<div class="p">You'd make the same choice again in <strong>${c.sameYes} of ${c.sameN}</strong> of them.</div>`);
+  lines.push(`<div class="tiny" style="color:var(--dim);margin-top:2px">From a small sample — a mirror, not a verdict.</div>`);
+  return lines.join('');
+}
+function decisionActions(d) {
+  return `<div style="display:flex;gap:6px;flex-shrink:0">
+    <button class="ghost" data-decreview="${d.id}">${decisionReviewed(d) ? 'Edit' : 'Review'}</button>
+    <button class="ghost" data-decdel="${d.id}" title="Delete" aria-label="Delete decision">✕</button></div>`;
+}
+function decisionOpenCard(d, due) {
+  const tag = d.domain ? `<span class="dec-tag" style="--c:var(--cat-${d.domain})">${escapeHtml(decDomainLabel(d.domain))}</span>` : '';
+  const conf = d.confidence != null ? `confidence ${d.confidence}/5` : '';
+  return `<div class="insight ${due ? 'dec-due' : ''}" style="margin-top:10px">
+    <div class="row" style="justify-content:space-between;align-items:baseline;gap:8px">
+      <div><strong>${escapeHtml(d.title)}</strong> ${tag}</div>${decisionActions(d)}</div>
+    <div class="tiny" style="color:var(--dim);margin:2px 0">${fmtDate(d.date)}${conf ? ' · ' + conf : ''}${d.review_on ? ' · revisit ' + fmtDate(d.review_on) : ''}</div>
+    ${d.expected ? `<div class="p"><strong>Expected:</strong> ${escapeHtml(d.expected)}</div>` : ''}
+  </div>`;
+}
+function decisionReviewedCard(d) {
+  const tag = d.domain ? `<span class="dec-tag" style="--c:var(--cat-${d.domain})">${escapeHtml(decDomainLabel(d.domain))}</span>` : '';
+  const rc = d.result === 'better' ? 'better' : d.result === 'worse' ? 'worse' : '';
+  const resultPill = d.result ? `<span class="dec-pill ${rc}">${escapeHtml(DEC_RESULT_LABEL[d.result] || d.result)}</span>` : '';
+  const samePill = d.same_again ? `<span class="dec-pill">${escapeHtml(DEC_SAME_LABEL[d.same_again] || d.same_again)}</span>` : '';
+  return `<div class="insight" style="margin-top:10px">
+    <div class="row" style="justify-content:space-between;align-items:baseline;gap:8px">
+      <div><strong>${escapeHtml(d.title)}</strong> ${tag}</div>${decisionActions(d)}</div>
+    <div class="tiny" style="color:var(--dim);margin:2px 0 4px">decided ${fmtDate(d.date)}${d.reviewed_on ? ' · reviewed ' + fmtDate(d.reviewed_on) : ''}</div>
+    <div style="margin:2px 0 4px">${resultPill}${samePill}</div>
+    ${d.lessons ? `<div class="p"><strong>Lesson:</strong> ${escapeHtml(d.lessons)}</div>` : ''}
+  </div>`;
+}
+function renderDecisionsReview() {
+  const host = document.getElementById('decisionsReview'); if (!host) return;
+  const status = document.getElementById('decisionsStatus');
+  const items = decisionItems();
+  if (!items.length) {
+    if (status) status.textContent = '';
+    host.innerHTML = `<div class="p" style="color:var(--dim)">Decisions you log on the Today page appear here. When one comes due, Mirror asks how it turned out — and over time shows whether your judgment is well-calibrated.</div>`;
+    return;
+  }
+  const today = todayStr();
+  const open = items.filter(d => !decisionReviewed(d));
+  const due = open.filter(d => d.review_on && d.review_on <= today);
+  const dueIds = new Set(due.map(d => d.id));
+  const laterOpen = open.filter(d => !dueIds.has(d.id));
+  const reviewed = items.filter(decisionReviewed);
+  if (status) status.textContent = `${items.length} logged · ${open.length} open · ${reviewed.length} reviewed`;
+  const sort = arr => arr.slice().sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  const parts = [decisionCalibrationHTML()];
+  if (due.length) {
+    parts.push(`<div class="meta" style="margin-top:14px">Ready to review (${due.length})</div>`);
+    parts.push(sort(due).map(d => decisionOpenCard(d, true)).join(''));
+  }
+  if (laterOpen.length) {
+    parts.push(`<div class="meta" style="margin-top:16px">Open — awaiting outcome (${laterOpen.length})</div>`);
+    parts.push(sort(laterOpen).slice(0, 8).map(d => decisionOpenCard(d, false)).join(''));
+    if (laterOpen.length > 8) parts.push(`<div class="tiny" style="color:var(--dim);margin-top:4px">+ ${laterOpen.length - 8} more open</div>`);
+  }
+  if (reviewed.length) {
+    parts.push(`<div class="meta" style="margin-top:16px">Reviewed (${reviewed.length})</div>`);
+    parts.push(sort(reviewed).slice(0, 6).map(decisionReviewedCard).join(''));
+    if (reviewed.length > 6) parts.push(`<div class="tiny" style="color:var(--dim);margin-top:4px">+ ${reviewed.length - 6} more reviewed</div>`);
+  }
+  host.innerHTML = parts.join('');
+  host.querySelectorAll('[data-decreview]').forEach(b => b.onclick = () => openDecisionReview(b.dataset.decreview));
+  host.querySelectorAll('[data-decdel]').forEach(b => b.onclick = () => deleteDecision(b.dataset.decdel));
+}
+function openDecisionReview(id) {
+  const d = decisionItems().find(x => x.id === id); if (!d) return;
+  const fields = [
+    { key: 'result', label: 'Outcome vs. your prediction', type: 'select', options: [
+      { value: '', label: '—' }, { value: 'better', label: 'Better than expected' },
+      { value: 'as_expected', label: 'About as expected' }, { value: 'worse', label: 'Worse than expected' } ] },
+    { key: 'same_again', label: 'Would you choose the same again?', type: 'select', options: [
+      { value: '', label: '—' }, { value: 'yes', label: 'Yes' }, { value: 'no', label: 'No' }, { value: 'unsure', label: 'Unsure' } ] },
+    { key: 'outcome', label: 'What actually happened? (optional)', type: 'textarea' },
+    { key: 'lessons', label: 'What did you learn? (optional)', type: 'textarea' },
+  ];
+  const values = { result: d.result || '', same_again: d.same_again || '', outcome: d.outcome || '', lessons: d.lessons || '' };
+  openEditModal('Review decision', d.title, fields, values, (v) => {
+    const outcome = (v.outcome || '').trim(), lessons = (v.lessons || '').trim();
+    const any = v.result || v.same_again || outcome || lessons;
+    d.result = v.result || null;
+    d.same_again = v.same_again || null;
+    d.outcome = outcome;
+    d.lessons = lessons;
+    d.reviewed_on = any ? todayStr() : null;   // clearing every phase-2 field reopens the decision
+    saveState();
+    renderDecisionsReview();
+    if (document.getElementById('decCount')) renderDecisionCapture();
+  });
+}
+function deleteDecision(id) {
+  const d = decisionItems().find(x => x.id === id); if (!d) return;
+  if (!confirm(`Delete the decision “${d.title}”? A snapshot is kept so you can undo via Snapshots.`)) return;
+  takeSnapshot('before delete decision');
+  state.decisions.items = decisionItems().filter(x => x.id !== id);
+  saveState();
+  renderDecisionsReview();
+  if (document.getElementById('decCount')) renderDecisionCapture();
+}
 
 /* =============================================================
    WEEKLY REVIEW — derived from the last 7 days of Daily Cards.

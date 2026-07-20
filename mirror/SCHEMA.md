@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **9** (field `__v` in the data).
+Current schema version: **10** (field `__v` in the data).
 
 ---
 
@@ -82,6 +82,28 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 
   > Daily Cards are intentionally simple. Their value comes from consistency over years, not
   > from richness on any single day.
+
+### decisions — the judgment log *(v10)*
+- **items[]** — one record per decision, written in **two phases**. Phase 1 (when you decide)
+  captures the choice and, crucially, your **prediction**; Phase 2 (added later, **upserted**
+  into the same item) captures how it actually turned out.
+  `{ id, date, title, domain?, context?, options?, reasoning?, confidence: 1–5?, expected?,
+  review_on?,  result?, same_again?, outcome?, lessons?, reviewed_on?,  _src, _at }`.
+  Only `title` + `date` are required.
+  - `date` — the local day the decision was made.
+  - `domain` — one of the six areas (`body`/`mind`/`health`/`relationships`/`money`/`identity`)
+    or empty. Ties the decision to that area for cross-room synthesis.
+  - `confidence` — 1–5, how sure you were it was the right call *at decision time*.
+  - `expected` — your **prediction** of what would happen. The field that makes review honest.
+  - `review_on` — an optional date to be prompted to revisit it (in Reflect).
+  - **Phase 2 (review):** `result` = `better` | `as_expected` | `worse` (outcome **vs. your
+    prediction**); `same_again` = `yes` | `no` | `unsure` (would you make the same choice
+    again — separates a lucky outcome from a good call); `outcome` (free text); `lessons`
+    (free text); `reviewed_on` (the day reviewed). A decision counts as *reviewed* once any
+    Phase-2 field is filled; clearing them all reopens it.
+  - **No verdict is ever stored.** "Well/badly decided" is never written down. **Calibration**
+    (does your confidence track how things actually turn out?) is *derived on read* in Reflect
+    from `confidence` × `result`, in tentative, small-sample language — never a score.
 
 ### identity
 - **values** — `string[]`. The handful you want to be measured by.
@@ -267,6 +289,12 @@ means**. So:
   display data, kept structurally separate from `completion`, category data, Daily Cards, and
   Health/Body logs. Not implemented in this phase (deferred): create/edit/delete, background
   sync, two-way sync, writing Mirror data into Google.
+- **v10** → **Decisions (the judgment log).** Adds a new store `decisions.items[]` — a
+  two-phase record (choice + prediction, then how it turned out on review). Stores the raw
+  prediction and outcome, never a verdict; **calibration is derived on read** in Reflect from
+  `confidence` × `result`. Auto-provenance via `RECORD_ARRAYS`; written in full into
+  `mirror-data.md`. Reshapes/renames nothing existing; the shallow-merge in `loadState` plus a
+  `v<10` migration backfill `decisions` for older data.
 
 ---
 
@@ -278,10 +306,13 @@ retrofitting privacy later, the schema keeps sensitive content *structurally sep
 the measurement series:
 
 - **Identifying / sensitive:** `relationships.*` (names), `identity.journal`, `identity.season`,
-  `mind.quotes`/`ideas` free text, expense `note`s, `symptoms` notes.
+  `mind.quotes`/`ideas` free text, expense `note`s, `symptoms` notes, and the free-text fields
+  of a decision (`title`, `context`, `options`, `reasoning`, `outcome`, `lessons`).
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
-  by category, reading counts.
+  by category, reading counts, and the **structured judgment signals** of a decision
+  (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration
+  series with no private content once the free text is dropped.
 
 A future anonymized export can therefore emit clean CSV of the measurement series with names
 hashed to initials and free-text fields dropped, **without touching the numbers**. Because the
