@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **10** (field `__v` in the data).
+Current schema version: **11** (field `__v` in the data).
 
 ---
 
@@ -104,6 +104,20 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   - **No verdict is ever stored.** "Well/badly decided" is never written down. **Calibration**
     (does your confidence track how things actually turn out?) is *derived on read* in Reflect
     from `confidence` × `result`, in tentative, small-sample language — never a score.
+
+### habits — recurring intentions *(v11)*
+- **items[]** — one record per habit you're cultivating.
+  `{ id, name, domain?, active, aim?, created, done: string[],  _src, _at }`.
+  - `domain` — one of the six areas or empty (ties coverage to that area for synthesis).
+  - `active` — `false` **archives** the habit: its history is kept, it just stops showing on
+    Today. Habits are archived, never silently lost.
+  - `aim` — optional **soft** target (times per week). Shown only as gentle context
+    ("3 of ~4 this week") — **never** a pass/fail, a miss, or a streak.
+  - `created` — the local date the habit was defined (coverage never counts days before it).
+  - `done` — the **raw observation**: the set of local dates you kept the habit. That's all
+    that is stored. "Didn't do" is simply an absent date. **Coverage** ("kept 18 of the last
+    30 days") is *derived on read*; **no streak, chain, or miss is ever stored or shown** —
+    this is deliberate, matching Mirror's no-shame stance. The coverage picture lives in Reflect.
 
 ### identity
 - **values** — `string[]`. The handful you want to be measured by.
@@ -295,6 +309,12 @@ means**. So:
   `confidence` × `result`. Auto-provenance via `RECORD_ARRAYS`; written in full into
   `mirror-data.md`. Reshapes/renames nothing existing; the shallow-merge in `loadState` plus a
   `v<10` migration backfill `decisions` for older data.
+- **v11** → **Habits (recurring intentions).** Adds a new store `habits.items[]`. Each habit
+  stores only the raw **dates kept** (`done[]`) plus an optional soft weekly `aim`; **coverage
+  is derived on read** and **no streak is ever stored or shown**. `active:false` archives a
+  habit without losing history. Auto-provenance via `RECORD_ARRAYS`; summarised (definition +
+  count + recent dates) in `mirror-data.md`. Reshapes/renames nothing; shallow-merge + a
+  `v<11` migration backfill `habits` for older data.
 
 ---
 
@@ -310,9 +330,11 @@ the measurement series:
   of a decision (`title`, `context`, `options`, `reasoning`, `outcome`, `lessons`).
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
-  by category, reading counts, and the **structured judgment signals** of a decision
+  by category, reading counts, the **structured judgment signals** of a decision
   (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration
-  series with no private content once the free text is dropped.
+  series with no private content once the free text is dropped — and **habit coverage**
+  (`domain`, `aim`, and the kept-date series), clean adherence data with only the habit `name`
+  needing to be dropped.
 
 A future anonymized export can therefore emit clean CSV of the measurement series with names
 hashed to initials and free-text fields dropped, **without touching the numbers**. Because the

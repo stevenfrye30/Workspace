@@ -272,8 +272,8 @@
 
   /* Weekly Review + Long View — narrative lines inside plain cards (the .p class is
      otherwise only styled within .insight) */
-  #weeklyReview .p, #longViewDetail .p, #onThisDay .p, #decisionsReview .p { font-size: 0.9rem; color: var(--ink); margin: 5px 0; line-height: 1.5; }
-  #weeklyReview .p strong, #longViewDetail .p strong, #onThisDay .p strong, #decisionsReview .p strong { color: var(--ink); }
+  #weeklyReview .p, #longViewDetail .p, #onThisDay .p, #decisionsReview .p, #habitsReview .p { font-size: 0.9rem; color: var(--ink); margin: 5px 0; line-height: 1.5; }
+  #weeklyReview .p strong, #longViewDetail .p strong, #onThisDay .p strong, #decisionsReview .p strong, #habitsReview .p strong { color: var(--ink); }
   /* Decision review — small domain tag + outcome pills */
   .dec-tag { display: inline-block; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.06em;
              padding: 1px 7px; border-radius: 999px; border: 1px solid var(--c, var(--line));
@@ -282,6 +282,18 @@
               background: var(--panel2); color: var(--dim); margin-right: 4px; }
   .dec-pill.better { color: var(--accent2); } .dec-pill.worse { color: var(--warn); }
   .dec-due { border-left-color: var(--warn) !important; }
+  /* Habits — one-tap toggle chips + coverage dot strip (never a streak) */
+  .habit-chip { display: inline-flex; align-items: center; gap: 6px; background: var(--panel2);
+                color: var(--ink); border: 1px solid var(--line); border-radius: 999px;
+                padding: 5px 13px; cursor: pointer; font: inherit; font-size: 0.85rem; }
+  .habit-chip .hc-mark { width: 14px; text-align: center; color: var(--dim); }
+  .habit-chip.on { background: color-mix(in srgb, var(--c, var(--accent2)) 20%, var(--panel2));
+                   border-color: var(--c, var(--accent2)); }
+  .habit-chip.on .hc-mark { color: var(--c, var(--accent2)); }
+  .habit-dots { display: inline-flex; gap: 2px; flex-wrap: wrap; align-items: center; }
+  .habit-dots .hd { width: 9px; height: 9px; border-radius: 2px; background: var(--line); }
+  .habit-dots .hd.on { background: var(--c, var(--accent2)); }
+  .habit-dots .hd.pre { background: transparent; }
   #weeklyReview .prompt { font-size: 0.92rem; }
 
   /* Long View — month calendar heatmap of Daily Cards */
@@ -1184,6 +1196,18 @@
     </div>
   </div>
 
+  <div class="section" id="habitsSection" style="margin-bottom:22px">
+    <div class="section-head">
+      <h2>Habits</h2>
+      <span class="act tiny" style="display:flex;gap:6px">
+        <button class="mini-btn" id="habitAdd">＋ Habit</button>
+        <button class="mini-btn" id="habitManage">Manage</button>
+      </span>
+    </div>
+    <div class="lede" style="margin-bottom:12px">Tap to mark what you kept — for the day selected above. No streaks, no misses; just the days you showed up. The coverage picture lives in Reflect.</div>
+    <div id="habitsToday" class="chip-row"></div>
+  </div>
+
   <div class="section" id="decisionSection" style="margin-bottom:22px">
     <div class="section-head">
       <h2>Decision</h2>
@@ -1880,6 +1904,11 @@
     <div id="decisionsReview"></div>
   </div>
 
+  <div class="section" id="habitsReviewSection">
+    <div class="section-head"><h2>Habits</h2><span class="act tiny" id="habitsStatus"></span></div>
+    <div id="habitsReview"></div>
+  </div>
+
   <div class="section">
     <div class="section-head"><h2>The long view</h2><span class="act tiny" id="longViewCoverage"></span></div>
     <div class="lv-nav">
@@ -1968,7 +1997,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 10;
+const SCHEMA_VERSION = 11;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -1984,7 +2013,7 @@ const RECORD_ARRAYS = [
   ['money','netWorth'], ['money','goals'],
   ['relationships','people'], ['relationships','followUps'],
   ['relationships','giftIdeas'], ['relationships','birthdays'],
-  ['daily','cards'], ['decisions','items'],
+  ['daily','cards'], ['decisions','items'], ['habits','items'],
 ];
 function nowISO(){ return new Date().toISOString(); }
 
@@ -2000,6 +2029,10 @@ const defaultState = () => ({
   //   PREDICTION when made, and (later, upserted into the same item) how it actually turned
   //   out. Verdicts are never stored; calibration is derived on read from confidence x result.
   decisions: { items: [] },
+  // habits: recurring intentions (v11). Each item stores the raw DATES you kept it (done[]),
+  //   never a streak — coverage is derived on read. `aim` = optional soft times/week (context,
+  //   never pass/fail). `active:false` archives without losing history.
+  habits: { items: [] },
   // completion: per local date, which of the six categories are 'started' or 'complete'.
   //   { "2026-07-15": { body:"complete", mind:"started", ... } }. Absent = not started.
   completion: {},
@@ -2108,6 +2141,13 @@ function migrate(s) {
     if (!s.decisions || typeof s.decisions !== 'object') s.decisions = { items: [] };
     if (!Array.isArray(s.decisions.items)) s.decisions.items = [];
     v = 10;
+  }
+  // v10 -> v11: add the habits store (recurring intentions; coverage not streaks). Shallow-merge
+  // in loadState already backfills it; this is the explicit, defensive guarantee.
+  if (v < 11) {
+    if (!s.habits || typeof s.habits !== 'object') s.habits = { items: [] };
+    if (!Array.isArray(s.habits.items)) s.habits.items = [];
+    v = 11;
   }
   s.__v = SCHEMA_VERSION;
   return s;
@@ -2395,7 +2435,7 @@ function buildDataMarkdown() {
   p(`_Saved ${todayStr()} · schema v${SCHEMA_VERSION} · human-readable companion to **mirror-data.json** (the lossless copy the app restores from)._`); p('');
 
   p(`## At a glance`); p('');
-  [['Daily cards','daily.cards'], ['Decisions','decisions.items'], ['Journal entries','identity.journal'],
+  [['Daily cards','daily.cards'], ['Decisions','decisions.items'], ['Habits','habits.items'], ['Journal entries','identity.journal'],
    ['Reflections','identity.reflections'], ['Pulse check-ins','identity.pulse'],
    ['Food entries','body.food'], ['Sleep nights','body.sleep'],
    ['Exercise sessions','body.exercise'], ['Expenses','money.expenses'],
@@ -2449,6 +2489,19 @@ function buildDataMarkdown() {
       } else if (d.review_on) {
         p(`  - Awaiting review (revisit ${d.review_on})`);
       }
+    });
+    p('');
+  }
+
+  /* Habits — recurring intentions. Definition + coverage; the raw kept-dates are summarised
+     (count + most recent) since they are high-frequency, with the full set living in the JSON. */
+  if (s.habits?.items?.length) {
+    p(`## Habits`); p('');
+    s.habits.items.forEach(h => {
+      const meta = [h.domain || null, h.aim != null ? `aim ~${h.aim}/wk` : null, h.active === false ? 'archived' : null].filter(Boolean).join(', ');
+      const done = (h.done || []).slice().sort().reverse();
+      p(`- **${h.name || '(unnamed)'}**${meta ? ` (${meta})` : ''} — kept ${done.length} day${done.length === 1 ? '' : 's'} total${h.created ? `, since ${h.created}` : ''}`);
+      if (done.length) p(`  - recent: ${done.slice(0, 10).join(', ')}${done.length > 10 ? ` … (+${done.length - 10} more)` : ''}`);
     });
     p('');
   }
@@ -5132,6 +5185,7 @@ function renderReflectCloser() {
 function renderReflect() {
   renderWeeklyReview();
   renderDecisionsReview();
+  renderHabits();
   renderLongView();
   renderReflectToday();
   renderReflectPatterns();
@@ -5200,7 +5254,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); renderDecisionCapture(); renderTodayEvents(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); renderHabitsToday(); renderDecisionCapture(); renderTodayEvents(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -5643,6 +5697,160 @@ function deleteDecision(id) {
   renderDecisionsReview();
   if (document.getElementById('decCount')) renderDecisionCapture();
 }
+
+/* =============================================================
+   HABITS — recurring intentions (v11). Store the raw DATES kept
+   (done[]); coverage is DERIVED on read, never a streak. Marking
+   lives on Today; the coverage picture lives in Reflect. `aim` is
+   an optional soft times/week — shown as context, never pass/fail.
+   ============================================================= */
+function habitItems() { return (state.habits && state.habits.items) || []; }
+function activeHabits() { return habitItems().filter(h => h.active !== false); }
+function habitDone(h) { if (!Array.isArray(h.done)) h.done = []; return h.done; }
+// The day this habit's record effectively begins — the earlier of its creation date and the
+// earliest day marked (so a backfilled mark before "created" still counts toward coverage).
+function habitStart(h) {
+  let start = (h.created || '').slice(0, 10) || '';
+  for (const d of habitDone(h)) { if (!start || d < start) start = d; }
+  return start;
+}
+function habitCoverage(h, days) {
+  const s = new Set(habitDone(h)), start = habitStart(h);
+  let num = 0, den = 0;
+  for (let i = 0; i < days; i++) {
+    const d = shiftDate(todayStr(), -i);
+    if (start && d < start) continue;           // don't count days before the habit existed
+    den++; if (s.has(d)) num++;
+  }
+  return { num, den };
+}
+function habitWeekCount(h) { const s = new Set(habitDone(h)); return lastNDays(7).filter(d => s.has(d)).length; }
+function habitDotStrip(h, days) {
+  const s = new Set(habitDone(h)), start = habitStart(h), cells = [];
+  for (let i = days - 1; i >= 0; i--) {          // oldest -> newest
+    const d = shiftDate(todayStr(), -i);
+    let cls = 'hd';
+    if (start && d < start) cls += ' pre';
+    else if (s.has(d)) cls += ' on';
+    cells.push(`<span class="${cls}" title="${d}"></span>`);
+  }
+  return `<span class="habit-dots" style="${h.domain ? `--c:var(--cat-${h.domain})` : ''}">${cells.join('')}</span>`;
+}
+function toggleHabit(id, date) {
+  const h = habitItems().find(x => x.id === id); if (!h) return;
+  const done = habitDone(h), i = done.indexOf(date);
+  if (i >= 0) done.splice(i, 1); else done.push(date);   // raw did/didn't for that day; no streak logic
+  saveState();
+  renderHabitsToday();
+  if (document.getElementById('habitsReview')) renderHabits();
+}
+function renderHabitsToday() {
+  const host = document.getElementById('habitsToday'); if (!host) return;
+  const date = qtLogDate, list = activeHabits();
+  if (!list.length) {
+    host.innerHTML = `<span class="tiny" style="color:var(--dim)">No habits yet — add one you're cultivating with ＋ Habit.</span>`;
+    return;
+  }
+  host.innerHTML = list.map(h => {
+    const on = habitDone(h).includes(date);
+    return `<button class="habit-chip ${on ? 'on' : ''}" style="${h.domain ? `--c:var(--cat-${h.domain})` : ''}" data-habit="${h.id}" aria-pressed="${on}">
+      <span class="hc-mark">${on ? '✓' : '○'}</span>${escapeHtml(h.name)}</button>`;
+  }).join('');
+  host.querySelectorAll('[data-habit]').forEach(b => b.onclick = () => toggleHabit(b.dataset.habit, qtLogDate));
+}
+function openHabitEdit(id) {
+  const h = id ? habitItems().find(x => x.id === id) : null;
+  const fields = [
+    { key: 'name', label: 'Habit', type: 'text' },
+    { key: 'domain', label: 'Area (optional)', type: 'select', options: [
+      { value: '', label: '—' }, ...DEC_DOMAINS.map(d => ({ value: d, label: catMeta(d).label })) ] },
+    { key: 'aim', label: 'Soft weekly aim (optional — times/week, just context)', type: 'number', min: 1, step: 1 },
+  ];
+  if (h) fields.push({ key: 'active', label: 'Status', type: 'select', options: [
+    { value: 'active', label: 'Active' }, { value: 'archived', label: 'Archived (kept, hidden from Today)' } ] });
+  const values = h
+    ? { name: h.name, domain: h.domain || '', aim: h.aim ?? '', active: h.active === false ? 'archived' : 'active' }
+    : { name: '', domain: '', aim: '' };
+  openEditModal(h ? 'Edit habit' : 'New habit', '', fields, values, (v) => {
+    const name = (v.name || '').trim(); if (!name) return;
+    const aim = (v.aim === '' || v.aim == null) ? null : Number(v.aim);
+    if (h) { h.name = name; h.domain = v.domain || ''; h.aim = aim; h.active = v.active !== 'archived'; }
+    else {
+      state.habits = state.habits || { items: [] };
+      state.habits.items.push({ id: uid(), name, domain: v.domain || '', aim, active: true, created: todayStr(), done: [] });
+    }
+    saveState(); renderHabitsToday();
+    if (document.getElementById('habitsReview')) renderHabits();
+  });
+}
+function renderHabitManage() {
+  const box = document.getElementById('habitManageList'); if (!box) return;
+  const list = habitItems();
+  if (!list.length) { box.innerHTML = `<div class="sub">No habits yet.</div>`; return; }
+  box.innerHTML = list.map(h => {
+    const cov = habitCoverage(h, 30);
+    return `<div class="row" style="justify-content:space-between;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--line)">
+      <div><strong>${escapeHtml(h.name)}</strong>${h.active === false ? ' <span class="tiny" style="color:var(--dim)">(archived)</span>' : ''}
+        <div class="tiny" style="color:var(--dim)">kept ${cov.num} of last ${cov.den} days</div></div>
+      <div style="display:flex;gap:6px;flex-shrink:0">
+        <button class="ghost" data-hedit="${h.id}">Edit</button>
+        <button class="ghost" data-harch="${h.id}">${h.active === false ? 'Unarchive' : 'Archive'}</button>
+        <button class="ghost" data-hdel="${h.id}" title="Delete" aria-label="Delete habit">✕</button></div></div>`;
+  }).join('');
+  box.querySelectorAll('[data-hedit]').forEach(b => b.onclick = () => openHabitEdit(b.dataset.hedit));
+  box.querySelectorAll('[data-harch]').forEach(b => b.onclick = () => {
+    const h = habitItems().find(x => x.id === b.dataset.harch);
+    if (h) { h.active = (h.active === false); saveState(); renderHabitManage(); renderHabitsToday(); if (document.getElementById('habitsReview')) renderHabits(); }
+  });
+  box.querySelectorAll('[data-hdel]').forEach(b => b.onclick = () => deleteHabit(b.dataset.hdel));
+}
+function openHabitManage() {
+  modalBox.innerHTML = `<h3>Manage habits</h3>
+    <div class="sub">Edit, archive (keeps the history, hides it from Today), or delete. Coverage is the last 30 days.</div>
+    <div id="habitManageList" style="margin:10px 0"></div>
+    <div class="actions"><button class="primary" id="habitManageAdd">＋ New habit</button><button class="ghost" id="habitManageClose">Close</button></div>`;
+  overlay.classList.add('open');
+  renderHabitManage();
+  document.getElementById('habitManageAdd').onclick = () => openHabitEdit(null);
+  document.getElementById('habitManageClose').onclick = closeModal;
+}
+function deleteHabit(id) {
+  const h = habitItems().find(x => x.id === id); if (!h) return;
+  if (!confirm(`Delete the habit “${h.name}” and its history? A snapshot is kept so you can undo via Snapshots.`)) return;
+  takeSnapshot('before delete habit');
+  state.habits.items = habitItems().filter(x => x.id !== id);
+  saveState(); renderHabitsToday();
+  if (document.getElementById('habitManageList')) renderHabitManage();
+  if (document.getElementById('habitsReview')) renderHabits();
+}
+function renderHabits() {
+  const host = document.getElementById('habitsReview'); if (!host) return;
+  const status = document.getElementById('habitsStatus');
+  const all = habitItems(), active = activeHabits(), archivedN = all.length - active.length;
+  if (!all.length) {
+    if (status) status.textContent = '';
+    host.innerHTML = `<div class="p" style="color:var(--dim)">Habits you add on the Today page appear here as a coverage picture — the days you kept them over the last month, no streaks.</div>`;
+    return;
+  }
+  if (status) status.textContent = `${active.length} active${archivedN ? ` · ${archivedN} archived` : ''}`;
+  if (!active.length) {
+    host.innerHTML = `<div class="p" style="color:var(--dim)">All your habits are archived — add or unarchive one on the Today page.</div>`;
+    return;
+  }
+  host.innerHTML = active.map(h => {
+    const cov = habitCoverage(h, 30);
+    const tag = h.domain ? `<span class="dec-tag" style="--c:var(--cat-${h.domain})">${escapeHtml(catMeta(h.domain).label)}</span>` : '';
+    const aim = (h.aim != null) ? ` · ${habitWeekCount(h)} of ~${h.aim} this week` : '';
+    return `<div class="insight" style="margin-top:10px">
+      <div class="row" style="justify-content:space-between;align-items:baseline;gap:8px">
+        <div><strong>${escapeHtml(h.name)}</strong> ${tag}</div></div>
+      <div style="margin:7px 0">${habitDotStrip(h, 30)}</div>
+      <div class="tiny" style="color:var(--dim)">kept ${cov.num} of last ${cov.den} day${cov.den === 1 ? '' : 's'}${aim}</div>
+    </div>`;
+  }).join('');
+}
+document.getElementById('habitAdd').onclick = () => openHabitEdit(null);
+document.getElementById('habitManage').onclick = openHabitManage;
 
 /* =============================================================
    WEEKLY REVIEW — derived from the last 7 days of Daily Cards.
