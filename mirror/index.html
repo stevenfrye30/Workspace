@@ -764,8 +764,7 @@
   .health-summary button.hs-cell:focus-visible { outline: 2px solid var(--cat-health); outline-offset: 1px; }
 
   /* two-column workbench */
-  .wb { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 16px; align-items: start; margin-bottom: 16px; }
-  @media (max-width: 900px) { .wb { grid-template-columns: minmax(0,1fr); } }
+  .wb { display: grid; grid-template-columns: minmax(0,1fr); gap: 16px; align-items: start; margin-bottom: 16px; }
   .wb-main, .wb-rail { min-width: 0; }
   .wb-card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 14px 16px; min-width: 0; }
   .wb-card + .wb-card { margin-top: 12px; }
@@ -967,7 +966,21 @@
   .fh-row #foodSearch { border: 0; background: transparent; font-size: 1.05rem; padding: 10px 4px; flex: 1; min-width: 0; }
   .fh-row #foodSearch:focus { outline: none; }
   .fh-meals { flex-shrink: 0; border-color: var(--h-line); color: var(--cat-health); background: var(--panel); }
-  .fh-add { margin-top: 10px; align-items: flex-end; }
+  /* entry row: [Meals] left · portion×count center · [Add] right */
+  .fh-add { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .fh-add .fh-qty { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+  .fh-add .fh-qty select { max-width: 190px; padding: 8px 6px; }
+  .fh-add .fh-qty #foodCount, .fh-add .fh-qty #foodUnitGrams { width: 64px; padding: 8px 6px; text-align: center; }
+  .fh-add .fh-x { color: var(--dim); }
+  .fh-add .fh-eq { color: var(--dim); font-size: 0.82rem; white-space: nowrap; }
+  .fh-add #foodAdd { flex-shrink: 0; }
+  .fh-add .fh-meals { margin-right: auto; }
+  .search-results .r-add { color: var(--cat-health); font-weight: 600; }
+  @media (max-width: 560px) {
+    .fh-add { flex-wrap: wrap; }
+    .fh-add .fh-qty { order: 3; width: 100%; justify-content: flex-start; }
+    .fh-add #foodAdd { margin-left: auto; }
+  }
   /* --- Day nutrition totals, now sitting with the food log --- */
   .food-totals { background: var(--h-soft); border: 1px solid var(--h-line); border-radius: 10px;
                  padding: 10px 12px; margin-bottom: 12px; }
@@ -1150,6 +1163,40 @@
       <div style="margin-top:12px"><button class="primary" id="bcSave">Save body check-in</button></div>
     </div>
     <div id="bodyCheckinHistory" style="margin-top:16px"></div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Movement</h2><span class="act tiny">Today</span></div>
+    <div class="card">
+      <div class="form">
+        <label>Type<input type="text" id="exType" placeholder="walk, run, yoga, lift"></label>
+        <label>Time<input type="time" id="exTime"></label>
+        <label>Minutes<input type="number" id="exMinutes" min="1" step="1"></label>
+      </div>
+      <div class="form">
+        <label>Distance<input type="number" id="exDistance" min="0" step="0.1" placeholder="mi"></label>
+        <label>Intensity<select id="exIntensity">
+          <option value="">—</option><option value="easy">easy</option><option value="moderate">moderate</option><option value="hard">hard</option>
+        </select></label>
+      </div>
+      <div class="form">
+        <input type="text" id="exNote" class="grow" placeholder="location / how it felt (optional)">
+        <button class="primary" id="exAdd">Add movement</button>
+      </div>
+      <div id="exLog"></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Sleep</h2><span class="act tiny">Last night</span></div>
+    <div class="card">
+      <div class="form">
+        <label>Hours<input type="number" id="sleepHours" min="0" max="24" step="0.25"></label>
+        <label>Quality (1–5)<input type="number" id="sleepQuality" min="1" max="5" step="1"></label>
+        <button class="primary" id="sleepAdd">Add sleep</button>
+      </div>
+      <div id="sleepLog"></div>
+    </div>
   </div>
 
   <div class="section">
@@ -1470,19 +1517,23 @@
         <div class="food-hero" id="quickAdd">
           <div class="fh-row">
             <span class="fh-icon" aria-hidden="true">🔍</span>
-            <input type="text" id="foodSearch" placeholder="Search foods…" class="grow" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="foodResults">
-            <button class="mini-btn fh-meals" id="openMealBuilder" title="Choose, build, or save a meal">🍽 Meals</button>
+            <input type="text" id="foodSearch" placeholder="Search a food…" class="grow" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="foodResults">
           </div>
           <div id="foodResults" class="search-results" role="listbox" style="display:none"></div>
           <div id="foodSelected" class="tiny" style="color:var(--dim)"></div>
-          <div class="form fh-add">
-            <div id="foodPortions" class="chip-row" style="display:none"></div>
-            <label>Grams<input type="number" id="foodGrams" min="1" step="1" placeholder="100"></label>
+          <div class="fh-add">
+            <button class="mini-btn fh-meals" id="openMealBuilder" title="Choose, build, or save a meal">🍽 Meals</button>
+            <div class="fh-qty" id="fhQty" style="display:none">
+              <select id="foodPortionSel" aria-label="Portion"></select>
+              <span class="fh-x" aria-hidden="true">×</span>
+              <input type="number" id="foodCount" min="0.25" step="0.25" value="1" aria-label="How many" inputmode="decimal">
+              <input type="number" id="foodUnitGrams" min="1" step="1" placeholder="grams" aria-label="Grams each" inputmode="numeric" style="display:none">
+              <span class="fh-eq" id="fhGramsOut"></span>
+            </div>
             <button class="primary" id="foodAdd" disabled>Add</button>
-            <button class="mini-btn" id="openCustomFood" title="Create a custom food">＋ Custom food</button>
           </div>
+          <input type="hidden" id="foodGrams">
           <div id="entryPreview" class="entry-preview" style="display:none"></div>
-          <div class="qa-hint tiny">↑↓ select · Enter to log</div>
         </div>
 
         <!-- Day's nutrition totals now sit WITH the log -->
@@ -1506,6 +1557,20 @@
         <div class="hsub">
           <div class="wb-sub" id="foodLogDate"></div>
           <div class="food-stream" id="foodLog"></div>
+        </div>
+      </div>
+
+      <div class="wb-card">
+        <div class="wb-hd"><h2>Water <span class="rail-val" id="railWaterVal"></span></h2></div>
+        <div class="care-card" style="--ac:var(--h-water)">
+          <div class="care-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
+          <div class="care-actions">
+            <button class="chip" data-hydr="2">+2 oz</button>
+            <button class="chip" data-hydr="8">+8 oz</button>
+          </div>
+          <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-top:6px"></div>
+          <span class="act tiny" id="hydrTotal" style="display:none"></span>
+          <div id="waterLog"></div>
         </div>
       </div>
 
@@ -1542,66 +1607,6 @@
       </div>
     </div>
 
-    <!-- DAILY CARE RAIL — three coordinated mini-cards -->
-    <div class="wb-rail">
-      <div class="wb-card">
-        <div class="wb-hd"><h2>Daily care</h2></div>
-
-        <div class="care-card" style="--ac:var(--h-water)">
-          <div class="care-hd"><span class="care-name"><span class="cd"></span>Water</span>
-            <span class="rail-val" id="railWaterVal"></span></div>
-          <div class="care-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
-          <div class="care-actions">
-            <button class="chip" data-hydr="2">+2 oz</button>
-            <button class="chip" data-hydr="8">+8 oz</button>
-          </div>
-          <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-top:6px"></div>
-          <span class="act tiny" id="hydrTotal" style="display:none"></span>
-          <div id="waterLog"></div>
-        </div>
-
-        <div class="care-card" style="--ac:var(--h-move)">
-          <div class="care-hd"><span class="care-name"><span class="cd"></span>Movement</span></div>
-          <div class="care-val" id="railMoveVal"></div>
-          <div class="care-actions"><button class="care-act" id="moveToggle" aria-expanded="false" aria-controls="moveDetail">Log movement</button></div>
-          <div class="care-detail" id="moveDetail" hidden>
-            <div class="form" style="margin-top:8px">
-              <label>Type<input type="text" id="exType" placeholder="walk, run, yoga, lift"></label>
-              <label>Time<input type="time" id="exTime"></label>
-              <label>Minutes<input type="number" id="exMinutes" min="1" step="1"></label>
-            </div>
-            <div class="form">
-              <label>Distance<input type="number" id="exDistance" min="0" step="0.1" placeholder="mi"></label>
-              <label>Intensity<select id="exIntensity">
-                <option value="">—</option>
-                <option value="easy">easy</option>
-                <option value="moderate">moderate</option>
-                <option value="hard">hard</option>
-              </select></label>
-            </div>
-            <div class="form">
-              <input type="text" id="exNote" class="grow" placeholder="location / how it felt (optional)">
-              <button class="primary" id="exAdd">Add</button>
-            </div>
-            <div id="exLog"></div>
-          </div>
-        </div>
-
-        <div class="care-card" style="--ac:var(--h-sleep)">
-          <div class="care-hd"><span class="care-name"><span class="cd"></span>Sleep</span></div>
-          <div class="care-val" id="railSleepVal"></div>
-          <div class="care-actions"><button class="care-act" id="sleepToggle" aria-expanded="false" aria-controls="sleepDetail">Log sleep</button></div>
-          <div class="care-detail" id="sleepDetail" hidden>
-            <div class="form" style="margin-top:8px">
-              <label>Hours<input type="number" id="sleepHours" min="0" max="24" step="0.25"></label>
-              <label>Quality (1–5)<input type="number" id="sleepQuality" min="1" max="5" step="1"></label>
-              <button class="primary" id="sleepAdd">Add</button>
-            </div>
-            <div id="sleepLog"></div>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- ("Your day" running log now lives in the Today view, aggregating every kind of entry) -->
@@ -2328,7 +2333,7 @@ function runViewRender(name){
   else if (name === 'today') { renderTodayTab(); gcalEnsureTodayMonth(); }
   else if (name === 'calendar') { renderCalendarView(); gcalEnsureMonth(); }
   else if (name === 'reflect') renderReflect();
-  else if (name === 'body') { renderBodyCheckin(); simpleLog('symptoms','symLog', r => escapeHtml(r.note)); }
+  else if (name === 'body') { renderBodyCheckin(); renderBodyMeasures(); simpleLog('symptoms','symLog', r => escapeHtml(r.note)); }
   else if (name === 'health') { renderHydration(); }
   if (['body','mind','health','relationships','money','identity'].includes(name)) renderCompletionBars();
 }
@@ -3006,6 +3011,34 @@ function rankedFoods(q, limit = 40) {
   scored.sort((a, b) => a[0] - b[0]);
   return scored.slice(0, limit).map(x => x[1]);
 }
+// Populate the portion dropdown from a food's portions (+ a custom-grams option). The user
+// picks a portion and a count; total grams = portionGrams x count is computed into #foodGrams.
+function renderPortionSelect(f) {
+  const sel = document.getElementById('foodPortionSel'); if (!sel) return;
+  const portions = (f.portions || []);
+  sel.innerHTML = portions.map(p => `<option value="${p.grams}">${escapeHtml(p.label)} · ${p.grams} g</option>`).join('')
+    + `<option value="custom">grams…</option>`;
+  sel.value = portions.length ? String(portions[0].grams) : 'custom';
+  toggleUnitGrams();
+}
+function toggleUnitGrams() {
+  const sel = document.getElementById('foodPortionSel');
+  const ug = document.getElementById('foodUnitGrams');
+  const custom = sel.value === 'custom';
+  ug.style.display = custom ? '' : 'none';
+  if (custom && !ug.value) ug.value = 100;
+  syncFoodGrams();
+}
+function syncFoodGrams() {
+  const sel = document.getElementById('foodPortionSel');
+  const count = Number(document.getElementById('foodCount').value) || 0;
+  const unit = sel.value === 'custom' ? (Number(document.getElementById('foodUnitGrams').value) || 0) : Number(sel.value);
+  const total = Math.round(unit * count * 100) / 100;
+  document.getElementById('foodGrams').value = total || '';
+  const out = document.getElementById('fhGramsOut');
+  if (out) out.textContent = total ? `= ${total} g` : '';
+  renderEntryPreview();
+}
 function selectFood(f) {
   selectedFood = f; selectedMealForLog = null;
   document.getElementById('foodSearch').value = f.name;
@@ -3015,12 +3048,10 @@ function selectFood(f) {
   const se = document.getElementById('foodSearch');
   se.setAttribute('aria-expanded', 'false'); se.removeAttribute('aria-activedescendant');
   const add = document.getElementById('foodAdd'); add.disabled = false; add.textContent = 'Add';
-  document.getElementById('foodGrams').disabled = false;
-  renderPortions(f);
-  const gEl = document.getElementById('foodGrams');
-  if (!gEl.value) gEl.value = (f.portions && f.portions[0] && f.portions[0].grams) || 100;
-  renderEntryPreview();
-  gEl.focus(); gEl.select();
+  const fq = document.getElementById('fhQty'); if (fq) fq.style.display = '';
+  document.getElementById('foodCount').value = 1;
+  renderPortionSelect(f);                       // sets portion, computes grams, renders preview
+  const cnt = document.getElementById('foodCount'); cnt.focus(); cnt.select();
 }
 function renderFoodResults(q) {
   const box = document.getElementById('foodResults');
@@ -3035,14 +3066,15 @@ function renderFoodResults(q) {
   const rows = meals.concat(foods);
   foodResultRows = rows; foodHi = rows.length ? 0 : -1;
   if (!rows.length) {
-    // Distinguish "nothing matched" from "there's no library to match against" (self-hosted
-    // copy with no foods.json) — the latter is not an error, just points to custom foods.
     const noLibrary = !foodsIndex.list || foodsIndex.list.length === 0;
-    box.innerHTML = noLibrary
-      ? '<div class="r tiny">No food library loaded — add your own in “Your foods” below, or add the optional food library (see README).</div>'
-      : '<div class="r tiny">no matches</div>';
+    box.innerHTML = (noLibrary
+      ? '<div class="r tiny">No food library loaded — you can still add your own below.</div>'
+      : '<div class="r tiny">No matches.</div>')
+      + `<div class="r r-add" data-addfood="1" role="option"><span>➕ Add “${escapeHtml(q)}” as a food<div class="c">a brand, snack, or restaurant item — saved for next time</div></span></div>`;
     box.style.display = 'block';
-    search.setAttribute('aria-expanded', 'true'); search.removeAttribute('aria-activedescendant'); return;
+    search.setAttribute('aria-expanded', 'true'); search.removeAttribute('aria-activedescendant');
+    const a = box.querySelector('[data-addfood]'); if (a) a.onclick = () => openQuickAdd(q);
+    return;
   }
   const custom = new Set((state.body.customFoods || []).map(c => c.id));
   const recent = recentFoodIdSet(40);
@@ -3059,10 +3091,12 @@ function renderFoodResults(q) {
               : '<span class="rtag">food</span>';
     const kc = f.n && f.n.kcal != null ? ` · ${Math.round(f.n.kcal)} kcal/100g` : '';
     return `<div class="r${act}" id="foodopt-${i}" role="option" aria-selected="${i === foodHi}" data-idx="${i}"><span>${escapeHtml(f.name)}<div class="c">${escapeHtml(f.category)}${kc}</div></span>${tag}</div>`;
-  }).join('');
+  }).join('')
+    + `<div class="r r-add" data-addfood="1" role="option"><span>➕ Add “${escapeHtml(q)}” as a new food</span></div>`;
   box.style.display = 'block'; search.setAttribute('aria-expanded', 'true');
   if (foodHi >= 0) search.setAttribute('aria-activedescendant', 'foodopt-' + foodHi);
   box.querySelectorAll('.r[data-idx]').forEach(r => r.onclick = () => chooseResult(Number(r.dataset.idx)));
+  const a = box.querySelector('[data-addfood]'); if (a) a.onclick = () => openQuickAdd(q);
 }
 // Select the Nth combined result — a food (into grams+preview) or a saved meal (into meal preview).
 function chooseResult(i) {
@@ -3125,15 +3159,46 @@ function renderEntryPreview() {
 function clearFoodEntry() {
   selectedFood = null; selectedMealForLog = null;
   document.getElementById('foodSearch').value = '';
-  const gEl = document.getElementById('foodGrams'); gEl.value = ''; gEl.disabled = false;
+  document.getElementById('foodGrams').value = '';
+  const fq = document.getElementById('fhQty'); if (fq) fq.style.display = 'none';
+  const cnt = document.getElementById('foodCount'); if (cnt) cnt.value = 1;
+  const ug = document.getElementById('foodUnitGrams'); if (ug) { ug.value = ''; ug.style.display = 'none'; }
+  const out = document.getElementById('fhGramsOut'); if (out) out.textContent = '';
   document.getElementById('foodSelected').textContent = '';
-  document.getElementById('foodPortions').style.display = 'none';
   document.getElementById('foodResults').style.display = 'none';
   foodResultRows = []; foodHi = -1;
   const se = document.getElementById('foodSearch');
   se.setAttribute('aria-expanded', 'false'); se.removeAttribute('aria-activedescendant');
   const add = document.getElementById('foodAdd'); add.disabled = true; add.textContent = 'Add';
   renderEntryPreview();
+}
+// Add-your-own: anything not in the library (a brand, snack, restaurant meal). Enter what ONE
+// serving has; stored as a reusable custom food (serving == 100 g nominal, so the per-100g
+// values equal the serving values) and logged immediately as "1 serving".
+function openQuickAdd(query) {
+  const fields = [
+    { key: 'name', label: 'Food name', type: 'text' },
+    { key: 'kcal', label: 'Calories (one serving)', type: 'number', min: 0, step: 1 },
+    { key: 'protein', label: 'Protein g (optional)', type: 'number', min: 0, step: 1 },
+    { key: 'carbs', label: 'Carbs g (optional)', type: 'number', min: 0, step: 1 },
+    { key: 'fat', label: 'Fat g (optional)', type: 'number', min: 0, step: 1 },
+  ];
+  openEditModal('Add a food', 'For anything not in the library — a brand, a snack, a restaurant meal. Enter what one serving has; it saves so next time it is one tap.',
+    fields, { name: (query || '').trim(), kcal: '', protein: '', carbs: '', fat: '' }, (v) => {
+      const name = (v.name || '').trim(); if (!name) return;
+      const num = x => (x === '' || x == null) ? 0 : Number(x);
+      const n = { kcal: num(v.kcal), protein_g: num(v.protein), carbs_g: num(v.carbs), fat_g: num(v.fat), fiber_g: 0 };
+      const food = { id: Date.now(), name, category: 'your foods', source: 'quick', portions: [{ label: '1 serving', grams: 100 }], n };
+      state.body.customFoods = state.body.customFoods || [];
+      state.body.customFoods.push(food);
+      indexCustomFoods();
+      _lastLogId = uid();
+      state.body.food.push({ id: _lastLogId, date: healthDate(), foodId: food.id, foodName: name, category: 'your foods', grams: 100, qty: 1, portionLabel: '1 serving', n: { ...n } });
+      saveState();
+      clearFoodEntry();
+      refreshFoodUI();
+      flashFoodStatus(`added & logged ${name}`);
+    });
 }
 // One shared refresh: a food change re-renders the whole coordinated Health workspace.
 function refreshFoodUI() { refreshHealthWorkspace(); }
@@ -3228,8 +3293,7 @@ document.getElementById('foodSearch').addEventListener('input', e => {
   selectedFood = null; selectedMealForLog = null;
   document.getElementById('foodSelected').textContent = '';
   const add = document.getElementById('foodAdd'); add.disabled = true; add.textContent = 'Add';
-  document.getElementById('foodGrams').disabled = false;
-  document.getElementById('foodPortions').style.display = 'none';
+  const fq = document.getElementById('fhQty'); if (fq) fq.style.display = 'none';   // typing clears any selection
   renderEntryPreview();
   renderFoodResults(e.target.value);
 });
@@ -3241,10 +3305,12 @@ document.getElementById('foodSearch').addEventListener('keydown', e => {
   else if (e.key === 'Enter') { if (open && foodHi >= 0) { e.preventDefault(); chooseResult(foodHi); } }
   else if (e.key === 'Escape') { box.style.display = 'none'; if (!selectedFood && !selectedMealForLog) clearFoodEntry(); }
 });
-document.getElementById('foodGrams').addEventListener('input', renderEntryPreview);
-document.getElementById('foodGrams').addEventListener('keydown', e => {
+document.getElementById('foodPortionSel').addEventListener('change', toggleUnitGrams);
+document.getElementById('foodCount').addEventListener('input', syncFoodGrams);
+document.getElementById('foodUnitGrams').addEventListener('input', syncFoodGrams);
+['foodCount','foodUnitGrams'].forEach(id => document.getElementById(id).addEventListener('keydown', e => {
   if (e.key === 'Enter') { e.preventDefault(); document.getElementById('foodAdd').click(); }
-});
+}));
 // The Add button logs either the selected food (with grams) or the selected saved meal.
 document.getElementById('foodAdd').onclick = () => {
   if (selectedMealForLog) {
@@ -3256,17 +3322,22 @@ document.getElementById('foodAdd').onclick = () => {
   }
   if (!selectedFood) return;
   const grams = Number(document.getElementById('foodGrams').value);
-  if (!(grams > 0)) { flashFoodStatus('enter a gram amount above 0'); return; }
+  if (!(grams > 0)) { flashFoodStatus('choose a portion or amount'); return; }
   const name = selectedFood.name;
+  const sel = document.getElementById('foodPortionSel');
+  const count = Number(document.getElementById('foodCount').value) || 1;
+  const portionLabel = sel.value === 'custom' ? '' : String(sel.options[sel.selectedIndex].text).split(' · ')[0];
   _lastLogId = uid();
-  state.body.food.push({
+  const entry = {
     id: _lastLogId, date: healthDate(), foodId: selectedFood.id, foodName: selectedFood.name,
     category: selectedFood.category, grams, n: snapshotNutrients(selectedFood)
-  });
+  };
+  if (portionLabel) { entry.qty = count; entry.portionLabel = portionLabel; }   // for "2 × 1 large egg" display
+  state.body.food.push(entry);
   saveState();
   clearFoodEntry();
   refreshFoodUI();
-  flashFoodStatus(`logged ${name} · ${grams} g`);
+  flashFoodStatus(portionLabel ? `logged ${count} × ${portionLabel} ${name}` : `logged ${name} · ${grams} g`);
   document.getElementById('foodSearch').focus();
 };
 
@@ -3517,7 +3588,7 @@ function renderFoodLog() {
     return `<div class="fs-row${flash}">
       <span class="fs-time">${escapeHtml(time)}</span>
       <span class="fs-name">${foodEmoji(r)} ${escapeHtml(r.foodName)}${meal}</span>
-      <span class="fs-g">${r.grams} g</span>
+      <span class="fs-g">${escapeHtml(foodAmt(r))}</span>
       <span class="fs-kcal">${kcal == null ? '—' : kcal + ' kcal'}</span>
       <span class="fs-menu-wrap"><button class="fs-menu-btn" data-fmenu="${r.id}" aria-haspopup="true" aria-expanded="false" aria-label="Actions for ${escapeHtml(r.foodName)}">⋯</button>
         <div class="fs-menu" id="fsmenu-${r.id}" hidden role="menu">
@@ -3597,9 +3668,6 @@ function refreshHealthWorkspace(){
   renderFoodLog();
   renderFoodTotals();          // day totals now sit with the log (was the Nutrition Overview tab)
   renderHydration();
-  // rail history is scoped to the selected date (agrees with summary, feed and food log)
-  simpleLog('sleep', 'sleepLog', r => `${r.hours}h · quality ${r.quality || '–'}`, healthDate());
-  simpleLog('exercise', 'exLog', exSummary, healthDate());
   renderNutritionActive();
   renderMeals(); renderCustomFoods();
   _lastLogId = null;   // consume the one-shot "just added" highlight after a full render pass
@@ -3719,9 +3787,8 @@ function selectMeal(m){
   const box = document.getElementById('foodResults'); box.style.display = 'none';
   foodResultRows = []; foodHi = -1;
   const se = document.getElementById('foodSearch'); se.setAttribute('aria-expanded', 'false'); se.removeAttribute('aria-activedescendant');
-  document.getElementById('foodPortions').style.display = 'none';
+  const fq = document.getElementById('fhQty'); if (fq) fq.style.display = 'none';   // meals log as one unit — no portion/count
   const add = document.getElementById('foodAdd'); add.disabled = false; add.textContent = 'Log meal';
-  document.getElementById('foodGrams').disabled = true;
   renderEntryPreview();
 }
 
@@ -4078,14 +4145,19 @@ document.querySelectorAll('[data-hydr]').forEach(b => b.onclick = () => logWater
 document.getElementById('sleepAdd').onclick = () => {
   const hours = Number(document.getElementById('sleepHours').value);
   const quality = Number(document.getElementById('sleepQuality').value);
-  const date = healthDate();
+  const date = todayStr();                    // Sleep lives in Body now — logs to today
   if (!hours) return;
   _lastLogId = uid();
   state.body.sleep.push({ id: _lastLogId, date, hours, quality });
   saveState();
   document.getElementById('sleepHours').value=''; document.getElementById('sleepQuality').value='';
-  refreshHealthWorkspace();
+  renderBodyMeasures(); refreshHealthWorkspace();
 };
+// Movement + Sleep logs live in the Body view now (retargeted to today).
+function renderBodyMeasures(){
+  simpleLog('exercise', 'exLog', exSummary, todayStr());
+  simpleLog('sleep', 'sleepLog', r => `${r.hours}h · quality ${r.quality || '–'}`, todayStr());
+}
 function exSummary(r){
   const lead = [];
   if (r.time) lead.push(escapeHtml(r.time));
@@ -4101,7 +4173,7 @@ function exSummary(r){
 document.getElementById('exAdd').onclick = () => {
   const type = document.getElementById('exType').value.trim();
   const minutes = Number(document.getElementById('exMinutes').value) || null;
-  const date = healthDate();
+  const date = todayStr();                     // Movement lives in Body now — logs to today
   const time = document.getElementById('exTime').value || '';
   const distance = Number(document.getElementById('exDistance').value) || null;
   const intensity = document.getElementById('exIntensity').value || '';
@@ -4112,7 +4184,7 @@ document.getElementById('exAdd').onclick = () => {
   saveState();
   ['exType','exMinutes','exTime','exDistance','exNote'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
   document.getElementById('exIntensity').value = '';
-  refreshHealthWorkspace();
+  renderBodyMeasures(); refreshHealthWorkspace();
 };
 document.getElementById('symAdd').onclick = () => {
   const note = document.getElementById('symNote').value.trim();
@@ -5877,6 +5949,8 @@ document.getElementById('habitManage').onclick = openHabitManage;
    food/water/move/sleep/notes/decisions/journal/pulse share one
    clock; day-level habit marks (no time) sort to the end.
    ============================================================= */
+// How much of a food an entry represents: "2 × 1 large egg" when logged by portion, else grams.
+function foodAmt(r) { return (r.qty && r.portionLabel) ? `${r.qty} × ${r.portionLabel}` : `${r.grams} g`; }
 function foodEmoji(f) {
   const s = ((f.foodName || '') + ' ' + (f.category || '')).toLowerCase();
   const map = [['coffee','☕'],['espresso','☕'],['latte','☕'],['tea','🍵'],['water','💧'],
@@ -5898,7 +5972,7 @@ function dayLogEvents(date) {
   (state.body.water || []).filter(w => w.date === date).forEach(w => push(w, '💧', `Water +${w.oz} oz`));
   (state.body.food || []).filter(f => f.date === date).forEach(f => {
     const nn = entryN(f), kcal = nn ? Math.round((nn.kcal || 0) * f.grams / 100) : null;
-    push(f, foodEmoji(f), `${escapeHtml(f.foodName || 'food')} · ${f.grams} g${kcal != null ? ` · ${kcal} kcal` : ''}${f.mealName ? ` <span class="meal-tag">${escapeHtml(f.mealName)}</span>` : ''}`);
+    push(f, foodEmoji(f), `${escapeHtml(f.foodName || 'food')} · ${escapeHtml(foodAmt(f))}${kcal != null ? ` · ${kcal} kcal` : ''}${f.mealName ? ` <span class="meal-tag">${escapeHtml(f.mealName)}</span>` : ''}`);
   });
   (state.body.exercise || []).filter(e => e.date === date).forEach(e => push(e, '🏃', escapeHtml(exSummary(e) || 'activity')));
   (state.body.sleep || []).filter(s => s.date === date).forEach(s => push(s, '😴', `Sleep ${s.hours} h · quality ${s.quality || '–'}/5`));
@@ -7118,13 +7192,10 @@ function setupHealthWorkbench(){
       if (j !== null) { e.preventDefault(); tabs[j].focus(); setNutritionTab(tabs[j].dataset.ntab); }
     });
   });
-  // quick-health rail toggles (water logs inline now; movement/sleep still expand)
-  document.getElementById('moveToggle').onclick = () => toggleRail('move');
-  document.getElementById('sleepToggle').onclick = () => toggleRail('sleep');
+  // (movement + sleep moved to the Body view; water logs inline in Health)
   // meal builder + custom food modals
   document.getElementById('openMealBuilder').onclick = () => openHealthModal('mealBuilderOverlay');
   document.getElementById('mealBuilderClose').onclick = () => closeHealthModal('mealBuilderOverlay');
-  document.getElementById('openCustomFood').onclick = () => openHealthModal('customFoodOverlay');
   document.getElementById('customFoodClose').onclick = () => closeHealthModal('customFoodOverlay');
   ['mealBuilderOverlay','customFoodOverlay'].forEach(id => {
     const ov = document.getElementById(id);
