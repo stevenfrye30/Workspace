@@ -669,6 +669,16 @@
                     color: var(--dim); margin: 0 0 7px; font-weight: 700; }
   .nut .dvbar { height: 4px; background: var(--panel2); border-radius: 2px; overflow: hidden; margin-top: 7px; }
   .nut .dvbar > span { display: block; height: 100%; background: var(--cat-health); }
+  /* "From these foods" — per-day contribution breakdown */
+  .food-breakdown { display: flex; flex-direction: column; }
+  .fb-row { display: grid; grid-template-columns: 1.5rem 1fr auto; grid-template-areas: "emoji name kcal" "emoji macros macros";
+            gap: 1px 8px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); }
+  .fb-row:last-child { border-bottom: 0; }
+  .fb-emoji { grid-area: emoji; font-size: 1rem; align-self: center; }
+  .fb-name { grid-area: name; font-size: 0.9rem; }
+  .fb-amt { color: var(--dim); font-size: 0.78rem; }
+  .fb-kcal { grid-area: kcal; font-weight: 600; font-size: 0.88rem; white-space: nowrap; }
+  .fb-macros { grid-area: macros; color: var(--dim); font-size: 0.76rem; }
   .nut .dvbar > span.over { background: var(--warn); }
   .nut .dv { font-size: 0.64rem; color: var(--dim); font-family: ui-monospace, monospace; margin-top: 3px; }
 
@@ -966,21 +976,32 @@
   .fh-row #foodSearch { border: 0; background: transparent; font-size: 1.05rem; padding: 10px 4px; flex: 1; min-width: 0; }
   .fh-row #foodSearch:focus { outline: none; }
   .fh-meals { flex-shrink: 0; border-color: var(--h-line); color: var(--cat-health); background: var(--panel); }
-  /* entry row: [Meals] left · portion×count center · [Add] right */
-  .fh-add { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
-  .fh-add .fh-qty { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
+  /* entry row: Meals + portion×count + Add, all centered under the search bar */
+  .fh-add { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .fh-add .fh-qty { display: flex; align-items: center; justify-content: center; gap: 6px; flex-wrap: wrap; }
   .fh-add .fh-qty select { max-width: 190px; padding: 8px 6px; }
   .fh-add .fh-qty #foodCount, .fh-add .fh-qty #foodUnitGrams { width: 64px; padding: 8px 6px; text-align: center; }
   .fh-add .fh-x { color: var(--dim); }
   .fh-add .fh-eq { color: var(--dim); font-size: 0.82rem; white-space: nowrap; }
-  .fh-add #foodAdd { flex-shrink: 0; }
-  .fh-add .fh-meals { margin-right: auto; }
   .search-results .r-add { color: var(--cat-health); font-weight: 600; }
-  @media (max-width: 560px) {
-    .fh-add { flex-wrap: wrap; }
-    .fh-add .fh-qty { order: 3; width: 100%; justify-content: flex-start; }
-    .fh-add #foodAdd { margin-left: auto; }
-  }
+  @media (max-width: 560px) { .fh-add .fh-qty { order: 3; width: 100%; } }
+  /* collapsible food log */
+  .fl-details { margin-top: 4px; }
+  .fl-summary { cursor: pointer; list-style: none; padding: 6px 0; display: flex; align-items: center; gap: 6px; }
+  .fl-summary::-webkit-details-marker { display: none; }
+  .fl-summary::before { content: "▸"; color: var(--dim); font-size: 0.8rem; transition: transform .15s; }
+  .fl-details[open] > .fl-summary::before { transform: rotate(90deg); }
+  /* compact water, attached under the food log */
+  .water-row { display: flex; align-items: center; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--h-line); }
+  .water-row .wr-name { font-size: 0.85rem; white-space: nowrap; }
+  .water-row .wr-bar { flex: 1; height: 8px; min-width: 40px; margin: 0; }
+  .water-row .wr-note { white-space: nowrap; }
+  .water-row .chip { cursor: pointer; background: var(--panel); flex-shrink: 0; }
+  .wlog-details { margin-top: 4px; }
+  .wlog-details .wlog-sum { cursor: pointer; color: var(--dim); list-style: none; padding: 2px 0; }
+  .wlog-details .wlog-sum::-webkit-details-marker { display: none; }
+  .wlog-details .wlog-sum::before { content: "＋ "; }
+  .wlog-details[open] .wlog-sum::before { content: "− "; }
   /* --- Day nutrition totals, now sitting with the food log --- */
   .food-totals { background: var(--h-soft); border: 1px solid var(--h-line); border-radius: 10px;
                  padding: 10px 12px; margin-bottom: 12px; }
@@ -1501,7 +1522,7 @@
   </div>
 
   <!-- ===== Health Today panel (derived areas-recorded + shortcuts) ===== -->
-  <div id="healthSummary"></div>
+  <!-- ("Health today" summary panel removed — the day's numbers live with the food log + Nutrition detail) -->
 
   <!-- ===== two-column workbench ===== -->
   <div class="wb">
@@ -1554,24 +1575,24 @@
           </div>
         </div>
 
-        <div class="hsub">
-          <div class="wb-sub" id="foodLogDate"></div>
+        <details class="fl-details" id="foodLogDetails" open>
+          <summary class="fl-summary"><span class="wb-sub" id="foodLogDate"></span></summary>
           <div class="food-stream" id="foodLog"></div>
-        </div>
-      </div>
+        </details>
 
-      <div class="wb-card">
-        <div class="wb-hd"><h2>Water <span class="rail-val" id="railWaterVal"></span></h2></div>
-        <div class="care-card" style="--ac:var(--h-water)">
-          <div class="care-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
-          <div class="care-actions">
-            <button class="chip" data-hydr="2">+2 oz</button>
-            <button class="chip" data-hydr="8">+8 oz</button>
-          </div>
-          <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-top:6px"></div>
+        <!-- compact water, attached to the food chunk -->
+        <div class="water-row">
+          <span class="wr-name">💧 Water</span>
+          <div class="care-bar wr-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
+          <span class="tiny wr-note" id="hydrTargetNote" style="color:var(--dim)"></span>
+          <button class="chip" data-hydr="2">+2</button>
+          <button class="chip" data-hydr="8">+8</button>
+        </div>
+        <details class="wlog-details" id="waterLogDetails">
+          <summary class="tiny wlog-sum">water entries</summary>
           <span class="act tiny" id="hydrTotal" style="display:none"></span>
           <div id="waterLog"></div>
-        </div>
+        </details>
       </div>
 
       <div class="wb-card">
@@ -4037,6 +4058,22 @@ function rangeCutoff(range) {
   if (range==='year') d.setFullYear(d.getFullYear()-1);
   return toLocalISO(d);
 }
+// The day's nutrition, broken down by the foods that produced it — sorted by calories.
+function foodBreakdownHtml(date) {
+  const entries = state.body.food.filter(r => r.date === date);
+  if (!entries.length) return '';
+  const rows = entries.map(e => {
+    const nn = entryN(e) || {}, f = e.grams / 100;
+    return { e, kcal: (nn.kcal || 0) * f, p: (nn.protein_g || 0) * f, c: (nn.carbs_g || 0) * f, ft: (nn.fat_g || 0) * f };
+  }).sort((a, b) => b.kcal - a.kcal);
+  const cells = rows.map(r => `<div class="fb-row">
+    <span class="fb-emoji">${foodEmoji(r.e)}</span>
+    <span class="fb-name">${escapeHtml(r.e.foodName)} <span class="fb-amt">${escapeHtml(foodAmt(r.e))}</span></span>
+    <span class="fb-kcal">${Math.round(r.kcal)} kcal</span>
+    <span class="fb-macros">${Math.round(r.p)}p · ${Math.round(r.c)}c · ${Math.round(r.ft)}f</span>
+  </div>`).join('');
+  return `<div class="nut-group fb-group"><h3>From these foods</h3><div class="food-breakdown">${cells}</div></div>`;
+}
 function renderNutrients() {
   const el = document.getElementById('nutrientSummary');
   if (!foodsIndex) { el.innerHTML='<div class="empty">Food library hasn\'t loaded yet.</div>'; return; }
@@ -4071,7 +4108,8 @@ function renderNutrients() {
       return `<div class="nut"><div class="k">${label}</div><div class="v">${disp}<span class="u">${unit}</span></div>${dvHtml}</div>`;
     }).join('');
     return `<div class="nut-group"><h3>${group}</h3><div class="nutrient-grid">${cells}</div></div>`;
-  }).join('');
+  }).join('')
+    + (currentRange === 'day' ? foodBreakdownHtml(cutoff) : '');   // "what foods it came from" (day view)
   const rangeLabel = { day:'today', week:'last 7 days', month:'last 30 days', year:'last 365 days' }[currentRange];
   document.getElementById('nutrientNote').textContent =
     `${entries.length} food entries · ${rangeLabel}` + (days > 1 ? ' · %DV = daily average' : '')
@@ -4127,7 +4165,7 @@ function renderHydration(){
   const bar = document.getElementById('hydrBar');
   if (bar) { const pct = T.water_oz ? Math.min(100, (total / T.water_oz) * 100) : 0; bar.style.width = pct + '%'; bar.classList.toggle('over', T.water_oz > 0 && total > T.water_oz); }
   const note = document.getElementById('hydrTargetNote');
-  if (note) note.textContent = T.water_oz ? `${total} of ${T.water_oz} oz daily target${total >= T.water_oz ? ' — reached' : ''}` : `${total} oz today`;
+  if (note) note.textContent = T.water_oz ? `${total} / ${T.water_oz} oz${total >= T.water_oz ? ' ✓' : ''}` : `${total} oz`;
   const el = document.getElementById('waterLog'); if (!el) return;
   const rows = (state.body.water || []).filter(w => w.date === date)
     .sort((a, b) => String(b._at || '').localeCompare(String(a._at || ''))).slice(0, 24);
