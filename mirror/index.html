@@ -294,6 +294,18 @@
   .habit-dots .hd { width: 9px; height: 9px; border-radius: 2px; background: var(--line); }
   .habit-dots .hd.on { background: var(--c, var(--accent2)); }
   .habit-dots .hd.pre { background: transparent; }
+  /* Your day — one timestamped, emoji-tagged running list of everything logged */
+  .day-log { display: flex; flex-direction: column; }
+  .dl-row { display: grid; grid-template-columns: 1.6rem 3.4rem 1fr; align-items: baseline; gap: 8px;
+            padding: 5px 0; border-bottom: 1px solid var(--line); font-size: 0.9rem; }
+  .dl-row:last-child { border-bottom: 0; }
+  .dl-emoji { font-size: 1.05rem; line-height: 1; text-align: center; }
+  .dl-time { color: var(--dim); font-size: 0.78rem; white-space: nowrap; }
+  .dl-main { color: var(--ink); }
+  .dl-main .meal-tag { font-size: 0.72rem; color: var(--dim); }
+  .dl-empty { color: var(--dim); font-style: italic; padding: 14px 4px; font-size: 0.9rem; }
+  @media (max-width: 520px) { .dl-row { grid-template-columns: 1.4rem 1fr; }
+    .dl-time { grid-column: 2; font-size: 0.72rem; margin-top: -2px; } .dl-main { grid-column: 2; } }
   #weeklyReview .prompt { font-size: 0.92rem; }
 
   /* Long View — month calendar heatmap of Daily Cards */
@@ -946,8 +958,20 @@
     .fs-row .fs-time::after { content: ' · '; }
   }
 
-  /* --- Meal action bar --- */
-  #view-health .meal-actions #openMealBuilder { border-color: var(--h-line); color: var(--cat-health); }
+  /* --- Food search hero: NutriLens is the star --- */
+  .food-hero { margin-bottom: 14px; }
+  .fh-row { display: flex; align-items: center; gap: 8px; background: var(--panel2); border: 1px solid var(--h-line);
+            border-radius: 12px; padding: 4px 6px 4px 12px; }
+  .fh-row:focus-within { border-color: var(--cat-health); box-shadow: 0 0 0 2px var(--h-soft); }
+  .fh-icon { font-size: 1.1rem; line-height: 1; opacity: 0.75; }
+  .fh-row #foodSearch { border: 0; background: transparent; font-size: 1.05rem; padding: 10px 4px; flex: 1; min-width: 0; }
+  .fh-row #foodSearch:focus { outline: none; }
+  .fh-meals { flex-shrink: 0; border-color: var(--h-line); color: var(--cat-health); background: var(--panel); }
+  .fh-add { margin-top: 10px; align-items: flex-end; }
+  /* --- Day nutrition totals, now sitting with the food log --- */
+  .food-totals { background: var(--h-soft); border: 1px solid var(--h-line); border-radius: 10px;
+                 padding: 10px 12px; margin-bottom: 12px; }
+  .food-totals .ft-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
 
   /* --- Daily Care rail: three consistent mini-cards --- */
   .care-card { background: var(--panel2); border: 1px solid var(--line); border-left: 3px solid var(--ac, var(--cat-health));
@@ -1164,6 +1188,11 @@
       <button class="chip" id="qtDateYesterday">Yesterday</button>
       <input type="date" id="qtDatePick" style="width:148px">
     </div>
+  </div>
+
+  <div class="section" id="dayLogSection" style="margin-bottom:22px">
+    <div class="section-head"><h2>Your day</h2><span class="act tiny" id="dayLogDate"></span></div>
+    <div id="dayLog" class="day-log"></div>
   </div>
 
   <div class="section" id="dailyCardSection" style="margin-bottom:22px">
@@ -1438,50 +1467,30 @@
             <button class="mini-btn" id="foodExportBtn" title="Download food log as CSV">Export CSV</button>
           </span>
         </div>
-        <div class="quick-add" id="quickAdd">
-          <div class="qa-main">
-            <div class="form">
-              <label style="flex:1;min-width:200px">Search
-                <input type="text" id="foodSearch" placeholder="Search foods or saved meals…" class="grow" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="foodResults">
-              </label>
-              <label>Grams<input type="number" id="foodGrams" min="1" step="1" placeholder="100"></label>
-              <button class="primary" id="foodAdd" disabled>Add</button>
-            </div>
-            <div id="foodResults" class="search-results" role="listbox" style="display:none"></div>
-            <div id="foodSelected" class="tiny" style="color:var(--dim)"></div>
+        <div class="food-hero" id="quickAdd">
+          <div class="fh-row">
+            <span class="fh-icon" aria-hidden="true">🔍</span>
+            <input type="text" id="foodSearch" placeholder="Search foods…" class="grow" autocomplete="off" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="foodResults">
+            <button class="mini-btn fh-meals" id="openMealBuilder" title="Choose, build, or save a meal">🍽 Meals</button>
+          </div>
+          <div id="foodResults" class="search-results" role="listbox" style="display:none"></div>
+          <div id="foodSelected" class="tiny" style="color:var(--dim)"></div>
+          <div class="form fh-add">
             <div id="foodPortions" class="chip-row" style="display:none"></div>
-            <div id="pinnedFoods" class="chip-row" style="display:none"></div>
-            <div id="recentFoods" class="chip-row" style="display:none"></div>
-            <div id="mealChips" class="chip-row" style="display:none"></div>
-            <div class="qa-hint tiny" title="Search foods or saved meals. ↑↓ choose · Enter picks then logs · ⚡ on a chip logs it.">↑↓ select · Enter log · ⚡ quick log</div>
+            <label>Grams<input type="number" id="foodGrams" min="1" step="1" placeholder="100"></label>
+            <button class="primary" id="foodAdd" disabled>Add</button>
+            <button class="mini-btn" id="openCustomFood" title="Create a custom food">＋ Custom food</button>
           </div>
           <div id="entryPreview" class="entry-preview" style="display:none"></div>
+          <div class="qa-hint tiny">↑↓ select · Enter to log</div>
         </div>
 
-        <div class="hsub">
-          <div class="wb-sub" id="foodLogDate"></div>
-          <div class="food-stream" id="foodLog"></div>
-        </div>
-
-        <div class="meal-actions">
-          <button class="mini-btn" id="openMealBuilder">Build a meal</button>
-          <button class="mini-btn" id="mealFromToday" title="Turn this day's log into a reusable meal">Save day as meal</button>
-          <button class="mini-btn" id="openCustomFood">New custom food</button>
-        </div>
-      </div>
-
-      <div class="wb-card">
-        <div class="wb-hd"><h2>Nutrition</h2>
-          <button class="mini-btn" id="targetsEditBtn" title="Edit daily targets">✎ targets</button>
-        </div>
-        <div class="ntabs" role="tablist" aria-label="Nutrition views">
-          <button class="ntab" role="tab" id="ntab-overview" aria-controls="npOverview" data-ntab="overview" aria-selected="true">Overview</button>
-          <button class="ntab" role="tab" id="ntab-nutrients" aria-controls="npNutrients" data-ntab="nutrients" aria-selected="false">Nutrients</button>
-          <button class="ntab" role="tab" id="ntab-trend" aria-controls="npTrend" data-ntab="trend" aria-selected="false">Trend</button>
-        </div>
-
-        <div class="npanel" id="npOverview" role="tabpanel" aria-labelledby="ntab-overview" tabindex="0">
-          <span class="act tiny" id="todayDateLabel" style="display:block;margin-bottom:6px"></span>
+        <!-- Day's nutrition totals now sit WITH the log -->
+        <div class="food-totals" id="foodTotals">
+          <div class="ft-head">
+            <span class="act tiny" id="todayDateLabel"></span>
+            <button class="mini-btn" id="targetsEditBtn" title="Edit daily targets">✎ targets</button>
+          </div>
           <div id="todaySummary"></div>
           <div class="macro-split" id="macroSplit"></div>
           <div id="novInsight"></div>
@@ -1494,7 +1503,20 @@
           </div>
         </div>
 
-        <div class="npanel" id="npNutrients" role="tabpanel" aria-labelledby="ntab-nutrients" tabindex="0" hidden>
+        <div class="hsub">
+          <div class="wb-sub" id="foodLogDate"></div>
+          <div class="food-stream" id="foodLog"></div>
+        </div>
+      </div>
+
+      <div class="wb-card">
+        <div class="wb-hd"><h2>Nutrition detail</h2></div>
+        <div class="ntabs" role="tablist" aria-label="Nutrition views">
+          <button class="ntab" role="tab" id="ntab-nutrients" aria-controls="npNutrients" data-ntab="nutrients" aria-selected="true">Nutrients</button>
+          <button class="ntab" role="tab" id="ntab-trend" aria-controls="npTrend" data-ntab="trend" aria-selected="false">Trend</button>
+        </div>
+
+        <div class="npanel" id="npNutrients" role="tabpanel" aria-labelledby="ntab-nutrients" tabindex="0">
           <div class="range-tabs">
             <button class="mini-btn active" data-range="day">Day</button>
             <button class="mini-btn" data-range="week">Week</button>
@@ -1530,21 +1552,12 @@
             <span class="rail-val" id="railWaterVal"></span></div>
           <div class="care-bar"><div class="fill" id="hydrBar" style="width:0%"></div></div>
           <div class="care-actions">
-            <button class="chip" data-hydr="8">+8</button>
-            <button class="chip" data-hydr="12">+12</button>
-            <button class="chip" data-hydr="16">+16</button>
-            <button class="care-act" id="waterMore" aria-expanded="false" aria-controls="waterDetail">Custom</button>
+            <button class="chip" data-hydr="2">+2 oz</button>
+            <button class="chip" data-hydr="8">+8 oz</button>
           </div>
-          <div class="care-detail" id="waterDetail" hidden>
-            <div class="form" style="margin-top:8px">
-              <label>Ounces<input type="number" id="waterOz" min="1" step="1" placeholder="custom"></label>
-              <label>Time<input type="time" id="waterTime"></label>
-              <button class="primary" id="waterAdd">Add</button>
-            </div>
-            <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-bottom:6px"></div>
-            <span class="act tiny" id="hydrTotal" style="display:none"></span>
-            <div id="waterLog"></div>
-          </div>
+          <div class="tiny" id="hydrTargetNote" style="color:var(--dim);margin-top:6px"></div>
+          <span class="act tiny" id="hydrTotal" style="display:none"></span>
+          <div id="waterLog"></div>
         </div>
 
         <div class="care-card" style="--ac:var(--h-move)">
@@ -1591,18 +1604,17 @@
     </div>
   </div>
 
-  <!-- ===== Your Day ribbon (selected date) ===== -->
-  <div class="wb-card">
-    <div class="wb-hd"><h2>Your day</h2><span class="act tiny" id="healthTlDate"></span></div>
-    <div id="healthTimeline"></div>
-  </div>
+  <!-- ("Your day" running log now lives in the Today view, aggregating every kind of entry) -->
 
   <!-- ===== Meal builder + saved-meal management (modal drawer) ===== -->
   <div class="modal-overlay" id="mealBuilderOverlay">
     <div class="modal modal-wide" role="dialog" aria-modal="true" aria-labelledby="mbTitle">
       <h3 id="mbTitle">Meals</h3>
-      <div class="sub">Build a reusable meal, then log it any day straight from the search.</div>
-      <div class="wb-sub">Saved meals</div>
+      <div class="sub">Choose a saved meal to log it, build a new one below, or turn the day you've logged into a reusable meal.</div>
+      <div class="wb-sub" style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <span>Saved meals</span>
+        <button class="mini-btn" id="mealFromToday" title="Turn this day's log into a reusable meal">Save this day as a meal</button>
+      </div>
       <div id="mealList"></div>
       <div class="wb-sub" style="margin-top:16px">Build a meal</div>
       <div class="form">
@@ -2317,7 +2329,7 @@ function runViewRender(name){
   else if (name === 'calendar') { renderCalendarView(); gcalEnsureMonth(); }
   else if (name === 'reflect') renderReflect();
   else if (name === 'body') { renderBodyCheckin(); simpleLog('symptoms','symLog', r => escapeHtml(r.note)); }
-  else if (name === 'health') { renderHealthTimeline(); renderHydration(); }
+  else if (name === 'health') { renderHydration(); }
   if (['body','mind','health','relationships','money','identity'].includes(name)) renderCompletionBars();
 }
 function navTo(name){
@@ -2949,7 +2961,7 @@ let selectedFood = null;
 let selectedMealForLog = null;          // a saved meal chosen from the combined search (logs on Add)
 let foodResultRows = [], foodHi = -1;   // current search results + keyboard highlight
 let healthSelectedDate = todayStr();    // the ONE shared date the whole Health workbench uses
-let activeNutritionTab = 'overview';    // 'overview' | 'nutrients' | 'trend' (runtime UI state)
+let activeNutritionTab = 'nutrients';   // 'nutrients' | 'trend' (Overview totals moved to the Food card)
 
 // The set of recently-logged food ids (most-recent first), used to float them up in search.
 function recentFoodIdSet(n) {
@@ -2959,6 +2971,14 @@ function recentFoodIdSet(n) {
 }
 // Relevance ranking: exact > prefix > word-start > substring; your foods & recents float up,
 // baby foods sink, shorter names win ties. Turns a 1,270-row substring dump into a useful list.
+// exact > prefix > word-start > substring; null = no match. Shared by name + alias matching.
+function _foodMatchScore(text, Q, wordRe) {
+  if (text === Q) return 0;
+  if (text.startsWith(Q)) return 1;
+  if (wordRe.test(text)) return 2;
+  if (text.includes(Q)) return 3;
+  return null;
+}
 function rankedFoods(q, limit = 40) {
   const Q = q.toLowerCase().trim();
   const wordRe = new RegExp('\\b' + Q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
@@ -2967,12 +2987,16 @@ function rankedFoods(q, limit = 40) {
   const scored = [];
   for (const f of foodPool()) {
     const name = f.name.toLowerCase();
-    let s;
-    if (name === Q) s = 0;
-    else if (name.startsWith(Q)) s = 1;
-    else if (wordRe.test(name)) s = 2;
-    else if (name.includes(Q)) s = 3;
-    else continue;
+    let s = _foodMatchScore(name, Q, wordRe);
+    if (s == null) {
+      // no name match — try search aliases (e.g. "boiled egg", "evoo", "pb"), ranked just
+      // below an equivalent real-name match so clean names still win.
+      const aliases = (f.n && Array.isArray(f.n.aliases)) ? f.n.aliases : (Array.isArray(f.aliases) ? f.aliases : []);
+      let best = null;
+      for (const a of aliases) { const as = _foodMatchScore(String(a).toLowerCase(), Q, wordRe); if (as != null && (best == null || as < best)) best = as; }
+      if (best == null) continue;
+      s = best + 0.15;
+    }
     if (custom.has(f.id)) s -= 0.5;
     if (recent.has(f.id)) s -= 0.25;
     if (f.category === 'Baby Foods') s += 0.6;
@@ -3175,7 +3199,7 @@ function wireChipRow(el) {
   });
 }
 function renderPinnedFoods() {
-  const el = document.getElementById('pinnedFoods');
+  const el = document.getElementById('pinnedFoods'); if (!el) return;   // chip row retired in the redesign
   if (!foodsIndex) { el.style.display = 'none'; return; }
   const pinned = (state.body.favoriteFoods || []).map(id => foodsIndex.byId.get(id)).filter(Boolean);
   if (!pinned.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
@@ -3184,7 +3208,7 @@ function renderPinnedFoods() {
   wireChipRow(el);
 }
 function renderRecentFoods() {
-  const el = document.getElementById('recentFoods');
+  const el = document.getElementById('recentFoods'); if (!el) return;   // chip row retired in the redesign
   if (!foodsIndex) { el.style.display = 'none'; return; }
   const seen = new Set((state.body.favoriteFoods || []));
   const recent = [];
@@ -3492,7 +3516,7 @@ function renderFoodLog() {
     const flash = r.id === _lastLogId ? ' just-added' : '';
     return `<div class="fs-row${flash}">
       <span class="fs-time">${escapeHtml(time)}</span>
-      <span class="fs-name">${escapeHtml(r.foodName)}${meal}</span>
+      <span class="fs-name">${foodEmoji(r)} ${escapeHtml(r.foodName)}${meal}</span>
       <span class="fs-g">${r.grams} g</span>
       <span class="fs-kcal">${kcal == null ? '—' : kcal + ' kcal'}</span>
       <span class="fs-menu-wrap"><button class="fs-menu-btn" data-fmenu="${r.id}" aria-haspopup="true" aria-expanded="false" aria-label="Actions for ${escapeHtml(r.foodName)}">⋯</button>
@@ -3571,14 +3595,13 @@ function refreshHealthWorkspace(){
   renderHealthCompleteHeader();
   renderHealthSummary();
   renderFoodLog();
-  renderRecentFoods(); renderPinnedFoods(); renderMealChips();
+  renderFoodTotals();          // day totals now sit with the log (was the Nutrition Overview tab)
   renderHydration();
   // rail history is scoped to the selected date (agrees with summary, feed and food log)
   simpleLog('sleep', 'sleepLog', r => `${r.hours}h · quality ${r.quality || '–'}`, healthDate());
   simpleLog('exercise', 'exLog', exSummary, healthDate());
   renderNutritionActive();
   renderMeals(); renderCustomFoods();
-  renderHealthTimeline();
   _lastLogId = null;   // consume the one-shot "just added" highlight after a full render pass
 }
 // Health Today panel — five life areas for the selected date, a derived "N of 5 recorded" count,
@@ -3638,7 +3661,7 @@ function renderHealthSummary(){
   if (rs) { rs.textContent = sleepDay ? `${sleepDay.hours} h · quality ${sleepDay.quality || '–'}/5` : 'Nothing recorded yet'; rs.classList.toggle('empty', !sleepDay); }
 }
 function healthSummaryJump(kind){
-  if (kind === 'nutrition') { setNutritionTab('overview'); const t = document.getElementById('ntab-overview'); if (t) { t.scrollIntoView({ behavior:'smooth', block:'nearest' }); t.focus(); } }
+  if (kind === 'nutrition') { const t = document.getElementById('foodTotals'); if (t) t.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
   else openRailDetail(kind);
 }
 // ----- Nutrition tabs (only one panel visible at a time) -----
@@ -3652,10 +3675,12 @@ function setNutritionTab(tab){
   renderNutritionActive();
 }
 function renderNutritionActive(){
-  if (activeNutritionTab === 'overview') { renderToday(); renderMacroSplit(); }
-  else if (activeNutritionTab === 'nutrients') renderNutrients();
-  else renderTrend();
+  if (activeNutritionTab === 'trend') renderTrend();
+  else renderNutrients();
 }
+// Day nutrition totals (calories/protein vs target + macro bar + insight) — now shown WITH
+// the food log in the Food card rather than in a separate Nutrition Overview tab.
+function renderFoodTotals(){ renderToday(); renderMacroSplit(); }
 // ----- Quick-health rail: inline detail toggles -----
 function toggleRail(kind, force){
   const map = { water: ['waterDetail','waterMore'], move: ['moveDetail','moveToggle'], sleep: ['sleepDetail','sleepToggle'] };
@@ -4048,13 +4073,6 @@ function renderHydration(){
     saveState(); refreshHealthWorkspace();
   });
 }
-document.getElementById('waterAdd').onclick = () => {
-  const oz = Number(document.getElementById('waterOz').value);
-  const t = document.getElementById('waterTime').value || '';
-  if (!oz) return;
-  logWater(oz, t);
-  document.getElementById('waterOz').value = ''; document.getElementById('waterTime').value = '';
-};
 document.querySelectorAll('[data-hydr]').forEach(b => b.onclick = () => logWater(Number(b.dataset.hydr), ''));
 
 document.getElementById('sleepAdd').onclick = () => {
@@ -5254,7 +5272,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderQtChips(); renderDailyCard(); renderHabitsToday(); renderDecisionCapture(); renderTodayEvents(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderDayLog(); renderQtChips(); renderDailyCard(); renderHabitsToday(); renderDecisionCapture(); renderTodayEvents(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -5851,6 +5869,60 @@ function renderHabits() {
 }
 document.getElementById('habitAdd').onclick = () => openHabitEdit(null);
 document.getElementById('habitManage').onclick = openHabitManage;
+
+/* =============================================================
+   YOUR DAY — one timestamped, emoji-tagged running list of
+   everything logged for the selected day (derived, read-only).
+   Reuses healthEventTime/timeSortKey (which fall back to _at) so
+   food/water/move/sleep/notes/decisions/journal/pulse share one
+   clock; day-level habit marks (no time) sort to the end.
+   ============================================================= */
+function foodEmoji(f) {
+  const s = ((f.foodName || '') + ' ' + (f.category || '')).toLowerCase();
+  const map = [['coffee','☕'],['espresso','☕'],['latte','☕'],['tea','🍵'],['water','💧'],
+    ['egg','🥚'],['milk','🥛'],['cheese','🧀'],['yogurt','🥣'],['oat','🥣'],['cereal','🥣'],
+    ['chicken','🍗'],['turkey','🍗'],['beef','🥩'],['steak','🥩'],['pork','🥓'],['bacon','🥓'],
+    ['salmon','🐟'],['tuna','🐟'],['fish','🐟'],['shrimp','🦐'],['rice','🍚'],['noodle','🍜'],
+    ['pasta','🍝'],['bread','🍞'],['bagel','🥯'],['toast','🍞'],['pizza','🍕'],['burger','🍔'],
+    ['banana','🍌'],['apple','🍎'],['orange','🍊'],['berr','🫐'],['grape','🍇'],['melon','🍉'],
+    ['salad','🥗'],['soup','🍲'],['potato','🥔'],['broccoli','🥦'],['veget','🥦'],['carrot','🥕'],
+    ['peanut','🥜'],['almond','🥜'],['nut','🥜'],['choc','🍫'],['cookie','🍪'],['cake','🍰'],
+    ['ice cream','🍦'],['beer','🍺'],['wine','🍷'],['juice','🧃'],['avocado','🥑'],['butter','🧈'],
+    ['oil','🫒'],['honey','🍯'],['fruit','🍎']];
+  for (const [k, e] of map) if (s.includes(k)) return e;
+  return '🍽️';
+}
+function dayLogEvents(date) {
+  const ev = [];
+  const push = (r, emoji, text) => ev.push({ t: timeSortKey(r), time: healthEventTime(r), emoji, text });
+  (state.body.water || []).filter(w => w.date === date).forEach(w => push(w, '💧', `Water +${w.oz} oz`));
+  (state.body.food || []).filter(f => f.date === date).forEach(f => {
+    const nn = entryN(f), kcal = nn ? Math.round((nn.kcal || 0) * f.grams / 100) : null;
+    push(f, foodEmoji(f), `${escapeHtml(f.foodName || 'food')} · ${f.grams} g${kcal != null ? ` · ${kcal} kcal` : ''}${f.mealName ? ` <span class="meal-tag">${escapeHtml(f.mealName)}</span>` : ''}`);
+  });
+  (state.body.exercise || []).filter(e => e.date === date).forEach(e => push(e, '🏃', escapeHtml(exSummary(e) || 'activity')));
+  (state.body.sleep || []).filter(s => s.date === date).forEach(s => push(s, '😴', `Sleep ${s.hours} h · quality ${s.quality || '–'}/5`));
+  (state.body.symptoms || []).filter(s => s.date === date).forEach(s => push(s, '🩹', escapeHtml(s.note || '')));
+  (state.identity.pulse || []).filter(p => p.date === date).forEach(p => push(p, '💭', `Pulse — mood ${p.mood ?? '–'}/5 · energy ${p.energy ?? '–'}/5`));
+  (state.identity.journal || []).filter(j => j.date === date).forEach(j => push(j, '📓', `Journal${j.title ? ` — ${escapeHtml(j.title)}` : ''}`));
+  ((state.decisions && state.decisions.items) || []).filter(d => d.date === date).forEach(d => push(d, '🧠', `Decision — ${escapeHtml(d.title || '')}`));
+  // Habit marks have no clock time — sort them after every timed entry ('99:99' > any HH:MM
+  // under localeCompare, unlike '~' which collates before digits), ordered by name.
+  activeHabits().forEach(h => { if (habitDone(h).includes(date)) ev.push({ t: '99:99_' + h.name, time: '', emoji: '✅', text: `Kept <strong>${escapeHtml(h.name)}</strong>` }); });
+  ev.sort((a, b) => String(a.t).localeCompare(String(b.t)));
+  return ev;
+}
+function renderDayLog() {
+  const host = document.getElementById('dayLog'); if (!host) return;
+  const date = qtLogDate;
+  const lbl = document.getElementById('dayLogDate'); if (lbl) lbl.textContent = (date === todayStr() ? 'Today' : fmtDate(date));
+  const ev = dayLogEvents(date);
+  if (!ev.length) { host.innerHTML = `<div class="dl-empty">Nothing logged ${date === todayStr() ? 'yet today' : 'this day'} — everything you record shows up here as it happens.</div>`; return; }
+  host.innerHTML = ev.map(e => `<div class="dl-row">
+    <span class="dl-emoji">${e.emoji}</span>
+    <span class="dl-time">${escapeHtml(e.time || '')}</span>
+    <span class="dl-main">${e.text}</span></div>`).join('');
+}
 
 /* =============================================================
    WEEKLY REVIEW — derived from the last 7 days of Daily Cards.
@@ -7046,8 +7118,7 @@ function setupHealthWorkbench(){
       if (j !== null) { e.preventDefault(); tabs[j].focus(); setNutritionTab(tabs[j].dataset.ntab); }
     });
   });
-  // quick-health rail toggles
-  document.getElementById('waterMore').onclick = () => toggleRail('water');
+  // quick-health rail toggles (water logs inline now; movement/sleep still expand)
   document.getElementById('moveToggle').onclick = () => toggleRail('move');
   document.getElementById('sleepToggle').onclick = () => toggleRail('sleep');
   // meal builder + custom food modals
