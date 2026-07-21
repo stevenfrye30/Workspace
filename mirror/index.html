@@ -2011,7 +2011,7 @@
   </div>
 
   <div class="section">
-    <div class="section-head"><h2>Patterns</h2><span class="act tiny">Last 30 days — associations from small samples. Hints to notice, not proof.</span></div>
+    <div class="section-head"><h2>Connections</h2><span class="act tiny">How you felt, across every room — sleep, movement, food, water, habits, places, money. Last 90 days · gentle associations, not proof.</span></div>
     <div id="reflectPatterns" class="insight-grid"></div>
   </div>
 
@@ -3382,86 +3382,6 @@ function flashFoodStatus(msg) {
   clearTimeout(st._t); st._t = setTimeout(() => { st.textContent = base; }, 2600);
 }
 // Log a food's default serving in a single tap (used by the ⚡ on recent/pinned chips).
-function quickLogFood(id) {
-  const f = foodsIndex && foodsIndex.byId.get(id); if (!f) return;
-  const grams = (f.portions && f.portions[0] && f.portions[0].grams) || 100;
-  const date = healthDate();
-  _lastLogId = uid();
-  state.body.food.push({ id: _lastLogId, date, foodId: f.id, foodName: f.name,
-    category: f.category, grams, n: snapshotNutrients(f) });
-  saveState(); refreshFoodUI();
-  flashFoodStatus(`logged ${f.name} · ${grams} g`);
-}
-function renderPortions(f) {
-  const el = document.getElementById('foodPortions');
-  const portions = (f.portions || []).slice(0, 8);
-  if (!portions.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
-  el.style.display = 'flex';
-  el.innerHTML = '<span class="lbl">Portion</span>' +
-    portions.map(p => `<button type="button" class="chip portion" data-g="${p.grams}">${escapeHtml(p.label)} · ${p.grams}g</button>`).join('');
-  el.querySelectorAll('.chip.portion').forEach(b => b.onclick = () => {
-    document.getElementById('foodGrams').value = b.dataset.g;
-    renderEntryPreview();
-    document.getElementById('foodGrams').focus();
-  });
-}
-function isPinned(id) { return (state.body.favoriteFoods || []).includes(id); }
-function togglePin(id) {
-  const list = state.body.favoriteFoods = state.body.favoriteFoods || [];
-  const i = list.indexOf(id);
-  if (i >= 0) list.splice(i, 1); else list.push(id);
-  saveState();
-  renderPinnedFoods(); renderRecentFoods(); renderFoodLog();
-}
-function chipHtml(f) {
-  const short = f.name.length > 30 ? f.name.slice(0, 28) + '…' : f.name;
-  const pinned = isPinned(f.id);
-  const dg = (f.portions && f.portions[0] && f.portions[0].grams) || 100;
-  return `<span class="chip" data-id="${f.id}">
-    <button type="button" class="pick" data-pick="${f.id}" title="Select ${escapeHtml(f.name)}">${escapeHtml(short)}</button>
-    <button type="button" class="qlog" data-qlog="${f.id}" title="Log ${dg} g of ${escapeHtml(f.name)} now" aria-label="Quick-log ${dg} grams of ${escapeHtml(f.name)}">⚡</button>
-    <button type="button" class="pin${pinned ? ' on' : ''}" data-pin="${f.id}" title="${pinned ? 'Unpin' : 'Pin'} ${escapeHtml(f.name)}" aria-pressed="${pinned}" aria-label="${pinned ? 'Unpin' : 'Pin'} ${escapeHtml(f.name)}">${pinned ? '★' : '☆'}</button>
-  </span>`;
-}
-function wireChipRow(el) {
-  el.querySelectorAll('[data-pin]').forEach(x => x.onclick = e => {
-    e.stopPropagation();
-    togglePin(Number(x.dataset.pin));
-  });
-  el.querySelectorAll('[data-qlog]').forEach(x => x.onclick = e => {
-    e.stopPropagation();
-    quickLogFood(Number(x.dataset.qlog));
-  });
-  el.querySelectorAll('[data-pick]').forEach(x => x.onclick = () => {
-    selectFood(foodsIndex.byId.get(Number(x.dataset.pick)));
-  });
-}
-function renderPinnedFoods() {
-  const el = document.getElementById('pinnedFoods'); if (!el) return;   // chip row retired in the redesign
-  if (!foodsIndex) { el.style.display = 'none'; return; }
-  const pinned = (state.body.favoriteFoods || []).map(id => foodsIndex.byId.get(id)).filter(Boolean);
-  if (!pinned.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
-  el.style.display = 'flex';
-  el.innerHTML = '<span class="lbl">Pinned</span>' + pinned.map(chipHtml).join('');
-  wireChipRow(el);
-}
-function renderRecentFoods() {
-  const el = document.getElementById('recentFoods'); if (!el) return;   // chip row retired in the redesign
-  if (!foodsIndex) { el.style.display = 'none'; return; }
-  const seen = new Set((state.body.favoriteFoods || []));
-  const recent = [];
-  for (let i = state.body.food.length - 1; i >= 0 && recent.length < 8; i--) {
-    const id = state.body.food[i].foodId;
-    if (seen.has(id)) continue;
-    seen.add(id);
-    const f = foodsIndex.byId.get(id);
-    if (f) recent.push(f);
-  }
-  if (!recent.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
-  el.style.display = 'flex';
-  el.innerHTML = '<span class="lbl">Recent</span>' + recent.map(chipHtml).join('');
-  wireChipRow(el);
-}
 document.getElementById('foodSearch').addEventListener('input', e => {
   selectedFood = null; selectedMealForLog = null;
   document.getElementById('foodSelected').textContent = '';
@@ -3765,7 +3685,6 @@ function renderFoodLog() {
       <span class="fs-kcal">${kcal == null ? '—' : kcal + ' kcal'}</span>
       <span class="fs-menu-wrap"><button class="fs-menu-btn" data-fmenu="${r.id}" aria-haspopup="true" aria-expanded="false" aria-label="Actions for ${escapeHtml(r.foodName)}">⋯</button>
         <div class="fs-menu" id="fsmenu-${r.id}" hidden role="menu">
-          <button data-fpin="${r.foodId}" role="menuitem">${isPinned(r.foodId) ? 'Unpin food' : 'Pin food'}</button>
           <button data-fedit="${r.id}" role="menuitem">Edit</button>
           <button data-fdel="${r.id}" role="menuitem">Delete</button>
         </div></span></div>`;
@@ -3777,7 +3696,6 @@ function renderFoodLog() {
     const willOpen = menu.hidden; closeAllFsMenus();
     menu.hidden = !willOpen; b.setAttribute('aria-expanded', String(willOpen));
   });
-  host.querySelectorAll('[data-fpin]').forEach(b => b.onclick = () => togglePin(Number(b.dataset.fpin)));
   host.querySelectorAll('[data-fdel]').forEach(b => b.onclick = () => {
     state.body.food = state.body.food.filter(x => x.id !== b.dataset.fdel); refreshFood();
   });
@@ -3837,73 +3755,12 @@ function renderHealthCompleteHeader(){
 function refreshHealthWorkspace(){
   renderHealthDateNav();
   renderHealthCompleteHeader();
-  renderHealthSummary();
   renderFoodLog();
   renderFoodTotals();          // day totals now sit with the log (was the Nutrition Overview tab)
   renderHydration();
   renderNutritionActive();
   renderMeals(); renderCustomFoods();
   _lastLogId = null;   // consume the one-shot "just added" highlight after a full render pass
-}
-// Health Today panel — five life areas for the selected date, a derived "N of 5 recorded" count,
-// five hexagonal progress markers, and clickable segments. Also fills the Daily Care rail values.
-let _htPrevVals = {};   // last-rendered display values, for a one-shot value pulse
-function renderHealthSummary(){
-  const day = healthDate();
-  let kcal = 0, protein = 0;
-  for (const e of state.body.food) {
-    if (e.date !== day) continue;
-    const nn = entryN(e); if (!nn) continue;
-    const f = e.grams / 100;
-    kcal += (nn.kcal || 0) * f; protein += (nn.protein_g || 0) * f;
-  }
-  const water = (state.body.water || []).filter(w => w.date === day).reduce((s,w) => s + Number(w.oz||0), 0);
-  const exDay = (state.body.exercise || []).filter(e => e.date === day);
-  const exMin = exDay.reduce((s,e) => s + (Number(e.minutes) || 0), 0);
-  const exType = (exDay.find(e => e.type) || {}).type || '';
-  const sleepDay = (state.body.sleep || []).filter(s => s.date === day).slice(-1)[0];
-  const T = getTargets();
-  // five areas, each recorded (has data) or not — the count is derived, never stored
-  const areas = [
-    { key:'food',  label:'Food',     ac:'var(--h-food)',  rec: kcal > 0,        jump:'nutrition',
-      val: kcal > 0 ? `${Math.round(kcal).toLocaleString()}<span class="u">kcal</span>` : 'Nothing yet' },
-    { key:'prot',  label:'Protein',  ac:'var(--h-nutri)', rec: protein > 0,     jump:'nutrition',
-      val: protein > 0 ? `${Math.round(protein)}<span class="u">g</span>` : 'Nothing yet' },
-    { key:'water', label:'Water',    ac:'var(--h-water)', rec: water > 0,       jump:'water',
-      val: `${water}<span class="sub"> / ${T.water_oz}</span><span class="u">oz</span>` },
-    { key:'move',  label:'Movement', ac:'var(--h-move)',  rec: exMin > 0,       jump:'move',
-      val: exMin > 0 ? `${exMin}<span class="u">min</span>${exType ? `<span class="sub"> ${escapeHtml(exType)}</span>` : ''}` : 'Not recorded' },
-    { key:'sleep', label:'Sleep',    ac:'var(--h-sleep)', rec: !!sleepDay,      jump:'sleep',
-      val: sleepDay ? `${sleepDay.hours}<span class="u">h</span>${sleepDay.quality ? `<span class="sub"> q${sleepDay.quality}</span>` : ''}` : 'Not recorded' },
-  ];
-  const recN = areas.filter(a => a.rec).length;
-  const markers = areas.map(a => `<span class="hxm${a.rec ? ' on' : ''}" style="--mk:${a.ac}" aria-hidden="true"></span>`).join('');
-  const cells = areas.map(a => {
-    const pulse = (_htPrevVals[a.key] !== undefined && _htPrevVals[a.key] !== a.val && a.rec) ? ' val-pulse' : '';
-    const aria = `${a.label}: ${a.rec ? (a.val.replace(/<[^>]+>/g, ' ').replace(/\s+/g,' ').trim()) : 'not recorded'}`;
-    return `<button type="button" class="ht-cell${a.rec ? '' : ' unrecorded'}" style="--ac:${a.ac}" data-hsjump="${a.jump}" aria-label="${escapeHtml(aria)}; open">
-      <div class="k"><span class="kd"></span>${a.label}</div><div class="v${pulse}">${a.val}</div></button>`;
-  }).join('');
-  const panel = document.getElementById('healthSummary');
-  if (panel) {
-    panel.innerHTML = `<div class="health-today">
-      <div class="ht-head"><span class="ht-title">Health today</span>
-        <span class="ht-count" role="status">${recN} of 5 recorded</span></div>
-      <div class="ht-markers" aria-hidden="true">${markers}</div>
-      <div class="ht-grid">${cells}</div></div>`;
-    panel.querySelectorAll('[data-hsjump]').forEach(b => b.onclick = () => healthSummaryJump(b.dataset.hsjump));
-  }
-  areas.forEach(a => _htPrevVals[a.key] = a.val);
-  // Daily Care rail values (consistent empty states)
-  const rw = document.getElementById('railWaterVal'); if (rw) rw.textContent = `${water} / ${T.water_oz} oz`;
-  const rm = document.getElementById('railMoveVal');
-  if (rm) { rm.textContent = exMin ? `${exMin} min${exType ? ' · ' + exType : ''}` : 'Nothing recorded yet'; rm.classList.toggle('empty', !exMin); }
-  const rs = document.getElementById('railSleepVal');
-  if (rs) { rs.textContent = sleepDay ? `${sleepDay.hours} h · quality ${sleepDay.quality || '–'}/5` : 'Nothing recorded yet'; rs.classList.toggle('empty', !sleepDay); }
-}
-function healthSummaryJump(kind){
-  if (kind === 'nutrition') { const t = document.getElementById('foodTotals'); if (t) t.scrollIntoView({ behavior:'smooth', block:'nearest' }); }
-  else openRailDetail(kind);
 }
 // ----- Nutrition tabs (only one panel visible at a time) -----
 function setNutritionTab(tab){
@@ -3923,30 +3780,6 @@ function renderNutritionActive(){
 // the food log in the Food card rather than in a separate Nutrition Overview tab.
 function renderFoodTotals(){ renderToday(); renderMacroSplit(); }
 // ----- Quick-health rail: inline detail toggles -----
-function toggleRail(kind, force){
-  const map = { water: ['waterDetail','waterMore'], move: ['moveDetail','moveToggle'], sleep: ['sleepDetail','sleepToggle'] };
-  const [detId, btnId] = map[kind] || []; const det = document.getElementById(detId), btn = document.getElementById(btnId);
-  if (!det) return false;
-  const open = force !== undefined ? force : det.hidden;
-  det.hidden = !open;
-  if (btn) btn.setAttribute('aria-expanded', String(open));
-  return open;
-}
-function openRailDetail(kind){
-  toggleRail(kind, true);
-  const focusId = { water:'waterOz', move:'exType', sleep:'sleepHours' }[kind];
-  const el = document.getElementById(focusId); if (el) el.focus();
-}
-// ----- Saved-meal quick chips (one-tap log to the shared date) -----
-function renderMealChips(){
-  const el = document.getElementById('mealChips'); if (!el) return;
-  const meals = (state.body.meals || []).slice(-6).reverse();
-  if (!meals.length) { el.style.display = 'none'; el.innerHTML = ''; return; }
-  el.style.display = 'flex';
-  el.innerHTML = '<span class="lbl">Meals</span>' + meals.map(m =>
-    `<span class="meal-chip"><span class="mc-name">${escapeHtml(m.name)}</span><button class="mc-log" data-mlogchip="${m.id}" title="Log ${escapeHtml(m.name)}" aria-label="Log meal ${escapeHtml(m.name)} to ${escapeHtml(fmtDate(healthDate()))}">⚡ log</button></span>`).join('');
-  el.querySelectorAll('[data-mlogchip]').forEach(b => b.onclick = () => logMeal(Number(b.dataset.mlogchip)));
-}
 // Saved meals that match a combined-search query.
 function matchingMeals(q){
   const Q = q.toLowerCase().trim();
@@ -5128,109 +4961,89 @@ function renderReflectToday() {
 }
 
 /* Patterns — last 30 days */
+/* CONNECTIONS — the cross-room synthesis. One data-driven engine over a single outcome
+   (how you felt: mood/energy from Daily Cards or pulse) against signals drawn from EVERY
+   room — sleep, movement, nutrition, hydration, habits, places, money. Surfaces the notable
+   associations, tentatively. Replaces the old four hard-coded health-only correlations. */
 function renderReflectPatterns() {
   const el = document.getElementById('reflectPatterns');
   const cards = [];
-  const range = daysInRange(30);
+  const range = daysInRange(90);
+  const cardByDate = new Map(((state.daily && state.daily.cards) || []).map(c => [c.date, c]));
   const pulseByDate = new Map(state.identity.pulse.map(p => [p.date, p]));
+  // "How you felt" = mood+energy averaged (either alone if only one is present), from the
+  // Daily Card first, then pulse. This is the single outcome every signal is measured against.
+  const feel = d => {
+    const c = cardByDate.get(d), p = pulseByDate.get(d);
+    const mood = (c && c.mood != null) ? c.mood : (p ? p.mood : null);
+    const energy = (c && c.energy != null) ? c.energy : (p ? p.energy : null);
+    if (mood != null && energy != null) return (mood + energy) / 2;
+    return mood != null ? mood : (energy != null ? energy : null);
+  };
+  const feelDays = range.filter(d => feel(d) != null);
+
+  // Per-day facts across the rooms
   const sleepByDate = new Map(state.body.sleep.map(s => [s.date, s]));
-  const exerciseDays = new Set(state.body.exercise.map(e => e.date));
+  const exDays = new Set(state.body.exercise.map(e => e.date));
+  const T = getTargets();
+  const curHome = (currentHome() || {}).name;
+  const daysMap = placeDays();
+  const expByDate = {};
+  state.money.expenses.forEach(e => { expByDate[e.date] = (expByDate[e.date] || 0) + Number(e.amount || 0); });
+  const spends = Object.values(expByDate).filter(v => v > 0).sort((a, b) => a - b);
+  const spendMed = spends.length ? spends[Math.floor(spends.length / 2)] : 0;
 
-  // Sleep ↔ energy
-  const sleepSplit = { high: [], low: [] };
-  for (const d of range) {
-    const p = pulseByDate.get(d); const s = sleepByDate.get(d);
-    if (!p || !s) continue;
-    (s.hours >= 7 ? sleepSplit.high : sleepSplit.low).push(p.energy);
-  }
-  if (sleepSplit.high.length >= 3 && sleepSplit.low.length >= 3) {
-    const hi = avg(sleepSplit.high), lo = avg(sleepSplit.low);
-    const diff = hi - lo;
-    const cls = diff >= 0.5 ? 'good' : diff <= -0.5 ? 'warn' : 'muted';
-    cards.push(`<div class="insight ${cls}"><div class="k">Sleep → energy</div>
-      <div class="v">${hi.toFixed(1)} <span class="u">vs</span> ${lo.toFixed(1)}</div>
-      <div class="p">Energy on nights ≥7h vs. &lt;7h. ${sleepSplit.high.length}/${sleepSplit.low.length} days sampled.</div></div>`);
-  }
-
-  // Sleep quality ↔ mood
-  const qSplit = { high: [], low: [] };
-  for (const d of range) {
-    const p = pulseByDate.get(d); const s = sleepByDate.get(d);
-    if (!p || !s || !s.quality) continue;
-    (s.quality >= 4 ? qSplit.high : qSplit.low).push(p.mood);
-  }
-  if (qSplit.high.length >= 3 && qSplit.low.length >= 3) {
-    const hi = avg(qSplit.high), lo = avg(qSplit.low);
-    const diff = hi - lo;
-    const cls = diff >= 0.3 ? 'good' : diff <= -0.3 ? 'warn' : 'muted';
-    cards.push(`<div class="insight ${cls}"><div class="k">Sleep quality → mood</div>
-      <div class="v">${hi.toFixed(1)} <span class="u">vs</span> ${lo.toFixed(1)}</div>
-      <div class="p">Mood after quality ≥4 nights vs. below. ${qSplit.high.length}/${qSplit.low.length} days sampled.</div></div>`);
-  }
-
-  // Exercise ↔ mood
-  const exSplit = { yes: [], no: [] };
-  for (const d of range) {
-    const p = pulseByDate.get(d); if (!p) continue;
-    (exerciseDays.has(d) ? exSplit.yes : exSplit.no).push(p.mood);
-  }
-  if (exSplit.yes.length >= 3 && exSplit.no.length >= 3) {
-    const y = avg(exSplit.yes), n = avg(exSplit.no);
-    const diff = y - n;
-    const cls = diff >= 0.3 ? 'good' : diff <= -0.3 ? 'warn' : 'muted';
-    cards.push(`<div class="insight ${cls}"><div class="k">Exercise → mood</div>
-      <div class="v">${y.toFixed(1)} <span class="u">vs</span> ${n.toFixed(1)}</div>
-      <div class="p">Mood on exercise days vs. off days.</div></div>`);
-  }
-
-  // Protein ↔ mood (needs foodsIndex)
-  if (foodsIndex) {
-    const proteinSplit = { high: [], low: [] };
-    for (const d of range) {
-      const p = pulseByDate.get(d); if (!p) continue;
-      const prot = sumNutrientForDate(d, 'protein_g');
-      if (prot === null || prot === 0) continue;
-      (prot >= 60 ? proteinSplit.high : proteinSplit.low).push(p.mood);
-    }
-    if (proteinSplit.high.length >= 3 && proteinSplit.low.length >= 3) {
-      const hi = avg(proteinSplit.high), lo = avg(proteinSplit.low);
-      const diff = hi - lo;
-      const cls = diff >= 0.3 ? 'good' : diff <= -0.3 ? 'warn' : 'muted';
-      cards.push(`<div class="insight ${cls}"><div class="k">Protein → mood</div>
-        <div class="v">${hi.toFixed(1)} <span class="u">vs</span> ${lo.toFixed(1)}</div>
-        <div class="p">Mood on days ≥60g protein vs. below.</div></div>`);
-    }
-  }
-
-  // Best / worst day of week
-  const dow = [[],[],[],[],[],[],[]];
-  const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  state.identity.pulse.forEach(p => {
-    const d = new Date(p.date+'T00:00').getDay();
-    dow[d].push((p.mood + p.energy) / 2);
+  // Each signal: test(date) -> true / false / null(skip this day for this signal)
+  const signals = [
+    { key: 'Slept 7h+',     on: 'nights of 7h+ sleep',         test: d => { const s = sleepByDate.get(d); return s ? s.hours >= 7 : null; } },
+    { key: 'Slept well',    on: 'quality-4+ nights',           test: d => { const s = sleepByDate.get(d); return (s && s.quality) ? s.quality >= 4 : null; } },
+    { key: 'Moved',         on: 'days you moved',              test: d => exDays.has(d) },
+    { key: 'Hit protein',   on: `days of ${Math.round(T.protein_g * 0.8)}g+ protein`, test: d => { if (!foodsIndex) return null; const pr = sumNutrientForDate(d, 'protein_g'); return (pr === null || pr === 0) ? null : pr >= T.protein_g * 0.8; } },
+    { key: 'Well hydrated', on: `days of ${Math.round(T.water_oz * 0.8)}oz+ water`, test: d => { const w = state.body.water.filter(x => x.date === d).reduce((s, x) => s + Number(x.oz || 0), 0); return w > 0 ? w >= T.water_oz * 0.8 : null; } },
+    { key: 'Away from home',on: 'days away from home',         test: d => { const pl = daysMap[d]; return pl ? (pl !== curHome) : null; } },
+    { key: 'Spent more',    on: 'higher-spend days',           test: d => { const v = expByDate[d]; return (spendMed > 0 && v > 0) ? v > spendMed : null; } },
+  ];
+  activeHabits().forEach(h => {
+    const done = new Set(habitDone(h)), start = habitStart(h);
+    signals.push({ key: `Kept "${h.name}"`, on: `days you kept "${h.name}"`, test: d => (start && d >= start) ? done.has(d) : null });
   });
-  const dowScored = dow.map((arr, i) => ({ day: dowNames[i], avg: avg(arr), n: arr.length }))
-                       .filter(x => x.n >= 2);
+
+  const found = [];
+  for (const sig of signals) {
+    const on = [], off = [];
+    for (const d of feelDays) { const t = sig.test(d); if (t === null) continue; (t ? on : off).push(feel(d)); }
+    if (on.length >= 3 && off.length >= 3) {
+      const hi = avg(on), lo = avg(off), diff = hi - lo;
+      if (Math.abs(diff) >= 0.35) found.push({ sig, hi, lo, diff, nOn: on.length, nOff: off.length });
+    }
+  }
+  found.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
+  found.slice(0, 6).forEach(f => {
+    const cls = f.diff > 0 ? 'good' : 'warn';
+    cards.push(`<div class="insight ${cls}"><div class="k">${escapeHtml(f.sig.key)}</div>
+      <div class="v">${f.hi.toFixed(1)} <span class="u">vs</span> ${f.lo.toFixed(1)}</div>
+      <div class="p">You felt <strong>${f.diff > 0 ? 'better' : 'worse'}</strong> on ${escapeHtml(f.sig.on)} — ${f.nOn} vs ${f.nOff} days. A gentle association, not proof.</div></div>`);
+  });
+
+  // Best / worst day of week (uses the same "how you felt" outcome)
+  const dow = [[], [], [], [], [], [], []], dowNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  feelDays.forEach(d => dow[new Date(d + 'T00:00').getDay()].push(feel(d)));
+  const dowScored = dow.map((arr, i) => ({ day: dowNames[i], avg: avg(arr), n: arr.length })).filter(x => x.n >= 2);
   if (dowScored.length >= 3) {
-    dowScored.sort((a,b) => b.avg - a.avg);
-    const best = dowScored[0], worst = dowScored[dowScored.length-1];
-    cards.push(`<div class="insight"><div class="k">Weekday pattern</div>
+    dowScored.sort((a, b) => b.avg - a.avg);
+    const best = dowScored[0], worst = dowScored[dowScored.length - 1];
+    cards.push(`<div class="insight"><div class="k">Weekday</div>
       <div class="v accent">${best.day}<span class="u">best</span></div>
       <div class="p"><strong>${best.day}</strong> avg ${best.avg.toFixed(1)} · <strong>${worst.day}</strong> avg ${worst.avg.toFixed(1)}</div></div>`);
   }
 
-  // Coverage
-  const pulseCount = range.filter(d => pulseByDate.has(d)).length;
-  const foodCount = range.filter(d => state.body.food.some(f => f.date === d)).length;
   cards.push(`<div class="insight muted"><div class="k">Coverage</div>
-    <div class="v">${pulseCount}<span class="u">/30 pulse</span></div>
-    <div class="p"><strong>${foodCount}/30</strong> days with food logged.</div></div>`);
+    <div class="v">${feelDays.length}<span class="u">days felt</span></div>
+    <div class="p">Connections are drawn from the last 90 days where you recorded how you felt (mood/energy).</div></div>`);
 
-  if (cards.length <= 1) {
-    el.innerHTML = '<div class="reflect-empty">Patterns need ~2 weeks of pulse + logs to show up. Keep going.</div>';
-  } else {
-    el.innerHTML = cards.join('');
-  }
+  el.innerHTML = (found.length || dowScored.length >= 3)
+    ? cards.join('')
+    : '<div class="reflect-empty">Connections need a couple of weeks of mood/energy plus logs across your rooms to surface. Keep going — every room you fill makes these sharper.</div>';
 }
 
 /* Alignment */
@@ -6869,31 +6682,6 @@ function timeSortKey(r){
 }
 // Unified activity feed for the shared date — food, water, movement, sleep and notes in the order
 // they happened, with a small type label (not colour-only). Compact rows, not a card per entry.
-function renderHealthTimeline(){
-  const host = document.getElementById('healthTimeline'); if (!host) return;
-  const date = healthDate();
-  const lbl = document.getElementById('healthTlDate'); if (lbl) lbl.textContent = fmtDate(date);
-  const ev = [];
-  (state.body.water || []).filter(w => w.date === date).forEach(w =>
-    ev.push({ id: w.id, t: timeSortKey(w), time: healthEventTime(w), type: 'water', tcls: 'ft-water', label: `${w.oz} oz` }));
-  (state.body.food || []).filter(f => f.date === date).forEach(f => {
-    const nn = entryN(f); const kcal = nn ? Math.round((nn.kcal || 0) * f.grams / 100) : null;
-    ev.push({ id: f.id, t: timeSortKey(f), time: healthEventTime(f), type: 'food', tcls: 'ft-food',
-      label: `${escapeHtml(f.foodName || 'food')} · ${f.grams} g${kcal != null ? ` · ${kcal} kcal` : ''}${f.mealName ? ` <span class="meal-tag">${escapeHtml(f.mealName)}</span>` : ''}` });
-  });
-  (state.body.exercise || []).filter(e => e.date === date).forEach(e =>
-    ev.push({ id: e.id, t: timeSortKey(e), time: healthEventTime(e), type: 'move', tcls: 'ft-move', label: exSummary(e) || 'activity' }));
-  (state.body.sleep || []).filter(s => s.date === date).forEach(s =>
-    ev.push({ id: s.id, t: timeSortKey(s), time: healthEventTime(s), type: 'sleep', tcls: 'ft-sleep', label: `${s.hours} h · quality ${s.quality || '–'}/5` }));
-  (state.body.symptoms || []).filter(s => s.date === date).forEach(s =>
-    ev.push({ id: s.id, t: timeSortKey(s), time: healthEventTime(s), type: 'note', tcls: 'ft-note', label: escapeHtml(s.note) }));
-  if (!ev.length) { host.innerHTML = '<div class="fs-empty">Your Health activity will appear here as you log it.</div>'; return; }
-  ev.sort((a, b) => String(a.t).localeCompare(String(b.t)));
-  host.innerHTML = ev.map(e => `<div class="feed-row${e.id === _lastLogId ? ' just-added' : ''}">
-    <span class="fr-time">${escapeHtml(e.time || '—')}</span>
-    <span class="fr-type ${e.tcls}">${e.type}</span>
-    <span class="fr-main">${e.label}</span></div>`).join('');
-}
 
 /* ----- Calendar: month grid + completion dots + integration boundary ----- */
 /* ============================================================
