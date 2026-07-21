@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **11** (field `__v` in the data).
+Current schema version: **12** (field `__v` in the data).
 
 ---
 
@@ -118,6 +118,16 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
     that is stored. "Didn't do" is simply an absent date. **Coverage** ("kept 18 of the last
     30 days") is *derived on read*; **no streak, chain, or miss is ever stored or shown** —
     this is deliberate, matching Mirror's no-shame stance. The coverage picture lives in Reflect.
+
+### places — the geography of your life *(v12)*
+- **items[]** — a durable register of the places your life happens.
+  `{ id, name, kind, from?, to?, note?,  _src, _at }`. `kind` is `home` (a place you
+  live/lived — a season), `trip` (travel/visits), or `spot` (a meaningful location; dates
+  optional). The **current home** is *derived* (the most-recently-started `home` with no `to`,
+  or a `to` in the future) and shown with a live duration — never stored.
+- **days** — `{ "YYYY-MM-DD": placeName }`. The per-day "where," set on the Today view.
+  **Absent = you were at your current home** (the default), so only travel/away days need a
+  tag. Denormalised to the place *name* so it survives a register edit.
 
 ### identity
 - **values** — `string[]`. The handful you want to be measured by.
@@ -315,6 +325,11 @@ means**. So:
   habit without losing history. Auto-provenance via `RECORD_ARRAYS`; summarised (definition +
   count + recent dates) in `mirror-data.md`. Reshapes/renames nothing; shallow-merge + a
   `v<11` migration backfill `habits` for older data.
+- **v12** → **Places (life geography).** Adds a new store `places` = `{ items[], days }` —
+  a durable register (home seasons / trips / meaningful spots) plus a per-day "where" map
+  (`days`), defaulting to the derived current home when unset. `items` gets auto-provenance and
+  is written in full into `mirror-data.md`. Reshapes/renames nothing; shallow-merge + a `v<12`
+  migration backfill `places` for older data.
 
 ---
 
@@ -326,8 +341,9 @@ retrofitting privacy later, the schema keeps sensitive content *structurally sep
 the measurement series:
 
 - **Identifying / sensitive:** `relationships.*` (names), `identity.journal`, `identity.season`,
-  `mind.quotes`/`ideas` free text, expense `note`s, `symptoms` notes, and the free-text fields
-  of a decision (`title`, `context`, `options`, `reasoning`, `outcome`, `lessons`).
+  `mind.quotes`/`ideas` free text, expense `note`s, `symptoms` notes, the free-text fields
+  of a decision (`title`, `context`, `options`, `reasoning`, `outcome`, `lessons`), and
+  `places` (locations are identifying).
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
   by category, reading counts, the **structured judgment signals** of a decision

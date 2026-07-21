@@ -306,6 +306,22 @@
   .dl-empty { color: var(--dim); font-style: italic; padding: 14px 4px; font-size: 0.9rem; }
   @media (max-width: 520px) { .dl-row { grid-template-columns: 1.4rem 1fr; }
     .dl-time { grid-column: 2; font-size: 0.72rem; margin-top: -2px; } .dl-main { grid-column: 2; } }
+  /* Your-day "where" tag */
+  .day-where { display: flex; align-items: center; gap: 8px; margin: 4px 0 12px; font-size: 0.85rem; color: var(--dim); }
+  .day-where select { padding: 5px 8px; max-width: 220px; }
+  /* Places register */
+  .pl-group { margin-bottom: 14px; }
+  .pl-group-h { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--dim); font-weight: 700; margin: 0 0 6px; }
+  .place-row { display: flex; align-items: baseline; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+  .place-row:last-child { border-bottom: 0; }
+  .place-row.is-current { background: color-mix(in srgb, var(--accent2) 8%, transparent); border-radius: 8px; padding: 10px; border-bottom: 0; }
+  .pl-icon { font-size: 1.1rem; }
+  .pl-body { flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pl-name { font-weight: 600; }
+  .pl-now { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent2); border: 1px solid var(--accent2); border-radius: 999px; padding: 0 6px; vertical-align: middle; }
+  .pl-meta { font-size: 0.78rem; color: var(--dim); }
+  .pl-note { font-size: 0.82rem; }
+  .pl-actions { flex-shrink: 0; white-space: nowrap; }
   #weeklyReview .prompt { font-size: 0.92rem; }
 
   /* Long View — month calendar heatmap of Daily Cards */
@@ -1260,6 +1276,7 @@
 
   <div class="section" id="dayLogSection" style="margin-bottom:22px">
     <div class="section-head"><h2>Your day</h2><span class="act tiny" id="dayLogDate"></span></div>
+    <div class="day-where"><label for="dayPlace">📍 Where</label><select id="dayPlace"></select></div>
     <div id="dayLog" class="day-log"></div>
   </div>
 
@@ -1457,6 +1474,27 @@
       <textarea id="seasonText" placeholder=""></textarea>
       <div style="margin-top:8px"><button class="ghost" id="seasonSave">Save</button>
         <span class="tiny" id="seasonSaved"></span></div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head"><h2>Places</h2><span class="act tiny">Where this chapter — and the ones before — happen.</span></div>
+    <div class="card">
+      <div class="form" style="align-items:flex-end;flex-wrap:wrap">
+        <label style="flex:2;min-width:160px">Place<input type="text" id="plName" placeholder="Milwaukee, WI · Chicago · the lake path"></label>
+        <label>Kind<select id="plKind">
+          <option value="home">🏠 Home</option>
+          <option value="trip">✈️ Trip</option>
+          <option value="spot">📍 Place</option>
+        </select></label>
+      </div>
+      <div class="form" style="align-items:flex-end;flex-wrap:wrap">
+        <label>From<input type="date" id="plFrom"></label>
+        <label>To (optional)<input type="date" id="plTo"></label>
+        <label style="flex:2;min-width:140px">Note<input type="text" id="plNote" placeholder="optional"></label>
+        <button class="primary" id="plAdd">Add place</button>
+      </div>
+      <div id="placeList" style="margin-top:12px"></div>
     </div>
   </div>
 
@@ -2035,7 +2073,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 11;
+const SCHEMA_VERSION = 12;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -2051,7 +2089,7 @@ const RECORD_ARRAYS = [
   ['money','netWorth'], ['money','goals'],
   ['relationships','people'], ['relationships','followUps'],
   ['relationships','giftIdeas'], ['relationships','birthdays'],
-  ['daily','cards'], ['decisions','items'], ['habits','items'],
+  ['daily','cards'], ['decisions','items'], ['habits','items'], ['places','items'],
 ];
 function nowISO(){ return new Date().toISOString(); }
 
@@ -2071,6 +2109,10 @@ const defaultState = () => ({
   //   never a streak — coverage is derived on read. `aim` = optional soft times/week (context,
   //   never pass/fail). `active:false` archives without losing history.
   habits: { items: [] },
+  // places: the geography of your life (v12). `items` = a durable register (home seasons,
+  //   trips, meaningful spots); `days` maps a local date -> place name (defaults to the
+  //   current home when unset). The "where" axis of the record.
+  places: { items: [], days: {} },
   // completion: per local date, which of the six categories are 'started' or 'complete'.
   //   { "2026-07-15": { body:"complete", mind:"started", ... } }. Absent = not started.
   completion: {},
@@ -2186,6 +2228,13 @@ function migrate(s) {
     if (!s.habits || typeof s.habits !== 'object') s.habits = { items: [] };
     if (!Array.isArray(s.habits.items)) s.habits.items = [];
     v = 11;
+  }
+  // v11 -> v12: add the places store (life geography). Shallow-merge backfills it; explicit guard.
+  if (v < 12) {
+    if (!s.places || typeof s.places !== 'object') s.places = { items: [], days: {} };
+    if (!Array.isArray(s.places.items)) s.places.items = [];
+    if (!s.places.days || typeof s.places.days !== 'object') s.places.days = {};
+    v = 12;
   }
   s.__v = SCHEMA_VERSION;
   return s;
@@ -2473,7 +2522,7 @@ function buildDataMarkdown() {
   p(`_Saved ${todayStr()} · schema v${SCHEMA_VERSION} · human-readable companion to **mirror-data.json** (the lossless copy the app restores from)._`); p('');
 
   p(`## At a glance`); p('');
-  [['Daily cards','daily.cards'], ['Decisions','decisions.items'], ['Habits','habits.items'], ['Journal entries','identity.journal'],
+  [['Daily cards','daily.cards'], ['Decisions','decisions.items'], ['Habits','habits.items'], ['Places','places.items'], ['Journal entries','identity.journal'],
    ['Reflections','identity.reflections'], ['Pulse check-ins','identity.pulse'],
    ['Food entries','body.food'], ['Sleep nights','body.sleep'],
    ['Exercise sessions','body.exercise'], ['Expenses','money.expenses'],
@@ -2541,6 +2590,20 @@ function buildDataMarkdown() {
       p(`- **${h.name || '(unnamed)'}**${meta ? ` (${meta})` : ''} — kept ${done.length} day${done.length === 1 ? '' : 's'} total${h.created ? `, since ${h.created}` : ''}`);
       if (done.length) p(`  - recent: ${done.slice(0, 10).join(', ')}${done.length > 10 ? ` … (+${done.length - 10} more)` : ''}`);
     });
+    p('');
+  }
+
+  /* Places — the geography of your life. Durable register, written in full. */
+  if (s.places?.items?.length) {
+    p(`## Places`); p('');
+    const KIND = { home: 'home', trip: 'trip', spot: 'place' };
+    s.places.items.slice().sort((a, b) => String(b.from || '').localeCompare(String(a.from || ''))).forEach(pl => {
+      const meta = [KIND[pl.kind] || pl.kind, pl.from ? `from ${pl.from}` : null, pl.to ? `to ${pl.to}` : null].filter(Boolean).join(', ');
+      p(`- **${pl.name}**${meta ? ` (${meta})` : ''}${pl.note ? ` — ${pl.note}` : ''}`);
+    });
+    const days = s.places.days || {};
+    const dk = Object.keys(days).sort().reverse();
+    if (dk.length) { p(''); p(`_Per-day location tags: ${dk.length} recorded._`); }
     p('');
   }
 
@@ -2769,6 +2832,95 @@ document.getElementById('seasonSave').onclick = () => {
   const s = document.getElementById('seasonSaved');
   s.textContent = 'saved ' + new Date().toLocaleTimeString();
   setTimeout(()=>s.textContent='', 2500);
+};
+
+/* =============================================================
+   PLACES — the geography of your life (v12). A durable register of
+   home seasons, trips, and meaningful spots, plus a per-day "where"
+   (places.days), defaulting to the current home.
+   ============================================================= */
+const PLACE_KIND = { home: { icon: '🏠', label: 'Home' }, trip: { icon: '✈️', label: 'Trip' }, spot: { icon: '📍', label: 'Place' } };
+function placeItems() { return (state.places && state.places.items) || []; }
+function placeDays() { state.places = state.places || { items: [], days: {} }; return (state.places.days = state.places.days || {}); }
+// Current home = the most-recently-started 'home' that hasn't ended (no `to`, or `to` in the future).
+function currentHome() {
+  const t = todayStr();
+  return placeItems().filter(p => p.kind === 'home' && (!p.to || p.to >= t))
+    .sort((a, b) => String(b.from || '').localeCompare(String(a.from || '')))[0] || null;
+}
+function placeDuration(from, to) {
+  if (!from) return '';
+  const end = to && to < todayStr() ? to : todayStr();
+  let months = daysBetween(from, end) / 30.44;
+  const years = Math.floor(months / 12); months = Math.round(months - years * 12);
+  const parts = [];
+  if (years) parts.push(`${years} yr${years === 1 ? '' : 's'}`);
+  if (months) parts.push(`${months} mo`);
+  const dur = parts.join(' ') || 'just now';
+  return (!to || to >= todayStr()) ? `${dur} and counting` : dur;
+}
+function fmtRange(p) {
+  if (!p.from && !p.to) return '';
+  const f = p.from ? fmtDate(p.from) : '?';
+  if (p.kind === 'home') return `from ${f}${p.to ? ` to ${fmtDate(p.to)}` : ''} · ${placeDuration(p.from, p.to)}`;
+  return p.to && p.to !== p.from ? `${f} – ${fmtDate(p.to)}` : f;
+}
+function placeCardHTML(p, isCurrent) {
+  const k = PLACE_KIND[p.kind] || PLACE_KIND.spot;
+  return `<div class="place-row${isCurrent ? ' is-current' : ''}">
+    <span class="pl-icon">${k.icon}</span>
+    <span class="pl-body"><span class="pl-name">${escapeHtml(p.name)}${isCurrent ? ' <span class="pl-now">now</span>' : ''}</span>
+      ${fmtRange(p) ? `<span class="pl-meta">${escapeHtml(fmtRange(p))}</span>` : ''}
+      ${p.note ? `<span class="pl-note">${escapeHtml(p.note)}</span>` : ''}</span>
+    <span class="pl-actions"><button class="edit-btn" data-pledit="${p.id}">edit</button><button class="x" data-pldel="${p.id}" aria-label="Delete place">×</button></span>
+  </div>`;
+}
+function renderPlaces() {
+  const el = document.getElementById('placeList'); if (!el) return;
+  const items = placeItems();
+  if (!items.length) {
+    el.innerHTML = `<div class="empty">No places yet. Add where this chapter of your life is happening — your home, a trip, a spot that matters.</div>`;
+    return;
+  }
+  const cur = currentHome();
+  const byFrom = (a, b) => String(b.from || '').localeCompare(String(a.from || ''));
+  const homes = items.filter(p => p.kind === 'home' && (!cur || p.id !== cur.id)).sort(byFrom);
+  const trips = items.filter(p => p.kind === 'trip').sort(byFrom);
+  const spots = items.filter(p => p.kind === 'spot').sort(byFrom);
+  const section = (title, arr) => arr.length ? `<div class="pl-group"><div class="pl-group-h">${title}</div>${arr.map(p => placeCardHTML(p, false)).join('')}</div>` : '';
+  el.innerHTML =
+    (cur ? `<div class="pl-group">${placeCardHTML(cur, true)}</div>` : '') +
+    section('Homes', homes) + section('Trips', trips) + section('Meaningful places', spots);
+  el.querySelectorAll('[data-pldel]').forEach(b => b.onclick = () => {
+    const p = placeItems().find(x => x.id === b.dataset.pldel);
+    if (p && confirm(`Delete “${p.name}”? A snapshot is kept so you can undo via Snapshots.`)) {
+      takeSnapshot('before delete place');
+      state.places.items = placeItems().filter(x => x.id !== b.dataset.pldel);
+      saveState(); renderPlaces(); if (document.getElementById('dayPlace')) renderDayPlace();
+    }
+  });
+  el.querySelectorAll('[data-pledit]').forEach(b => b.onclick = () => {
+    const p = placeItems().find(x => x.id === b.dataset.pledit); if (!p) return;
+    openEditModal('Edit place', '', [
+      { key: 'name', label: 'Place', type: 'text' },
+      { key: 'kind', label: 'Kind', type: 'select', options: [{ value: 'home', label: 'Home' }, { value: 'trip', label: 'Trip' }, { value: 'spot', label: 'Place' }] },
+      { key: 'from', label: 'From', type: 'date' }, { key: 'to', label: 'To', type: 'date' }, { key: 'note', label: 'Note', type: 'text' },
+    ], p, vals => { Object.assign(p, vals); saveState(); renderPlaces(); if (document.getElementById('dayPlace')) renderDayPlace(); });
+  });
+}
+document.getElementById('plAdd').onclick = () => {
+  const name = document.getElementById('plName').value.trim(); if (!name) return;
+  state.places = state.places || { items: [], days: {} };
+  state.places.items = state.places.items || [];
+  state.places.items.push({
+    id: uid(), name, kind: document.getElementById('plKind').value || 'spot',
+    from: document.getElementById('plFrom').value || '', to: document.getElementById('plTo').value || '',
+    note: document.getElementById('plNote').value.trim(),
+  });
+  saveState();
+  ['plName', 'plFrom', 'plTo', 'plNote'].forEach(id => document.getElementById(id).value = '');
+  renderPlaces();
+  if (document.getElementById('dayPlace')) renderDayPlace();
 };
 
 /* Pulse */
@@ -5382,7 +5534,7 @@ function syncTodayPulseInputs() {
   const note = document.getElementById('qtPulseNote');
   if (note && document.activeElement !== note && pulse) note.value = pulse.note || '';
 }
-function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderDayLog(); renderQtChips(); renderDailyCard(); renderHabitsToday(); renderDecisionCapture(); renderTodayEvents(); }
+function renderTodayTab() { renderHome(); renderTodaySummary(); syncTodayPulseInputs(); renderQtDateControl(); renderDayPlace(); renderDayLog(); renderQtChips(); renderDailyCard(); renderHabitsToday(); renderDecisionCapture(); renderTodayEvents(); }
 
 function renderQtDateControl() {
   const pick = document.getElementById('qtDatePick'); if (!pick) return;
@@ -6024,6 +6176,23 @@ function dayLogEvents(date) {
   ev.sort((a, b) => String(a.t).localeCompare(String(b.t)));
   return ev;
 }
+// The per-day "where" tag: a select of your register places, defaulting to the current home.
+function renderDayPlace() {
+  const sel = document.getElementById('dayPlace'); if (!sel) return;
+  const cur = currentHome(), days = placeDays();
+  const chosen = days[qtLogDate] || (cur ? cur.name : '');
+  const names = [];
+  if (cur) names.push(cur.name);
+  placeItems().forEach(p => { if (!names.includes(p.name)) names.push(p.name); });
+  if (chosen && !names.includes(chosen)) names.unshift(chosen);
+  if (!names.length) { sel.innerHTML = '<option value="">— add places in Identity</option>'; sel.disabled = true; return; }
+  sel.disabled = false;
+  sel.innerHTML = names.map(n => `<option value="${escapeHtml(n)}"${n === chosen ? ' selected' : ''}>${escapeHtml(n)}</option>`).join('');
+}
+document.getElementById('dayPlace').addEventListener('change', e => {
+  placeDays()[qtLogDate] = e.target.value;
+  saveState();
+});
 function renderDayLog() {
   const host = document.getElementById('dayLog'); if (!host) return;
   const date = qtLogDate;
@@ -7180,7 +7349,7 @@ function openDayDetail(ds, trigger){
 }
 
 function renderAll() {
-  renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal();
+  renderValues(); renderSeason(); renderPulse(); renderReflections(); renderJournal(); renderPlaces();
   refreshHealthWorkspace();   // one coordinated pass over every Health surface
   simpleLog('symptoms','symLog', r => escapeHtml(r.note));   // symptoms live in the Body view
   renderBudget(); renderExpenses(); renderSubs(); renderNetWorth(); renderGoals();
