@@ -56,8 +56,8 @@
     </form>
     <p class="hint">
       Type it how you'd say it. <code>2 bag flour</code> &middot; <code>@pantry</code> sets where it lives &middot;
-      <code>#baking</code> adds a tag. Tags are what the Make engine matches on — a
-      <em>cast iron skillet</em> tagged <code>#pan</code> counts as a pan.
+      <code>#baking</code> adds a tag &middot; <code>!5d</code> sets a use-by (also <code>!2w</code>, <code>!1m</code>, or <code>!2026-08-10</code>).
+      Tags are what the Make engine matches on — a <em>cast iron skillet</em> tagged <code>#pan</code> counts as a pan.
     </p>
 
     <div class="toolsrow">
@@ -167,7 +167,10 @@
         </select>
       </label>
     </div>
-    <label class="field"><span>Where it lives</span><input type="text" id="editLoc" placeholder="pantry, top drawer, garage"></label>
+    <div class="fieldrow">
+      <label class="field"><span>Where it lives</span><input type="text" id="editLoc" placeholder="pantry, top drawer, garage"></label>
+      <label class="field"><span>Use by (optional)</span><input type="date" id="editExpires"></label>
+    </div>
     <label class="field">
       <span>Tags — what this counts as</span>
       <input type="text" id="editTags" placeholder="pan, oven-safe, skillet">

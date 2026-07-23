@@ -237,6 +237,54 @@ function areaName(id) {
   return a ? a.name : id;
 }
 
+/* ---------------------------------------------------------- freshness */
+
+/* Whole days from today to a "YYYY-MM-DD" use-by date. Negative = past.
+ * null when the item carries no date (most shelf-stable things don't). */
+function daysUntil(dateStr) {
+  if (!dateStr) return null;
+  const t = new Date(dateStr + 'T00:00:00');
+  if (isNaN(t.getTime())) return null;
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  return Math.round((t.getTime() - now.getTime()) / 86400000);
+}
+
+/* Buckets tuned to how a kitchen actually feels: past, next few days,
+ * this week, and everything comfortably ahead (or undated). */
+function freshness(item) {
+  const d = daysUntil(item && item.expires);
+  if (d === null) return { level: 'none', days: null };
+  if (d < 0) return { level: 'expired', days: d };
+  if (d <= 3) return { level: 'soon', days: d };
+  if (d <= 7) return { level: 'week', days: d };
+  return { level: 'ok', days: d };
+}
+
+/** Short chip text: "expired", "today", "2d". */
+function freshChip(f) {
+  if (f.level === 'expired') return 'expired';
+  if (f.days === 0) return 'today';
+  if (f.days === 1) return 'tomorrow';
+  return f.days + 'd';
+}
+
+/** Turn `!5d`, `!2w`, `!1m`, or `!2026-08-10` into a use-by date string. */
+function parseExpiryToken(t) {
+  let m = t.match(/^(\d{4}-\d{2}-\d{2})$/);
+  if (m) return m[1];
+  m = t.match(/^(\d+)([dwm])$/i);
+  if (!m) return '';
+  const n = Number(m[1]);
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  const unit = m[2].toLowerCase();
+  if (unit === 'd') d.setDate(d.getDate() + n);
+  else if (unit === 'w') d.setDate(d.getDate() + n * 7);
+  else if (unit === 'm') d.setMonth(d.getMonth() + n);
+  return d.toISOString().slice(0, 10);
+}
+
 /* ------------------------------------------------------------- persistence */
 
 function setSaveState(cls, text) {
@@ -437,9 +485,11 @@ function parseQuick(text) {
   let s = text.trim();
   const tags = [];
   let location = '';
+  let expires = '';
 
   s = s.replace(/#([\w\-]+)/g, (_, t) => { tags.push(t.replace(/-/g, ' ')); return ' '; });
-  s = s.replace(/@([\w\- ]+?)(?=\s+[#@]|$)/g, (_, l) => { location = l.trim(); return ' '; });
+  s = s.replace(/!(\S+)/g, (_, t) => { expires = parseExpiryToken(t) || expires; return ' '; });
+  s = s.replace(/@([\w\- ]+?)(?=\s+[#@!]|$)/g, (_, l) => { location = l.trim(); return ' '; });
   s = s.replace(/\s+/g, ' ').trim();
 
   let qty = 1;
@@ -469,6 +519,7 @@ function parseQuick(text) {
     location: location,
     tags: tags,
     notes: '',
+    expires: expires || null,
     added: now,
     updated: now,
   };
@@ -540,6 +591,8 @@ function renderStock() {
     `${all.filter((i) => i.kind === 'durable').length} gear · ` +
     `${all.filter((i) => !inStock(i)).length} out`;
 
+  renderFreshStrip(box, all);
+
   if (!items.length) {
     const e = el('div', 'empty');
     e.appendChild(el('strong', null, all.length ? 'Nothing matches.' : 'Nothing here yet.'));
@@ -567,6 +620,36 @@ function renderStock() {
   }
 }
 
+/* A compact "use these soon" banner above the stock list — expired and
+ * near-date items only, soonest first, each a tap-to-edit chip. Shows
+ * nothing (and takes no space) when the fridge is calm. */
+function renderFreshStrip(box, scopeItems) {
+  const soon = scopeItems
+    .filter(inStock)
+    .map((it) => ({ it, f: freshness(it) }))
+    .filter((x) => x.f.level === 'expired' || x.f.level === 'soon' || x.f.level === 'week')
+    .sort((a, b) => a.f.days - b.f.days);
+  if (!soon.length) return;
+
+  const strip = el('div', 'fresh-strip');
+  const head = el('div', 'fresh-strip-head');
+  head.appendChild(el('span', 'fresh-strip-title', '⏳ Use soon'));
+  head.appendChild(el('span', 'fresh-strip-n', String(soon.length)));
+  strip.appendChild(head);
+
+  const chips = el('div', 'fresh-strip-chips');
+  for (const { it, f } of soon) {
+    const c = el('button', 'fresh-item ' + f.level);
+    c.appendChild(el('span', 'fi-name', it.name));
+    c.appendChild(el('span', 'fi-when', freshChip(f)));
+    c.title = 'Edit / update ' + it.name;
+    c.onclick = () => openEdit(it);
+    chips.appendChild(c);
+  }
+  strip.appendChild(chips);
+  box.appendChild(strip);
+}
+
 function itemRow(it) {
   const row = el('div', 'item' + (inStock(it) ? '' : ' out'));
 
@@ -582,6 +665,12 @@ function itemRow(it) {
   const main = el('div', 'item-main');
   main.appendChild(el('div', 'item-name', it.name));
   const meta = el('div', 'item-meta');
+  const f = freshness(it);
+  if (f.level !== 'none' && f.level !== 'ok' && inStock(it)) {
+    const chip = el('span', 'freshchip ' + f.level, freshChip(f));
+    chip.title = it.expires ? 'Use by ' + it.expires : '';
+    meta.appendChild(chip);
+  }
   if (area === 'all') meta.appendChild(el('span', null, areaName(it.area)));
   if (it.location) meta.appendChild(el('span', null, '· ' + it.location));
   (it.tags || []).forEach((t) => meta.appendChild(el('span', 'tagchip', t)));
@@ -640,6 +729,8 @@ function renderMake(evals) {
     return;
   }
 
+  renderCookSoon(box, list);
+
   for (const [title, items, cls] of buckets) {
     if (!items.length) continue;
     const g = el('div', 'group');
@@ -658,6 +749,45 @@ function renderMake(evals) {
     box.appendChild(el('p', 'hint',
       `${hidden} more are three or more things away — tick "show everything" to see them.`));
   }
+}
+
+/* The payoff of freshness dates: makeable-now dishes that USE a perishable
+ * on the clock, so the app points you at dinner AND at what to rescue.
+ * Ranked by the soonest-expiring ingredient each one uses up. */
+function renderCookSoon(box, list) {
+  const picks = [];
+  for (const e of list) {
+    if (e.gap !== 0) continue;                 // must be cookable right now
+    let best = null, via = null;
+    for (const r of e.reqs) {
+      if (!r.have || !r.provider) continue;
+      const f = freshness(r.provider);
+      if (f.level === 'expired' || f.level === 'soon' || f.level === 'week') {
+        if (best === null || f.days < best) { best = f.days; via = r.provider; }
+      }
+    }
+    if (via) picks.push({ e, days: best, via });
+  }
+  if (!picks.length) return;
+  picks.sort((a, b) => a.days - b.days);
+
+  const g = el('div', 'group cooksoon');
+  const h = el('div', 'group-head');
+  h.appendChild(el('h2', null, '🍳 Cook before it goes'));
+  h.appendChild(el('span', 'n', String(picks.length)));
+  g.appendChild(h);
+  g.appendChild(el('p', 'cooksoon-note',
+    'Ready now, and each one uses something that’s near its date.'));
+  const cards = el('div', 'cards');
+  for (const { e, via, days } of picks.slice(0, 8)) {
+    const card = makeCard(e, 'ready');
+    const f = { level: '', days };
+    card.appendChild(el('div', 'uses-up',
+      'uses your ' + via.name + ' (' + (days < 0 ? 'expired' : days + 'd') + ')'));
+    cards.appendChild(card);
+  }
+  g.appendChild(cards);
+  box.appendChild(g);
 }
 
 function makeCard(e, cls) {
@@ -867,6 +997,7 @@ function openEdit(it) {
   $('editQty').value = it.qty == null ? '' : it.qty;
   $('editUnit').value = it.unit || '';
   $('editLoc').value = it.location || '';
+  $('editExpires').value = it.expires || '';
   $('editTags').value = (it.tags || []).join(', ');
   $('editNotes').value = it.notes || '';
   $('editKind').value = it.kind === 'durable' ? 'durable' : 'consumable';
@@ -967,6 +1098,7 @@ function wire() {
     it.qty = q === '' ? 0 : Math.max(0, Number(q) || 0);
     it.unit = $('editUnit').value.trim();
     it.location = $('editLoc').value.trim();
+    it.expires = $('editExpires').value || null;
     it.tags = splitList($('editTags').value);
     it.notes = $('editNotes').value.trim();
     it.area = $('editArea').value;
