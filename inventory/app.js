@@ -324,8 +324,16 @@ function tombstone(id) {
  * like that can arrive from a merge, so we sanitize on every load. */
 function fixRow(x, i, prefix) {
   if (!x || typeof x !== 'object') return null;
+  const hasName = typeof x.name === 'string' && x.name.trim();
+  const hasTags = Array.isArray(x.tags) && x.tags.length;
+  const hasNotes = typeof x.notes === 'string' && x.notes.trim();
+  const hasReqs = (Array.isArray(x.needs) && x.needs.length) ||
+                  (Array.isArray(x.tools) && x.tools.length);
+  // A row with no name and nothing else identifiable is junk from a stray
+  // half-edit — drop it outright rather than keep resurrecting it via merge.
+  if (!hasName && !hasTags && !hasNotes && !hasReqs) return null;
   if (!x.id) x.id = prefix + '-' + i + '-' + Math.random().toString(36).slice(2, 6);
-  if (typeof x.name !== 'string' || !x.name.trim()) x.name = '(unnamed)';
+  if (!hasName) x.name = '(unnamed)';
   if (!Array.isArray(x.tags)) x.tags = [];
   return x;
 }
@@ -1300,6 +1308,15 @@ function openSetup() {
   }
 
   if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+    // When a freshly-deployed service worker takes over, reload once so the
+    // running page swaps to the new code automatically — no more "close the
+    // app and reopen" after every update.
+    let swReloaded = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (swReloaded) return;
+      swReloaded = true;
+      location.reload();
+    });
     navigator.serviceWorker.register('sw.js').catch(() => { /* fine without it */ });
   }
 
