@@ -84,6 +84,10 @@ code {
 .setup-steps p { margin: 0 0 8px; }
 .setup-steps p:last-child { margin-bottom: 0; }
 .setup-steps a { color: var(--accent); }
+.setup-note {
+  margin-top: 10px !important; padding-top: 10px;
+  border-top: 1px solid var(--line); color: var(--ink-faint);
+}
 
 /* ---------------------------------------------------------------- areas */
 

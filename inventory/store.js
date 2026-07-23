@@ -59,6 +59,20 @@ const Store = (function () {
 
   function nowStamp() { return new Date().toISOString(); }
 
+  /* Does this browser actually keep what we write? In iOS Private Browsing —
+   * and some locked-down configs — localStorage.setItem throws or is wiped,
+   * so a token "saved" this session is gone next launch. We probe once and
+   * warn loudly, rather than silently making the user sign in every time. */
+  function storagePersists() {
+    try {
+      const k = '__inv_probe__';
+      localStorage.setItem(k, '1');
+      const ok = localStorage.getItem(k) === '1';
+      localStorage.removeItem(k);
+      return ok;
+    } catch { return false; }
+  }
+
   function readLS(key, fallback) {
     try {
       const raw = localStorage.getItem(key);
@@ -283,11 +297,14 @@ const Store = (function () {
     status,
     mode() { return mode; },
     github: GitHub,
+    storagePersists,
 
+    /** Returns true only if the token is actually there after writing it. */
     setGitHubConfig(cfg, tok) {
       writeLS(LS_CFG, cfg);
       writeLS(LS_MODE, 'github');
       try { localStorage.setItem(LS_TOKEN, tok); } catch { /* ignore */ }
+      return this.github.token() === tok && !!this.github.cfg();
     },
 
     forgetToken() {

@@ -1059,7 +1059,16 @@ function wireSync() {
       return;
     }
     $('setupMsg').textContent = 'Checking…';
-    Store.setGitHubConfig({ owner, repo, path: 'inventory.json', branch: 'main' }, token);
+    const stuck = Store.setGitHubConfig(
+      { owner, repo, path: 'inventory.json', branch: 'main' }, token);
+    if (!stuck || !Store.storagePersists()) {
+      $('setupMsg').innerHTML =
+        '<b>This browser isn\'t saving the login.</b> You\'re almost ' +
+        'certainly in <b>Private Browsing</b> — turn it off (Safari: tap the ' +
+        'tabs icon, then “Private” → switch to a normal tab), reopen this ' +
+        'page, and connect once more. After that it stays signed in.';
+      return;
+    }
     try {
       const { state: remote } = await Store.github.load();
       if (remote) {
