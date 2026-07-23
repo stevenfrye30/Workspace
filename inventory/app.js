@@ -300,7 +300,8 @@ function save() {
     const res = await Store.save(state);
     if (res.ok) {
       setSaveState('saved', res.merged ? 'merged ✓' : 'saved ✓');
-      if (res.state) { state = res.state; render(); }
+      // A merge can return rows we haven't cleaned — sanitize before drawing.
+      if (res.state) { state = normalizeState(res.state); render(); }
     } else if (res.offline) {
       setSaveState('pending', 'offline — will sync');
     } else {
@@ -535,7 +536,25 @@ function parseQuick(text) {
 
 /* ------------------------------------------------------------- rendering */
 
+/* Self-healing wrapper. If a draw ever throws — a bad row, unexpected data,
+ * anything — a click used to leave a blank screen that only a reload fixed.
+ * Now we catch it, sanitize the state (which always renders), and redraw.
+ * The app fixes itself instead of stranding you. */
 function render() {
+  try {
+    renderInner();
+  } catch (err) {
+    console.error('render failed — sanitizing state and retrying', err);
+    try {
+      state = normalizeState(state);
+      renderInner();
+    } catch (err2) {
+      console.error('render still failing after sanitize', err2);
+    }
+  }
+}
+
+function renderInner() {
   renderAreas();
   document.querySelectorAll('.view').forEach((v) => v.classList.add('hidden'));
   $('view-' + view).classList.remove('hidden');
@@ -1168,8 +1187,7 @@ function wire() {
       if (!confirm(`Replace everything with this file?\n\n` +
                    `${next.items.length} items, ${(next.blueprints || []).length} blueprints.\n` +
                    `Your current data stays in backups/.`)) return;
-      state = next;
-      if (!Array.isArray(state.areas) || !state.areas.length) state.areas = DEFAULT_AREAS.slice();
+      state = normalizeState(next);
       save(); render();
     } catch (err) {
       alert('That file did not look like an Inventory export.\n\n' + err.message);
