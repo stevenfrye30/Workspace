@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventory</title>
+<link rel="stylesheet" href="styles.css">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#7a5c2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Inventory">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📦</text></svg>">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="logo">📦</span>
+    <div>
+      <h1>Inventory</h1>
+      <p class="sub">What you have &middot; what it adds up to</p>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span id="saveState" class="save-state">&nbsp;</span>
+    <button class="ghost" id="btnSync" title="Pull your partner's changes and push yours">⟳</button>
+    <button class="ghost" id="btnExport" title="Download a copy of everything">Export</button>
+    <button class="ghost" id="btnImport" title="Load a previously exported file">Import</button>
+    <input type="file" id="importFile" accept="application/json" hidden>
+    <button class="ghost" id="btnSettings" title="Where this syncs to">⚙</button>
+    <button class="ghost" id="btnTheme" title="Light / dark">◐</button>
+  </div>
+</header>
+
+<nav class="areabar" id="areaBar"></nav>
+
+<nav class="tabs">
+  <button class="tab active" data-view="stock">Stock</button>
+  <button class="tab" data-view="make">Make<span class="pill" id="makeCount">0</span></button>
+  <button class="tab" data-view="gaps">Gaps</button>
+  <button class="tab" data-view="blueprints">Blueprints</button>
+</nav>
+
+<main>
+
+  <!-- ================= STOCK ================= -->
+  <section class="view" id="view-stock">
+
+    <form class="quickadd" id="quickAdd" autocomplete="off">
+      <div class="kindtoggle" id="kindToggle">
+        <button type="button" class="kind active" data-kind="consumable" title="Something that gets used up">Supply</button>
+        <button type="button" class="kind" data-kind="durable" title="Something you keep and use again">Gear</button>
+      </div>
+      <input type="text" id="quickInput" placeholder="2 bag flour @pantry #baking" aria-label="Add an item">
+      <button type="submit" class="primary">Add</button>
+    </form>
+    <p class="hint">
+      Type it how you'd say it. <code>2 bag flour</code> &middot; <code>@pantry</code> sets where it lives &middot;
+      <code>#baking</code> adds a tag. Tags are what the Make engine matches on — a
+      <em>cast iron skillet</em> tagged <code>#pan</code> counts as a pan.
+    </p>
+
+    <div class="toolsrow">
+      <input type="search" id="search" placeholder="Search stock…" aria-label="Search stock">
+      <label class="check"><input type="checkbox" id="hideOut"> Hide out-of-stock</label>
+      <span class="spacer"></span>
+      <span class="counts" id="stockCounts"></span>
+    </div>
+
+    <div id="stockList"></div>
+  </section>
+
+  <!-- ================= MAKE ================= -->
+  <section class="view hidden" id="view-make">
+    <div class="toolsrow">
+      <input type="search" id="makeSearch" placeholder="Search what you can make…">
+      <label class="check"><input type="checkbox" id="showAllMake"> Show everything, even far-off</label>
+    </div>
+    <div id="makeList"></div>
+  </section>
+
+  <!-- ================= GAPS ================= -->
+  <section class="view hidden" id="view-gaps">
+    <div class="explain">
+      <h2>One thing away</h2>
+      <p>Everything you don't have, ranked by how much it would unlock. The top of this
+         list is your shopping list — not by what's missing most often, but by what
+         <strong>finishes</strong> the most things.</p>
+    </div>
+    <div id="gapList"></div>
+  </section>
+
+  <!-- ================= BLUEPRINTS ================= -->
+  <section class="view hidden" id="view-blueprints">
+    <div class="explain">
+      <h2>Blueprints</h2>
+      <p>A blueprint is anything you could make or do: a meal, a build, a repair. It lists
+         what it consumes (<em>needs</em>) and what it uses without consuming (<em>tools</em>).
+         Write <code>butter|oil</code> for "either one works" and <code>~parsley</code> for
+         "nice to have, not required".</p>
+    </div>
+
+    <form class="bpform" id="bpForm" autocomplete="off">
+      <input type="hidden" id="bpId">
+      <div class="bprow">
+        <input type="text" id="bpName" placeholder="Name — e.g. Roasted vegetables" required>
+        <select id="bpArea"></select>
+      </div>
+      <input type="text" id="bpNeeds" placeholder="Needs — potato, olive oil, salt, ~rosemary">
+      <input type="text" id="bpTools" placeholder="Tools — oven, sheet pan">
+      <input type="text" id="bpTags" placeholder="Tags — side, cheap">
+      <div class="bprow">
+        <button type="submit" class="primary" id="bpSubmit">Add blueprint</button>
+        <button type="button" class="ghost" id="bpCancel" hidden>Cancel</button>
+      </div>
+    </form>
+
+    <div class="toolsrow">
+      <input type="search" id="bpSearch" placeholder="Search blueprints…">
+      <span class="spacer"></span>
+      <span class="counts" id="bpCounts"></span>
+    </div>
+    <div id="bpList"></div>
+  </section>
+
+</main>
+
+<!-- use / partial-deletion popover -->
+<div class="modal hidden" id="useModal">
+  <div class="modal-card">
+    <h3 id="useTitle">Use some</h3>
+    <p class="modal-sub" id="useSub"></p>
+    <div class="usequick" id="useQuick"></div>
+    <label class="field">
+      <span>Set the amount to</span>
+      <input type="number" id="useExact" step="any" min="0">
+    </label>
+    <div class="modal-actions">
+      <button class="ghost danger" id="useOut">Mark out of stock</button>
+      <span class="spacer"></span>
+      <button class="ghost" id="useCancel">Cancel</button>
+      <button class="primary" id="useSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- edit item -->
+<div class="modal hidden" id="editModal">
+  <div class="modal-card">
+    <h3>Edit item</h3>
+    <input type="hidden" id="editId">
+    <div class="fieldrow">
+      <label class="field" style="flex:0 0 80px"><span>Icon</span>
+        <input type="text" id="editEmoji" maxlength="4" placeholder="auto"></label>
+      <label class="field"><span>Name</span><input type="text" id="editName"></label>
+    </div>
+    <div class="fieldrow">
+      <label class="field"><span>Amount</span><input type="number" id="editQty" step="any" min="0"></label>
+      <label class="field"><span>Unit</span><input type="text" id="editUnit" placeholder="bag, lb, bottle"></label>
+    </div>
+    <div class="fieldrow">
+      <label class="field"><span>Area</span><select id="editArea"></select></label>
+      <label class="field"><span>Kind</span>
+        <select id="editKind">
+          <option value="consumable">Supply — gets used up</option>
+          <option value="durable">Gear — kept and reused</option>
+        </select>
+      </label>
+    </div>
+    <label class="field"><span>Where it lives</span><input type="text" id="editLoc" placeholder="pantry, top drawer, garage"></label>
+    <label class="field">
+      <span>Tags — what this counts as</span>
+      <input type="text" id="editTags" placeholder="pan, oven-safe, skillet">
+    </label>
+    <label class="field"><span>Notes</span><input type="text" id="editNotes"></label>
+    <div class="modal-actions">
+      <button class="ghost danger" id="editDelete">Delete item</button>
+      <span class="spacer"></span>
+      <button class="ghost" id="editCancel">Cancel</button>
+      <button class="primary" id="editSave">Save</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- where this syncs to -->
+<div class="modal hidden" id="setupModal">
+  <div class="modal-card">
+    <h3>Sync with GitHub</h3>
+    <p class="modal-sub">
+      Your inventory lives as one JSON file in a private repo, so it's reachable
+      from any phone and two people can work on it. Every change is a commit,
+      so nothing is ever really lost.
+    </p>
+
+    <div class="setup-steps" id="setupSteps">
+      <p><b>1.</b> Create a <b>private</b> repo — nothing in it, no README.
+         <a href="https://github.com/new" target="_blank" rel="noopener">github.com/new</a></p>
+      <p><b>2.</b> Make a fine-grained token with <b>Contents: Read and write</b>
+         on <i>only that repo</i>.
+         <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">create one</a></p>
+      <p><b>3.</b> Paste it below. It's kept in this browser and nowhere else —
+         it is never committed and never leaves your device except to talk to GitHub.</p>
+      <p><b>4.</b> To share: add your partner on the repo under
+         <i>Settings → Collaborators</i>. They make their own token and do this same setup.</p>
+    </div>
+
+    <div class="fieldrow">
+      <label class="field"><span>GitHub user or org</span>
+        <input type="text" id="cfgOwner" placeholder="stevenfrye30" autocapitalize="off" spellcheck="false"></label>
+      <label class="field"><span>Repo name</span>
+        <input type="text" id="cfgRepo" placeholder="inventory-data" autocapitalize="off" spellcheck="false"></label>
+    </div>
+    <label class="field"><span>Access token</span>
+      <input type="password" id="cfgToken" placeholder="github_pat_…" autocapitalize="off" spellcheck="false"></label>
+    <p class="modal-sub" id="setupMsg"></p>
+
+    <div class="modal-actions">
+      <button class="ghost danger" id="cfgForget" hidden>Sign out of this device</button>
+      <span class="spacer"></span>
+      <button class="ghost" id="cfgCancel">Close</button>
+      <button class="primary" id="cfgSave">Connect</button>
+    </div>
+  </div>
+</div>
+
+<script src="store.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
