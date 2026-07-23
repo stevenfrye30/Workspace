@@ -167,10 +167,20 @@
         </select>
       </label>
     </div>
+    <label class="field"><span>Where it lives</span><input type="text" id="editLoc" placeholder="pantry, fridge, garage"></label>
     <div class="fieldrow">
-      <label class="field"><span>Where it lives</span><input type="text" id="editLoc" placeholder="pantry, top drawer, garage"></label>
-      <label class="field"><span>Use by (optional)</span><input type="date" id="editExpires"></label>
+      <label class="field"><span>Bought</span><input type="date" id="editPurchased"></label>
+      <label class="field"><span>Condition</span>
+        <select id="editCondition">
+          <option value="fresh">🟢 Fresh</option>
+          <option value="ripe">🟡 Ripe</option>
+          <option value="soft">🟠 Getting soft</option>
+          <option value="use-now">🔴 Use now</option>
+        </select>
+      </label>
     </div>
+    <label class="field"><span>Use by — override the estimate (optional)</span><input type="date" id="editExpires"></label>
+    <p class="est-hint" id="editEstimate"></p>
     <label class="field">
       <span>Tags — what this counts as</span>
       <input type="text" id="editTags" placeholder="pan, oven-safe, skillet">

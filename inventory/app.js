@@ -239,34 +239,155 @@ function areaName(id) {
 
 /* ---------------------------------------------------------- freshness */
 
-/* Whole days from today to a "YYYY-MM-DD" use-by date. Negative = past.
- * null when the item carries no date (most shelf-stable things don't). */
+/* Typical shelf life in days, for PERISHABLES ONLY. This list doubles as the
+ * definition of "things that go bad" — anything not here (flour, salt, cans)
+ * gets no prediction and no expiry nag, which is correct. Days assume the
+ * food's normal storage and follow USDA FoodKeeper-style guidance. Ordered
+ * specific-before-generic; matched through the same token engine as the Make
+ * tab, so "macaroni and cheese" never reads as "cheese". */
+const SHELF_LIFE = [
+  // leafy & delicate
+  ['spinach', 5], ['arugula', 5], ['kale', 7], ['lettuce', 7], ['greens', 5],
+  ['basil', 5], ['cilantro', 6], ['parsley', 7], ['mint', 7], ['herb', 6],
+  // berries & soft fruit
+  ['raspberry', 3], ['strawberry', 4], ['blackberry', 4], ['blueberry', 7],
+  ['berries', 4], ['cherry', 5], ['grape', 7], ['fig', 4],
+  // tree & other fruit
+  ['banana', 5], ['avocado', 4], ['peach', 4], ['nectarine', 4], ['plum', 5],
+  ['apricot', 4], ['mango', 5], ['pear', 6], ['kiwi', 14], ['pineapple', 5],
+  ['melon', 5], ['apple', 30], ['orange', 21], ['grapefruit', 21],
+  ['lemon', 21], ['lime', 21],
+  // veg
+  ['cherry tomato', 7], ['tomato', 6], ['cucumber', 7], ['zucchini', 6],
+  ['mushroom', 5], ['asparagus', 4], ['green bean', 7], ['broccoli', 7],
+  ['cauliflower', 7], ['bell pepper', 10], ['jalapeno', 12], ['eggplant', 6],
+  ['corn', 3], ['celery', 14], ['cabbage', 21], ['carrot', 28],
+  ['green onion', 7], ['scallion', 7],
+  // roots & alliums (pantry)
+  ['sweet potato', 30], ['potato', 60], ['onion', 30], ['garlic', 21],
+  // NB: fresh ginger omitted deliberately — "ground ginger" (a spice) would
+  // otherwise match it, and fresh ginger is a rare, long-keeping exception.
+  // dairy & eggs
+  ['cottage cheese', 7], ['cream cheese', 14], ['sour cream', 14],
+  ['ricotta', 7], ['mozzarella', 14], ['cheese', 21], ['milk', 7],
+  ['heavy cream', 10], ['cream', 7], ['yogurt', 14], ['butter', 45],
+  ['egg', 28],
+  // proteins (raw, fridge)
+  ['chicken', 2], ['turkey', 2], ['ground beef', 2], ['sausage', 2],
+  ['fish', 2], ['salmon', 2], ['shrimp', 2], ['bacon', 7], ['deli meat', 5],
+  ['steak', 4], ['pork', 4], ['beef', 4], ['tofu', 7], ['hummus', 7],
+  // bread & prepared
+  ['tortilla', 7], ['bagel', 5], ['bread', 6], ['muffin', 4],
+  ['leftovers', 4], ['salad', 3],
+];
+
+/* How much of the shelf life is left, judged by eye. `fresh` trusts the
+ * purchase date; the riper states trust what you're looking at NOW and count
+ * forward from today, because a stale "bought" date shouldn't outvote your
+ * own eyes on a softening tomato. */
+const CONDITION = {
+  fresh:     { label: '🟢 Fresh',        fromToday: null },
+  ripe:      { label: '🟡 Ripe',         fromToday: 'half' },
+  soft:      { label: '🟠 Getting soft', fromToday: 2 },
+  'use-now': { label: '🔴 Use now',      fromToday: 1 },
+};
+
+function parseYMD(s) {
+  if (!s) return null;
+  const t = new Date((String(s).length === 10 ? s + 'T00:00:00' : s));
+  return isNaN(t.getTime()) ? null : t;
+}
+
+function addDays(date, n) {
+  const d = new Date(date.getTime());
+  d.setDate(d.getDate() + n);
+  return d;
+}
+
+function todayMidnight() {
+  const d = new Date();
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+/** Days from today to a use-by date. Negative = past. null if no date. */
 function daysUntil(dateStr) {
-  if (!dateStr) return null;
-  const t = new Date(dateStr + 'T00:00:00');
-  if (isNaN(t.getTime())) return null;
-  const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  return Math.round((t.getTime() - now.getTime()) / 86400000);
+  const t = parseYMD(dateStr);
+  if (!t) return null;
+  return Math.round((t.getTime() - todayMidnight().getTime()) / 86400000);
 }
 
-/* Buckets tuned to how a kitchen actually feels: past, next few days,
- * this week, and everything comfortably ahead (or undated). */
+/* Words that mean "this is a preserved / shelf-stable form" — a canned,
+ * jarred, dried, ground, or powdered version of a fresh food doesn't spoil on
+ * the fresh food's clock. Catches "canned tomato", "ground ginger", "black
+ * pepper", "tomato sauce", "dry milk", "evaporated milk" — none of which are
+ * a near-term waste risk. */
+const SHELF_STABLE = new RegExp(
+  '\\b(freez|frozen|canned|jar|jarred|dried|dry|powder|powdered|' +
+  'flake|flakes|instant|preserved|pickled|bouillon|mix|extract|syrup|sauce|' +
+  'paste|seasoning|spice|evaporated|condensed|peppercorn)\\b');
+
+/** Typical shelf life for this item, or null if it isn't a tracked perishable
+ *  (or is a preserved/shelf-stable form of one). */
+function shelfLifeFor(item) {
+  if (!item || item.kind === 'durable') return null;
+  const text = norm(item.name) + ' ' + norm(item.location || '') + ' ' +
+               (item.tags || []).map(norm).join(' ');
+  if (SHELF_STABLE.test(text)) return null;
+  const tok = itemTokens(item);
+  for (const [key, days] of SHELF_LIFE) {
+    const k = singular(key);
+    if (tok.exact.has(key) || tok.derived.has(key) ||
+        tok.exact.has(k) || tok.derived.has(k)) return days;
+  }
+  return null;
+}
+
+/** Estimated use-by "YYYY-MM-DD", from when you got it + how it looks now.
+ *  null when we can't estimate (not a perishable we know). */
+function predictExpiry(item) {
+  const life = shelfLifeFor(item);
+  if (life == null) return null;
+  const cond = CONDITION[item && item.condition] || CONDITION.fresh;
+  let d;
+  if (cond.fromToday === null) {                   // fresh — trust purchase date
+    const bought = parseYMD(item.purchased) || parseYMD(item.added) || todayMidnight();
+    d = addDays(bought, life);
+  } else if (cond.fromToday === 'half') {          // ripe — a slice from today
+    d = addDays(todayMidnight(), Math.max(2, Math.round(life * 0.4)));
+  } else {
+    d = addDays(todayMidnight(), cond.fromToday);  // soft / use-now
+  }
+  return d.toISOString().slice(0, 10);
+}
+
+/** The date the app actually uses: your explicit override wins; otherwise the
+ *  estimate. */
+function effectiveExpiry(item) {
+  return (item && item.expires) || predictExpiry(item);
+}
+
+/* Buckets tuned to how a kitchen actually feels: past, next few days, this
+ * week, and everything comfortably ahead (or undated). `predicted` marks an
+ * estimate so the UI can show it with a ~. */
 function freshness(item) {
-  const d = daysUntil(item && item.expires);
-  if (d === null) return { level: 'none', days: null };
-  if (d < 0) return { level: 'expired', days: d };
-  if (d <= 3) return { level: 'soon', days: d };
-  if (d <= 7) return { level: 'week', days: d };
-  return { level: 'ok', days: d };
+  const eff = effectiveExpiry(item);
+  const d = daysUntil(eff);
+  const predicted = !!(eff && !(item && item.expires));
+  if (d === null) return { level: 'none', days: null, predicted: false };
+  if (d < 0) return { level: 'expired', days: d, predicted };
+  if (d <= 3) return { level: 'soon', days: d, predicted };
+  if (d <= 7) return { level: 'week', days: d, predicted };
+  return { level: 'ok', days: d, predicted };
 }
 
-/** Short chip text: "expired", "today", "2d". */
+/** Short chip text: "expired", "today", "2d" — with a ~ when it's an estimate. */
 function freshChip(f) {
-  if (f.level === 'expired') return 'expired';
-  if (f.days === 0) return 'today';
-  if (f.days === 1) return 'tomorrow';
-  return f.days + 'd';
+  const tilde = f.predicted ? '~' : '';
+  if (f.level === 'expired') return tilde + 'expired';
+  if (f.days === 0) return tilde + 'today';
+  if (f.days === 1) return tilde + 'tomorrow';
+  return tilde + f.days + 'd';
 }
 
 /** Turn `!5d`, `!2w`, `!1m`, or `!2026-08-10` into a use-by date string. */
@@ -1024,13 +1145,51 @@ function openEdit(it) {
   $('editQty').value = it.qty == null ? '' : it.qty;
   $('editUnit').value = it.unit || '';
   $('editLoc').value = it.location || '';
+  $('editPurchased').value = it.purchased || (it.added ? it.added.slice(0, 10) : '');
+  $('editCondition').value = it.condition || 'fresh';
   $('editExpires').value = it.expires || '';
   $('editTags').value = (it.tags || []).join(', ');
   $('editNotes').value = it.notes || '';
   $('editKind').value = it.kind === 'durable' ? 'durable' : 'consumable';
   fillAreaSelect($('editArea'), it.area);
+  updateEditEstimate();
   $('editModal').classList.remove('hidden');
   $('editName').focus();
+}
+
+/* Live preview of the estimated use-by as you fill the form — so the
+ * prediction is visible and adjustable, never a black box. */
+function updateEditEstimate() {
+  const el2 = $('editEstimate');
+  if (!el2) return;
+  const tmp = {
+    name: $('editName').value,
+    tags: splitList($('editTags').value),
+    kind: $('editKind').value,
+    location: $('editLoc').value,
+    purchased: $('editPurchased').value || null,
+    condition: $('editCondition').value,
+    added: (state.items.find((x) => x.id === $('editId').value) || {}).added,
+  };
+  if ($('editExpires').value) {
+    el2.textContent = '✓ Using the date you set.';
+    el2.className = 'est-hint set';
+    return;
+  }
+  const life = shelfLifeFor(tmp);
+  const pred = predictExpiry(tmp);
+  if (!pred) {
+    el2.textContent = 'Not a tracked perishable — no estimate needed.';
+    el2.className = 'est-hint none';
+    return;
+  }
+  const dd = daysUntil(pred);
+  const when = new Date(pred + 'T00:00:00')
+    .toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  el2.textContent = '≈ best used by ' + when +
+    (dd < 0 ? ' (past)' : dd === 0 ? ' (today)' : ' (~' + dd + ' days)') +
+    '  · about ' + life + '-day shelf life';
+  el2.className = 'est-hint';
 }
 
 function fillAreaSelect(sel, chosen) {
@@ -1115,6 +1274,12 @@ function wire() {
 
   // edit modal
   $('editCancel').onclick = () => closeModal('editModal');
+  // Recompute the estimate live as any input that feeds it changes.
+  ['editName', 'editTags', 'editKind', 'editLoc', 'editPurchased',
+   'editCondition', 'editExpires'].forEach((id) => {
+    const node = $(id);
+    if (node) node.addEventListener('input', updateEditEstimate);
+  });
   $('editSave').onclick = () => {
     const it = state.items.find((x) => x.id === $('editId').value);
     if (!it) return closeModal('editModal');
@@ -1125,6 +1290,8 @@ function wire() {
     it.qty = q === '' ? 0 : Math.max(0, Number(q) || 0);
     it.unit = $('editUnit').value.trim();
     it.location = $('editLoc').value.trim();
+    it.purchased = $('editPurchased').value || null;
+    it.condition = $('editCondition').value === 'fresh' ? null : $('editCondition').value;
     it.expires = $('editExpires').value || null;
     it.tags = splitList($('editTags').value);
     it.notes = $('editNotes').value.trim();
