@@ -1370,6 +1370,27 @@ function wire() {
       document.body.classList.contains('dark') ? 'dark' : 'light');
   };
 
+  // text size — scales the whole UI bigger, remembered per browser. Handy on
+  // a laptop where the default runs small; cycles 100 → 175% and wraps.
+  const SIZES = [1, 1.15, 1.3, 1.5, 1.75];
+  let zi = Math.max(0, SIZES.indexOf(Number(localStorage.getItem('inventory_zoom')) || 1));
+  const applyZoom = () => {
+    const z = SIZES[zi];
+    // Zoom the content regions, not <body> — zooming the body would break the
+    // fixed-position modals. Modals stay at 100% and correctly centred.
+    ['.topbar', '.areabar', '.tabs', 'main'].forEach((sel) => {
+      const n = document.querySelector(sel);
+      if (n) n.style.zoom = z;
+    });
+    $('btnSize').textContent = zi === 0 ? 'A' : Math.round(z * 100) + '%';
+  };
+  applyZoom();
+  $('btnSize').onclick = () => {
+    zi = (zi + 1) % SIZES.length;
+    localStorage.setItem('inventory_zoom', SIZES[zi]);
+    applyZoom();
+  };
+
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeModal('useModal'); closeModal('editModal'); useTarget = null;
