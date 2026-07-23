@@ -390,6 +390,17 @@ function freshChip(f) {
   return tilde + f.days + 'd';
 }
 
+/** Recognise a freshness word after `!` — `!ripe`, `!soft`, `!usenow`,
+ *  `!fresh`. Returns the condition key or null. */
+function parseConditionToken(t) {
+  const w = norm(t).replace(/[^a-z]/g, '');
+  if (w === 'fresh' || w === 'new') return 'fresh';
+  if (w === 'ripe' || w === 'peak') return 'ripe';
+  if (w === 'soft' || w === 'old' || w === 'gettingsoft') return 'soft';
+  if (w === 'usenow' || w === 'now' || w === 'today') return 'use-now';
+  return null;
+}
+
 /** Turn `!5d`, `!2w`, `!1m`, or `!2026-08-10` into a use-by date string. */
 function parseExpiryToken(t) {
   let m = t.match(/^(\d{4}-\d{2}-\d{2})$/);
@@ -616,9 +627,18 @@ function parseQuick(text) {
   const tags = [];
   let location = '';
   let expires = '';
+  // Default freshness comes from the quick-add dropdown; a `!ripe`-style token
+  // in the text overrides it.
+  const condSel = $('quickCondition');
+  let condition = condSel ? condSel.value : 'fresh';
 
   s = s.replace(/#([\w\-]+)/g, (_, t) => { tags.push(t.replace(/-/g, ' ')); return ' '; });
-  s = s.replace(/!(\S+)/g, (_, t) => { expires = parseExpiryToken(t) || expires; return ' '; });
+  s = s.replace(/!(\S+)/g, (_, t) => {
+    const c = parseConditionToken(t);
+    if (c) { condition = c; return ' '; }
+    expires = parseExpiryToken(t) || expires;
+    return ' ';
+  });
   s = s.replace(/@([\w\- ]+?)(?=\s+[#@!]|$)/g, (_, l) => { location = l.trim(); return ' '; });
   s = s.replace(/\s+/g, ' ').trim();
 
@@ -649,6 +669,7 @@ function parseQuick(text) {
     location: location,
     tags: tags,
     notes: '',
+    condition: condition === 'fresh' ? null : condition,
     expires: expires || null,
     added: now,
     updated: now,
@@ -768,9 +789,9 @@ function renderStock() {
   }
 }
 
-/* A compact "use these soon" banner above the stock list — expired and
- * near-date items only, soonest first, each a tap-to-edit chip. Shows
- * nothing (and takes no space) when the fridge is calm. */
+/* A quiet one-line "use these soon" bar above the stock list. Collapsed by
+ * default so it never dominates; tap to expand the chips. Shows nothing (and
+ * takes no space) when nothing is near its date. */
 function renderFreshStrip(box, scopeItems) {
   const soon = scopeItems
     .filter(inStock)
@@ -779,22 +800,31 @@ function renderFreshStrip(box, scopeItems) {
     .sort((a, b) => a.f.days - b.f.days);
   if (!soon.length) return;
 
-  const strip = el('div', 'fresh-strip');
-  const head = el('div', 'fresh-strip-head');
+  const open = localStorage.getItem('inventory_usesoon') === 'open';
+  const strip = el('div', 'fresh-strip' + (open ? ' open' : ''));
+
+  const head = el('button', 'fresh-strip-head');
   head.appendChild(el('span', 'fresh-strip-title', '⏳ Use soon'));
   head.appendChild(el('span', 'fresh-strip-n', String(soon.length)));
+  head.appendChild(el('span', 'fresh-strip-caret', open ? '▾' : '▸'));
+  head.onclick = () => {
+    localStorage.setItem('inventory_usesoon', open ? 'closed' : 'open');
+    renderStock();
+  };
   strip.appendChild(head);
 
-  const chips = el('div', 'fresh-strip-chips');
-  for (const { it, f } of soon) {
-    const c = el('button', 'fresh-item ' + f.level);
-    c.appendChild(el('span', 'fi-name', it.name));
-    c.appendChild(el('span', 'fi-when', freshChip(f)));
-    c.title = 'Edit / update ' + it.name;
-    c.onclick = () => openEdit(it);
-    chips.appendChild(c);
+  if (open) {
+    const chips = el('div', 'fresh-strip-chips');
+    for (const { it, f } of soon) {
+      const c = el('button', 'fresh-item ' + f.level);
+      c.appendChild(el('span', 'fi-name', it.name));
+      c.appendChild(el('span', 'fi-when', freshChip(f)));
+      c.title = 'Edit / update ' + it.name;
+      c.onclick = () => openEdit(it);
+      chips.appendChild(c);
+    }
+    strip.appendChild(chips);
   }
-  strip.appendChild(chips);
   box.appendChild(strip);
 }
 
@@ -1257,6 +1287,7 @@ function wire() {
     if (!item) return;
     state.items.push(item);
     $('quickInput').value = '';
+    $('quickCondition').value = 'fresh';   // back to default for the next add
     save(); render();
   };
 

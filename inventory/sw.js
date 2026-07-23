@@ -8,7 +8,7 @@
  * worse than an honest failure to sync.
  */
 
-const CACHE = 'inventory-shell-v8';
+const CACHE = 'inventory-shell-v9';
 const SHELL = ['./', './index.html', './app.js', './store.js', './styles.css',
                './manifest.webmanifest'];
 

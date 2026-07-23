@@ -53,12 +53,18 @@
         <button type="button" class="kind" data-kind="durable" title="Something you keep and use again">Gear</button>
       </div>
       <input type="text" id="quickInput" placeholder="2 bag flour @pantry #baking" aria-label="Add an item">
+      <select id="quickCondition" class="quick-cond" title="Freshness — only matters for produce" aria-label="Freshness">
+        <option value="fresh">🟢 Fresh</option>
+        <option value="ripe">🟡 Ripe</option>
+        <option value="soft">🟠 Getting soft</option>
+        <option value="use-now">🔴 Use now</option>
+      </select>
       <button type="submit" class="primary">Add</button>
     </form>
     <p class="hint">
       Type it how you'd say it. <code>2 bag flour</code> &middot; <code>@pantry</code> sets where it lives &middot;
-      <code>#baking</code> adds a tag &middot; <code>!5d</code> sets a use-by (also <code>!2w</code>, <code>!1m</code>, or <code>!2026-08-10</code>).
-      Tags are what the Make engine matches on — a <em>cast iron skillet</em> tagged <code>#pan</code> counts as a pan.
+      <code>#baking</code> adds a tag. For produce, pick a freshness above (or type <code>!ripe</code> / <code>!soft</code>) and the app
+      estimates a use-by; <code>!5d</code> or <code>!2026-08-10</code> sets one by hand.
     </p>
 
     <div class="toolsrow">

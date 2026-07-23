@@ -164,6 +164,8 @@ input:focus, select:focus { outline: 2px solid var(--accent-soft); border-color:
 }
 .kind.active { background: var(--accent-soft); color: var(--ink); font-weight: 600; }
 
+.quick-cond { flex: none; font-size: 13px; padding: 8px 6px; }
+
 .hint { margin: 8px 2px 18px; font-size: 12.5px; color: var(--ink-faint); }
 .hint code { font-size: 11.5px; }
 
@@ -328,17 +330,26 @@ input:focus, select:focus { outline: 2px solid var(--accent-soft); border-color:
 .freshchip.week    { background: var(--warn-soft); color: var(--warn); }
 
 .fresh-strip {
-  background: var(--warn-soft); border: 1px solid var(--warn);
-  border-radius: var(--radius); padding: 12px 14px; margin-bottom: 20px;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  margin-bottom: 16px; overflow: hidden; background: var(--panel-2);
 }
-.fresh-strip-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.fresh-strip-title { font-weight: 700; font-size: 13px; color: var(--warn); letter-spacing: .02em; }
+.fresh-strip.open { border-color: var(--warn); }
+.fresh-strip-head {
+  display: flex; align-items: center; gap: 8px; width: 100%;
+  padding: 8px 12px; background: none; border: 0; cursor: pointer;
+  font: inherit; color: var(--ink-soft); text-align: left;
+}
+.fresh-strip-head:hover { color: var(--ink); }
+.fresh-strip-title { font-weight: 650; font-size: 13px; }
 .fresh-strip-n {
-  background: var(--warn); color: var(--bg); font-size: 11px; font-weight: 700;
-  min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px;
+  background: var(--warn-soft); color: var(--warn); font-size: 11px; font-weight: 700;
+  min-width: 18px; height: 18px; padding: 0 6px; border-radius: 999px;
   display: inline-grid; place-items: center;
 }
-.fresh-strip-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.fresh-strip-caret { margin-left: auto; font-size: 11px; color: var(--ink-faint); }
+.fresh-strip-chips {
+  display: flex; flex-wrap: wrap; gap: 6px; padding: 0 12px 12px;
+}
 .fresh-item {
   display: inline-flex; align-items: center; gap: 7px; cursor: pointer;
   background: var(--panel); border: 1px solid var(--line);
