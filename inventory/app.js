@@ -270,14 +270,33 @@ function tombstone(id) {
   state.tombstones.push({ id, at: Store.nowStamp() });
 }
 
+/* Repair anything that would break rendering. A single item with no name
+ * used to crash the alphabetical sort and blank the whole list (counts
+ * still showed, because they're computed before the sort). A stray row
+ * like that can arrive from a merge, so we sanitize on every load. */
+function fixRow(x, i, prefix) {
+  if (!x || typeof x !== 'object') return null;
+  if (!x.id) x.id = prefix + '-' + i + '-' + Math.random().toString(36).slice(2, 6);
+  if (typeof x.name !== 'string' || !x.name.trim()) x.name = '(unnamed)';
+  if (!Array.isArray(x.tags)) x.tags = [];
+  return x;
+}
+
 function normalizeState(s) {
   if (!s || typeof s !== 'object') s = {};
-  if (!Array.isArray(s.items)) s.items = [];
-  if (!Array.isArray(s.blueprints)) s.blueprints = [];
+  s.items = (Array.isArray(s.items) ? s.items : [])
+    .map((x, i) => fixRow(x, i, 'item')).filter(Boolean);
+  s.blueprints = (Array.isArray(s.blueprints) ? s.blueprints : [])
+    .map((x, i) => fixRow(x, i, 'bp')).filter(Boolean);
   if (!Array.isArray(s.tombstones)) s.tombstones = [];
   if (!Array.isArray(s.areas) || !s.areas.length) s.areas = DEFAULT_AREAS.slice();
   s.areas.forEach((a, i) => { if (!a.id) a.id = 'area-' + i; });
   return s;
+}
+
+/* Sort helper that never throws on a missing name. */
+function byName(a, b) {
+  return String(a && a.name || '').localeCompare(String(b && b.name || ''));
 }
 
 async function syncNow() {
@@ -407,7 +426,7 @@ function evaluateAll() {
   const list = state.blueprints
     .filter((bp) => area === 'all' || bp.area === area)
     .map((bp) => evalBlueprint(bp, idx));
-  list.sort((a, b) => a.gap - b.gap || a.bp.name.localeCompare(b.bp.name));
+  list.sort((a, b) => a.gap - b.gap || byName(a.bp, b.bp));
   return list;
 }
 
@@ -537,7 +556,7 @@ function renderStock() {
   ];
   for (const [title, list] of groups) {
     if (!list.length) continue;
-    list.sort((a, b) => a.name.localeCompare(b.name));
+    list.sort(byName);
     const g = el('div', 'group');
     const h = el('div', 'group-head');
     h.appendChild(el('h2', null, title));
@@ -694,7 +713,7 @@ function renderGaps(evals) {
   const list = [...gaps.values()].sort((a, b) =>
     b.finishes.length - a.finishes.length ||
     b.appears - a.appears ||
-    a.token.localeCompare(b.token));
+    String(a.token||'').localeCompare(String(b.token||'')));
 
   if (!list.length) {
     box.appendChild(emptyBox('No gaps.',
@@ -760,7 +779,7 @@ function renderBlueprints() {
   let list = state.blueprints.filter((bp) => area === 'all' || bp.area === area);
   $('bpCounts').textContent = `${list.length} in view · ${state.blueprints.length} total`;
   if (q) list = list.filter((bp) => norm(bp.name).includes(q));
-  list.sort((a, b) => a.name.localeCompare(b.name));
+  list.sort(byName);
 
   if (!list.length) {
     box.appendChild(emptyBox('No blueprints here.', 'Add one with the form above.'));
