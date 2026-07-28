@@ -1487,6 +1487,8 @@ body{background:var(--bg);color:var(--text);font-family:"Segoe UI",Arial,sans-se
 .prac-label{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:8.5px;font-weight:700;letter-spacing:.20em;text-transform:uppercase;color:rgba(232,200,64,.7);margin-bottom:18px;align-self:center}
 .prac-prompt{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:24px;width:100%}
 .prac-prompt-ipa{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:64px;font-weight:700;color:var(--gold);line-height:1;letter-spacing:-1px;text-shadow:0 0 16px rgba(232,200,64,.22),0 0 1px rgba(232,200,64,.4)}
+.prac-prompt-ipaword{font-family:ui-monospace,"SF Mono","Cascadia Mono",Consolas,monospace;font-size:36px;font-weight:700;color:var(--gold);line-height:1.2;text-align:center;word-break:break-word;max-width:100%;text-shadow:0 0 16px rgba(232,200,64,.22),0 0 1px rgba(232,200,64,.4)}
+@media(max-width:640px){.prac-prompt-ipaword{font-size:28px}}
 .prac-prompt-text{font-size:16px;color:var(--text);text-align:center;line-height:1.5;max-width:460px}
 
 .prac-answer{width:100%;display:flex;flex-direction:column;align-items:center}
@@ -2670,7 +2672,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     <div class="prac-shell">
       <nav class="prac-modes" id="prac-modes" aria-label="Practice exercises"><!-- mode buttons injected by JS --></nav>
       <header class="prac-controls">
-        <div class="prac-ctl-group" role="group" aria-label="Source set">
+        <div class="prac-ctl-group" id="prac-source-group" role="group" aria-label="Source set">
           <span class="prac-ctl-label">Set</span>
           <div class="prac-seg" id="prac-source">
             <button class="prac-seg-btn active" type="button" data-source="reference">IPA Reference</button>
@@ -9140,6 +9142,10 @@ let practiceAnswered = false;
 let practiceCurrent = null;
 let practiceCurrentPool = [];
 let practiceInited = false;
+// Which generator the shared quiz "Next" button calls. Basic Drill uses the
+// phoneme generator (practiceNew); Read the Word swaps in its own. Both are
+// hoisted function declarations, so referencing practiceNew here is safe.
+let practiceNextFn = practiceNew;
 
 const PRAC_PLACE_ABBR = {
   bilabial:"Bilab", labiodental:"Lab-d", dental:"Dent", alveolar:"Alv",
@@ -9544,6 +9550,8 @@ function practiceRender(){
   prompt.className = "prac-prompt";
   if (q.promptKind === "ipa") {
     prompt.innerHTML = `<span class="prac-prompt-ipa">${practiceEsc(q.promptValue)}</span>`;
+  } else if (q.promptKind === "ipa-word") {
+    prompt.innerHTML = `<span class="prac-prompt-ipaword">${practiceEsc(q.promptValue)}</span>`;
   } else if (q.promptKind === "text") {
     prompt.innerHTML = `<span class="prac-prompt-text">${practiceEsc(q.promptValue)}</span>`;
   } else if (q.promptKind === "grid-target") {
@@ -9630,8 +9638,11 @@ function practiceConclude(correct){
       `<span class="prac-fb-text">${practiceEsc(q.feedback)}</span>` +
       `<button type="button" class="prac-next" id="prac-next">Next →</button>`;
     const nb = document.getElementById("prac-next");
-    if (nb) nb.addEventListener("click", practiceNew);
+    if (nb) nb.addEventListener("click", () => practiceNextFn());
   }
+  // Reading drills verify by ear: speak the whole word once it's revealed, so
+  // you hear what you just read. Only read-word questions carry q.speak.
+  if (q.speak && typeof smSpeak === "function") { try { smSpeak(q.speak, 0.9); } catch(_) {} }
   // Feed the answered phoneme to the shared selection so it highlights on
   // the IPA grid / vowel chart / vocal tract when the reader switches to
   // Coverage. (No side panel — that was removed; this only drives the
@@ -9824,11 +9835,67 @@ function pracGraphemePairs(source){
 // Basic Drill — the original multiple-choice quiz, now a registry entry.
 function exerciseBasicDrill(stage, ctx){
   practiceSource = ctx.source; practiceLevel = ctx.level;
+  practiceNextFn = practiceNew;
   const wrap = document.createElement("div");
   wrap.className = "prac-quiz";
   wrap.innerHTML = `<div class="prac-score" id="prac-score" aria-live="polite"></div><div class="prac-card" id="prac-card"></div>`;
   stage.appendChild(wrap);
   practiceNew();   // renders into #prac-card, updates #prac-score
+}
+
+// ── Read the Word — read a whole-word IPA transcription, pick the word ──
+// The genuine "reading IPA" skill: blend the symbols into a word. Prompts are
+// real GA transcriptions pulled live from the CMU dictionary (D); on reveal the
+// word is spoken so you can check your reading by ear. English-only.
+const PRAC_READ_WORDS = {
+  1: ["thin","this","ship","fish","church","sing","thing","bath","think","three","phone","laugh","tough","who","word","one","judge","cheese","should","young"],
+  2: ["butter","measure","nature","water","other","mother","future","question","special","nation","enough","picture","usual","danger","pleasure","thousand","language","people","women","busy"],
+  3: ["comfortable","adventure","chocolate","umbrella","dangerous","beautiful","television","interesting","vegetable","photograph","furniture","imagine","develop","syllable","pronounce","curious","especially","literature","temperature","celebrate"]
+};
+function pracReadPool(level){
+  const tiers = level <= 1 ? [1] : level === 2 ? [1,2] : [1,2,3];
+  const out = [], seen = new Set();
+  tiers.forEach(t => (PRAC_READ_WORDS[t]||[]).forEach(w => {
+    if (seen.has(w)) return; seen.add(w);
+    const e = (typeof D !== "undefined") ? D[w] : null;
+    if (e && e[0]) out.push({ word: w, ipa: e[0], syl: e[2] || 0 });
+  }));
+  return out;
+}
+function pracReadQuestion(level){
+  const pool = pracReadPool(level);
+  if (pool.length < 4) return null;
+  const correct = practicePick(pool);
+  const others = pool.filter(p => p.word !== correct.word);
+  const sameSyl = others.filter(p => p.syl === correct.syl);   // force real reading, not length-guessing
+  const distractors = practiceDistinctBy(correct, sameSyl, others, 3, "word");
+  if (distractors.length < 3) return null;
+  const opts = practiceShuffle([correct, ...distractors]);
+  return {
+    type: "read-word", promptLabel: "Read the word",
+    promptKind: "ipa-word", promptValue: "/" + correct.ipa + "/",
+    answerKind: "choices",
+    choices: opts.map(o => ({ label: o.word })),
+    correctIndex: opts.indexOf(correct),
+    answerPhoneme: null, speak: correct.word,
+    feedback: `/${correct.ipa}/ = “${correct.word}”`
+  };
+}
+function practiceNewRead(){
+  practiceAnswered = false;
+  practiceCurrentPool = [];
+  practiceCurrent = pracReadQuestion(practiceLevel);
+  practiceRender();
+}
+function exerciseReadWord(stage, ctx){
+  practiceLevel = ctx.level;
+  if (typeof D === "undefined") { stage.innerHTML = `<div class="prac-empty">The pronunciation dictionary isn’t loaded yet — try again in a moment.</div>`; return; }
+  practiceNextFn = practiceNewRead;
+  const wrap = document.createElement("div");
+  wrap.className = "prac-quiz";
+  wrap.innerHTML = `<div class="prac-score" id="prac-score" aria-live="polite"></div><div class="prac-card" id="prac-card"></div>`;
+  stage.appendChild(wrap);
+  practiceNewRead();
 }
 
 // IPA Grid Builder — flagship. Drag phoneme tiles into their place×manner cell.
@@ -9954,6 +10021,7 @@ function exerciseGrapheme(stage, ctx){
 // ══════════════════════════════════════════════════════════════════════════
 const PRAC_EXERCISES = [
   { id:"basic",      title:"Basic Drill",        usesLevel:true,  build: exerciseBasicDrill },
+  { id:"read-word",  title:"Read the Word",      usesLevel:true,  usesSource:false, build: exerciseReadWord },
   { id:"grid",       title:"IPA Grid Builder",   usesLevel:true,  build: exerciseGridBuilder },
   { id:"sound-word", title:"Sound ↔ Word",       usesLevel:true,  build: exerciseSoundWord },
   { id:"grapheme",   title:"Grapheme ↔ Phoneme", usesLevel:false, build: exerciseGrapheme }
@@ -9986,6 +10054,8 @@ function pracRenderActive(){
   const ex = pracActiveExercise();
   const lvlGroup = document.getElementById("prac-level-group");
   if (lvlGroup) lvlGroup.style.display = ex.usesLevel ? "" : "none";
+  const srcGroup = document.getElementById("prac-source-group");
+  if (srcGroup) srcGroup.style.display = ex.usesSource === false ? "none" : "";
   const ctx = { source: practiceSource, level: practiceLevel, stage };
   try { ex.build(stage, ctx); }
   catch (err) { stage.innerHTML = `<div class="prac-empty">This exercise could not load.</div>`; console.warn("Practice exercise error", err); }

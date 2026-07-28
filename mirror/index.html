@@ -587,6 +587,9 @@
   .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200;
                    display: none; align-items: center; justify-content: center; padding: 18px; }
   .modal-overlay.open { display: flex; }
+  /* The generic edit modal must sit ABOVE the health modals (e.g. the label form opened from
+     inside the meal builder), so it isn't intercepted by an overlay behind it. */
+  #modalOverlay { z-index: 300; }
   .modal { background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
            padding: 22px; width: 100%; max-width: 460px; max-height: 86vh; overflow-y: auto;
            box-shadow: 0 10px 40px rgba(0,0,0,.28); }
@@ -1688,6 +1691,7 @@
         <label>Grams<input type="number" id="mealGrams" min="1" step="1" placeholder="100"></label>
         <button class="primary" id="mealItemAdd" disabled>Add</button>
       </div>
+      <div class="tiny" style="margin:2px 0 6px;color:var(--dim)">Not in the library? <button class="mini-btn" id="mealCustomAdd" title="Enter a food's values straight from its nutrition label">＋ From a nutrition label</button></div>
       <div id="mealResults" class="search-results" style="display:none"></div>
       <div id="mealSelected" class="tiny" style="color:var(--dim);margin:4px 0"></div>
       <div id="mealDraft"></div>
@@ -3345,34 +3349,51 @@ function clearFoodEntry() {
   const add = document.getElementById('foodAdd'); add.disabled = true; add.textContent = 'Add';
   renderEntryPreview();
 }
-// Add-your-own: anything not in the library (a brand, snack, restaurant meal). Enter what ONE
-// serving has; stored as a reusable custom food (serving == 100 g nominal, so the per-100g
-// values equal the serving values) and logged immediately as "1 serving".
-function openQuickAdd(query) {
-  const fields = [
-    { key: 'name', label: 'Food name', type: 'text' },
-    { key: 'kcal', label: 'Calories (one serving)', type: 'number', min: 0, step: 1 },
-    { key: 'protein', label: 'Protein g (optional)', type: 'number', min: 0, step: 1 },
-    { key: 'carbs', label: 'Carbs g (optional)', type: 'number', min: 0, step: 1 },
-    { key: 'fat', label: 'Fat g (optional)', type: 'number', min: 0, step: 1 },
-  ];
-  openEditModal('Add a food', 'For anything not in the library — a brand, a snack, a restaurant meal. Enter what one serving has; it saves so next time it is one tap.',
-    fields, { name: (query || '').trim(), kcal: '', protein: '', carbs: '', fat: '' }, (v) => {
+// Add a food from its nutrition label — the ONE custom-food entry form, shared by the search
+// "add it" flow and the meal builder. Serving size is optional: give it (in grams) for
+// label-accurate portions, or leave it blank and the values are treated as one serving.
+// Saves a reusable custom food, then hands it to onSaved(food, servingGrams, per100g) so the
+// caller can log it or drop it into the meal being built.
+function openFoodLabelForm(prefillName, onSaved) {
+  openEditModal('Add a food from its label',
+    'Type the numbers straight off the nutrition label. Serving size is optional — give it (in grams) for label-accurate portions, or leave it blank. It saves as one of your foods for next time.',
+    [
+      { key: 'name', label: 'Food name', type: 'text' },
+      { key: 'serving', label: 'Serving size in grams (optional — from the label)', type: 'number', min: 1, step: 1 },
+      { key: 'kcal', label: 'Calories (per serving)', type: 'number', min: 0, step: 1 },
+      { key: 'protein', label: 'Protein g', type: 'number', min: 0, step: 0.1 },
+      { key: 'carbs', label: 'Carbs g', type: 'number', min: 0, step: 0.1 },
+      { key: 'fat', label: 'Fat g', type: 'number', min: 0, step: 0.1 },
+      { key: 'fiber', label: 'Fiber g (optional)', type: 'number', min: 0, step: 0.1 },
+    ],
+    { name: (prefillName || '').trim(), serving: '', kcal: '', protein: '', carbs: '', fat: '', fiber: '' },
+    v => {
       const name = (v.name || '').trim(); if (!name) return;
+      const serving = Number(v.serving) > 0 ? Number(v.serving) : 100;   // blank -> treat entries as one 100 g serving
       const num = x => (x === '' || x == null) ? 0 : Number(x);
-      const n = { kcal: num(v.kcal), protein_g: num(v.protein), carbs_g: num(v.carbs), fat_g: num(v.fat), fiber_g: 0 };
-      const food = { id: Date.now(), name, category: 'your foods', source: 'quick', portions: [{ label: '1 serving', grams: 100 }], n };
+      const per = k => num(v[k]) * 100 / serving;                        // label per-serving -> per-100 g
+      const n = { kcal: per('kcal'), protein_g: per('protein'), carbs_g: per('carbs'), fat_g: per('fat'), fiber_g: per('fiber') };
+      const food = { id: Date.now(), name, category: 'your foods', source: 'label', portions: [{ label: '1 serving', grams: serving }], n };
       state.body.customFoods = state.body.customFoods || [];
       state.body.customFoods.push(food);
-      indexCustomFoods();
-      _lastLogId = uid();
-      state.body.food.push({ id: _lastLogId, date: healthDate(), foodId: food.id, foodName: name, category: 'your foods', grams: 100, qty: 1, portionLabel: '1 serving', n: { ...n } });
-      saveState();
-      clearFoodEntry();
-      refreshFoodUI();
-      flashFoodStatus(`added & logged ${name}`);
+      saveState(); indexCustomFoods();
+      onSaved(food, serving, n);
     });
 }
+// The search "add it" path: create the food and log one serving immediately.
+function openQuickAdd(query) {
+  openFoodLabelForm(query, (food, serving, n) => {
+    _lastLogId = uid();
+    state.body.food.push({ id: _lastLogId, date: healthDate(), foodId: food.id, foodName: food.name, category: 'your foods', grams: serving, qty: 1, portionLabel: '1 serving', n: { ...n } });
+    saveState(); clearFoodEntry(); refreshFoodUI();
+    flashFoodStatus(`added & logged ${food.name}`);
+  });
+}
+// The meal-builder path: create the food and drop one serving into the meal being built.
+document.getElementById('mealCustomAdd').onclick = () => openFoodLabelForm('', (food, serving, n) => {
+  mealDraft.push({ foodId: food.id, foodName: food.name, category: 'your foods', grams: serving, n: { ...n } });
+  renderMealDraft();
+});
 // One shared refresh: a food change re-renders the whole coordinated Health workspace.
 function refreshFoodUI() { refreshHealthWorkspace(); }
 function flashFoodStatus(msg) {
