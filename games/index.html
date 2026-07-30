@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Games — Workspace</title>
+  <meta name="description" content="The play shelf — Emoji Games, Flags, and Cosmos.">
+  <link rel="stylesheet" href="../atlas/atlas.css">
+  <link rel="stylesheet" href="../_shared/hub-nav.css">
+  <style>
+    /* Games doorway — Task 52 (2026-07-30): a small doorway page for
+       the play shelf (Emoji Games, Flags, Cosmos left the front page).
+       Dress = the workspace front page's own card grammar. */
+    :root {
+      --accent-warm: #7a4e26;
+      --accent-deep: #5e2828;
+      --w-emoji:  #5a5048;
+      --w-flags:  #4e4a40;
+      --w-cosmos: #1f2a3a;
+    }
+    body {
+      background:
+        radial-gradient(ellipse 80% 40% at 50% -5%, rgba(255, 250, 238, 0.55), transparent 70%),
+        radial-gradient(ellipse 70% 35% at 50% 105%, rgba(60, 40, 20, 0.06), transparent 70%),
+        var(--bg);
+      background-attachment: fixed;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .atlas-main { flex: 1 1 auto; padding-top: 1rem; padding-bottom: 1rem; }
+    .page-lede { max-width: 44rem; margin: 0 0 1rem; }
+    .page-lede h1 { font-family: var(--serif); font-size: 1.7rem; margin: 0 0 0.25rem; }
+    .page-lede p { font-family: var(--sans); font-size: 0.85rem; color: var(--ink-soft); margin: 0; }
+
+    .doorways {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      padding: 0.5rem 0;
+      border-top: 1px solid var(--accent-deep);
+      border-bottom: 1px solid var(--accent-deep);
+    }
+    .doorway {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 6rem;
+      padding: 0.55rem 0.85rem;
+      background: linear-gradient(155deg,
+        color-mix(in srgb, var(--w) 11%, var(--bg)) 0%,
+        color-mix(in srgb, var(--w) 6%, var(--bg)) 60%,
+        color-mix(in srgb, var(--w) 9%, var(--bg)) 100%);
+      border: 1px solid color-mix(in srgb, var(--w) 22%, transparent);
+      border-radius: 2px;
+      box-shadow: inset 0 1px 0 rgba(255, 252, 240, 0.6);
+      transition: border-color 0.2s, transform 0.15s ease, box-shadow 0.25s ease;
+    }
+    .doorway:hover {
+      border-color: color-mix(in srgb, var(--w) 50%, transparent);
+      box-shadow: 0 6px 18px -6px color-mix(in srgb, var(--w) 35%, transparent);
+      transform: translateY(-1px);
+    }
+    .doorway-primary { display: block; flex: 1 1 auto; text-decoration: none; color: var(--ink); }
+    .doorway-primary::after { content: ""; position: absolute; inset: 0; z-index: 1; border-radius: 2px; }
+    .doorway-kind {
+      display: block; font-family: var(--sans); font-size: 0.66rem;
+      letter-spacing: 0.18em; text-transform: uppercase; color: var(--w);
+      margin-bottom: 0.18rem; font-weight: 600;
+    }
+    .doorway-name {
+      display: inline-block; font-family: var(--serif); font-size: 1.2rem;
+      font-weight: 700; line-height: 1.05; margin-bottom: 0.14rem;
+      border-bottom: 1px solid transparent; transition: color 0.15s, border-bottom-color 0.15s;
+    }
+    .doorway:hover .doorway-name { color: var(--w); border-bottom-color: var(--w); }
+    .doorway-desc {
+      display: block; font-family: var(--sans); font-size: 0.72rem;
+      color: var(--ink-soft); line-height: 1.25; max-width: 92%;
+    }
+    @media (max-width: 900px) { .doorways { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 600px) { .doorways { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <nav class="ws-hub-nav" aria-label="Workspace hub">
+    <a class="ws-hub-home" href="../">&larr; Workspace</a>
+  </nav>
+  <header class="atlas-header">
+    <nav class="atlas-nav" aria-label="Primary">
+      <a class="brand" href="../">Workspace</a>
+    </nav>
+  </header>
+
+  <main class="atlas-main">
+    <section class="page-lede">
+      <h1>Games</h1>
+      <p>The play shelf — quick rounds and long orbits.</p>
+    </section>
+
+    <nav class="doorways" aria-label="Game doorways">
+
+      <div class="doorway" style="--w: var(--w-emoji);">
+        <a class="doorway-primary" href="../emoji-games/">
+          <span class="doorway-kind">Play</span>
+          <span class="doorway-name">Emoji Games</span>
+          <span class="doorway-desc">Small puzzle rounds built from emoji.</span>
+        </a>
+      </div>
+
+      <div class="doorway" style="--w: var(--w-flags);">
+        <a class="doorway-primary" href="../flags/">
+          <span class="doorway-kind">Play</span>
+          <span class="doorway-name">Flags</span>
+          <span class="doorway-desc">The flags of the world, learned by rounds.</span>
+        </a>
+      </div>
+
+      <div class="doorway" style="--w: var(--w-cosmos);">
+        <a class="doorway-primary" href="../cosmos/">
+          <span class="doorway-kind">Play</span>
+          <span class="doorway-name">Cosmos</span>
+          <span class="doorway-desc">An orbit through the solar system and beyond.</span>
+        </a>
+      </div>
+
+    </nav>
+  </main>
+
+  <footer class="atlas-footer">
+    <p>A local workspace made public in pieces.</p>
+  </footer>
+</body>
+</html>

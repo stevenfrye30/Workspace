@@ -7,8 +7,10 @@
   <meta name="description" content="A small public site of reading tools, language work, and curated archives.">
   <link rel="stylesheet" href="atlas/atlas.css">
   <style>
-    /* Workspace — nine large archival drawer plates in a 3×3 grid,
-       with smaller tools collected beneath. Warm paper triad unchanged. */
+    /* Workspace — Task 52 (2026-07-30): a hierarchy of doorways.
+       Three MAIN plates (Digital Archive · Mirror · Pantheons), two
+       regular entrances (Games · Sound Map), two small entrances
+       (Images · Science). Warm paper triad unchanged. */
 
     :root {
       --accent-warm:   #7a4e26;
@@ -77,6 +79,17 @@
       border-top: 1px solid var(--accent-deep);
       border-bottom: 1px solid var(--accent-deep);
     }
+
+    /* Task 52 — the three tiers share one card grammar */
+    .doorways.main { border-bottom: none; }
+    .doorways.regular, .doorways.small { grid-template-columns: repeat(2, 1fr); }
+    .doorways.regular { border-top: none; border-bottom: none; }
+    .doorways.regular .doorway { min-height: 5.2rem; }
+    .doorways.regular .doorway-name { font-size: 1.12rem; }
+    .doorways.small { border-top: none; }
+    .doorways.small .doorway { min-height: 0; padding: 0.45rem 0.8rem; }
+    .doorways.small .doorway-name { font-size: 1rem; }
+    .doorways.small .doorway-desc { font-size: 0.68rem; }
 
     .doorway {
       position: relative;
@@ -393,7 +406,7 @@
 
   <main class="atlas-main">
 
-    <nav class="doorways" aria-label="Primary destinations">
+    <nav class="doorways main" aria-label="Main doorways">
 
       <!-- 1 · Digital Archive -->
       <div class="doorway" style="--w: var(--w-archive);">
@@ -426,24 +439,13 @@
           </span>
           <span class="doorway-kind">Self</span>
           <span class="doorway-name">Mirror</span>
-          <span class="doorway-desc">Personal reflection, tracking, and daily patterns.</span>
+          <span class="doorway-desc">The personal wing — Self, Masri, Milwaukee, NutriLens, Inventory, and the family album.</span>
         </a>
       </div>
 
-      <!-- 3 · Philosophy -->
-      <div class="doorway" style="--w: var(--w-philosophy);">
-        <a class="doorway-primary" href="philosophy/">
-          <span class="doorway-icon-wrap">
-            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M19 4 C 13 6 8 10 6 16 L4 20 L8 18 C 14 16 18 11 19 4 z"/>
-              <path d="M11 14 L17 8"/>
-            </svg>
-          </span>
-          <span class="doorway-kind">Thought</span>
-          <span class="doorway-name">Philosophy</span>
-          <span class="doorway-desc">Reading notes, short essays, and ideas.</span>
-        </a>
-      </div>
+      <!-- Task 52: the Philosophy card RETIRED — the project lives on
+           the archive's Philosophy shelf; its doorway is the archive
+           entrance. philosophy/ stays on disk (nothing deleted). -->
 
       <!-- 4 · Pantheons -->
       <div class="doorway" style="--w: var(--w-pantheons);">
@@ -458,6 +460,27 @@
           <span class="doorway-kind">Myth</span>
           <span class="doorway-name">Pantheons</span>
           <span class="doorway-desc">Cross-cultural maps of deities and mythic systems.</span>
+        </a>
+      </div>
+
+    </nav>
+
+    <nav class="doorways regular" aria-label="Regular entrances">
+
+      <!-- Games — Task 52: the play shelf's doorway (Emoji Games,
+           Flags, and Cosmos left the front page into games/) -->
+      <div class="doorway" style="--w: var(--w-emoji);">
+        <a class="doorway-primary" href="games/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="8" width="18" height="10" rx="3"/>
+              <circle cx="8" cy="13" r="1.3"/>
+              <circle cx="16" cy="13" r="1.3"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Play</span>
+          <span class="doorway-name">Games</span>
+          <span class="doorway-desc">Emoji Games, Flags, and Cosmos — the play shelf.</span>
         </a>
       </div>
 
@@ -477,6 +500,25 @@
           <a class="doorway-sub" href="language/">Phonos</a>
           <a class="doorway-sub" href="glyphs/">Glyphs</a>
         </span>
+      </div>
+
+    </nav>
+
+    <nav class="doorways small" aria-label="Small entrances">
+
+      <!-- Images — Task 52: up from the smaller-tools row -->
+      <div class="doorway" style="--w: var(--w-images);">
+        <a class="doorway-primary" href="images/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="5" width="18" height="14" rx="1"/>
+              <path d="M3 16 L8 11 L13 15 L17 12 L21 16"/>
+              <circle cx="16" cy="9" r="1.3"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Gallery</span>
+          <span class="doorway-name">Images</span>
+        </a>
       </div>
 
       <!-- 6 · Science (umbrella — now also hosts Math Lab) -->
@@ -500,115 +542,26 @@
         </span>
       </div>
 
-      <!-- 7 · Atlas -->
-      <div class="doorway" style="--w: var(--w-atlas);">
-        <a class="doorway-primary" href="https://stevenfrye30.github.io/Atlas/">
-          <span class="doorway-icon-wrap">
-            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <circle cx="6" cy="6" r="1.8"/>
-              <circle cx="18" cy="6" r="1.8"/>
-              <circle cx="6" cy="18" r="1.8"/>
-              <circle cx="18" cy="18" r="1.8"/>
-              <circle cx="12" cy="12" r="1.8"/>
-              <line x1="7.3" y1="7.3" x2="10.7" y2="10.7"/>
-              <line x1="16.7" y1="7.3" x2="13.3" y2="10.7"/>
-              <line x1="7.3" y1="16.7" x2="10.7" y2="13.3"/>
-              <line x1="16.7" y1="16.7" x2="13.3" y2="13.3"/>
-            </svg>
-          </span>
-          <span class="doorway-kind">Engine</span>
-          <span class="doorway-name">Atlas</span>
-          <span class="doorway-desc">Structural map of the archive and its relationships.</span>
-        </a>
-        <span class="doorway-subs">
-          <a class="doorway-sub" href="graph/">Concept Graph</a>
-        </span>
-      </div>
+      <!-- Task 52: the Atlas card RETIRED — it is an archive
+           instrument; its quiet mono link lives in the archive
+           entrance's footer row now (target unchanged). Concept
+           Graph (graph/) keeps its inbound from archive/entity.html. -->
 
-      <!-- 8 · Milwaukee -->
-      <div class="doorway" style="--w: var(--w-milwaukee);">
-        <a class="doorway-primary" href="milwaukee/">
-          <span class="doorway-icon-wrap">
-            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M3 20 H21"/>
-              <path d="M5 20 v-7 h3 v7"/>
-              <path d="M10 20 v-12 h3 v12"/>
-              <path d="M15 20 v-5 h3 v5"/>
-            </svg>
-          </span>
-          <span class="doorway-kind">Place</span>
-          <span class="doorway-name">Milwaukee</span>
-          <span class="doorway-desc">Local guide, places, and practical notes.</span>
-        </a>
-      </div>
+      <!-- Task 52: the Milwaukee card RETIRED — its milwaukee/ target
+           never existed in this tree (dead link on live, surveyed
+           2026-07-30); the Mirror doorway carries the project as an
+           in-progress placeholder until it surfaces. -->
 
-      <!-- 9 · Masri (independent language project — not part of Sound Map / Phonos; in the former Images position) -->
-      <div class="doorway" style="--w: var(--w-language);">
-        <a class="doorway-primary" href="masri/">
-          <span class="doorway-icon-wrap">
-            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M4 5 h16 a1 1 0 0 1 1 1 v8 a1 1 0 0 1 -1 1 h-8 l-4 3 v-3 h-4 a1 1 0 0 1 -1 -1 v-8 a1 1 0 0 1 1 -1z"/>
-              <path d="M8 9.5 h8 M8 12.5 h5"/>
-            </svg>
-          </span>
-          <span class="doorway-kind">Language</span>
-          <span class="doorway-name">Masri</span>
-          <span class="doorway-desc">Egyptian Arabic sounds, grammar, phrases, vocabulary, and personal notes.</span>
-        </a>
-      </div>
+      <!-- Task 52: the Masri card moved onto the Mirror doorway
+           (mirror/) — the personal wing. -->
 
     </nav>
 
-    <section class="extras" aria-labelledby="extras-label">
-      <h2 id="extras-label" class="extras-label">Smaller Tools &amp; Other Spaces</h2>
-      <ul class="extras-list">
+    <!-- Task 52: the smaller-tools row RETIRED — Emoji Games, Flags,
+         and Cosmos live behind the Games doorway (games/); NutriLens
+         lives on the Mirror doorway (mirror/); Images is a small
+         entrance above. Nothing deleted; every target reachable. -->
 
-        <li><a href="flags/" style="--w: var(--w-flags);">
-          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M5 4 v16"/>
-            <path d="M5 5 q5 -1 10 1 q4 1.5 7 -0.5 v6 q-3 2 -7 0.5 q-5 -2 -10 -1 z"/>
-          </svg></span>
-          Flags
-        </a></li>
-
-        <li><a href="nutrilens/" style="--w: var(--w-nutrilens);">
-          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M4 20 q-1 -11 8 -16 q9 5 8 16 q-8 -2 -16 0 z"/>
-            <path d="M12 4 v16"/>
-          </svg></span>
-          NutriLens
-        </a></li>
-
-        <li><a href="emoji-games/" style="--w: var(--w-emoji);">
-          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="8" width="18" height="10" rx="3"/>
-            <circle cx="8" cy="13" r="1.3"/>
-            <circle cx="16" cy="13" r="1.3"/>
-          </svg></span>
-          Emoji Games
-        </a></li>
-
-        <li><a href="cosmos/" style="--w: var(--w-cosmos);">
-          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
-            <ellipse cx="12" cy="12" rx="9" ry="3.5"/>
-            <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/>
-            <ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(120 12 12)"/>
-          </svg></span>
-          Cosmos
-        </a></li>
-
-        <li><a href="images/" style="--w: var(--w-images);">
-          <span class="extras-icon-wrap"><svg class="extras-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <rect x="3" y="5" width="18" height="14" rx="1"/>
-            <path d="M3 16 L8 11 L13 15 L17 12 L21 16"/>
-            <circle cx="16" cy="9" r="1.3"/>
-          </svg></span>
-          Images
-        </a></li>
-
-      </ul>
-    </section>
   </main>
 
   <footer class="atlas-footer">
