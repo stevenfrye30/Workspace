@@ -59,8 +59,10 @@
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
-      justify-content: center;
-      padding-top: 0.5rem;
+      /* Task 71b — the grid composes higher: a comfortable margin,
+         not a centered void */
+      justify-content: flex-start;
+      padding-top: 2.2rem;
       padding-bottom: 0.5rem;
     }
 
@@ -82,6 +84,11 @@
 
     /* Task 52 — the three tiers share one card grammar */
     .doorways.main { border-bottom: none; }
+    /* Task 71b — the plates center: eyebrow, title, description,
+       and sub-pills; the corner icon motif stays put. */
+    .doorway { text-align: center; }
+    .doorway-desc { margin-left: auto; margin-right: auto; }
+    .doorway-subs { justify-content: center; }
     /* Task 71 — the four mains step up: two-by-two, larger plates,
        a deeper wash of each plate's own tint (the --w family — no
        palette break, no emoji; the workspace keeps its look). */
@@ -443,9 +450,7 @@
           <span class="doorway-name">Digital Archive</span>
           <span class="doorway-desc">Historical and sacred texts, sources, and archive notes.</span>
         </a>
-        <span class="doorway-subs">
-          <a class="doorway-sub" href="archive/">Archive Shelf</a>
-        </span>
+        <!-- Task 71b: the plate is one whole link; the shelf pill retired -->
       </div>
 
       <!-- 4 · Pantheons -->
@@ -553,6 +558,7 @@
           </span>
           <span class="doorway-kind">Gallery</span>
           <span class="doorway-name">Images</span>
+          <span class="doorway-desc">The World Gallery — artworks by region and artist.</span>
         </a>
       </div>
 
