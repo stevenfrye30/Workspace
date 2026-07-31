@@ -579,6 +579,23 @@ ul.clean li { margin:6px 0; }
 <nav class="ws-hub-nav" aria-label="Workspace navigation">
 <a class="ws-hub-home" href="../">← Hub</a>
 </nav>
+<script>
+/* Entered via the Digital Archive's philosophy shelf: back leads to the
+   archive's philosophy room for the whole visit (same-origin session). */
+(function () {
+  try {
+    if (new URLSearchParams(location.search).get("from") === "archive" ||
+        /\/Digital-Archive\//.test(document.referrer)) {
+      sessionStorage.setItem("ws-phil-back", "archive");
+    }
+    if (sessionStorage.getItem("ws-phil-back") === "archive") {
+      var a = document.querySelector(".ws-hub-home");
+      a.href = "https://stevenfrye30.github.io/Digital-Archive/philosophy.html";
+      a.textContent = "← Archive";
+    }
+  } catch (e) {}
+})();
+</script>
 
 <header>
   <h1><a href="#/home" id="home-title" aria-label="Return to Philosophy home">Philosophy</a></h1>
