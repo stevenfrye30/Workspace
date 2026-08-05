@@ -181,7 +181,6 @@
   body.theme-dark .chip[aria-pressed="true"] { color: #1c1e24; }
   .chip.ghost { border-style: dashed; color: var(--dim); }
   /* Safety net: a stray long label must never blow out the row. */
-  #foodChips .chip { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
   /* ---------- inputs ---------- */
   input[type=text], input[type=number], textarea, select {
@@ -247,8 +246,8 @@
   /* The recent-type chip rows fill in as you use the app, which would make
      these two cards jump the first time you log a new food or activity.
      Reserve the row so the instruments hold still. */
-  #exChips, #foodChips { min-height: 32px; align-content: flex-start; }
-  body.dense #exChips, body.dense #foodChips { min-height: 29px; }
+  #exChips { min-height: 32px; align-content: flex-start; }
+  body.dense #exChips { min-height: 29px; }
 
   /* The seven sleep chips wrapped to a second row inside a column, which cost
      nearly 40px on the tallest card in the grid. Narrower chips fit one row. */
@@ -1203,7 +1202,7 @@ function loadFoods() {
       foodsIndex = { list, byId: new Map(list.map((f) => [f.id, f])) };
       indexCustomFoods();
       $('foodStatus').textContent = '';
-      renderFoodChips(); renderFoodLog();
+      renderFoodLog();
     })
     .catch(() => {
       // Opened as a file://, or served without the library beside it. Custom
@@ -1211,7 +1210,7 @@ function loadFoods() {
       foodsIndex = foodsIndex || { list: [], byId: new Map() };
       indexCustomFoods();
       $('foodStatus').textContent = 'Food library unavailable — your own foods still work.';
-      renderFoodChips(); renderFoodLog();
+      renderFoodLog();
     });
   return foodsPromise;
 }
@@ -1242,48 +1241,6 @@ function proteinOf(entry) {
   return n && n.protein_g != null ? (n.protein_g * entry.grams) / 100 : null;
 }
 
-/* ---- the chip row: pinned first, then what you actually eat most ---- */
-function foodChipList() {
-  const pinned = state.body.favoriteFoods || [];
-  const counts = new Map();
-  const names = new Map();
-  const cutoff = shiftDay(todayStr(), -60);
-  (state.body.food || []).forEach((e) => {
-    if (e.date < cutoff) return;
-    counts.set(e.foodId, (counts.get(e.foodId) || 0) + 1);
-    names.set(e.foodId, e.foodName);
-  });
-  const frequent = [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([id]) => id);
-  const ids = [...new Set([...pinned, ...frequent])].slice(0, 10);
-  return ids.map((id) => {
-    const f = foodsIndex && foodsIndex.byId.get(id);
-    return { id, name: (f && f.name) || names.get(id) || 'food', pinned: pinned.includes(id) };
-  });
-}
-function renderFoodChips() {
-  const box = $('foodChips'); box.innerHTML = '';
-  const chips = foodChipList();
-  if (!chips.length) {
-    box.innerHTML = '<span class="tiny">Search below — what you log most shows up here.</span>';
-    return;
-  }
-  chips.forEach((c) => {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.type = 'button';
-    b.textContent = (c.pinned ? '★ ' : '') + shortName(c.name);
-    b.title = c.name + ' — tap to log, right-click to choose a portion';
-    b.onclick = async () => { await loadFoods(); quickLog(c.id, c.name); };
-    b.oncontextmenu = async (e) => { e.preventDefault(); await loadFoods(); openPortion(c.id, c.name); };
-    box.appendChild(b);
-  });
-}
-/** One tap = the food's default portion (its first named portion, else 100 g). */
-function quickLog(foodId, fallbackName) {
-  const f = foodsIndex && foodsIndex.byId.get(foodId);
-  if (!f) { openPortion(foodId, fallbackName); return; }
-  const p = (f.portions || [])[0];
-  logFood(foodId, f.name, p ? p.grams : 100, p ? p.label : null);
-}
 function logFood(foodId, foodName, grams, portionLabel) {
   const rec = stamp({
     id: uid(), date: day, foodId, foodName,
@@ -1291,7 +1248,7 @@ function logFood(foodId, foodName, grams, portionLabel) {
     portion: portionLabel || '', t: stampTime(),
   });
   appendRec(state.body.food, rec, shortName(foodName, 24));
-  saveState(); renderFoodChips(); renderFoodLog(); renderFeed();
+  saveState(); renderFoodLog(); renderFeed();
   toast('Logged ' + shortName(foodName, 24));
 }
 
@@ -1302,30 +1259,38 @@ function logFood(foodId, foodName, grams, portionLabel) {
    WHOLE-WORD match now outranks a prefix-of-a-longer-word: "egg" matches the
    word "Egg," in "Egg, hard-boiled" before it matches the start of "Eggnog". */
 const WORD_EDGE = /[\s,()\-/]/;
+/** How well one word matches a name: 0 exact, 1 whole word, 2 word-prefix, 3 buried, -1 absent. */
+function tokenRank(name, t) {
+  const i = name.indexOf(t);
+  if (i < 0) return { rank: -1, pos: -1 };
+  const startsWord = i === 0 || WORD_EDGE.test(name[i - 1]);
+  const after = name[i + t.length];
+  const endsWord = after === undefined || WORD_EDGE.test(after);
+  return { rank: name === t ? 0 : (startsWord && endsWord) ? 1 : startsWord ? 2 : 3, pos: i };
+}
 function searchFoods(q) {
   if (!foodsIndex || !q) return [];
   const s = q.toLowerCase().trim();
   if (s.length < 2) return [];
+  // Every word must appear, in any order: "boiled egg" has to find
+  // "Egg, hard-boiled", which a whole-phrase match never would.
+  const tokens = s.split(/\s+/).filter(Boolean);
+  const anchor = tokens.slice().sort((a, b) => b.length - a.length)[0];
   const hits = [];
   const all = [...foodsIndex.list, ...(state.body.customFoods || [])];
   for (const f of all) {
     const name = (f.name || '').toLowerCase();
-    const i = name.indexOf(s);
-    if (i < 0) continue;
-    const startsWord = i === 0 || WORD_EDGE.test(name[i - 1]);
-    const after = name[i + s.length];
-    const endsWord = after === undefined || WORD_EDGE.test(after);
-    const rank =
-      name === s            ? 0 :   // exact
-      startsWord && endsWord ? 1 :  // a whole word — "Egg," in "Egg, hard-boiled"
-      startsWord             ? 2 :  // the start of a longer word — "Eggnog"
-                               3;   // buried anywhere
-    hits.push({ f, rank, pos: i, len: name.length });
+    const each = tokens.map((t) => tokenRank(name, t));
+    if (each.some((r) => r.rank < 0)) continue;
+    // The worst word decides the tier, so a stray buried word can't flatter a match.
+    const rank = Math.max(...each.map((r) => r.rank));
+    hits.push({ f, rank, pos: tokenRank(name, anchor).pos, len: name.length });
     if (hits.length > 600) break;
   }
   hits.sort((a, b) => a.rank - b.rank || a.pos - b.pos || a.len - b.len);
   return hits.slice(0, 14).map((h) => h.f);
 }
+
 function renderResults(q) {
   const box = $('foodResults');
   const rows = searchFoods(q);
@@ -1356,15 +1321,13 @@ function openPortion(foodId, foodName) {
   const f = foodsIndex && foodsIndex.byId.get(foodId);
   const name = (f && f.name) || foodName || 'food';
   const portions = (f && f.portions) || [];
-  const pinned = (state.body.favoriteFoods || []).includes(foodId);
 
   openPop(name,
     (portions.length ? '<div class="rowlabel">Portion</div><div class="chips" id="popPortions"></div>' : '') +
     '<div class="rowlabel">Grams</div><input type="number" id="popGrams" min="1" step="1" value="' +
       (portions[0] ? portions[0].grams : 100) + '">' +
     '<div class="tiny" id="popKcal" style="margin-top:8px"></div>' +
-    '<div style="margin-top:10px"><button class="pinbtn' + (pinned ? ' on' : '') + '" id="popPin" type="button">' +
-      (pinned ? '★ Pinned' : '☆ Pin to favorites') + '</button></div>',
+    '',
     () => {
       const g = parseFloat($('popGrams').value);
       if (!g || g <= 0) return false;
@@ -1394,15 +1357,6 @@ function openPortion(foodId, foodName) {
         });
         chosenLabel = portions[0].label;
       }
-      $('popPin').onclick = () => {
-        state.body.favoriteFoods = state.body.favoriteFoods || [];
-        const i = state.body.favoriteFoods.indexOf(foodId);
-        if (i < 0) state.body.favoriteFoods.push(foodId); else state.body.favoriteFoods.splice(i, 1);
-        const on = i < 0;
-        $('popPin').className = 'pinbtn' + (on ? ' on' : '');
-        $('popPin').textContent = on ? '★ Pinned' : '☆ Pin to favorites';
-        saveState(); renderFoodChips();
-      };
       showKcal();
     }, 'Log');
 }
@@ -1436,6 +1390,78 @@ function renderFoodTotals(rows) {
     cell('Water', water, t.water_oz, ' oz');
 }
 
+/* ---- meals: the combinations you eat again ----
+   Built from what you have already logged rather than assembled in a
+   builder. You eat the thing, then keep it — less work, and more honest
+   than guessing portions up front. */
+function mealKcal(meal) {
+  return (meal.items || []).reduce((n, it) => {
+    const nut = nutrientsFor(it.foodId);
+    return n + (nut && nut.kcal != null ? (nut.kcal * it.grams) / 100 : 0);
+  }, 0);
+}
+function logMeal(meal) {
+  // Each food pushes its own undo; collapse them so undoing a meal is one
+  // press rather than one per ingredient.
+  const before = undoStack.length;
+  (meal.items || []).forEach((it) => logFood(it.foodId, it.foodName, it.grams, it.portion));
+  const mine = undoStack.splice(Math.min(before, undoStack.length));
+  if (mine.length) pushUndo(meal.name, () => { mine.slice().reverse().forEach((u) => u.revert()); });
+  closePop();
+  toast('Logged ' + meal.name);
+}
+function openMeals() {
+  loadFoods();
+  openPop('Meals',
+    '<div class="list" id="mealList"></div>' +
+    '<div class="chips" style="margin-top:10px">' +
+      '<button class="mini" id="mealSaveToday">＋ Save today’s food as a meal</button></div>',
+    null,
+    () => {
+      const box = $('mealList');
+      const paint = () => {
+        box.innerHTML = '';
+        const live = state.body.meals || [];
+        if (!live.length) {
+          box.innerHTML = '<div class="empty">No meals yet. Log a few foods, then keep the day as one.</div>';
+          return;
+        }
+        live.slice().reverse().forEach((m) => {
+          const div = document.createElement('div'); div.className = 'row';
+          const kc = Math.round(mealKcal(m));
+          div.innerHTML = '<span>' + esc(m.name) + '</span><span class="tiny">' +
+            (m.items || []).length + ' items' + (kc ? ' · ' + kc + ' kcal' : '') + '</span>';
+          const log = document.createElement('button');
+          log.className = 'mini'; log.type = 'button'; log.textContent = 'Log';
+          log.style.marginLeft = 'auto';
+          log.onclick = () => logMeal(m);
+          const x = document.createElement('button');
+          x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Delete meal';
+          x.onclick = () => { dropRecord(state.body.meals, m.id, m.name); saveState(); paint(); };
+          div.appendChild(log); div.appendChild(x);
+          box.appendChild(div);
+        });
+      };
+      paint();
+      $('mealSaveToday').onclick = () => {
+        const rows = onDay(state.body.food);
+        if (!rows.length) { toast('Nothing logged today to save'); return; }
+        closePop();
+        openForm('Save as a meal', [{ key: 'name', label: 'Call it', placeholder: 'breakfast, post-gym…' }],
+          {}, (v) => {
+            if (!v.name) return false;
+            appendRec(state.body.meals, stamp({
+              id: uid(), name: v.name,
+              items: rows.map((r) => ({ foodId: r.foodId, foodName: r.foodName,
+                                        grams: r.grams, portion: r.portion || '' })),
+            }), 'meal “' + v.name + '”');
+            saveState();
+            toast('Saved ' + v.name);
+          }, 'Save');
+      };
+    });
+}
+
 /* ---- your own food ---- */
 /* Stored per 100 g in the same shape self.html writes, so both apps read it. */
 function openCustomFood() {
@@ -1463,7 +1489,7 @@ function openCustomFood() {
       state.body.customFoods.push(f);
       state.body.favoriteFoods = state.body.favoriteFoods || [];
       state.body.favoriteFoods.push(f.id);      // you made it, you'll log it
-      saveState(); indexCustomFoods(); renderFoodChips();
+      saveState(); indexCustomFoods();
     });
 }
 
@@ -1936,7 +1962,7 @@ function backup() {
    ============================================================= */
 function renderAll() {
   loadPulse(); loadSleep();
-  renderDrinks(); renderSubs(); renderFoodChips(); renderFoodLog();
+  renderDrinks(); renderSubs(); renderFoodLog();
   renderExercise(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
@@ -1992,137 +2018,8 @@ $('symAdd').onclick = () => openPop('Note a symptom',
     toast('Noted');
   });
 $('customFoodBtn').onclick = () => { loadFoods(); openCustomFood(); };
+$('mealsBtn').onclick = openMeals;
 $('foodSearch').onfocus = () => loadFoods();
-// Opening the fold is the clearest signal you're about to search.
-$('foodFold').addEventListener('toggle', () => {
-  if ($('foodFold').open) { loadFoods(); $('foodSearch').focus(); }
-});
-$('foodSearch').oninput = (e) => { loadFoods().then(() => renderResults(e.target.value)); renderResults(e.target.value); };
-$('foodSearch').onkeydown = (e) => {
-  if (e.key === 'Escape') { e.target.value = ''; $('foodResults').innerHTML = ''; }
-  if (e.key === 'Enter') { const first = $('foodResults').querySelector('button'); if (first) first.click(); }
-};
-// Dismiss the results list when focus leaves the search area.
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.searchwrap')) $('foodResults').innerHTML = '';
-});
-// Fetch the 1.2 MB library only once the food card is actually on screen.
-if ('IntersectionObserver' in window) {
-  const io = new IntersectionObserver((entries) => {
-    if (entries.some((en) => en.isIntersecting)) { io.disconnect(); loadFoods(); }
-  }, { rootMargin: '200px' });
-  io.observe($('foodCard'));
-}
-
-/* ---- drawer add-buttons ---- */
-const addTo = (arr, rec, label) => {
-  appendRec(arr, stamp(rec), label || 'entry');
-  saveState(); renderDrawers(); renderFeed();
-  if (label) toast('Added ' + label);
-};
-
-$('addPerson').onclick = () => openForm('Add a person', [
-  { key: 'name', label: 'Name' },
-  { key: 'relation', label: 'Relation', placeholder: 'friend, brother, colleague' },
-], {}, (v) => {
-  if (!v.name) return false;
-  addTo(state.relationships.people, { id: uid(), name: v.name, relation: v.relation, tier: 2 }, v.name);
-});
-
-$('addBirthday').onclick = () => openForm('Add a birthday', [
-  { key: 'name', label: 'Name' },
-  { key: 'month', label: 'Month', type: 'select', options: MONTHS.map((m, i) => ({ v: String(i + 1), l: m })) },
-  { key: 'day', label: 'Day', type: 'number', placeholder: '1–31' },
-  { key: 'year', label: 'Year (optional)', type: 'number', placeholder: 'e.g. 1994' },
-], {}, (v) => {
-  if (!v.name || !v.month) return false;
-  addTo(state.relationships.birthdays, {
-    id: uid(), name: v.name, month: Number(v.month),
-    day: Number(v.day) || null, year: Number(v.year) || null, deceased: false,
-  }, v.name + "'s birthday");
-});
-
-$('addBook').onclick = () => openForm('Add a book', [
-  { key: 'title', label: 'Title' },
-  { key: 'author', label: 'Author' },
-  { key: 'status', label: 'Status', type: 'select', options: ['want', 'reading', 'finished', 'abandoned'] },
-], { status: 'reading' }, (v) => {
-  if (!v.title) return false;
-  addTo(state.mind.books, { id: uid(), title: v.title, author: v.author, status: v.status || 'want' }, v.title);
-});
-
-$('addQuote').onclick = () => openForm('Add a quote', [
-  { key: 'text', label: 'Quote', type: 'textarea' },
-  { key: 'source', label: 'Who said it' },
-  { key: 'why', label: 'Why it stuck (optional)' },
-], {}, (v) => {
-  if (!v.text) return false;
-  addTo(state.mind.quotes, { id: uid(), date: todayStr(), text: v.text, source: v.source, why: v.why }, 'a quote');
-});
-
-$('addIdea').onclick = () => openForm('Add an idea', [
-  { key: 'text', label: 'Idea', type: 'textarea' },
-  { key: 'source', label: 'Where it came from', placeholder: 'book, person, self' },
-], {}, (v) => {
-  if (!v.text) return false;
-  addTo(state.mind.ideas, { id: uid(), date: todayStr(), text: v.text, source: v.source }, 'an idea');
-});
-
-$('addCategory').onclick = () => openForm('Add a budget line', [
-  { key: 'name', label: 'Category', placeholder: 'Food, Rent, Transport' },
-  { key: 'planned', label: 'Planned per month', type: 'number', step: '0.01' },
-], {}, (v) => {
-  if (!v.name) return false;
-  addTo(state.money.categories, { id: uid(), name: v.name, planned: Number(v.planned) || 0 }, v.name);
-});
-
-$('addExpense').onclick = () => {
-  const cats = state.money.categories || [];
-  if (!cats.length) { alert('Add a budget category first — an expense needs somewhere to go.'); return; }
-  openForm('Add an expense', [
-    { key: 'amount', label: 'Amount', type: 'number', step: '0.01' },
-    { key: 'categoryId', label: 'Category', type: 'select', options: cats.map((c) => ({ v: c.id, l: c.name })) },
-    { key: 'note', label: 'Note (optional)' },
-    { key: 'date', label: 'Date', type: 'date' },
-  ], { date: day }, (v) => {
-    const amt = Number(v.amount);
-    if (!amt) return false;
-    addTo(state.money.expenses, {
-      id: uid(), date: v.date || day, amount: amt, categoryId: v.categoryId, note: v.note,
-    }, fmt$(amt));
-  });
-};
-
-$('addSub').onclick = () => openForm('Add a subscription', [
-  { key: 'name', label: 'Name' },
-  { key: 'amount', label: 'Amount', type: 'number', step: '0.01' },
-  { key: 'cadence', label: 'Billed', type: 'select', options: ['monthly', 'yearly'] },
-], {}, (v) => {
-  if (!v.name || !Number(v.amount)) return false;
-  addTo(state.money.subscriptions, {
-    id: uid(), name: v.name, amount: Number(v.amount), cadence: v.cadence || 'monthly',
-  }, v.name);
-});
-
-$('editValues').onclick = () => openForm('Your values', [
-  { key: 'values', label: 'One per line — the handful you want to be measured by', type: 'textarea' },
-], { values: (state.identity.values || []).join('\n') }, (v) => {
-  state.identity.values = v.values.split('\n').map((s) => s.trim()).filter(Boolean);
-  saveState(); renderDrawers();
-}, 'Save');
-
-$('addPlace').onclick = () => openForm('Add a place', [
-  { key: 'name', label: 'Name', placeholder: 'Milwaukee, Cairo, the cabin' },
-  { key: 'kind', label: 'Kind', type: 'select',
-    options: [{ v: 'home', l: 'home — somewhere you live(d)' },
-              { v: 'trip', l: 'trip — travel or a visit' },
-              { v: 'spot', l: 'spot — a meaningful place' }] },
-  { key: 'from', label: 'From', type: 'date' },
-  { key: 'to', label: 'To (leave blank if current)', type: 'date' },
-], {}, (v) => {
-  if (!v.name) return false;
-  addTo(state.places.items, { id: uid(), name: v.name, kind: v.kind || 'spot', from: v.from, to: v.to }, v.name);
-});
 
 $('popBack').onclick = closePop;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
