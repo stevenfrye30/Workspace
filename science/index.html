@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Science Lab — Workspace</title>
-  <meta name="description" content="A personal science lab — periodic table, chemistry, biology, biochemistry, physics, neuroscience, lab methods, data analysis, and a coursework archive.">
+  <title>Chemistry — Science Lab</title>
+  <meta name="description" content="A general-chemistry bench — interactive periodic table, polyatomic ion and solubility reference tables, strong acid/base and Ka/Kb values, and live calculators for molar mass, molarity, dilution, pH and buffers.">
   <link rel="stylesheet" href="../_shared/hub-nav.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/lab.css">
@@ -17,89 +17,94 @@
   <div class="page">
     <header class="lab-head">
       <div class="kicker">Science Lab</div>
-      <h1>Science</h1>
-      <p class="sub">A research bench and field notebook — the periodic table at its center, with rooms for chemistry, biology, the body, instruments, and the data they produce.</p>
+      <h1>Chemistry</h1>
+      <p class="sub">A general-chemistry bench — the periodic table, the lookup tables you reach for mid-problem, and live solvers for the everyday calculations.</p>
       <div class="stats">
         <div><strong>118</strong> elements</div>
-        <div><strong>16</strong> unit quantities</div>
-        <div><strong>SI</strong> prefixes &amp; constants</div>
+        <div><strong>32</strong> polyatomic ions</div>
+        <div><strong>5</strong> chem calculators</div>
       </div>
     </header>
 
-    <div class="section-label">Core tools</div>
-    <a class="featured" href="room.html?room=periodic-table">
-      <span class="big-glyph">⚛</span>
-      <span class="kind">Core hub · the table everything hangs from</span>
-      <span class="name">Periodic Table</span>
-      <span class="desc">The connective center of the lab — elements, groups &amp; periods, atomic structure, periodic trends, and bonding, linked outward to Chemistry, Biochemistry, Physics, and lab work.</span>
-      <span class="chips"><span class="chip">Elements</span><span class="chip">Groups &amp; periods</span><span class="chip">Atomic structure</span><span class="chip">Trends</span><span class="chip">Bonding</span><span class="chip">Bio &amp; lab relevance</span></span>
+    <div class="section-label">Start here</div>
+    <a class="featured" href="room.html?room=chemistry">
+      <span class="big-glyph">🧪</span>
+      <span class="kind">Core room · formulas, examples &amp; live solvers</span>
+      <span class="name">Chemistry</span>
+      <span class="desc">Atoms to reactions — bonding, stoichiometry, acids/bases, equilibrium, thermodynamics and kinetics, with worked examples and calculators for molar mass, molarity, dilution, pH and buffers.</span>
+      <span class="chips"><span class="chip">Stoichiometry</span><span class="chip">Acids &amp; bases</span><span class="chip">Equilibrium</span><span class="chip">Thermo</span><span class="chip">Calculators</span></span>
     </a>
 
-    <div class="section-label">Major disciplines</div>
     <div class="rooms">
 
-      <a class="sci-card" style="--c:#e0794b;" href="room.html?room=chemistry">
-        <span class="glyph">🧪</span><span class="kind">Matter</span><span class="name">Chemistry</span>
-        <span class="desc">Atoms to reactions — bonding, stoichiometry, acids/bases, equilibrium, thermo, kinetics, and organic foundations, with formulas and worked examples.</span>
-        <span class="chips"><span class="chip">Bonding</span><span class="chip">Stoichiometry</span><span class="chip">Equilibrium</span><span class="chip">Organic</span></span>
+      <a class="sci-card" style="--c:#d4a24c;" href="room.html?room=periodic-table">
+        <span class="glyph">⚛</span><span class="kind">The table</span><span class="name">Periodic Table</span>
+        <span class="desc">All 118 elements — click any one for atomic mass, group, period, electron configuration and oxidation states. Search by name, symbol or number; filter by category.</span>
+        <span class="chips"><span class="chip">Elements</span><span class="chip">Trends</span><span class="chip">Configurations</span></span>
       </a>
 
-      <a class="sci-card" style="--c:#6fae5f;" href="room.html?room=biology">
-        <span class="glyph">🌿</span><span class="kind">Life</span><span class="name">Biology</span>
-        <span class="desc">Cells, genes, organisms &amp; body systems — cell biology, genetics, immunity, physiology, and evolution, with reference cards and worked examples.</span>
-        <span class="chips"><span class="chip">Cells</span><span class="chip">Genetics</span><span class="chip">Body systems</span><span class="chip">Disease</span></span>
-      </a>
-
-      <a class="sci-card" style="--c:#c98bd0;" href="room.html?room=physics">
-        <span class="glyph">🧲</span><span class="kind">Forces &amp; fields</span><span class="name">Physics &amp; Math</span>
-        <span class="desc">Mechanics, electricity, waves, optics, thermodynamics, and measurement — bridges into Math Lab tools.</span>
-        <span class="chips"><span class="chip">Mechanics</span><span class="chip">Waves</span><span class="chip">Measurement</span></span>
-      </a>
-
-    </div>
-
-    <div class="section-label">Bridge areas <span>— smaller, specialized cross-over areas</span></div>
-    <div class="rooms bridge-row">
-
-      <a class="sci-card bridge" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
-        <span class="glyph">🧬</span><span class="kind">Bridge · molecules of life</span><span class="name">Biochemistry</span>
-        <span class="desc">Where chemistry meets biology — proteins, enzymes, metabolism, DNA/RNA, membranes, and signaling.</span>
-        <span class="chips"><span class="chip">Enzymes</span><span class="chip">Metabolism</span><span class="chip">DNA/RNA</span></span>
-      </a>
-
-      <a class="sci-card bridge" style="--c:#e06b8b;" href="room.html?room=neuroscience">
-        <span class="glyph">🧠</span><span class="kind">Bridge · signals</span><span class="name">Neuroscience &amp; Ephys</span>
-        <span class="desc">Where biology meets physics — neurons, synapses, membrane potential, patch clamp, and Ca²⁺ imaging (GCaMP / iGluSnFR).</span>
-        <span class="chips"><span class="chip">Membrane potential</span><span class="chip">Patch clamp</span><span class="chip">Ca²⁺ imaging</span></span>
-      </a>
-
-    </div>
-
-    <div class="section-label">Bench &amp; analysis</div>
-    <div class="rooms">
-
-      <a class="sci-card" style="--c:#b8a24c;" href="room.html?room=lab-methods">
-        <span class="glyph">🔬</span><span class="kind">Technique</span><span class="name">Lab Methods</span>
-        <span class="desc">Pipetting, microscopy, electrophysiology, protein purification, assays, imaging, safety, troubleshooting.</span>
-        <span class="chips"><span class="chip">Microscopy</span><span class="chip">Purification</span><span class="chip">Assays</span></span>
+      <a class="sci-card" style="--c:#5f9ea0;" href="room.html?room=reference">
+        <span class="glyph">📋</span><span class="kind">Lookup</span><span class="name">Reference Tables</span>
+        <span class="desc">Polyatomic ions, solubility rules, strong acids &amp; bases, and K<sub>a</sub>/K<sub>b</sub> values. Searchable across every table, sized for screen-sharing, printable as a handout.</span>
+        <span class="chips"><span class="chip">Ions</span><span class="chip">Solubility</span><span class="chip">K<sub>a</sub> / K<sub>b</sub></span></span>
       </a>
 
       <a class="sci-card" style="--c:#5fb0a8;" href="room.html?room=data-analysis">
-        <span class="glyph">📊</span><span class="kind">Evidence &amp; notation</span><span class="name">Data, Symbols &amp; Units</span>
-        <span class="desc">Experimental design, statistics, time-series traces, controls &amp; error — plus a live <strong>Master Units Table</strong>: a converter across 16 quantities, SI prefixes, base &amp; derived units, and physical constants. Links to Math Stats, Time-Series &amp; Graph Lab.</span>
-        <span class="chips"><span class="chip">Stats</span><span class="chip">Traces</span><span class="chip">Units</span><span class="chip">Notation</span></span>
-      </a>
-
-      <a class="sci-card" style="--c:#c2b280;" href="room.html?room=notes">
-        <span class="glyph">📓</span><span class="kind">Notebook</span><span class="name">Notes &amp; Study Library</span>
-        <span class="desc">Science notes, definitions, diagrams, formulas, saved explanations, and study reminders.</span>
-        <span class="chips"><span class="chip">Notes</span><span class="chip">Definitions</span><span class="chip">Formulas</span></span>
+        <span class="glyph">📊</span><span class="kind">Units &amp; notation</span><span class="name">Data, Symbols &amp; Units</span>
+        <span class="desc">A converter across 16 quantities, SI prefixes, base &amp; derived units, physical constants — plus a scientific calculator and the notation used across the sciences.</span>
+        <span class="chips"><span class="chip">Converter</span><span class="chip">Constants</span><span class="chip">Calculator</span></span>
       </a>
 
     </div>
 
+    <details class="advanced">
+      <summary>
+        <span class="adv-title">Advanced &amp; research bench</span>
+        <span class="adv-hint">Biology, biochemistry, neuroscience &amp; ephys, lab methods, physics, notebook</span>
+      </summary>
+      <div class="rooms">
+
+        <a class="sci-card" style="--c:#6fae5f;" href="room.html?room=biology">
+          <span class="glyph">🌿</span><span class="kind">Life</span><span class="name">Biology</span>
+          <span class="desc">Cells, genes, organisms &amp; body systems — cell biology, genetics, immunity, physiology, and evolution.</span>
+          <span class="chips"><span class="chip">Cells</span><span class="chip">Genetics</span><span class="chip">Body systems</span></span>
+        </a>
+
+        <a class="sci-card" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
+          <span class="glyph">🧬</span><span class="kind">Molecules of life</span><span class="name">Biochemistry</span>
+          <span class="desc">Where chemistry meets biology — proteins, enzymes, metabolism, DNA/RNA, membranes, and signaling.</span>
+          <span class="chips"><span class="chip">Enzymes</span><span class="chip">Metabolism</span><span class="chip">DNA/RNA</span></span>
+        </a>
+
+        <a class="sci-card" style="--c:#e06b8b;" href="room.html?room=neuroscience">
+          <span class="glyph">🧠</span><span class="kind">Signals</span><span class="name">Neuroscience &amp; Ephys</span>
+          <span class="desc">Neurons, synapses, membrane potential, patch clamp, and Ca²⁺ imaging (GCaMP / iGluSnFR).</span>
+          <span class="chips"><span class="chip">Membrane potential</span><span class="chip">Patch clamp</span><span class="chip">Ca²⁺ imaging</span></span>
+        </a>
+
+        <a class="sci-card" style="--c:#b8a24c;" href="room.html?room=lab-methods">
+          <span class="glyph">🔬</span><span class="kind">Technique</span><span class="name">Lab Methods</span>
+          <span class="desc">Pipetting, microscopy, electrophysiology, protein purification, assays, imaging, safety, troubleshooting.</span>
+          <span class="chips"><span class="chip">Microscopy</span><span class="chip">Purification</span><span class="chip">Assays</span></span>
+        </a>
+
+        <a class="sci-card" style="--c:#c98bd0;" href="room.html?room=physics">
+          <span class="glyph">🧲</span><span class="kind">Forces &amp; fields</span><span class="name">Physics &amp; Math</span>
+          <span class="desc">Mechanics, electricity, waves, optics, thermodynamics, and measurement — bridges into Math Lab tools.</span>
+          <span class="chips"><span class="chip">Mechanics</span><span class="chip">Waves</span><span class="chip">Measurement</span></span>
+        </a>
+
+        <a class="sci-card" style="--c:#c2b280;" href="room.html?room=notes">
+          <span class="glyph">📓</span><span class="kind">Notebook</span><span class="name">Notes &amp; Study Library</span>
+          <span class="desc">Science notes, definitions, diagrams, formulas, saved explanations, and study reminders.</span>
+          <span class="chips"><span class="chip">Notes</span><span class="chip">Definitions</span><span class="chip">Formulas</span></span>
+        </a>
+
+      </div>
+    </details>
+
     <footer>
-      A self-contained science bench — interactive periodic table, master units table, and reference rooms. Source on
+      A general-chemistry bench — interactive periodic table, searchable reference tables, and live solvers. Source on
       <a href="https://github.com/stevenfrye30/Workspace">GitHub</a>.
     </footer>
   </div>

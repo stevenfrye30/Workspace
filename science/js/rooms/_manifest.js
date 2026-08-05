@@ -2,6 +2,7 @@
 
 export const MANIFEST = {
   "periodic-table": { name: "Periodic Table", glyph: "⚛", color: "#d4a24c" },
+  "reference": { name: "Reference Tables", glyph: "📋", color: "#5f9ea0" },
   "chemistry": { name: "Chemistry", glyph: "🧪", color: "#e0794b" },
   "biology": { name: "Biology", glyph: "🌿", color: "#6fae5f" },
   "biochemistry": { name: "Biochemistry", glyph: "🧬", color: "#7fb0d0" },

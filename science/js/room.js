@@ -15,6 +15,7 @@ import { MANIFEST, ALIAS } from './rooms/_manifest.js';
 /* Instruments per room, in render order. */
 const WIDGETS = {
   'periodic-table': ['./widgets/periodic-table.js'],
+  'reference': ['./widgets/reference-tables.js'],
   'data-analysis': ['./widgets/units.js', './widgets/calculator.js'],
   'chemistry': ['./widgets/chemistry.js'],
   'notes': ['./widgets/notes-library.js']
