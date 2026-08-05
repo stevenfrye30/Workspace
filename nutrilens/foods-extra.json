@@ -1,0 +1,622 @@
+{
+  "note": "Hand-curated additions to the USDA SR Legacy export in foods.json. Kept separately so they survive a regeneration of that export; merge_extra.py folds them in and is idempotent. Values are per 100 g edible portion, from USDA SR Legacy / FoodData Central. Ids continue the 9000001+ block used by the first curated batch.",
+  "per": "100 g edible portion",
+  "foods": [
+    {
+      "id": 9000046,
+      "name": "Cinnamon, ground",
+      "aliases": [
+        "cinnamon"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 2.6
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 7.8
+        }
+      ],
+      "kcal": 247,
+      "water_g": 10.6,
+      "protein_g": 4.0,
+      "carbs_g": 80.6,
+      "fiber_g": 53.1,
+      "sugar_g": 2.2,
+      "fat_g": 1.2,
+      "sodium_mg": 10,
+      "potassium_mg": 431,
+      "calcium_mg": 1002,
+      "iron_mg": 8.3,
+      "magnesium_mg": 60
+    },
+    {
+      "id": 9000047,
+      "name": "Turmeric, ground",
+      "aliases": [
+        "turmeric",
+        "haldi"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 3.0
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 9.0
+        }
+      ],
+      "kcal": 312,
+      "water_g": 12.8,
+      "protein_g": 9.7,
+      "carbs_g": 67.1,
+      "fiber_g": 22.7,
+      "sugar_g": 3.2,
+      "fat_g": 3.3,
+      "sodium_mg": 27,
+      "potassium_mg": 2080,
+      "calcium_mg": 168,
+      "iron_mg": 55.0,
+      "magnesium_mg": 208
+    },
+    {
+      "id": 9000048,
+      "name": "Oregano, dried",
+      "aliases": [
+        "oregano"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 1.0
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 3.0
+        }
+      ],
+      "kcal": 265,
+      "water_g": 9.9,
+      "protein_g": 9.0,
+      "carbs_g": 68.9,
+      "fiber_g": 42.5,
+      "sugar_g": 4.1,
+      "fat_g": 4.3,
+      "sodium_mg": 25,
+      "potassium_mg": 1260,
+      "calcium_mg": 1597,
+      "iron_mg": 36.8,
+      "magnesium_mg": 270
+    },
+    {
+      "id": 9000049,
+      "name": "Parsley, dried",
+      "aliases": [
+        "parsley"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 0.5
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 1.3
+        }
+      ],
+      "kcal": 292,
+      "water_g": 5.9,
+      "protein_g": 26.6,
+      "carbs_g": 50.6,
+      "fiber_g": 26.7,
+      "sugar_g": 7.3,
+      "fat_g": 5.5,
+      "sodium_mg": 452,
+      "potassium_mg": 2683,
+      "calcium_mg": 1140,
+      "iron_mg": 22.0,
+      "magnesium_mg": 372
+    },
+    {
+      "id": 9000051,
+      "name": "Cayenne pepper, ground",
+      "aliases": [
+        "cayenne",
+        "red pepper flakes",
+        "chili flakes"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 1.8
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 5.3
+        }
+      ],
+      "kcal": 318,
+      "water_g": 8.1,
+      "protein_g": 12.0,
+      "carbs_g": 56.6,
+      "fiber_g": 27.2,
+      "sugar_g": 10.3,
+      "fat_g": 17.3,
+      "sodium_mg": 30,
+      "potassium_mg": 2014,
+      "calcium_mg": 148,
+      "iron_mg": 7.8,
+      "magnesium_mg": 152
+    },
+    {
+      "id": 9000052,
+      "name": "Nutmeg, ground",
+      "aliases": [
+        "nutmeg"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 2.2
+        }
+      ],
+      "kcal": 525,
+      "water_g": 6.2,
+      "protein_g": 5.8,
+      "carbs_g": 49.3,
+      "fiber_g": 20.8,
+      "sugar_g": 28.5,
+      "fat_g": 36.3,
+      "sodium_mg": 16,
+      "potassium_mg": 350,
+      "calcium_mg": 184,
+      "iron_mg": 3.0,
+      "magnesium_mg": 183
+    },
+    {
+      "id": 9000053,
+      "name": "Cloves, ground",
+      "aliases": [
+        "clove"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 2.1
+        }
+      ],
+      "kcal": 274,
+      "water_g": 9.9,
+      "protein_g": 6.0,
+      "carbs_g": 65.5,
+      "fiber_g": 33.9,
+      "sugar_g": 2.4,
+      "fat_g": 13.0,
+      "sodium_mg": 277,
+      "potassium_mg": 1020,
+      "calcium_mg": 632,
+      "iron_mg": 11.8,
+      "magnesium_mg": 259
+    },
+    {
+      "id": 9000056,
+      "name": "Chili powder",
+      "aliases": [
+        "chilli powder"
+      ],
+      "source": "curated",
+      "category": "Spices & Herbs",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 2.7
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 8.0
+        }
+      ],
+      "kcal": 282,
+      "water_g": 10.8,
+      "protein_g": 13.5,
+      "carbs_g": 49.7,
+      "fiber_g": 34.8,
+      "sugar_g": 7.2,
+      "fat_g": 14.3,
+      "sodium_mg": 2867,
+      "potassium_mg": 1950,
+      "calcium_mg": 330,
+      "iron_mg": 17.3,
+      "magnesium_mg": 149
+    },
+    {
+      "id": 9000057,
+      "name": "Ketchup",
+      "aliases": [
+        "catsup",
+        "tomato ketchup"
+      ],
+      "source": "curated",
+      "category": "Soups & Sauces",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tbsp",
+          "grams": 17.0
+        },
+        {
+          "label": "1 packet",
+          "grams": 8.0
+        }
+      ],
+      "kcal": 101,
+      "water_g": 68.5,
+      "protein_g": 1.0,
+      "carbs_g": 27.4,
+      "fiber_g": 0.3,
+      "sugar_g": 21.8,
+      "fat_g": 0.1,
+      "sodium_mg": 907,
+      "potassium_mg": 281,
+      "calcium_mg": 15
+    },
+    {
+      "id": 9000058,
+      "name": "Mayonnaise",
+      "aliases": [
+        "mayo"
+      ],
+      "source": "curated",
+      "category": "Fats & Oils",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tbsp",
+          "grams": 13.8
+        },
+        {
+          "label": "1 tsp",
+          "grams": 4.6
+        }
+      ],
+      "kcal": 680,
+      "water_g": 15.0,
+      "protein_g": 1.0,
+      "carbs_g": 0.6,
+      "fiber_g": 0.0,
+      "sugar_g": 0.5,
+      "fat_g": 74.9,
+      "sfa_g": 11.7,
+      "cholesterol_mg": 42,
+      "sodium_mg": 635
+    },
+    {
+      "id": 9000059,
+      "name": "Mustard, prepared yellow",
+      "aliases": [
+        "mustard"
+      ],
+      "source": "curated",
+      "category": "Soups & Sauces",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 5.0
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 15.0
+        }
+      ],
+      "kcal": 66,
+      "water_g": 82.7,
+      "protein_g": 4.4,
+      "carbs_g": 5.8,
+      "fiber_g": 3.3,
+      "sugar_g": 1.0,
+      "fat_g": 3.6,
+      "sodium_mg": 1104,
+      "potassium_mg": 152,
+      "calcium_mg": 58
+    },
+    {
+      "id": 9000060,
+      "name": "Maple syrup",
+      "aliases": [
+        "maple"
+      ],
+      "source": "curated",
+      "category": "Sweets",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tbsp",
+          "grams": 20.0
+        },
+        {
+          "label": "1/4 cup",
+          "grams": 80.0
+        }
+      ],
+      "kcal": 260,
+      "water_g": 32.4,
+      "protein_g": 0.0,
+      "carbs_g": 67.0,
+      "fiber_g": 0.0,
+      "sugar_g": 60.5,
+      "fat_g": 0.1,
+      "sodium_mg": 12,
+      "potassium_mg": 212,
+      "calcium_mg": 102
+    },
+    {
+      "id": 9000061,
+      "name": "Hot sauce",
+      "aliases": [
+        "tabasco",
+        "pepper sauce"
+      ],
+      "source": "curated",
+      "category": "Soups & Sauces",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tsp",
+          "grams": 4.7
+        },
+        {
+          "label": "1 tbsp",
+          "grams": 14.0
+        }
+      ],
+      "kcal": 21,
+      "water_g": 90.8,
+      "protein_g": 0.9,
+      "carbs_g": 4.1,
+      "fiber_g": 1.7,
+      "sugar_g": 1.5,
+      "fat_g": 0.7,
+      "sodium_mg": 2643,
+      "potassium_mg": 165,
+      "calcium_mg": 12
+    },
+    {
+      "id": 9000062,
+      "name": "Barbecue sauce",
+      "aliases": [
+        "bbq sauce"
+      ],
+      "source": "curated",
+      "category": "Soups & Sauces",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tbsp",
+          "grams": 17.0
+        },
+        {
+          "label": "2 tbsp",
+          "grams": 34.0
+        }
+      ],
+      "kcal": 172,
+      "water_g": 57.0,
+      "protein_g": 0.8,
+      "carbs_g": 40.8,
+      "fiber_g": 0.7,
+      "sugar_g": 33.2,
+      "fat_g": 0.6,
+      "sodium_mg": 1027,
+      "potassium_mg": 232,
+      "calcium_mg": 21
+    },
+    {
+      "id": 9000063,
+      "name": "Salsa",
+      "aliases": [
+        "pico de gallo"
+      ],
+      "source": "curated",
+      "category": "Soups & Sauces",
+      "tags": [],
+      "portions": [
+        {
+          "label": "2 tbsp",
+          "grams": 32.0
+        },
+        {
+          "label": "1/4 cup",
+          "grams": 64.0
+        }
+      ],
+      "kcal": 36,
+      "water_g": 89.8,
+      "protein_g": 1.5,
+      "carbs_g": 7.0,
+      "fiber_g": 1.9,
+      "sugar_g": 3.3,
+      "fat_g": 0.2,
+      "sodium_mg": 430,
+      "potassium_mg": 275,
+      "calcium_mg": 27
+    },
+    {
+      "id": 9000064,
+      "name": "Ranch dressing",
+      "aliases": [
+        "ranch"
+      ],
+      "source": "curated",
+      "category": "Fats & Oils",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tbsp",
+          "grams": 14.7
+        },
+        {
+          "label": "2 tbsp",
+          "grams": 29.4
+        }
+      ],
+      "kcal": 430,
+      "water_g": 40.4,
+      "protein_g": 1.3,
+      "carbs_g": 6.3,
+      "fiber_g": 0.1,
+      "sugar_g": 4.1,
+      "fat_g": 44.7,
+      "sfa_g": 7.0,
+      "cholesterol_mg": 21,
+      "sodium_mg": 1077
+    },
+    {
+      "id": 9000065,
+      "name": "Soy sauce",
+      "aliases": [
+        "shoyu",
+        "tamari"
+      ],
+      "source": "curated",
+      "category": "Soups & Sauces",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 tbsp",
+          "grams": 16.0
+        },
+        {
+          "label": "1 tsp",
+          "grams": 5.3
+        }
+      ],
+      "kcal": 53,
+      "water_g": 71.1,
+      "protein_g": 8.1,
+      "carbs_g": 4.9,
+      "fiber_g": 0.8,
+      "sugar_g": 0.4,
+      "fat_g": 0.6,
+      "sodium_mg": 5493,
+      "potassium_mg": 435,
+      "calcium_mg": 33
+    },
+    {
+      "id": 9000066,
+      "name": "Tortilla, flour",
+      "aliases": [
+        "flour tortilla",
+        "wrap"
+      ],
+      "source": "curated",
+      "category": "Baked Goods",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 medium (8 in)",
+          "grams": 45.0
+        },
+        {
+          "label": "1 large (10 in)",
+          "grams": 72.0
+        }
+      ],
+      "kcal": 306,
+      "water_g": 27.6,
+      "protein_g": 8.2,
+      "carbs_g": 51.4,
+      "fiber_g": 3.1,
+      "sugar_g": 2.6,
+      "fat_g": 8.0,
+      "sodium_mg": 663,
+      "potassium_mg": 145,
+      "calcium_mg": 145,
+      "iron_mg": 3.6
+    },
+    {
+      "id": 9000067,
+      "name": "Tortilla, corn",
+      "aliases": [
+        "corn tortilla"
+      ],
+      "source": "curated",
+      "category": "Baked Goods",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 medium (6 in)",
+          "grams": 26.0
+        }
+      ],
+      "kcal": 218,
+      "water_g": 45.9,
+      "protein_g": 5.7,
+      "carbs_g": 44.6,
+      "fiber_g": 6.3,
+      "sugar_g": 0.9,
+      "fat_g": 2.9,
+      "sodium_mg": 45,
+      "potassium_mg": 186,
+      "calcium_mg": 81,
+      "iron_mg": 1.2
+    },
+    {
+      "id": 9000070,
+      "name": "Onion, raw",
+      "aliases": [
+        "onion",
+        "yellow onion"
+      ],
+      "source": "curated",
+      "category": "Vegetables",
+      "tags": [],
+      "portions": [
+        {
+          "label": "1 medium",
+          "grams": 110.0
+        },
+        {
+          "label": "1/2 cup chopped",
+          "grams": 80.0
+        }
+      ],
+      "kcal": 40,
+      "water_g": 89.1,
+      "protein_g": 1.1,
+      "carbs_g": 9.3,
+      "fiber_g": 1.7,
+      "sugar_g": 4.2,
+      "fat_g": 0.1,
+      "sodium_mg": 4,
+      "potassium_mg": 146,
+      "calcium_mg": 23,
+      "iron_mg": 0.2,
+      "magnesium_mg": 10
+    }
+  ]
+}

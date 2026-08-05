@@ -243,11 +243,11 @@
 
   #drinkLabelRow { margin-bottom: 8px; }
 
-  /* The recent-type chip rows fill in as you use the app, which would make
-     these two cards jump the first time you log a new food or activity.
-     Reserve the row so the instruments hold still. */
-  #exChips { min-height: 32px; align-content: flex-start; }
-  body.dense #exChips { min-height: 29px; }
+  /* Movement keeps a row of the types you use most. Empty it collapses
+     rather than holding open a blank gap between the heading and the
+     fields — the reservation only made sense when a fold sat below it. */
+  #exChips:empty { display: none; }
+  #exChips { margin-bottom: 9px; }
 
   /* The seven sleep chips wrapped to a second row inside a column, which cost
      nearly 40px on the tallest card in the grid. Narrower chips fit one row. */
@@ -1280,7 +1280,16 @@ function searchFoods(q) {
   const all = [...foodsIndex.list, ...(state.body.customFoods || [])];
   for (const f of all) {
     const name = (f.name || '').toLowerCase();
-    const each = tokens.map((t) => tokenRank(name, t));
+    // Curated foods carry aliases — "mayo", "bbq sauce", "red pepper flakes".
+    // A word found only there still counts, just at a worse tier than the name.
+    // loadFoods() maps records to {id,name,category,portions,n}, so the raw
+    // record — and its aliases — hangs off .n; customFoods carry theirs flat.
+    const alias = ((f.aliases || (f.n && f.n.aliases) || []).join(' ')).toLowerCase();
+    const each = tokens.map((t) => {
+      const r = tokenRank(name, t);
+      if (r.rank >= 0) return r;
+      return alias.includes(t) ? { rank: 4, pos: 0 } : { rank: -1, pos: -1 };
+    });
     if (each.some((r) => r.rank < 0)) continue;
     // The worst word decides the tier, so a stray buried word can't flatter a match.
     const rank = Math.max(...each.map((r) => r.rank));
