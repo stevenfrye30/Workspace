@@ -28,10 +28,10 @@ cards: [
   { name: "Imaging notation", body: "ΔF/F · F₀ (baseline) · GCaMP (Ca²⁺) · iGluSnFR (glutamate).", note: "" }
 ],
 links: [
-  { name: "Math Lab · Statistics", desc: "Distributions, regression, hypothesis tests.", href: "../math/room.html?room=statistics", tag: "math" },
-  { name: "Math Lab · Time-Series", desc: "Trace smoothing, peaks, AUC, decay τ.", href: "../math/room.html?room=time-series", tag: "math" },
-  { name: "Math Lab · Graph Lab", desc: "Plot and explore functions & data.", href: "../math/graph-lab.html", tag: "math" },
-  { name: "Math Lab · Symbols", desc: "Click-to-copy symbol library (175 symbols).", href: "../math/room.html?room=symbols", tag: "math" },
+  { name: "Statistics", desc: "Distributions, regression, hypothesis tests.", href: "room.html?room=math-statistics", tag: "math" },
+  { name: "Time-Series", desc: "Trace smoothing, peaks, AUC, decay τ.", href: "room.html?room=math-time-series", tag: "math" },
+  { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
+  { name: "Symbols", desc: "Click-to-copy symbol library (175 symbols).", href: "room.html?room=math-symbols", tag: "math" },
   { name: "Periodic Table", desc: "Element symbols & units.", href: "room.html?room=periodic-table", tag: "room" },
   { name: "Biology", desc: "Where the data comes from.", href: "room.html?room=biology", tag: "room" },
   { name: "Chemistry", desc: "Notation in context.", href: "room.html?room=chemistry", tag: "room" },

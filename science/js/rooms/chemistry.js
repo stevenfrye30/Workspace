@@ -44,6 +44,6 @@ links: [
   { name: "Data, Symbols & Units", desc: "Unit converter, constants and a scientific calculator.", href: "room.html?room=data-analysis", tag: "room" },
   { name: "Biochemistry", desc: "Where this chemistry meets biology.", href: "room.html?room=biochemistry", tag: "room" },
   { name: "Lab Methods", desc: "Solution prep, titrations, calibration.", href: "room.html?room=lab-methods", tag: "room" },
-  { name: "Math Lab", desc: "Algebra, calculus, statistics — the full toolset.", href: "../math/", tag: "math" }
+  { name: "Algebra", desc: "Rearrange and solve equations.", href: "room.html?room=math-algebra", tag: "math" }
 ]
 };

@@ -32,7 +32,7 @@ const WIDGETS = {
   'chem-thermo': ['./widgets/thermochem.js']
 };
 
-const TAGLABEL = { room: 'room', math: 'math lab', soon: 'soon' };
+const TAGLABEL = { room: 'room', math: 'math', soon: 'soon' };
 
 const main = document.getElementById('main');
 
@@ -115,9 +115,26 @@ async function render(key) {
       }).join('') + '</div></section>';
   }
 
+  /* Click-to-copy symbol groups, from the ported Symbols room. */
+  if (room.groups) {
+    h += '<section class="block"><div class="block-head"><h2>Symbols</h2>' +
+      '<span class="tag">Click to copy</span>' +
+      '<p>Click any symbol to copy it to the clipboard.</p></div>' +
+      room.groups.map(function (grp) {
+        return '<div class="symkey-group"><div class="symkey-title">' + esc(grp.title) + '</div>' +
+          '<div class="symkey-grid">' + grp.symbols.map(function (s) {
+            return '<button class="symkey" type="button" data-name="' + esc(s.n) + '">' +
+              '<span class="symkey-ch">' + s.g + '</span>' +
+              '<span class="symkey-nm">' + esc(s.n) + '</span></button>';
+          }).join('') + '</div></div>';
+      }).join('') + '</section>';
+  }
+
   if (room.examples) {
-    h += '<section class="block"><div class="block-head"><h2>Worked Examples</h2>' +
-      '<span class="tag">Practice</span><p>Click to reveal each solution.</p></div>' +
+    h += '<section class="block"><div class="block-head"><h2>' +
+      esc(room.examplesTitle || 'Worked Examples') + '</h2>' +
+      '<span class="tag">Practice</span><p>' +
+      esc(room.examplesSub || 'Click to reveal each solution.') + '</p></div>' +
       '<div class="examples">' + room.examples.map(function (ex) {
         return '<details class="ex"><summary><span class="ex-q">' + ex.q + '</span></summary>' +
           '<ul class="ex-steps">' + ex.steps.map(function (s) {
@@ -141,6 +158,17 @@ async function render(key) {
       }).join('') + '</div></section>';
   }
 
+  /* An outline of the territory, carried over from the Math rooms. */
+  if (room.sections) {
+    h += '<section class="block"><div class="block-head"><h2>What this covers</h2>' +
+      '<span class="tag">Outline</span></div><div class="sec-grid">' +
+      room.sections.map(function (s) {
+        return '<div class="sec-card"><div class="sec-title">' + esc(s.title) + '</div><ul>' +
+          s.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') +
+          '</ul></div>';
+      }).join('') + '</div></section>';
+  }
+
   /* Per-room notebook, saved locally as scilab.notes.<room> */
   const notesPh = room.notesPlaceholder || 'Notes, definitions, reminders…';
   const notesCls = 'sci-notes' + (room.notesTall ? ' tall' : '');
@@ -154,8 +182,33 @@ async function render(key) {
   main.innerHTML = h;
 
   initNotes(key);
+  if (room.groups) initSymbolCopy();
   if (specs.length) share.initBar();
   widgets.forEach(function (w, i) { w.init(specs[i].opts); });
+}
+
+/* Copy a symbol on click, confirming on the button itself so the feedback
+   lands where the eye already is. */
+function initSymbolCopy() {
+  document.querySelectorAll('.symkey').forEach(function (btn) {
+    btn.addEventListener('click', async function () {
+      const ch = btn.querySelector('.symkey-ch').textContent;
+      const label = btn.querySelector('.symkey-nm');
+      const was = label.textContent;
+      let ok = true;
+      try { await navigator.clipboard.writeText(ch); }
+      catch (e) {
+        const ta = document.createElement('textarea');
+        ta.value = ch; ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta); ta.select();
+        try { ok = document.execCommand('copy'); } catch (e2) { ok = false; }
+        ta.remove();
+      }
+      label.textContent = ok ? 'copied' : 'press ⌘C';
+      btn.classList.add('copied');
+      setTimeout(function () { label.textContent = was; btn.classList.remove('copied'); }, 1100);
+    });
+  });
 }
 
 function initNotes(roomKey) {

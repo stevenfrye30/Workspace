@@ -53,7 +53,7 @@ links: [
   { name: "Open Biology", desc: "Cells, physiology, the nervous system.", href: "room.html?room=biology", tag: "room" },
   { name: "Open Lab Methods", desc: "Patch clamp, microscopy, imaging.", href: "room.html?room=lab-methods", tag: "room" },
   { name: "Open Data, Symbols & Units", desc: "Design, controls, error, notation.", href: "room.html?room=data-analysis", tag: "room" },
-  { name: "Math Lab · Time-Series", desc: "Smooth, peaks/events, AUC, decay τ.", href: "../math/room.html?room=time-series", tag: "math" },
-  { name: "Math Lab · Statistics", desc: "Compare events, tests, effect size.", href: "../math/room.html?room=statistics", tag: "math" },
+  { name: "Time-Series", desc: "Smooth, peaks/events, AUC, decay τ.", href: "room.html?room=math-time-series", tag: "math" },
+  { name: "Statistics", desc: "Compare events, tests, effect size.", href: "room.html?room=math-statistics", tag: "math" },
 ]
 };

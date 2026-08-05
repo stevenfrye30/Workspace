@@ -94,6 +94,14 @@ not appear on a public-facing index, sidebar, or sitemap.
     buttons instead of content, and the nine `chem-*` rooms hold the
     actual tools. A `WIDGETS` entry may be `{path, opts}` so one widget
     module (the calculators) serves several rooms with different tabs.
+    `science/index.html` is the **home dashboard** — every room as a
+    button, grouped Chemistry / Science / Math.
+- `math/` — **RETIRED as a separate app.** Its nine rooms moved into
+  `science/js/rooms/` as `math-*` (its physics room replaced the old
+  Science bridge room and kept the `physics` key). `math/index.html` and
+  `math/room.html` are now forwarders that map each old `?room=` key to
+  its new Science address. `graph-lab.html`, `math_symbols.js` and
+  `calc.js` were deleted — graphing hands off to Desmos.
   - `build_phonetics.py` / `build_soundmap.py` / `strip_soundmap.py` —
     the IPA → Sound Map → phonetics pipeline; their `ipa/` and
     `sound-map/` sources are gone (sound-map retired to `_legacy/`).

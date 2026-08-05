@@ -69,6 +69,34 @@ h1 { font-size: 2.4rem; font-weight: 600; letter-spacing: 0.01em; margin: 0.2rem
 .sci-card.bridge { min-height: 6.2rem; }
 .rooms.bridge-row { grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); max-width: 34rem; }
 
+/* Home dashboard — every room visible, grouped by subject. */
+.dash { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: 0.7rem; }
+.dash-card {
+  position: relative; display: flex; flex-direction: column;
+  text-decoration: none; color: inherit;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 14%, var(--panel)), var(--panel));
+  border: 1px solid var(--border); border-left: 3px solid var(--c);
+  border-radius: 4px; padding: 0.8rem 0.9rem 0.85rem; min-height: 7.6rem;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+}
+.dash-card:hover, .dash-card:focus-visible {
+  transform: translateY(-2px); border-color: var(--c);
+  box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--c) 60%, transparent);
+  outline: none;
+}
+.dash-card .d-glyph { position: absolute; top: 0.6rem; right: 0.75rem; font-size: 1.35rem; opacity: 0.45; }
+.dash-card .d-name { font-size: 1.08rem; font-weight: 600; padding-right: 2rem; margin-bottom: 0.28rem; }
+.dash-card .d-desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem;
+  color: var(--muted); line-height: 1.4; flex: 1 1 auto; }
+.dash-card .d-tool { font-family: -apple-system, sans-serif; font-size: 0.62rem; font-weight: 600;
+  color: var(--c); margin-top: 0.55rem; align-self: flex-start;
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border-radius: 999px; padding: 0.13rem 0.5rem; }
+.dash-card.external { border-style: dashed; }
+
+@media (max-width: 600px) { .dash { grid-template-columns: 1fr; } }
+
 /* Advanced / research bench — collapsed so a chemistry student isn't
    handed nine rooms, but nothing is hidden from someone who wants it. */
 .advanced { margin-top: 1.6rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
