@@ -1,4 +1,4 @@
-import { ELEMENTS } from '../data/elements.js';
+import { molarMass } from '../chem/formula.js';
 import { uFmt } from '../format.js';
 
 export function block() {
@@ -59,51 +59,8 @@ export function init() {
     });
   });
 
-  // Element symbol → atomic mass, from the periodic-table data.
-  var MASS = {};
-  for (var i = 0; i < ELEMENTS.length; i++) {
-    var m = ELEMENTS[i].m;
-    if (typeof m === "string") m = parseFloat(m.replace(/[\[\]]/g, ""));
-    MASS[ELEMENTS[i].s] = m;
-  }
-  function parseGroup(str) {
-    var idx = 0;
-    function count() {
-      var num = "";
-      while (idx < str.length && /[0-9]/.test(str[idx])) { num += str[idx]; idx++; }
-      return num === "" ? 1 : parseInt(num, 10);
-    }
-    function group() {
-      var mass = 0;
-      while (idx < str.length) {
-        var ch = str[idx];
-        if (ch === "(" || ch === "[") { idx++; mass += group() * count(); }
-        else if (ch === ")" || ch === "]") { idx++; return mass; }
-        else if (/[A-Z]/.test(ch)) {
-          var sym = ch; idx++;
-          while (idx < str.length && /[a-z]/.test(str[idx])) { sym += str[idx]; idx++; }
-          if (!(sym in MASS)) throw new Error("Unknown element “" + sym + "”");
-          mass += MASS[sym] * count();
-        } else throw new Error("Unexpected “" + ch + "”");
-      }
-      return mass;
-    }
-    return group();
-  }
-  function molarMass(f) {
-    f = f.replace(/\s+/g, "");
-    if (!f) throw new Error("Enter a formula");
-    var segs = f.split(/[.·]/);
-    var total = 0;
-    for (var s = 0; s < segs.length; s++) {
-      var seg = segs[s]; if (!seg) continue;
-      var coef = 1;
-      var mm = seg.match(/^(\d+)([A-Za-z(\[].*)$/);
-      if (mm) { coef = parseInt(mm[1], 10); seg = mm[2]; }
-      total += coef * parseGroup(seg);
-    }
-    return total;
-  }
+  // molarMass now comes from ../chem/formula.js, shared with the
+  // stoichiometry tool rather than duplicated here.
 
   var mmF = document.getElementById("mmFormula"), mmOut = document.getElementById("mmOut");
   function doMM() {

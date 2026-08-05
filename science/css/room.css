@@ -187,6 +187,40 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .calc-btn.eq { background: var(--c); color: #11161f; border-color: var(--c); font-weight: 700; }
 .calc-btn.wide { grid-column: span 2; }
 
+/* ── Stoichiometry: limiting reagent & yield (chemistry room) ─ */
+.st-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; }
+.st-eq { flex: 1 1 22rem; font-family: ui-monospace, Menlo, monospace; font-size: 1rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.55rem 0.7rem; outline: none; }
+.st-eq:focus { border-color: var(--c); }
+.st-balance { font-family: -apple-system, sans-serif; font-size: 0.78rem; margin: -0.2rem 0 0.9rem; min-height: 1.1rem; }
+.st-balance.ok { color: #7fd6a0; }
+.st-balance.warn { color: #e0b26b; }
+.st-balance.bad { color: #e0806b; }
+.st-balance b { color: inherit; }
+
+.st-label { font-family: -apple-system, sans-serif; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0.2rem 0 0.5rem; }
+.st-reactant { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.45rem; }
+.st-name { font-family: ui-monospace, Menlo, monospace; font-size: 1rem; color: var(--c); min-width: 6rem; }
+.st-mm { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); min-width: 7rem; }
+.st-amt { width: 8rem; }
+.st-product label, .st-actual label { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted); }
+.st-actual { margin-top: 0.9rem; padding-top: 0.7rem; border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+
+.st-out { margin-top: 1rem; }
+.st-hint { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); font-style: italic; }
+.st-step { background: color-mix(in srgb, var(--c) 6%, var(--panel)); border: 1px solid var(--border);
+  border-left: 3px solid var(--c); border-radius: 4px; padding: 0.6rem 0.85rem; margin-bottom: 0.5rem; }
+.st-step .st-h { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.35rem; }
+.st-step ul { margin: 0; padding-left: 1.1rem; }
+.st-step li { font-family: -apple-system, sans-serif; font-size: 0.88rem; color: var(--fg); line-height: 1.65; }
+.st-step p { font-family: -apple-system, sans-serif; font-size: 0.88rem; color: var(--fg); line-height: 1.55; }
+.st-step b { font-family: ui-monospace, Menlo, monospace; }
+.st-lim { color: #e0b26b; }
+.st-ans { color: var(--c); font-size: 1.02rem; }
+.st-flag { color: var(--muted); font-style: italic; }
+
 /* ── Reference tables (reference room only) ─────────────────── */
 .rt-bar { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; margin-bottom: 0.7rem; }
 .rt-search { flex: 1 1 18rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.9rem; color: var(--fg);
