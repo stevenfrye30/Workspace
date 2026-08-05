@@ -565,21 +565,20 @@
   <!-- The speed path is the chip row: the things you actually eat, one tap.
        Search is the fallback for everything else. Named portions ("1 cup")
        mean you never type grams unless you want to. -->
+  <!-- The search box is the whole instrument: no suggestion chips, no fold to
+       open first. Type, pick, done. -->
   <div class="card" id="foodCard">
     <h2>Food <span class="totals" id="foodTotals"></span></h2>
     <div class="macrobar" id="foodMacros"></div>
-    <div class="chips" id="foodChips"></div>
-    <details class="fold" id="foodFold">
-      <summary>Search &amp; add</summary>
-      <div class="searchwrap">
-        <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
-        <div class="results" id="foodResults"></div>
-      </div>
-      <div class="chips" style="margin-top:8px">
-        <button class="chip ghost" id="customFoodBtn">＋ Your own food</button>
-        <span class="foodstatus" id="foodStatus"></span>
-      </div>
-    </details>
+    <div class="searchwrap">
+      <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
+      <div class="results" id="foodResults"></div>
+    </div>
+    <div class="chips" style="margin-top:9px">
+      <button class="mini" id="mealsBtn">Meals</button>
+      <button class="mini" id="customFoodBtn">＋ Your own food</button>
+    </div>
+    <div class="foodstatus" id="foodStatus"></div>
   </div>
 
   <!-- The reference drawers ride in the same masonry grid as the
@@ -1296,7 +1295,13 @@ function logFood(foodId, foodName, grams, portionLabel) {
   toast('Logged ' + shortName(foodName, 24));
 }
 
-/* ---- search ---- */
+/* ---- search ----
+   Ranking matters more than it looks. Sorting ties by shortest name buried
+   "Egg, hard-boiled" (16 chars) under "Eggnog" (6) and "Eggplant" (13) — the
+   database had the egg all along, the search just never showed it. So a
+   WHOLE-WORD match now outranks a prefix-of-a-longer-word: "egg" matches the
+   word "Egg," in "Egg, hard-boiled" before it matches the start of "Eggnog". */
+const WORD_EDGE = /[\s,()\-/]/;
 function searchFoods(q) {
   if (!foodsIndex || !q) return [];
   const s = q.toLowerCase().trim();
@@ -1307,13 +1312,19 @@ function searchFoods(q) {
     const name = (f.name || '').toLowerCase();
     const i = name.indexOf(s);
     if (i < 0) continue;
-    // Rank: name starts with the query, then a word starts with it, then anywhere.
-    const rank = i === 0 ? 0 : (name[i - 1] === ' ' || name[i - 1] === ',') ? 1 : 2;
-    hits.push({ f, rank, len: name.length });
-    if (hits.length > 400) break;
+    const startsWord = i === 0 || WORD_EDGE.test(name[i - 1]);
+    const after = name[i + s.length];
+    const endsWord = after === undefined || WORD_EDGE.test(after);
+    const rank =
+      name === s            ? 0 :   // exact
+      startsWord && endsWord ? 1 :  // a whole word — "Egg," in "Egg, hard-boiled"
+      startsWord             ? 2 :  // the start of a longer word — "Eggnog"
+                               3;   // buried anywhere
+    hits.push({ f, rank, pos: i, len: name.length });
+    if (hits.length > 600) break;
   }
-  hits.sort((a, b) => a.rank - b.rank || a.len - b.len);
-  return hits.slice(0, 12).map((h) => h.f);
+  hits.sort((a, b) => a.rank - b.rank || a.pos - b.pos || a.len - b.len);
+  return hits.slice(0, 14).map((h) => h.f);
 }
 function renderResults(q) {
   const box = $('foodResults');
