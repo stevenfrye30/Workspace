@@ -43,14 +43,30 @@
   @media (min-width: 1240px) { body.dense { max-width: 1440px; } }
 
   /* ---------- top bar ---------- */
+  /* Three tracks so the title is centred on the page, not merely pushed
+     around by whatever happens to sit either side of it. */
   .top {
-    display: flex; align-items: center; gap: 8px;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;
     padding: calc(12px + env(safe-area-inset-top)) 0 10px;
     position: sticky; top: 0; z-index: 20;
     background: var(--bg);
   }
-  .top h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .01em; }
-  .top .spacer { flex: 1; }
+  .top h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .01em; text-align: center; }
+  .top .home {
+    justify-self: start; display: inline-flex; align-items: center; gap: 5px;
+    text-decoration: none; color: var(--dim); font-size: .78rem;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid transparent;
+  }
+  .top .home:hover { color: var(--accent); border-color: var(--line); background: var(--panel); }
+  .top .tools { justify-self: end; display: flex; align-items: center; gap: 6px; }
+  /* On a phone the four tools plus a labelled link overrun the row, so the
+     words drop away and the glyphs carry it. */
+  @media (max-width: 560px) {
+    .top .home .lbl, .top #undoBtn .lbl { display: none; }
+    .top .home { padding: 5px 7px; }
+    .top .tools { gap: 4px; }
+    .icon-btn { padding: 5px 7px; }
+  }
   .icon-btn {
     background: var(--panel); border: 1px solid var(--line); color: var(--dim);
     border-radius: 8px; padding: 5px 9px; font: inherit; font-size: .8rem;
@@ -91,19 +107,16 @@
       grid-template-columns: 1fr 1fr; gap: 10px; align-items: start;
     }
     .daily > .card { grid-column: span 2; margin-bottom: 0; }
-    .daily > .card.narrow, .daily > .drawer { grid-column: span 1; margin-bottom: 0; }
-    /* Closed, a drawer is a summary line and pairs happily. Open, its contents
-       need the room — "Subscriptions ＋ Subscription" does not fit in half a
-       phone — so it takes both columns while it is open. */
-    .daily > .drawer[open] { grid-column: span 2; }
+    .daily > .card.narrow { grid-column: span 1; margin-bottom: 0; }
   }
-  .daily > .card, .daily > .drawer { break-inside: avoid; -webkit-column-break-inside: avoid; }
-  /* Closed drawers are ~46px each; stacked full-width that is 280px of page
-     for five summary lines. In the grid they fill the ragged bottoms of the
-     columns instead, and cost almost nothing. */
-  .daily > .drawer { margin-bottom: 12px; }
-  body.dense .daily > .drawer { margin-bottom: 10px; }
-  body.dense .daily > .drawer > summary { padding: 10px 11px; font-size: .66rem; }
+  .daily > .card { break-inside: avoid; -webkit-column-break-inside: avoid; }
+
+  /* The reference panels: their own masonry, below the instruments. */
+  .panels { column-count: 2; column-gap: 12px; }
+  @media (min-width: 900px)  { body.dense .panels { column-count: 3; } }
+  @media (min-width: 1240px) { body.dense .panels { column-count: 4; } }
+  @media (max-width: 640px)  { .panels { column-count: 1; } }
+  .panels > .card { break-inside: avoid; -webkit-column-break-inside: avoid; }
 
   /* ---------- cards ---------- */
   .card {
@@ -379,25 +392,22 @@
   .bdayline { margin-top: 10px; font-size: .78rem; color: var(--dim); }
   .bdayline b { color: var(--ink); font-weight: 600; }
 
-  /* ---------- drawers ---------- */
-  .drawer {
-    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
-    margin-bottom: 10px; box-shadow: var(--shadow); overflow: hidden;
-  }
-  .drawer > summary {
-    cursor: pointer; padding: 13px 14px; list-style: none; display: flex;
-    align-items: baseline; gap: 10px; font-size: .72rem; font-weight: 600;
-    text-transform: uppercase; letter-spacing: .1em; color: var(--dim);
-  }
-  .drawer > summary::-webkit-details-marker { display: none; }
-  .drawer > summary::before { content: '▸'; font-size: .8rem; color: var(--dim); transition: transform .15s; }
-  .drawer[open] > summary::before { transform: rotate(90deg); }
-  .drawer > summary:hover { color: var(--ink); }
-  .drawer .sum {
+  .sum {
     margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400;
     color: var(--dim); font-size: .74rem; text-align: right;
   }
-  .drawer-body { padding: 0 14px 14px; }
+  .drawer-body { padding: 0; }
+  /* These panels are always open now, so their lists have to be bounded —
+     otherwise a few years of expenses would push the tracker off the page.
+     Scroll inside instead of growing. */
+  .drawer-body .list, .drawer-body #quoteList, .drawer-body #ideaList {
+    max-height: 122px; overflow-y: auto;
+  }
+  body.dense .drawer-body .list,
+  body.dense .drawer-body #quoteList,
+  body.dense .drawer-body #ideaList { max-height: 104px; }
+  .drawer-body .sub { margin-top: 11px; }
+  body.dense .drawer-body .sub { margin-top: 9px; }
   .sub { margin-top: 14px; }
   .sub:first-child { margin-top: 0; }
   .sub h3 {
@@ -463,12 +473,21 @@
 <body>
 
 <div class="top">
+  <a class="home" href="../" title="Back to the workspace"><span class="arw">←</span><span class="lbl">Workspace</span></a>
   <h1>Mirror</h1>
-  <span class="spacer"></span>
-  <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶ Undo</button>
-  <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
-  <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
-  <button class="icon-btn" id="backupBtn" title="Download a copy of all your data">Back up</button>
+  <span class="tools">
+    <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶<span class="lbl"> Undo</span></button>
+    <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
+    <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
+    <button class="icon-btn" id="backupBtn" title="Download a copy of all your data">Back up</button>
+  </span>
+</div>
+
+<!-- No heading: nine labelled pills do not need to be told they are links,
+     and the heading cost as much height as a row of them. -->
+<div class="card">
+  <div class="launch" id="launch"></div>
+  <div class="bdayline" id="bdayLine"></div>
 </div>
 
 <div class="datestrip">
@@ -581,8 +600,15 @@
   <!-- ============ DRAWERS ============ -->
   <!-- Everything you touch weekly rather than daily. Closed by default; each
        summary earns its space by saying something useful while shut. -->
-  <details class="drawer" id="drawerPeople">
-    <summary>People <span class="sum" id="sumPeople"></span></summary>
+</div>
+
+<!-- The reference panels get their own grid. Sharing the instruments'
+     masonry, their height rebalanced the columns and pushed Water and Weed
+     below the fold — the daily controls must not be displaced by things
+     you read once a week. -->
+<div class="panels">
+  <div class="card" id="drawerPeople">
+    <h2>People <span class="sum" id="sumPeople"></span></h2>
     <div class="drawer-body">
       <div class="sub">
         <h3>People <button class="mini act" id="addPerson">＋ Person</button></h3>
@@ -593,10 +619,9 @@
         <div class="list" id="bdayList"></div>
       </div>
     </div>
-  </details>
-
-  <details class="drawer" id="drawerMind">
-    <summary>Mind <span class="sum" id="sumMind"></span></summary>
+  </div>
+  <div class="card" id="drawerMind">
+    <h2>Mind <span class="sum" id="sumMind"></span></h2>
     <div class="drawer-body">
       <div class="sub">
         <h3>Books <button class="mini act" id="addBook">＋ Book</button></h3>
@@ -611,10 +636,9 @@
         <div id="ideaList"></div>
       </div>
     </div>
-  </details>
-
-  <details class="drawer" id="drawerMoney">
-    <summary>Money <span class="sum" id="sumMoney"></span></summary>
+  </div>
+  <div class="card" id="drawerMoney">
+    <h2>Money <span class="sum" id="sumMoney"></span></h2>
     <div class="drawer-body">
       <div class="sub">
         <h3>Budget <button class="mini act" id="addCategory">＋ Category</button></h3>
@@ -629,10 +653,9 @@
         <div class="list" id="subList"></div>
       </div>
     </div>
-  </details>
-
-  <details class="drawer" id="drawerLife">
-    <summary>Life <span class="sum" id="sumLife"></span></summary>
+  </div>
+  <div class="card" id="drawerLife">
+    <h2>Life <span class="sum" id="sumLife"></span></h2>
     <div class="drawer-body">
       <div class="sub">
         <h3>Values <button class="mini act" id="editValues">Edit</button></h3>
@@ -643,18 +666,11 @@
         <div class="list" id="placeList"></div>
       </div>
     </div>
-  </details>
-
+  </div>
 </div>
+
 
 <!-- ============ LAUNCHPAD ============ -->
-<!-- No heading: nine labelled pills do not need to be told they are links,
-     and the heading cost as much height as a row of them. -->
-<div class="card">
-  <div class="launch" id="launch"></div>
-  <div class="bdayline" id="bdayLine"></div>
-</div>
-
 <!-- ============ THE TRACKER ============ -->
 <!-- Every instrument above empties into here, in the order you entered things
      — by entry time, not clock time, so a backdated entry doesn't jump the
@@ -665,14 +681,14 @@
 </div>
 
 <!-- The week in review sits under the day it summarises. -->
-<details class="drawer" id="drawerWeek">
-  <summary>This week <span class="sum" id="sumWeek"></span></summary>
+<div class="card" id="drawerWeek">
+    <h2>This week <span class="sum" id="sumWeek"></span></h2>
   <div class="drawer-body">
     <div class="wk" id="wkCells"></div>
     <div class="wkdays" id="wkDays"></div>
     <div class="wknote" id="wkNotes"></div>
   </div>
-</details>
+</div>
 
 <div class="foot">
   <a href="../">← Workspace</a> · <a href="self.html">the full app</a> is still here —
