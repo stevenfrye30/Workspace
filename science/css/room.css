@@ -221,6 +221,33 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .st-ans { color: var(--c); font-size: 1.02rem; }
 .st-flag { color: var(--muted); font-style: italic; }
 
+/* ── Hub: big topic buttons instead of one long scroll ─────── */
+.hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0.7rem; }
+.hub-card {
+  display: flex; flex-direction: column; position: relative;
+  text-decoration: none; color: inherit;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 13%, var(--panel)), var(--panel));
+  border: 1px solid var(--border); border-left: 3px solid var(--c);
+  border-radius: 4px; padding: 0.85rem 0.95rem 0.9rem; min-height: 8.5rem;
+  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
+}
+.hub-card:hover, .hub-card:focus-visible {
+  transform: translateY(-2px); border-color: var(--c);
+  box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--c) 60%, transparent);
+  outline: none;
+}
+.hub-glyph { position: absolute; top: 0.6rem; right: 0.8rem; font-size: 1.5rem; opacity: 0.45; }
+.hub-name { font-size: 1.15rem; font-weight: 600; padding-right: 2rem; margin-bottom: 0.3rem; }
+.hub-desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem;
+  color: var(--muted); line-height: 1.4; flex: 1 1 auto; }
+.hub-tool { font-family: -apple-system, sans-serif; font-size: 0.64rem; font-weight: 600;
+  letter-spacing: 0.04em; color: var(--c); margin-top: 0.6rem;
+  background: color-mix(in srgb, var(--c) 12%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border-radius: 999px; padding: 0.15rem 0.5rem; align-self: flex-start; }
+
+@media (max-width: 600px) { .hub-grid { grid-template-columns: 1fr; } }
+
 /* ── Titration curves (chemistry room only) ────────────────── */
 .ti-inputs { margin-bottom: 0.8rem; }
 .ti-views { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.9rem 0; }

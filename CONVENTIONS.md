@@ -90,6 +90,10 @@ not appear on a public-facing index, sidebar, or sitemap.
     file per room in `js/rooms/`, instruments in `js/widgets/`, shared
     tables in `js/data/`. `js/rooms/_manifest.js` is the only list of
     valid `?room=` keys; add a room there and in `js/rooms/`.
+    `chemistry` is a **hub**: a room with a `hub:` array renders topic
+    buttons instead of content, and the nine `chem-*` rooms hold the
+    actual tools. A `WIDGETS` entry may be `{path, opts}` so one widget
+    module (the calculators) serves several rooms with different tabs.
   - `build_phonetics.py` / `build_soundmap.py` / `strip_soundmap.py` —
     the IPA → Sound Map → phonetics pipeline; their `ipa/` and
     `sound-map/` sources are gone (sound-map retired to `_legacy/`).

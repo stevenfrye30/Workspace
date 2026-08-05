@@ -12,15 +12,23 @@
 import { esc } from './format.js';
 import { MANIFEST, ALIAS } from './rooms/_manifest.js';
 
-/* Instruments per room, in render order. */
+/* Instruments per room, in render order. An entry is either a module path or
+   {path, opts}; opts is passed to that widget's block() and init(), which is
+   how one calculator module serves several topic rooms with different tabs. */
 const WIDGETS = {
   'periodic-table': ['./widgets/periodic-table.js'],
   'reference': ['./widgets/reference-tables.js'],
   'data-analysis': ['./widgets/units.js', './widgets/calculator.js'],
-  'chemistry': ['./widgets/stoichiometry.js', './widgets/gaslaws.js',
-                './widgets/thermochem.js', './widgets/titration.js',
-                './widgets/chemistry.js'],
-  'notes': ['./widgets/notes-library.js']
+  'notes': ['./widgets/notes-library.js'],
+
+  /* Chemistry is a hub of topic rooms; the instruments live in those. */
+  'chem-moles': ['./widgets/stoichiometry.js',
+                 { path: './widgets/chemistry.js', opts: { tabs: ['molar'] } }],
+  'chem-solutions': [{ path: './widgets/chemistry.js', opts: { tabs: ['molarity', 'dilution'] } }],
+  'chem-acids': [{ path: './widgets/chemistry.js', opts: { tabs: ['ph', 'buffer'] } }],
+  'chem-titration': ['./widgets/titration.js'],
+  'chem-gases': ['./widgets/gaslaws.js'],
+  'chem-thermo': ['./widgets/thermochem.js']
 };
 
 const TAGLABEL = { room: 'room', math: 'math lab', soon: 'soon' };
@@ -50,9 +58,10 @@ if (!Object.prototype.hasOwnProperty.call(MANIFEST, key)) {
 
 async function render(key) {
   const room = (await import('./rooms/' + key + '.js')).default;
-  const widgets = await Promise.all(
-    (WIDGETS[key] || []).map(function (path) { return import(path); })
-  );
+  const specs = (WIDGETS[key] || []).map(function (w) {
+    return typeof w === 'string' ? { path: w, opts: {} } : { path: w.path, opts: w.opts || {} };
+  });
+  const widgets = await Promise.all(specs.map(function (s) { return import(s.path); }));
 
   document.title = room.name + ' — Science Lab';
   document.documentElement.style.setProperty('--c', room.color);
@@ -69,7 +78,19 @@ async function render(key) {
 
   if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
 
-  widgets.forEach(function (w) { h += w.block(); });
+  /* A hub room leads with big topic buttons instead of a wall of sections. */
+  if (room.hub) {
+    h += '<section class="block"><div class="hub-grid">' + room.hub.map(function (t) {
+      return '<a class="hub-card" href="room.html?room=' + encodeURIComponent(t.key) + '">' +
+        '<span class="hub-glyph">' + t.glyph + '</span>' +
+        '<span class="hub-name">' + esc(t.name) + '</span>' +
+        '<span class="hub-desc">' + esc(t.desc) + '</span>' +
+        (t.tools ? '<span class="hub-tool">' + esc(t.tools) + '</span>' : '') +
+        '</a>';
+    }).join('') + '</div></section>';
+  }
+
+  widgets.forEach(function (w, i) { h += w.block(specs[i].opts); });
 
   if (room.topics) {
     h += '<section class="block"><div class="block-head"><h2>Core Topics</h2>' +
@@ -128,7 +149,7 @@ async function render(key) {
   main.innerHTML = h;
 
   initNotes(key);
-  widgets.forEach(function (w) { w.init(); });
+  widgets.forEach(function (w, i) { w.init(specs[i].opts); });
 }
 
 function initNotes(roomKey) {

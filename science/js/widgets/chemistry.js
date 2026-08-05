@@ -1,118 +1,161 @@
+/* The everyday chemistry solvers.
+
+   Each pane can be requested on its own, so a topic room shows only the
+   calculators that belong to it — the Solutions room gets molarity and
+   dilution, the Acids room gets pH and buffer. Pass {tabs:[...]} to pick;
+   omit it for all five. */
+
 import { molarMass } from '../chem/formula.js';
 import { uFmt } from '../format.js';
 
-export function block() {
-  return '<section class="block"><div class="block-head"><h2>Chemistry Calculators</h2><span class="tag">Instrument</span>' +
-    '<p>Molar mass, molarity, dilution, pH, and buffer pH — the everyday chem solvers, live.</p></div>' +
-    '<div class="u-tabs" id="chemTabs">' +
-      '<button class="u-tab on" type="button" data-pane="molar">Molar mass</button>' +
-      '<button class="u-tab" type="button" data-pane="molarity">Molarity</button>' +
-      '<button class="u-tab" type="button" data-pane="dilution">Dilution</button>' +
-      '<button class="u-tab" type="button" data-pane="ph">pH</button>' +
-      '<button class="u-tab" type="button" data-pane="buffer">Buffer</button>' +
-    '</div>' +
-    '<div class="chem">' +
-      '<div class="u-pane on" data-pane="molar">' +
-        '<div class="u-row"><input class="u-input" id="mmFormula" style="width:15rem" placeholder="e.g. Ca(OH)2, NaCl, C6H12O6" autocomplete="off" spellcheck="false"></div>' +
-        '<div class="chem-out" id="mmOut">—</div>' +
-        '<div class="u-note">Supports parentheses and hydrate dots (e.g. CuSO4·5H2O). Element symbols are case-sensitive.</div>' +
-      '</div>' +
-      '<div class="u-pane" data-pane="molarity">' +
-        '<div class="u-row"><label>Moles (mol)</label><input class="u-input" id="molMol" type="number" step="any" value="0.5"></div>' +
-        '<div class="u-row"><label>Volume (L)</label><input class="u-input" id="molVol" type="number" step="any" value="1"></div>' +
-        '<div class="chem-out" id="molOut">—</div>' +
-        '<div class="u-note">Molarity M = moles of solute / litres of solution.</div>' +
-      '</div>' +
-      '<div class="u-pane" data-pane="dilution">' +
-        '<div class="u-row"><label>Stock conc. C₁</label><input class="u-input" id="dC1" type="number" step="any" value="2"></div>' +
-        '<div class="u-row"><label>Target conc. C₂</label><input class="u-input" id="dC2" type="number" step="any" value="0.5"></div>' +
-        '<div class="u-row"><label>Final volume V₂</label><input class="u-input" id="dV2" type="number" step="any" value="100"></div>' +
-        '<div class="chem-out" id="dOut">—</div>' +
-        '<div class="u-note">C₁V₁ = C₂V₂. Keep both concentrations in the same units, and the volume in whatever unit you want V₁ back in.</div>' +
-      '</div>' +
-      '<div class="u-pane" data-pane="ph">' +
-        '<div class="u-row"><label>pH</label><input class="u-input" id="phPH" type="number" step="any" value="7"></div>' +
-        '<div class="u-row"><label>[H⁺] (M)</label><input class="u-input" id="phH" type="number" step="any"></div>' +
-        '<div class="chem-out" id="phOut">—</div>' +
-        '<div class="u-note">pH = −log₁₀[H⁺]. Edit either field; the other follows.</div>' +
-      '</div>' +
-      '<div class="u-pane" data-pane="buffer">' +
-        '<div class="u-row"><label>pKₐ</label><input class="u-input" id="bfPKa" type="number" step="any" value="4.74"></div>' +
-        '<div class="u-row"><label>[A⁻] (base)</label><input class="u-input" id="bfA" type="number" step="any" value="1"></div>' +
-        '<div class="u-row"><label>[HA] (acid)</label><input class="u-input" id="bfHA" type="number" step="any" value="1"></div>' +
-        '<div class="chem-out" id="bfOut">—</div>' +
-        '<div class="u-note">Henderson–Hasselbalch: pH = pKₐ + log₁₀([A⁻]/[HA]).</div>' +
-      '</div>' +
-    '</div></section>';
+const PANES = {
+  molar: {
+    label: 'Molar mass',
+    body: '<div class="u-row"><input class="u-input" id="mmFormula" style="width:15rem" placeholder="e.g. Ca(OH)2, NaCl, C6H12O6" autocomplete="off" spellcheck="false"></div>' +
+      '<div class="chem-out" id="mmOut">—</div>' +
+      '<div class="u-note">Supports parentheses and hydrate dots (e.g. CuSO4·5H2O). Element symbols are case-sensitive.</div>'
+  },
+  molarity: {
+    label: 'Molarity',
+    body: '<div class="u-row"><label>Moles (mol)</label><input class="u-input" id="molMol" type="number" step="any" value="0.5"></div>' +
+      '<div class="u-row"><label>Volume (L)</label><input class="u-input" id="molVol" type="number" step="any" value="1"></div>' +
+      '<div class="chem-out" id="molOut">—</div>' +
+      '<div class="u-note">Molarity M = moles of solute / litres of solution.</div>'
+  },
+  dilution: {
+    label: 'Dilution',
+    body: '<div class="u-row"><label>Stock conc. C₁</label><input class="u-input" id="dC1" type="number" step="any" value="2"></div>' +
+      '<div class="u-row"><label>Target conc. C₂</label><input class="u-input" id="dC2" type="number" step="any" value="0.5"></div>' +
+      '<div class="u-row"><label>Final volume V₂</label><input class="u-input" id="dV2" type="number" step="any" value="100"></div>' +
+      '<div class="chem-out" id="dOut">—</div>' +
+      '<div class="u-note">C₁V₁ = C₂V₂. Keep both concentrations in the same units, and the volume in whatever unit you want V₁ back in.</div>'
+  },
+  ph: {
+    label: 'pH',
+    body: '<div class="u-row"><label>pH</label><input class="u-input" id="phPH" type="number" step="any" value="7"></div>' +
+      '<div class="u-row"><label>[H⁺] (M)</label><input class="u-input" id="phH" type="number" step="any"></div>' +
+      '<div class="chem-out" id="phOut">—</div>' +
+      '<div class="u-note">pH = −log₁₀[H⁺]. Edit either field; the other follows.</div>'
+  },
+  buffer: {
+    label: 'Buffer',
+    body: '<div class="u-row"><label>pKₐ</label><input class="u-input" id="bfPKa" type="number" step="any" value="4.74"></div>' +
+      '<div class="u-row"><label>[A⁻] (base)</label><input class="u-input" id="bfA" type="number" step="any" value="1"></div>' +
+      '<div class="u-row"><label>[HA] (acid)</label><input class="u-input" id="bfHA" type="number" step="any" value="1"></div>' +
+      '<div class="chem-out" id="bfOut">—</div>' +
+      '<div class="u-note">Henderson–Hasselbalch: pH = pKₐ + log₁₀([A⁻]/[HA]).</div>'
+  }
+};
+
+function keysFor(opts) {
+  const want = opts && opts.tabs;
+  if (!want || !want.length) return Object.keys(PANES);
+  return want.filter(function (k) { return k in PANES; });
 }
 
-export function init() {
-  var tabsEl = document.getElementById("chemTabs");
-  if (!tabsEl) return;
-  var block = tabsEl.closest(".block");
-  Array.prototype.forEach.call(block.querySelectorAll("#chemTabs .u-tab"), function (t) {
-    t.addEventListener("click", function () {
-      Array.prototype.forEach.call(block.querySelectorAll("#chemTabs .u-tab"), function (x) { x.classList.remove("on"); });
-      Array.prototype.forEach.call(block.querySelectorAll(".chem .u-pane"), function (x) { x.classList.remove("on"); });
-      t.classList.add("on");
-      block.querySelector('.chem .u-pane[data-pane="' + t.getAttribute("data-pane") + '"]').classList.add("on");
+export function block(opts) {
+  const keys = keysFor(opts);
+  const single = keys.length === 1;
+  const heading = single ? PANES[keys[0]].label : 'Chemistry Calculators';
+  const blurb = single
+    ? 'Live — type and it solves as you go.'
+    : keys.map(function (k) { return PANES[k].label; }).join(', ') + ' — the everyday chem solvers, live.';
+
+  const tabs = single ? '' : '<div class="u-tabs" id="chemTabs">' +
+    keys.map(function (k, i) {
+      return '<button class="u-tab' + (i ? '' : ' on') + '" type="button" data-pane="' + k + '">' +
+        PANES[k].label + '</button>';
+    }).join('') + '</div>';
+
+  const panes = keys.map(function (k, i) {
+    return '<div class="u-pane' + (i ? '' : ' on') + '" data-pane="' + k + '">' + PANES[k].body + '</div>';
+  }).join('');
+
+  return '<section class="block"><div class="block-head"><h2>' + heading + '</h2>' +
+    '<span class="tag">Instrument</span><p>' + blurb + '</p></div>' +
+    tabs + '<div class="chem">' + panes + '</div></section>';
+}
+
+export function init(opts) {
+  const keys = keysFor(opts);
+  const tabsEl = document.getElementById('chemTabs');
+  if (tabsEl) {
+    const wrap = tabsEl.closest('.block');
+    wrap.querySelectorAll('#chemTabs .u-tab').forEach(function (t) {
+      t.addEventListener('click', function () {
+        wrap.querySelectorAll('#chemTabs .u-tab').forEach(function (x) { x.classList.remove('on'); });
+        wrap.querySelectorAll('.chem .u-pane').forEach(function (x) { x.classList.remove('on'); });
+        t.classList.add('on');
+        wrap.querySelector('.chem .u-pane[data-pane="' + t.getAttribute('data-pane') + '"]').classList.add('on');
+      });
     });
-  });
+  }
 
-  // molarMass now comes from ../chem/formula.js, shared with the
-  // stoichiometry tool rather than duplicated here.
+  const has = function (k) { return keys.indexOf(k) >= 0; };
+  const g = function (id) { return document.getElementById(id); };
 
-  var mmF = document.getElementById("mmFormula"), mmOut = document.getElementById("mmOut");
-  function doMM() {
-    var v = mmF.value.trim();
-    if (!v) { mmOut.textContent = "—"; return; }
-    try { mmOut.innerHTML = "<b>" + uFmt(molarMass(v)) + "</b> g/mol"; }
-    catch (e) { mmOut.textContent = e.message || "Invalid formula"; }
+  if (has('molar')) {
+    const mmF = g('mmFormula'), mmOut = g('mmOut');
+    const doMM = function () {
+      const v = mmF.value.trim();
+      if (!v) { mmOut.textContent = '—'; return; }
+      try { mmOut.innerHTML = '<b>' + uFmt(molarMass(v)) + '</b> g/mol'; }
+      catch (e) { mmOut.textContent = e.message || 'Invalid formula'; }
+    };
+    mmF.addEventListener('input', doMM); doMM();
   }
-  mmF.addEventListener("input", doMM); doMM();
 
-  var molMol = document.getElementById("molMol"), molVol = document.getElementById("molVol"), molOut = document.getElementById("molOut");
-  function doMol() {
-    var n = parseFloat(molMol.value), V = parseFloat(molVol.value);
-    if (isNaN(n) || isNaN(V) || V === 0) { molOut.textContent = "—"; return; }
-    molOut.innerHTML = "<b>" + uFmt(n / V) + "</b> mol/L (M)";
+  if (has('molarity')) {
+    const molMol = g('molMol'), molVol = g('molVol'), molOut = g('molOut');
+    const doMol = function () {
+      const n = parseFloat(molMol.value), V = parseFloat(molVol.value);
+      if (isNaN(n) || isNaN(V) || V === 0) { molOut.textContent = '—'; return; }
+      molOut.innerHTML = '<b>' + uFmt(n / V) + '</b> mol/L (M)';
+    };
+    molMol.addEventListener('input', doMol); molVol.addEventListener('input', doMol); doMol();
   }
-  molMol.addEventListener("input", doMol); molVol.addEventListener("input", doMol); doMol();
 
-  var dC1 = document.getElementById("dC1"), dC2 = document.getElementById("dC2"), dV2 = document.getElementById("dV2"), dOut = document.getElementById("dOut");
-  function doDil() {
-    var C1 = parseFloat(dC1.value), C2 = parseFloat(dC2.value), V2 = parseFloat(dV2.value);
-    if (isNaN(C1) || isNaN(C2) || isNaN(V2) || C1 === 0) { dOut.textContent = "—"; return; }
-    var V1 = C2 * V2 / C1;
-    if (V1 > V2) { dOut.innerHTML = "Target is more concentrated than the stock — can't reach it by dilution."; return; }
-    dOut.innerHTML = "Take <b>" + uFmt(V1) + "</b> of stock, add <b>" + uFmt(V2 - V1) + "</b> diluent → " + uFmt(V2) + " total.";
+  if (has('dilution')) {
+    const dC1 = g('dC1'), dC2 = g('dC2'), dV2 = g('dV2'), dOut = g('dOut');
+    const doDil = function () {
+      const C1 = parseFloat(dC1.value), C2 = parseFloat(dC2.value), V2 = parseFloat(dV2.value);
+      if (isNaN(C1) || isNaN(C2) || isNaN(V2) || C1 === 0) { dOut.textContent = '—'; return; }
+      const V1 = C2 * V2 / C1;
+      if (V1 > V2) { dOut.innerHTML = "Target is more concentrated than the stock — can't reach it by dilution."; return; }
+      dOut.innerHTML = 'Take <b>' + uFmt(V1) + '</b> of stock, add <b>' + uFmt(V2 - V1) + '</b> diluent → ' + uFmt(V2) + ' total.';
+    };
+    dC1.addEventListener('input', doDil); dC2.addEventListener('input', doDil); dV2.addEventListener('input', doDil); doDil();
   }
-  dC1.addEventListener("input", doDil); dC2.addEventListener("input", doDil); dV2.addEventListener("input", doDil); doDil();
 
-  var phPH = document.getElementById("phPH"), phH = document.getElementById("phH"), phOut = document.getElementById("phOut");
-  function showPH(pH) {
-    phOut.innerHTML = "pH = <b>" + uFmt(pH) + "</b> · pOH = <b>" + uFmt(14 - pH) + "</b> · [OH⁻] = <b>" + Math.pow(10, -(14 - pH)).toExponential(3) + "</b> M";
+  if (has('ph')) {
+    const phPH = g('phPH'), phH = g('phH'), phOut = g('phOut');
+    const showPH = function (pH) {
+      phOut.innerHTML = 'pH = <b>' + uFmt(pH) + '</b> · pOH = <b>' + uFmt(14 - pH) + '</b> · [OH⁻] = <b>' +
+        Math.pow(10, -(14 - pH)).toExponential(3) + '</b> M';
+    };
+    const fromPH = function () {
+      const pH = parseFloat(phPH.value);
+      if (isNaN(pH)) { phOut.textContent = '—'; return; }
+      phH.value = Math.pow(10, -pH).toExponential(3);
+      showPH(pH);
+    };
+    const fromH = function () {
+      const H = parseFloat(phH.value);
+      if (isNaN(H) || H <= 0) { phOut.textContent = '—'; return; }
+      const pH = -Math.log(H) / Math.LN10;
+      phPH.value = parseFloat(pH.toFixed(3));
+      showPH(pH);
+    };
+    phPH.addEventListener('input', fromPH); phH.addEventListener('input', fromH); fromPH();
   }
-  function fromPH() {
-    var pH = parseFloat(phPH.value);
-    if (isNaN(pH)) { phOut.textContent = "—"; return; }
-    phH.value = Math.pow(10, -pH).toExponential(3);
-    showPH(pH);
-  }
-  function fromH() {
-    var H = parseFloat(phH.value);
-    if (isNaN(H) || H <= 0) { phOut.textContent = "—"; return; }
-    var pH = -Math.log(H) / Math.LN10;
-    phPH.value = parseFloat(pH.toFixed(3));
-    showPH(pH);
-  }
-  phPH.addEventListener("input", fromPH); phH.addEventListener("input", fromH); fromPH();
 
-  var bfPKa = document.getElementById("bfPKa"), bfA = document.getElementById("bfA"), bfHA = document.getElementById("bfHA"), bfOut = document.getElementById("bfOut");
-  function doBuf() {
-    var pKa = parseFloat(bfPKa.value), A = parseFloat(bfA.value), HA = parseFloat(bfHA.value);
-    if (isNaN(pKa) || isNaN(A) || isNaN(HA) || A <= 0 || HA <= 0) { bfOut.textContent = "—"; return; }
-    bfOut.innerHTML = "pH = <b>" + uFmt(pKa + Math.log(A / HA) / Math.LN10) + "</b>";
+  if (has('buffer')) {
+    const bfPKa = g('bfPKa'), bfA = g('bfA'), bfHA = g('bfHA'), bfOut = g('bfOut');
+    const doBuf = function () {
+      const pKa = parseFloat(bfPKa.value), A = parseFloat(bfA.value), HA = parseFloat(bfHA.value);
+      if (isNaN(pKa) || isNaN(A) || isNaN(HA) || A <= 0 || HA <= 0) { bfOut.textContent = '—'; return; }
+      bfOut.innerHTML = 'pH = <b>' + uFmt(pKa + Math.log(A / HA) / Math.LN10) + '</b>';
+    };
+    bfPKa.addEventListener('input', doBuf); bfA.addEventListener('input', doBuf); bfHA.addEventListener('input', doBuf); doBuf();
   }
-  bfPKa.addEventListener("input", doBuf); bfA.addEventListener("input", doBuf); bfHA.addEventListener("input", doBuf); doBuf();
 }
