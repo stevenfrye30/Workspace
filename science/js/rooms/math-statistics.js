@@ -3,7 +3,7 @@
 export default {
 name: "Statistics", kind: "Data", glyph: "📊", color: "#8b93d0",
 blurb: "Descriptive stats, distributions, probability, and inference — a working reference for real data, from coursework to research and signal analysis.",
-status: "Reference & examples ready — interactive tools coming",
+status: "Reference — formulas and worked examples",
 topics: [
   "Descriptive statistics", "Mean, median, mode", "Variance & SD", "Distributions",
   "Normal distribution", "Z-scores", "Probability", "Sampling", "Confidence intervals",

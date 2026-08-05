@@ -3,7 +3,7 @@
 export default {
 name: "Algebra", kind: "Structure", glyph: "x²", color: "#8b93d0",
 blurb: "Equations, factoring, functions, and symbolic manipulation — a working reference with rules, worked examples, and room to grow.",
-status: "Reference & examples ready — interactive tools coming",
+status: "Reference — formulas and worked examples",
 topics: [
   "Equations", "Inequalities", "Factoring", "Functions", "Exponents",
   "Radicals", "Logarithms", "Systems of equations", "Polynomials", "Rational expressions"

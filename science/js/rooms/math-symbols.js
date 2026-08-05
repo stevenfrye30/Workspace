@@ -3,7 +3,7 @@
 export default {
 name: "Symbols", kind: "Notation", glyph: "π", color: "#8b93d0",
 blurb: "A notation cabinet for writing math — Greek letters, operators, and notation from every field, each a click away to copy.",
-status: "Notation library ready — click any symbol to copy; pickers coming",
+status: "Click any symbol to copy",
 callout: "Click any symbol to copy it. For symbols while graphing, Desmos has its own on-screen keyboard.",
 topics: [
   "Greek letters", "Operators", "Comparison symbols", "Set notation", "Logic symbols",

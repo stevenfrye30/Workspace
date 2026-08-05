@@ -3,7 +3,7 @@
 export default {
 name: "Biology", kind: "Life", glyph: "🌿", color: "#6fae5f",
 blurb: "The broad life-science room — cells, genes, immunity, the body, plants, and evolution.",
-status: "Populated — broad reference and worked examples",
+status: "Reference — cards and worked examples",
 topics: [
   "Cells", "Organelles", "Membranes", "Membrane transport", "DNA & genes", "Replication",
   "Transcription", "Translation", "Genetics", "Gene regulation", "Cell cycle", "Cell death",

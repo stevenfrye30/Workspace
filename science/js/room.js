@@ -19,7 +19,7 @@ import * as share from './share.js';
 const WIDGETS = {
   'periodic-table': ['./widgets/periodic-table.js'],
   'reference': ['./widgets/reference-tables.js'],
-  'data-analysis': ['./widgets/units.js', './widgets/calculator.js'],
+  'data-analysis': ['./widgets/units.js'],
   'notes': ['./widgets/notes-library.js'],
 
   /* Chemistry is a hub of topic rooms; the instruments live in those. */
@@ -83,10 +83,14 @@ async function render(key) {
      the URL, so copying it hands over the whole worked problem. */
   if (specs.length) h += share.bar();
 
-  /* A hub room leads with big topic buttons instead of a wall of sections. */
+  /* A hub room leads with big topic buttons instead of a wall of sections.
+     A tile targets either an internal room (key) or an outside tool (href). */
   if (room.hub) {
     h += '<section class="block"><div class="hub-grid">' + room.hub.map(function (t) {
-      return '<a class="hub-card" href="room.html?room=' + encodeURIComponent(t.key) + '">' +
+      const external = !!t.href;
+      const href = external ? t.href : 'room.html?room=' + encodeURIComponent(t.key);
+      return '<a class="hub-card' + (external ? ' external' : '') + '" href="' + href + '"' +
+        (external ? ' target="_blank" rel="noopener"' : '') + '>' +
         '<span class="hub-glyph">' + t.glyph + '</span>' +
         '<span class="hub-name">' + esc(t.name) + '</span>' +
         '<span class="hub-desc">' + esc(t.desc) + '</span>' +

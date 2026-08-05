@@ -3,7 +3,7 @@
 export default {
 name: "Trigonometry", kind: "Angle", glyph: "∿", color: "#8b93d0",
 blurb: "The bridge between angles, triangles, the unit circle, and waves (∿) — θ, π, sin, cos, tan, and the graphs they trace.",
-status: "Reference & examples ready — interactive tools coming",
+status: "Reference — formulas and worked examples",
 topics: [
   "Angles", "Degrees & radians", "Unit circle", "Sine", "Cosine", "Tangent",
   "Reciprocal functions", "Right-triangle ratios", "Special angles", "Trig identities",

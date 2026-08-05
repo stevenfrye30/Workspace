@@ -5,7 +5,7 @@
 export default {
 name: "Physics", kind: "Nature", glyph: "⚛", color: "#c98bd0",
 blurb: "Applied math with units — motion, forces, energy, electricity, and waves (F, v, a, E, P, V, I, R, λ, f, ω), tied to graphing and real measurements.",
-status: "Reference & examples ready — interactive tools coming",
+status: "Reference — formulas and worked examples",
 topics: [
   "Units & dimensions", "Vectors", "Motion", "Velocity", "Acceleration", "Force", "Newton's laws",
   "Work", "Energy", "Power", "Momentum", "Circular motion", "Waves", "Frequency", "Period",

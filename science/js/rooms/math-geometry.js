@@ -3,7 +3,7 @@
 export default {
 name: "Geometry", kind: "Form", glyph: "△", color: "#8b93d0",
 blurb: "Shapes, theorems, and coordinate geometry — a visual reference that ties figures (△ ○ □) to formulas and to algebra.",
-status: "Reference & examples ready — interactive tools coming",
+status: "Reference — formulas and worked examples",
 topics: [
   "Points, lines & planes", "Angles", "Triangles", "Polygons", "Circles", "Perimeter",
   "Area", "Surface area", "Volume", "Coordinate geometry", "Distance formula", "Midpoint formula",

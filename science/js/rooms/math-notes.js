@@ -3,7 +3,7 @@
 export default {
 name: "Notes & Formulas", kind: "Library", glyph: "✎", color: "#8b93d0",
 blurb: "Your personal formula vault and study notebook — collect, save, and reuse math from every room in one place.",
-status: "Your notebook — autosaves locally; organizing tools coming",
+status: "Your notebook — autosaves locally",
 topics: [
   "Personal notes", "Formula library", "Saved definitions", "Worked examples", "Reusable explanations",
   "Theorem notes", "Study reminders", "Problem-solving strategies", "Notation reminders", "Common mistakes",

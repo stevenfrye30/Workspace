@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Science &amp; Math</title>
-  <meta name="description" content="A general-chemistry bench and math reference — interactive periodic table, chemistry solvers, reference tables, algebra through statistics, and a symbol cabinet.">
+  <meta name="description" content="Chemistry, math, physics, biology and the periodic table — one dashboard.">
   <link rel="stylesheet" href="../_shared/hub-nav.css">
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/lab.css">
@@ -15,156 +15,81 @@
   </nav>
 
   <div class="page">
-    <header class="lab-head">
-      <div class="kicker">Science Lab</div>
-      <h1>Science &amp; Math</h1>
-      <p class="sub">Every room in one place. Chemistry leads — the rest is here when a problem reaches for it.</p>
-      <div class="stats">
-        <div><strong>118</strong> elements</div>
-        <div><strong>25</strong> rooms</div>
-        <div><strong>14</strong> live tools</div>
-      </div>
-    </header>
+    <h1 class="board-title">Science &amp; Math</h1>
 
-    <!-- ── Chemistry ─────────────────────────────────────────── -->
-    <div class="section-label">Chemistry <span>— nine topic rooms, each with its own solvers</span></div>
-    <div class="dash">
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-atoms">
-        <span class="d-glyph">⚛</span><span class="d-name">Atoms, Bonding &amp; Trends</span>
-        <span class="d-desc">Structure, ions, electron configuration, bond types, periodic trends, intermolecular forces.</span>
+    <!-- Nine tiles. The periodic table sits at the centre because every
+         other room reaches for it. -->
+    <div class="board">
+      <a class="tile" style="--c:#e0794b;" href="room.html?room=chemistry">
+        <span class="t-glyph">🧪</span>
+        <span class="t-name">Chemistry</span>
+        <span class="t-sub">9 topic rooms</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-moles">
-        <span class="d-glyph">⚖️</span><span class="d-name">Moles &amp; Stoichiometry</span>
-        <span class="d-desc">Molar mass, empirical formulas, balancing, mole ratios, limiting reagent.</span>
-        <span class="d-tool">Limiting reagent · molar mass</span>
+
+      <a class="tile" style="--c:#8b93d0;" href="room.html?room=math">
+        <span class="t-glyph">∑</span>
+        <span class="t-name">Math</span>
+        <span class="t-sub">9 rooms</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-solutions">
-        <span class="d-glyph">🧫</span><span class="d-name">Solutions &amp; Concentration</span>
-        <span class="d-desc">Molarity, dilution, solubility rules, net ionic equations.</span>
-        <span class="d-tool">Molarity · dilution</span>
+
+      <a class="tile" style="--c:#c98bd0;" href="room.html?room=physics">
+        <span class="t-glyph">⚛</span>
+        <span class="t-name">Physics</span>
+        <span class="t-sub">Motion, energy, waves</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-acids">
-        <span class="d-glyph">🧴</span><span class="d-name">Acids, Bases &amp; Buffers</span>
-        <span class="d-desc">Strong vs weak, the pH scale, Ka and Kb, buffers, Henderson–Hasselbalch.</span>
-        <span class="d-tool">pH · buffer</span>
+
+      <a class="tile" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
+        <span class="t-glyph">🧬</span>
+        <span class="t-name">Biochemistry</span>
+        <span class="t-sub">Enzymes, metabolism, DNA</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-titration">
-        <span class="d-glyph">⚗️</span><span class="d-name">Titration</span>
-        <span class="d-desc">Curves, equivalence and half-equivalence, the buffer region, indicators.</span>
-        <span class="d-tool">Curve · table · indicator</span>
+
+      <a class="tile tile-center" style="--c:#d4a24c;" href="room.html?room=periodic-table">
+        <span class="t-glyph">⚛</span>
+        <span class="t-name">Periodic Table</span>
+        <span class="t-sub">118 elements</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-gases">
-        <span class="d-glyph">🎈</span><span class="d-name">Gases</span>
-        <span class="d-desc">Ideal and combined gas laws, molar volume, partial pressures, effusion.</span>
-        <span class="d-tool">PV=nRT · Dalton · Graham</span>
+
+      <a class="tile" style="--c:#5f9ea0;" href="room.html?room=reference">
+        <span class="t-glyph">📋</span>
+        <span class="t-name">Reference Tables</span>
+        <span class="t-sub">Ions, solubility, K<sub>a</sub>, thermo</span>
+        <span class="t-also" data-href="room.html?room=data-analysis">Data, Symbols &amp; Units →</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-thermo">
-        <span class="d-glyph">🔥</span><span class="d-name">Thermochemistry</span>
-        <span class="d-desc">Calorimetry, enthalpy, Hess's law, phase changes, entropy, spontaneity.</span>
-        <span class="d-tool">q=mcΔT · ΔH°rxn · Hess</span>
+
+      <a class="tile" style="--c:#e06b8b;" href="room.html?room=neuroscience">
+        <span class="t-glyph">🧠</span>
+        <span class="t-name">Neuroscience</span>
+        <span class="t-sub">Membrane potential, synapses</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-equilibrium">
-        <span class="d-glyph">⚖</span><span class="d-name">Equilibrium &amp; Kinetics</span>
-        <span class="d-desc">K and Q, Le Chatelier, ICE tables, rate laws, order, half-life, catalysts.</span>
+
+      <a class="tile" style="--c:#6fae5f;" href="room.html?room=biology">
+        <span class="t-glyph">🌿</span>
+        <span class="t-name">Biology</span>
+        <span class="t-sub">Cells, genes, physiology</span>
       </a>
-      <a class="dash-card" style="--c:#e0794b;" href="room.html?room=chem-redox">
-        <span class="d-glyph">🔋</span><span class="d-name">Redox &amp; Electrochemistry</span>
-        <span class="d-desc">Oxidation numbers, half-reactions, galvanic cells, cell potential, electrolysis.</span>
+
+      <a class="tile" style="--c:#b8a24c;" href="room.html?room=lab-methods">
+        <span class="t-glyph">🔬</span>
+        <span class="t-name">Lab Methods</span>
+        <span class="t-sub">Safety, prep, technique</span>
+        <span class="t-also" data-href="room.html?room=notes">Science Notes →</span>
       </a>
     </div>
-
-    <!-- ── Science ───────────────────────────────────────────── -->
-    <div class="section-label">Science <span>— reference and the rest of the bench</span></div>
-    <div class="dash">
-      <a class="dash-card" style="--c:#d4a24c;" href="room.html?room=periodic-table">
-        <span class="d-glyph">⚛</span><span class="d-name">Periodic Table</span>
-        <span class="d-desc">All 118 elements — mass, group, period, electron configuration, oxidation states.</span>
-        <span class="d-tool">Searchable · filterable</span>
-      </a>
-      <a class="dash-card" style="--c:#5f9ea0;" href="room.html?room=reference">
-        <span class="d-glyph">📋</span><span class="d-name">Reference Tables</span>
-        <span class="d-desc">Polyatomic ions, solubility rules, strong acids &amp; bases, Ka/Kb, thermo data.</span>
-        <span class="d-tool">Search · print handout</span>
-      </a>
-      <a class="dash-card" style="--c:#5fb0a8;" href="room.html?room=data-analysis">
-        <span class="d-glyph">📊</span><span class="d-name">Data, Symbols &amp; Units</span>
-        <span class="d-desc">Converter across 16 quantities, SI prefixes, physical constants, notation.</span>
-        <span class="d-tool">Converter · calculator</span>
-      </a>
-      <a class="dash-card" style="--c:#c98bd0;" href="room.html?room=physics">
-        <span class="d-glyph">⚛</span><span class="d-name">Physics</span>
-        <span class="d-desc">Motion, forces, energy, electricity and waves — applied math with units.</span>
-      </a>
-      <a class="dash-card" style="--c:#6fae5f;" href="room.html?room=biology">
-        <span class="d-glyph">🌿</span><span class="d-name">Biology</span>
-        <span class="d-desc">Cells, genes, immunity, physiology and evolution.</span>
-      </a>
-      <a class="dash-card" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
-        <span class="d-glyph">🧬</span><span class="d-name">Biochemistry</span>
-        <span class="d-desc">Proteins, enzymes, metabolism, DNA/RNA, membranes and signalling.</span>
-      </a>
-      <a class="dash-card" style="--c:#e06b8b;" href="room.html?room=neuroscience">
-        <span class="d-glyph">🧠</span><span class="d-name">Neuroscience &amp; Ephys</span>
-        <span class="d-desc">Membrane potential, synapses, patch clamp and calcium imaging.</span>
-      </a>
-      <a class="dash-card" style="--c:#b8a24c;" href="room.html?room=lab-methods">
-        <span class="d-glyph">🔬</span><span class="d-name">Lab Methods</span>
-        <span class="d-desc">Safety, solution prep, pipetting, microscopy, assays, troubleshooting.</span>
-      </a>
-      <a class="dash-card" style="--c:#c2b280;" href="room.html?room=notes">
-        <span class="d-glyph">📓</span><span class="d-name">Science Notes</span>
-        <span class="d-desc">Your science notebook — every room's notes gathered in one place.</span>
-      </a>
-    </div>
-
-    <!-- ── Math ──────────────────────────────────────────────── -->
-    <div class="section-label">Math <span>— reference, worked examples, and Desmos for graphing</span></div>
-    <div class="dash">
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-algebra">
-        <span class="d-glyph">x²</span><span class="d-name">Algebra</span>
-        <span class="d-desc">Equations, factoring, functions, exponents, logarithms, systems.</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-calculus">
-        <span class="d-glyph">∫</span><span class="d-name">Calculus</span>
-        <span class="d-desc">Limits, derivatives, integrals, and the rules that connect them.</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-geometry">
-        <span class="d-glyph">△</span><span class="d-name">Geometry</span>
-        <span class="d-desc">Shapes, area and volume, coordinates, distance and proofs.</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-trigonometry">
-        <span class="d-glyph">∠</span><span class="d-name">Trigonometry</span>
-        <span class="d-desc">Ratios, the unit circle, identities, and wave behaviour.</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-statistics">
-        <span class="d-glyph">📊</span><span class="d-name">Statistics</span>
-        <span class="d-desc">Descriptive stats, distributions, probability, inference and regression.</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-time-series">
-        <span class="d-glyph">〜</span><span class="d-name">Time-Series Lab</span>
-        <span class="d-desc">Traces over time — smoothing, peaks and events, area, decay constants.</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-symbols">
-        <span class="d-glyph">π</span><span class="d-name">Symbols</span>
-        <span class="d-desc">Greek letters, operators, set and logic notation — click any to copy.</span>
-        <span class="d-tool">Click to copy</span>
-      </a>
-      <a class="dash-card" style="--c:#8b93d0;" href="room.html?room=math-notes">
-        <span class="d-glyph">✎</span><span class="d-name">Notes &amp; Formulas</span>
-        <span class="d-desc">Your formula vault — essentials from every math room, plus a notebook.</span>
-      </a>
-      <a class="dash-card external" style="--c:#8b93d0;" href="https://www.desmos.com/calculator" target="_blank" rel="noopener">
-        <span class="d-glyph">📈</span><span class="d-name">Desmos ↗</span>
-        <span class="d-desc">Graphing, sliders and tables. Opens in a new tab — the graphing tool this lab points at.</span>
-        <span class="d-tool">External</span>
-      </a>
-    </div>
-
-    <footer>
-      A general-chemistry bench with the rest of the sciences and math alongside it —
-      interactive periodic table, searchable reference tables, live solvers, and shareable problem links. Source on
-      <a href="https://github.com/stevenfrye30/Workspace">GitHub</a>.
-    </footer>
   </div>
+
+  <script type="module" src="js/calc-dock.js"></script>
+  <script>
+    /* The two shared tiles carry a second destination. A nested <a> is
+       invalid inside a tile link, so the secondary target is a span that
+       navigates itself and stops the tile from also firing. */
+    document.querySelectorAll('.t-also').forEach(function (el) {
+      el.setAttribute('role', 'link');
+      el.setAttribute('tabindex', '0');
+      function go(e) { e.preventDefault(); e.stopPropagation(); location.href = el.dataset.href; }
+      el.addEventListener('click', go);
+      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') go(e); });
+    });
+  </script>
 </body>
 </html>

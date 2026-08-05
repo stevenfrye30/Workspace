@@ -1,4 +1,4 @@
-/* Science Lab dashboard (index.html) — a research bench / field notebook. */
+/* Science &amp; Math — the home dashboard. Nine tiles, nothing else. */
 
 body {
   background:
@@ -8,118 +8,61 @@ body {
     var(--bg);
 }
 
-.lab-head {
-  position: relative; border-bottom: 1px solid var(--gold);
-  padding: 0.6rem 0 1rem; margin-bottom: 1.4rem;
-  background-image:
-    linear-gradient(rgba(143,163,186,0.05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(143,163,186,0.05) 1px, transparent 1px);
-  background-size: 26px 26px;
+.board-title {
+  font-size: 2.1rem; font-weight: 600; letter-spacing: 0.01em;
+  margin: 0 0 1.2rem; padding-bottom: 0.7rem;
+  border-bottom: 1px solid var(--gold);
 }
-.kicker { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
-h1 { font-size: 2.4rem; font-weight: 600; letter-spacing: 0.01em; margin: 0.2rem 0 0; }
-.sub { color: var(--muted); font-style: italic; font-size: 1rem; margin-top: 0.4rem; max-width: 46rem; }
-.stats { display: flex; gap: 1.4rem; flex-wrap: wrap; margin-top: 0.7rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--muted); }
-.stats strong { color: var(--fg); }
 
-/* Featured central hub — Periodic Table.
-   Must be a flex column: its children are inline <span>s, so under
-   display:block the kicker, title and description all ran together on one line. */
-.featured {
-  position: relative; display: flex; flex-direction: column; align-items: flex-start;
-  text-decoration: none; color: inherit;
-  background: linear-gradient(150deg, rgba(212,162,76,0.16), rgba(212,162,76,0.05) 60%, var(--panel));
-  border: 1px solid var(--gold); border-radius: 4px;
-  padding: 1.1rem 1.3rem; margin-bottom: 1.1rem; overflow: hidden;
-  transition: transform 0.15s, box-shadow 0.2s, border-color 0.2s;
+.board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.8rem;
 }
-.featured:hover { transform: translateY(-2px); box-shadow: 0 10px 30px -12px rgba(212,162,76,0.4); }
-.featured .big-glyph { position: absolute; top: -0.3rem; right: 0.8rem; font-size: 4.4rem; opacity: 0.22; }
-.featured .kind { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); font-weight: 700; }
-.featured .name { font-size: 1.8rem; font-weight: 600; margin: 0.15rem 0 0.3rem; }
-.featured .desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.9rem; color: var(--muted); max-width: 52rem; line-height: 1.45; }
-.featured .chips { margin-top: 0.7rem; display: flex; flex-wrap: wrap; gap: 0.35rem; }
 
-.rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.8rem; }
-.sci-card {
-  position: relative; display: flex; flex-direction: column; text-decoration: none; color: inherit;
-  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 16%, var(--panel)), var(--panel));
-  border: 1px solid var(--border); border-left: 3px solid var(--c);
-  border-radius: 4px; padding: 0.8rem 0.9rem 0.85rem; min-height: 7.4rem;
+.tile {
+  position: relative; display: flex; flex-direction: column; justify-content: center;
+  text-decoration: none; color: inherit; text-align: center;
+  min-height: 10.5rem; padding: 1.1rem 1rem;
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 15%, var(--panel)), var(--panel));
+  border: 1px solid var(--border); border-top: 3px solid var(--c);
+  border-radius: 5px;
   transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
 }
-.sci-card:hover { transform: translateY(-2px); border-color: var(--c); box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--c) 60%, transparent); }
-.sci-card .glyph { position: absolute; top: 0.5rem; right: 0.7rem; font-size: 1.4rem; opacity: 0.5; }
-.sci-card .kind { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.58rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--c); font-weight: 700; }
-.sci-card .name { font-size: 1.18rem; font-weight: 600; margin: 0.1rem 0 0.25rem; padding-right: 1.8rem; }
-.sci-card .desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); line-height: 1.35; flex: 1 1 auto; }
-
-.chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.55rem; }
-.chip {
-  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.6rem; font-weight: 600; color: var(--c, var(--gold));
-  background: color-mix(in srgb, var(--c, var(--gold)) 14%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c, var(--gold)) 34%, transparent);
-  border-radius: 999px; padding: 0.1rem 0.45rem;
-}
-
-.section-label { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; margin: 1.5rem 0 0.7rem; }
-.section-label span { color: var(--muted); font-weight: 500; text-transform: none; letter-spacing: 0; font-style: italic; opacity: 0.85; }
-
-/* Bridge areas — smaller, specialized cross-over rooms; lighter than a major discipline. */
-.sci-card.bridge { min-height: 6.2rem; }
-.rooms.bridge-row { grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); max-width: 34rem; }
-
-/* Home dashboard — every room visible, grouped by subject. */
-.dash { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: 0.7rem; }
-.dash-card {
-  position: relative; display: flex; flex-direction: column;
-  text-decoration: none; color: inherit;
-  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 14%, var(--panel)), var(--panel));
-  border: 1px solid var(--border); border-left: 3px solid var(--c);
-  border-radius: 4px; padding: 0.8rem 0.9rem 0.85rem; min-height: 7.6rem;
-  transition: transform 0.15s, border-color 0.2s, box-shadow 0.2s;
-}
-.dash-card:hover, .dash-card:focus-visible {
+.tile:hover, .tile:focus-visible {
   transform: translateY(-2px); border-color: var(--c);
-  box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--c) 60%, transparent);
+  box-shadow: 0 10px 26px -12px color-mix(in srgb, var(--c) 70%, transparent);
   outline: none;
 }
-.dash-card .d-glyph { position: absolute; top: 0.6rem; right: 0.75rem; font-size: 1.35rem; opacity: 0.45; }
-.dash-card .d-name { font-size: 1.08rem; font-weight: 600; padding-right: 2rem; margin-bottom: 0.28rem; }
-.dash-card .d-desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem;
-  color: var(--muted); line-height: 1.4; flex: 1 1 auto; }
-.dash-card .d-tool { font-family: -apple-system, sans-serif; font-size: 0.62rem; font-weight: 600;
-  color: var(--c); margin-top: 0.55rem; align-self: flex-start;
-  background: color-mix(in srgb, var(--c) 12%, transparent);
-  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
-  border-radius: 999px; padding: 0.13rem 0.5rem; }
-.dash-card.external { border-style: dashed; }
 
-@media (max-width: 600px) { .dash { grid-template-columns: 1fr; } }
-
-/* Advanced / research bench — collapsed so a chemistry student isn't
-   handed nine rooms, but nothing is hidden from someone who wants it. */
-.advanced { margin-top: 1.6rem; border-top: 1px solid var(--rule); padding-top: 0.9rem; }
-.advanced > summary {
-  cursor: pointer; list-style: none; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.6rem;
-  font-family: -apple-system, "Segoe UI", sans-serif;
+/* The centre tile carries the whole accent, so it reads as the anchor. */
+.tile-center {
+  background: linear-gradient(150deg, color-mix(in srgb, var(--c) 26%, var(--panel)), var(--panel));
+  border: 1px solid var(--c); border-top: 3px solid var(--c);
 }
-.advanced > summary::-webkit-details-marker { display: none; }
-.advanced > summary::before {
-  content: "▸"; color: var(--gold); font-size: 0.8rem; transition: transform 0.15s;
-}
-.advanced[open] > summary::before { content: "▾"; }
-.advanced > summary:hover .adv-title { color: var(--gold); }
-.adv-title { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
-.adv-hint { font-size: 0.76rem; color: var(--muted); font-style: italic; opacity: 0.8; }
-.advanced .rooms { margin-top: 0.9rem; }
 
-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule); font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); font-style: italic; }
-footer a { color: var(--gold); text-decoration: none; }
-footer a:hover { text-decoration: underline; }
-
-@media (max-width: 600px) {
-  h1 { font-size: 1.9rem; }
-  .rooms { grid-template-columns: 1fr; }
-  .featured .name { font-size: 1.5rem; }
+.t-glyph { font-size: 1.9rem; opacity: 0.65; margin-bottom: 0.4rem; }
+.t-name { font-size: 1.22rem; font-weight: 600; line-height: 1.2; }
+.t-sub {
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.74rem;
+  color: var(--muted); margin-top: 0.3rem;
 }
+.tile-center .t-glyph { font-size: 2.4rem; opacity: 0.8; }
+.tile-center .t-name { font-size: 1.4rem; }
+
+/* Second destination on the two shared tiles. */
+.t-also {
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; font-weight: 600;
+  color: var(--c); cursor: pointer; margin-top: 0.6rem;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 13%, transparent);
+  border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
+  align-self: center;
+}
+.t-also:hover, .t-also:focus-visible {
+  color: var(--fg); background: color-mix(in srgb, var(--c) 26%, transparent);
+  outline: none;
+}
+
+@media (max-width: 760px) { .board { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .board { grid-template-columns: 1fr; } .tile { min-height: 7rem; } }

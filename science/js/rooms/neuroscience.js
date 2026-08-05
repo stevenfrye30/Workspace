@@ -1,9 +1,9 @@
 /* Room content: neuroscience */
 
 export default {
-name: "Neuroscience & Electrophysiology", kind: "Signals", glyph: "🧠", color: "#e06b8b",
+name: "Neuroscience", kind: "Signals", glyph: "🧠", color: "#e06b8b",
 blurb: "Neurons, synapses, and the electrical & optical signals they produce — a bench notebook for patch clamp, calcium/glutamate imaging, and trace analysis.",
-status: "Populated — ephys & imaging reference, examples, and Time-Series links",
+status: "Reference — ephys and imaging, with worked examples",
 callout: "<b>Bench-oriented & educational.</b> This room mirrors real ephys/imaging workflow and connects it to the Time-Series and Statistics tools in Math Lab. (General reference — no private lab data.)",
 topics: [
   "Neurons", "Glia", "Membrane potential", "Ion gradients", "Ions: Na⁺ K⁺ Ca²⁺ Cl⁻", "Action potentials",

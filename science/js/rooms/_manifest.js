@@ -17,6 +17,7 @@ export const MANIFEST = {
   "biology": { name: "Biology", glyph: "🌿", color: "#6fae5f" },
   "biochemistry": { name: "Biochemistry", glyph: "🧬", color: "#7fb0d0" },
   "physics": { name: "Physics", glyph: "⚛", color: "#c98bd0" },
+  "math": { name: "Math", glyph: "∑", color: "#8b93d0" },
   /* Math rooms, absorbed from the standalone Math Lab. */
   "math-algebra": { name: "Algebra", glyph: "x²", color: "#8b93d0" },
   "math-calculus": { name: "Calculus", glyph: "∫", color: "#8b93d0" },
@@ -26,7 +27,7 @@ export const MANIFEST = {
   "math-time-series": { name: "Time-Series Lab", glyph: "〜", color: "#8b93d0" },
   "math-symbols": { name: "Symbols", glyph: "π", color: "#8b93d0" },
   "math-notes": { name: "Notes & Formulas", glyph: "✎", color: "#8b93d0" },
-  "neuroscience": { name: "Neuroscience & Electrophysiology", glyph: "🧠", color: "#e06b8b" },
+  "neuroscience": { name: "Neuroscience", glyph: "🧠", color: "#e06b8b" },
   "lab-methods": { name: "Lab Methods", glyph: "🔬", color: "#b8a24c" },
   "data-analysis": { name: "Data, Symbols & Units", glyph: "📊", color: "#5fb0a8" },
   "notes": { name: "Notes & Study Library", glyph: "📓", color: "#c2b280" },

@@ -3,7 +3,7 @@
 export default {
 name: "Time-Series Lab", kind: "Signal", glyph: "〜", color: "#8b93d0",
 blurb: "A data & signal console for anything measured over time — electrophysiology traces, stock data, repeated measures, and sensor streams.",
-status: "Reference & plan ready — data tools coming",
+status: "Reference — formulas and worked examples",
 callout: "<b>Future-facing data lab.</b> Upload &amp; analysis aren't wired up yet — this is the working reference and the plan. Built to grow into a real console for ephys traces, stock data, and repeated measures.",
 topics: [
   "Time-series data", "Traces", "Sampling rate", "Baseline", "Amplitude", "Frequency",

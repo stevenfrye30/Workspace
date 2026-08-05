@@ -3,7 +3,7 @@
 export default {
 name: "Biochemistry", kind: "Molecules of life", glyph: "🧬", color: "#7fb0d0",
 blurb: "The bridge from Chemistry to Biology — water and pH become amino acids, enzymes, membranes, metabolism, and the molecules that carry information.",
-status: "Populated — molecular reference, examples, and coursework links",
+status: "Reference — molecular cards and worked examples",
 topics: [
   "Water & pH", "Buffers", "Amino acids", "Protein structure", "Enzymes", "Enzyme kinetics",
   "Carbohydrates", "Lipids", "Membranes", "DNA & RNA", "Nucleotides", "Transcription & translation",
