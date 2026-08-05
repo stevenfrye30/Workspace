@@ -57,7 +57,11 @@ function parseSegment(str) {
   function number() {
     let n = '';
     while (i < str.length && /[0-9]/.test(str[i])) { n += str[i]; i++; }
-    return n === '' ? 1 : parseInt(n, 10);
+    if (n === '') return 1;
+    const v = parseInt(n, 10);
+    /* "H0" is not a formula. Without this it silently weighs nothing. */
+    if (v === 0) throw new Error('A subscript cannot be zero');
+    return v;
   }
 
   function group(depth) {
@@ -111,8 +115,22 @@ export function parseEquation(input) {
     const terms = text.split('+').map(function (t) { return t.trim(); }).filter(Boolean);
     if (!terms.length) throw new Error('Nothing on the ' + which + ' side');
     return terms.map(function (t) {
-      const m = t.match(/^(\d+)?\s*(.+)$/);
-      const coef = m[1] ? parseInt(m[1], 10) : 1;
+      /* Coefficients may be whole (2), decimal (0.5) or fractional (1/2).
+         Formation and combustion equations are conventionally written with a
+         half — "H2 + 1/2 O2 -> H2O" — so rejecting those would turn away the
+         exact form a thermochemistry problem arrives in. */
+      const m = t.match(/^(\d+\/\d+|\d+(?:\.\d+)?)?\s*(.+)$/);
+      let coef = 1;
+      if (m[1]) {
+        if (m[1].indexOf('/') >= 0) {
+          const fr = m[1].split('/');
+          const den = parseInt(fr[1], 10);
+          if (den === 0) throw new Error('A coefficient cannot divide by zero');
+          coef = parseInt(fr[0], 10) / den;
+        } else {
+          coef = parseFloat(m[1]);
+        }
+      }
       if (coef === 0) throw new Error('A coefficient cannot be zero');
       const withState = m[2].replace(/\s+/g, '');
       const sp = splitState(withState);
@@ -130,6 +148,9 @@ export function parseEquation(input) {
   return { reactants: side(parts[0], 'left'), products: side(parts[1], 'right') };
 }
 
+/* Trim binary noise from a fractional atom count for display. */
+function round(x) { return Math.abs(x - Math.round(x)) < 1e-9 ? Math.round(x) : Math.round(x * 1e6) / 1e6; }
+
 /* Atom balance. Returns the per-element totals so the caller can show a
    student exactly which element is off, not just that something is. */
 export function balanceCheck(eq) {
@@ -145,8 +166,11 @@ export function balanceCheck(eq) {
   const left = tally(eq.reactants), right = tally(eq.products);
   const elements = Object.keys(left).concat(Object.keys(right))
     .filter(function (v, i, a) { return a.indexOf(v) === i; }).sort();
+  /* Fractional coefficients make these sums floating-point, so compare with a
+     tolerance — 1/2 + 1/2 is not reliably 1 in binary. */
   const rows = elements.map(function (el) {
-    return { el: el, left: left[el] || 0, right: right[el] || 0 };
+    const l = left[el] || 0, r = right[el] || 0;
+    return { el: el, left: round(l), right: round(r), equal: Math.abs(l - r) < 1e-9 };
   });
-  return { balanced: rows.every(function (r) { return r.left === r.right; }), rows: rows };
+  return { balanced: rows.every(function (r) { return r.equal; }), rows: rows };
 }

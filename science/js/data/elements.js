@@ -39,6 +39,37 @@ const RAW = [
   [104,"Rf","Rutherfordium","[267]","transition",4,7],[105,"Db","Dubnium","[268]","transition",5,7],[106,"Sg","Seaborgium","[269]","transition",6,7],[107,"Bh","Bohrium","[270]","transition",7,7],[108,"Hs","Hassium","[269]","transition",8,7],[109,"Mt","Meitnerium","[278]","transition",9,7],[110,"Ds","Darmstadtium","[281]","transition",10,7],[111,"Rg","Roentgenium","[282]","transition",11,7],[112,"Cn","Copernicium","[285]","transition",12,7],[113,"Nh","Nihonium","[286]","unknown",13,7],[114,"Fl","Flerovium","[289]","unknown",14,7],[115,"Mc","Moscovium","[290]","unknown",15,7],[116,"Lv","Livermorium","[293]","unknown",16,7],[117,"Ts","Tennessine","[294]","unknown",17,7],[118,"Og","Oganesson","[294]","unknown",18,7]
 ];
 export const ELEMENTS = RAW.map(function (r) { return { z: r[0], s: r[1], n: r[2], m: r[3], c: r[4], g: r[5], p: r[6] }; });
+/* Experimentally-established ground-state configurations that plain Aufbau
+   filling gets wrong, listed as the orbitals beyond the preceding noble-gas
+   core. Chromium and copper are the two every general-chemistry course
+   teaches as exceptions — a half-filled or filled d subshell is more stable
+   than the s2 the filling rule predicts — so a table that shows Cu as
+   4s(2) 3d(9) is teaching students the wrong answer to a question they will
+   be asked. Each entry's electrons plus its core must sum to Z; the periodic
+   table widget asserts that on load. */
+export const ANOMALOUS_CONFIG = {
+  24:  [["3d", 5], ["4s", 1]],                  /* Cr */
+  29:  [["3d", 10], ["4s", 1]],                 /* Cu */
+  41:  [["4d", 4], ["5s", 1]],                  /* Nb */
+  42:  [["4d", 5], ["5s", 1]],                  /* Mo */
+  44:  [["4d", 7], ["5s", 1]],                  /* Ru */
+  45:  [["4d", 8], ["5s", 1]],                  /* Rh */
+  46:  [["4d", 10]],                            /* Pd — no 5s at all */
+  47:  [["4d", 10], ["5s", 1]],                 /* Ag */
+  57:  [["5d", 1], ["6s", 2]],                  /* La */
+  58:  [["4f", 1], ["5d", 1], ["6s", 2]],       /* Ce */
+  64:  [["4f", 7], ["5d", 1], ["6s", 2]],       /* Gd */
+  78:  [["4f", 14], ["5d", 9], ["6s", 1]],      /* Pt */
+  79:  [["4f", 14], ["5d", 10], ["6s", 1]],     /* Au */
+  89:  [["6d", 1], ["7s", 2]],                  /* Ac */
+  90:  [["6d", 2], ["7s", 2]],                  /* Th */
+  91:  [["5f", 2], ["6d", 1], ["7s", 2]],       /* Pa */
+  92:  [["5f", 3], ["6d", 1], ["7s", 2]],       /* U  */
+  93:  [["5f", 4], ["6d", 1], ["7s", 2]],       /* Np */
+  96:  [["5f", 7], ["6d", 1], ["7s", 2]],       /* Cm */
+  103: [["5f", 14], ["7s", 2], ["7p", 1]]       /* Lr */
+};
+
 /* Curated significance for key elements; others fall back to a category blurb. */
 export const REL = {
   1:  { ox: "+1, −1", desc: "Lightest element and the fuel of stars; the backbone of acids, water, and organic molecules.", bio: "Half of water; central to pH, redox, and every biomolecule.", lab: "pH, ¹H NMR, reducing gas." },

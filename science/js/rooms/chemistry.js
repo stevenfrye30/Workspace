@@ -3,7 +3,7 @@
 export default {
 name: "Chemistry", kind: "Matter", glyph: "🧪", color: "#e0794b",
 blurb: "Where the periodic table becomes reactions — bonding, equations, solutions, acids/bases, equilibrium, thermodynamics, kinetics, and organic foundations.",
-status: "Populated — formulas and worked examples",
+status: "Live — five solvers, plus formulas and worked examples",
 topics: [
   "Atoms & ions", "Elements & compounds", "Periodic trends", "Electron configuration", "Bonding",
   "Ionic bonds", "Covalent bonds", "Molecular geometry", "Intermolecular forces", "Chemical equations",

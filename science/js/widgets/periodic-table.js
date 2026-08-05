@@ -1,19 +1,55 @@
-import { CATS, CATDESC, ELEMENTS, REL } from '../data/elements.js';
+import { CATS, CATDESC, ELEMENTS, REL, ANOMALOUS_CONFIG } from '../data/elements.js';
 
 function sup(n) { var m = { "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹" }; return String(n).split("").map(function (d) { return m[d] || d; }).join(""); }
-function electronConfig(z) {
+
+var NOBLES = [[86, "Rn"], [54, "Xe"], [36, "Kr"], [18, "Ar"], [10, "Ne"], [2, "He"]];
+
+function coreFor(z) {
+  for (var i = 0; i < NOBLES.length; i++) if (NOBLES[i][0] < z) return NOBLES[i];
+  return null;
+}
+
+/* A configuration is written in order of increasing n, then increasing l —
+   so chromium reads [Ar] 3d5 4s1, not the 4s-before-3d order it was filled
+   in. Filling order and writing order genuinely differ, and the written form
+   is what a student is asked to reproduce. */
+var LSEQ = { s: 0, p: 1, d: 2, f: 3 };
+function byShell(a, b) {
+  var na = parseInt(a[0], 10), nb = parseInt(b[0], 10);
+  return na - nb || LSEQ[a[0].charAt(1)] - LSEQ[b[0].charAt(1)];
+}
+
+/* Orbitals occupied beyond the noble-gas core, before any anomaly override. */
+function aufbau(z, coreZ) {
   var order = [["1s",2],["2s",2],["2p",6],["3s",2],["3p",6],["4s",2],["3d",10],["4p",6],["5s",2],["4d",10],["5p",6],["6s",2],["4f",14],["5d",10],["6p",6],["7s",2],["5f",14],["6d",10],["7p",6]];
-  var nobles = [[86,"Rn"],[54,"Xe"],[36,"Kr"],[18,"Ar"],[10,"Ne"],[2,"He"]];
-  var core = null, i;
-  for (i = 0; i < nobles.length; i++) { if (nobles[i][0] < z) { core = nobles[i]; break; } }
-  var coreZ = core ? core[0] : 0, rem = z, cum = 0, parts = [];
+  var rem = z, cum = 0, parts = [];
   for (var j = 0; j < order.length && rem > 0; j++) {
     var cap = order[j][1], start = cum, put = Math.min(cap, rem);
     rem -= put; cum += put;
-    if (start >= coreZ) parts.push(order[j][0] + sup(put));
+    if (start >= coreZ) parts.push([order[j][0], put]);
   }
-  return (core ? "[" + core[1] + "] " : "") + parts.join(" ");
+  return parts;
 }
+
+function electronConfig(z) {
+  var core = coreFor(z);
+  var coreZ = core ? core[0] : 0;
+  var orbitals = ANOMALOUS_CONFIG[z] || aufbau(z, coreZ);
+  var written = orbitals.slice().sort(byShell)
+    .map(function (o) { return o[0] + sup(o[1]); }).join(" ");
+  return (core ? "[" + core[1] + "] " : "") + written;
+}
+
+/* Every listed anomaly must still account for exactly Z electrons; a typo in
+   that table would otherwise show a plausible-looking but impossible atom. */
+Object.keys(ANOMALOUS_CONFIG).forEach(function (z) {
+  var core = coreFor(+z);
+  var total = (core ? core[0] : 0) +
+    ANOMALOUS_CONFIG[z].reduce(function (a, o) { return a + o[1]; }, 0);
+  if (total !== +z) {
+    console.error('ANOMALOUS_CONFIG for Z=' + z + ' sums to ' + total + ' electrons, not ' + z);
+  }
+});
 function gridPos(el) {
   if (el.c === "lanthanide") return { x: 3 + (el.z - 57), y: 8 };
   if (el.c === "actinide") return { x: 3 + (el.z - 89), y: 9 };
