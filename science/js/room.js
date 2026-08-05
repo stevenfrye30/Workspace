@@ -11,6 +11,7 @@
 
 import { esc } from './format.js';
 import { MANIFEST, ALIAS } from './rooms/_manifest.js';
+import * as share from './share.js';
 
 /* Instruments per room, in render order. An entry is either a module path or
    {path, opts}; opts is passed to that widget's block() and init(), which is
@@ -77,6 +78,10 @@ async function render(key) {
        esc(room.status || 'Scaffold ready') + '</div></header>';
 
   if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
+
+  /* Rooms with tools carry a share bar: the tools mirror their inputs into
+     the URL, so copying it hands over the whole worked problem. */
+  if (specs.length) h += share.bar();
 
   /* A hub room leads with big topic buttons instead of a wall of sections. */
   if (room.hub) {
@@ -149,6 +154,7 @@ async function render(key) {
   main.innerHTML = h;
 
   initNotes(key);
+  if (specs.length) share.initBar();
   widgets.forEach(function (w, i) { w.init(specs[i].opts); });
 }
 

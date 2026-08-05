@@ -1,5 +1,6 @@
 import { UNITS, U_PREFIXES, U_SIBASE, U_SIDERIVED, U_CONSTANTS } from '../data/units.js';
 import { esc, uFmt } from '../format.js';
+import { readState, writeState } from '../share.js';
 
 export function block() {
   var prefRows = U_PREFIXES.map(function (p) { return '<tr><td>' + esc(p[0]) + '</td><td class="u-sym">' + esc(p[1]) + '</td><td class="u-val">' + p[2] + '</td></tr>'; }).join("");
@@ -74,9 +75,19 @@ export function init() {
       ? "Base: " + spec.base + ". Temperature conversions account for scale offsets, not just ratios."
       : "Converting from " + from[0] + " (" + from[1] + "). Base unit " + spec.base + "; values use exact definitional factors.";
   }
-  catSel.addEventListener("change", function () { state.cat = catSel.value; state.fromIdx = 0; fillFrom(); compute(); });
-  fromSel.addEventListener("change", function () { state.fromIdx = +fromSel.value; compute(); });
-  valInput.addEventListener("input", compute);
+  /* Quantity, source unit and value ride in the URL, so a converted value
+     can be handed over exactly as it was set up. */
+  function sync() { writeState('un', { c: state.cat, u: state.fromIdx || '', v: valInput.value }); }
+
+  catSel.addEventListener("change", function () { state.cat = catSel.value; state.fromIdx = 0; fillFrom(); compute(); sync(); });
+  fromSel.addEventListener("change", function () { state.fromIdx = +fromSel.value; compute(); sync(); });
+  valInput.addEventListener("input", function () { compute(); sync(); });
   searchInput.addEventListener("input", compute);
+
+  var saved = readState('un');
+  if (saved.c && UNITS[saved.c]) { state.cat = saved.c; catSel.value = saved.c; }
+  var si = parseInt(saved.u, 10);
+  if (!isNaN(si) && UNITS[state.cat].u[si]) state.fromIdx = si;
+  if (saved.v !== undefined) valInput.value = saved.v;
   fillFrom(); compute();
 }

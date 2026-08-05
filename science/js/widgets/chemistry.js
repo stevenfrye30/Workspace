@@ -7,6 +7,7 @@
 
 import { molarMass } from '../chem/formula.js';
 import { uFmt } from '../format.js';
+import { readState, writeState, changedOnly, snapshot } from '../share.js';
 
 const PANES = {
   molar: {
@@ -93,6 +94,25 @@ export function init(opts) {
 
   const has = function (k) { return keys.indexOf(k) >= 0; };
   const g = function (id) { return document.getElementById(id); };
+
+  /* Restore shared values first, then mirror edits back to the URL. Only
+     the fields actually on screen are touched, so two rooms sharing this
+     module never overwrite each other's keys. */
+  const saved = readState('cc');
+  const FIELDS = ['mmFormula', 'molMol', 'molVol', 'dC1', 'dC2', 'dV2', 'phPH', 'phH', 'bfPKa', 'bfA', 'bfHA'];
+  const DEFAULTS = snapshot(FIELDS, g);
+  FIELDS.forEach(function (id) {
+    if (g(id) && saved[id] !== undefined) g(id).value = saved[id];
+  });
+  const sync = function () {
+    const state = {};
+    FIELDS.forEach(function (id) { if (g(id)) state[id] = g(id).value; });
+    writeState('cc', changedOnly(DEFAULTS, state));
+  };
+  FIELDS.forEach(function (id) {
+    const el = g(id);
+    if (el) el.addEventListener('input', sync);
+  });
 
   if (has('molar')) {
     const mmF = g('mmFormula'), mmOut = g('mmOut');

@@ -6,6 +6,7 @@
 import { parseEquation, balanceCheck } from '../chem/formula.js';
 import { SPECIFIC_HEAT, lookupDHf, PHASE_WATER } from '../data/thermo.js';
 import { esc } from '../format.js';
+import { readState, writeState, readJSON, changedOnly, snapshot } from '../share.js';
 
 function n(x, sig) {
   if (!isFinite(x)) return '—';
@@ -105,14 +106,37 @@ export function init() {
 
   const tabs = root.querySelectorAll('#tcTabs .u-tab');
   const panes = root.querySelectorAll('.tc-pane');
+  let pane = 'calor';
+  function showPane(name) {
+    pane = name;
+    tabs.forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-pane') === name); });
+    panes.forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-pane') === name); });
+  }
   tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      tabs.forEach(function (x) { x.classList.remove('on'); });
-      panes.forEach(function (p) { p.classList.remove('on'); });
-      t.classList.add('on');
-      root.querySelector('.tc-pane[data-pane="' + t.getAttribute('data-pane') + '"]').classList.add('on');
-    });
+    t.addEventListener('click', function () { showPane(t.getAttribute('data-pane')); sync(); });
   });
+
+  /* Calorimetry and reaction fields mirrored to the URL; Hess rows ride
+     along as JSON since they are a variable-length list. */
+  const TC_FIELDS = ['tcSub', 'tcM', 'tcC', 'tcT1', 'tcT2', 'tcQ', 'tcEq'];
+  const TC_DEFAULTS = snapshot(TC_FIELDS, function (id) { return document.getElementById(id); });
+  const HESS_DEFAULT = JSON.stringify(HESS_EXAMPLE.map(function (r) { return [r.eq, r.dh, r.mult]; }));
+  function sync() {
+    const state = {};
+    TC_FIELDS.forEach(function (id) {
+      const el = document.getElementById(id);
+      if (el) state[id] = el.value;
+    });
+    const out = changedOnly(TC_DEFAULTS, state);
+    if (pane !== 'calor') out.tab = pane;
+    const hessNow = JSON.stringify(hess.map(function (r) { return [r.eq, r.dh, r.mult]; }));
+    if (hessNow !== HESS_DEFAULT) out.hess = hessNow;
+    writeState('tc', out);
+  }
+  const saved = readState('tc');
+  let hess = readJSON(saved, 'hess', null)
+    ? readJSON(saved, 'hess', []).map(function (r) { return { eq: String(r[0] || ''), dh: String(r[1] == null ? '' : r[1]), mult: String(r[2] == null ? '1' : r[2]) }; })
+    : HESS_EXAMPLE.map(function (r) { return Object.assign({}, r); });
 
   /* ── Calorimetry ─────────────────────────────────────────────── */
   const subSel = document.getElementById('tcSub');
@@ -200,7 +224,11 @@ export function init() {
   }
 
   [mEl, cEl, t1El, t2El, qEl].forEach(function (el) {
-    el.addEventListener('input', solveCalor);
+    el.addEventListener('input', function () { solveCalor(); sync(); });
+  });
+  TC_FIELDS.forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el && saved[id] !== undefined) el.value = saved[id];
   });
 
   phaseEl.innerHTML = '<div class="tc-phasenote"><b>Phase changes happen at constant temperature</b>, ' +
@@ -312,20 +340,19 @@ export function init() {
     rxnOut.innerHTML = h;
   }
 
-  eqEl.addEventListener('input', solveRxn);
+  eqEl.addEventListener('input', function () { solveRxn(); sync(); });
   eqEx.addEventListener('change', function () {
     if (!eqEx.value) return;
     eqEl.value = eqEx.value;
-    solveRxn();
+    solveRxn(); sync();
     eqEx.value = '';
   });
-  eqEl.value = 'CH4(g) + 2 O2(g) -> CO2(g) + 2 H2O(l)';
+  if (saved.tcEq === undefined) eqEl.value = 'CH4(g) + 2 O2(g) -> CO2(g) + 2 H2O(l)';
   solveRxn();
 
   /* ── Hess's law ──────────────────────────────────────────────── */
   const hessRows = document.getElementById('tcHessRows');
   const hessOut = document.getElementById('tcHessOut');
-  let hess = [];
 
   function renderHess() {
     hessRows.innerHTML = hess.map(function (row, i) {
@@ -341,19 +368,19 @@ export function init() {
     }).join('');
 
     hessRows.querySelectorAll('.tc-heq').forEach(function (el) {
-      el.addEventListener('input', function () { hess[+el.dataset.i].eq = el.value; solveHess(); });
+      el.addEventListener('input', function () { hess[+el.dataset.i].eq = el.value; solveHess(); sync(); });
     });
     hessRows.querySelectorAll('.tc-hdh').forEach(function (el) {
-      el.addEventListener('input', function () { hess[+el.dataset.i].dh = el.value; solveHess(); });
+      el.addEventListener('input', function () { hess[+el.dataset.i].dh = el.value; solveHess(); sync(); });
     });
     hessRows.querySelectorAll('.tc-hm').forEach(function (el) {
-      el.addEventListener('input', function () { hess[+el.dataset.i].mult = el.value; solveHess(); });
+      el.addEventListener('input', function () { hess[+el.dataset.i].mult = el.value; solveHess(); sync(); });
     });
     hessRows.querySelectorAll('.tc-hdel').forEach(function (el) {
       el.addEventListener('click', function () {
         hess.splice(+el.dataset.i, 1);
         if (!hess.length) hess.push({ eq: '', dh: '', mult: '1' });
-        renderHess(); solveHess();
+        renderHess(); solveHess(); sync();
       });
     });
   }
@@ -387,14 +414,14 @@ export function init() {
 
   document.getElementById('tcHessAdd').addEventListener('click', function () {
     hess.push({ eq: '', dh: '', mult: '1' });
-    renderHess(); solveHess();
+    renderHess(); solveHess(); sync();
   });
   document.getElementById('tcHessEx').addEventListener('click', function () {
     hess = HESS_EXAMPLE.map(function (r) { return Object.assign({}, r); });
-    renderHess(); solveHess();
+    renderHess(); solveHess(); sync();
   });
 
-  hess = HESS_EXAMPLE.map(function (r) { return Object.assign({}, r); });
   renderHess();
   solveHess();
+  if (saved.tab) showPane(saved.tab);
 }

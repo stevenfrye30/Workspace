@@ -2,6 +2,7 @@ import { POLYATOMIC, OXYANION_PATTERN, SOLUBILITY, STRONG_ACIDS, STRONG_BASES,
          KA, KB, KA_KB_NOTES } from '../data/chem-tables.js';
 import { DHF, DHF_NAMES, SPECIFIC_HEAT, PHASE_WATER } from '../data/thermo.js';
 import { esc } from '../format.js';
+import { readState, writeState } from '../share.js';
 
 const STATE_NAME = { s: 'solid', l: 'liquid', g: 'gas', aq: 'aqueous' };
 
@@ -209,7 +210,10 @@ export function init() {
   const count = document.getElementById('rtCount');
   const bigger = document.getElementById('rtBigger');
 
+  var current = 'ions';
+  function sync() { writeState('rt', { tab: current === 'ions' ? '' : current, q: search.value.trim() }); }
   function showPane(name) {
+    current = name;
     tabs.forEach(function (t) { t.classList.toggle('on', t.getAttribute('data-pane') === name); });
     if (name === 'all') {
       panes.forEach(function (p) { p.classList.add('on'); });
@@ -218,7 +222,7 @@ export function init() {
     }
   }
   tabs.forEach(function (t) {
-    t.addEventListener('click', function () { showPane(t.getAttribute('data-pane')); });
+    t.addEventListener('click', function () { showPane(t.getAttribute('data-pane')); sync(); });
   });
 
   /* Searching spans every table, so it switches to the All view and reports
@@ -241,7 +245,7 @@ export function init() {
     });
     count.textContent = q ? shown + ' of ' + total + ' rows' : '';
   }
-  search.addEventListener('input', filter);
+  search.addEventListener('input', function () { filter(); sync(); });
   search.addEventListener('keydown', function (e) {
     if (e.key === 'Escape') { search.value = ''; filter(); showPane('ions'); }
   });
@@ -258,5 +262,8 @@ export function init() {
     window.print();
   });
 
+  const saved = readState('rt');
+  if (saved.q) search.value = saved.q;
+  if (saved.tab) showPane(saved.tab);
   filter();
 }

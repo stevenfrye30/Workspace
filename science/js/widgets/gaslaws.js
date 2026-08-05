@@ -9,6 +9,7 @@ import { R_ATM, R_VALUES, P_UNITS, V_UNITS, T_UNITS, REF_CONDITIONS, GAS_LAWS }
   from '../data/gases.js';
 import { molarMass } from '../chem/formula.js';
 import { esc } from '../format.js';
+import { readState, writeState, readJSON, changedOnly, snapshot } from '../share.js';
 
 function n(x, sig) {
   if (!isFinite(x)) return '—';
@@ -148,16 +149,51 @@ export function init() {
 
   const tabs = root.querySelectorAll('#glTabs .u-tab');
   const panes = root.querySelectorAll('.gl-pane');
+  let pane = 'ideal';
+  function showPane(name) {
+    pane = name;
+    tabs.forEach(function (x) { x.classList.toggle('on', x.getAttribute('data-pane') === name); });
+    panes.forEach(function (p) { p.classList.toggle('on', p.getAttribute('data-pane') === name); });
+  }
   tabs.forEach(function (t) {
-    t.addEventListener('click', function () {
-      tabs.forEach(function (x) { x.classList.remove('on'); });
-      panes.forEach(function (p) { p.classList.remove('on'); });
-      t.classList.add('on');
-      root.querySelector('.gl-pane[data-pane="' + t.getAttribute('data-pane') + '"]').classList.add('on');
-    });
+    t.addEventListener('click', function () { showPane(t.getAttribute('data-pane')); sync(); });
   });
 
   const g = function (id) { return document.getElementById(id); };
+
+  /* Declared here, ahead of sync(), which reads it. */
+  let gases = [{ f: 'N2', mol: '0.78' }, { f: 'O2', mol: '0.21' }, { f: 'Ar', mol: '0.01' }];
+
+  /* Restore a shared setup before anything renders. */
+  const saved = readState('gl');
+  gases = readJSON(saved, 'gas', null)
+    ? readJSON(saved, 'gas', []).map(function (r) { return { f: String(r[0] || ''), mol: String(r[1] == null ? '' : r[1]) }; })
+    : gases;
+
+  /* Every input on every tab, mirrored to the URL. */
+  const FIELDS = ['glP', 'glPu', 'glV', 'glVu', 'glN', 'glFormula', 'glGrams', 'glT', 'glTu',
+    'glP1', 'glP1u', 'glV1', 'glV1u', 'glT1', 'glT1u',
+    'glP2', 'glP2u', 'glV2', 'glV2u', 'glT2', 'glT2u',
+    'glPtot', 'glPtotu', 'glG1', 'glG2'];
+  const DEFAULTS = snapshot(FIELDS, g);
+  const DEFAULT_GAS = JSON.stringify(gases.map(function (r) { return [r.f, r.mol]; }));
+  function sync() {
+    const state = {};
+    FIELDS.forEach(function (id) { if (g(id)) state[id] = g(id).value; });
+    const out = changedOnly(DEFAULTS, state);
+    if (pane !== 'ideal') out.tab = pane;
+    const gasNow = JSON.stringify(gases.map(function (r) { return [r.f, r.mol]; }));
+    if (gasNow !== DEFAULT_GAS) out.gas = gasNow;
+    writeState('gl', out);
+  }
+  FIELDS.forEach(function (id) {
+    const el = g(id);
+    if (!el) return;
+    if (saved[id] !== undefined) el.value = saved[id];   /* after DEFAULTS */
+    el.addEventListener('input', sync);
+    el.addEventListener('change', sync);
+  });
+  if (saved.tab) showPane(saved.tab);
   const hint = function (msg) { return '<div class="st-hint">' + msg + '</div>'; };
 
   /* ── Ideal gas ─────────────────────────────────────────────── */
@@ -263,7 +299,8 @@ export function init() {
   ['glPu', 'glVu', 'glTu'].forEach(function (id) { g(id).addEventListener('change', solveIdeal); });
   g('glFormula').addEventListener('input', solveIdeal);
   g('glGrams').addEventListener('input', solveIdeal);
-  g('glN').value = '';
+  /* Default to solving for n, unless a shared link supplied one. */
+  if (saved.glN === undefined) g('glN').value = '';
   solveIdeal();
 
   /* ── Combined gas law ──────────────────────────────────────── */
@@ -365,7 +402,6 @@ export function init() {
 
   /* ── Dalton ────────────────────────────────────────────────── */
   const dRows = g('glDaltonRows'), dOut = g('glDaltonOut');
-  let gases = [{ f: 'N2', mol: '0.78' }, { f: 'O2', mol: '0.21' }, { f: 'Ar', mol: '0.01' }];
 
   function renderDalton() {
     dRows.innerHTML = gases.map(function (row, i) {
@@ -380,14 +416,14 @@ export function init() {
     dRows.querySelectorAll('input').forEach(function (el) {
       el.addEventListener('input', function () {
         gases[+el.dataset.i][el.dataset.k] = el.value;
-        solveDalton();
+        solveDalton(); sync();
       });
     });
     dRows.querySelectorAll('.gl-del').forEach(function (el) {
       el.addEventListener('click', function () {
         gases.splice(+el.dataset.i, 1);
         if (!gases.length) gases.push({ f: '', mol: '' });
-        renderDalton(); solveDalton();
+        renderDalton(); solveDalton(); sync();
       });
     });
   }
@@ -428,7 +464,7 @@ export function init() {
   }
 
   g('glDaltonAdd').addEventListener('click', function () {
-    gases.push({ f: '', mol: '' }); renderDalton(); solveDalton();
+    gases.push({ f: '', mol: '' }); renderDalton(); solveDalton(); sync();
   });
   g('glPtot').addEventListener('input', solveDalton);
   g('glPtotu').addEventListener('change', solveDalton);

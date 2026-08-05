@@ -6,6 +6,7 @@
 
 import { parseEquation, balanceCheck } from '../chem/formula.js';
 import { esc } from '../format.js';
+import { readState, writeState, readJSON } from '../share.js';
 
 const EXAMPLES = [
   { label: "Al + Cl₂", eq: "2 Al + 3 Cl2 -> 2 AlCl3", amts: ["5.4", "12.0"], actual: "" },
@@ -99,18 +100,18 @@ export function init() {
     inputsEl.querySelectorAll('.st-amt').forEach(function (el) {
       el.addEventListener('input', function () {
         amounts[+el.dataset.i].value = el.value;
-        solve();
+        solve(); sync();
       });
     });
     inputsEl.querySelectorAll('.st-unit').forEach(function (el) {
       el.addEventListener('change', function () {
         amounts[+el.dataset.i].unit = el.value;
-        solve();
+        solve(); sync();
       });
     });
     document.getElementById('stProduct').addEventListener('change', function (e) {
       productIdx = +e.target.value;
-      solve();
+      solve(); sync();
     });
   }
 
@@ -248,8 +249,18 @@ export function init() {
     outEl.innerHTML = h;
   }
 
-  eqInput.addEventListener('input', readEquation);
-  actualEl.addEventListener('input', solve);
+  /* Mirror the whole setup into the URL so the link reproduces the problem. */
+  function sync() {
+    writeState('st', {
+      eq: eqInput.value.trim(),
+      a: JSON.stringify(amounts.map(function (a) { return [a.value, a.unit]; })),
+      p: productIdx || '',
+      y: actualEl.value.trim()
+    });
+  }
+
+  eqInput.addEventListener('input', function () { readEquation(); sync(); });
+  actualEl.addEventListener('input', function () { solve(); sync(); });
   exSel.addEventListener('change', function () {
     const e = EXAMPLES[exSel.value];
     if (!e) return;
@@ -258,11 +269,23 @@ export function init() {
     actualEl.value = e.actual;
     productIdx = 0;
     readEquation();
+    sync();
     exSel.value = '';
   });
 
-  /* Open on a worked example so the tool explains itself. */
-  eqInput.value = EXAMPLES[0].eq;
-  amounts = EXAMPLES[0].amts.map(function (v) { return { value: v, unit: 'g' }; });
+  /* A shared link wins over the default example; otherwise open on the
+     example so the tool explains itself. */
+  const saved = readState('st');
+  if (saved.eq) {
+    eqInput.value = saved.eq;
+    amounts = readJSON(saved, 'a', []).map(function (a) {
+      return { value: String(a[0] == null ? '' : a[0]), unit: a[1] === 'mol' ? 'mol' : 'g' };
+    });
+    productIdx = Math.max(0, parseInt(saved.p, 10) || 0);
+    actualEl.value = saved.y || '';
+  } else {
+    eqInput.value = EXAMPLES[0].eq;
+    amounts = EXAMPLES[0].amts.map(function (v) { return { value: v, unit: 'g' }; });
+  }
   readEquation();
 }

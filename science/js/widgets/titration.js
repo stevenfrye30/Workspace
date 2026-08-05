@@ -13,6 +13,7 @@
 import { curve, keyPoints, equivalenceVolume, pHat } from '../chem/titration.js';
 import { KA, KB, INDICATORS } from '../data/chem-tables.js';
 import { esc } from '../format.js';
+import { readState, writeState } from '../share.js';
 
 /* Curve colour: the room accent snapped into the dark-mode lightness band
    (the raw accent sits at L 0.683, just above the 0.67 ceiling). Validated
@@ -85,25 +86,49 @@ export function init() {
   const out = g('tiOut');
   let view = 'both';
 
+  /* Mirror the setup — including which view is open — into the URL. */
+  function sync() {
+    writeState('ti', {
+      s: g('tiSys').value,
+      ca: g('tiCa').value, va: g('tiVa').value, cb: g('tiCb').value,
+      ka: g('tiKa').value, kb: g('tiKb').value,
+      v: view === 'both' ? '' : view
+    });
+  }
+
   root.querySelectorAll('.ti-views .u-tab').forEach(function (b) {
     b.addEventListener('click', function () {
       root.querySelectorAll('.ti-views .u-tab').forEach(function (x) { x.classList.remove('on'); });
       b.classList.add('on');
       view = b.getAttribute('data-view');
-      render();
+      render(); sync();
     });
   });
 
   g('tiKaPick').addEventListener('change', function () {
-    if (this.value) { g('tiKa').value = this.value; this.value = ''; render(); }
+    if (this.value) { g('tiKa').value = this.value; this.value = ''; render(); sync(); }
   });
   g('tiKbPick').addEventListener('change', function () {
-    if (this.value) { g('tiKb').value = this.value; this.value = ''; render(); }
+    if (this.value) { g('tiKb').value = this.value; this.value = ''; render(); sync(); }
   });
   ['tiSys', 'tiCa', 'tiVa', 'tiCb', 'tiKa', 'tiKb'].forEach(function (id) {
-    g(id).addEventListener('input', render);
-    g(id).addEventListener('change', render);
+    g(id).addEventListener('input', function () { render(); sync(); });
+    g(id).addEventListener('change', function () { render(); sync(); });
   });
+
+  /* Restore a shared setup before the first render. */
+  const saved = readState('ti');
+  if (saved.s && ['strong', 'weak', 'weakbase'].indexOf(saved.s) >= 0) g('tiSys').value = saved.s;
+  ['ca:tiCa', 'va:tiVa', 'cb:tiCb', 'ka:tiKa', 'kb:tiKb'].forEach(function (pair) {
+    const p = pair.split(':');
+    if (saved[p[0]] !== undefined && saved[p[0]] !== '') g(p[1]).value = saved[p[0]];
+  });
+  if (saved.v === 'curve' || saved.v === 'table') {
+    view = saved.v;
+    root.querySelectorAll('.ti-views .u-tab').forEach(function (x) {
+      x.classList.toggle('on', x.getAttribute('data-view') === view);
+    });
+  }
 
   function readParams() {
     const sys = g('tiSys').value;

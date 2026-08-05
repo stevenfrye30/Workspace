@@ -1,4 +1,5 @@
 import { CATS, CATDESC, ELEMENTS, REL, ANOMALOUS_CONFIG } from '../data/elements.js';
+import { readState, writeState } from '../share.js';
 
 function sup(n) { var m = { "0":"⁰","1":"¹","2":"²","3":"³","4":"⁴","5":"⁵","6":"⁶","7":"⁷","8":"⁸","9":"⁹" }; return String(n).split("").map(function (d) { return m[d] || d; }).join(""); }
 
@@ -74,6 +75,11 @@ export function init() {
   var count = document.getElementById("ptCount");
   if (!grid || !detail) return;
   var byZ = {}, tileByZ = {}, activeCat = null;
+  var saved = readState('pt');
+  var selectedZ = 6;
+  function sync() {
+    writeState('pt', { z: selectedZ === 6 ? '' : selectedZ, q: search.value.trim(), cat: activeCat || '' });
+  }
 
   // legend
   Object.keys(CATS).forEach(function (code) {
@@ -83,6 +89,7 @@ export function init() {
     b.innerHTML = '<span class="sw" style="background:' + c.color + '"></span>' + c.label;
     b.addEventListener("click", function () {
       activeCat = (activeCat === code) ? null : code;
+      sync();
       Array.prototype.forEach.call(legend.children, function (ch) {
         ch.classList.toggle("off", activeCat && ch.getAttribute("data-cat") !== activeCat);
       });
@@ -113,6 +120,7 @@ export function init() {
 
   function selectEl(z) {
     var el = byZ[z]; if (!el) return;
+    selectedZ = z;
     var cat = CATS[el.c];
     detail.style.setProperty("--cat", cat.color);
     var r = REL[z] || {};
@@ -137,6 +145,7 @@ export function init() {
       '<div class="d-rel" style="margin-top:0.6rem;opacity:0.8;">↳ Explore in the Chemistry, Biochemistry, and Physics rooms below.</div>';
     Object.keys(tileByZ).forEach(function (k) { tileByZ[k].classList.remove("sel"); });
     tileByZ[z].classList.add("sel");
+    sync();
   }
 
   function applyFilter() {
@@ -154,6 +163,7 @@ export function init() {
 
   search.addEventListener("input", function () {
     applyFilter();
+    sync();
     var q = search.value.trim().toLowerCase();
     if (!q) return;
     var matches = ELEMENTS.filter(function (el) {
@@ -174,6 +184,15 @@ export function init() {
     applyFilter(); search.focus();
   });
 
+  /* A shared link can preselect an element, a search and a category. */
+  if (saved.q) search.value = saved.q;
+  if (saved.cat && CATS[saved.cat]) {
+    activeCat = saved.cat;
+    Array.prototype.forEach.call(legend.children, function (ch) {
+      ch.classList.toggle("off", ch.getAttribute("data-cat") !== activeCat);
+    });
+  }
   applyFilter();
-  selectEl(6); // default: carbon, the center of organic life
+  var startZ = parseInt(saved.z, 10);
+  selectEl(byZ[startZ] ? startZ : 6);  // default: carbon, the centre of organic life
 }

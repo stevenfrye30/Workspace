@@ -221,6 +221,13 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .st-ans { color: var(--c); font-size: 1.02rem; }
 .st-flag { color: var(--muted); font-style: italic; }
 
+/* ── Share bar: hand the worked problem to a student ───────── */
+.share-bar { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0 0 1.3rem; }
+.share-btn { white-space: nowrap; }
+.share-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.76rem; color: var(--muted); }
+.share-note.ok { color: #7fd6a0; }
+@media print { .share-bar { display: none; } }
+
 /* ── Hub: big topic buttons instead of one long scroll ─────── */
 .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0.7rem; }
 .hub-card {
