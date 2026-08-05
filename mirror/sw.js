@@ -22,8 +22,8 @@
  * worse than an honest failure to reach it.
  */
 
-const CACHE = 'mirror-shell-v2';
-const SHELL = ['./dashboard.html', './manifest.webmanifest'];
+const CACHE = 'mirror-shell-v3';
+const SHELL = ['./', './index.html', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -64,7 +64,7 @@ self.addEventListener('fetch', (event) => {
           }
           return res;
         })
-        .catch(() => caches.match(req).then((hit) => hit || caches.match('./dashboard.html')))
+        .catch(() => caches.match(req).then((hit) => hit || caches.match('./index.html') || caches.match('./')))
     );
     return;
   }
