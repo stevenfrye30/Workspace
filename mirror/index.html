@@ -204,6 +204,46 @@
 
   #drinkLabelRow { margin-bottom: 8px; }
 
+  /* The recent-type chip rows fill in as you use the app, which would make
+     these two cards jump the first time you log a new food or activity.
+     Reserve the row so the instruments hold still. */
+  #exChips, #foodChips { min-height: 32px; align-content: flex-start; }
+  body.dense #exChips, body.dense #foodChips { min-height: 29px; }
+
+  /* ---------- the pending readout ----------
+     Always present, even at zero, so the card never changes height as you
+     tap — the whole point of the instruments staying still. */
+  .pending {
+    display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;
+    padding: 6px 10px; border-radius: 9px; min-height: 40px;
+    background: var(--panel); border: 1px dashed color-mix(in srgb, var(--c) 35%, transparent);
+  }
+  .pending .pv {
+    font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums;
+    color: var(--c); line-height: 1.1;
+  }
+  .pending.zero .pv { color: var(--dim); opacity: .4; font-weight: 400; }
+  .pending .pu { font-size: .68rem; color: var(--dim); }
+  .pending .pclear {
+    margin-left: auto; background: none; border: 0; cursor: pointer;
+    color: var(--dim); font: inherit; font-size: .85rem; padding: 2px 4px; visibility: hidden;
+  }
+  .pending:not(.zero) .pclear { visibility: visible; }
+  .pending .pclear:hover { color: var(--warn); }
+  body.dense .pending { min-height: 34px; padding: 4px 9px; margin-bottom: 6px; }
+  body.dense .pending .pv { font-size: 1.3rem; }
+
+  .quick button.enter {
+    background: var(--c); color: #fff; border-color: var(--c);
+  }
+  body.theme-dark .quick button.enter { color: #1c1e24; }
+  .quick button.enter[disabled] {
+    background: var(--panel2); color: var(--dim);
+    border-color: var(--line); cursor: default; opacity: .6;
+  }
+  .icon-btn[disabled] { opacity: .35; cursor: default; }
+  .icon-btn[disabled]:hover { color: var(--dim); border-color: var(--line); }
+
   /* ---------- food ---------- */
   .totals { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400; font-variant-numeric: tabular-nums; }
   .totals b { color: var(--ink); font-weight: 600; }
@@ -373,6 +413,15 @@
   .pop h3 { font-size: .95rem; margin-bottom: 10px; }
   .pop .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 
+  .toast {
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) translateY(12px); z-index: 60;
+    background: var(--ink); color: var(--bg); font-size: .8rem;
+    padding: 9px 16px; border-radius: 999px; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
   .foot { text-align: center; color: var(--dim); font-size: .72rem; padding: 18px 0 4px; }
   .foot a { color: var(--dim); }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -383,6 +432,7 @@
 <div class="top">
   <h1>Mirror</h1>
   <span class="spacer"></span>
+  <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶ Undo</button>
   <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
   <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
   <button class="icon-btn" id="backupBtn" title="Download a copy of all your data">Back up</button>
@@ -420,12 +470,10 @@
     <div class="field"><button class="primary" id="pSave">Save</button></div>
   </div>
 
-  <!-- Drinks — one box, four tabs. The box takes the active tab's colour so
-       what you're logging is obvious at a glance, and each tab carries its own
-       four quick amounts, so a drink is always exactly one tap. Storage is
-       unchanged: water -> body.water, coffee/other -> body.drinks, and alcohol
-       stays in body.substances because standard drinks, not ounces, are what
-       you'd ever want back from it. -->
+  <!-- Drinks — one box, four tabs, and an adding machine. The amount buttons
+       accumulate into a pending total that Enter commits to the tracker, which
+       is why three buttons are enough: +8 +8 is 16, +2 +2 is 4. Nothing about
+       this card's shape changes as you log — the entries land below. -->
   <div class="card boxed" id="drinksCard">
     <h2><span id="drinksName">Drinks</span> <span class="note" id="drinksTotal"></span></h2>
     <div class="tabs" id="drinkTabs"></div>
@@ -433,17 +481,22 @@
       <div class="chips" id="drinkRecent" style="margin-bottom:7px"></div>
       <input type="text" id="drinkLabel" placeholder="what was it? — tea, juice, soda">
     </div>
+    <div class="pending" id="drinkPending">
+      <span class="pv" id="drinkPendingVal">0</span><span class="pu">oz</span>
+      <button class="pclear" id="drinkClear" title="Clear">✕</button>
+    </div>
     <div class="quick" id="drinkQuick"></div>
-    <div class="list" id="drinkLog"></div>
   </div>
 
-  <!-- Substances — the non-food, non-drink side. No natural quick amounts, so
-       one tap logs one, and + opens a note for anything worth the detail. -->
+  <!-- Substances — same instrument, counting rather than measuring. -->
   <div class="card boxed" id="subsCard">
     <h2><span id="subsName">Substances</span> <span class="note" id="subsTotal"></span></h2>
     <div class="tabs" id="subTabs"></div>
+    <div class="pending" id="subPending">
+      <span class="pv" id="subPendingVal">0</span><span class="pu" id="subPendingUnit"></span>
+      <button class="pclear" id="subClear" title="Clear">✕</button>
+    </div>
     <div class="quick" id="subQuick"></div>
-    <div class="list" id="subLog"></div>
   </div>
 
   <div class="card">
@@ -462,7 +515,6 @@
         <button class="primary" id="exAdd">Log</button>
       </div>
     </details>
-    <div class="list" id="exList"></div>
   </div>
 
   <!-- The speed path is the chip row: the things you actually eat, one tap.
@@ -483,20 +535,21 @@
         <span class="foodstatus" id="foodStatus"></span>
       </div>
     </details>
-    <div class="list" id="foodLog"></div>
   </div>
 
   <div class="card">
     <h2>Symptoms</h2>
     <div class="chips"><button class="chip ghost" id="symAdd">＋ Note a symptom</button></div>
-    <div class="list" id="symList"></div>
   </div>
 
 </div>
 
-<!-- ============ YOUR DAY ============ -->
+<!-- ============ THE TRACKER ============ -->
+<!-- Every instrument above empties into here, in the order you entered things
+     — by entry time, not clock time, so a backdated entry doesn't jump the
+     queue. This is the only part of the page that grows. -->
 <div class="card">
-  <h2>Your day <span class="note tiny" id="feedDate"></span></h2>
+  <h2>Tracker <span class="note tiny" id="feedDate"></span></h2>
   <div class="feed" id="feed"></div>
 </div>
 
@@ -590,6 +643,7 @@
 
 <div class="pop-back" id="popBack"></div>
 <div class="pop" id="pop" style="display:none"></div>
+<div class="toast" id="toast"></div>
 
 <script>
 /* =============================================================
@@ -709,12 +763,68 @@ function saveState() {
     alert('Could not save — this browser is out of storage space, or is in private mode.');
   }
 }
-/** Remove a record and leave a tombstone, so a future sync can't resurrect it. */
-function dropRecord(arr, id) {
+/* =============================================================
+   UNDO — a stack of inverse operations, not state snapshots.
+
+   The state tree runs to megabytes after a few years, and copying all of
+   it on every tap so a sip of water is undoable would be absurd. Each
+   entry instead knows only how to put back the one thing it changed.
+   ============================================================= */
+const undoStack = [];
+const UNDO_MAX = 25;
+
+function pushUndo(label, revert) {
+  undoStack.push({ label, revert });
+  if (undoStack.length > UNDO_MAX) undoStack.shift();
+  refreshUndo();
+}
+function refreshUndo() {
+  const b = $('undoBtn');
+  if (!b) return;
+  const top = undoStack[undoStack.length - 1];
+  b.disabled = !top;
+  b.title = top ? 'Undo ' + top.label : 'Nothing to undo';
+}
+function doUndo() {
+  const top = undoStack.pop();
+  if (!top) return;
+  top.revert();
+  saveState();
+  refreshUndo();
+  renderAll();
+  toast('Undid ' + top.label);
+}
+/** Append a record and make it undoable in one move. */
+function appendRec(arr, rec, label) {
+  arr.push(rec);
+  pushUndo(label, () => {
+    const i = arr.findIndex((r) => r.id === rec.id);
+    if (i >= 0) arr.splice(i, 1);
+  });
+  return rec;
+}
+
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+}
+
+/** Remove a record, leave a tombstone so a future sync can't resurrect it,
+ *  and keep enough to put it back exactly where it was. */
+function dropRecord(arr, id, label) {
   const i = arr.findIndex((r) => r.id === id);
   if (i < 0) return;
-  arr.splice(i, 1);
+  const [rec] = arr.splice(i, 1);
   state._deleted.push({ id, at: nowISO() });
+  pushUndo('removing ' + (label || 'an entry'), () => {
+    arr.splice(i, 0, rec);
+    const j = state._deleted.findIndex((t) => t.id === id);
+    if (j >= 0) state._deleted.splice(j, 1);
+  });
 }
 
 /* ---------- selected day ---------- */
@@ -858,18 +968,20 @@ function writeSleep() {
 }
 
 /* =============================================================
-   DRINKS + SUBSTANCES — two tabbed boxes over three stores.
+   DRINKS + SUBSTANCES — two tabbed instruments over three stores.
+
+   Each is an adding machine: the amount buttons accumulate into a pending
+   figure, and Enter commits it to the tracker below. That is what makes
+   three buttons enough — +8 +8 is 16, +2 +2 is 4 — and it means the card
+   itself never changes shape as you log, because the entries land in the
+   tracker rather than piling up here.
 
    The UI groups by what a thing IS; storage stays exactly where it was, so
    no history has to move:
      water            -> body.water[]       { oz }
      coffee / other   -> body.drinks[]      { kind, label, oz, count }
-     alcohol          -> body.substances[]  { kind, count, unit, oz }
+     alcohol          -> body.substances[]  { kind, count, oz }
      weed / nicotine  -> body.substances[]  { kind, count, note }
-
-   Alcohol shows among the drinks because that is what it is, but it stays
-   stored as a standard-drink count — a 12 oz beer and a 1.5 oz shot are one
-   drink each, and that equivalence is the whole point of the measure.
    ============================================================= */
 const KINDS = {
   water:    { name: 'Water',    icon: '💧', c: 'water',    store: 'water' },
@@ -879,23 +991,16 @@ const KINDS = {
   weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
   nicotine: { name: 'Nicotine', icon: '🚬', c: 'nicotine', store: 'substances' },
 };
-const intakeMeta = (k) => KINDS[k];          // the day-feed reads its icons from here
+const intakeMeta = (k) => KINDS[k];          // the tracker reads its icons from here
 const DRINK_TABS = ['water', 'coffee', 'alcohol', 'other'];
 const SUB_TABS   = ['weed', 'nicotine'];
-
-/* Four one-tap amounts per drink tab. Substances have no natural amount, so
-   one tap logs one and the second button opens a note. */
-const QUICK = {
-  water:    [{ l: '8', oz: 8 }, { l: '12', oz: 12 }, { l: '16', oz: 16 }, { l: '24', oz: 24 }],
-  coffee:   [{ l: '4', oz: 4 }, { l: '8', oz: 8 }, { l: '12', oz: 12 }, { l: '16', oz: 16 }],
-  alcohol:  [{ l: 'Beer', oz: 12 }, { l: 'Wine', oz: 5 }, { l: 'Shot', oz: 1.5 }, { l: 'Drink', oz: null }],
-  other:    [{ l: '8', oz: 8 }, { l: '12', oz: 12 }, { l: '16', oz: 16 }, { l: '24', oz: 24 }],
-  weed:     [{ l: '+1', n: 1 }, { l: '＋ detail…', ask: true }],
-  nicotine: [{ l: '+1', n: 1 }, { l: '＋ detail…', ask: true }],
-};
+const DRINK_STEPS = [2, 8, 16];              // ounces; compose to anything useful
+const SUB_STEPS   = [1];
 
 let drinkTab = 'water';
 let subTab = 'weed';
+let drinkPending = 0;
+let subPending = 0;
 
 function arrOf(kind) {
   const s = KINDS[kind].store;
@@ -904,16 +1009,23 @@ function arrOf(kind) {
 function entriesOf(kind) {
   return kind === 'water' ? onDay(state.body.water) : onDay(arrOf(kind)).filter((r) => r.kind === kind);
 }
-/** The headline number for a kind, in the unit that kind is actually about. */
+/** The day's headline number for a kind, in the unit that kind is about. */
 function totalOf(kind) {
   const rows = entriesOf(kind);
-  if (kind === 'water' || kind === 'other') {
+  if (KINDS[kind].store === 'water' || kind === 'coffee' || kind === 'other' || kind === 'alcohol') {
     return { n: rows.reduce((a, r) => a + (Number(r.oz) || 0), 0), unit: 'oz' };
   }
-  const n = rows.reduce((a, r) => a + (Number(r.count) || 1), 0);
-  if (kind === 'coffee')  return { n, unit: n === 1 ? 'cup' : 'cups' };
-  if (kind === 'alcohol') return { n, unit: n === 1 ? 'drink' : 'drinks' };
-  return { n, unit: '' };
+  return { n: rows.reduce((a, r) => a + (Number(r.count) || 1), 0), unit: '' };
+}
+/** How an entry reads in the tracker and in an undo message. */
+function describeIntake(kind, rec) {
+  if (kind === 'water') return round1(rec.oz) + ' oz water';
+  const bits = [];
+  if (rec.oz) bits.push(round1(rec.oz) + ' oz');
+  else if (rec.count > 1) bits.push('×' + rec.count);
+  bits.push(rec.label && rec.label !== KINDS[kind].name ? rec.label : KINDS[kind].name.toLowerCase());
+  if (rec.note) bits.push('· ' + rec.note);
+  return bits.join(' ');
 }
 
 function addIntake(kind, opts) {
@@ -921,23 +1033,21 @@ function addIntake(kind, opts) {
   const rec = stamp({ id: uid(), date: day, t: stampTime() });
   if (kind === 'water') {
     rec.oz = opts.oz;
-    state.body.water.push(rec);
   } else if (m.store === 'drinks') {
     rec.kind = kind; rec.count = 1;
     if (opts.oz != null) rec.oz = opts.oz;
     rec.label = opts.label || m.name;
-    state.body.drinks.push(rec);
   } else {
     rec.kind = kind; rec.count = Number(opts.count) || 1;
     if (opts.oz != null) rec.oz = opts.oz;
-    if (opts.unit) rec.unit = opts.unit;
     if (opts.note) rec.note = opts.note;
-    state.body.substances.push(rec);
   }
+  appendRec(arrOf(kind), rec, describeIntake(kind, rec));
   saveState();
   renderDrinks(); renderSubs();
   renderFoodTotals(onDay(state.body.food));   // the macro bar carries the day's water
   renderFeed();
+  toast('Logged ' + describeIntake(kind, rec));
 }
 
 function renderTabs(el, kinds, active, onPick) {
@@ -952,29 +1062,6 @@ function renderTabs(el, kinds, active, onPick) {
     b.innerHTML = m.icon + ' ' + esc(m.name) + (t.n ? '<span class="n">' + round1(t.n) + '</span>' : '');
     b.onclick = () => onPick(k);
     el.appendChild(b);
-  });
-}
-
-/** Today's entries for one kind, each with an undo. */
-function renderKindLog(el, kind) {
-  const rows = entriesOf(kind);
-  el.innerHTML = '';
-  if (!rows.length) { el.innerHTML = '<div class="empty">Nothing yet for ' + fmtDay(day) + '.</div>'; return; }
-  rows.slice().reverse().forEach((r) => {
-    const div = document.createElement('div'); div.className = 'row';
-    const what = kind === 'water'
-      ? round1(r.oz) + ' oz'
-      : ([r.label && r.label !== KINDS[kind].name ? r.label : null,
-          r.unit, r.note, r.oz ? round1(r.oz) + ' oz' : null].filter(Boolean).join(' · ')
-         || (r.count > 1 ? '×' + r.count : KINDS[kind].name));
-    div.innerHTML = '<span class="tiny">' + esc(r.t || '') + '</span><span>' + esc(what) + '</span>';
-    const x = document.createElement('button');
-    x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
-    x.onclick = () => {
-      dropRecord(arrOf(kind), r.id); saveState();
-      renderDrinks(); renderSubs(); renderFoodTotals(onDay(state.body.food)); renderFeed();
-    };
-    div.appendChild(x); el.appendChild(div);
   });
 }
 
@@ -993,32 +1080,48 @@ function renderDrinkRecent() {
   });
 }
 
+/** Build one instrument's step buttons plus its Enter key. */
+function renderSteps(el, steps, pending, onStep, onEnter, unit) {
+  el.innerHTML = '';
+  steps.forEach((n) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = '+' + n + (unit ? '<span class="u">' + unit + '</span>' : '');
+    b.onclick = () => onStep(n);
+    el.appendChild(b);
+  });
+  const e = document.createElement('button');
+  e.type = 'button'; e.className = 'enter'; e.textContent = 'Enter';
+  e.disabled = !pending;
+  e.onclick = onEnter;
+  el.appendChild(e);
+}
+
 function renderDrinks() {
   const m = KINDS[drinkTab];
   $('drinksCard').style.setProperty('--c', 'var(--' + m.c + ')');
   $('drinksName').textContent = m.name;
   const t = totalOf(drinkTab);
-  $('drinksTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
-  renderTabs($('drinkTabs'), DRINK_TABS, drinkTab, (k) => { drinkTab = k; renderDrinks(); });
+  $('drinksTotal').textContent = t.n ? round1(t.n) + ' ' + t.unit : '';
+  renderTabs($('drinkTabs'), DRINK_TABS, drinkTab, (k) => {
+    drinkTab = k; drinkPending = 0; renderDrinks();
+  });
 
   $('drinkLabelRow').hidden = drinkTab !== 'other';
   if (drinkTab === 'other') renderDrinkRecent();
 
-  const q = $('drinkQuick'); q.innerHTML = '';
-  QUICK[drinkTab].forEach((p) => {
-    const b = document.createElement('button'); b.type = 'button';
-    const isAmount = /^[0-9]/.test(p.l);
-    b.innerHTML = isAmount ? '+' + p.l + '<span class="u">oz</span>' : esc(p.l);
-    b.onclick = () => {
-      const opts = { oz: p.oz };
-      if (drinkTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
-      if (drinkTab === 'alcohol') opts.unit = p.l;
-      addIntake(drinkTab, opts);
-      if (drinkTab === 'other') $('drinkLabel').value = '';
-    };
-    q.appendChild(b);
-  });
-  renderKindLog($('drinkLog'), drinkTab);
+  $('drinkPending').classList.toggle('zero', !drinkPending);
+  $('drinkPendingVal').textContent = round1(drinkPending);
+  renderSteps($('drinkQuick'), DRINK_STEPS, drinkPending,
+    (n) => { drinkPending += n; renderDrinks(); }, commitDrink, 'oz');
+}
+function commitDrink() {
+  if (!drinkPending) return;
+  const opts = { oz: drinkPending };
+  if (drinkTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
+  drinkPending = 0;
+  addIntake(drinkTab, opts);
+  if (drinkTab === 'other') $('drinkLabel').value = '';
 }
 
 function renderSubs() {
@@ -1027,24 +1130,31 @@ function renderSubs() {
   $('subsName').textContent = m.name;
   const t = totalOf(subTab);
   $('subsTotal').textContent = t.n ? String(round1(t.n)) : '';
-  renderTabs($('subTabs'), SUB_TABS, subTab, (k) => { subTab = k; renderSubs(); });
+  renderTabs($('subTabs'), SUB_TABS, subTab, (k) => { subTab = k; subPending = 0; renderSubs(); });
 
-  const q = $('subQuick'); q.innerHTML = '';
-  QUICK[subTab].forEach((p) => {
-    const b = document.createElement('button'); b.type = 'button';
-    b.textContent = p.l;
-    b.onclick = () => {
-      if (!p.ask) { addIntake(subTab, { count: p.n }); return; }
-      openForm(m.name, [
-        { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
-        { key: 'note', label: 'Note (optional)', placeholder: 'strain, brand, context…' },
-      ], { count: '1' }, (v) => {
-        addIntake(subTab, { count: Number(v.count) || 1, note: v.note });
-      }, 'Log');
-    };
-    q.appendChild(b);
-  });
-  renderKindLog($('subLog'), subTab);
+  $('subPending').classList.toggle('zero', !subPending);
+  $('subPendingVal').textContent = String(subPending);
+  $('subPendingUnit').textContent = subPending === 1 ? 'time' : 'times';
+  renderSteps($('subQuick'), SUB_STEPS, subPending,
+    (n) => { subPending += n; renderSubs(); }, commitSub, '');
+
+  // A note belongs with the substance, not the amount, so it gets its own way in.
+  const note = document.createElement('button');
+  note.type = 'button'; note.textContent = '＋ note';
+  note.onclick = () => openForm(m.name, [
+    { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
+    { key: 'note', label: 'Note', placeholder: 'strain, brand, context…' },
+  ], { count: String(subPending || 1) }, (v) => {
+    subPending = 0;
+    addIntake(subTab, { count: Number(v.count) || 1, note: v.note });
+  }, 'Log');
+  $('subQuick').appendChild(note);
+}
+function commitSub() {
+  if (!subPending) return;
+  const n = subPending;
+  subPending = 0;
+  addIntake(subTab, { count: n });
 }
 
 /* =============================================================
@@ -1161,12 +1271,14 @@ function quickLog(foodId, fallbackName) {
   logFood(foodId, f.name, p ? p.grams : 100, p ? p.label : null);
 }
 function logFood(foodId, foodName, grams, portionLabel) {
-  state.body.food.push(stamp({
+  const rec = stamp({
     id: uid(), date: day, foodId, foodName,
     grams: Math.round(grams * 10) / 10,
     portion: portionLabel || '', t: stampTime(),
-  }));
+  });
+  appendRec(state.body.food, rec, shortName(foodName, 24));
   saveState(); renderFoodChips(); renderFoodLog(); renderFeed();
+  toast('Logged ' + shortName(foodName, 24));
 }
 
 /* ---- search ---- */
@@ -1269,28 +1381,9 @@ function openPortion(foodId, foodName) {
     }, 'Log');
 }
 
-/* ---- the day's log + totals ---- */
-function renderFoodLog() {
-  const rows = onDay(state.body.food);
-  const list = $('foodLog'); list.innerHTML = '';
-  if (!rows.length) {
-    list.innerHTML = '<div class="empty">Nothing logged for ' + fmtDay(day) + '.</div>';
-  } else {
-    rows.slice().reverse().forEach((e) => {
-      const div = document.createElement('div'); div.className = 'foodrow';
-      const kc = kcalOf(e);
-      div.title = e.foodName;
-      div.innerHTML = '<span class="nm">' + esc(shortName(e.foodName, 99)) + '</span>' +
-        '<span class="g">' + esc(e.portion || (round1(e.grams) + ' g')) + '</span>' +
-        '<span class="kc">' + (kc == null ? '—' : Math.round(kc) + ' kcal') + '</span>';
-      const x = document.createElement('button');
-      x.className = 'x'; x.type = 'button'; x.textContent = '✕';
-      x.onclick = () => { dropRecord(state.body.food, e.id); saveState(); renderFoodLog(); renderFeed(); };
-      div.appendChild(x); list.appendChild(div);
-    });
-  }
-  renderFoodTotals(rows);
-}
+/* The day's food lives in the tracker now, not here — this card keeps only
+   the running totals, which are a fixed shape whatever you've eaten. */
+function renderFoodLog() { renderFoodTotals(onDay(state.body.food)); }
 function renderFoodTotals(rows) {
   const t = state.body.targets || {};
   let kcal = 0, protein = 0, unknown = 0;
@@ -1367,29 +1460,19 @@ function renderExercise() {
     b.onclick = () => { $('exType').value = t; $('exMin').focus(); };
     chips.appendChild(b);
   });
-  const list = $('exList'); list.innerHTML = '';
-  const rows = onDay(state.body.exercise);
-  if (!rows.length) { list.innerHTML = '<div class="empty">Nothing logged for ' + fmtDay(day) + '.</div>'; return; }
-  rows.slice().reverse().forEach((e) => {
-    const div = document.createElement('div'); div.className = 'row';
-    div.innerHTML = '<span>' + esc(e.type) + '</span><span class="tiny">' +
-      (e.minutes ? esc(e.minutes) + ' min' : '') + '</span>';
-    const x = document.createElement('button');
-    x.className = 'x'; x.type = 'button'; x.textContent = '✕';
-    x.onclick = () => { dropRecord(state.body.exercise, e.id); saveState(); renderExercise(); renderFeed(); };
-    div.appendChild(x); list.appendChild(div);
-  });
 }
 function addExercise() {
   const type = $('exType').value.trim();
   if (!type) { $('exType').focus(); return; }
   const min = parseInt($('exMin').value, 10);
-  state.body.exercise.push(stamp({
+  const rec = stamp({
     id: uid(), date: day, type,
     minutes: isNaN(min) ? null : min, time: stampTime(),
-  }));
+  });
+  appendRec(state.body.exercise, rec, type + (rec.minutes ? ' · ' + rec.minutes + ' min' : ''));
   $('exType').value = ''; $('exMin').value = '';
   saveState(); renderExercise(); renderFeed();
+  toast('Logged ' + type);
 }
 
 /* =============================================================
@@ -1407,8 +1490,15 @@ function renderHabits() {
     b.onclick = () => {
       h.done = h.done || [];
       const i = h.done.indexOf(day);
-      if (i < 0) h.done.push(day); else h.done.splice(i, 1);
-      stamp(h); saveState(); renderHabits(); renderFeed();
+      const adding = i < 0;
+      if (adding) h.done.push(day); else h.done.splice(i, 1);
+      stamp(h);
+      pushUndo((adding ? 'keeping ' : 'clearing ') + h.name, () => {
+        const j = h.done.indexOf(day);
+        if (adding && j >= 0) h.done.splice(j, 1);
+        else if (!adding && j < 0) h.done.push(day);
+      });
+      saveState(); renderHabits(); renderFeed();
     };
     wrap.appendChild(b);
   });
@@ -1428,62 +1518,61 @@ function renderHabits() {
 /* =============================================================
    SYMPTOMS — sparse, free text, high value.
    ============================================================= */
-function renderSymptoms() {
-  const list = $('symList'); list.innerHTML = '';
-  const rows = onDay(state.body.symptoms);
-  if (!rows.length) { list.innerHTML = '<div class="empty">None noted.</div>'; return; }
-  rows.slice().reverse().forEach((s) => {
-    const div = document.createElement('div'); div.className = 'row';
-    div.innerHTML = '<span>' + esc(s.note) + '</span>';
-    const x = document.createElement('button');
-    x.className = 'x'; x.type = 'button'; x.textContent = '✕';
-    x.onclick = () => { dropRecord(state.body.symptoms, s.id); saveState(); renderSymptoms(); renderFeed(); };
-    div.appendChild(x); list.appendChild(div);
-  });
-}
+function renderSymptoms() { /* symptoms live in the tracker; nothing to draw here */ }
 
 /* =============================================================
-   YOUR DAY — every kind of entry on one timeline. The payoff that
-   makes logging feel worth it.
+   THE TRACKER — every instrument empties into here.
+
+   Ordered by _at (when you entered it), not by t (the time of day it is
+   about). Those differ whenever you backdate, and "the order I put things
+   in" is the one that makes a running log make sense.
    ============================================================= */
 function renderFeed() {
   $('feedDate').textContent = fmtDay(day);
   const rows = [];
-  const push = (t, ic, tx, del) => rows.push({ t: t || '', ic, tx, del });
+  /* Sort on _up, not _at. For a logged entry they're the same, but a habit
+     record was created the day you defined the habit — ticking it today has
+     to place it where you tapped it, not months ago. Same for the pulse and
+     sleep rows, which upsert into one record per day. */
+  const push = (rec, ic, tx, del) => rows.push({
+    at: (rec && (rec._up || rec._at)) || '', t: (rec && (rec.t || rec.time)) || '', ic, tx, del,
+  });
 
   onDay(state.body.water).forEach((r) =>
-    push(r.t, '💧', round1(r.oz) + ' oz water', () => dropRecord(state.body.water, r.id)));
+    push(r, '💧', round1(r.oz) + ' oz water',
+      () => dropRecord(state.body.water, r.id, round1(r.oz) + ' oz water')));
   onDay(state.body.drinks).forEach((r) =>
-    push(r.t, intakeMeta(r.kind) ? intakeMeta(r.kind).icon : '🥤', r.label || r.kind,
-      () => dropRecord(state.body.drinks, r.id)));
-  onDay(state.body.substances).forEach((r) => {
-    const m = intakeMeta(r.kind);
-    push(r.t, m ? m.icon : '•', (m ? m.name : r.kind) + (r.count > 1 ? ' ×' + r.count : ''),
-      () => dropRecord(state.body.substances, r.id));
-  });
+    push(r, (intakeMeta(r.kind) || {}).icon || '🥤', describeIntake(r.kind, r),
+      () => dropRecord(state.body.drinks, r.id, describeIntake(r.kind, r))));
+  onDay(state.body.substances).forEach((r) =>
+    push(r, (intakeMeta(r.kind) || {}).icon || '•', describeIntake(r.kind, r),
+      () => dropRecord(state.body.substances, r.id, describeIntake(r.kind, r))));
   onDay(state.body.exercise).forEach((r) =>
-    push(r.time, '🏃', r.type + (r.minutes ? ' · ' + r.minutes + ' min' : ''),
-      () => dropRecord(state.body.exercise, r.id)));
-  onDay(state.body.food).forEach((r) =>
-    push(r.t, '🍽', (r.foodName || 'food') + (r.grams ? ' · ' + r.grams + ' g' : ''),
-      () => dropRecord(state.body.food, r.id)));
+    push(r, '🏃', r.type + (r.minutes ? ' · ' + r.minutes + ' min' : ''),
+      () => dropRecord(state.body.exercise, r.id, r.type)));
+  onDay(state.body.food).forEach((r) => {
+    const kc = kcalOf(r);
+    push(r, '🍽', shortName(r.foodName || 'food', 28) +
+      ' · ' + (r.portion || round1(r.grams) + ' g') + (kc == null ? '' : ' · ' + Math.round(kc) + ' kcal'),
+      () => dropRecord(state.body.food, r.id, r.foodName));
+  });
   onDay(state.body.symptoms).forEach((r) =>
-    push(r.t, '⚕', r.note, () => dropRecord(state.body.symptoms, r.id)));
+    push(r, '⚕', r.note, () => dropRecord(state.body.symptoms, r.id, r.note)));
 
   const s = sleepFor(day);
-  if (s) push('', '🌙', round1(s.hours) + ' h sleep' + (s.quality ? ' · quality ' + s.quality : ''), null);
+  if (s) push(s, '🌙', round1(s.hours) + ' h sleep' + (s.quality ? ' · quality ' + s.quality : ''), null);
   const c = card(day);
   if (c && (c.mood != null || c.energy != null)) {
     const bits = [];
     if (c.mood != null) bits.push('mood ' + c.mood);
     if (c.energy != null) bits.push('energy ' + c.energy);
-    push('', '◉', bits.join(' · '), null);
+    push(c, '◉', bits.join(' · '), null);
   }
   (state.habits.items || []).filter((h) => (h.done || []).includes(day))
-    .forEach((h) => push('', '✓', h.name, null));
+    .forEach((h) => push(h, '✓', h.name, null));
 
-  // Timed entries first in clock order; untimed summaries after.
-  rows.sort((a, b) => (a.t && b.t) ? a.t.localeCompare(b.t) : (a.t ? -1 : b.t ? 1 : 0));
+  // Oldest first: the log grows downward as the day does.
+  rows.sort((a, b) => String(a.at).localeCompare(String(b.at)) || String(a.t).localeCompare(String(b.t)));
 
   const feed = $('feed');
   feed.innerHTML = '';
@@ -1910,6 +1999,16 @@ $('themeBtn').onclick = () => {
 $('themeBtn').textContent = document.body.classList.contains('theme-dark') ? '☀' : '☾';
 
 $('backupBtn').onclick = backup;
+$('undoBtn').onclick = doUndo;
+$('drinkClear').onclick = () => { drinkPending = 0; renderDrinks(); };
+$('subClear').onclick = () => { subPending = 0; renderSubs(); };
+// Enter commits whichever instrument you're working in.
+$('drinksCard').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); commitDrink(); }
+});
+$('subsCard').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); commitSub(); }
+});
 $('dTodayBtn').onclick = () => setDay(todayStr());
 $('dYestBtn').onclick = () => setDay(shiftDay(todayStr(), -1));
 $('dPick').onchange = (e) => { if (e.target.value) setDay(e.target.value); };
@@ -1920,8 +2019,9 @@ $('symAdd').onclick = () => openPop('Note a symptom',
   '<input type="text" id="popSym" placeholder="headache, sore throat, nausea…">', () => {
     const note = $('popSym').value.trim();
     if (!note) return false;
-    state.body.symptoms.push(stamp({ id: uid(), date: day, note, t: stampTime() }));
-    saveState(); renderSymptoms(); renderFeed();
+    appendRec(state.body.symptoms, stamp({ id: uid(), date: day, note, t: stampTime() }), note);
+    saveState(); renderFeed();
+    toast('Noted');
   });
 $('customFoodBtn').onclick = () => { loadFoods(); openCustomFood(); };
 $('foodSearch').onfocus = () => loadFoods();
