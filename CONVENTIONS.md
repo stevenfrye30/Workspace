@@ -84,8 +84,12 @@ not appear on a public-facing index, sidebar, or sitemap.
   `build_soundmap.py`, `strip_soundmap.py` — build scripts,
   **all four now orphaned (do not run):**
   - `build_science.py` — source `projects/class notes` was removed;
-    `science/` is now a self-contained, hand-built rooms page
-    (`index.html` + `room.html`) with no generated-data dependency.
+    `science/` is now a self-contained, hand-built rooms page with no
+    generated-data dependency: `index.html` + `room.html` shells,
+    `css/{base,lab,room}.css`, and ES modules under `js/` — one content
+    file per room in `js/rooms/`, instruments in `js/widgets/`, shared
+    tables in `js/data/`. `js/rooms/_manifest.js` is the only list of
+    valid `?room=` keys; add a room there and in `js/rooms/`.
   - `build_phonetics.py` / `build_soundmap.py` / `strip_soundmap.py` —
     the IPA → Sound Map → phonetics pipeline; their `ipa/` and
     `sound-map/` sources are gone (sound-map retired to `_legacy/`).

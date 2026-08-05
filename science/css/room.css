@@ -1,0 +1,193 @@
+/* Science Lab room page (room.html). The accent --c is set at runtime from
+   the room's own colour, so every rule here tints itself to the room. */
+
+body {
+  background:
+    radial-gradient(ellipse 90% 50% at 50% -10%, color-mix(in srgb, var(--c) 14%, transparent), transparent 60%),
+    var(--bg);
+}
+
+.crumb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; font-weight: 600; margin: 0 0 1rem; }
+.crumb a { color: var(--c); text-decoration: none; }
+.crumb a:hover { text-decoration: underline; }
+.crumb .sep { color: var(--muted); margin: 0 0.4rem; }
+.crumb .here { color: var(--muted); }
+
+.r-head { position: relative; border-bottom: 1px solid var(--c); padding-bottom: 1rem; margin-bottom: 1.3rem; }
+.r-glyph { position: absolute; top: -0.2rem; right: 0; font-size: 3.2rem; opacity: 0.3; }
+.r-kicker { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.64rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--c); font-weight: 700; }
+.r-title { font-size: 2.2rem; font-weight: 600; margin: 0.15rem 0 0; padding-right: 4rem; }
+.r-blurb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.92rem; color: var(--muted); margin-top: 0.45rem; max-width: 50rem; line-height: 1.5; }
+.r-status { display: inline-flex; align-items: center; gap: 0.4rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--c);
+  background: color-mix(in srgb, var(--c) 12%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); border-radius: 999px; padding: 0.22rem 0.7rem; margin-top: 0.8rem; }
+.r-status .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c); }
+
+.callout { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.84rem; line-height: 1.5; color: var(--fg);
+  background: color-mix(in srgb, var(--c) 10%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+  border-left: 3px solid var(--c); border-radius: 3px; padding: 0.7rem 0.9rem; margin: 0 0 1.4rem; }
+.callout b { color: var(--c); }
+
+.block { margin-bottom: 1.7rem; }
+.block-head { margin-bottom: 0.7rem; }
+.block-head h2 { display: inline; font-size: 1.2rem; font-weight: 600; }
+.block-head .tag { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-left: 0.55rem; vertical-align: 0.15em; }
+.block-head p { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+.topic-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.topic { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--fg);
+  background: color-mix(in srgb, var(--c) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+  border-left: 3px solid var(--c); border-radius: 3px; padding: 0.32rem 0.65rem; }
+
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.7rem; }
+.card { background: linear-gradient(155deg, color-mix(in srgb, var(--c) 12%, var(--panel)), var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem 0.85rem 0.75rem; }
+.card .c-name { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.45rem; }
+.card .c-body { font-size: 1rem; line-height: 1.55; }
+.card .c-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.35; }
+
+/* Worked examples (click-to-expand) */
+.examples { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: 0.6rem; }
+details.ex { background: color-mix(in srgb, var(--c) 7%, var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.55rem 0.8rem 0.6rem; }
+details.ex > summary { cursor: pointer; list-style: none; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.84rem; font-weight: 600; color: var(--fg); display: flex; gap: 0.45rem; align-items: baseline; }
+details.ex > summary::-webkit-details-marker { display: none; }
+details.ex > summary::before { content: "+"; color: var(--c); font-weight: 700; }
+details.ex[open] > summary::before { content: "\2212"; }
+.ex-q { font-family: Georgia, serif; color: var(--fg); }
+.ex-steps { margin: 0.55rem 0 0; padding: 0; list-style: none; }
+.ex-steps li { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; color: var(--muted); line-height: 1.45; padding: 0.12rem 0 0.12rem 1.25rem; position: relative; }
+.ex-steps li::before { content: "\2192"; position: absolute; left: 0; color: var(--c); }
+.ex-ans { font-family: Georgia, serif; font-weight: 700; color: var(--fg); margin-top: 0.5rem; padding-top: 0.4rem; border-top: 1px dashed color-mix(in srgb, var(--c) 30%, transparent); }
+.ex-ans b { color: var(--c); }
+
+/* element card preview (periodic table) */
+.elcard { display: inline-flex; flex-direction: column; width: 5.4rem; padding: 0.5rem 0.6rem; border: 1px solid var(--c); border-radius: 4px; background: color-mix(in srgb, var(--c) 14%, var(--panel)); }
+.elcard .z { font-family: -apple-system, sans-serif; font-size: 0.62rem; color: var(--muted); }
+.elcard .sym { font-size: 1.9rem; font-weight: 700; line-height: 1; color: var(--c); }
+.elcard .nm { font-family: -apple-system, sans-serif; font-size: 0.66rem; color: var(--fg); margin-top: 0.15rem; }
+.elcard .ms { font-family: -apple-system, sans-serif; font-size: 0.6rem; color: var(--muted); }
+
+.links { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.6rem; }
+.lnk { position: relative; display: block; text-decoration: none; color: var(--fg);
+  background: color-mix(in srgb, var(--c) 7%, var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.6rem 0.75rem; }
+.lnk.live { transition: transform 0.12s, border-color 0.15s, background 0.2s; }
+.lnk.live:hover { transform: translateY(-1px); border-color: var(--c); background: color-mix(in srgb, var(--c) 14%, var(--panel)); }
+.lnk.soon { border-style: dashed; opacity: 0.85; }
+/* Reserve space for the absolutely-positioned badge so long names don't run under it. */
+.lnk .l-name { font-family: -apple-system, "Segoe UI", sans-serif; font-weight: 600; font-size: 0.9rem; padding-right: 4.6rem; }
+.lnk .l-desc { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.2rem; line-height: 1.3; }
+.lnk .l-badge { position: absolute; top: 0.5rem; right: 0.55rem; font-family: -apple-system, sans-serif; font-size: 0.52rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); border-radius: 999px; padding: 0.1rem 0.4rem; }
+
+.sci-notes { width: 100%; min-height: 150px; resize: vertical; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.85rem; line-height: 1.5;
+  color: var(--fg); background: color-mix(in srgb, var(--c) 6%, #1a2433); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem 0.8rem; outline: none; }
+.sci-notes:focus { border-color: var(--c); }
+.sci-notes.tall { min-height: 280px; }
+.notes-status { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; color: var(--muted); margin-top: 0.4rem; }
+
+/* ── Interactive periodic table (periodic-table room only) ───── */
+.pt-wrap { display: grid; grid-template-columns: minmax(0,1fr) 18rem; gap: 1rem; align-items: start; }
+.pt-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.7rem; }
+.pt-search { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.82rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; min-width: 12rem; outline: none; }
+.pt-search:focus { border-color: var(--c); }
+.pt-clear { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; }
+.pt-clear:hover { color: var(--fg); border-color: var(--c); }
+.pt-count { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); }
+
+.pt-scroll { overflow-x: auto; padding-bottom: 0.4rem; }
+.pt-grid { display: grid; grid-template-columns: repeat(18, minmax(2.35rem, 1fr)); gap: 2px; min-width: 46rem; }
+.pt-cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid color-mix(in srgb, var(--cat,#888) 55%, transparent);
+  background: color-mix(in srgb, var(--cat,#888) 20%, var(--panel)); border-radius: 2px; cursor: pointer; padding: 1px 0 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; text-align: center;
+  transition: transform 0.08s, box-shadow 0.12s, opacity 0.12s; }
+.pt-cell:hover, .pt-cell.sel { transform: translateY(-1px); box-shadow: 0 0 0 1px var(--cat,#fff), 0 4px 10px -4px var(--cat,#000); z-index: 2; }
+.pt-cell .z { font-family: -apple-system, sans-serif; font-size: 0.5rem; color: var(--muted); position: absolute; top: 1px; left: 2px; }
+.pt-cell .sym { font-family: Georgia, serif; font-weight: 700; font-size: 0.95rem; color: var(--fg); }
+.pt-cell .nm { font-family: -apple-system, sans-serif; font-size: 0.44rem; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-cell.dim { opacity: 0.16; }
+.pt-marker { grid-column: 3; display: flex; align-items: center; justify-content: center; font-family: -apple-system, sans-serif; font-size: 0.55rem; color: var(--muted); border: 1px dashed var(--border); border-radius: 2px; }
+
+.pt-legend { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.8rem 0; }
+.pt-leg { font-family: -apple-system, sans-serif; font-size: 0.6rem; font-weight: 600; color: var(--fg); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.15rem 0.45rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+.pt-leg .sw { width: 9px; height: 9px; border-radius: 2px; }
+.pt-leg.off { opacity: 0.38; }
+
+.pt-detail { background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--cat,var(--c)); border-radius: 4px; padding: 0.85rem 0.95rem; position: sticky; top: 0.6rem; }
+.pt-detail .d-top { display: flex; align-items: baseline; gap: 0.6rem; }
+.pt-detail .d-sym { font-family: Georgia, serif; font-weight: 700; font-size: 2.2rem; color: var(--cat,var(--c)); line-height: 1; }
+.pt-detail .d-z { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); }
+.pt-detail .d-name { font-size: 1.25rem; font-weight: 600; margin-top: 0.1rem; }
+.pt-detail .d-cat { font-family: -apple-system, sans-serif; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cat,var(--c)); margin-top: 0.15rem; }
+.pt-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.6rem; margin: 0.7rem 0 0; font-family: -apple-system, sans-serif; font-size: 0.76rem; }
+.pt-detail dt { color: var(--muted); }
+.pt-detail dd { color: var(--fg); }
+.pt-detail .d-desc { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--fg); line-height: 1.45; margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+.pt-detail .d-rel { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); line-height: 1.4; margin-top: 0.5rem; }
+.pt-detail .d-rel b { color: var(--cat,var(--c)); font-weight: 600; }
+
+@media (max-width: 760px) { .pt-wrap { grid-template-columns: 1fr; } .pt-detail { position: static; } }
+
+/* ── Master units table / converter (data-analysis room only) ─ */
+.u-tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.9rem; }
+.u-tab { font-family: -apple-system, sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--muted); cursor: pointer;
+  padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+.u-tab.on { color: #11161f; background: var(--c); border-color: var(--c); }
+.u-pane { display: none; }
+.u-pane.on { display: block; }
+.u-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.7rem; }
+.u-input, .u-select { font-family: -apple-system, sans-serif; font-size: 0.82rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; outline: none; }
+.u-input { width: 9rem; }
+.u-input:focus, .u-select:focus { border-color: var(--c); }
+.u-select { flex: 1; min-width: 9rem; }
+.u-search { width: 100%; font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.45rem 0.6rem; outline: none; margin-bottom: 0.7rem; }
+.u-search:focus { border-color: var(--c); }
+.u-scroll { max-height: 24rem; overflow: auto; border: 1px solid var(--border); border-radius: 4px; }
+table.u-table { width: 100%; border-collapse: collapse; font-family: -apple-system, sans-serif; font-size: 0.78rem; }
+table.u-table th { text-align: left; color: var(--muted); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--panel); }
+table.u-table td { padding: 0.32rem 0.6rem; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); color: var(--fg); }
+table.u-table tr:last-child td { border-bottom: none; }
+table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transparent); }
+.u-val { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; color: var(--c); text-align: right; white-space: nowrap; }
+.u-sym { font-family: ui-monospace, Menlo, monospace; color: var(--muted); }
+.u-table tr.from td { color: var(--fg); font-weight: 700; }
+.u-table tr.from td.u-val { color: var(--fg); }
+.u-note { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.5; }
+
+/* ── Chemistry calculators (chemistry room only) ───────────── */
+.chem .u-row label { font-family: -apple-system, sans-serif; font-size: 0.76rem; color: var(--muted); min-width: 8rem; }
+.chem-out { font-family: -apple-system, sans-serif; font-size: 0.95rem; color: var(--fg); background: var(--panel);
+  border: 1px solid var(--border); border-left: 3px solid var(--c); border-radius: 4px; padding: 0.6rem 0.8rem; margin: 0.2rem 0 0.2rem; }
+.chem-out b { color: var(--c); font-family: ui-monospace, Menlo, monospace; }
+
+/* ── Notes library (notes room only) ───────────────────────── */
+.notelib-item { display: block; text-decoration: none; color: inherit; background: var(--panel);
+  border: 1px solid var(--border); border-left: 3px solid var(--c); border-radius: 4px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem;
+  transition: border-color 0.15s, transform 0.15s; }
+.notelib-item:hover { transform: translateY(-1px); border-color: var(--c); }
+.notelib-room { font-family: -apple-system, sans-serif; font-size: 0.84rem; font-weight: 600; color: var(--c); margin-bottom: 0.2rem; }
+.notelib-snip { font-family: ui-monospace, Menlo, monospace; font-size: 0.72rem; color: var(--muted); white-space: pre-wrap; max-height: 4.5rem; overflow: hidden; }
+.notelib-empty { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); font-style: italic; }
+
+/* ── Scientific calculator (data-analysis room only) ───────── */
+.calc { max-width: 19rem; outline: none; border-radius: 6px; }
+.calc:focus { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent); }
+.calc-display { background: #141d29; border: 1px solid var(--border); border-radius: 5px; padding: 0.6rem 0.7rem; margin-bottom: 0.5rem; min-height: 3.4rem; text-align: right; }
+.calc-expr { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); min-height: 1rem; word-break: break-all; }
+.calc-result { font-family: ui-monospace, Menlo, monospace; font-size: 1.5rem; font-weight: 700; color: var(--fg); word-break: break-all; }
+.calc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }
+.calc-btn { font-family: -apple-system, sans-serif; font-size: 0.85rem; color: var(--fg); background: var(--panel); border: 1px solid var(--border); border-radius: 5px; padding: 0.55rem 0; cursor: pointer; }
+.calc-btn:hover { border-color: var(--c); }
+.calc-btn:active { background: var(--bg2); }
+.calc-btn.fn { color: var(--c); font-size: 0.74rem; }
+.calc-btn.op { color: #79b6e0; }
+.calc-btn.clear { color: #d9746b; }
+.calc-btn.eq { background: var(--c); color: #11161f; border-color: var(--c); font-weight: 700; }
+.calc-btn.wide { grid-column: span 2; }
+
+.notfound { font-family: -apple-system, "Segoe UI", sans-serif; color: var(--muted); }
+.notfound a { color: var(--gold); }
+
+@media (max-width: 600px) { .r-title { font-size: 1.7rem; } .r-glyph { font-size: 2.4rem; } .card-grid, .links, .examples { grid-template-columns: 1fr; } }

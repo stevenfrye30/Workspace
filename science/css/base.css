@@ -1,0 +1,35 @@
+/* Science Lab — shared foundation for index.html and room.html.
+   Palette: gold accent on deep navy; --c is the per-room accent, which
+   room.html overrides at runtime from the room's own colour. */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg: #1e2a3a;
+  --bg2: #243347;
+  --panel: #28384c;
+  --fg: #e8ecf1;
+  --muted: #8fa3ba;
+  --border: #32445c;
+  --gold: #d4a24c;
+  --rule: #3a4d66;
+  --c: #d4a24c;
+}
+
+body {
+  font-family: Georgia, "Iowan Old Style", serif;
+  background-attachment: fixed;
+  color: var(--fg);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+/* The shared hub-nav pill is position:fixed at top-left (see
+   _shared/hub-nav.css). Reserve room for it so it never sits on top of the
+   breadcrumb or the page heading at narrow widths. */
+.page { max-width: 1100px; margin: 0 auto; padding: 2.6rem 1.6rem 3rem; }
+
+@media print {
+  body { background: #fff; color: #000; }
+  .page { max-width: none; padding: 0; }
+}
