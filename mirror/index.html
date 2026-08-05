@@ -39,7 +39,8 @@
   /* 720px is a reading width. Three columns of it are ~228px each, which is
      too narrow for the intake tiles and the macro bar — so compact mode gets
      a dashboard width instead. */
-  @media (min-width: 900px) { body.dense { max-width: 1120px; } }
+  @media (min-width: 900px)  { body.dense { max-width: 1120px; } }
+  @media (min-width: 1240px) { body.dense { max-width: 1440px; } }
 
   /* ---------- top bar ---------- */
   .top {
@@ -76,8 +77,26 @@
      CSS columns rather than grid: cards are wildly different heights, and
      this is the one layout that packs them without leaving holes. */
   .daily { column-count: 2; column-gap: 12px; }
-  @media (min-width: 900px) { body.dense .daily { column-count: 3; } }
-  @media (max-width: 640px)  { .daily { column-count: 1; } }
+  @media (min-width: 900px)  { body.dense .daily { column-count: 3; } }
+  /* A fourth column only once there is room for it to still be ~300px —
+     below that the dot rows and the drink tabs start clipping. */
+  @media (min-width: 1240px) { body.dense .daily { column-count: 4; } }
+
+  /* Phone: masonry can't mix widths, so drop to a real grid. The instruments
+     keep the full width they need; the small cards and the drawer summaries
+     pair up two-across, which is where the scrolling actually went. */
+  @media (max-width: 640px) {
+    .daily {
+      column-count: initial; display: grid;
+      grid-template-columns: 1fr 1fr; gap: 10px; align-items: start;
+    }
+    .daily > .card { grid-column: span 2; margin-bottom: 0; }
+    .daily > .card.narrow, .daily > .drawer { grid-column: span 1; margin-bottom: 0; }
+    /* Closed, a drawer is a summary line and pairs happily. Open, its contents
+       need the room — "Subscriptions ＋ Subscription" does not fit in half a
+       phone — so it takes both columns while it is open. */
+    .daily > .drawer[open] { grid-column: span 2; }
+  }
   .daily > .card, .daily > .drawer { break-inside: avoid; -webkit-column-break-inside: avoid; }
   /* Closed drawers are ~46px each; stacked full-width that is 280px of page
      for five summary lines. In the grid they fill the ragged bottoms of the
@@ -518,12 +537,12 @@
     <div class="quick" id="subQuick"></div>
   </div>
 
-  <div class="card">
+  <div class="card narrow">
     <h2>Habits <span class="note tiny" id="habitNote"></span></h2>
     <div class="chips" id="habitChips"></div>
   </div>
 
-  <div class="card">
+  <div class="card narrow">
     <h2>Movement</h2>
     <div class="chips" id="exChips"></div>
     <details class="fold">
