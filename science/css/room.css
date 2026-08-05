@@ -221,6 +221,23 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .st-ans { color: var(--c); font-size: 1.02rem; }
 .st-flag { color: var(--muted); font-style: italic; }
 
+/* ── Gas laws (chemistry room only) ────────────────────────── */
+.gl-pane { display: none; }
+.gl-pane.on { display: block; }
+.gl-u { flex: 0 0 6.5rem; }
+.gl-formula { width: 9rem; }
+.gl-grams { width: 5.5rem; }
+.gl-gas { width: 9rem; font-family: ui-monospace, Menlo, monospace; }
+.gl-rnote { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted); margin-top: 0.35rem; }
+.gl-states { display: grid; grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr)); gap: 0.9rem; margin-bottom: 0.4rem; }
+.gl-state { background: color-mix(in srgb, var(--c) 4%, var(--panel)); border: 1px solid var(--border);
+  border-radius: 4px; padding: 0.7rem 0.8rem 0.3rem; }
+.gl-sh { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.5rem; }
+.gl-state .tc-lab { min-width: 2.5rem; }
+.gl-gasrow { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.4rem; }
+.gl-del { flex: 0 0 auto; padding: 0.4rem 0.6rem; line-height: 1; }
+
 /* ── Thermochemistry (chemistry room only) ─────────────────── */
 .tc-pane { display: none; }
 .tc-pane.on { display: block; }
