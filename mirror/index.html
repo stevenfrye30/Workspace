@@ -324,6 +324,9 @@
   .results button:hover, .results button.sel { background: var(--panel2); }
   .results .meta { display: block; font-size: .68rem; color: var(--dim); }
   .results .none { padding: 10px 12px; font-size: .8rem; color: var(--dim); font-style: italic; }
+  /* Inside the meal builder the popover already scrolls, so an absolutely
+     positioned dropdown would be clipped by it. */
+  .results.flat { position: static; max-height: 190px; margin-top: 6px; box-shadow: none; }
 
   .foodrow { display: flex; align-items: baseline; gap: 8px; font-size: .85rem; padding: 7px 0; border-bottom: 1px solid var(--line); }
   .foodrow:last-child { border-bottom: 0; }
@@ -1388,9 +1391,9 @@ function renderFoodTotals(rows) {
 }
 
 /* ---- meals: the combinations you eat again ----
-   Built from what you have already logged rather than assembled in a
-   builder. You eat the thing, then keep it — less work, and more honest
-   than guessing portions up front. */
+   Two ways in, because they suit different moments. Build one deliberately
+   from search when you know the recipe, or keep a day you have already
+   logged when it turns out to be worth repeating. */
 function mealKcal(meal) {
   return (meal.items || []).reduce((n, it) => {
     const nut = nutrientsFor(it.foodId);
@@ -1407,12 +1410,129 @@ function logMeal(meal) {
   closePop();
   toast('Logged ' + meal.name);
 }
+
+/* ---- the builder ---- */
+let mealDraft = [];        // [{ foodId, foodName, grams, portion }]
+let mealEditing = null;    // the meal being edited, or null for a new one
+
+function openMealBuilder(existing) {
+  loadFoods();
+  mealEditing = existing || null;
+  mealDraft = existing ? (existing.items || []).map((i) => ({ ...i })) : [];
+
+  openPop(existing ? 'Edit meal' : 'New meal',
+    '<input type="text" id="mbName" placeholder="what do you call it? — breakfast, post-gym…">' +
+    '<div class="rowlabel">Add foods</div>' +
+    '<div class="searchwrap">' +
+      '<input type="text" id="mbSearch" placeholder="Search foods…" autocomplete="off">' +
+      '<div class="results flat" id="mbResults"></div>' +
+    '</div>' +
+    '<div class="list" id="mbItems"></div>' +
+    '<div class="tiny" id="mbTotal" style="margin-top:8px"></div>',
+    () => {
+      const name = $('mbName').value.trim();
+      if (!name || !mealDraft.length) return false;
+      if (mealEditing) {
+        mealEditing.name = name;
+        mealEditing.items = mealDraft.map((i) => ({ ...i }));
+        stamp(mealEditing);
+        saveState(); toast('Saved ' + name);
+      } else {
+        appendRec(state.body.meals, stamp({
+          id: uid(), name, items: mealDraft.map((i) => ({ ...i })),
+        }), 'meal “' + name + '”');
+        saveState(); toast('Saved ' + name);
+      }
+      mealDraft = []; mealEditing = null;
+    },
+    () => {
+      if (existing) $('mbName').value = existing.name || '';
+
+      const paint = () => {
+        const box = $('mbItems');
+        box.innerHTML = '';
+        if (!mealDraft.length) {
+          box.innerHTML = '<div class="empty">No foods yet — search above and tap to add.</div>';
+        }
+        mealDraft.forEach((it, idx) => {
+          const div = document.createElement('div'); div.className = 'row';
+          div.innerHTML = '<span style="flex:1;min-width:0">' + esc(shortName(it.foodName, 26)) + '</span>';
+          const g = document.createElement('input');
+          g.type = 'number'; g.min = '1'; g.step = '1'; g.value = it.grams;
+          g.style.cssText = 'width:66px;padding:4px 6px;font-size:.78rem';
+          g.title = 'grams';
+          g.oninput = () => {
+            const v = parseFloat(g.value);
+            if (v > 0) { it.grams = v; it.portion = ''; total(); }
+          };
+          const x = document.createElement('button');
+          x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
+          x.onclick = () => { mealDraft.splice(idx, 1); paint(); };
+          div.appendChild(g); div.appendChild(x);
+          box.appendChild(div);
+        });
+        total();
+      };
+      const total = () => {
+        const kc = mealDraft.reduce((n, it) => {
+          const nut = nutrientsFor(it.foodId);
+          return n + (nut && nut.kcal != null ? (nut.kcal * it.grams) / 100 : 0);
+        }, 0);
+        $('mbTotal').textContent = mealDraft.length
+          ? mealDraft.length + ' item' + (mealDraft.length === 1 ? '' : 's') +
+            (kc ? ' · ' + Math.round(kc) + ' kcal' : '')
+          : '';
+      };
+
+      const search = $('mbSearch');
+      const showResults = () => {
+        const box = $('mbResults');
+        const rows = searchFoods(search.value);
+        box.innerHTML = '';
+        if (search.value.trim().length < 2) return;
+        if (!rows.length) {
+          box.innerHTML = '<div class="none">' +
+            (foodsIndex && foodsIndex.list.length ? 'No match.' : 'Food library still loading…') + '</div>';
+          return;
+        }
+        rows.slice(0, 8).forEach((f) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          const n = f.n || f;
+          b.innerHTML = esc(f.name) + '<span class="meta">' +
+            esc([f.category, n && n.kcal != null ? Math.round(n.kcal) + ' kcal/100g' : '']
+              .filter(Boolean).join(' · ')) + '</span>';
+          b.onclick = () => {
+            const p = (f.portions || [])[0];
+            mealDraft.push({ foodId: f.id, foodName: f.name,
+                             grams: p ? p.grams : 100, portion: p ? p.label : '' });
+            search.value = ''; box.innerHTML = '';
+            paint(); search.focus();
+          };
+          box.appendChild(b);
+        });
+      };
+      search.oninput = () => { loadFoods().then(showResults); showResults(); };
+      search.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const first = $('mbResults').querySelector('button');
+          if (first) first.click();
+        }
+      };
+      paint();
+      $('mbName').focus();
+    },
+    'Save meal');
+}
+
 function openMeals() {
   loadFoods();
   openPop('Meals',
     '<div class="list" id="mealList"></div>' +
     '<div class="chips" style="margin-top:10px">' +
-      '<button class="mini" id="mealSaveToday">＋ Save today’s food as a meal</button></div>',
+      '<button class="mini" id="mealNew">＋ New meal</button>' +
+      '<button class="mini" id="mealSaveToday">＋ From today’s food</button></div>',
     null,
     () => {
       const box = $('mealList');
@@ -1420,41 +1540,40 @@ function openMeals() {
         box.innerHTML = '';
         const live = state.body.meals || [];
         if (!live.length) {
-          box.innerHTML = '<div class="empty">No meals yet. Log a few foods, then keep the day as one.</div>';
+          box.innerHTML = '<div class="empty">No meals yet. Build one, or keep a day you have already logged.</div>';
           return;
         }
         live.slice().reverse().forEach((m) => {
           const div = document.createElement('div'); div.className = 'row';
           const kc = Math.round(mealKcal(m));
-          div.innerHTML = '<span>' + esc(m.name) + '</span><span class="tiny">' +
-            (m.items || []).length + ' items' + (kc ? ' · ' + kc + ' kcal' : '') + '</span>';
+          div.innerHTML = '<span style="flex:1;min-width:0">' + esc(m.name) + '</span>' +
+            '<span class="tiny">' + (m.items || []).length + ' items' +
+            (kc ? ' · ' + kc + ' kcal' : '') + '</span>';
           const log = document.createElement('button');
           log.className = 'mini'; log.type = 'button'; log.textContent = 'Log';
-          log.style.marginLeft = 'auto';
           log.onclick = () => logMeal(m);
+          const edit = document.createElement('button');
+          edit.className = 'mini'; edit.type = 'button'; edit.textContent = 'Edit';
+          edit.onclick = () => openMealBuilder(m);
           const x = document.createElement('button');
           x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Delete meal';
           x.onclick = () => { dropRecord(state.body.meals, m.id, m.name); saveState(); paint(); };
-          div.appendChild(log); div.appendChild(x);
+          div.appendChild(log); div.appendChild(edit); div.appendChild(x);
           box.appendChild(div);
         });
       };
       paint();
+      $('mealNew').onclick = () => openMealBuilder(null);
       $('mealSaveToday').onclick = () => {
         const rows = onDay(state.body.food);
         if (!rows.length) { toast('Nothing logged today to save'); return; }
-        closePop();
-        openForm('Save as a meal', [{ key: 'name', label: 'Call it', placeholder: 'breakfast, post-gym…' }],
-          {}, (v) => {
-            if (!v.name) return false;
-            appendRec(state.body.meals, stamp({
-              id: uid(), name: v.name,
-              items: rows.map((r) => ({ foodId: r.foodId, foodName: r.foodName,
-                                        grams: r.grams, portion: r.portion || '' })),
-            }), 'meal “' + v.name + '”');
-            saveState();
-            toast('Saved ' + v.name);
-          }, 'Save');
+        // Seed the builder rather than saving blind, so you can drop the
+        // things that were not part of the meal.
+        mealDraft = rows.map((r) => ({ foodId: r.foodId, foodName: r.foodName,
+                                       grams: r.grams, portion: r.portion || '' }));
+        const seeded = { name: '', items: mealDraft };
+        openMealBuilder(seeded);
+        mealEditing = null;          // seeded, but saving creates a new meal
       };
     });
 }
