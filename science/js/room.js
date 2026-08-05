@@ -17,7 +17,7 @@ const WIDGETS = {
   'periodic-table': ['./widgets/periodic-table.js'],
   'reference': ['./widgets/reference-tables.js'],
   'data-analysis': ['./widgets/units.js', './widgets/calculator.js'],
-  'chemistry': ['./widgets/stoichiometry.js', './widgets/chemistry.js'],
+  'chemistry': ['./widgets/stoichiometry.js', './widgets/thermochem.js', './widgets/chemistry.js'],
   'notes': ['./widgets/notes-library.js']
 };
 

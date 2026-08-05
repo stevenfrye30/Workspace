@@ -1,6 +1,9 @@
 import { POLYATOMIC, OXYANION_PATTERN, SOLUBILITY, STRONG_ACIDS, STRONG_BASES,
          KA, KB, KA_KB_NOTES } from '../data/chem-tables.js';
+import { DHF, DHF_NAMES, SPECIFIC_HEAT, PHASE_WATER } from '../data/thermo.js';
 import { esc } from '../format.js';
+
+const STATE_NAME = { s: 'solid', l: 'liquid', g: 'gas', aq: 'aqueous' };
 
 /* A bare formula: every digit is an atom count, so subscript them all.
    Only safe on pure formulas (SO4, Ca(OH)2) — never on prose. */
@@ -86,6 +89,33 @@ export function block() {
 
   const notes = KA_KB_NOTES.map(function (n) { return '<li>' + esc(n) + '</li>'; }).join('');
 
+  /* Formation enthalpies, elements-at-zero last so the compounds lead. */
+  const dhfRows = Object.keys(DHF).map(function (k) {
+    const i = k.indexOf('|'), f = k.slice(0, i), st = k.slice(i + 1);
+    return { f: f, st: st, v: DHF[k], name: DHF_NAMES[f] || '' };
+  }).sort(function (a, b) {
+    const ea = a.name === '' ? 1 : 0, eb = b.name === '' ? 1 : 0;
+    if (ea !== eb) return ea - eb;
+    return a.f.localeCompare(b.f) || a.st.localeCompare(b.st);
+  }).map(function (r) {
+    return '<tr data-s="' + esc(r.f + ' ' + r.st + ' ' + r.name) + '">' +
+      '<td class="rt-f">' + fmtFormula(r.f) + '<span class="tc-state">(' + r.st + ')</span></td>' +
+      '<td>' + esc(r.name || 'element, standard state') + '</td>' +
+      '<td class="rt-val">' + (r.v > 0 ? '+' : r.v < 0 ? '−' : '') + Math.abs(r.v).toFixed(1) + '</td>' +
+      '<td class="rt-note">' + esc(STATE_NAME[r.st] || '') + '</td></tr>';
+  }).join('');
+
+  const shRows = SPECIFIC_HEAT.map(function (r) {
+    return '<tr data-s="' + esc(r.n) + '"><td>' + esc(r.n) + '</td>' +
+      '<td class="rt-val">' + r.c + '</td>' +
+      '<td class="rt-note">' + esc(r.note || '') + '</td></tr>';
+  }).join('');
+
+  const phaseRows = PHASE_WATER.map(function (p) {
+    return '<tr data-s="' + esc(p.n) + '"><td>' + esc(p.n) + '</td>' +
+      '<td class="rt-val">' + p.kJmol + '</td><td class="rt-val">' + p.Jg + '</td></tr>';
+  }).join('');
+
   return '<section class="block rt" id="refTables">' +
     '<div class="block-head"><h2>Search every table</h2><span class="tag">Lookup</span>' +
     '<p>One search box across all four tables. Use <b>Bigger</b> when screen-sharing ' +
@@ -103,6 +133,7 @@ export function block() {
       '<button class="u-tab" type="button" data-pane="solubility">Solubility</button>' +
       '<button class="u-tab" type="button" data-pane="strong">Strong acids &amp; bases</button>' +
       '<button class="u-tab" type="button" data-pane="ka">K<sub>a</sub> / K<sub>b</sub></button>' +
+      '<button class="u-tab" type="button" data-pane="thermo">Thermo</button>' +
       '<button class="u-tab" type="button" data-pane="all">All</button>' +
     '</div>' +
 
@@ -143,6 +174,26 @@ export function block() {
       '<table class="rt-table"><thead><tr><th>Formula</th><th>Name</th><th>K<sub>b</sub></th><th>pK<sub>b</sub></th><th>Note</th></tr></thead>' +
       '<tbody>' + kb + '</tbody></table>' +
       '<ul class="rt-notes">' + notes + '</ul>' +
+    '</div>' +
+
+    '<div class="rt-pane" data-pane="thermo">' +
+      '<h3 class="rt-h">Standard enthalpies of formation, ΔH°<sub>f</sub> (kJ/mol at 298 K)</h3>' +
+      '<p class="rt-sub">An element in its standard state is zero by definition. ' +
+      'State matters — H<sub>2</sub>O(l) and H<sub>2</sub>O(g) differ by the enthalpy of vaporisation.</p>' +
+      '<table class="rt-table"><thead><tr><th>Species</th><th>Name</th>' +
+      '<th style="text-align:right">ΔH°<sub>f</sub></th><th>State</th></tr></thead>' +
+      '<tbody>' + dhfRows + '</tbody></table>' +
+
+      '<h3 class="rt-h">Specific heat capacity, c (J/g·°C)</h3>' +
+      '<table class="rt-table"><thead><tr><th>Substance</th>' +
+      '<th style="text-align:right">c</th><th>Note</th></tr></thead>' +
+      '<tbody>' + shRows + '</tbody></table>' +
+
+      '<h3 class="rt-h">Phase changes for water</h3>' +
+      '<p class="rt-sub">Temperature does not change during a phase change, so q = mcΔT does not apply — use q = n·ΔH.</p>' +
+      '<table class="rt-table"><thead><tr><th>Transition</th>' +
+      '<th style="text-align:right">kJ/mol</th><th style="text-align:right">J/g</th></tr></thead>' +
+      '<tbody>' + phaseRows + '</tbody></table>' +
     '</div>' +
 
     '</section>';

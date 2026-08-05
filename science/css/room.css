@@ -221,6 +221,30 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .st-ans { color: var(--c); font-size: 1.02rem; }
 .st-flag { color: var(--muted); font-style: italic; }
 
+/* ── Thermochemistry (chemistry room only) ─────────────────── */
+.tc-pane { display: none; }
+.tc-pane.on { display: block; }
+.tc-hint { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem; line-height: 1.5; }
+.tc-hint b { color: var(--fg); }
+.tc-lab { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted); min-width: 9rem; }
+.tc-unit { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); }
+.tc-state { color: var(--muted); font-size: 0.85em; }
+.tc-zero { color: var(--muted); font-size: 0.85em; font-style: italic; }
+.tc-sum { border-top: 1px dashed color-mix(in srgb, var(--c) 30%, transparent); margin-top: 0.3rem; padding-top: 0.3rem; }
+.tc-phasenote { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted);
+  line-height: 1.55; margin-top: 0.9rem; padding: 0.6rem 0.8rem;
+  background: color-mix(in srgb, var(--c) 5%, var(--panel)); border: 1px dashed var(--border); border-radius: 4px; }
+.tc-phasenote b { color: var(--fg); }
+.tc-check { font-family: -apple-system, sans-serif; font-size: 0.76rem; color: var(--muted); font-style: italic; margin-top: 0.4rem; }
+
+.tc-hessrow { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.45rem; }
+.tc-heq { flex: 1 1 18rem; font-size: 0.88rem; padding: 0.4rem 0.6rem; }
+.tc-hdh { width: 7rem; }
+.tc-hm { width: 5rem; }
+.tc-hdel { flex: 0 0 auto; padding: 0.4rem 0.6rem; line-height: 1; }
+.tc-heqtxt { font-family: ui-monospace, Menlo, monospace; color: var(--fg); }
+.tc-how { color: var(--muted); font-style: italic; }
+
 /* ── Reference tables (reference room only) ─────────────────── */
 .rt-bar { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; margin-bottom: 0.7rem; }
 .rt-search { flex: 1 1 18rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.9rem; color: var(--fg);

@@ -22,6 +22,11 @@ cards: [
   { name: "Ka and Kb", body: "K<sub>a</sub> · K<sub>b</sub> = K<sub>w</sub> = 1 × 10⁻¹⁴", note: "stronger acid ⇒ larger K<sub>a</sub>." },
   { name: "Henderson–Hasselbalch", body: "pH = pK<sub>a</sub> + log([A⁻] / [HA])", note: "buffer pH from the conjugate ratio." },
   { name: "Equilibrium constant", body: "K = [products] / [reactants]", note: "each term raised to its coefficient. Q vs K predicts the shift (Le Chatelier)." },
+  { name: "Heat and temperature change", body: "q = m·c·ΔT, where ΔT = T<sub>final</sub> − T<sub>initial</sub>", note: "c for water = 4.184 J/(g·°C). Positive q = absorbed, negative q = released." },
+  { name: "Endothermic vs exothermic", body: "Exothermic: releases heat, ΔH &lt; 0, surroundings warm up.<br>Endothermic: absorbs heat, ΔH &gt; 0, surroundings cool down.", note: "The sign is from the system's point of view, not yours." },
+  { name: "Enthalpy from formation values", body: "ΔH°<sub>rxn</sub> = Σ n·ΔH°<sub>f</sub>(products) − Σ n·ΔH°<sub>f</sub>(reactants)", note: "An element in its standard state has ΔH°<sub>f</sub> = 0, so those terms drop out." },
+  { name: "Hess's law", body: "Enthalpy is a state function — ΔH depends only on start and end, not the route.", note: "Reverse a step ⇒ flip the sign. Double a step ⇒ double its ΔH." },
+  { name: "Phase changes", body: "q = n·ΔH<sub>fus</sub> or n·ΔH<sub>vap</sub>. Water: 6.02 kJ/mol to melt, 40.7 kJ/mol to boil.", note: "Temperature holds constant during a phase change, so q = mcΔT does not apply there." },
   { name: "Gibbs free energy", body: "ΔG = ΔH − TΔS · ΔG = −RT ln K", note: "ΔG &lt; 0 ⇒ spontaneous." },
   { name: "Reaction rate", body: "rate = k[A]<sup>m</sup>[B]<sup>n</sup>", note: "orders m, n are found experimentally." },
   { name: "Redox (OIL RIG)", body: "Oxidation Is Loss, Reduction Is Gain of e⁻", note: "oxidizing agent is reduced; reducing agent is oxidized." },
@@ -40,6 +45,11 @@ examples: [
   { q: "pH when [H⁺] = 1 × 10⁻³ M", steps: ["pH = −log(10⁻³)"], ans: "pH = <b>3</b>" },
   { q: "Buffer pH: pK<sub>a</sub> = 4.74, [A⁻] = [HA]", steps: ["pH = pK<sub>a</sub> + log(1)", "log 1 = 0"], ans: "pH = <b>4.74</b>" },
   { q: "Redox: Zn + Cu²⁺ → Zn²⁺ + Cu", steps: ["Zn → Zn²⁺ + 2e⁻ (loses electrons)", "Cu²⁺ + 2e⁻ → Cu (gains electrons)"], ans: "Zn is <b>oxidized</b>, Cu²⁺ is <b>reduced</b>" },
+  { q: "Heat to warm 100 g of water from 25 °C to 75 °C", steps: ["ΔT = 75 − 25 = 50 °C", "q = m·c·ΔT = 100 × 4.184 × 50"], ans: "<b>20 920 J = 20.9 kJ</b> absorbed" },
+  { q: "Final temperature after adding 5 000 J to 200 g of water at 20 °C", steps: ["ΔT = q / (m·c) = 5000 / (200 × 4.184) = 5.98 °C", "T = 20 + 5.98"], ans: "<b>26.0 °C</b>" },
+  { q: "ΔH°rxn for CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(l)", steps: ["Products: −393.5 + 2(−285.8) = −965.1 kJ", "Reactants: −74.6 + 2(0) = −74.6 kJ", "Subtract: −965.1 − (−74.6)"], ans: "<b>−890.5 kJ</b> — exothermic" },
+  { q: "Why is O₂(g) worth zero in that sum?", steps: ["ΔH°f is the enthalpy to form 1 mol from its elements", "O₂(g) already <i>is</i> the element in its standard state", "Forming it from itself costs nothing"], ans: "ΔH°<sub>f</sub> of any element in its standard state = <b>0</b>" },
+  { q: "Hess: find ΔH for C(s) + ½O₂(g) → CO(g)", steps: ["C(s) + O₂ → CO₂, ΔH = −393.5 kJ", "CO + ½O₂ → CO₂, ΔH = −283.0 kJ — reverse it: +283.0", "Add: −393.5 + 283.0"], ans: "<b>−110.5 kJ</b>" },
   { q: "Why does NaCl form? (connect to the table)", steps: ["Na (Z 11) loses 1e⁻ → Na⁺", "Cl (Z 17) gains 1e⁻ → Cl⁻", "Opposite charges attract"], ans: "<b>Na⁺Cl⁻</b> — open the Periodic Table room to inspect Na &amp; Cl" }
 ],
 links: [

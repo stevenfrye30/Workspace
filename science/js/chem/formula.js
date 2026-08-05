@@ -17,10 +17,22 @@ ELEMENTS.forEach(function (el) {
   MASS[el.s] = m;
 });
 
+/* Split a trailing physical-state label off a formula: "H2O(l)" -> H2O + "l".
+   Only a trailing (s)/(l)/(g)/(aq) counts, so Ca(OH)2 keeps its parentheses.
+   State is not decoration — H2O(l) and H2O(g) have different enthalpies of
+   formation, so anything thermochemical has to keep them apart. */
+export function splitState(input) {
+  const s = String(input).replace(/\s+/g, '');
+  const m = s.match(/^(.*?)\((s|l|g|aq)\)$/i);
+  return m ? { formula: m[1], state: m[2].toLowerCase() }
+           : { formula: s, state: null };
+}
+
 /* Parse a neutral formula into element counts.
-   Handles nested parentheses/brackets and hydrate dots: CuSO4·5H2O. */
+   Handles nested parentheses/brackets and hydrate dots: CuSO4·5H2O.
+   A trailing state label is ignored, so H2O(l) parses like H2O. */
 export function parseFormula(input) {
-  const f = String(input).replace(/\s+/g, '');
+  const f = splitState(input).formula;
   if (!f) throw new Error('Enter a formula');
 
   const total = {};
@@ -101,9 +113,17 @@ export function parseEquation(input) {
     return terms.map(function (t) {
       const m = t.match(/^(\d+)?\s*(.+)$/);
       const coef = m[1] ? parseInt(m[1], 10) : 1;
-      const formula = m[2].replace(/\s+/g, '');
       if (coef === 0) throw new Error('A coefficient cannot be zero');
-      return { coef: coef, formula: formula, counts: parseFormula(formula), mass: molarMass(formula) };
+      const withState = m[2].replace(/\s+/g, '');
+      const sp = splitState(withState);
+      return {
+        coef: coef,
+        formula: sp.formula,          // bare formula, for mass and balancing
+        state: sp.state,              // 's' | 'l' | 'g' | 'aq' | null
+        label: withState,             // as the user typed it, for display
+        counts: parseFormula(sp.formula),
+        mass: molarMass(sp.formula)
+      };
     });
   }
 
