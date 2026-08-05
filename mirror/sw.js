@@ -22,8 +22,8 @@
  * worse than an honest failure to reach it.
  */
 
-const CACHE = 'mirror-shell-v3';
-const SHELL = ['./', './index.html', './manifest.webmanifest'];
+const CACHE = 'mirror-shell-v4';
+const SHELL = ['./', './index.html', './records.html', './manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(

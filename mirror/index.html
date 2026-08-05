@@ -396,18 +396,6 @@
     margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400;
     color: var(--dim); font-size: .74rem; text-align: right;
   }
-  .drawer-body { padding: 0; }
-  /* These panels are always open now, so their lists have to be bounded —
-     otherwise a few years of expenses would push the tracker off the page.
-     Scroll inside instead of growing. */
-  .drawer-body .list, .drawer-body #quoteList, .drawer-body #ideaList {
-    max-height: 122px; overflow-y: auto;
-  }
-  body.dense .drawer-body .list,
-  body.dense .drawer-body #quoteList,
-  body.dense .drawer-body #ideaList { max-height: 104px; }
-  .drawer-body .sub { margin-top: 11px; }
-  body.dense .drawer-body .sub { margin-top: 9px; }
   .sub { margin-top: 14px; }
   .sub:first-child { margin-top: 0; }
   .sub h3 {
@@ -607,66 +595,41 @@
      below the fold — the daily controls must not be displaced by things
      you read once a week. -->
 <div class="panels">
+
   <div class="card" id="drawerPeople">
     <h2>People <span class="sum" id="sumPeople"></span></h2>
-    <div class="drawer-body">
-      <div class="sub">
-        <h3>People <button class="mini act" id="addPerson">＋ Person</button></h3>
-        <div class="list" id="peopleList"></div>
-      </div>
-      <div class="sub">
-        <h3>Birthdays <button class="mini act" id="addBirthday">＋ Birthday</button></h3>
-        <div class="list" id="bdayList"></div>
-      </div>
+    <div class="chips">
+      <button class="mini" id="addPerson">＋ Person</button>
+      <button class="mini" id="addBirthday">＋ Birthday</button>
     </div>
   </div>
+
   <div class="card" id="drawerMind">
     <h2>Mind <span class="sum" id="sumMind"></span></h2>
-    <div class="drawer-body">
-      <div class="sub">
-        <h3>Books <button class="mini act" id="addBook">＋ Book</button></h3>
-        <div class="list" id="bookList"></div>
-      </div>
-      <div class="sub">
-        <h3>Quotes <button class="mini act" id="addQuote">＋ Quote</button></h3>
-        <div id="quoteList"></div>
-      </div>
-      <div class="sub">
-        <h3>Ideas <button class="mini act" id="addIdea">＋ Idea</button></h3>
-        <div id="ideaList"></div>
-      </div>
+    <div class="chips">
+      <button class="mini" id="addBook">＋ Book</button>
+      <button class="mini" id="addQuote">＋ Quote</button>
+      <button class="mini" id="addIdea">＋ Idea</button>
     </div>
   </div>
+
   <div class="card" id="drawerMoney">
     <h2>Money <span class="sum" id="sumMoney"></span></h2>
-    <div class="drawer-body">
-      <div class="sub">
-        <h3>Budget <button class="mini act" id="addCategory">＋ Category</button></h3>
-        <div class="list" id="budgetList"></div>
-      </div>
-      <div class="sub">
-        <h3>Expenses <button class="mini act" id="addExpense">＋ Expense</button></h3>
-        <div class="list" id="expenseList"></div>
-      </div>
-      <div class="sub">
-        <h3>Subscriptions <button class="mini act" id="addSub">＋ Subscription</button></h3>
-        <div class="list" id="subList"></div>
-      </div>
+    <div class="chips">
+      <button class="mini" id="addExpense">＋ Expense</button>
+      <button class="mini" id="addCategory">＋ Category</button>
+      <button class="mini" id="addSub">＋ Subscription</button>
     </div>
   </div>
+
   <div class="card" id="drawerLife">
     <h2>Life <span class="sum" id="sumLife"></span></h2>
-    <div class="drawer-body">
-      <div class="sub">
-        <h3>Values <button class="mini act" id="editValues">Edit</button></h3>
-        <div class="chips valchips" id="valueList"></div>
-      </div>
-      <div class="sub">
-        <h3>Places <button class="mini act" id="addPlace">＋ Place</button></h3>
-        <div class="list" id="placeList"></div>
-      </div>
+    <div class="chips">
+      <button class="mini" id="addPlace">＋ Place</button>
+      <button class="mini" id="editValues">Values</button>
     </div>
   </div>
+
 </div>
 
 
@@ -682,12 +645,10 @@
 
 <!-- The week in review sits under the day it summarises. -->
 <div class="card" id="drawerWeek">
-    <h2>This week <span class="sum" id="sumWeek"></span></h2>
-  <div class="drawer-body">
-    <div class="wk" id="wkCells"></div>
-    <div class="wkdays" id="wkDays"></div>
-    <div class="wknote" id="wkNotes"></div>
-  </div>
+  <h2>This week <span class="sum" id="sumWeek"></span></h2>
+  <div class="wk" id="wkCells"></div>
+  <div class="wkdays" id="wkDays"></div>
+  <div class="wknote" id="wkNotes"></div>
 </div>
 
 <div class="foot">
@@ -1625,6 +1586,25 @@ function renderFeed() {
   (state.habits.items || []).filter((h) => (h.done || []).includes(day))
     .forEach((h) => push(h, '✓', h.name, null));
 
+  /* Things added from the panels. These have no `date` of their own — a
+     person isn't "about" a day — so they're matched on when they were
+     entered, which is exactly what the tracker is a record of. */
+  const enteredToday = (arr) => (arr || []).filter((r) =>
+    r && r._at && toLocalISO(new Date(r._at)) === day);
+  const added = [
+    [state.relationships.people, '🧑', (r) => r.name + (r.relation ? ' · ' + r.relation : '')],
+    [state.relationships.birthdays, '🎂', (r) => r.name + ' · ' + (MONTHS[r.month - 1] || '?') + (r.day ? ' ' + r.day : '')],
+    [state.mind.books, '📕', (r) => r.title + (r.author ? ' · ' + r.author : '')],
+    [state.mind.quotes, '❝', (r) => shortName(r.text, 44) + (r.source ? ' — ' + r.source : '')],
+    [state.mind.ideas, '💡', (r) => shortName(r.text, 52)],
+    [state.money.expenses, '💵', (r) => fmt$(r.amount) + (r.note ? ' · ' + r.note : '')],
+    [state.money.categories, '📊', (r) => r.name + (r.planned ? ' · ' + fmt$(r.planned) + '/mo' : '')],
+    [state.money.subscriptions, '🔁', (r) => r.name + ' · ' + fmt$(r.amount) + '/' + (r.cadence || 'monthly')],
+    [state.places.items, '📍', (r) => r.name + ' · ' + r.kind],
+  ];
+  added.forEach(([arr, icon, label]) => enteredToday(arr).forEach((r) =>
+    push(r, icon, label(r), () => dropRecord(arr, r.id, label(r)))));
+
   // Oldest first: the log grows downward as the day does.
   rows.sort((a, b) => String(a.at).localeCompare(String(b.at)) || String(a.t).localeCompare(String(b.t)));
 
@@ -1712,27 +1692,13 @@ function openForm(title, fields, values, onSave, okLabel) {
     if (first) first.focus();
   }, okLabel || 'Add');
 }
-/** Render a simple list of rows with a delete button. */
-function paintList(el, rows, rowHTML, onDelete, emptyText) {
-  el.innerHTML = '';
-  if (!rows.length) { el.innerHTML = '<div class="empty">' + esc(emptyText) + '</div>'; return; }
-  rows.forEach((r) => {
-    const div = document.createElement('div'); div.className = 'row';
-    div.innerHTML = rowHTML(r);
-    if (onDelete) {
-      const x = document.createElement('button');
-      x.className = 'x'; x.type = 'button'; x.textContent = '✕';
-      x.onclick = () => { onDelete(r); saveState(); renderDrawers(); };
-      div.appendChild(x);
-    }
-    el.appendChild(div);
-  });
-}
-
 /* =============================================================
    LAUNCHPAD — fixed doors plus your own.
    ============================================================= */
 const DOORS = [
+  // One layer past the dashboard: the full lists this page deliberately
+  // does not carry.
+  { ic: '📚', name: 'Records',   url: 'records.html' },
   { ic: '✉️', name: 'Gmail',     url: 'https://mail.google.com' },
   { ic: '📅', name: 'Calendar',  url: 'https://calendar.google.com' },
   { ic: '📁', name: 'Drive',     url: 'https://drive.google.com' },
@@ -1825,89 +1791,40 @@ function renderBirthdayLine() {
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const monthKey = () => todayStr().slice(0, 7);
 
+/* The panels are input only. What you add lands in the tracker like every
+   other entry, and the full lists live on the records page — nothing
+   accumulates up here, so the cards keep a fixed height forever. */
 function renderPeople() {
   const people = state.relationships.people || [];
-  const bdays = state.relationships.birthdays || [];
-  paintList($('peopleList'), people,
-    (p) => '<span>' + esc(p.name) + '</span><span class="tiny">' + esc(p.relation || '') + '</span>',
-    (p) => dropRecord(state.relationships.people, p.id), 'No one yet.');
-  const sorted = bdays.slice().sort((a, b) => (a.month - b.month) || ((a.day || 0) - (b.day || 0)));
-  paintList($('bdayList'), sorted,
-    (b) => '<span>' + esc(b.name) + '</span><span class="tiny">' +
-           esc(MONTHS[b.month - 1] || '?') + (b.day ? ' ' + b.day : '') + '</span>',
-    (b) => dropRecord(state.relationships.birthdays, b.id), 'No birthdays yet.');
   const up = upcomingBirthdays(31).length;
   $('sumPeople').textContent = [
     people.length ? plural(people.length, 'person', 'people') : '',
     up ? plural(up, 'birthday') + ' this month' : '',
-  ].filter(Boolean).join(' · ') || 'empty';
+  ].filter(Boolean).join(' · ') || 'nothing yet';
 }
 
 function renderMind() {
   const books = state.mind.books || [];
-  paintList($('bookList'), books,
-    (b) => '<span>' + esc(b.title) + '</span><span class="tiny">' +
-           esc([b.author, b.status].filter(Boolean).join(' · ')) + '</span>',
-    (b) => dropRecord(state.mind.books, b.id), 'No books yet.');
-
-  const quotes = (state.mind.quotes || []).slice().reverse();
-  const qbox = $('quoteList'); qbox.innerHTML = '';
-  if (!quotes.length) qbox.innerHTML = '<div class="empty">No quotes yet.</div>';
-  quotes.slice(0, 12).forEach((q) => {
-    const div = document.createElement('div'); div.className = 'quote';
-    div.innerHTML = '“' + esc(q.text) + '”<span class="src">' + esc(q.source || '') + '</span>';
-    qbox.appendChild(div);
-  });
-
-  const ideas = (state.mind.ideas || []).slice().reverse();
-  const ibox = $('ideaList'); ibox.innerHTML = '';
-  if (!ideas.length) ibox.innerHTML = '<div class="empty">No ideas yet.</div>';
-  ideas.slice(0, 12).forEach((i) => {
-    const div = document.createElement('div'); div.className = 'quote';
-    div.innerHTML = esc(i.text) + '<span class="src">' + esc([i.source, i.date].filter(Boolean).join(' · ')) + '</span>';
-    ibox.appendChild(div);
-  });
-
+  const quotes = state.mind.quotes || [];
   const reading = books.filter((b) => b.status === 'reading').length;
   $('sumMind').textContent = [
     reading ? reading + ' reading' : (books.length ? plural(books.length, 'book') : ''),
     quotes.length ? plural(quotes.length, 'quote') : '',
-  ].filter(Boolean).join(' · ') || 'empty';
+  ].filter(Boolean).join(' · ') || 'nothing yet';
 }
 
 function renderMoney() {
-  const cats = state.money.categories || [];
   const exp = state.money.expenses || [];
   const subs = state.money.subscriptions || [];
   const mk = monthKey();
-  const thisMonth = exp.filter((e) => (e.date || '').startsWith(mk));
-  const spentBy = new Map();
-  thisMonth.forEach((e) => spentBy.set(e.categoryId, (spentBy.get(e.categoryId) || 0) + Number(e.amount || 0)));
-
-  paintList($('budgetList'), cats, (c) => {
-    const spent = spentBy.get(c.id) || 0;
-    const planned = Number(c.planned || 0);
-    const over = planned && spent > planned;
-    return '<span>' + esc(c.name) + '</span><span class="tiny"' + (over ? ' style="color:var(--warn)"' : '') + '>' +
-      fmt$(spent) + (planned ? ' / ' + fmt$(planned) : '') + '</span>';
-  }, (c) => dropRecord(state.money.categories, c.id), 'No budget lines yet.');
-
-  paintList($('expenseList'), exp.slice().reverse().slice(0, 15), (e) => {
-    const c = cats.find((x) => x.id === e.categoryId);
-    return '<span>' + esc(e.note || (c ? c.name : 'expense')) + '</span><span class="tiny">' +
-      esc(e.date || '') + ' · ' + fmt$(e.amount) + '</span>';
-  }, (e) => dropRecord(state.money.expenses, e.id), 'Nothing logged this month.');
-
-  paintList($('subList'), subs,
-    (s) => '<span>' + esc(s.name) + '</span><span class="tiny">' + fmt$(s.amount) + ' / ' + esc(s.cadence || 'monthly') + '</span>',
-    (s) => dropRecord(state.money.subscriptions, s.id), 'No subscriptions tracked.');
-
-  const spent = thisMonth.reduce((n, e) => n + Number(e.amount || 0), 0);
-  const perMonth = subs.reduce((n, s) => n + (s.cadence === 'yearly' ? Number(s.amount || 0) / 12 : Number(s.amount || 0)), 0);
+  const spent = exp.filter((e) => (e.date || '').startsWith(mk))
+    .reduce((n, e) => n + Number(e.amount || 0), 0);
+  const perMonth = subs.reduce((n, s) =>
+    n + (s.cadence === 'yearly' ? Number(s.amount || 0) / 12 : Number(s.amount || 0)), 0);
   $('sumMoney').textContent = [
     spent ? fmt$(spent) + ' this month' : '',
     perMonth ? fmt$(perMonth) + '/mo subscriptions' : '',
-  ].filter(Boolean).join(' · ') || 'empty';
+  ].filter(Boolean).join(' · ') || 'nothing yet';
 }
 
 /** The current home: the latest-starting `home` place with no end, or an end in the future. */
@@ -1918,20 +1835,6 @@ function currentHome() {
 }
 function renderLife() {
   const vals = state.identity.values || [];
-  const box = $('valueList'); box.innerHTML = '';
-  if (!vals.length) box.innerHTML = '<span class="tiny">None set.</span>';
-  vals.forEach((v) => {
-    const b = document.createElement('span');
-    b.className = 'chip'; b.textContent = v; box.appendChild(b);
-  });
-
-  const places = (state.places.items || []).slice()
-    .sort((a, b) => String(b.from || '').localeCompare(String(a.from || '')));
-  paintList($('placeList'), places,
-    (p) => '<span>' + esc(p.name) + '</span><span class="tiny">' +
-           esc(p.kind) + (p.from ? ' · ' + p.from : '') + (p.to ? '–' + p.to : '') + '</span>',
-    (p) => dropRecord(state.places.items, p.id), 'No places yet.');
-
   const home = currentHome();
   let since = '';
   if (home && home.from) {
@@ -1942,7 +1845,7 @@ function renderLife() {
   $('sumLife').textContent = [
     home ? home.name + since : '',
     vals.length ? plural(vals.length, 'value') : '',
-  ].filter(Boolean).join(' · ') || 'empty';
+  ].filter(Boolean).join(' · ') || 'nothing yet';
 }
 
 /* =============================================================
@@ -2101,14 +2004,18 @@ if ('IntersectionObserver' in window) {
 }
 
 /* ---- drawer add-buttons ---- */
-const addTo = (arr, rec) => { arr.push(stamp(rec)); saveState(); renderDrawers(); };
+const addTo = (arr, rec, label) => {
+  appendRec(arr, stamp(rec), label || 'entry');
+  saveState(); renderDrawers(); renderFeed();
+  if (label) toast('Added ' + label);
+};
 
 $('addPerson').onclick = () => openForm('Add a person', [
   { key: 'name', label: 'Name' },
   { key: 'relation', label: 'Relation', placeholder: 'friend, brother, colleague' },
 ], {}, (v) => {
   if (!v.name) return false;
-  addTo(state.relationships.people, { id: uid(), name: v.name, relation: v.relation, tier: 2 });
+  addTo(state.relationships.people, { id: uid(), name: v.name, relation: v.relation, tier: 2 }, v.name);
 });
 
 $('addBirthday').onclick = () => openForm('Add a birthday', [
@@ -2121,7 +2028,7 @@ $('addBirthday').onclick = () => openForm('Add a birthday', [
   addTo(state.relationships.birthdays, {
     id: uid(), name: v.name, month: Number(v.month),
     day: Number(v.day) || null, year: Number(v.year) || null, deceased: false,
-  });
+  }, v.name + "'s birthday");
 });
 
 $('addBook').onclick = () => openForm('Add a book', [
@@ -2130,7 +2037,7 @@ $('addBook').onclick = () => openForm('Add a book', [
   { key: 'status', label: 'Status', type: 'select', options: ['want', 'reading', 'finished', 'abandoned'] },
 ], { status: 'reading' }, (v) => {
   if (!v.title) return false;
-  addTo(state.mind.books, { id: uid(), title: v.title, author: v.author, status: v.status || 'want' });
+  addTo(state.mind.books, { id: uid(), title: v.title, author: v.author, status: v.status || 'want' }, v.title);
 });
 
 $('addQuote').onclick = () => openForm('Add a quote', [
@@ -2139,7 +2046,7 @@ $('addQuote').onclick = () => openForm('Add a quote', [
   { key: 'why', label: 'Why it stuck (optional)' },
 ], {}, (v) => {
   if (!v.text) return false;
-  addTo(state.mind.quotes, { id: uid(), date: todayStr(), text: v.text, source: v.source, why: v.why });
+  addTo(state.mind.quotes, { id: uid(), date: todayStr(), text: v.text, source: v.source, why: v.why }, 'a quote');
 });
 
 $('addIdea').onclick = () => openForm('Add an idea', [
@@ -2147,7 +2054,7 @@ $('addIdea').onclick = () => openForm('Add an idea', [
   { key: 'source', label: 'Where it came from', placeholder: 'book, person, self' },
 ], {}, (v) => {
   if (!v.text) return false;
-  addTo(state.mind.ideas, { id: uid(), date: todayStr(), text: v.text, source: v.source });
+  addTo(state.mind.ideas, { id: uid(), date: todayStr(), text: v.text, source: v.source }, 'an idea');
 });
 
 $('addCategory').onclick = () => openForm('Add a budget line', [
@@ -2155,7 +2062,7 @@ $('addCategory').onclick = () => openForm('Add a budget line', [
   { key: 'planned', label: 'Planned per month', type: 'number', step: '0.01' },
 ], {}, (v) => {
   if (!v.name) return false;
-  addTo(state.money.categories, { id: uid(), name: v.name, planned: Number(v.planned) || 0 });
+  addTo(state.money.categories, { id: uid(), name: v.name, planned: Number(v.planned) || 0 }, v.name);
 });
 
 $('addExpense').onclick = () => {
@@ -2171,7 +2078,7 @@ $('addExpense').onclick = () => {
     if (!amt) return false;
     addTo(state.money.expenses, {
       id: uid(), date: v.date || day, amount: amt, categoryId: v.categoryId, note: v.note,
-    });
+    }, fmt$(amt));
   });
 };
 
@@ -2183,7 +2090,7 @@ $('addSub').onclick = () => openForm('Add a subscription', [
   if (!v.name || !Number(v.amount)) return false;
   addTo(state.money.subscriptions, {
     id: uid(), name: v.name, amount: Number(v.amount), cadence: v.cadence || 'monthly',
-  });
+  }, v.name);
 });
 
 $('editValues').onclick = () => openForm('Your values', [
@@ -2203,7 +2110,7 @@ $('addPlace').onclick = () => openForm('Add a place', [
   { key: 'to', label: 'To (leave blank if current)', type: 'date' },
 ], {}, (v) => {
   if (!v.name) return false;
-  addTo(state.places.items, { id: uid(), name: v.name, kind: v.kind || 'spot', from: v.from, to: v.to });
+  addTo(state.places.items, { id: uid(), name: v.name, kind: v.kind || 'spot', from: v.from, to: v.to }, v.name);
 });
 
 $('popBack').onclick = closePop;

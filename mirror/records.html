@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Records · Mirror</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#8a6a3e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mirror">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪞</text></svg>">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:#f6f1e6; --panel:#fffdf7; --panel2:#efe8d8;
+    --ink:#2a2620; --dim:#7a6f5e; --line:rgba(42,38,32,.12);
+    --accent:#8a6a3e; --accent2:#5b7a55; --warn:#a85a3a;
+    --shadow:0 1px 2px rgba(42,38,32,.05);
+  }
+  body.theme-dark {
+    --bg:#1c1e24; --panel:#24262e; --panel2:#2d3039;
+    --ink:#e8e4dc; --dim:#8a8478; --line:rgba(232,228,220,.1);
+    --accent:#c89b60; --accent2:#8fb080; --warn:#d87a5a;
+    --shadow:0 1px 2px rgba(0,0,0,.25);
+  }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 15px; line-height: 1.45;
+    padding: 0 14px calc(40px + env(safe-area-inset-bottom));
+    max-width: 1120px; margin: 0 auto; -webkit-text-size-adjust: 100%;
+  }
+
+  .top {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 8px;
+    padding: calc(12px + env(safe-area-inset-top)) 0 10px;
+    position: sticky; top: 0; z-index: 20; background: var(--bg);
+  }
+  .top h1 { font-size: 1.05rem; font-weight: 600; text-align: center; }
+  .top .home {
+    justify-self: start; display: inline-flex; align-items: center; gap: 5px;
+    text-decoration: none; color: var(--dim); font-size: .78rem;
+    padding: 5px 10px; border-radius: 999px; border: 1px solid transparent;
+  }
+  .top .home:hover { color: var(--accent); border-color: var(--line); background: var(--panel); }
+  .top .tools { justify-self: end; display: flex; gap: 6px; }
+  .icon-btn {
+    background: var(--panel); border: 1px solid var(--line); color: var(--dim);
+    border-radius: 8px; padding: 5px 9px; font: inherit; font-size: .8rem; cursor: pointer;
+  }
+  .icon-btn:hover { color: var(--ink); border-color: var(--accent); }
+  @media (max-width: 560px) { .top .home .lbl { display: none; } }
+
+  .searchbar { margin-bottom: 14px; }
+  .searchbar input {
+    width: 100%; font: inherit; font-size: .9rem; padding: 10px 13px;
+    border-radius: 10px; border: 1px solid var(--line);
+    background: var(--panel); color: var(--ink);
+  }
+  .searchbar input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+  .tabbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .tabbar button {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 999px; padding: 6px 14px; font: inherit; font-size: .78rem; cursor: pointer;
+  }
+  .tabbar button:hover { border-color: var(--accent); }
+  .tabbar button[aria-selected="true"] {
+    background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600;
+  }
+  body.theme-dark .tabbar button[aria-selected="true"] { color: #1c1e24; }
+  .tabbar button .n { opacity: .65; margin-left: 5px; font-size: .7rem; }
+
+  .sect { margin-bottom: 20px; }
+  .sect > h2 {
+    font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--dim); margin-bottom: 9px; display: flex; align-items: baseline; gap: 9px;
+  }
+  .sect > h2 .cnt { margin-left: auto; font-weight: 400; letter-spacing: 0; text-transform: none; }
+  .rows {
+    background: var(--panel); border: 1px solid var(--line);
+    border-radius: 12px; box-shadow: var(--shadow); overflow: hidden;
+  }
+  .r {
+    display: flex; align-items: baseline; gap: 10px; padding: 10px 14px;
+    border-bottom: 1px solid var(--line); font-size: .88rem;
+  }
+  .r:last-child { border-bottom: 0; }
+  .r .main { flex: 1; min-width: 0; }
+  .r .meta { font-size: .74rem; color: var(--dim); white-space: nowrap; }
+  .r .x {
+    background: none; border: 0; color: var(--dim); cursor: pointer;
+    font: inherit; padding: 0 2px; opacity: 0;
+  }
+  .r:hover .x, .r .x:focus { opacity: 1; }
+  .r .x:hover { color: var(--warn); }
+  .r .sub { display: block; font-size: .74rem; color: var(--dim); margin-top: 2px; }
+  .empty { padding: 14px; color: var(--dim); font-style: italic; font-size: .85rem; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 12px 14px; }
+  .chip {
+    background: var(--panel2); border: 1px solid var(--line); color: var(--ink);
+    border-radius: 999px; padding: 5px 12px; font-size: .8rem;
+  }
+  .foot { text-align: center; color: var(--dim); font-size: .72rem; padding: 20px 0 4px; }
+  .foot a { color: var(--dim); }
+  .toast {
+    position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
+    transform: translateX(-50%) translateY(12px); z-index: 60;
+    background: var(--ink); color: var(--bg); font-size: .8rem;
+    padding: 9px 16px; border-radius: 999px; box-shadow: 0 6px 20px rgba(0,0,0,.25);
+    opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="top">
+  <a class="home" href="./" title="Back to the dashboard"><span>←</span><span class="lbl">Dashboard</span></a>
+  <h1>Records</h1>
+  <span class="tools">
+    <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
+  </span>
+</div>
+
+<div class="searchbar">
+  <input type="text" id="q" placeholder="Search everything — a name, a book, a place…" autocomplete="off">
+</div>
+<div class="tabbar" id="tabs"></div>
+<div id="out"></div>
+
+<div class="foot">
+  <a href="./">← Dashboard</a> · <a href="self.html">the full app</a> · records are read here, entered there.
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* =============================================================
+   Mirror — Records.
+
+   The dashboard is for putting things in; this is for looking them up.
+   It shares `mirror_v1`, reads the same tree, and deliberately offers no
+   way to create anything: one place to write, one place to browse.
+   Deleting is allowed, because finding a mistake is exactly what
+   browsing is for.
+   ============================================================= */
+const STORAGE_KEY = 'mirror_v1';
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const round1 = (n) => Math.round(n * 10) / 10;
+function fmt$(n) {
+  const v = Number(n || 0);
+  return (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2).replace(/\.00$/, '');
+}
+function toLocalISO(d) {
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') +
+         '-' + String(d.getDate()).padStart(2, '0');
+}
+function fmtDate(s) {
+  if (!s) return '';
+  const d = new Date(String(s).length > 10 ? s : s + 'T00:00');
+  return isNaN(d) ? '' : d.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+}
+
+let state = null;
+function load() {
+  try { state = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { state = null; }
+  if (!state) state = {};
+  const g = (o, ...path) => path.reduce((a, k) => (a && a[k]) || undefined, o);
+  state.relationships = state.relationships || {};
+  state.mind = state.mind || {};
+  state.money = state.money || {};
+  state.identity = state.identity || {};
+  state.places = state.places || { items: [], days: {} };
+  state.body = state.body || {};
+  state.habits = state.habits || { items: [] };
+  state.daily = state.daily || { cards: [] };
+  return state;
+}
+function save() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch { alert('Could not save — this browser is out of storage space.'); }
+}
+let toastTimer = null;
+function toast(msg) {
+  const el = $('toast');
+  el.textContent = msg; el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2000);
+}
+/* Deletions leave a tombstone here too, so the sync layer can't resurrect
+   something removed from this side. */
+function remove(arr, id, label) {
+  const i = arr.findIndex((r) => r.id === id);
+  if (i < 0) return;
+  arr.splice(i, 1);
+  state._deleted = state._deleted || [];
+  state._deleted.push({ id, at: new Date().toISOString() });
+  save(); render();
+  toast('Removed ' + (label || 'entry'));
+}
+
+/* ---------- what this page knows how to show ----------
+   Each section says where its rows live, how to draw one, and what text a
+   search should match. Adding a new kind of record is one entry here. */
+const SECTIONS = [
+  { key: 'people', name: 'People', arr: () => state.relationships.people,
+    text: (r) => [r.name, r.relation].join(' '),
+    row: (r) => ({ main: r.name, meta: r.relation || '' }),
+    sort: (a, b) => String(a.name).localeCompare(String(b.name)) },
+
+  { key: 'birthdays', name: 'Birthdays', arr: () => state.relationships.birthdays,
+    text: (r) => [r.name, MONTHS[r.month - 1]].join(' '),
+    row: (r) => ({ main: r.name,
+      meta: (MONTHS[r.month - 1] || '?') + (r.day ? ' ' + r.day : '') + (r.year ? ', ' + r.year : '') }),
+    sort: (a, b) => (a.month - b.month) || ((a.day || 0) - (b.day || 0)) },
+
+  { key: 'books', name: 'Books', arr: () => state.mind.books,
+    text: (r) => [r.title, r.author, r.status].join(' '),
+    row: (r) => ({ main: r.title, meta: [r.author, r.status].filter(Boolean).join(' · ') }),
+    sort: (a, b) => String(a.status).localeCompare(String(b.status)) },
+
+  { key: 'quotes', name: 'Quotes', arr: () => state.mind.quotes,
+    text: (r) => [r.text, r.source].join(' '),
+    row: (r) => ({ main: '“' + r.text + '”', sub: [r.source, r.why].filter(Boolean).join(' · '),
+      meta: fmtDate(r.date) }),
+    sort: (a, b) => String(b.date).localeCompare(String(a.date)) },
+
+  { key: 'ideas', name: 'Ideas', arr: () => state.mind.ideas,
+    text: (r) => [r.text, r.source].join(' '),
+    row: (r) => ({ main: r.text, meta: [r.source, fmtDate(r.date)].filter(Boolean).join(' · ') }),
+    sort: (a, b) => String(b.date).localeCompare(String(a.date)) },
+
+  { key: 'questions', name: 'Questions', arr: () => state.mind.questions,
+    text: (r) => [r.q, r.note].join(' '),
+    row: (r) => ({ main: r.q, meta: [r.status, fmtDate(r.date)].filter(Boolean).join(' · ') }),
+    sort: (a, b) => String(b.date).localeCompare(String(a.date)) },
+
+  { key: 'budget', name: 'Budget', arr: () => state.money.categories,
+    text: (r) => r.name,
+    row: (r) => ({ main: r.name, meta: r.planned ? fmt$(r.planned) + ' planned' : '' }),
+    sort: (a, b) => String(a.name).localeCompare(String(b.name)) },
+
+  { key: 'expenses', name: 'Expenses', arr: () => state.money.expenses,
+    text: (r) => [r.note, catName(r.categoryId)].join(' '),
+    row: (r) => ({ main: r.note || catName(r.categoryId) || 'expense',
+      sub: catName(r.categoryId), meta: fmtDate(r.date) + ' · ' + fmt$(r.amount) }),
+    sort: (a, b) => String(b.date).localeCompare(String(a.date)) },
+
+  { key: 'subscriptions', name: 'Subscriptions', arr: () => state.money.subscriptions,
+    text: (r) => r.name,
+    row: (r) => ({ main: r.name, meta: fmt$(r.amount) + ' / ' + (r.cadence || 'monthly') }),
+    sort: (a, b) => String(a.name).localeCompare(String(b.name)) },
+
+  { key: 'places', name: 'Places', arr: () => state.places.items,
+    text: (r) => [r.name, r.kind, r.note].join(' '),
+    row: (r) => ({ main: r.name,
+      meta: [r.kind, [fmtDate(r.from), r.to ? fmtDate(r.to) : (r.from ? 'now' : '')].filter(Boolean).join(' – ')]
+        .filter(Boolean).join(' · ') }),
+    sort: (a, b) => String(b.from || '').localeCompare(String(a.from || '')) },
+
+  { key: 'habits', name: 'Habits', arr: () => state.habits.items,
+    text: (r) => r.name,
+    row: (r) => ({ main: r.name,
+      meta: (r.done || []).length + ' days kept' + (r.active === false ? ' · archived' : '') }),
+    sort: (a, b) => (b.done || []).length - (a.done || []).length },
+];
+function catName(id) {
+  const c = (state.money.categories || []).find((x) => x.id === id);
+  return c ? c.name : '';
+}
+
+let activeTab = 'all';
+let query = '';
+
+function matching(sec) {
+  const rows = (sec.arr() || []).slice();
+  const q = query.trim().toLowerCase();
+  const hits = q ? rows.filter((r) => String(sec.text(r) || '').toLowerCase().includes(q)) : rows;
+  return sec.sort ? hits.sort(sec.sort) : hits;
+}
+
+function renderTabs() {
+  const box = $('tabs'); box.innerHTML = '';
+  const mk = (key, label, n) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = esc(label) + (n != null ? '<span class="n">' + n + '</span>' : '');
+    b.setAttribute('aria-selected', String(activeTab === key));
+    b.onclick = () => { activeTab = key; render(); };
+    box.appendChild(b);
+  };
+  mk('all', 'Everything');
+  SECTIONS.forEach((s) => mk(s.key, s.name, matching(s).length));
+}
+
+function renderSections() {
+  const out = $('out'); out.innerHTML = '';
+  const show = SECTIONS.filter((s) => activeTab === 'all' || s.key === activeTab);
+  let anything = false;
+
+  show.forEach((sec) => {
+    const rows = matching(sec);
+    // When searching across everything, an empty section is just noise.
+    if (!rows.length && (query || activeTab === 'all')) return;
+    anything = true;
+
+    const wrap = document.createElement('div'); wrap.className = 'sect';
+    const h = document.createElement('h2');
+    h.innerHTML = esc(sec.name) + '<span class="cnt">' + rows.length + '</span>';
+    wrap.appendChild(h);
+
+    const box = document.createElement('div'); box.className = 'rows';
+    if (!rows.length) {
+      box.innerHTML = '<div class="empty">Nothing here yet — add it from the dashboard.</div>';
+    } else {
+      rows.forEach((r) => {
+        const d = sec.row(r);
+        const div = document.createElement('div'); div.className = 'r';
+        div.innerHTML = '<span class="main">' + esc(d.main) +
+          (d.sub ? '<span class="sub">' + esc(d.sub) + '</span>' : '') + '</span>' +
+          (d.meta ? '<span class="meta">' + esc(d.meta) + '</span>' : '');
+        const x = document.createElement('button');
+        x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
+        x.onclick = () => remove(sec.arr(), r.id, d.main);
+        div.appendChild(x);
+        box.appendChild(div);
+      });
+    }
+    wrap.appendChild(box);
+    out.appendChild(wrap);
+  });
+
+  // Values are a short list of strings rather than records, so they get a
+  // chip row rather than a table.
+  const vals = state.identity.values || [];
+  if ((activeTab === 'all' || activeTab === 'places') && vals.length &&
+      (!query || vals.some((v) => v.toLowerCase().includes(query.trim().toLowerCase())))) {
+    anything = true;
+    const wrap = document.createElement('div'); wrap.className = 'sect';
+    wrap.innerHTML = '<h2>Values<span class="cnt">' + vals.length + '</span></h2>' +
+      '<div class="rows"><div class="chips">' +
+      vals.map((v) => '<span class="chip">' + esc(v) + '</span>').join('') + '</div></div>';
+    out.appendChild(wrap);
+  }
+
+  if (!anything) {
+    out.innerHTML = '<div class="sect"><div class="rows"><div class="empty">' +
+      (query ? 'Nothing matches “' + esc(query) + '”.' : 'Nothing recorded yet.') +
+      '</div></div></div>';
+  }
+}
+
+function render() { renderTabs(); renderSections(); }
+
+if (localStorage.getItem('mirror_theme') === 'dark') document.body.classList.add('theme-dark');
+$('themeBtn').textContent = document.body.classList.contains('theme-dark') ? '☀' : '☾';
+$('themeBtn').onclick = () => {
+  document.body.classList.toggle('theme-dark');
+  const dark = document.body.classList.contains('theme-dark');
+  localStorage.setItem('mirror_theme', dark ? 'dark' : 'light');
+  $('themeBtn').textContent = dark ? '☀' : '☾';
+};
+$('q').oninput = (e) => { query = e.target.value; render(); };
+$('q').onkeydown = (e) => { if (e.key === 'Escape') { e.target.value = ''; query = ''; render(); } };
+
+load();
+render();
+
+if ('serviceWorker' in navigator && location.protocol.startsWith('http')) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>
