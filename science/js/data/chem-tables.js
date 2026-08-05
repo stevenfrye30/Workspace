@@ -132,6 +132,19 @@ export const KB = [
   { f: "C6H5NH2", n: "aniline",       kb: 4.3e-10, pkb: 9.37 }
 ];
 
+/* Acid-base indicators, with the pH range over which each changes colour.
+   An indicator is right for a titration when its range straddles the
+   equivalence pH — that is the whole basis for choosing one. */
+export const INDICATORS = [
+  { n: "Methyl orange",     lo: 3.1, hi: 4.4,  change: "red → yellow" },
+  { n: "Bromocresol green", lo: 3.8, hi: 5.4,  change: "yellow → blue" },
+  { n: "Methyl red",        lo: 4.4, hi: 6.2,  change: "red → yellow" },
+  { n: "Bromothymol blue",  lo: 6.0, hi: 7.6,  change: "yellow → blue" },
+  { n: "Phenol red",        lo: 6.8, hi: 8.4,  change: "yellow → red" },
+  { n: "Phenolphthalein",   lo: 8.3, hi: 10.0, change: "colourless → pink" },
+  { n: "Thymolphthalein",   lo: 9.4, hi: 10.6, change: "colourless → blue" }
+];
+
 /* Relationships a student needs alongside the Ka/Kb table. */
 export const KA_KB_NOTES = [
   "Ka × Kb = Kw = 1.0 × 10⁻¹⁴ for a conjugate acid–base pair.",

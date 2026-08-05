@@ -18,7 +18,8 @@ const WIDGETS = {
   'reference': ['./widgets/reference-tables.js'],
   'data-analysis': ['./widgets/units.js', './widgets/calculator.js'],
   'chemistry': ['./widgets/stoichiometry.js', './widgets/gaslaws.js',
-                './widgets/thermochem.js', './widgets/chemistry.js'],
+                './widgets/thermochem.js', './widgets/titration.js',
+                './widgets/chemistry.js'],
   'notes': ['./widgets/notes-library.js']
 };
 
