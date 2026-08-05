@@ -161,50 +161,48 @@
   body.theme-dark button.primary { color: #1c1e24; }
   button.primary:hover { filter: brightness(1.08); }
 
-  /* ---------- intake tiles ----------
-     auto-fit, not a fixed 3: inside a CSS column a media query measures the
-     viewport, not the column, so the track count has to come from the space
-     actually available. */
-  .intake { display: grid; grid-template-columns: repeat(auto-fit, minmax(96px, 1fr)); gap: 8px; }
-  body.dense .intake { gap: 6px; }
-  .tile {
-    background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
-    padding: 9px 10px 10px; text-align: left; position: relative;
-    border-top: 2px solid var(--c, var(--accent));
+  /* ---------- tabbed, colour-tinted boxes (drinks + substances) ----------
+     The whole card takes the active tab's hue, so what you're about to log
+     is unmistakable without reading anything. */
+  .boxed {
+    background: color-mix(in srgb, var(--c, var(--accent)) 13%, var(--panel));
+    border-color: color-mix(in srgb, var(--c, var(--accent)) 45%, transparent);
+    transition: background .18s, border-color .18s;
   }
-  .tile .name {
-    display: block; font-size: .68rem; text-transform: uppercase; letter-spacing: .06em;
-    color: var(--c); font-weight: 600;
-    padding-right: 26px;                 /* clear the absolutely-placed + button */
+  body.theme-dark .boxed { background: color-mix(in srgb, var(--c, var(--accent)) 18%, var(--panel)); }
+  .boxed > h2 { color: var(--c, var(--dim)); }
+  .boxed > h2 .note { color: var(--ink); font-weight: 600; }
+
+  .tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+  .tabs button {
+    flex: 1 1 0; min-width: 0; cursor: pointer; font: inherit; font-size: .7rem;
+    padding: 6px 4px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--panel2); color: var(--dim);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: background .14s, color .14s, border-color .14s;
+  }
+  .tabs button:hover { border-color: var(--tc); color: var(--tc); }
+  .tabs button[aria-selected="true"] {
+    background: var(--tc); border-color: var(--tc); color: #fff; font-weight: 600;
+  }
+  body.theme-dark .tabs button[aria-selected="true"] { color: #1c1e24; }
+  .tabs button .n { font-size: .62rem; opacity: .75; margin-left: 3px; }
+  body.dense .tabs { gap: 3px; margin-bottom: 8px; }
+  body.dense .tabs button { font-size: .66rem; padding: 5px 3px; }
+
+  .quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(62px, 1fr)); gap: 6px; }
+  .quick button {
+    cursor: pointer; font: inherit; font-size: .8rem; font-weight: 600; padding: 11px 4px;
+    border-radius: 9px; border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
+    background: var(--panel); color: var(--c);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .tile .amt {
-    display: block; width: 100%; text-align: left; background: none; border: 0; padding: 2px 0 0;
-    font: inherit; font-size: 1.15rem; font-weight: 600; font-variant-numeric: tabular-nums;
-    color: var(--ink); cursor: pointer; line-height: 1.15;
-  }
-  .tile .amt .u { font-size: .62rem; color: var(--dim); font-weight: 400; margin-left: 2px; }
-  .tile .amt:hover { color: var(--c); }
-  .tile .amt.zero { color: var(--dim); font-weight: 400; }
-  .tile .plus {
-    position: absolute; top: 7px; right: 7px; width: 30px; height: 30px;
-    border-radius: 8px; border: 1px solid var(--line); background: var(--panel);
-    color: var(--c); font-size: 1.15rem; line-height: 1; cursor: pointer; font-family: inherit;
-  }
-  .tile .plus:hover { background: var(--c); color: #fff; border-color: var(--c); }
-  .tile .sizes { display: flex; gap: 3px; margin-top: 7px; }
-  .tile .sizes button {
-    flex: 1; font: inherit; font-size: .66rem; padding: 3px 0; cursor: pointer;
-    border: 1px solid var(--line); background: var(--panel); color: var(--dim); border-radius: 5px;
-  }
-  .tile .sizes button:hover { border-color: var(--c); color: var(--c); }
-  body.dense .tile { padding: 7px 8px 8px; }
-  /* "ALCOHOL" and "NICOTINE" are the long ones; at three tiles across they
-     were clipping against the + button. Tighter type buys the ~8px needed. */
-  body.dense .tile .name { font-size: .62rem; letter-spacing: .03em; padding-right: 22px; }
-  body.dense .tile .amt { font-size: 1rem; }
-  body.dense .tile .plus { width: 26px; height: 26px; font-size: 1rem; top: 5px; right: 5px; }
-  body.dense .tile .sizes { margin-top: 5px; }
+  .quick button:hover { background: var(--c); color: #fff; border-color: var(--c); }
+  body.theme-dark .quick button:hover { color: #1c1e24; }
+  body.dense .quick button { padding: 9px 4px; font-size: .76rem; }
+  .quick button .u { font-size: .6rem; font-weight: 400; opacity: .7; margin-left: 1px; }
+
+  #drinkLabelRow { margin-bottom: 8px; }
 
   /* ---------- food ---------- */
   .totals { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400; font-variant-numeric: tabular-nums; }
@@ -419,20 +417,33 @@
     <div class="rowlabel">Sleep <span class="note" id="sleepNote"></span></div>
     <div class="chips" id="sHours"></div>
     <div class="dotline" style="margin-top:7px"><span class="dl">Quality</span><div class="dots" id="sQuality"></div></div>
-    <details class="fold">
-      <summary>Notes</summary>
-      <div class="field"><input type="number" id="sCustom" min="0" max="24" step="0.25" placeholder="exact sleep hours"></div>
-      <div class="field"><input type="text" id="pNote" placeholder="How does your body feel?"></div>
-      <div class="field"><textarea id="pSentence" placeholder="What happened today?"></textarea></div>
-    </details>
     <div class="field"><button class="primary" id="pSave">Save</button></div>
   </div>
 
-  <!-- Six of the daily items in one widget. Tap + to log; tap the number to
-       review or undo. Everything is timestamped. -->
-  <div class="card">
-    <h2>Intake</h2>
-    <div class="intake" id="intake"></div>
+  <!-- Drinks — one box, four tabs. The box takes the active tab's colour so
+       what you're logging is obvious at a glance, and each tab carries its own
+       four quick amounts, so a drink is always exactly one tap. Storage is
+       unchanged: water -> body.water, coffee/other -> body.drinks, and alcohol
+       stays in body.substances because standard drinks, not ounces, are what
+       you'd ever want back from it. -->
+  <div class="card boxed" id="drinksCard">
+    <h2><span id="drinksName">Drinks</span> <span class="note" id="drinksTotal"></span></h2>
+    <div class="tabs" id="drinkTabs"></div>
+    <div id="drinkLabelRow" hidden>
+      <div class="chips" id="drinkRecent" style="margin-bottom:7px"></div>
+      <input type="text" id="drinkLabel" placeholder="what was it? — tea, juice, soda">
+    </div>
+    <div class="quick" id="drinkQuick"></div>
+    <div class="list" id="drinkLog"></div>
+  </div>
+
+  <!-- Substances — the non-food, non-drink side. No natural quick amounts, so
+       one tap logs one, and + opens a note for anything worth the detail. -->
+  <div class="card boxed" id="subsCard">
+    <h2><span id="subsName">Substances</span> <span class="note" id="subsTotal"></span></h2>
+    <div class="tabs" id="subTabs"></div>
+    <div class="quick" id="subQuick"></div>
+    <div class="list" id="subLog"></div>
   </div>
 
   <div class="card">
@@ -758,8 +769,6 @@ function loadPulse() {
     soreness: ck.soreness ?? null,
     comfort: ck.comfort ?? null,
   };
-  $('pNote').value = ck.note || c.body_note || '';
-  $('pSentence').value = c.one_sentence || '';
   renderPulse();
 }
 function renderPulse() {
@@ -772,25 +781,23 @@ function renderPulse() {
   $('pulseSaved').textContent = c ? 'saved' : '';
 }
 function savePulse() {
-  const note = $('pNote').value.trim();
-  const sentence = $('pSentence').value.trim();
-
+  // The free-text fields were removed from this card; any note already on a
+  // record stays exactly as it was rather than being blanked by a re-save.
   let c = card(day);
   if (!c) { c = { id: uid(), date: day, tags: [] }; state.daily.cards.push(c); }
   c.mood = pulse.mood; c.energy = pulse.energy;
-  c.body_note = note; c.one_sentence = sentence;
   stamp(c);
 
   let ck = checkin(day);
   if (!ck) { ck = { id: uid(), date: day }; state.body.checkins.push(ck); }
   ck.energy = pulse.energy; ck.fatigue = pulse.fatigue;
-  ck.soreness = pulse.soreness; ck.comfort = pulse.comfort; ck.note = note;
+  ck.soreness = pulse.soreness; ck.comfort = pulse.comfort;
   stamp(ck);
 
   if (pulse.mood != null || pulse.energy != null) {
     let p = state.identity.pulse.find((x) => x.date === day);
     if (!p) { p = { id: uid(), date: day }; state.identity.pulse.push(p); }
-    p.mood = pulse.mood; p.energy = pulse.energy; p.note = note;
+    p.mood = pulse.mood; p.energy = pulse.energy;
     stamp(p);
   }
 
@@ -813,7 +820,6 @@ function sleepFor(d) { return (state.body.sleep || []).find((s) => s.date === d)
 function loadSleep() {
   const s = sleepFor(day);
   sleepDraft = { hours: s ? s.hours : null, quality: s ? s.quality : null };
-  $('sCustom').value = '';
   renderSleep();
 }
 function renderSleep() {
@@ -822,7 +828,7 @@ function renderSleep() {
     const b = document.createElement('button');
     b.type = 'button'; b.className = 'chip'; b.textContent = h;
     b.setAttribute('aria-pressed', String(sleepDraft.hours === h));
-    b.onclick = () => { sleepDraft.hours = sleepDraft.hours === h ? null : h; $('sCustom').value = ''; renderSleep(); };
+    b.onclick = () => { sleepDraft.hours = sleepDraft.hours === h ? null : h; renderSleep(); };
     wrap.appendChild(b);
   });
   buildDots($('sQuality'), sleepDraft.quality, (v) => { sleepDraft.quality = v; renderSleep(); });
@@ -833,8 +839,7 @@ function renderSleep() {
    there is something to write — logging a mood must not demand a sleep
    figure you don't have. Returns whether anything was written. */
 function writeSleep() {
-  const typed = parseFloat($('sCustom').value);
-  const hours = !isNaN(typed) ? typed : sleepDraft.hours;
+  const hours = sleepDraft.hours;
   if (hours == null) return false;
 
   let s = sleepFor(day);
@@ -853,138 +858,193 @@ function writeSleep() {
 }
 
 /* =============================================================
-   INTAKE — six counters over two stores.
-   water      -> body.water[]       { oz }
-   coffee/other -> body.drinks[]    { kind, label, oz?, count }
-   alcohol/nicotine/weed -> body.substances[] { kind, count }
-   Alcohol sits with the substances, not the drinks: what you'd ever want
-   back from it is standard drinks per night, not fluid ounces.
+   DRINKS + SUBSTANCES — two tabbed boxes over three stores.
+
+   The UI groups by what a thing IS; storage stays exactly where it was, so
+   no history has to move:
+     water            -> body.water[]       { oz }
+     coffee / other   -> body.drinks[]      { kind, label, oz, count }
+     alcohol          -> body.substances[]  { kind, count, unit, oz }
+     weed / nicotine  -> body.substances[]  { kind, count, note }
+
+   Alcohol shows among the drinks because that is what it is, but it stays
+   stored as a standard-drink count — a 12 oz beer and a 1.5 oz shot are one
+   drink each, and that equivalence is the whole point of the measure.
    ============================================================= */
-const INTAKE = [
-  { key: 'water',    name: 'Water',    icon: '💧', store: 'water',      unit: 'oz',
-    sizes: [8, 12, 16, 24], dflt: 12 },
-  { key: 'coffee',   name: 'Coffee',   icon: '☕', store: 'drinks',     unit: '', dflt: 1 },
-  { key: 'other',    name: 'Other',    icon: '🥤', store: 'drinks',     unit: '', dflt: 1, asks: true },
-  { key: 'alcohol',  name: 'Alcohol',  icon: '🍺', store: 'substances', unit: '', dflt: 1 },
-  { key: 'nicotine', name: 'Nicotine', icon: '🚬', store: 'substances', unit: '', dflt: 1 },
-  { key: 'weed',     name: 'Weed',     icon: '🌿', store: 'substances', unit: '', dflt: 1 },
-];
-const intakeMeta = (k) => INTAKE.find((i) => i.key === k);
+const KINDS = {
+  water:    { name: 'Water',    icon: '💧', c: 'water',    store: 'water' },
+  coffee:   { name: 'Coffee',   icon: '☕', c: 'coffee',   store: 'drinks' },
+  alcohol:  { name: 'Alcohol',  icon: '🍺', c: 'alcohol',  store: 'substances' },
+  other:    { name: 'Other',    icon: '🥤', c: 'other',    store: 'drinks' },
+  weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
+  nicotine: { name: 'Nicotine', icon: '🚬', c: 'nicotine', store: 'substances' },
+};
+const intakeMeta = (k) => KINDS[k];          // the day-feed reads its icons from here
+const DRINK_TABS = ['water', 'coffee', 'alcohol', 'other'];
+const SUB_TABS   = ['weed', 'nicotine'];
 
-function intakeEntries(spec) {
-  if (spec.store === 'water') return onDay(state.body.water);
-  const arr = spec.store === 'drinks' ? state.body.drinks : state.body.substances;
-  return onDay(arr).filter((r) => r.kind === spec.key);
+/* Four one-tap amounts per drink tab. Substances have no natural amount, so
+   one tap logs one and the second button opens a note. */
+const QUICK = {
+  water:    [{ l: '8', oz: 8 }, { l: '12', oz: 12 }, { l: '16', oz: 16 }, { l: '24', oz: 24 }],
+  coffee:   [{ l: '4', oz: 4 }, { l: '8', oz: 8 }, { l: '12', oz: 12 }, { l: '16', oz: 16 }],
+  alcohol:  [{ l: 'Beer', oz: 12 }, { l: 'Wine', oz: 5 }, { l: 'Shot', oz: 1.5 }, { l: 'Drink', oz: null }],
+  other:    [{ l: '8', oz: 8 }, { l: '12', oz: 12 }, { l: '16', oz: 16 }, { l: '24', oz: 24 }],
+  weed:     [{ l: '+1', n: 1 }, { l: '＋ detail…', ask: true }],
+  nicotine: [{ l: '+1', n: 1 }, { l: '＋ detail…', ask: true }],
+};
+
+let drinkTab = 'water';
+let subTab = 'weed';
+
+function arrOf(kind) {
+  const s = KINDS[kind].store;
+  return s === 'water' ? state.body.water : s === 'drinks' ? state.body.drinks : state.body.substances;
 }
-function intakeTotal(spec) {
-  const rows = intakeEntries(spec);
-  if (spec.key === 'water') return rows.reduce((n, r) => n + (Number(r.oz) || 0), 0);
-  return rows.reduce((n, r) => n + (Number(r.count) || 1), 0);
+function entriesOf(kind) {
+  return kind === 'water' ? onDay(state.body.water) : onDay(arrOf(kind)).filter((r) => r.kind === kind);
+}
+/** The headline number for a kind, in the unit that kind is actually about. */
+function totalOf(kind) {
+  const rows = entriesOf(kind);
+  if (kind === 'water' || kind === 'other') {
+    return { n: rows.reduce((a, r) => a + (Number(r.oz) || 0), 0), unit: 'oz' };
+  }
+  const n = rows.reduce((a, r) => a + (Number(r.count) || 1), 0);
+  if (kind === 'coffee')  return { n, unit: n === 1 ? 'cup' : 'cups' };
+  if (kind === 'alcohol') return { n, unit: n === 1 ? 'drink' : 'drinks' };
+  return { n, unit: '' };
 }
 
-function addIntake(spec, amount, label) {
+function addIntake(kind, opts) {
+  const m = KINDS[kind];
   const rec = stamp({ id: uid(), date: day, t: stampTime() });
-  if (spec.key === 'water') {
-    rec.oz = amount;
+  if (kind === 'water') {
+    rec.oz = opts.oz;
     state.body.water.push(rec);
-  } else if (spec.store === 'drinks') {
-    rec.kind = spec.key; rec.label = label || spec.name; rec.count = 1;
+  } else if (m.store === 'drinks') {
+    rec.kind = kind; rec.count = 1;
+    if (opts.oz != null) rec.oz = opts.oz;
+    rec.label = opts.label || m.name;
     state.body.drinks.push(rec);
   } else {
-    rec.kind = spec.key; rec.count = 1;
+    rec.kind = kind; rec.count = Number(opts.count) || 1;
+    if (opts.oz != null) rec.oz = opts.oz;
+    if (opts.unit) rec.unit = opts.unit;
+    if (opts.note) rec.note = opts.note;
     state.body.substances.push(rec);
   }
-  // The macro bar carries the day's water, so it has to refresh with the tiles.
-  saveState(); renderIntake(); renderFoodTotals(onDay(state.body.food)); renderFeed();
+  saveState();
+  renderDrinks(); renderSubs();
+  renderFoodTotals(onDay(state.body.food));   // the macro bar carries the day's water
+  renderFeed();
 }
 
-function renderIntake() {
-  const wrap = $('intake'); wrap.innerHTML = '';
-  INTAKE.forEach((spec) => {
-    const total = intakeTotal(spec);
-    const tile = document.createElement('div');
-    tile.className = 'tile'; tile.style.setProperty('--c', 'var(--' + spec.key + ')');
-
-    const plus = document.createElement('button');
-    plus.className = 'plus'; plus.type = 'button'; plus.textContent = '+';
-    plus.title = 'Log ' + spec.name.toLowerCase();
-    plus.onclick = () => (spec.asks ? askOtherDrink(spec) : addIntake(spec, spec.dflt));
-
-    const amt = document.createElement('button');
-    amt.className = 'amt' + (total ? '' : ' zero'); amt.type = 'button';
-    amt.innerHTML = total
-      ? esc(round1(total)) + (spec.unit ? '<span class="u">' + spec.unit + '</span>' : '')
-      : '<span class="u">none yet</span>';
-    amt.title = 'Review or undo';
-    amt.onclick = () => openIntakeDetail(spec);
-
-    tile.innerHTML = '<span class="name">' + spec.icon + ' ' + esc(spec.name) + '</span>';
-    tile.appendChild(plus); tile.appendChild(amt);
-
-    if (spec.sizes) {
-      const sizes = document.createElement('div'); sizes.className = 'sizes';
-      spec.sizes.forEach((oz) => {
-        const b = document.createElement('button');
-        b.type = 'button'; b.textContent = '+' + oz;
-        b.onclick = () => addIntake(spec, oz);
-        sizes.appendChild(b);
-      });
-      tile.appendChild(sizes);
-    }
-    wrap.appendChild(tile);
+function renderTabs(el, kinds, active, onPick) {
+  el.innerHTML = '';
+  kinds.forEach((k) => {
+    const m = KINDS[k];
+    const t = totalOf(k);
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.style.setProperty('--tc', 'var(--' + m.c + ')');
+    b.setAttribute('aria-selected', String(k === active));
+    b.innerHTML = m.icon + ' ' + esc(m.name) + (t.n ? '<span class="n">' + round1(t.n) + '</span>' : '');
+    b.onclick = () => onPick(k);
+    el.appendChild(b);
   });
 }
 
-function askOtherDrink(spec) {
-  const recent = [...new Set(state.body.drinks.filter((d) => d.kind === 'other')
-    .slice(-30).map((d) => d.label).filter(Boolean))].slice(-6).reverse();
-  openPop('What did you drink?',
-    (recent.length ? '<div class="chips" id="popRecent" style="margin-bottom:10px"></div>' : '') +
-    '<input type="text" id="popLabel" placeholder="tea, juice, soda…">',
-    () => {
-      const label = $('popLabel').value.trim();
-      if (!label) return false;
-      addIntake(spec, 1, label);
-    },
-    () => {
-      if (!recent.length) return;
-      const box = $('popRecent');
-      recent.forEach((label) => {
-        const b = document.createElement('button');
-        b.className = 'chip'; b.type = 'button'; b.textContent = label;
-        b.onclick = () => { closePop(); addIntake(spec, 1, label); };
-        box.appendChild(b);
-      });
-    });
-}
-
-function openIntakeDetail(spec) {
-  const rows = intakeEntries(spec);
-  if (!rows.length) { spec.asks ? askOtherDrink(spec) : addIntake(spec, spec.dflt); return; }
-  const html = '<div class="list" id="popList"></div>';
-  openPop(spec.icon + ' ' + spec.name + ' — ' + fmtDay(day), html, null, () => {
-    const box = $('popList');
-    const paint = () => {
-      box.innerHTML = '';
-      const live = intakeEntries(spec);
-      if (!live.length) { box.innerHTML = '<div class="empty">Nothing left for this day.</div>'; return; }
-      live.slice().reverse().forEach((r) => {
-        const div = document.createElement('div'); div.className = 'row';
-        const amount = spec.key === 'water' ? round1(r.oz) + ' oz' : (r.label || spec.name);
-        div.innerHTML = '<span class="tiny">' + esc(r.t || '') + '</span><span>' + esc(amount) + '</span>';
-        const x = document.createElement('button');
-        x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
-        x.onclick = () => {
-          const arr = spec.store === 'water' ? state.body.water
-            : spec.store === 'drinks' ? state.body.drinks : state.body.substances;
-          dropRecord(arr, r.id); saveState(); paint();
-          renderIntake(); renderFoodTotals(onDay(state.body.food)); renderFeed();
-        };
-        div.appendChild(x); box.appendChild(div);
-      });
+/** Today's entries for one kind, each with an undo. */
+function renderKindLog(el, kind) {
+  const rows = entriesOf(kind);
+  el.innerHTML = '';
+  if (!rows.length) { el.innerHTML = '<div class="empty">Nothing yet for ' + fmtDay(day) + '.</div>'; return; }
+  rows.slice().reverse().forEach((r) => {
+    const div = document.createElement('div'); div.className = 'row';
+    const what = kind === 'water'
+      ? round1(r.oz) + ' oz'
+      : ([r.label && r.label !== KINDS[kind].name ? r.label : null,
+          r.unit, r.note, r.oz ? round1(r.oz) + ' oz' : null].filter(Boolean).join(' · ')
+         || (r.count > 1 ? '×' + r.count : KINDS[kind].name));
+    div.innerHTML = '<span class="tiny">' + esc(r.t || '') + '</span><span>' + esc(what) + '</span>';
+    const x = document.createElement('button');
+    x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
+    x.onclick = () => {
+      dropRecord(arrOf(kind), r.id); saveState();
+      renderDrinks(); renderSubs(); renderFoodTotals(onDay(state.body.food)); renderFeed();
     };
-    paint();
+    div.appendChild(x); el.appendChild(div);
   });
+}
+
+/* Labels you have used before, so "Other" is one tap the second time. */
+function renderDrinkRecent() {
+  const box = $('drinkRecent');
+  const recent = [...new Set((state.body.drinks || [])
+    .filter((d) => d.kind === 'other' && d.label && d.label !== 'Other')
+    .slice(-40).map((d) => d.label))].slice(-5).reverse();
+  box.innerHTML = '';
+  recent.forEach((label) => {
+    const b = document.createElement('button');
+    b.className = 'chip'; b.type = 'button'; b.textContent = label;
+    b.onclick = () => { $('drinkLabel').value = label; };
+    box.appendChild(b);
+  });
+}
+
+function renderDrinks() {
+  const m = KINDS[drinkTab];
+  $('drinksCard').style.setProperty('--c', 'var(--' + m.c + ')');
+  $('drinksName').textContent = m.name;
+  const t = totalOf(drinkTab);
+  $('drinksTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
+  renderTabs($('drinkTabs'), DRINK_TABS, drinkTab, (k) => { drinkTab = k; renderDrinks(); });
+
+  $('drinkLabelRow').hidden = drinkTab !== 'other';
+  if (drinkTab === 'other') renderDrinkRecent();
+
+  const q = $('drinkQuick'); q.innerHTML = '';
+  QUICK[drinkTab].forEach((p) => {
+    const b = document.createElement('button'); b.type = 'button';
+    const isAmount = /^[0-9]/.test(p.l);
+    b.innerHTML = isAmount ? '+' + p.l + '<span class="u">oz</span>' : esc(p.l);
+    b.onclick = () => {
+      const opts = { oz: p.oz };
+      if (drinkTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
+      if (drinkTab === 'alcohol') opts.unit = p.l;
+      addIntake(drinkTab, opts);
+      if (drinkTab === 'other') $('drinkLabel').value = '';
+    };
+    q.appendChild(b);
+  });
+  renderKindLog($('drinkLog'), drinkTab);
+}
+
+function renderSubs() {
+  const m = KINDS[subTab];
+  $('subsCard').style.setProperty('--c', 'var(--' + m.c + ')');
+  $('subsName').textContent = m.name;
+  const t = totalOf(subTab);
+  $('subsTotal').textContent = t.n ? String(round1(t.n)) : '';
+  renderTabs($('subTabs'), SUB_TABS, subTab, (k) => { subTab = k; renderSubs(); });
+
+  const q = $('subQuick'); q.innerHTML = '';
+  QUICK[subTab].forEach((p) => {
+    const b = document.createElement('button'); b.type = 'button';
+    b.textContent = p.l;
+    b.onclick = () => {
+      if (!p.ask) { addIntake(subTab, { count: p.n }); return; }
+      openForm(m.name, [
+        { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
+        { key: 'note', label: 'Note (optional)', placeholder: 'strain, brand, context…' },
+      ], { count: '1' }, (v) => {
+        addIntake(subTab, { count: Number(v.count) || 1, note: v.note });
+      }, 'Log');
+    };
+    q.appendChild(b);
+  });
+  renderKindLog($('subLog'), subTab);
 }
 
 /* =============================================================
@@ -1819,7 +1879,7 @@ function backup() {
    ============================================================= */
 function renderAll() {
   loadPulse(); loadSleep();
-  renderIntake(); renderFoodChips(); renderFoodLog();
+  renderDrinks(); renderSubs(); renderFoodChips(); renderFoodLog();
   renderExercise(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
