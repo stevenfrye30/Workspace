@@ -64,6 +64,8 @@
     background: var(--panel2); border-radius: 10px;
   }
   .datestrip .lbl { font-size: .7rem; color: var(--dim); text-transform: uppercase; letter-spacing: .07em; }
+  body.dense .datestrip { padding: 5px 9px; margin-bottom: 12px; }
+  body.dense .datestrip .chip { padding: 4px 11px; }
   .datestrip input[type=date] {
     font: inherit; font-size: .78rem; padding: 3px 6px; border-radius: 6px;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink);
@@ -76,7 +78,13 @@
   .daily { column-count: 2; column-gap: 12px; }
   @media (min-width: 900px) { body.dense .daily { column-count: 3; } }
   @media (max-width: 640px)  { .daily { column-count: 1; } }
-  .daily > .card { break-inside: avoid; -webkit-column-break-inside: avoid; }
+  .daily > .card, .daily > .drawer { break-inside: avoid; -webkit-column-break-inside: avoid; }
+  /* Closed drawers are ~46px each; stacked full-width that is 280px of page
+     for five summary lines. In the grid they fill the ragged bottoms of the
+     columns instead, and cost almost nothing. */
+  .daily > .drawer { margin-bottom: 12px; }
+  body.dense .daily > .drawer { margin-bottom: 10px; }
+  body.dense .daily > .drawer > summary { padding: 10px 11px; font-size: .66rem; }
 
   /* ---------- cards ---------- */
   .card {
@@ -210,6 +218,11 @@
   #exChips, #foodChips { min-height: 32px; align-content: flex-start; }
   body.dense #exChips, body.dense #foodChips { min-height: 29px; }
 
+  /* The seven sleep chips wrapped to a second row inside a column, which cost
+     nearly 40px on the tallest card in the grid. Narrower chips fit one row. */
+  body.dense #sHours .chip { padding: 5px 9px; font-size: .76rem; }
+  body.dense .card > .field:last-child .primary { padding: 8px 15px; }
+
   /* ---------- the pending readout ----------
      Always present, even at zero, so the card never changes height as you
      tap — the whole point of the instruments staying still. */
@@ -320,30 +333,31 @@
   .list .row .x { background: none; border: 0; color: var(--dim); cursor: pointer; font: inherit; margin-left: auto; }
   .list .row .x:hover { color: var(--warn); }
 
-  /* ---------- launchpad ---------- */
-  .launch { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-  @media (max-width: 520px) { .launch { grid-template-columns: repeat(3, 1fr); } }
-  .launch a, .launch .pend {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    gap: 4px; padding: 11px 6px; text-decoration: none; text-align: center;
-    background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
-    color: var(--ink); font-size: .72rem; line-height: 1.2; position: relative;
+  /* ---------- launchpad ----------
+     Stacked icon-over-label tiles cost 226px — more than half the whole
+     instrument grid — to hold nine links. As inline pills they cost about
+     40px and keep their labels. */
+  .launch { display: flex; flex-wrap: wrap; gap: 6px; }
+  .launch a, .launch .pend, .launch .add {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px 6px 10px; text-decoration: none; position: relative;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 999px;
+    color: var(--ink); font: inherit; font-size: .74rem; line-height: 1.15; white-space: nowrap;
   }
   .launch a:hover { border-color: var(--accent); color: var(--accent); }
-  .launch .ic { font-size: 1.3rem; line-height: 1; }
-  .launch .pend { opacity: .5; }
-  .launch .pend .soon {
-    position: absolute; top: 3px; right: 5px; font-size: .54rem; letter-spacing: .06em;
-    text-transform: uppercase; color: var(--dim);
-  }
+  .launch .ic { font-size: .95rem; line-height: 1; }
+  .launch .pend { opacity: .45; }
+  .launch .pend .soon { display: none; }       /* the dimming already says it */
+  .launch .mine { padding-right: 24px; }
   .launch .mine .del {
-    position: absolute; top: 2px; right: 3px; background: none; border: 0; cursor: pointer;
-    color: var(--dim); font-size: .8rem; line-height: 1; padding: 2px; opacity: 0;
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; cursor: pointer;
+    color: var(--dim); font-size: .78rem; line-height: 1; padding: 0; opacity: .5;
   }
   .launch .mine:hover .del { opacity: 1; }
   .launch .mine .del:hover { color: var(--warn); }
-  .launch .add { border-style: dashed; color: var(--dim); cursor: pointer; font: inherit; }
-  .bdayline { margin-top: 12px; font-size: .78rem; color: var(--dim); }
+  .launch .add { border-style: dashed; color: var(--dim); cursor: pointer; }
+  .bdayline { margin-top: 10px; font-size: .78rem; color: var(--dim); }
   .bdayline b { color: var(--ink); font-weight: 600; }
 
   /* ---------- drawers ---------- */
@@ -467,7 +481,12 @@
     <div class="rowlabel">Sleep <span class="note" id="sleepNote"></span></div>
     <div class="chips" id="sHours"></div>
     <div class="dotline" style="margin-top:7px"><span class="dl">Quality</span><div class="dots" id="sQuality"></div></div>
-    <div class="field"><button class="primary" id="pSave">Save</button></div>
+    <div class="field inline">
+      <button class="primary" id="pSave">Save</button>
+      <!-- Symptoms had a card to itself for one button. It is how your body
+           is, so it belongs here, and it costs no height sharing this row. -->
+      <button class="chip ghost" id="symAdd">＋ Symptom</button>
+    </div>
   </div>
 
   <!-- Drinks — one box, four tabs, and an adding machine. The amount buttons
@@ -537,11 +556,84 @@
     </details>
   </div>
 
-  <div class="card">
-    <h2>Symptoms</h2>
-    <div class="chips"><button class="chip ghost" id="symAdd">＋ Note a symptom</button></div>
-  </div>
+  <!-- The reference drawers ride in the same masonry grid as the
+       instruments: they are small closed, so they fill the column gaps
+       instead of costing a stacked row each. -->
+  <!-- ============ DRAWERS ============ -->
+  <!-- Everything you touch weekly rather than daily. Closed by default; each
+       summary earns its space by saying something useful while shut. -->
+  <details class="drawer" id="drawerPeople">
+    <summary>People <span class="sum" id="sumPeople"></span></summary>
+    <div class="drawer-body">
+      <div class="sub">
+        <h3>People <button class="mini act" id="addPerson">＋ Person</button></h3>
+        <div class="list" id="peopleList"></div>
+      </div>
+      <div class="sub">
+        <h3>Birthdays <button class="mini act" id="addBirthday">＋ Birthday</button></h3>
+        <div class="list" id="bdayList"></div>
+      </div>
+    </div>
+  </details>
 
+  <details class="drawer" id="drawerMind">
+    <summary>Mind <span class="sum" id="sumMind"></span></summary>
+    <div class="drawer-body">
+      <div class="sub">
+        <h3>Books <button class="mini act" id="addBook">＋ Book</button></h3>
+        <div class="list" id="bookList"></div>
+      </div>
+      <div class="sub">
+        <h3>Quotes <button class="mini act" id="addQuote">＋ Quote</button></h3>
+        <div id="quoteList"></div>
+      </div>
+      <div class="sub">
+        <h3>Ideas <button class="mini act" id="addIdea">＋ Idea</button></h3>
+        <div id="ideaList"></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawerMoney">
+    <summary>Money <span class="sum" id="sumMoney"></span></summary>
+    <div class="drawer-body">
+      <div class="sub">
+        <h3>Budget <button class="mini act" id="addCategory">＋ Category</button></h3>
+        <div class="list" id="budgetList"></div>
+      </div>
+      <div class="sub">
+        <h3>Expenses <button class="mini act" id="addExpense">＋ Expense</button></h3>
+        <div class="list" id="expenseList"></div>
+      </div>
+      <div class="sub">
+        <h3>Subscriptions <button class="mini act" id="addSub">＋ Subscription</button></h3>
+        <div class="list" id="subList"></div>
+      </div>
+    </div>
+  </details>
+
+  <details class="drawer" id="drawerLife">
+    <summary>Life <span class="sum" id="sumLife"></span></summary>
+    <div class="drawer-body">
+      <div class="sub">
+        <h3>Values <button class="mini act" id="editValues">Edit</button></h3>
+        <div class="chips valchips" id="valueList"></div>
+      </div>
+      <div class="sub">
+        <h3>Places <button class="mini act" id="addPlace">＋ Place</button></h3>
+        <div class="list" id="placeList"></div>
+      </div>
+    </div>
+  </details>
+
+</div>
+
+<!-- ============ LAUNCHPAD ============ -->
+<!-- No heading: nine labelled pills do not need to be told they are links,
+     and the heading cost as much height as a row of them. -->
+<div class="card">
+  <div class="launch" id="launch"></div>
+  <div class="bdayline" id="bdayLine"></div>
 </div>
 
 <!-- ============ THE TRACKER ============ -->
@@ -553,80 +645,7 @@
   <div class="feed" id="feed"></div>
 </div>
 
-<!-- ============ LAUNCHPAD ============ -->
-<div class="card">
-  <h2>Go</h2>
-  <div class="launch" id="launch"></div>
-  <div class="bdayline" id="bdayLine"></div>
-</div>
-
-<!-- ============ DRAWERS ============ -->
-<!-- Everything you touch weekly rather than daily. Closed by default; each
-     summary earns its space by saying something useful while shut. -->
-<details class="drawer" id="drawerPeople">
-  <summary>People <span class="sum" id="sumPeople"></span></summary>
-  <div class="drawer-body">
-    <div class="sub">
-      <h3>People <button class="mini act" id="addPerson">＋ Person</button></h3>
-      <div class="list" id="peopleList"></div>
-    </div>
-    <div class="sub">
-      <h3>Birthdays <button class="mini act" id="addBirthday">＋ Birthday</button></h3>
-      <div class="list" id="bdayList"></div>
-    </div>
-  </div>
-</details>
-
-<details class="drawer" id="drawerMind">
-  <summary>Mind <span class="sum" id="sumMind"></span></summary>
-  <div class="drawer-body">
-    <div class="sub">
-      <h3>Books <button class="mini act" id="addBook">＋ Book</button></h3>
-      <div class="list" id="bookList"></div>
-    </div>
-    <div class="sub">
-      <h3>Quotes <button class="mini act" id="addQuote">＋ Quote</button></h3>
-      <div id="quoteList"></div>
-    </div>
-    <div class="sub">
-      <h3>Ideas <button class="mini act" id="addIdea">＋ Idea</button></h3>
-      <div id="ideaList"></div>
-    </div>
-  </div>
-</details>
-
-<details class="drawer" id="drawerMoney">
-  <summary>Money <span class="sum" id="sumMoney"></span></summary>
-  <div class="drawer-body">
-    <div class="sub">
-      <h3>Budget <button class="mini act" id="addCategory">＋ Category</button></h3>
-      <div class="list" id="budgetList"></div>
-    </div>
-    <div class="sub">
-      <h3>Expenses <button class="mini act" id="addExpense">＋ Expense</button></h3>
-      <div class="list" id="expenseList"></div>
-    </div>
-    <div class="sub">
-      <h3>Subscriptions <button class="mini act" id="addSub">＋ Subscription</button></h3>
-      <div class="list" id="subList"></div>
-    </div>
-  </div>
-</details>
-
-<details class="drawer" id="drawerLife">
-  <summary>Life <span class="sum" id="sumLife"></span></summary>
-  <div class="drawer-body">
-    <div class="sub">
-      <h3>Values <button class="mini act" id="editValues">Edit</button></h3>
-      <div class="chips valchips" id="valueList"></div>
-    </div>
-    <div class="sub">
-      <h3>Places <button class="mini act" id="addPlace">＋ Place</button></h3>
-      <div class="list" id="placeList"></div>
-    </div>
-  </div>
-</details>
-
+<!-- The week in review sits under the day it summarises. -->
 <details class="drawer" id="drawerWeek">
   <summary>This week <span class="sum" id="sumWeek"></span></summary>
   <div class="drawer-body">
