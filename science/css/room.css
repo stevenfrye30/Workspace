@@ -287,7 +287,12 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .ti-cap b { color: var(--fg); font-family: ui-monospace, Menlo, monospace; }
 .ti-table { margin-bottom: 1rem; }
 
-@media (max-width: 600px) { .ti-label, .ti-note { font-size: 13px; } }
+/* The portrait chart is barely downscaled, so its type can stay modest —
+   but bump it a step so ticks and labels clear ~11px on a phone. */
+.ti-svg.narrow .ti-tick { font-size: 13px; }
+.ti-svg.narrow .ti-axis { font-size: 14px; }
+.ti-svg.narrow .ti-label { font-size: 14px; }
+.ti-svg.narrow .ti-note { font-size: 13px; }
 
 /* ── Gas laws (chemistry room only) ────────────────────────── */
 .gl-pane { display: none; }

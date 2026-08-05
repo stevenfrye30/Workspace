@@ -20,9 +20,16 @@ import { readState, writeState } from '../share.js';
    against the panel surface #28384c — passes lightness, chroma and contrast. */
 const SERIES = '#da6828';
 
-const L = 52, R = 14, T = 16, B = 38;      /* plot padding */
-const W = 720, H = 380;
-const PW = W - L - R, PH = H - T - B;
+/* Chart geometry. SVG text scales with the viewBox, so a landscape chart
+   squeezed onto a phone renders its labels at about 5px — legible nowhere.
+   On a narrow screen the chart turns portrait instead, which keeps the scale
+   factor near 1 and gives the curve room to breathe vertically. */
+const WIDE   = { W: 720, H: 380, L: 52, R: 14, T: 16, B: 38 };
+const NARROW = { W: 380, H: 440, L: 44, R: 12, T: 14, B: 46 };
+function geom() {
+  const g = (typeof window !== 'undefined' && window.innerWidth < 640) ? NARROW : WIDE;
+  return Object.assign({ PW: g.W - g.L - g.R, PH: g.H - g.T - g.B, narrow: g === NARROW }, g);
+}
 
 function n(x, d) { return (Math.round(x * Math.pow(10, d == null ? 2 : d)) / Math.pow(10, d == null ? 2 : d)).toFixed(d == null ? 2 : d); }
 function sub(f) { return esc(f).replace(/(\d+)/g, '<sub>$1</sub>'); }
@@ -169,11 +176,13 @@ export function init() {
   }
 
   /* ── the plot ──────────────────────────────────────────────── */
-  function x(V, Vmax) { return L + (V / Vmax) * PW; }
-  function y(pH) { return T + (1 - pH / 14) * PH; }
+  let G = geom();
+  function x(V, Vmax) { return G.L + (V / Vmax) * G.PW; }
+  function y(pH) { return G.T + (1 - pH / 14) * G.PH; }
 
   function chart(sys, p, pts, keys, Veq) {
     const Vmax = 2 * Veq;
+    const L = G.L, T = G.T, PW = G.PW, PH = G.PH, W = G.W, H = G.H;
     const path = pts.map(function (pt, i) {
       return (i ? 'L' : 'M') + n(x(pt.V * 1000, Vmax), 1) + ' ' + n(y(pt.pH), 1);
     }).join(' ');
@@ -217,7 +226,7 @@ export function init() {
     marks += marker(Veq, eq.pH, 'equivalence · pH ' + n(eq.pH), Veq > 0.62 * Vmax ? 'end' : 'start', 22);
 
     return '<figure class="ti-figure">' +
-      '<svg class="ti-svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
+      '<svg class="ti-svg' + (G.narrow ? ' narrow' : '') + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" ' +
         'aria-label="Titration curve: pH against volume of titrant added. Equivalence at ' +
         trimNum(Veq) + ' millilitres, pH ' + n(eq.pH) + '.">' +
       wash + grid + guides +
@@ -242,14 +251,15 @@ export function init() {
     const cap = document.getElementById('tiCap');
     if (!svg || !hit) return;
     const Vmax = 2 * Veq;
+    const VBW = G.W, PADL = G.L, PLOTW = G.PW;
     const line = cross.querySelector('line');
     const ring = cross.querySelector('.ti-ring');
     const dot = cross.querySelector('.ti-dot');
 
     function move(ev) {
       const r = svg.getBoundingClientRect();
-      const px = (ev.clientX - r.left) / r.width * W;
-      const V = Math.max(0, Math.min(Vmax, (px - L) / PW * Vmax));
+      const px = (ev.clientX - r.left) / r.width * VBW;
+      const V = Math.max(0, Math.min(Vmax, (px - PADL) / PLOTW * Vmax));
       /* nearest sampled point, so the readout is a real computed value */
       let best = pts[0], bd = Infinity;
       pts.forEach(function (pt) {
@@ -332,6 +342,17 @@ export function init() {
       '<p class="tc-check">Pick an indicator whose range falls on the steep part of the curve — ' +
       'that is what makes the colour change sharp.</p></div>';
   }
+
+  /* Rotating a phone crosses the narrow/wide boundary; re-render when it
+     actually changes rather than on every resize tick. */
+  let rt;
+  window.addEventListener('resize', function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      const next = geom();
+      if (next.narrow !== G.narrow) { G = next; render(); }
+    }, 200);
+  });
 
   render();
 }
