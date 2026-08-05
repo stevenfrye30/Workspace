@@ -551,14 +551,11 @@
   <div class="card narrow">
     <h2>Movement</h2>
     <div class="chips" id="exChips"></div>
-    <details class="fold">
-      <summary>Log a session</summary>
-      <div class="field inline">
-        <input type="text" id="exType" placeholder="walk, lift, yoga">
-        <input type="number" id="exMin" min="1" step="1" placeholder="min" style="max-width:74px">
-        <button class="primary" id="exAdd">Log</button>
-      </div>
-    </details>
+    <div class="field inline">
+      <input type="text" id="exType" placeholder="walk, lift, yoga">
+      <input type="number" id="exMin" min="1" step="1" placeholder="min" style="max-width:74px">
+      <button class="primary" id="exAdd">Log</button>
+    </div>
   </div>
 
   <!-- The speed path is the chip row: the things you actually eat, one tap.
@@ -2020,6 +2017,25 @@ $('symAdd').onclick = () => openPop('Note a symptom',
 $('customFoodBtn').onclick = () => { loadFoods(); openCustomFood(); };
 $('mealsBtn').onclick = openMeals;
 $('foodSearch').onfocus = () => loadFoods();
+$('foodSearch').oninput = (e) => {
+  loadFoods().then(() => renderResults(e.target.value));
+  renderResults(e.target.value);
+};
+$('foodSearch').onkeydown = (e) => {
+  if (e.key === 'Escape') { e.target.value = ''; $('foodResults').innerHTML = ''; }
+  if (e.key === 'Enter') { const first = $('foodResults').querySelector('button'); if (first) first.click(); }
+};
+// Dismiss the results list when focus leaves the search area.
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.searchwrap')) $('foodResults').innerHTML = '';
+});
+// Fetch the 1.2 MB library only once the food card is actually on screen.
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver((entries) => {
+    if (entries.some((en) => en.isIntersecting)) { io.disconnect(); loadFoods(); }
+  }, { rootMargin: '200px' });
+  io.observe($('foodCard'));
+}
 
 $('popBack').onclick = closePop;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
