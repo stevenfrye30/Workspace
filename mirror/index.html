@@ -94,31 +94,18 @@
   /* ---------- the daily grid ----------
      CSS columns rather than grid: cards are wildly different heights, and
      this is the one layout that packs them without leaving holes. */
-  .daily { column-count: 2; column-gap: 12px; }
-  @media (min-width: 900px)  { body.dense .daily { column-count: 3; } }
-  /* A fourth column only once there is room for it to still be ~300px —
-     below that the dot rows and the drink tabs start clipping. */
-  @media (min-width: 1240px) { body.dense .daily { column-count: 4; } }
-
-  /* Phone: masonry can't mix widths, so drop to a real grid. The instruments
-     keep the full width they need; the small cards and the drawer summaries
-     pair up two-across, which is where the scrolling actually went. */
-  @media (max-width: 640px) {
-    .daily {
-      column-count: initial; display: grid;
-      grid-template-columns: 1fr 1fr; gap: 10px; align-items: start;
-    }
-    .daily > .card { grid-column: span 2; margin-bottom: 0; }
-    .daily > .card.narrow { grid-column: span 1; margin-bottom: 0; }
-  }
-  .daily > .card { break-inside: avoid; -webkit-column-break-inside: avoid; }
+  /* Four assigned columns, priority-ordered. Each is an independent stack —
+     align-items:start keeps a tall column from stretching its neighbours. */
+  .daily { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: start; }
+  @media (min-width: 900px)  { .daily { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1240px) { body.dense .daily { grid-template-columns: repeat(4, 1fr); } }
+  .col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
+  body.dense .daily, body.dense .col { gap: 10px; }
+  .col > .card { margin-bottom: 0; }
 
   /* The reference panels: their own masonry, below the instruments. */
-  .panels { column-count: 2; column-gap: 12px; }
-  @media (min-width: 900px)  { body.dense .panels { column-count: 3; } }
-  @media (min-width: 1240px) { body.dense .panels { column-count: 4; } }
-  @media (max-width: 640px)  { .panels { column-count: 1; } }
-  .panels > .card { break-inside: avoid; -webkit-column-break-inside: avoid; }
+  /* Inside a column now, so a plain stack. */
+  .panels { display: flex; flex-direction: column; gap: 10px; }
 
   /* ---------- cards ---------- */
   .card {
@@ -129,10 +116,18 @@
   .card > h2 {
     font-size: .72rem; font-weight: 600; text-transform: uppercase;
     letter-spacing: .1em; color: var(--dim); margin-bottom: 12px;
-    display: flex; align-items: center; gap: 8px;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    position: relative; text-align: center; min-height: 1.1em;
+  }
+  /* Pinned rather than laid out, so a long note cannot shove the title
+     off-centre. */
+  .card > h2 .note, .card > h2 .sum {
+    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
+    margin-left: 0; max-width: 55%; overflow: hidden; text-overflow: ellipsis;
+    white-space: nowrap;
   }
   body.dense .card > h2 { font-size: .66rem; margin-bottom: 8px; }
-  .card > h2 .note { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .card > h2 .note { text-transform: none; letter-spacing: 0; font-weight: 400; }
   .saved { color: var(--accent2); }
 
   .rowlabel { font-size: .78rem; color: var(--dim); margin: 10px 0 5px; }
@@ -370,7 +365,7 @@
      they open themselves once, on load, if they have anything to show. */
   .panels > .card, .panels > details { box-shadow: none; }
   .panels > details > summary {
-    cursor: pointer; list-style: none;
+    cursor: pointer; list-style: none; justify-content: center; position: relative;
     font-size: .68rem; font-weight: 600; text-transform: uppercase;
     letter-spacing: .1em; color: var(--dim);
     display: flex; align-items: baseline; gap: 8px;
@@ -493,34 +488,33 @@
 </div>
 
 <!-- ============ THE DAILY GRID ============ -->
-<!-- Masonry via CSS columns: three on a laptop, two at medium, one on a
-     phone. The rule for what folds: anything you log with a TAP stays on
-     screen, anything that needs the KEYBOARD folds away. Hiding the taps
-     would just rebuild the seven rooms one <details> at a time. -->
+<!-- Four assigned columns, ordered by how often each is touched, rather than
+     masonry. Masonry packs tightly but decides placement by height — which is
+     how the drink controls once ended up below the fold. Assigned columns cost
+     a little whitespace and never move.
+
+     Each column is its own stack, so a long food list cannot stretch the one
+     beside it. Stacked on a phone the DOM order is already the priority order:
+     Food, Intake, Movement, How you are, then the rest. -->
 <div class="daily">
 
-  <!-- How you are — one form replacing three that each asked for mood and
-       energy separately (the old Today pulse, the Body check-in, and the
-       Daily Card), with sleep folded in so it doesn't need its own card. -->
-  <div class="card">
-    <h2>How you are <span class="note saved" id="pulseSaved"></span></h2>
-    <div class="dotline"><span class="dl">Mood</span><div class="dots" id="dMood"></div></div>
-    <div class="dotline"><span class="dl">Energy</span><div class="dots" id="dEnergy"></div></div>
-    <div class="dotline"><span class="dl">Fatigue</span><div class="dots" id="dFatigue"></div></div>
-    <div class="dotline"><span class="dl">Soreness</span><div class="dots" id="dSore"></div></div>
-    <div class="dotline"><span class="dl">Comfort</span><div class="dots" id="dComfort"></div></div>
-    <div class="hr"></div>
-    <div class="rowlabel">Sleep <span class="note" id="sleepNote"></span></div>
-    <div class="chips" id="sHours"></div>
-    <div class="dotline" style="margin-top:7px"><span class="dl">Quality</span><div class="dots" id="sQuality"></div></div>
-    <div class="field inline">
-      <button class="primary" id="pSave">Save</button>
-      <!-- Symptoms had a card to itself for one button. It is how your body
-           is, so it belongs here, and it costs no height sharing this row. -->
-      <button class="chip ghost" id="symAdd">＋ Symptom</button>
+  <div class="col">
+  <div class="card" id="foodCard">
+    <h2>Food</h2>
+    <div class="macrobar" id="foodMacros"></div>
+    <div class="searchwrap">
+      <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
+      <div class="results" id="foodResults"></div>
     </div>
+    <div class="chips" style="margin-top:9px">
+      <button class="mini" id="mealsBtn">Meals</button>
+      <button class="mini" id="customFoodBtn">＋ Your own food</button>
+    </div>
+    <div class="foodstatus" id="foodStatus"></div>
+  </div>
   </div>
 
+  <div class="col">
   <!-- Intake — one instrument, six tabs. Drinks and Substances were the same
        control twice; they differ only in the unit each kind is measured in,
        so that is the only thing the card branches on. Storage is unchanged:
@@ -544,11 +538,6 @@
   </div>
 
   <div class="card narrow">
-    <h2>Habits <span class="note tiny" id="habitNote"></span></h2>
-    <div class="chips" id="habitChips"></div>
-  </div>
-
-  <div class="card narrow">
     <h2>Movement</h2>
     <div class="chips" id="exChips"></div>
     <div class="field inline" id="exRow">
@@ -561,80 +550,75 @@
       <div class="field" id="exOtherWrap"></div>
     </details>
   </div>
-
-  <!-- The speed path is the chip row: the things you actually eat, one tap.
-       Search is the fallback for everything else. Named portions ("1 cup")
-       mean you never type grams unless you want to. -->
-  <!-- The search box is the whole instrument: no suggestion chips, no fold to
-       open first. Type, pick, done. -->
-  <div class="card" id="foodCard">
-    <h2>Food</h2>
-    <div class="macrobar" id="foodMacros"></div>
-    <div class="searchwrap">
-      <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
-      <div class="results" id="foodResults"></div>
-    </div>
-    <div class="chips" style="margin-top:9px">
-      <button class="mini" id="mealsBtn">Meals</button>
-      <button class="mini" id="customFoodBtn">＋ Your own food</button>
-    </div>
-    <div class="foodstatus" id="foodStatus"></div>
   </div>
 
-  <!-- The reference drawers ride in the same masonry grid as the
-       instruments: they are small closed, so they fill the column gaps
-       instead of costing a stacked row each. -->
-  <!-- ============ DRAWERS ============ -->
-  <!-- Everything you touch weekly rather than daily. Closed by default; each
-       summary earns its space by saying something useful while shut. -->
-</div>
-
-<!-- A utility row, not a section: no card, no heading. The day comes
-     first; these are the doors out of it. -->
-<div class="launchrow">
-  <div class="launch" id="launch"></div>
-  <div class="bdayline" id="bdayLine"></div>
-</div>
-
-<!-- The reference panels get their own grid. Sharing the instruments'
-     masonry, their height rebalanced the columns and pushed Water and Weed
-     below the fold — the daily controls must not be displaced by things
-     you read once a week. -->
-<div class="panels">
-
-  <details class="card" id="drawerPeople">
-    <summary>People <span class="sum" id="sumPeople"></span></summary>
-    <div class="chips">
-      <button class="mini" id="addPerson">＋ Person</button>
-      <button class="mini" id="addBirthday">＋ Birthday</button>
+  <div class="col">
+  <!-- How you are — one form replacing three that each asked for mood and
+       energy separately (the old Today pulse, the Body check-in, and the
+       Daily Card), with sleep folded in so it doesn't need its own card. -->
+  <div class="card">
+    <h2>How you are <span class="note saved" id="pulseSaved"></span></h2>
+    <div class="dotline"><span class="dl">Mood</span><div class="dots" id="dMood"></div></div>
+    <div class="dotline"><span class="dl">Energy</span><div class="dots" id="dEnergy"></div></div>
+    <div class="dotline"><span class="dl">Fatigue</span><div class="dots" id="dFatigue"></div></div>
+    <div class="dotline"><span class="dl">Soreness</span><div class="dots" id="dSore"></div></div>
+    <div class="dotline"><span class="dl">Comfort</span><div class="dots" id="dComfort"></div></div>
+    <div class="hr"></div>
+    <div class="rowlabel">Sleep <span class="note" id="sleepNote"></span></div>
+    <div class="chips" id="sHours"></div>
+    <div class="dotline" style="margin-top:7px"><span class="dl">Quality</span><div class="dots" id="sQuality"></div></div>
+    <div class="field inline">
+      <button class="primary" id="pSave">Save</button>
+      <!-- Symptoms had a card to itself for one button. It is how your body
+           is, so it belongs here, and it costs no height sharing this row. -->
+      <button class="chip ghost" id="symAdd">＋ Symptom</button>
     </div>
-  </details>
+  </div>
+  </div>
 
-  <details class="card" id="drawerMind">
-    <summary>Mind <span class="sum" id="sumMind"></span></summary>
-    <div class="chips">
-      <button class="mini" id="addBook">＋ Book</button>
-      <button class="mini" id="addQuote">＋ Quote</button>
-      <button class="mini" id="addIdea">＋ Idea</button>
+  <div class="col">
+    <div class="launchrow">
+      <div class="launch" id="launch"></div>
+      <div class="bdayline" id="bdayLine"></div>
     </div>
-  </details>
+  <div class="panels">
 
-  <details class="card" id="drawerMoney">
-    <summary>Money <span class="sum" id="sumMoney"></span></summary>
-    <div class="chips">
-      <button class="mini" id="addExpense">＋ Expense</button>
-      <button class="mini" id="addCategory">＋ Category</button>
-      <button class="mini" id="addSub">＋ Subscription</button>
-    </div>
-  </details>
+    <details class="card" id="drawerPeople">
+      <summary>People <span class="sum" id="sumPeople"></span></summary>
+      <div class="chips">
+        <button class="mini" id="addPerson">＋ Person</button>
+        <button class="mini" id="addBirthday">＋ Birthday</button>
+      </div>
+    </details>
 
-  <details class="card" id="drawerLife">
-    <summary>Life <span class="sum" id="sumLife"></span></summary>
-    <div class="chips">
-      <button class="mini" id="addPlace">＋ Place</button>
-      <button class="mini" id="editValues">Values</button>
-    </div>
-  </details>
+    <details class="card" id="drawerMind">
+      <summary>Mind <span class="sum" id="sumMind"></span></summary>
+      <div class="chips">
+        <button class="mini" id="addBook">＋ Book</button>
+        <button class="mini" id="addQuote">＋ Quote</button>
+        <button class="mini" id="addIdea">＋ Idea</button>
+      </div>
+    </details>
+
+    <details class="card" id="drawerMoney">
+      <summary>Money <span class="sum" id="sumMoney"></span></summary>
+      <div class="chips">
+        <button class="mini" id="addExpense">＋ Expense</button>
+        <button class="mini" id="addCategory">＋ Category</button>
+        <button class="mini" id="addSub">＋ Subscription</button>
+      </div>
+    </details>
+
+    <details class="card" id="drawerLife">
+      <summary>Life <span class="sum" id="sumLife"></span></summary>
+      <div class="chips">
+        <button class="mini" id="addPlace">＋ Place</button>
+        <button class="mini" id="editValues">Values</button>
+      </div>
+    </details>
+
+  </div>
+  </div>
 
 </div>
 
@@ -1680,7 +1664,9 @@ function addExercise() {
    no streak, no miss, nothing to feel bad about (SCHEMA.md v11).
    ============================================================= */
 function renderHabits() {
-  const wrap = $('habitChips'); wrap.innerHTML = '';
+  const wrap = $('habitChips');
+  if (!wrap) return;      // habits live in the Overview room now
+  wrap.innerHTML = '';
   const active = (state.habits.items || []).filter((h) => h.active !== false);
   active.forEach((h) => {
     const kept = (h.done || []).includes(day);
