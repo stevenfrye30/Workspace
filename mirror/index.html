@@ -511,6 +511,7 @@
       <button class="mini" id="customFoodBtn">＋ Your own food</button>
     </div>
     <div class="foodstatus" id="foodStatus"></div>
+    <div class="list" id="foodLog"></div>
   </div>
   </div>
 
@@ -521,7 +522,7 @@
        water -> body.water, coffee/other -> body.drinks, the rest ->
        body.substances. -->
   <div class="card boxed" id="intakeCard">
-    <h2><span id="intakeName">Water</span> <span class="note" id="intakeTotal"></span></h2>
+    <h2>Intake <span class="note" id="intakeTotal"></span></h2>
     <div class="tabs" id="intakeTabs"></div>
     <div id="drinkLabelRow" hidden>
       <div class="chips" id="drinkRecent" style="margin-bottom:7px"></div>
@@ -1105,14 +1106,12 @@ function renderIntake() {
   const m = KINDS[intakeTab];
   const vol = isVolume(intakeTab);
   $('intakeCard').style.setProperty('--c', 'var(--' + m.c + ')');
-  $('intakeName').textContent = m.name;
+  // Title stays 'Intake'; the tint is what says which tab you are on.
+  // The header is always "Intake"; the active tab tints it and the cap.
+  // Water's running total lives in the Food macro bar, against its target.
   const t = totalOf(intakeTab);
-  // Water is the only kind with a target, so it is the only one that reads
-  // as a fraction. It appears here and nowhere else on the page.
-  const target = intakeTab === 'water' ? Number((state.body.targets || {}).water_oz) || 0 : 0;
-  $('intakeTotal').textContent = target
-    ? round1(t.n) + ' / ' + target + ' oz'
-    : (t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '');
+  $('intakeTotal').textContent = (intakeTab !== 'water' && t.n)
+    ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
   renderTabs($('intakeTabs'), INTAKE_TABS, intakeTab, (k) => {
     intakeTab = k; renderIntake();
   });
@@ -1366,9 +1365,32 @@ function openPortion(foodId, foodName) {
     }, 'Log');
 }
 
-/* The day's food lives in the tracker now, not here — this card keeps only
-   the running totals, which are a fixed shape whatever you've eaten. */
-function renderFoodLog() { renderFoodTotals(onDay(state.body.food)); }
+/* Column 1 is Food, so the day's eating belongs in it — the Tracker keeps
+   its copy in entry order, this one is the meal. */
+function renderFoodLog() {
+  const rows = onDay(state.body.food);
+  const list = $('foodLog');
+  if (list) {
+    list.innerHTML = '';
+    if (!rows.length) {
+      list.innerHTML = '<div class="empty">Nothing logged for ' + fmtDay(day) + '.</div>';
+    } else {
+      rows.slice().reverse().forEach((e) => {
+        const div = document.createElement('div'); div.className = 'foodrow';
+        const kc = kcalOf(e);
+        div.title = e.foodName;
+        div.innerHTML = '<span class="nm">' + esc(shortName(e.foodName, 99)) + '</span>' +
+          '<span class="g">' + esc(e.portion || (round1(e.grams) + ' g')) + '</span>' +
+          '<span class="kc">' + (kc == null ? '—' : Math.round(kc) + ' kcal') + '</span>';
+        const x = document.createElement('button');
+        x.className = 'x'; x.type = 'button'; x.textContent = '✕';
+        x.onclick = () => { dropRecord(state.body.food, e.id, e.foodName); saveState(); renderFoodLog(); renderFeed(); };
+        div.appendChild(x); list.appendChild(div);
+      });
+    }
+  }
+  renderFoodTotals(rows);
+}
 function renderFoodTotals(rows) {
   const t = state.body.targets || {};
   let kcal = 0, protein = 0, unknown = 0;
@@ -1384,11 +1406,13 @@ function renderFoodTotals(rows) {
         '<span class="u">' + (target ? ' / ' + target + unit : unit) + '</span></div>' +
       '<div class="bar"><span class="' + (over ? 'over' : '') + '" style="width:' + pct + '%"></span></div></div>';
   };
-  // Water belongs to Intake, which shows it against its target. Food shows
-  // what Food knows.
+  // Water reads against a target, and the macro bar is the only row on the
+  // page with targets in it — so it belongs here, and only here.
+  const water = onDay(state.body.water).reduce((n, r) => n + (Number(r.oz) || 0), 0);
   $('foodMacros').innerHTML =
     cell('Calories', kcal, t.kcal, unknown ? ' kcal · ' + unknown + ' unresolved' : ' kcal') +
-    cell('Protein', protein, t.protein_g, ' g');
+    cell('Protein', protein, t.protein_g, ' g') +
+    cell('Water', water, t.water_oz || 64, ' oz');
 }
 
 /* ---- meals: the combinations you eat again ----
