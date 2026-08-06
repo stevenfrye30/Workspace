@@ -5,7 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mirror</title>
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#8a6a3e">
+<meta name="theme-color" content="#8a6a3e" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1c1e24" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" id="themeColor" content="#8a6a3e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Mirror">
@@ -22,7 +24,7 @@
   }
   body.theme-dark {
     --bg:#1c1e24; --panel:#24262e; --panel2:#2d3039;
-    --ink:#e8e4dc; --dim:#8a8478; --line:rgba(232,228,220,.1);
+    --ink:#e8e4dc; --dim:#9a948a; --line:rgba(232,228,220,.1);
     --accent:#c89b60; --accent2:#8fb080; --warn:#d87a5a;
     --shadow:0 1px 2px rgba(0,0,0,.25);
     --water:#7aa8c8; --coffee:#b08055; --other:#6ba0a0;
@@ -75,18 +77,18 @@
   .icon-btn:hover { color: var(--ink); border-color: var(--accent); }
 
   /* ---------- date strip ---------- */
+  /* A plain inline row, not a panel: it is a control, not a section. */
   .datestrip {
-    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
-    padding: 8px 10px; margin-bottom: 16px;
-    background: var(--panel2); border-radius: 10px;
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 0; margin-bottom: 14px;
   }
   .datestrip .lbl { font-size: .7rem; color: var(--dim); text-transform: uppercase; letter-spacing: .07em; }
-  body.dense .datestrip { padding: 5px 9px; margin-bottom: 12px; }
-  body.dense .datestrip .chip { padding: 4px 11px; }
   .datestrip input[type=date] {
     font: inherit; font-size: .78rem; padding: 3px 6px; border-radius: 6px;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink);
   }
+  body.dense .datestrip { margin-bottom: 12px; }
+  body.dense .datestrip .chip { padding: 4px 11px; }
   .backdate-warn { width: 100%; font-size: .74rem; color: var(--warn); }
 
   /* ---------- the daily grid ----------
@@ -157,18 +159,17 @@
   body.dense .dotline { gap: 7px; margin-bottom: 4px; }
   body.dense .dotline .dl { flex-basis: 3.9rem; font-size: .7rem; }
 
-  .dots { display: flex; gap: 6px; }
+  .dots { display: flex; gap: 7px; }
   .dots button {
-    flex: 1; min-width: 0; height: 38px; border-radius: 8px; cursor: pointer;
-    border: 1px solid var(--line); background: var(--panel2); color: var(--dim);
-    font: inherit; font-size: .85rem; font-variant-numeric: tabular-nums;
-    transition: background .12s, color .12s, border-color .12s;
+    flex: 0 0 auto; width: 38px; height: 38px; border-radius: 999px; padding: 0;
+    cursor: pointer; border: 1px solid var(--line); background: var(--panel2);
+    transition: background .12s, border-color .12s, transform .1s;
   }
-  body.dense .dots { gap: 4px; }
-  body.dense .dots button { height: 30px; font-size: .78rem; border-radius: 6px; }
   .dots button:hover { border-color: var(--accent); }
-  .dots button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
-  body.theme-dark .dots button[aria-pressed="true"] { color: #1c1e24; }
+  .dots button:active { transform: scale(.92); }
+  .dots button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); }
+  body.dense .dots { gap: 6px; }
+  body.dense .dots button { width: 30px; height: 30px; }
 
   /* ---------- chips ---------- */
   .chips { display: flex; gap: 6px; flex-wrap: wrap; }
@@ -203,12 +204,14 @@
   /* ---------- tabbed, colour-tinted boxes (drinks + substances) ----------
      The whole card takes the active tab's hue, so what you're about to log
      is unmistakable without reading anything. */
+  /* The hue identifies the active tab; it does not need to wash the whole
+     card to do that. A 3px inset cap, the header text and the active tab
+     carry it, and the body stays the same panel as every other card. */
   .boxed {
-    background: color-mix(in srgb, var(--c, var(--accent)) 13%, var(--panel));
-    border-color: color-mix(in srgb, var(--c, var(--accent)) 45%, transparent);
-    transition: background .18s, border-color .18s;
+    background: var(--panel);
+    box-shadow: inset 0 3px 0 var(--c, var(--accent)), var(--shadow);
+    transition: box-shadow .18s;
   }
-  body.theme-dark .boxed { background: color-mix(in srgb, var(--c, var(--accent)) 18%, var(--panel)); }
   .boxed > h2 { color: var(--c, var(--dim)); }
   .boxed > h2 .note { color: var(--ink); font-weight: 600; }
 
@@ -254,37 +257,6 @@
   body.dense #sHours .chip { padding: 5px 9px; font-size: .76rem; }
   body.dense .card > .field:last-child .primary { padding: 8px 15px; }
 
-  /* ---------- the pending readout ----------
-     Always present, even at zero, so the card never changes height as you
-     tap — the whole point of the instruments staying still. */
-  .pending {
-    display: flex; align-items: baseline; gap: 4px; margin-bottom: 8px;
-    padding: 6px 10px; border-radius: 9px; min-height: 40px;
-    background: var(--panel); border: 1px dashed color-mix(in srgb, var(--c) 35%, transparent);
-  }
-  .pending .pv {
-    font-size: 1.5rem; font-weight: 700; font-variant-numeric: tabular-nums;
-    color: var(--c); line-height: 1.1;
-  }
-  .pending.zero .pv { color: var(--dim); opacity: .4; font-weight: 400; }
-  .pending .pu { font-size: .68rem; color: var(--dim); }
-  .pending .pclear {
-    margin-left: auto; background: none; border: 0; cursor: pointer;
-    color: var(--dim); font: inherit; font-size: .85rem; padding: 2px 4px; visibility: hidden;
-  }
-  .pending:not(.zero) .pclear { visibility: visible; }
-  .pending .pclear:hover { color: var(--warn); }
-  body.dense .pending { min-height: 34px; padding: 4px 9px; margin-bottom: 6px; }
-  body.dense .pending .pv { font-size: 1.3rem; }
-
-  .quick button.enter {
-    background: var(--c); color: #fff; border-color: var(--c);
-  }
-  body.theme-dark .quick button.enter { color: #1c1e24; }
-  .quick button.enter[disabled] {
-    background: var(--panel2); color: var(--dim);
-    border-color: var(--line); cursor: default; opacity: .6;
-  }
   .icon-btn[disabled] { opacity: .35; cursor: default; }
   .icon-btn[disabled]:hover { color: var(--dim); border-color: var(--line); }
 
@@ -389,11 +361,14 @@
   .launch .mine:hover .del { opacity: 1; }
   .launch .mine .del:hover { color: var(--warn); }
   .launch .add { border-style: dashed; color: var(--dim); cursor: pointer; }
+  .launchrow { margin: 0 0 16px; }
+  body.dense .launchrow { margin-bottom: 13px; }
   .bdayline { margin-top: 10px; font-size: .78rem; color: var(--dim); }
   .bdayline b { color: var(--ink); font-weight: 600; }
 
   /* The reference panels are real collapsibles. Closed they are one line;
      they open themselves once, on load, if they have anything to show. */
+  .panels > .card, .panels > details { box-shadow: none; }
   .panels > details > summary {
     cursor: pointer; list-style: none;
     font-size: .68rem; font-weight: 600; text-transform: uppercase;
@@ -401,6 +376,8 @@
     display: flex; align-items: baseline; gap: 8px;
   }
   .panels > details > summary::-webkit-details-marker { display: none; }
+  /* Reference cards read one step quieter than the daily instruments. */
+  .panels > details > summary, .panels > .card > h2 { font-size: .64rem; }
   .panels > details > summary::after {
     content: '+'; margin-left: 6px; font-size: .9rem; line-height: 1; color: var(--dim);
   }
@@ -499,13 +476,6 @@
   </span>
 </div>
 
-<!-- No heading: nine labelled pills do not need to be told they are links,
-     and the heading cost as much height as a row of them. -->
-<div class="card">
-  <div class="launch" id="launch"></div>
-  <div class="bdayline" id="bdayLine"></div>
-</div>
-
 <div class="nudge" id="nudge" hidden>
   <span id="nudgeMsg"></span>
   <button class="mini" id="nudgeGo">Save a forever-copy</button>
@@ -580,11 +550,15 @@
   <div class="card narrow">
     <h2>Movement</h2>
     <div class="chips" id="exChips"></div>
-    <div class="field inline">
+    <div class="field inline" id="exRow">
       <input type="text" id="exType" placeholder="walk, lift, yoga">
       <input type="number" id="exMin" min="1" step="1" placeholder="min" style="max-width:74px">
       <button class="primary" id="exAdd">Log</button>
     </div>
+    <details class="fold" id="exOtherFold" hidden>
+      <summary>other…</summary>
+      <div class="field" id="exOtherWrap"></div>
+    </details>
   </div>
 
   <!-- The speed path is the chip row: the things you actually eat, one tap.
@@ -612,6 +586,13 @@
   <!-- ============ DRAWERS ============ -->
   <!-- Everything you touch weekly rather than daily. Closed by default; each
        summary earns its space by saying something useful while shut. -->
+</div>
+
+<!-- A utility row, not a section: no card, no heading. The day comes
+     first; these are the doors out of it. -->
+<div class="launchrow">
+  <div class="launch" id="launch"></div>
+  <div class="bdayline" id="bdayLine"></div>
 </div>
 
 <!-- The reference panels get their own grid. Sharing the instruments'
@@ -891,13 +872,21 @@ const stampTime = () => (day === todayStr() ? nowHM() : '');
 const onDay = (arr) => (arr || []).filter((r) => r && r.date === day);
 
 /* ---------- dot rows ---------- */
-function buildDots(el, value, onPick) {
+/* Progressive fill: tapping the 4th dot fills 1-4, so the row reads as a
+   quantity rather than five things you might have chosen. No numerals are
+   drawn — they were the same five digits repeated six times down the card —
+   but every dot still carries its value in aria-label, and aria-pressed is
+   true for all dots up to it, which is what makes the fill legible to a
+   screen reader too. */
+function buildDots(el, value, onPick, name) {
   el.innerHTML = '';
   for (let i = 1; i <= 5; i++) {
     const b = document.createElement('button');
-    b.type = 'button'; b.textContent = i;
-    b.setAttribute('aria-pressed', String(value === i));
-    b.onclick = () => onPick(value === i ? null : i);   // tap again to clear
+    b.type = 'button';
+    b.setAttribute('aria-pressed', String(value != null && i <= value));
+    b.setAttribute('aria-label', (name || 'Rating') + ' ' + i + ' of 5');
+    b.title = i + ' of 5';
+    b.onclick = () => onPick(value === i ? null : i);   // tap the same one to clear
     el.appendChild(b);
   }
 }
@@ -926,11 +915,11 @@ function loadPulse() {
   renderPulse();
 }
 function renderPulse() {
-  buildDots($('dMood'), pulse.mood, (v) => { pulse.mood = v; renderPulse(); });
-  buildDots($('dEnergy'), pulse.energy, (v) => { pulse.energy = v; renderPulse(); });
-  buildDots($('dFatigue'), pulse.fatigue, (v) => { pulse.fatigue = v; renderPulse(); });
-  buildDots($('dSore'), pulse.soreness, (v) => { pulse.soreness = v; renderPulse(); });
-  buildDots($('dComfort'), pulse.comfort, (v) => { pulse.comfort = v; renderPulse(); });
+  buildDots($('dMood'), pulse.mood, (v) => { pulse.mood = v; renderPulse(); }, 'Mood');
+  buildDots($('dEnergy'), pulse.energy, (v) => { pulse.energy = v; renderPulse(); }, 'Energy');
+  buildDots($('dFatigue'), pulse.fatigue, (v) => { pulse.fatigue = v; renderPulse(); }, 'Fatigue');
+  buildDots($('dSore'), pulse.soreness, (v) => { pulse.soreness = v; renderPulse(); }, 'Soreness');
+  buildDots($('dComfort'), pulse.comfort, (v) => { pulse.comfort = v; renderPulse(); }, 'Comfort');
   const c = card(day);
   $('pulseSaved').textContent = c ? 'saved' : '';
 }
@@ -985,7 +974,7 @@ function renderSleep() {
     b.onclick = () => { sleepDraft.hours = sleepDraft.hours === h ? null : h; renderSleep(); };
     wrap.appendChild(b);
   });
-  buildDots($('sQuality'), sleepDraft.quality, (v) => { sleepDraft.quality = v; renderSleep(); });
+  buildDots($('sQuality'), sleepDraft.quality, (v) => { sleepDraft.quality = v; renderSleep(); }, 'Sleep quality');
   const s = sleepFor(day);
   $('sleepNote').textContent = s ? round1(s.hours) + ' h logged' : '';
 }
@@ -1014,10 +1003,10 @@ function writeSleep() {
 /* =============================================================
    INTAKE — one tabbed instrument over three stores.
 
-   Drinks and Substances were the same control twice: tabs, a pending
-   readout, quick buttons. Six tabs in one card instead, split only by the
-   unit each kind is measured in — volume for the first three, count for
-   the last three.
+   Drinks and Substances were the same control twice. Six tabs in one card
+   instead, split only by the unit each kind is measured in — volume for the
+   first three, count for the last three. A tap on a quick button logs
+   immediately; exact amounts live behind the fold.
 
    The UI groups by what a thing IS; storage stays exactly where it was, so
    no history has to move:
@@ -1105,7 +1094,7 @@ function renderTabs(el, kinds, active, onPick) {
     b.style.setProperty('--tc', 'var(--' + m.c + ')');
     b.setAttribute('aria-selected', String(k === active));
     const badge = (k !== 'water' && t.n) ? '<span class="n">' + round1(t.n) + '</span>' : '';
-    b.innerHTML = m.icon + ' ' + esc(m.name) + badge;
+    b.innerHTML = esc(m.name) + badge;   // colour identifies the kind
     b.onclick = () => onPick(k);
     el.appendChild(b);
   });
@@ -1648,13 +1637,28 @@ function recentExTypes() {
 }
 function renderExercise() {
   const chips = $('exChips'); chips.innerHTML = '';
-  recentExTypes().forEach((t) => {
+  const types = recentExTypes();
+  types.forEach((t) => {
     const b = document.createElement('button');
     b.className = 'chip'; b.type = 'button'; b.textContent = t;
-    b.onclick = () => { $('exType').value = t; $('exMin').focus(); };
+    b.setAttribute('aria-pressed', String($('exType').value.trim().toLowerCase() === t.toLowerCase()));
+    b.onclick = () => { $('exType').value = t; renderExercise(); $('exMin').focus(); };
     chips.appendChild(b);
   });
+  /* Once you have a few usual activities the free-text box is the rare case,
+     so it moves behind "other…" and the row is just minutes and Log. The
+     input is MOVED, not duplicated, so its value and handlers come with it —
+     one source of truth for the type either way. */
+  const useChips = types.length > 0;
+  $('exOtherFold').hidden = !useChips;
+  const type = $('exType');
+  if (useChips) {
+    if (type.parentElement !== $('exOtherWrap')) $('exOtherWrap').appendChild(type);
+  } else if (type.parentElement !== $('exRow')) {
+    $('exRow').insertBefore(type, $('exMin'));
+  }
 }
+
 function addExercise() {
   const type = $('exType').value.trim();
   if (!type) { $('exType').focus(); return; }
@@ -2434,9 +2438,10 @@ $('themeBtn').onclick = () => {
   const dark = document.body.classList.contains('theme-dark');
   localStorage.setItem('mirror_theme', dark ? 'dark' : 'light');
   $('themeBtn').textContent = dark ? '☀' : '☾';
-  document.querySelector('meta[name=theme-color]').content = dark ? '#1c1e24' : '#8a6a3e';
+  $('themeColor').content = dark ? '#1c1e24' : '#8a6a3e';
 };
 $('themeBtn').textContent = document.body.classList.contains('theme-dark') ? '☀' : '☾';
+$('themeColor').content = document.body.classList.contains('theme-dark') ? '#1c1e24' : '#8a6a3e';
 
 $('dataBtn').onclick = openData;
 $('restoreFile').onchange = (e) => {
