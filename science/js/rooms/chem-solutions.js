@@ -1,7 +1,8 @@
 /* Room content: chem-solutions — concentration and dilution. */
 
 export default {
-name: "Solutions & Concentration", kind: "Chemistry · mixtures", glyph: "🧫", color: "#e0794b",
+kind: "Chemistry · mixtures",
+
 blurb: "Moles per litre, and what happens when you add water — molarity, dilution, solution stoichiometry, and the rules for what actually dissolves.",
 status: "Live — molarity and dilution solvers",
 cards: [

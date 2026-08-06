@@ -1,7 +1,8 @@
 /* Room content: data-analysis */
 
 export default {
-name: "Data, Symbols & Units", kind: "Evidence & notation", glyph: "📊", color: "#5fb0a8",
+kind: "Evidence & notation",
+
 blurb: "The bench reference for turning measurements into conclusions — experimental design, statistics, traces, and error — plus the shared units, symbols, and notation of science.",
 status: "Live — unit converter, constants and notation",
 cards: [

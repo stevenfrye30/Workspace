@@ -1,7 +1,8 @@
 /* Room content: biochemistry */
 
 export default {
-name: "Biochemistry", kind: "Molecules of life", glyph: "🧬", color: "#7fb0d0",
+kind: "Molecules of life",
+
 blurb: "The bridge from Chemistry to Biology — water and pH become amino acids, enzymes, membranes, metabolism, and the molecules that carry information.",
 status: "Reference — molecular cards and worked examples",
 cards: [

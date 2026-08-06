@@ -1,7 +1,8 @@
 /* Room content: chem-titration — titration curves and indicators. */
 
 export default {
-name: "Titration", kind: "Chemistry · analysis", glyph: "⚗️", color: "#e0794b",
+kind: "Chemistry · analysis",
+
 blurb: "Adding measured titrant and reading the curve that results — equivalence, half-equivalence, the buffer region, and picking an indicator that changes where it matters.",
 status: "Live — curve, table and indicator picker",
 cards: [

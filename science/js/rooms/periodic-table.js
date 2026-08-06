@@ -5,7 +5,8 @@
    examples are raw HTML and use proper <sub> / <sup> markup. */
 
 export default {
-name: "Periodic Table", kind: "Core hub", glyph: "⚛", color: "#d4a24c",
+kind: "Core hub",
+
 blurb: "The connective center of the Science Lab — every element a doorway into chemistry, biochemistry, physics, and the bench. Shade the table by a property to see a trend all at once, then read why it goes that way.",
 status: "Live — 118 elements, searchable, filterable, and shaded by four periodic trends",
 cards: [

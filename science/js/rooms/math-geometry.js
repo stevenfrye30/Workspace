@@ -1,7 +1,8 @@
 /* Room content: math-geometry — ported from the standalone Math Lab. */
 
 export default {
-name: "Geometry", kind: "Form", glyph: "△", color: "#8b93d0",
+kind: "Form",
+
 blurb: "Shapes, theorems, and coordinate geometry — a visual reference that ties figures (△ ○ □) to formulas and to algebra.",
 status: "Reference — formulas and worked examples",
 cards: [

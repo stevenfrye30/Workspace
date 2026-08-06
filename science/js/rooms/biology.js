@@ -1,7 +1,8 @@
 /* Room content: biology */
 
 export default {
-name: "Biology", kind: "Life", glyph: "🌿", color: "#6fae5f",
+kind: "Life",
+
 blurb: "The broad life-science room — cells, genes, immunity, the body, plants, and evolution.",
 status: "Reference — cards and worked examples",
 cards: [

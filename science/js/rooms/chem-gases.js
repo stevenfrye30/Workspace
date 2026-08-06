@@ -1,7 +1,8 @@
 /* Room content: chem-gases — the gas laws. */
 
 export default {
-name: "Gases", kind: "Chemistry · the gas phase", glyph: "🎈", color: "#e0794b",
+kind: "Chemistry · the gas phase",
+
 blurb: "Pressure, volume, temperature and amount, and the one equation that ties them together — plus partial pressures and why lighter gases escape faster.",
 status: "Live — ideal, combined, Dalton and Graham solvers",
 cards: [

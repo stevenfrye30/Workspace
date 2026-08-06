@@ -21,82 +21,18 @@
          built on first focus, not on page load. -->
     <div id="boardSearch"></div>
 
-    <!-- Nine tiles. The periodic table sits at the centre because every
-         other room reaches for it. -->
-    <div class="board">
-      <a class="tile" style="--c:#e0794b;" href="room.html?room=chemistry">
-        <span class="t-glyph">🧪</span>
-        <span class="t-name">Chemistry</span>
-        <span class="t-sub">9 topic rooms</span>
-      </a>
-
-      <a class="tile" style="--c:#8b93d0;" href="room.html?room=math">
-        <span class="t-glyph">∑</span>
-        <span class="t-name">Math</span>
-        <span class="t-sub">9 rooms</span>
-      </a>
-
-      <a class="tile" style="--c:#c98bd0;" href="room.html?room=physics">
-        <span class="t-glyph">⚛</span>
-        <span class="t-name">Physics</span>
-        <span class="t-sub">Motion, energy, waves</span>
-      </a>
-
-      <a class="tile" style="--c:#7fb0d0;" href="room.html?room=biochemistry">
-        <span class="t-glyph">🧬</span>
-        <span class="t-name">Biochemistry</span>
-        <span class="t-sub">Enzymes, metabolism, DNA</span>
-      </a>
-
-      <a class="tile tile-center" style="--c:#d4a24c;" href="room.html?room=periodic-table">
-        <span class="t-glyph">⚛</span>
-        <span class="t-name">Periodic Table</span>
-        <span class="t-sub">118 elements</span>
-      </a>
-
-      <a class="tile" style="--c:#5f9ea0;" href="room.html?room=reference">
-        <span class="t-glyph">📋</span>
-        <span class="t-name">Reference Tables</span>
-        <span class="t-sub">Ions, solubility, K<sub>a</sub>, thermo</span>
-        <span class="t-also" data-href="room.html?room=data-analysis">Data, Symbols &amp; Units →</span>
-      </a>
-
-      <a class="tile" style="--c:#e06b8b;" href="room.html?room=neuroscience">
-        <span class="t-glyph">🧠</span>
-        <span class="t-name">Neuroscience</span>
-        <span class="t-sub">Membrane potential, synapses</span>
-      </a>
-
-      <a class="tile" style="--c:#6fae5f;" href="room.html?room=biology">
-        <span class="t-glyph">🌿</span>
-        <span class="t-name">Biology</span>
-        <span class="t-sub">Cells, genes, physiology</span>
-      </a>
-
-      <a class="tile" style="--c:#b8a24c;" href="room.html?room=lab-methods">
-        <span class="t-glyph">🔬</span>
-        <span class="t-name">Lab Methods</span>
-        <span class="t-sub">Safety, prep, technique</span>
-      </a>
-    </div>
+    <!-- Nine tiles, generated from js/rooms/_manifest.js. The periodic table
+         sits at the centre because every other room reaches for it. -->
+    <div class="board" id="board"></div>
   </div>
 
+  <noscript>
+    <p class="notfound" style="max-width:1100px;margin:0 auto;padding:1.5rem;">
+      The board is built in the browser and needs JavaScript enabled.
+    </p>
+  </noscript>
+
+  <script type="module" src="js/board.js"></script>
   <script type="module" src="js/dock.js"></script>
-  <script type="module">
-    import { mountBox } from './js/search.js';
-    mountBox(document.getElementById('boardSearch'));
-  </script>
-  <script>
-    /* The two shared tiles carry a second destination. A nested <a> is
-       invalid inside a tile link, so the secondary target is a span that
-       navigates itself and stops the tile from also firing. */
-    document.querySelectorAll('.t-also').forEach(function (el) {
-      el.setAttribute('role', 'link');
-      el.setAttribute('tabindex', '0');
-      function go(e) { e.preventDefault(); e.stopPropagation(); location.href = el.dataset.href; }
-      el.addEventListener('click', go);
-      el.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') go(e); });
-    });
-  </script>
 </body>
 </html>

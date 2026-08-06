@@ -1,7 +1,8 @@
 /* Room content: chem-equilibrium — equilibrium and reaction rates. */
 
 export default {
-name: "Equilibrium & Kinetics", kind: "Chemistry · rates and balance", glyph: "⚖", color: "#e0794b",
+kind: "Chemistry · rates and balance",
+
 blurb: "How far a reaction goes, and how fast it gets there — two different questions that students routinely mix up.",
 status: "Reference — formulas and worked examples",
 cards: [

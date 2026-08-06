@@ -1,7 +1,8 @@
 /* Room content: reference — the general-chemistry lookup tables. */
 
 export default {
-name: "Reference Tables", kind: "Lookup", glyph: "📋", color: "#5f9ea0",
+kind: "Lookup",
+
 /* blurb / status / topics are escaped by the renderer, so they use plain
    "Ka" and "Kb" — Unicode has a subscript a but no subscript b, and mixing
    the two reads as a typo. Card bodies and examples below are raw HTML and

@@ -1,7 +1,8 @@
 /* Room content: math-time-series — ported from the standalone Math Lab. */
 
 export default {
-name: "Time-Series Lab", kind: "Signal", glyph: "〜", color: "#8b93d0",
+kind: "Signal",
+
 blurb: "A data & signal console for anything measured over time — electrophysiology traces, stock data, repeated measures, and sensor streams.",
 status: "Reference — formulas and worked examples",
 callout: "<b>Future-facing data lab.</b> Upload &amp; analysis aren't wired up yet — this is the working reference and the plan. Built to grow into a real console for ephys traces, stock data, and repeated measures.",

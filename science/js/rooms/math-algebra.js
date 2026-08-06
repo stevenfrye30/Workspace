@@ -1,7 +1,8 @@
 /* Room content: math-algebra — ported from the standalone Math Lab. */
 
 export default {
-name: "Algebra", kind: "Structure", glyph: "x²", color: "#8b93d0",
+kind: "Structure",
+
 blurb: "Equations, factoring, functions, and symbolic manipulation — a working reference with rules, worked examples, and room to grow.",
 status: "Reference — formulas and worked examples",
 cards: [

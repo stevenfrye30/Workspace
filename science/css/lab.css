@@ -24,6 +24,16 @@ body {
   gap: 0.7rem;
 }
 
+/* Each grid position is a cell, not a bare tile, so a tile with a second
+   destination can hold two sibling anchors. The secondary link used to be a
+   <span role="link"> inside the tile's own anchor — invalid, and it broke
+   middle-click and open-in-new-tab on the one room reachable only there. */
+.cell { display: flex; flex-direction: column; min-width: 0; }
+.cell > .tile { flex: 1; }
+/* Same specificity as the rule above, and after it, so the round tile keeps
+   its own size instead of being stretched to fill the row. */
+.cell > .tile-center { flex: 0 0 auto; margin: auto; }
+
 .tile {
   position: relative; display: flex; flex-direction: column; justify-content: center;
   text-decoration: none; color: inherit; text-align: center;
@@ -46,7 +56,9 @@ body {
 .tile-center {
   aspect-ratio: 1 / 1;
   width: 100%; max-width: 9.75rem; min-height: 0;
-  justify-self: center; align-self: center;
+  /* It is a flex child of its cell now, so it centres with auto margins
+     rather than the grid's justify-self, and must not stretch to fill. */
+  flex: 0 0 auto; margin: auto;
   border-radius: 50%;
   padding: 0.8rem;
   background:
@@ -73,14 +85,14 @@ body {
 .tile-center .t-name { font-size: 1rem; line-height: 1.14; padding: 0 0.3rem; }
 .tile-center .t-sub { font-size: 0.64rem; margin-top: 0.18rem; }
 
-/* Second destination on the two shared tiles. */
+/* Second destination — a real anchor sitting under its tile. */
 .t-also {
   font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.66rem; font-weight: 600;
-  color: var(--c); cursor: pointer; margin-top: 0.45rem;
+  color: var(--c); text-decoration: none; cursor: pointer; margin-top: 0.4rem;
   padding: 0.16rem 0.5rem; border-radius: 999px;
   background: color-mix(in srgb, var(--c) 13%, transparent);
   border: 1px solid color-mix(in srgb, var(--c) 32%, transparent);
-  align-self: center;
+  align-self: center; text-align: center;
 }
 .t-also:hover, .t-also:focus-visible {
   color: var(--fg); background: color-mix(in srgb, var(--c) 26%, transparent);

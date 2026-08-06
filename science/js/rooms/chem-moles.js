@@ -1,7 +1,8 @@
 /* Room content: chem-moles — moles, molar mass and stoichiometry. */
 
 export default {
-name: "Moles & Stoichiometry", kind: "Chemistry · counting", glyph: "⚖️", color: "#e0794b",
+kind: "Chemistry · counting",
+
 blurb: "The mole is chemistry's counting unit, and stoichiometry is what you do with it — mass to moles, mole ratios from a balanced equation, and which reactant runs out first.",
 status: "Live — limiting reagent solver and molar-mass calculator",
 cards: [

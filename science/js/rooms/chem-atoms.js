@@ -1,7 +1,8 @@
 /* Room content: chem-atoms — atomic structure, bonding and periodic trends. */
 
 export default {
-name: "Atoms, Bonding & Trends", kind: "Chemistry · structure", glyph: "⚛", color: "#e0794b",
+kind: "Chemistry · structure",
+
 blurb: "What atoms are made of, how they join, and why the periodic table's patterns fall out of electron arrangement.",
 status: "Reference — pairs with the interactive periodic table",
 cards: [

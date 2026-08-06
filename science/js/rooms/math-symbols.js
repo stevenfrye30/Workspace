@@ -1,7 +1,8 @@
 /* Room content: math-symbols — ported from the standalone Math Lab. */
 
 export default {
-name: "Symbols", kind: "Notation", glyph: "π", color: "#8b93d0",
+kind: "Notation",
+
 blurb: "A notation cabinet for writing math — Greek letters, operators, and notation from every field, each a click away to copy.",
 status: "Click any symbol to copy",
 callout: "Click any symbol to copy it. For symbols while graphing, Desmos has its own on-screen keyboard.",

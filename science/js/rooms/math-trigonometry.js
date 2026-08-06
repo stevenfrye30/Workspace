@@ -1,7 +1,8 @@
 /* Room content: math-trigonometry — ported from the standalone Math Lab. */
 
 export default {
-name: "Trigonometry", kind: "Angle", glyph: "∿", color: "#8b93d0",
+kind: "Angle",
+
 blurb: "The bridge between angles, triangles, the unit circle, and waves (∿) — θ, π, sin, cos, tan, and the graphs they trace.",
 status: "Reference — formulas and worked examples",
 cards: [

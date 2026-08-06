@@ -1,7 +1,8 @@
 /* Room content: chem-redox — oxidation, reduction and electrochemistry. */
 
 export default {
-name: "Redox & Electrochemistry", kind: "Chemistry · electron transfer", glyph: "🔋", color: "#e0794b",
+kind: "Chemistry · electron transfer",
+
 blurb: "Reactions that move electrons, and the cells that put that movement to work — oxidation numbers, half-reactions, batteries and electrolysis.",
 status: "Reference — formulas and worked examples",
 cards: [

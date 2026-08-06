@@ -1,7 +1,8 @@
 /* Room content: neuroscience */
 
 export default {
-name: "Neuroscience", kind: "Signals", glyph: "🧠", color: "#e06b8b",
+kind: "Signals",
+
 blurb: "Neurons, synapses, and the electrical & optical signals they produce — a bench notebook for patch clamp, calcium/glutamate imaging, and trace analysis.",
 status: "Reference — ephys and imaging, with worked examples",
 callout: "<b>Bench-oriented & educational.</b> This room mirrors real ephys/imaging workflow and connects it to the Time-Series and Statistics tools in Math Lab. (General reference — no private lab data.)",

@@ -3,7 +3,8 @@
    purpose was linking out to the Math Lab. */
 
 export default {
-name: "Physics", kind: "Nature", glyph: "⚛", color: "#c98bd0",
+kind: "Nature",
+
 blurb: "Applied math with units — motion, forces, energy, electricity, and waves (F, v, a, E, P, V, I, R, λ, f, ω), tied to graphing and real measurements.",
 status: "Reference — formulas and worked examples",
 cards: [

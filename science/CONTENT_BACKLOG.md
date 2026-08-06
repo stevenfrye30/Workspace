@@ -1,39 +1,63 @@
 # Content backlog
 
-Topics that the rooms used to advertise as chips but had no reference card
-behind them. The chip list is gone — a room now shows its cards as the topic
-list, so nothing is promised that does not exist. These are the candidates
-for writing next, kept here so removing the chips did not quietly lose them.
+Topics the rooms used to advertise as chips with no reference card behind
+them. The chip list is gone — a room shows its cards as the topic list, so
+nothing is promised that does not exist. These are the candidates for writing
+next, kept here so removing the chips did not quietly lose them.
 
-Generated when the topic chips were merged into the cards.
+**Reading the table.** A room delivers content three ways and this counts all
+three. Cards are the collapsible reference list. Examples are the worked
+problems. Groups are click-to-copy symbol sets. A room with 0 cards is not
+empty — `math-symbols` is a notation cabinet of 13 groups and 9 examples and
+has no cards by design. `reference` likewise carries most of its content as
+searchable tables in its instrument rather than as cards, so its uncovered
+topics are lower than the card count alone suggests.
 
-| Room | Topics were | Cards | Uncovered |
-|---|---|---|---|
-| `biochemistry` | 22 | 19 | 16 |
-| `biology` | 22 | 21 | 13 |
-| `chem-acids` | 13 | 10 | 8 |
-| `chem-atoms` | 18 | 11 | 12 |
-| `chem-equilibrium` | 16 | 13 | 6 |
-| `chem-gases` | 15 | 9 | 12 |
-| `chem-moles` | 12 | 9 | 4 |
-| `chem-redox` | 13 | 11 | 6 |
-| `chem-solutions` | 11 | 8 | 4 |
-| `chem-thermo` | 14 | 10 | 8 |
-| `chem-titration` | 12 | 8 | 8 |
-| `data-analysis` | 19 | 15 | 6 |
-| `lab-methods` | 27 | 21 | 8 |
-| `math-algebra` | 10 | 9 | 9 |
-| `math-calculus` | 12 | 12 | 9 |
-| `math-geometry` | 18 | 16 | 12 |
-| `math-notes` | 16 | 10 | 14 |
-| `math-statistics` | 14 | 14 | 8 |
-| `math-symbols` | 14 | 0 | 14 |
-| `math-time-series` | 20 | 14 | 12 |
-| `math-trigonometry` | 19 | 14 | 11 |
-| `neuroscience` | 27 | 21 | 19 |
-| `periodic-table` | 27 | 4 | 22 |
-| `physics` | 23 | 20 | 13 |
-| `reference` | 12 | 6 | 12 |
+| Room | Topics were | Cards | Examples | Groups | Uncovered |
+|---|---|---|---|---|---|
+| `biochemistry` | 22 | 19 | 10 | 0 | 16 |
+| `biology` | 22 | 21 | 9 | 0 | 13 |
+| `chem-acids` | 13 | 10 | 7 | 0 | 8 |
+| `chem-atoms` | 18 | 11 | 6 | 0 | 12 |
+| `chem-equilibrium` | 16 | 13 | 7 | 0 | 6 |
+| `chem-gases` | 15 | 9 | 6 | 0 | 12 |
+| `chem-moles` | 12 | 9 | 7 | 0 | 4 |
+| `chem-redox` | 13 | 11 | 6 | 0 | 6 |
+| `chem-solutions` | 11 | 8 | 5 | 0 | 4 |
+| `chem-thermo` | 14 | 10 | 7 | 0 | 8 |
+| `chem-titration` | 12 | 8 | 5 | 0 | 8 |
+| `data-analysis` | 19 | 15 | 0 | 0 | 6 |
+| `lab-methods` | 27 | 21 | 10 | 0 | 8 |
+| `math-algebra` | 10 | 9 | 5 | 0 | 9 |
+| `math-calculus` | 12 | 12 | 7 | 0 | 9 |
+| `math-geometry` | 18 | 16 | 8 | 0 | 12 |
+| `math-notes` | 16 | 10 | 7 | 0 | 14 |
+| `math-statistics` | 14 | 14 | 8 | 0 | 8 |
+| `math-symbols` | 14 | 0 | 9 | 13 | 14 |
+| `math-time-series` | 20 | 14 | 9 | 0 | 12 |
+| `math-trigonometry` | 19 | 14 | 9 | 0 | 11 |
+| `neuroscience` | 27 | 21 | 10 | 0 | 19 |
+| `periodic-table` | 27 | 20 | 8 | 0 | 0 |
+| `physics` | 23 | 20 | 10 | 0 | 13 |
+| `reference` | 12 | 12 | 7 | 0 | 0 |
+
+## periodic-table — done
+
+All nine real topics on this list are written. The rest of what was here was
+scrape residue from the chip merge — CSS class names (`elcard`, `z`, `sym`,
+`nm`, `ms`) and fragments of card literals, never topics at all.
+
+| Was listed as | Now covered by |
+|---|---|
+| Elements | the instrument itself — 118 searchable tiles |
+| Periods | Periods and groups |
+| Atomic structure | Atomic structure from a tile |
+| Electron configuration | Reading an electron configuration |
+| Oxidation states | Oxidation states you can predict |
+| Electronegativity | Electronegativity · Using electronegativity difference |
+| Atomic mass | Why atomic masses are not whole numbers |
+| Biological relevance | Which elements life uses |
+| Lab relevance | Where the table shows up on the bench |
 
 ## biochemistry
 
@@ -320,33 +344,6 @@ Generated when the topic chips were merged into the cards.
 - Signal traces
 - Time-series analysis
 
-## periodic-table
-
-- Elements
-- Periods
-- Atomic structure
-- Electron configuration
-- Oxidation states
-- Electronegativity
-- Atomic mass
-- Biological relevance
-- Lab relevance
-- elcard
-- z
-- sym
-- nm
-- ms
-- Click any element above to open its card: atomic number &amp; mass, group, period, electron configuration, oxidation states, and its biological + lab relevance.
-- Across a period →: radius ↓, electronegativity ↑, ionization energy ↑.<br>Down a group ↓: radius ↑, electronegativity ↓.
--  },
-  { name: 
-- , body: 
-- , note: 
--  },
-  { name: 
-- , body: 
-- , note: 
-
 ## physics
 
 - Units & dimensions
@@ -363,17 +360,24 @@ Generated when the topic chips were merged into the cards.
 - Simple harmonic motion
 - Measurement & uncertainty
 
-## reference
+## reference — done
 
-- Polyatomic ions
-- Oxyanion naming
-- Ionic formulas
-- Solubility rules
-- Precipitation
-- Net ionic equations
-- Strong acids
-- Strong bases
-- Weak acids
-- Ka and pKa
-- Kb and pKb
-- Buffers
+All twelve are covered; half of them by the instrument rather than by cards,
+which is why the card count alone read as a gap. The room's search-every-table
+tool carries 174 rows under these exact headings.
+
+| Was listed as | Now covered by |
+|---|---|
+| Polyatomic ions | instrument — Polyatomic ions table |
+| Oxyanion naming | instrument — The oxyanion pattern · card Naming an oxyanion series |
+| Ionic formulas | card Writing an ionic formula |
+| Solubility rules | instrument — Solubility rules table |
+| Precipitation | card Will it precipitate? |
+| Net ionic equations | card Net ionic equations |
+| Strong acids | instrument — Strong acids table · card Strong or weak? |
+| Strong bases | instrument — Strong bases table |
+| Weak acids | instrument — Weak acids, Ka at 25 °C |
+| Ka and pKa | instrument — Ka table · card Reading a Ka value |
+| Kb and pKb | instrument — Kb table · card Conjugate pairs |
+| Buffers | card Choosing a buffer |
+

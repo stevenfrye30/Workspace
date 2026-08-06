@@ -1,7 +1,8 @@
 /* Room content: math-statistics — ported from the standalone Math Lab. */
 
 export default {
-name: "Statistics", kind: "Data", glyph: "📊", color: "#8b93d0",
+kind: "Data",
+
 blurb: "Descriptive stats, distributions, probability, and inference — a working reference for real data, from coursework to research and signal analysis.",
 status: "Reference — formulas and worked examples",
 cards: [

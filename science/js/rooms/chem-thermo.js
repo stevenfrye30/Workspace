@@ -1,7 +1,8 @@
 /* Room content: chem-thermo — heat, enthalpy and spontaneity. */
 
 export default {
-name: "Thermochemistry", kind: "Chemistry · energy", glyph: "🔥", color: "#e0794b",
+kind: "Chemistry · energy",
+
 blurb: "Where the heat goes — warming things up, the enthalpy of a reaction, Hess's law, and what decides whether a reaction happens on its own.",
 status: "Live — calorimetry, ΔH°rxn and Hess's law solvers",
 cards: [

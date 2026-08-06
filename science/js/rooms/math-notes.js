@@ -1,7 +1,8 @@
 /* Room content: math-notes — ported from the standalone Math Lab. */
 
 export default {
-name: "Notes & Formulas", kind: "Library", glyph: "✎", color: "#8b93d0",
+kind: "Library",
+
 blurb: "Your personal formula vault and study notebook — collect, save, and reuse math from every room in one place.",
 status: "Your notebook — autosaves locally",
 cards: [

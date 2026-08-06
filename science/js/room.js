@@ -13,23 +13,9 @@ import { esc, slug, anchorsFor } from './format.js';
 import { MANIFEST, ALIAS } from './rooms/_manifest.js';
 import * as share from './share.js';
 
-/* Instruments per room, in render order. An entry is either a module path or
-   {path, opts}; opts is passed to that widget's block() and init(), which is
-   how one calculator module serves several topic rooms with different tabs. */
-const WIDGETS = {
-  'periodic-table': ['./widgets/periodic-table.js'],
-  'reference': ['./widgets/reference-tables.js'],
-  'data-analysis': ['./widgets/units.js'],
-
-  /* Chemistry is a hub of topic rooms; the instruments live in those. */
-  'chem-moles': ['./widgets/stoichiometry.js',
-                 { path: './widgets/chemistry.js', opts: { tabs: ['molar'] } }],
-  'chem-solutions': [{ path: './widgets/chemistry.js', opts: { tabs: ['molarity', 'dilution'] } }],
-  'chem-acids': [{ path: './widgets/chemistry.js', opts: { tabs: ['ph', 'buffer'] } }],
-  'chem-titration': ['./widgets/titration.js'],
-  'chem-gases': ['./widgets/gaslaws.js'],
-  'chem-thermo': ['./widgets/thermochem.js']
-};
+/* Instruments now live in the manifest beside the room they belong to, so a
+   room is declared in one place. The paths are resolved here, in the module
+   that imports them — which is why they are still written './widgets/…'. */
 
 const TAGLABEL = { room: 'room', math: 'math', soon: 'soon' };
 
@@ -72,8 +58,14 @@ function brokenWidget(path, err) {
 }
 
 async function render(key) {
-  const room = (await import('./rooms/' + key + '.js')).default;
-  const specs = (WIDGETS[key] || []).map(function (w) {
+  const meta = MANIFEST[key];
+  /* Display fields come from the manifest, content from the module. A module
+     no longer carries its own name, glyph or colour, so there is one place to
+     change them and nothing to keep in step. */
+  const room = Object.assign({}, (await import('./rooms/' + key + '.js')).default, {
+    name: meta.name, glyph: meta.glyph, color: meta.color, children: meta.children
+  });
+  const specs = (meta.widgets || []).map(function (w) {
     return typeof w === 'string' ? { path: w, opts: {} } : { path: w.path, opts: w.opts || {} };
   });
   const widgets = await Promise.all(specs.map(function (s) {
@@ -89,7 +81,7 @@ async function render(key) {
 
   /* A hub is a set of doors, so it gets only its name — a kicker, blurb and
      status pill above nine buttons is chrome competing with the choice. */
-  if (room.hub) {
+  if (room.children) {
     h += '<header class="r-head r-head-hub"><h1 class="r-title">' + esc(room.name) + '</h1></header>';
   } else {
     h += '<header class="r-head"><span class="r-glyph">' + room.glyph + '</span>' +
@@ -108,12 +100,22 @@ async function render(key) {
 
   /* A hub room leads with big topic buttons instead of a wall of sections.
      A tile targets either an internal room (key) or an outside tool (href). */
-  if (room.hub) {
-    h += '<section class="block"><div class="hub-grid">' + room.hub.map(function (t) {
-      const external = !!t.href;
-      const href = external ? t.href : 'room.html?room=' + encodeURIComponent(t.key);
-      return '<a class="hub-card' + (external ? ' external' : '') + '" href="' + href + '"' +
-        (external ? ' target="_blank" rel="noopener"' : '') + '>' +
+  if (room.children) {
+    /* The hub lists child keys; name and glyph are looked up, and only the
+       prose that is unique to this hub — the one-line description, and any
+       tool label — comes from the module. */
+    const doors = room.children.map(function (k) {
+      const c = MANIFEST[k] || {}, own = (room.hub || {})[k] || {};
+      return { href: 'room.html?room=' + encodeURIComponent(k), glyph: c.glyph, name: c.name,
+               desc: own.desc || '', tools: own.tools, external: false };
+    }).concat((room.hubExternal || []).map(function (x) {
+      return { href: x.href, glyph: x.glyph, name: x.name, desc: x.desc,
+               tools: x.tools, external: true };
+    }));
+
+    h += '<section class="block"><div class="hub-grid">' + doors.map(function (t) {
+      return '<a class="hub-card' + (t.external ? ' external' : '') + '" href="' + t.href + '"' +
+        (t.external ? ' target="_blank" rel="noopener"' : '') + '>' +
         '<span class="hub-glyph">' + t.glyph + '</span>' +
         '<span class="hub-name">' + esc(t.name) + '</span>' +
         '<span class="hub-desc">' + esc(t.desc) + '</span>' +
@@ -124,9 +126,10 @@ async function render(key) {
     /* One or two small links under the grid, in place of a full
        Tools & Connections section that would compete with the doors. */
     if (room.quick) {
-      h += '<div class="quick-row">' + room.quick.map(function (q) {
-        return '<a class="quick" href="room.html?room=' + encodeURIComponent(q.key) + '">' +
-          '<span class="quick-glyph">' + q.glyph + '</span>' + esc(q.name) + ' →</a>';
+      h += '<div class="quick-row">' + room.quick.map(function (k) {
+        const c = MANIFEST[k] || {};
+        return '<a class="quick" href="room.html?room=' + encodeURIComponent(k) + '">' +
+          '<span class="quick-glyph">' + c.glyph + '</span>' + esc(c.name) + ' →</a>';
       }).join('') + '</div>';
     }
   }
