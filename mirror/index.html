@@ -392,6 +392,22 @@
   .bdayline { margin-top: 10px; font-size: .78rem; color: var(--dim); }
   .bdayline b { color: var(--ink); font-weight: 600; }
 
+  /* The reference panels are real collapsibles. Closed they are one line;
+     they open themselves once, on load, if they have anything to show. */
+  .panels > details > summary {
+    cursor: pointer; list-style: none;
+    font-size: .68rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .1em; color: var(--dim);
+    display: flex; align-items: baseline; gap: 8px;
+  }
+  .panels > details > summary::-webkit-details-marker { display: none; }
+  .panels > details > summary::after {
+    content: '+'; margin-left: 6px; font-size: .9rem; line-height: 1; color: var(--dim);
+  }
+  .panels > details[open] > summary::after { content: '2'; }
+  .panels > details > summary:hover { color: var(--ink); }
+  .panels > details[open] > summary { margin-bottom: 10px; }
+
   .sum {
     margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400;
     color: var(--dim); font-size: .74rem; text-align: right;
@@ -604,42 +620,41 @@
      you read once a week. -->
 <div class="panels">
 
-  <div class="card" id="drawerPeople">
-    <h2>People <span class="sum" id="sumPeople"></span></h2>
+  <details class="card" id="drawerPeople">
+    <summary>People <span class="sum" id="sumPeople"></span></summary>
     <div class="chips">
       <button class="mini" id="addPerson">＋ Person</button>
       <button class="mini" id="addBirthday">＋ Birthday</button>
     </div>
-  </div>
+  </details>
 
-  <div class="card" id="drawerMind">
-    <h2>Mind <span class="sum" id="sumMind"></span></h2>
+  <details class="card" id="drawerMind">
+    <summary>Mind <span class="sum" id="sumMind"></span></summary>
     <div class="chips">
       <button class="mini" id="addBook">＋ Book</button>
       <button class="mini" id="addQuote">＋ Quote</button>
       <button class="mini" id="addIdea">＋ Idea</button>
     </div>
-  </div>
+  </details>
 
-  <div class="card" id="drawerMoney">
-    <h2>Money <span class="sum" id="sumMoney"></span></h2>
+  <details class="card" id="drawerMoney">
+    <summary>Money <span class="sum" id="sumMoney"></span></summary>
     <div class="chips">
       <button class="mini" id="addExpense">＋ Expense</button>
       <button class="mini" id="addCategory">＋ Category</button>
       <button class="mini" id="addSub">＋ Subscription</button>
     </div>
-  </div>
+  </details>
 
-  <div class="card" id="drawerLife">
-    <h2>Life <span class="sum" id="sumLife"></span></h2>
+  <details class="card" id="drawerLife">
+    <summary>Life <span class="sum" id="sumLife"></span></summary>
     <div class="chips">
       <button class="mini" id="addPlace">＋ Place</button>
       <button class="mini" id="editValues">Values</button>
     </div>
-  </div>
+  </details>
 
 </div>
-
 
 <!-- ============ LAUNCHPAD ============ -->
 <!-- ============ THE TRACKER ============ -->
@@ -2065,9 +2080,26 @@ function renderWeek() {
   $('sumWeek').textContent = cards.length + ' of 7 days logged';
 }
 
+/* Auto-open a panel the first time a render finds content in it. Once only:
+   after that it is yours to open and close, and re-rendering must not fight
+   you for it. */
+let panelsSettled = false;
+function settlePanels() {
+  if (panelsSettled) return;
+  panelsSettled = true;
+  const has = {
+    drawerPeople: (state.relationships.people || []).length || (state.relationships.birthdays || []).length,
+    drawerMind: (state.mind.books || []).length || (state.mind.quotes || []).length || (state.mind.ideas || []).length,
+    drawerMoney: (state.money.expenses || []).length || (state.money.categories || []).length || (state.money.subscriptions || []).length,
+    drawerLife: (state.places.items || []).length || (state.identity.values || []).length,
+  };
+  Object.entries(has).forEach(([id, n]) => { if (n) $(id).open = true; });
+}
+
 function renderDrawers() {
   renderLaunch(); renderBirthdayLine();
   renderPeople(); renderMind(); renderMoney(); renderLife(); renderWeek();
+  settlePanels();
 }
 
 /* =============================================================
@@ -2454,6 +2486,116 @@ if ('IntersectionObserver' in window) {
   }, { rootMargin: '200px' });
   io.observe($('foodCard'));
 }
+
+/* ---- drawer add-buttons ---- */
+const addTo = (arr, rec, label) => {
+  appendRec(arr, stamp(rec), label || 'entry');
+  saveState(); renderDrawers(); renderFeed();
+  if (label) toast('Added ' + label);
+};
+
+$('addPerson').onclick = () => openForm('Add a person', [
+  { key: 'name', label: 'Name' },
+  { key: 'relation', label: 'Relation', placeholder: 'friend, brother, colleague' },
+], {}, (v) => {
+  if (!v.name) return false;
+  addTo(state.relationships.people, { id: uid(), name: v.name, relation: v.relation, tier: 2 }, v.name);
+});
+
+$('addBirthday').onclick = () => openForm('Add a birthday', [
+  { key: 'name', label: 'Name' },
+  { key: 'month', label: 'Month', type: 'select', options: MONTHS.map((m, i) => ({ v: String(i + 1), l: m })) },
+  { key: 'day', label: 'Day', type: 'number', placeholder: '1–31' },
+  { key: 'year', label: 'Year (optional)', type: 'number', placeholder: 'e.g. 1994' },
+], {}, (v) => {
+  if (!v.name || !v.month) return false;
+  addTo(state.relationships.birthdays, {
+    id: uid(), name: v.name, month: Number(v.month),
+    day: Number(v.day) || null, year: Number(v.year) || null, deceased: false,
+  }, v.name + "'s birthday");
+});
+
+$('addBook').onclick = () => openForm('Add a book', [
+  { key: 'title', label: 'Title' },
+  { key: 'author', label: 'Author' },
+  { key: 'status', label: 'Status', type: 'select', options: ['want', 'reading', 'finished', 'abandoned'] },
+], { status: 'reading' }, (v) => {
+  if (!v.title) return false;
+  addTo(state.mind.books, { id: uid(), title: v.title, author: v.author, status: v.status || 'want' }, v.title);
+});
+
+$('addQuote').onclick = () => openForm('Add a quote', [
+  { key: 'text', label: 'Quote', type: 'textarea' },
+  { key: 'source', label: 'Who said it' },
+  { key: 'why', label: 'Why it stuck (optional)' },
+], {}, (v) => {
+  if (!v.text) return false;
+  addTo(state.mind.quotes, { id: uid(), date: todayStr(), text: v.text, source: v.source, why: v.why }, 'a quote');
+});
+
+$('addIdea').onclick = () => openForm('Add an idea', [
+  { key: 'text', label: 'Idea', type: 'textarea' },
+  { key: 'source', label: 'Where it came from', placeholder: 'book, person, self' },
+], {}, (v) => {
+  if (!v.text) return false;
+  addTo(state.mind.ideas, { id: uid(), date: todayStr(), text: v.text, source: v.source }, 'an idea');
+});
+
+$('addCategory').onclick = () => openForm('Add a budget line', [
+  { key: 'name', label: 'Category', placeholder: 'Food, Rent, Transport' },
+  { key: 'planned', label: 'Planned per month', type: 'number', step: '0.01' },
+], {}, (v) => {
+  if (!v.name) return false;
+  addTo(state.money.categories, { id: uid(), name: v.name, planned: Number(v.planned) || 0 }, v.name);
+});
+
+$('addExpense').onclick = () => {
+  const cats = state.money.categories || [];
+  if (!cats.length) { alert('Add a budget category first — an expense needs somewhere to go.'); return; }
+  openForm('Add an expense', [
+    { key: 'amount', label: 'Amount', type: 'number', step: '0.01' },
+    { key: 'categoryId', label: 'Category', type: 'select', options: cats.map((c) => ({ v: c.id, l: c.name })) },
+    { key: 'note', label: 'Note (optional)' },
+    { key: 'date', label: 'Date', type: 'date' },
+  ], { date: day }, (v) => {
+    const amt = Number(v.amount);
+    if (!amt) return false;
+    addTo(state.money.expenses, {
+      id: uid(), date: v.date || day, amount: amt, categoryId: v.categoryId, note: v.note,
+    }, fmt$(amt));
+  });
+};
+
+$('addSub').onclick = () => openForm('Add a subscription', [
+  { key: 'name', label: 'Name' },
+  { key: 'amount', label: 'Amount', type: 'number', step: '0.01' },
+  { key: 'cadence', label: 'Billed', type: 'select', options: ['monthly', 'yearly'] },
+], {}, (v) => {
+  if (!v.name || !Number(v.amount)) return false;
+  addTo(state.money.subscriptions, {
+    id: uid(), name: v.name, amount: Number(v.amount), cadence: v.cadence || 'monthly',
+  }, v.name);
+});
+
+$('editValues').onclick = () => openForm('Your values', [
+  { key: 'values', label: 'One per line — the handful you want to be measured by', type: 'textarea' },
+], { values: (state.identity.values || []).join('\n') }, (v) => {
+  state.identity.values = v.values.split('\n').map((s) => s.trim()).filter(Boolean);
+  saveState(); renderDrawers();
+}, 'Save');
+
+$('addPlace').onclick = () => openForm('Add a place', [
+  { key: 'name', label: 'Name', placeholder: 'Milwaukee, Cairo, the cabin' },
+  { key: 'kind', label: 'Kind', type: 'select',
+    options: [{ v: 'home', l: 'home — somewhere you live(d)' },
+              { v: 'trip', l: 'trip — travel or a visit' },
+              { v: 'spot', l: 'spot — a meaningful place' }] },
+  { key: 'from', label: 'From', type: 'date' },
+  { key: 'to', label: 'To (leave blank if current)', type: 'date' },
+], {}, (v) => {
+  if (!v.name) return false;
+  addTo(state.places.items, { id: uid(), name: v.name, kind: v.kind || 'spot', from: v.from, to: v.to }, v.name);
+});
 
 $('popBack').onclick = closePop;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
