@@ -81,14 +81,19 @@ async function render(key) {
 
   /* A hub is a set of doors, so it gets only its name — a kicker, blurb and
      status pill above nine buttons is chrome competing with the choice. */
+  /* The heading carries id and tabindex so <main> can be labelled by it and
+     focus can be moved to it once the room has rendered. Every glyph in the
+     chrome is aria-hidden: they repeat the name beside them, and a screen
+     reader announcing "test tube, Chemistry" is reading decoration aloud. */
   if (room.children) {
-    h += '<header class="r-head r-head-hub"><h1 class="r-title">' + esc(room.name) + '</h1></header>';
+    h += '<header class="r-head r-head-hub"><h1 class="r-title" id="roomTitle" tabindex="-1">' +
+         esc(room.name) + '</h1></header>';
   } else {
-    h += '<header class="r-head"><span class="r-glyph">' + room.glyph + '</span>' +
+    h += '<header class="r-head"><span class="r-glyph" aria-hidden="true">' + room.glyph + '</span>' +
          '<div class="r-kicker">' + esc(room.kind) + '</div>' +
-         '<h1 class="r-title">' + esc(room.name) + '</h1>' +
+         '<h1 class="r-title" id="roomTitle" tabindex="-1">' + esc(room.name) + '</h1>' +
          '<p class="r-blurb">' + esc(room.blurb) + '</p>' +
-         '<div class="r-status"><span class="dot"></span>' +
+         '<div class="r-status"><span class="dot" aria-hidden="true"></span>' +
          esc(room.status || 'Scaffold ready') + '</div></header>';
   }
 
@@ -116,7 +121,7 @@ async function render(key) {
     h += '<section class="block"><div class="hub-grid">' + doors.map(function (t) {
       return '<a class="hub-card' + (t.external ? ' external' : '') + '" href="' + t.href + '"' +
         (t.external ? ' target="_blank" rel="noopener"' : '') + '>' +
-        '<span class="hub-glyph">' + t.glyph + '</span>' +
+        '<span class="hub-glyph" aria-hidden="true">' + t.glyph + '</span>' +
         '<span class="hub-name">' + esc(t.name) + '</span>' +
         '<span class="hub-desc">' + esc(t.desc) + '</span>' +
         (t.tools ? '<span class="hub-tool">' + esc(t.tools) + '</span>' : '') +
@@ -129,7 +134,7 @@ async function render(key) {
       h += '<div class="quick-row">' + room.quick.map(function (k) {
         const c = MANIFEST[k] || {};
         return '<a class="quick" href="room.html?room=' + encodeURIComponent(k) + '">' +
-          '<span class="quick-glyph">' + c.glyph + '</span>' + esc(c.name) + ' →</a>';
+          '<span class="quick-glyph" aria-hidden="true">' + c.glyph + '</span>' + esc(c.name) + ' →</a>';
       }).join('') + '</div>';
     }
   }
@@ -226,9 +231,26 @@ async function render(key) {
 
   main.innerHTML = h;
 
+  /* The landmark is named by the room it currently holds, so a screen reader
+     listing landmarks gets "Titration, main" rather than an unlabelled region
+     that could be any of twenty-seven pages. */
+  main.setAttribute('aria-labelledby', 'roomTitle');
+
   if (room.cards && room.cards.length) initRefList();
   if (room.groups) initSymbolCopy();
   if (specs.length) share.initBar();
+
+  /* The page arrives empty and fills in, so focus is still on the document
+     when the content appears — a screen reader user would have to walk back
+     through the nav to find out where they are. Move it to the heading once
+     there is a heading to move it to.
+
+     Not when a fragment was requested: a search result asked for a specific
+     card, and revealHash is already sending focus and scroll there. */
+  if (!location.hash) {
+    const title = document.getElementById('roomTitle');
+    if (title) title.focus({ preventScroll: true });
+  }
 
   revealHash();
 

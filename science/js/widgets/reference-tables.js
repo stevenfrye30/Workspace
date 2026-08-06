@@ -126,7 +126,9 @@ export function block() {
       '<input class="rt-search" id="rtSearch" type="text" placeholder="Search any table — name, formula, ion…" autocomplete="off" spellcheck="false">' +
       '<button class="rt-btn" id="rtBigger" type="button" aria-pressed="false">Bigger</button>' +
       '<button class="rt-btn" id="rtPrint" type="button">Print</button>' +
-      '<span class="rt-count" id="rtCount"></span>' +
+      /* The row count is the only feedback that a search narrowed anything,
+         and it changes in place, so it has to announce itself. */
+      '<span class="rt-count" id="rtCount" role="status" aria-live="polite"></span>' +
     '</div>' +
 
     '<div class="u-tabs" id="rtTabs">' +

@@ -21,7 +21,12 @@ export function block() {
       '<div class="u-row"><input class="u-input" id="uVal" type="number" step="any" value="1"><select class="u-select" id="uFrom"></select></div>' +
       '<input class="u-search" id="uSearch" type="text" placeholder="Filter units in this quantity…" autocomplete="off" spellcheck="false">' +
       '<div class="u-scroll"><table class="u-table"><thead><tr><th>Unit</th><th>Symbol</th><th style="text-align:right">Value</th></tr></thead><tbody id="uBody"></tbody></table></div>' +
-      '<div class="u-note" id="uNote"></div>' +
+      /* The converted values rewrite themselves in place with every keystroke.
+         The table itself is deliberately NOT a live region — announcing two
+         dozen rows on each key would be unusable — so this one line carries
+         what changed: what is being converted, and how many units are shown
+         when the filter is narrowing them. */
+      '<div class="u-note" id="uNote" role="status" aria-live="polite"></div>' +
     '</div>' +
     '<div class="u-pane" data-pane="prefixes"><div class="u-scroll"><table class="u-table"><thead><tr><th>Prefix</th><th>Symbol</th><th style="text-align:right">Factor</th></tr></thead><tbody>' + prefRows + '</tbody></table></div></div>' +
     '<div class="u-pane" data-pane="si"><div class="u-scroll"><table class="u-table"><thead><tr><th>Base quantity</th><th>Unit</th><th>Symbol</th></tr></thead><tbody>' + baseRows + '</tbody></table></div>' +
@@ -64,16 +69,18 @@ export function init() {
     if (isNaN(v)) v = 0;
     var base = toBase(spec, from, v);
     var q = (searchInput.value || "").toLowerCase();
-    body.innerHTML = spec.u.filter(function (u) {
+    var shown = spec.u.filter(function (u) {
       return !q || u[0].toLowerCase().indexOf(q) >= 0 || u[1].toLowerCase().indexOf(q) >= 0;
-    }).map(function (u) {
+    });
+    body.innerHTML = shown.map(function (u) {
       var out = fromBase(spec, u, base);
       var cls = (u === from) ? ' class="from"' : '';
       return '<tr' + cls + '><td>' + esc(u[0]) + '</td><td class="u-sym">' + esc(u[1]) + '</td><td class="u-val">' + uFmt(out) + '</td></tr>';
     }).join("");
-    note.textContent = spec.special
+    var filtered = q ? shown.length + " of " + spec.u.length + " units shown. " : "";
+    note.textContent = filtered + (spec.special
       ? "Base: " + spec.base + ". Temperature conversions account for scale offsets, not just ratios."
-      : "Converting from " + from[0] + " (" + from[1] + "). Base unit " + spec.base + "; values use exact definitional factors.";
+      : "Converting from " + from[0] + " (" + from[1] + "). Base unit " + spec.base + "; values use exact definitional factors.");
   }
   /* Quantity, source unit and value ride in the URL, so a converted value
      can be handed over exactly as it was set up. */

@@ -10,12 +10,14 @@
   <link rel="stylesheet" href="css/lab.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
   <nav class="ws-hub-nav" aria-label="Workspace navigation">
     <a class="ws-hub-home" href="../">← Hub</a>
   </nav>
 
-  <div class="page">
-    <h1 class="board-title">Science &amp; Math</h1>
+  <main class="page" id="main" tabindex="-1" aria-labelledby="boardTitle">
+    <h1 class="board-title" id="boardTitle">Science &amp; Math</h1>
 
     <!-- Search over every room's cards, examples and symbols. The index is
          built on first focus, not on page load. -->
@@ -24,7 +26,7 @@
     <!-- Nine tiles, generated from js/rooms/_manifest.js. The periodic table
          sits at the centre because every other room reaches for it. -->
     <div class="board" id="board"></div>
-  </div>
+  </main>
 
   <noscript>
     <p class="notfound" style="max-width:1100px;margin:0 auto;padding:1.5rem;">

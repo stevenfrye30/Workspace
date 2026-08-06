@@ -29,6 +29,22 @@ body {
    breadcrumb or the page heading at narrow widths. */
 .page { max-width: 1100px; margin: 0 auto; padding: 2.6rem 1.6rem 3rem; }
 
+/* Off-screen until focused, then the first thing the eye and the tab order
+   reach. Both shells put the hub pill and the dock ahead of the content, so
+   without this a keyboard user tabs through the furniture on every room. */
+.skip-link {
+  position: fixed; top: 0; left: 0; z-index: 100000;
+  transform: translateY(-140%);
+  font: 600 0.8rem/1 -apple-system, "Segoe UI", system-ui, sans-serif;
+  color: #11161f; background: var(--gold);
+  padding: 0.6rem 0.9rem; border-radius: 0 0 6px 0; text-decoration: none;
+  transition: transform 0.15s;
+}
+.skip-link:focus { transform: translateY(0); }
+/* The landmark takes focus from the skip link, and should not draw a ring
+   round the whole page when it does. */
+#main:focus { outline: none; }
+
 /* Calculator internals — used by the dock on every page. */
 .calc { max-width: 19rem; outline: none; border-radius: 6px; }
 .calc:focus { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent); }
@@ -160,6 +176,27 @@ body {
   /* Still a comfortable thumb target — 2rem plus the 0.4rem gap. */
   .dock-btn { width: 2rem; height: 2rem; }
   .dock-panel, .dock-panel.notepad { left: 0.6rem; right: 0.6rem; width: auto; }
+}
+
+/* Every lift, scale and slide in the app is decoration on top of a state
+   change that is also carried by colour or a border, so all of it can go.
+   Transitions are neutralised rather than removed so nothing depends on a
+   transitionend that would never fire. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .tile:hover, .tile:focus-visible,
+  .tile-center:hover, .tile-center:focus-visible,
+  .hub-card:hover, .hub-card:focus-visible,
+  .quick:hover, .quick:focus-visible,
+  .dock-btn:hover, .pt-cell:hover, .pt-cell.sel,
+  .symkey:hover, .ref-item:hover {
+    transform: none !important;
+  }
 }
 
 @media print {
