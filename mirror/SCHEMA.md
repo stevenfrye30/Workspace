@@ -211,7 +211,10 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 ### money
 - **categories[]** — `{ id, name, planned }`. Budget lines.
 - **expenses[]** — `{ id, date, amount, categoryId, note, ... }`. `categoryId` → `categories[].id`.
-- **subscriptions[]** — `{ id, name, amount, cadence: "monthly"|"yearly", ... }`
+- **income[]** — `{ id, date, amount, source, note, ... }`. Added in v13. `source` is a free
+  string, not an id: income arrives from a handful of places that rarely need a record of their
+  own, and the dashboard offers past sources back as chips.
+- **subscriptions[]** — `{ id, name, amount, cadence: "monthly"|"yearly", categoryId?, ... }`
 - **netWorth[]** — `{ id, date, assets, liabilities, ... }`. Sparse, decades-valuable snapshots.
 - **goals[]** — `{ id, name, target, by, saved, ... }`
 

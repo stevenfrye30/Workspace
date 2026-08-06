@@ -384,33 +384,74 @@
   .list .row .x:hover { color: var(--warn); }
 
   /* ---------- launchpad ----------
-     Stacked icon-over-label tiles cost 226px — more than half the whole
-     instrument grid — to hold nine links. As inline pills they cost about
-     40px and keep their labels. */
+     Stacked icon-over-label tiles cost 226px — more than half the instrument
+     grid — to hold nine links. Labelled pills cost about 40px. Icon-only
+     pills cost one row and stay one row as you add your own: you recognise
+     Gmail's envelope without reading the word, and the name is still there
+     on hover and for a screen reader. */
   .launch { display: flex; flex-wrap: wrap; gap: 6px; }
   .launch a, .launch .pend, .launch .add {
-    display: inline-flex; align-items: center; gap: 6px;
-    padding: 6px 12px 6px 10px; text-decoration: none; position: relative;
-    background: var(--panel2); border: 1px solid var(--line); border-radius: 999px;
-    color: var(--ink); font: inherit; font-size: .74rem; line-height: 1.15; white-space: nowrap;
+    display: grid; place-items: center; position: relative; text-decoration: none;
+    width: 34px; height: 34px;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
+    color: var(--ink); font: inherit; font-size: .74rem; line-height: 1;
   }
   .launch a:hover { border-color: var(--accent); color: var(--accent); }
-  .launch .ic { font-size: .95rem; line-height: 1; }
-  .launch .pend { opacity: .45; }
+  .launch a:focus-visible, .launch .add:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .launch .ic { font-size: 1.02rem; line-height: 1; }
+  .launch .pend { opacity: .4; }
   .launch .pend .soon { display: none; }       /* the dimming already says it */
-  .launch .mine { padding-right: 24px; }
   .launch .mine .del {
-    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
-    background: none; border: 0; cursor: pointer;
-    color: var(--dim); font-size: .78rem; line-height: 1; padding: 0; opacity: .5;
+    position: absolute; top: -5px; right: -5px;
+    width: 15px; height: 15px; display: grid; place-items: center;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 50%;
+    cursor: pointer; color: var(--dim); font-size: .6rem; padding: 0; opacity: 0;
   }
-  .launch .mine:hover .del { opacity: 1; }
-  .launch .mine .del:hover { color: var(--warn); }
+  .launch .mine:hover .del, .launch .mine:focus-within .del { opacity: 1; }
+  .launch .mine .del:hover { color: var(--warn); border-color: var(--warn); }
   .launch .add { border-style: dashed; color: var(--dim); cursor: pointer; }
+  body.dense .launch a, body.dense .launch .pend, body.dense .launch .add { width: 31px; height: 31px; }
   .launchrow { margin: 0 0 16px; }
   body.dense .launchrow { margin-bottom: 13px; }
   .bdayline { margin-top: 10px; font-size: .78rem; color: var(--dim); }
   .bdayline b { color: var(--ink); font-weight: 600; }
+
+  /* ---------- the log grid ----------
+     Four drawers, each opening onto a row of "＋ Add" buttons, charged a tap
+     for nothing: the drawer's summary counted things whose full lists live on
+     Records, and the button you actually wanted sat underneath it. Six tiles,
+     one per thing you log, one tap each. Money and Values are wider because
+     both open onto a choice rather than a plain form. */
+  .loggrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 7px; }
+  .logtile {
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px;
+    padding: 12px 4px; min-height: 64px;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 11px;
+    color: var(--dim); font: inherit; font-size: .64rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .09em; cursor: pointer;
+    white-space: nowrap; overflow: hidden;
+  }
+  .logtile:hover { border-color: var(--accent); color: var(--accent); }
+  .logtile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .logtile .ic { font-size: 1.2rem; letter-spacing: 0; line-height: 1; }
+  .logtile.wide { grid-column: span 2; }
+  body.dense .logtile { min-height: 56px; padding: 9px 4px; }
+  /* Two across on a phone; the wide pair each take a full row. */
+  @media (max-width: 560px) { .loggrid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* A row of choices inside a form — money categories, value words. */
+  .pickrow { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 4px; }
+  .seg { display: flex; gap: 6px; margin-bottom: 12px; }
+  .seg button {
+    flex: 1; padding: 8px 4px; font: inherit; font-size: .78rem; font-weight: 600;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 9px;
+    color: var(--dim); cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  body.theme-dark .seg button[aria-pressed="true"] { color: #1c1e24; }
+  .mdy { display: grid; grid-template-columns: 1.3fr 1fr 1.2fr; gap: 6px; }
+  .checkline { display: flex; align-items: center; gap: 7px; margin-top: 11px; font-size: .8rem; color: var(--dim); }
+  .checkline input { width: auto; margin: 0; }
 
   /* The reference panels are real collapsibles. Closed they are one line;
      they open themselves once, on load, if they have anything to show. */
@@ -481,7 +522,45 @@
     padding: 16px; box-shadow: 0 12px 40px rgba(0,0,0,.28);
   }
   .pop h3 { font-size: .95rem; margin-bottom: 10px; }
+  /* The overview is a reading surface, not a form, so it gets the room. */
+  .pop.wide { width: min(94vw, 620px); }
+
+  /* ---------- the overview room ----------
+     One layer past the dashboard, reached through the title. The dashboard
+     answers "what am I logging right now"; this answers "what does it add up
+     to". Deliberately no scores and no streaks: a streak turns a record into
+     something you can fail, and then into something you stop keeping. */
+  .ov { margin-top: 15px; }
+  .ov:first-of-type { margin-top: 4px; }
+  .ov > h4 {
+    font-size: .62rem; font-weight: 600; text-transform: uppercase; letter-spacing: .1em;
+    color: var(--dim); margin-bottom: 8px;
+  }
+  .ovstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  @media (max-width: 460px) { .ovstats { grid-template-columns: repeat(2, 1fr); } }
+  .ovstats .c { background: var(--panel2); border-radius: 9px; padding: 9px 10px; }
+  .ovstats .c .k { font-size: .6rem; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); }
+  .ovstats .c .v { font-size: 1.02rem; font-weight: 600; margin-top: 2px; }
+  .ovstats .c .v .u { font-size: .64rem; font-weight: 400; color: var(--dim); }
+  .ovhab { display: flex; flex-direction: column; gap: 6px; }
+  .ovhab .h { display: flex; align-items: center; gap: 9px; font-size: .8rem; }
+  .ovhab .h .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ovhab .h .wk { display: flex; gap: 3px; }
+  .ovhab .h .wk i { width: 11px; height: 11px; border-radius: 3px; background: var(--panel2); }
+  .ovhab .h .wk i.on { background: var(--accent2); }
+  .ovhab .h .n { font-size: .72rem; color: var(--dim); min-width: 46px; text-align: right; }
+  .ovrecent { display: flex; flex-direction: column; gap: 5px; }
+  .ovrecent .r { display: flex; gap: 8px; font-size: .8rem; align-items: baseline; }
+  .ovrecent .r .ic { width: 17px; text-align: center; }
+  .ovrecent .r .tx { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ovrecent .r .dt { font-size: .68rem; color: var(--dim); white-space: nowrap; }
   .pop .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+  .top h1 button {
+    background: none; border: 0; padding: 0; margin: 0; cursor: pointer;
+    font: inherit; color: inherit; letter-spacing: inherit;
+  }
+  .top h1 button:hover { color: var(--accent); }
+  .top h1 button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
 
   .hint { display: block; font-size: .72rem; color: var(--dim); margin-top: 2px; }
 
@@ -513,7 +592,7 @@
 
 <div class="top">
   <a class="home" href="../" title="Back to the workspace"><span class="arw">←</span><span class="lbl">Workspace</span></a>
-  <h1>Mirror</h1>
+  <h1><button type="button" id="overviewBtn" title="What this adds up to">Mirror</button></h1>
   <span class="tools">
     <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶<span class="lbl"> Undo</span></button>
     <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
@@ -641,42 +720,14 @@
       <div class="launch" id="launch"></div>
       <div class="bdayline" id="bdayLine"></div>
     </div>
-  <div class="panels">
-
-    <details class="card" id="drawerPeople">
-      <summary>People <span class="sum" id="sumPeople"></span></summary>
-      <div class="chips">
-        <button class="mini" id="addPerson">＋ Person</button>
-        <button class="mini" id="addBirthday">＋ Birthday</button>
-      </div>
-    </details>
-
-    <details class="card" id="drawerMind">
-      <summary>Mind <span class="sum" id="sumMind"></span></summary>
-      <div class="chips">
-        <button class="mini" id="addBook">＋ Book</button>
-        <button class="mini" id="addQuote">＋ Quote</button>
-        <button class="mini" id="addIdea">＋ Idea</button>
-      </div>
-    </details>
-
-    <details class="card" id="drawerMoney">
-      <summary>Money <span class="sum" id="sumMoney"></span></summary>
-      <div class="chips">
-        <button class="mini" id="addExpense">＋ Expense</button>
-        <button class="mini" id="addCategory">＋ Category</button>
-        <button class="mini" id="addSub">＋ Subscription</button>
-      </div>
-    </details>
-
-    <details class="card" id="drawerLife">
-      <summary>Life <span class="sum" id="sumLife"></span></summary>
-      <div class="chips">
-        <button class="mini" id="addPlace">＋ Place</button>
-        <button class="mini" id="editValues">Values</button>
-      </div>
-    </details>
-
+  <!-- Six things you log, one tap each. Not four drawers you open first. -->
+  <div class="loggrid">
+    <button class="logtile" id="logPerson" type="button"><span class="ic">🧑</span>Person</button>
+    <button class="logtile" id="logBook"   type="button"><span class="ic">📕</span>Book</button>
+    <button class="logtile" id="logIdea"   type="button"><span class="ic">💡</span>Idea</button>
+    <button class="logtile" id="logPlace"  type="button"><span class="ic">📍</span>Place</button>
+    <button class="logtile wide" id="logMoney"  type="button"><span class="ic">💵</span>Money</button>
+    <button class="logtile wide" id="logValues" type="button"><span class="ic">✦</span>Values</button>
   </div>
   </div>
 
@@ -753,7 +804,9 @@ function esc(s) {
 function round1(n) { return Math.round(n * 10) / 10; }
 function fmt$(n) {
   const v = Number(n || 0);
-  return (v < 0 ? '-$' : '$') + Math.abs(v).toFixed(2).replace(/\.00$/, '');
+  const [whole, cents] = Math.abs(v).toFixed(2).split('.');
+  return (v < 0 ? '-$' : '$') + whole.replace(/\B(?=(\d{3})+$)/g, ',') +
+         (cents === '00' ? '' : '.' + cents);
 }
 function daysBetween(a, b) {
   return Math.round((new Date(b + 'T00:00') - new Date(a + 'T00:00')) / 86400000);
@@ -773,7 +826,7 @@ const defaultState = () => ({
     drinks: [], substances: [],            // v13
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
-  money: { categories: [], expenses: [], subscriptions: [], netWorth: [], goals: [] },
+  money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
   daily: { cards: [] },
   decisions: { items: [] },
@@ -2012,6 +2065,7 @@ function renderFeed() {
     [state.mind.quotes, '❝', (r) => shortName(r.text, 44) + (r.source ? ' — ' + r.source : '')],
     [state.mind.ideas, '💡', (r) => shortName(r.text, 52)],
     [state.money.expenses, '💵', (r) => fmt$(r.amount) + (r.note ? ' · ' + r.note : '')],
+    [state.money.income, '💰', (r) => '+' + fmt$(r.amount) + (r.source ? ' · ' + r.source : '')],
     [state.money.categories, '📊', (r) => r.name + (r.planned ? ' · ' + fmt$(r.planned) + '/mo' : '')],
     [state.money.subscriptions, '🔁', (r) => r.name + ' · ' + fmt$(r.amount) + '/' + (r.cadence || 'monthly')],
     [state.places.items, '📍', (r) => r.name + ' · ' + r.kind],
@@ -2071,6 +2125,7 @@ function openPop(title, bodyHTML, onConfirm, afterRender, okLabel) {
   });
 }
 function closePop() {
+  $('pop').classList.remove('wide');
   $('pop').style.display = 'none';
   $('popBack').classList.remove('open');
   popConfirm = null;
@@ -2092,16 +2147,37 @@ function openForm(title, fields, values, onSave, okLabel) {
         return '<option value="' + esc(v) + '">' + esc(l) + '</option>';
       }).join('') + '</select>';
     }
+    /* A date you know by month and day but often not by year — a birthday.
+       `<input type=date>` would demand all three and a full-year answer. */
+    if (f.type === 'mdy') {
+      return lab + '<div class="mdy">' +
+        '<select id="' + id + '_m"><option value="">month</option>' +
+          MONTHS.map((m, i) => '<option value="' + (i + 1) + '">' + m + '</option>').join('') +
+        '</select>' +
+        '<input type="number" id="' + id + '_d" placeholder="day" min="1" max="31">' +
+        '<input type="number" id="' + id + '_y" placeholder="year" min="1900" max="2100">' +
+      '</div>';
+    }
     if (f.type === 'textarea') return lab + '<textarea id="' + id + '" placeholder="' + esc(f.placeholder || '') + '"></textarea>';
     return lab + '<input type="' + (f.type || 'text') + '" id="' + id + '" placeholder="' +
            esc(f.placeholder || '') + '"' + (f.step ? ' step="' + f.step + '"' : '') + '>';
   }).join('');
   openPop(title, html, () => {
     const out = {};
-    fields.forEach((f) => { out[f.key] = String($('ff_' + f.key).value || '').trim(); });
+    fields.forEach((f) => {
+      if (f.type === 'mdy') {
+        const g = (sfx) => String($('ff_' + f.key + sfx).value || '').trim();
+        out[f.key] = { m: g('_m'), d: g('_d'), y: g('_y') };
+        return;
+      }
+      out[f.key] = String($('ff_' + f.key).value || '').trim();
+    });
     return onSave(out);
   }, () => {
-    fields.forEach((f) => { if (values && values[f.key] != null) $('ff_' + f.key).value = values[f.key]; });
+    fields.forEach((f) => {
+      if (f.type === 'mdy' || !values || values[f.key] == null) return;
+      $('ff_' + f.key).value = values[f.key];
+    });
     const first = $('pop').querySelector('input,select,textarea');
     if (first) first.focus();
   }, okLabel || 'Add');
@@ -2132,18 +2208,23 @@ function safeUrl(raw) {
   if (/^(javascript|data|vbscript):/i.test(u)) return null;
   return u;
 }
+/* Icon-only, so the name has to live in `title` and `aria-label` — the pill
+   would otherwise be an unreadable glyph to anything that is not an eye. */
 function renderLaunch() {
   const box = $('launch'); box.innerHTML = '';
   DOORS.forEach((d) => {
     if (d.pending) {
       const el = document.createElement('div');
       el.className = 'pend'; el.title = d.name + ' — not published yet';
-      el.innerHTML = '<span class="soon">soon</span><span class="ic">' + d.ic + '</span>' + esc(d.name);
+      el.setAttribute('aria-label', d.name + ' — not published yet');
+      el.innerHTML = '<span class="soon">soon</span><span class="ic">' + d.ic + '</span>';
       box.appendChild(el);
       return;
     }
     const a = document.createElement('a');
-    a.href = d.url; a.innerHTML = '<span class="ic">' + d.ic + '</span>' + esc(d.name);
+    a.href = d.url; a.title = d.name;
+    a.setAttribute('aria-label', d.name);
+    a.innerHTML = '<span class="ic">' + d.ic + '</span>';
     box.appendChild(a);
   });
   (state.links || []).forEach((l) => {
@@ -2152,7 +2233,8 @@ function renderLaunch() {
     const a = document.createElement('a');
     a.className = 'mine'; a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
     a.title = l.label + ' — ' + url;
-    a.innerHTML = '<span class="ic">' + esc(l.icon || '🔗') + '</span>' + esc(shortName(l.label, 14));
+    a.setAttribute('aria-label', l.label);
+    a.innerHTML = '<span class="ic">' + esc(l.icon || '🔗') + '</span>';
     const del = document.createElement('button');
     del.className = 'del'; del.type = 'button'; del.textContent = '✕'; del.title = 'Remove link';
     del.onclick = (e) => {
@@ -2164,7 +2246,8 @@ function renderLaunch() {
   });
   const add = document.createElement('button');
   add.className = 'add'; add.type = 'button';
-  add.innerHTML = '<span class="ic">＋</span>Link';
+  add.title = 'Add a link'; add.setAttribute('aria-label', 'Add a link');
+  add.innerHTML = '<span class="ic">＋</span>';
   add.onclick = () => openForm('Add a link', [
     { key: 'label', label: 'Name', placeholder: 'what you call it' },
     { key: 'url', label: 'Address', placeholder: 'example.com/page' },
@@ -2205,41 +2288,9 @@ function renderBirthdayLine() {
 const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const monthKey = () => todayStr().slice(0, 7);
 
-/* The panels are input only. What you add lands in the tracker like every
-   other entry, and the full lists live on the records page — nothing
-   accumulates up here, so the cards keep a fixed height forever. */
-function renderPeople() {
-  const people = state.relationships.people || [];
-  const up = upcomingBirthdays(31).length;
-  $('sumPeople').textContent = [
-    people.length ? plural(people.length, 'person', 'people') : '',
-    up ? plural(up, 'birthday') + ' this month' : '',
-  ].filter(Boolean).join(' · ') || 'nothing yet';
-}
-
-function renderMind() {
-  const books = state.mind.books || [];
-  const quotes = state.mind.quotes || [];
-  const reading = books.filter((b) => b.status === 'reading').length;
-  $('sumMind').textContent = [
-    reading ? reading + ' reading' : (books.length ? plural(books.length, 'book') : ''),
-    quotes.length ? plural(quotes.length, 'quote') : '',
-  ].filter(Boolean).join(' · ') || 'nothing yet';
-}
-
-function renderMoney() {
-  const exp = state.money.expenses || [];
-  const subs = state.money.subscriptions || [];
-  const mk = monthKey();
-  const spent = exp.filter((e) => (e.date || '').startsWith(mk))
-    .reduce((n, e) => n + Number(e.amount || 0), 0);
-  const perMonth = subs.reduce((n, s) =>
-    n + (s.cadence === 'yearly' ? Number(s.amount || 0) / 12 : Number(s.amount || 0)), 0);
-  $('sumMoney').textContent = [
-    spent ? fmt$(spent) + ' this month' : '',
-    perMonth ? fmt$(perMonth) + '/mo subscriptions' : '',
-  ].filter(Boolean).join(' · ') || 'nothing yet';
-}
+/* The log grid is input only. What you add lands in the Tracker like every
+   other entry, and the full lists live on the Records page — nothing
+   accumulates up here, so the tiles keep a fixed height forever. */
 
 /** The current home: the latest-starting `home` place with no end, or an end in the future. */
 function currentHome() {
@@ -2247,21 +2298,6 @@ function currentHome() {
   const live = homes.filter((p) => !p.to || p.to >= todayStr());
   return live.sort((a, b) => String(b.from || '').localeCompare(String(a.from || '')))[0] || null;
 }
-function renderLife() {
-  const vals = state.identity.values || [];
-  const home = currentHome();
-  let since = '';
-  if (home && home.from) {
-    const months = Math.max(0, Math.round(daysBetween(home.from, todayStr()) / 30.44));
-    since = months >= 12 ? ' · ' + Math.floor(months / 12) + 'y' + (months % 12 ? ' ' + (months % 12) + 'm' : '')
-          : months ? ' · ' + months + 'm' : '';
-  }
-  $('sumLife').textContent = [
-    home ? home.name + since : '',
-    vals.length ? plural(vals.length, 'value') : '',
-  ].filter(Boolean).join(' · ') || 'nothing yet';
-}
-
 /* =============================================================
    THIS WEEK — derived live from the last 7 days, never stored.
    Descriptive, not evaluative: counts and averages, no score, no
@@ -2315,26 +2351,8 @@ function renderWeek() {
   $('sumWeek').textContent = cards.length + ' of 7 days logged';
 }
 
-/* Auto-open a panel the first time a render finds content in it. Once only:
-   after that it is yours to open and close, and re-rendering must not fight
-   you for it. */
-let panelsSettled = false;
-function settlePanels() {
-  if (panelsSettled) return;
-  panelsSettled = true;
-  const has = {
-    drawerPeople: (state.relationships.people || []).length || (state.relationships.birthdays || []).length,
-    drawerMind: (state.mind.books || []).length || (state.mind.quotes || []).length || (state.mind.ideas || []).length,
-    drawerMoney: (state.money.expenses || []).length || (state.money.categories || []).length || (state.money.subscriptions || []).length,
-    drawerLife: (state.places.items || []).length || (state.identity.values || []).length,
-  };
-  Object.entries(has).forEach(([id, n]) => { if (n) $(id).open = true; });
-}
-
 function renderDrawers() {
-  renderLaunch(); renderBirthdayLine();
-  renderPeople(); renderMind(); renderMoney(); renderLife(); renderWeek();
-  settlePanels();
+  renderLaunch(); renderBirthdayLine(); renderWeek();
 }
 
 /* =============================================================
@@ -2433,11 +2451,17 @@ const MD_SUMMARY = [
   ['Food', () => state.body.food, (r) => `${r.date} — ${r.foodName}, ${r.portion || r.grams + ' g'}`],
   ['Water', () => state.body.water, (r) => `${r.date} — ${round1(r.oz)} oz`],
   ['Drinks', () => state.body.drinks, (r) => `${r.date} — ${r.label || r.kind}${r.oz ? `, ${round1(r.oz)} oz` : ''}`],
-  ['Substances', () => state.body.substances, (r) => `${r.date} — ${r.kind} ×${r.count || 1}${r.note ? ` (${r.note})` : ''}`],
-  ['Sleep', () => state.body.sleep, (r) => `${r.date} — ${r.hours} h${r.quality ? `, quality ${r.quality}/5` : ''}`],
+  ['Substances', () => state.body.substances, (r) => `${r.date} — ${r.kind} ×${r.count || 1}` +
+    `${r.amount ? `, ${round1(r.amount)}${r.unit || ''}` : ''}${r.form ? ` (${r.form})` : ''}` +
+    `${r.note ? ` — ${r.note}` : ''}`],
+  ['Sleep', () => state.body.sleep, (r) => `${r.date} — ${r.hours} h ` +
+    `${(r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep'}` +
+    `${r.start != null && r.end != null ? `, ${fmtHour(r.start)}–${fmtHour(r.end)}` : ''}` +
+    `${r.quality ? `, quality ${r.quality}/5` : ''}`],
   ['Exercise', () => state.body.exercise, (r) => `${r.date} — ${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`],
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
   ['Expenses', () => state.money.expenses, (r) => `${r.date} — ${fmt$(r.amount)}${r.note ? ` (${r.note})` : ''}`],
+  ['Income', () => state.money.income, (r) => `${r.date} — +${fmt$(r.amount)}${r.source ? `, ${r.source}` : ''}${r.note ? ` (${r.note})` : ''}`],
 ];
 
 function buildDataMarkdown() {
@@ -2757,7 +2781,7 @@ const MERGE_BY_ID = [
   ['body', 'symptoms'], ['body', 'customFoods'], ['body', 'meals'],
   ['body', 'drinks'], ['body', 'substances'],
   ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
-  ['money', 'categories'], ['money', 'expenses'], ['money', 'subscriptions'],
+  ['money', 'categories'], ['money', 'expenses'], ['money', 'income'], ['money', 'subscriptions'],
   ['money', 'netWorth'], ['money', 'goals'],
   ['relationships', 'people'], ['relationships', 'followUps'],
   ['relationships', 'giftIdeas'], ['relationships', 'birthdays'],
@@ -3307,53 +3331,58 @@ if ('IntersectionObserver' in window) {
   io.observe($('foodCard'));
 }
 
-/* ---- drawer add-buttons ---- */
+/* =============================================================
+   THE LOG GRID - six tiles, six forms.
+   Every one goes through addTo, so every record is stamped, lands in the
+   Tracker, and can be taken back with Undo.
+   ============================================================= */
 const addTo = (arr, rec, label) => {
   appendRec(arr, stamp(rec), label || 'entry');
   saveState(); renderDrawers(); renderFeed();
   if (label) toast('Added ' + label);
 };
 
-$('addPerson').onclick = () => openForm('Add a person', [
+/* A person and their birthday are one thing you know about someone, so they
+   are one form. The birthday is optional: leave the month unset and only the
+   person is written. */
+$('logPerson').onclick = () => openForm('Add a person', [
   { key: 'name', label: 'Name' },
   { key: 'relation', label: 'Relation', placeholder: 'friend, brother, colleague' },
+  { key: 'bday', label: 'Birthday (optional)', type: 'mdy' },
 ], {}, (v) => {
   if (!v.name) return false;
   addTo(state.relationships.people, { id: uid(), name: v.name, relation: v.relation, tier: 2 }, v.name);
+  if (v.bday.m) {
+    addTo(state.relationships.birthdays, {
+      id: uid(), name: v.name, month: Number(v.bday.m),
+      day: Number(v.bday.d) || null, year: Number(v.bday.y) || null, deceased: false,
+    }, v.name + "'s birthday");
+  }
 });
 
-$('addBirthday').onclick = () => openForm('Add a birthday', [
-  { key: 'name', label: 'Name' },
-  { key: 'month', label: 'Month', type: 'select', options: MONTHS.map((m, i) => ({ v: String(i + 1), l: m })) },
-  { key: 'day', label: 'Day', type: 'number', placeholder: '1–31' },
-  { key: 'year', label: 'Year (optional)', type: 'number', placeholder: 'e.g. 1994' },
-], {}, (v) => {
-  if (!v.name || !v.month) return false;
-  addTo(state.relationships.birthdays, {
-    id: uid(), name: v.name, month: Number(v.month),
-    day: Number(v.day) || null, year: Number(v.year) || null, deceased: false,
-  }, v.name + "'s birthday");
-});
-
-$('addBook').onclick = () => openForm('Add a book', [
+/* A book you are reading and the line out of it that stopped you are the same
+   moment, so one form writes both. Leave the passage empty and it is just a
+   book. */
+$('logBook').onclick = () => openForm('Add a book', [
   { key: 'title', label: 'Title' },
   { key: 'author', label: 'Author' },
-  { key: 'status', label: 'Status', type: 'select', options: ['want', 'reading', 'finished', 'abandoned'] },
+  { key: 'status', label: 'Status', type: 'select', options: ['reading', 'want', 'finished', 'abandoned'] },
+  { key: 'passage', label: 'What you read (optional)', type: 'textarea',
+    placeholder: 'a line worth keeping' },
 ], { status: 'reading' }, (v) => {
   if (!v.title) return false;
   addTo(state.mind.books, { id: uid(), title: v.title, author: v.author, status: v.status || 'want' }, v.title);
+  if (v.passage) {
+    addTo(state.mind.quotes, {
+      id: uid(), date: todayStr(), text: v.passage,
+      // Comma, not a dash: the Tracker already joins quote and source with a
+      // dash, and "\u2026 \u2014 Meditations \u2014 Aurelius" reads as two separate sources.
+      source: v.title + (v.author ? ', ' + v.author : ''),
+    }, 'a passage');
+  }
 });
 
-$('addQuote').onclick = () => openForm('Add a quote', [
-  { key: 'text', label: 'Quote', type: 'textarea' },
-  { key: 'source', label: 'Who said it' },
-  { key: 'why', label: 'Why it stuck (optional)' },
-], {}, (v) => {
-  if (!v.text) return false;
-  addTo(state.mind.quotes, { id: uid(), date: todayStr(), text: v.text, source: v.source, why: v.why }, 'a quote');
-});
-
-$('addIdea').onclick = () => openForm('Add an idea', [
+$('logIdea').onclick = () => openForm('Add an idea', [
   { key: 'text', label: 'Idea', type: 'textarea' },
   { key: 'source', label: 'Where it came from', placeholder: 'book, person, self' },
 ], {}, (v) => {
@@ -3361,61 +3390,301 @@ $('addIdea').onclick = () => openForm('Add an idea', [
   addTo(state.mind.ideas, { id: uid(), date: todayStr(), text: v.text, source: v.source }, 'an idea');
 });
 
-$('addCategory').onclick = () => openForm('Add a budget line', [
-  { key: 'name', label: 'Category', placeholder: 'Food, Rent, Transport' },
-  { key: 'planned', label: 'Planned per month', type: 'number', step: '0.01' },
-], {}, (v) => {
-  if (!v.name) return false;
-  addTo(state.money.categories, { id: uid(), name: v.name, planned: Number(v.planned) || 0 }, v.name);
-});
-
-$('addExpense').onclick = () => {
-  const cats = state.money.categories || [];
-  if (!cats.length) { alert('Add a budget category first — an expense needs somewhere to go.'); return; }
-  openForm('Add an expense', [
-    { key: 'amount', label: 'Amount', type: 'number', step: '0.01' },
-    { key: 'categoryId', label: 'Category', type: 'select', options: cats.map((c) => ({ v: c.id, l: c.name })) },
-    { key: 'note', label: 'Note (optional)' },
-    { key: 'date', label: 'Date', type: 'date' },
-  ], { date: day }, (v) => {
-    const amt = Number(v.amount);
-    if (!amt) return false;
-    addTo(state.money.expenses, {
-      id: uid(), date: v.date || day, amount: amt, categoryId: v.categoryId, note: v.note,
-    }, fmt$(amt));
-  });
-};
-
-$('addSub').onclick = () => openForm('Add a subscription', [
-  { key: 'name', label: 'Name' },
-  { key: 'amount', label: 'Amount', type: 'number', step: '0.01' },
-  { key: 'cadence', label: 'Billed', type: 'select', options: ['monthly', 'yearly'] },
-], {}, (v) => {
-  if (!v.name || !Number(v.amount)) return false;
-  addTo(state.money.subscriptions, {
-    id: uid(), name: v.name, amount: Number(v.amount), cadence: v.cadence || 'monthly',
-  }, v.name);
-});
-
-$('editValues').onclick = () => openForm('Your values', [
-  { key: 'values', label: 'One per line — the handful you want to be measured by', type: 'textarea' },
-], { values: (state.identity.values || []).join('\n') }, (v) => {
-  state.identity.values = v.values.split('\n').map((s) => s.trim()).filter(Boolean);
-  saveState(); renderDrawers();
-}, 'Save');
-
-$('addPlace').onclick = () => openForm('Add a place', [
+$('logPlace').onclick = () => openForm('Add a place', [
   { key: 'name', label: 'Name', placeholder: 'Milwaukee, Cairo, the cabin' },
   { key: 'kind', label: 'Kind', type: 'select',
-    options: [{ v: 'home', l: 'home — somewhere you live(d)' },
-              { v: 'trip', l: 'trip — travel or a visit' },
-              { v: 'spot', l: 'spot — a meaningful place' }] },
+    options: [{ v: 'home', l: 'home \u2014 somewhere you live(d)' },
+              { v: 'trip', l: 'trip \u2014 travel or a visit' },
+              { v: 'spot', l: 'spot \u2014 a meaningful place' }] },
   { key: 'from', label: 'From', type: 'date' },
   { key: 'to', label: 'To (leave blank if current)', type: 'date' },
 ], {}, (v) => {
   if (!v.name) return false;
   addTo(state.places.items, { id: uid(), name: v.name, kind: v.kind || 'spot', from: v.from, to: v.to }, v.name);
 });
+
+/* ---- money -------------------------------------------------------------
+   Expense and income are the same gesture - an amount, and where it came from
+   or went - so they share a form and differ by a toggle. The categories you
+   already use are chips, because picking one is faster than typing it and
+   keeps the spelling consistent; "Other" opens a text field and the name you
+   type becomes a new category, so the list grows by being used rather than by
+   being maintained. A subscription is an expense that repeats, which is a
+   checkbox, not a third form. */
+const INCOME_SEED = ['Salary', 'Freelance', 'Gift', 'Refund'];
+function incomeSources() {
+  return [...new Set([...INCOME_SEED, ...(state.money.income || []).map((r) => r.source).filter(Boolean)])];
+}
+$('logMoney').onclick = () => {
+  let side = 'expense';       // 'expense' | 'income'
+  let chosen = null;          // a category id, a source string, or '__other'
+  openPop('Money',
+    '<div class="seg" id="mSeg">' +
+      '<button type="button" data-s="expense">Expense</button>' +
+      '<button type="button" data-s="income">Income</button>' +
+    '</div>' +
+    '<div class="rowlabel">Amount</div>' +
+    '<input type="number" step="0.01" id="mAmt" placeholder="0.00">' +
+    '<div class="rowlabel" id="mPickLabel">Category</div>' +
+    '<div class="pickrow" id="mPick"></div>' +
+    '<input type="text" id="mOther" placeholder="name it" hidden>' +
+    '<div class="rowlabel">Note (optional)</div>' +
+    '<input type="text" id="mNote" placeholder="what it was for">' +
+    '<div class="rowlabel">Date</div>' +
+    '<input type="date" id="mDate">' +
+    '<label class="checkline" id="mRepeatLine"><input type="checkbox" id="mRepeat">repeats every month</label>',
+    () => {
+      const amt = Number($('mAmt').value);
+      if (!amt || amt <= 0) { $('mAmt').focus(); return false; }
+      const other = $('mOther').value.trim();
+      if (chosen === '__other' && !other) { $('mOther').focus(); return false; }
+      const date = $('mDate').value || day;
+      const note = $('mNote').value.trim();
+
+      if (side === 'income') {
+        const source = chosen === '__other' ? other : (chosen || 'Other');
+        addTo(state.money.income, { id: uid(), date, amount: amt, source, note }, '+' + fmt$(amt));
+        return;
+      }
+      // An expense needs a category; "Other" mints one, so the list grows by use.
+      let catId = (chosen && chosen !== '__other') ? chosen : null;
+      if (!catId) {
+        const name = other || 'Other';
+        let cat = (state.money.categories || []).find((c) => c.name.toLowerCase() === name.toLowerCase());
+        if (!cat) { cat = stamp({ id: uid(), name, planned: 0 }); appendRec(state.money.categories, cat, name); }
+        catId = cat.id;
+      }
+      if ($('mRepeat').checked) {
+        const cat = (state.money.categories || []).find((c) => c.id === catId);
+        addTo(state.money.subscriptions, {
+          id: uid(), name: note || (cat && cat.name) || 'Subscription',
+          amount: amt, cadence: 'monthly', categoryId: catId,
+        }, fmt$(amt) + '/mo');
+        return;
+      }
+      addTo(state.money.expenses, { id: uid(), date, amount: amt, categoryId: catId, note }, fmt$(amt));
+    },
+    () => {
+      $('mDate').value = day;
+      const paint = () => {
+        [...$('mSeg').children].forEach((b) =>
+          b.setAttribute('aria-pressed', String(b.dataset.s === side)));
+        $('mPickLabel').textContent = side === 'expense' ? 'Category' : 'Source';
+        $('mRepeatLine').hidden = side !== 'expense';
+        if (side !== 'expense') $('mRepeat').checked = false;
+
+        const box = $('mPick'); box.innerHTML = '';
+        const opts = side === 'expense'
+          ? (state.money.categories || []).map((c) => ({ v: c.id, l: c.name }))
+          : incomeSources().map((x) => ({ v: x, l: x }));
+        opts.concat([{ v: '__other', l: 'Other\u2026' }]).forEach((o) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'chip';
+          b.textContent = o.l;
+          b.setAttribute('aria-pressed', String(chosen === o.v));
+          b.onclick = () => { chosen = (chosen === o.v ? null : o.v); paint(); };
+          box.appendChild(b);
+        });
+        const other = $('mOther');
+        other.hidden = chosen !== '__other';
+        if (chosen === '__other') other.focus();
+      };
+      $('mSeg').onclick = (e) => {
+        const b = e.target.closest('button[data-s]');
+        if (!b) return;
+        side = b.dataset.s; chosen = null; $('mOther').value = ''; paint();
+      };
+      paint();
+      $('mAmt').focus();
+    }, 'Log');
+};
+
+/* ---- values ------------------------------------------------------------
+   A textarea asked you to compose a list from nothing. A picker asks you to
+   recognise words instead, which is the easier act and the one that produces
+   an honest answer; anything missing you can still type. */
+const VALUE_WORDS = [
+  'Honesty', 'Curiosity', 'Discipline', 'Kindness', 'Courage', 'Patience',
+  'Craft', 'Health', 'Family', 'Freedom', 'Generosity', 'Humility',
+  'Loyalty', 'Presence', 'Rest', 'Service', 'Simplicity', 'Wonder',
+];
+$('logValues').onclick = () => {
+  const held = (state.identity.values || []).slice();
+  const picked = new Set(held);
+  const vocab = [...new Set([...held, ...VALUE_WORDS])];
+  openPop('Values',
+    '<div class="tiny" style="margin-bottom:11px">The handful you want to be measured by. ' +
+      'Tap to keep or drop one.</div>' +
+    '<div class="pickrow" id="vPick"></div>' +
+    '<div class="namefield" style="margin-top:10px">' +
+      '<input type="text" id="vNew" placeholder="a word of your own">' +
+      '<button class="mini" type="button" id="vAdd">Add</button>' +
+    '</div>',
+    () => {
+      // Values you already held keep their order; newly picked ones follow.
+      state.identity.values = held.filter((v) => picked.has(v))
+        .concat(vocab.filter((v) => picked.has(v) && !held.includes(v)));
+      saveState(); renderDrawers();
+    },
+    () => {
+      const paint = () => {
+        const box = $('vPick'); box.innerHTML = '';
+        vocab.forEach((w) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'chip'; b.textContent = w;
+          b.setAttribute('aria-pressed', String(picked.has(w)));
+          b.onclick = () => { picked.has(w) ? picked.delete(w) : picked.add(w); paint(); };
+          box.appendChild(b);
+        });
+      };
+      const take = () => {
+        const w = $('vNew').value.trim();
+        if (!w) return;
+        const already = vocab.find((x) => x.toLowerCase() === w.toLowerCase());
+        if (!already) vocab.push(w);
+        picked.add(already || w);
+        $('vNew').value = ''; paint(); $('vNew').focus();
+      };
+      $('vAdd').onclick = take;
+      $('vNew').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); take(); } };
+      paint();
+    }, 'Save');
+};
+
+/* =============================================================
+   THE OVERVIEW ROOM
+   Everything here is derived at open time and stored nowhere, so it can
+   never disagree with the record it describes.
+   ============================================================= */
+/* Every array of records, borrowed from the merge table so a store added
+   there is never silently missing here. */
+const ALL_STORES = [...MERGE_BY_ID, ...MERGE_BY_DATE];
+
+/** One line for any record, whatever store it came out of. */
+function recordLabel(r, store) {
+  if (store === 'water' || store === 'drinks') {
+    return round1(r.oz) + ' oz' + (r.label ? ' ' + r.label : '') + (store === 'water' ? ' water' : '');
+  }
+  if (store === 'substances') {
+    return (r.kind || 'substance') + (r.amount ? ' \u00b7 ' + round1(r.amount) + (r.unit || '') : '');
+  }
+  if (store === 'sleep') {
+    return round1(r.hours) + ' h ' + ((r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep');
+  }
+  if (store === 'exercise') return (r.type || 'movement') + (r.minutes ? ' \u00b7 ' + r.minutes + ' min' : '');
+  if (store === 'expenses') return fmt$(r.amount) + (r.note ? ' \u00b7 ' + r.note : '');
+  if (store === 'income') return '+' + fmt$(r.amount) + (r.source ? ' \u00b7 ' + r.source : '');
+  if (store === 'subscriptions') return r.name + ' \u00b7 ' + fmt$(r.amount) + '/' + (r.cadence || 'monthly');
+  if (store === 'birthdays') {
+    return r.name + ' \u00b7 ' + (MONTHS[r.month - 1] || '?') + (r.day ? ' ' + r.day : '');
+  }
+  if (store === 'people') return r.name + (r.relation ? ' \u00b7 ' + r.relation : '');
+  if (store === 'items') return r.name + (r.kind ? ' \u00b7 ' + r.kind : '');
+  if (store === 'cards') return r.one_sentence ? shortName(r.one_sentence, 52) : 'day note';
+  const t = r.name || r.title || r.text || r.note || r.one_sentence || r.q || r.question || '';
+  return t ? shortName(String(t), 52) : store;
+}
+
+function ovStat(k, v, u) {
+  // No value, no unit: "— h avg" reads as a broken number rather than as none.
+  return '<div class="c"><div class="k">' + esc(k) + '</div><div class="v">' +
+    (v == null ? '&mdash;'
+               : esc(String(v)) + (u ? '<span class="u"> ' + esc(u) + '</span>' : '')) +
+    '</div></div>';
+}
+
+/** Days with any entry at all, over the whole record — not a streak. */
+function daysKept() {
+  const d = new Set();
+  ALL_STORES.forEach(([a, b]) => (pick(state, a, b) || []).forEach((r) => {
+    if (r && r.date) d.add(r.date);
+    else if (r && r._at) d.add(toLocalISO(new Date(r._at)));
+  }));
+  return d;
+}
+
+$('overviewBtn').onclick = () => {
+  const days = daysKept();
+  const sorted = [...days].sort();
+  const first = sorted[0];
+  const mk = monthKey();
+  const spent = (state.money.expenses || [])
+    .filter((e) => (e.date || '').startsWith(mk)).reduce((n, e) => n + Number(e.amount || 0), 0);
+  const earned = (state.money.income || [])
+    .filter((r) => (r.date || '').startsWith(mk)).reduce((n, r) => n + Number(r.amount || 0), 0);
+  const home = currentHome();
+  let homeSince = '';
+  if (home && home.from) {
+    const months = Math.max(0, Math.round(daysBetween(home.from, todayStr()) / 30.44));
+    homeSince = months >= 12
+      ? Math.floor(months / 12) + 'y' + (months % 12 ? ' ' + (months % 12) + 'm' : '')
+      : (months ? months + 'm' : 'new');
+  }
+  const sleeps = (state.body.sleep || [])
+    .filter((r) => (r.kind || 'overnight') === 'overnight').map((r) => Number(r.hours))
+    .filter((n) => !isNaN(n));
+  const avgSleep = sleeps.length ? sleeps.reduce((a, b) => a + b, 0) / sleeps.length : null;
+  const week = weekDays();
+
+  /* Habits, as a picture of the last seven days rather than a run you can
+     break. A dot per day, and the count over the whole record. */
+  const habits = (state.habits.items || []).map((h) => {
+    const done = h.done || [];
+    return '<div class="h"><span class="nm">' + esc(h.name) + '</span>' +
+      '<span class="wk">' + week.map((d) =>
+        '<i class="' + (done.includes(d) ? 'on' : '') + '" title="' + esc(fmtDay(d)) + '"></i>').join('') +
+      '</span><span class="n">' + plural(done.length, 'day') + '</span></div>';
+  }).join('');
+
+  const vals = state.identity.values || [];
+
+  /* The last ten things entered anywhere, newest first — the record as it
+     actually grew, across every store. */
+  const recent = [];
+  /* MERGE_BY_ID, not ALL_STORES: the by-date rows (the daily card, the body
+     check-in, the pulse) are upserted once per day and one of them is created
+     as a side effect of logging sleep. Listing those as things you "added"
+     would be reporting your own bookkeeping back to you. */
+  MERGE_BY_ID.forEach(([a, b]) => (pick(state, a, b) || []).forEach((r) => {
+    if (r && r._at) recent.push({ r, at: r._at, store: b || a });
+  }));
+  recent.sort((x, y) => String(y.at).localeCompare(String(x.at)));
+  const RECENT_IC = {
+    people: '🧑', birthdays: '🎂', books: '📕', quotes: '❝', ideas: '💡',
+    expenses: '💵', income: '💰', categories: '📊', subscriptions: '🔁',
+    items: '📍', food: '🍽', water: '💧', drinks: '🥤', substances: '◍',
+    sleep: '🌙', exercise: '🏃', symptoms: '⚕', meals: '🍱', customFoods: '🍳',
+  };
+  const rows = recent.slice(0, 10).map(({ r, at, store }) =>
+    '<div class="r"><span class="ic">' + (RECENT_IC[store] || '·') + '</span>' +
+    '<span class="tx">' + esc(recordLabel(r, store)) + '</span>' +
+    '<span class="dt">' + esc(fmtDay(toLocalISO(new Date(at)))) + '</span></div>').join('');
+
+  openPop('Mirror',
+    '<div class="ov"><h4>At a glance</h4><div class="ovstats">' +
+      ovStat('Days kept', days.size) +
+      ovStat('Keeping since', first ? fmtDay(first) : null) +
+      ovStat('Sleep', avgSleep == null ? null : round1(avgSleep), 'h avg') +
+      ovStat('This month out', spent ? fmt$(spent) : null) +
+      ovStat('This month in', earned ? fmt$(earned) : null) +
+      ovStat('Home', home ? home.name : null, homeSince) +
+    '</div></div>' +
+    '<div class="ov"><h4>Behavior &middot; last 7 days</h4>' +
+      (habits ? '<div class="ovhab">' + habits + '</div>'
+              : '<div class="empty">No habits yet.</div>') +
+    '</div>' +
+    '<div class="ov"><h4>Values you keep</h4>' +
+      (vals.length
+        ? '<div class="chips valchips">' + vals.map((v) =>
+            '<span class="chip">' + esc(v) + '</span>').join('') + '</div>'
+        : '<div class="empty">None set yet &mdash; the Values tile.</div>') +
+    '</div>' +
+    '<div class="ov"><h4>Recently added</h4>' +
+      (rows ? '<div class="ovrecent">' + rows + '</div>'
+            : '<div class="empty">Nothing yet.</div>') +
+    '</div>',
+    null, () => { $('pop').classList.add('wide'); });
+};
 
 $('popBack').onclick = closePop;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });

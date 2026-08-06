@@ -19,12 +19,21 @@ silently repurposed — see [`SCHEMA.md`](./SCHEMA.md), the decoder ring for you
 | **`self.html`** | The older seven-room version, on the same data. |
 
 **The dashboard** is one page in four bands: fixed instruments at the top (how you are ·
-intake · habits · movement · food), a row of links, then the **Tracker** — every entry of the
-day in the order you made it — and the week in review beneath it.
+intake · habits · movement · food · sleep), a row of link pills over the six-tile **log grid**
+(person · book · idea · place · money · values), then the **Tracker** — every entry of the day
+in the order you made it — and the week in review beneath it.
 
 The instruments never change shape as you log. Entries land in the Tracker, not in the card
 you typed into, so the thing you are aiming at never moves. One tap logs a glass of water;
-`Undo` in the header takes back the last thing you did, including a deletion.
+sleep is two handles on a 24-hour track, so you say when you went down and got up rather than
+doing the arithmetic; `Undo` in the header takes back the last thing you did, including a
+deletion.
+
+Clicking the title opens the **Overview** — what the record adds up to: days kept, sleep
+average, this month's money, habits over the last seven days, the values you keep, and the last
+ten things you entered. It is derived at open time and stored nowhere, so it cannot disagree
+with the record. No scores and no streaks: a streak turns a record into something you can fail,
+and then into something you stop keeping.
 
 **Records** is the reading surface. One search runs across people, birthdays, books, quotes,
 ideas, budget, expenses, subscriptions, places and habits at once. It deliberately cannot

@@ -249,6 +249,12 @@ const SECTIONS = [
       sub: catName(r.categoryId), meta: fmtDate(r.date) + ' · ' + fmt$(r.amount) }),
     sort: (a, b) => String(b.date).localeCompare(String(a.date)) },
 
+  { key: 'income', name: 'Income', arr: () => state.money.income,
+    text: (r) => [r.source, r.note].join(' '),
+    row: (r) => ({ main: r.source || 'income', sub: r.note,
+      meta: fmtDate(r.date) + ' · +' + fmt$(r.amount) }),
+    sort: (a, b) => String(b.date).localeCompare(String(a.date)) },
+
   { key: 'subscriptions', name: 'Subscriptions', arr: () => state.money.subscriptions,
     text: (r) => r.name,
     row: (r) => ({ main: r.name, meta: fmt$(r.amount) + ' / ' + (r.cadence || 'monthly') }),
