@@ -12,6 +12,7 @@
 import { esc, slug, anchorsFor } from './format.js';
 import { MANIFEST, ALIAS } from './rooms/_manifest.js';
 import * as share from './share.js';
+import { widgetCSS } from './widget-css.js';
 
 /* Instruments now live in the manifest beside the room they belong to, so a
    room is declared in one place. The paths are resolved here, in the module
@@ -181,6 +182,9 @@ async function render(key) {
 
   /* Click-to-copy symbol groups, from the ported Symbols room. */
   if (room.groups) {
+    /* The cabinet is rendered here rather than by a widget, so room.js asks
+       for its stylesheet the same way a widget would — one room uses it. */
+    widgetCSS('symbols');
     h += '<section class="block"><div class="block-head"><h2>Symbols</h2>' +
       '<span class="tag">Click to copy</span>' +
       '<p>Click any symbol to copy it to the clipboard.</p></div>' +

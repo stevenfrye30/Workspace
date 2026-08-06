@@ -3,6 +3,10 @@ import { POLYATOMIC, OXYANION_PATTERN, SOLUBILITY, STRONG_ACIDS, STRONG_BASES,
 import { DHF, DHF_NAMES, SPECIFIC_HEAT, PHASE_WATER } from '../data/thermo.js';
 import { esc } from '../format.js';
 import { readState, writeState } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
+widgetCSS('reference-tables');
 
 const STATE_NAME = { s: 'solid', l: 'liquid', g: 'gas', aq: 'aqueous' };
 

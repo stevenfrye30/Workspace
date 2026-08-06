@@ -1,0 +1,114 @@
+/* Shared instrument kit.
+
+   The tab/pane/row vocabulary (.u-*), the worked-step output (.st-*), the
+   labelled panes (.tc-*) and the searchable tables (.rt-*) are used by
+   between four and seven widgets each, so they cannot be split per widget
+   without duplicating them. Every instrument loads this; a room with no
+   instrument loads none of it.
+
+   .rt-btn is NOT here - it is in base.css, because the dock uses it on the
+   board, where neither this file nor room.css is loaded. */
+
+/* ── Master units table / converter (data-analysis room only) ─ */
+.u-tabs { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.9rem; }
+.u-tab { font-family: -apple-system, sans-serif; font-size: 0.7rem; font-weight: 600; color: var(--muted); cursor: pointer;
+  padding: 0.3rem 0.7rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+.u-tab.on { color: #11161f; background: var(--c); border-color: var(--c); }
+.u-pane { display: none; }
+.u-pane.on { display: block; }
+.u-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.7rem; }
+.u-input, .u-select { font-family: -apple-system, sans-serif; font-size: 0.82rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; outline: none; }
+.u-input { width: 9rem; }
+.u-input:focus, .u-select:focus { border-color: var(--c); }
+.u-select { flex: 1; min-width: 9rem; }
+.u-search { width: 100%; font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.45rem 0.6rem; outline: none; margin-bottom: 0.7rem; }
+.u-search:focus { border-color: var(--c); }
+.u-scroll { max-height: 24rem; overflow: auto; border: 1px solid var(--border); border-radius: 4px; }
+table.u-table { width: 100%; border-collapse: collapse; font-family: -apple-system, sans-serif; font-size: 0.78rem; }
+table.u-table th { text-align: left; color: var(--muted); font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 0.35rem 0.6rem; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: var(--panel); }
+table.u-table td { padding: 0.32rem 0.6rem; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); color: var(--fg); }
+table.u-table tr:last-child td { border-bottom: none; }
+table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transparent); }
+.u-val { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; color: var(--c); text-align: right; white-space: nowrap; }
+.u-sym { font-family: ui-monospace, Menlo, monospace; color: var(--muted); }
+.u-table tr.from td { color: var(--fg); font-weight: 700; }
+.u-table tr.from td.u-val { color: var(--fg); }
+.u-note { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.6rem; line-height: 1.5; }
+/* ── Stoichiometry: limiting reagent & yield (chemistry room) ─ */
+.st-row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; }
+.st-eq { flex: 1 1 22rem; font-family: ui-monospace, Menlo, monospace; font-size: 1rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.55rem 0.7rem; outline: none; }
+.st-eq:focus { border-color: var(--c); }
+.st-balance { font-family: -apple-system, sans-serif; font-size: 0.78rem; margin: -0.2rem 0 0.9rem; min-height: 1.1rem; }
+.st-balance.ok { color: #7fd6a0; }
+.st-balance.warn { color: #e0b26b; }
+.st-balance.bad { color: #e0806b; }
+.st-balance b { color: inherit; }
+.st-label { font-family: -apple-system, sans-serif; font-size: 0.72rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0.2rem 0 0.5rem; }
+.st-reactant { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.45rem; }
+.st-name { font-family: ui-monospace, Menlo, monospace; font-size: 1rem; color: var(--c); min-width: 6rem; }
+.st-mm { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); min-width: 7rem; }
+.st-amt { width: 8rem; }
+.st-product label, .st-actual label { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted); }
+.st-actual { margin-top: 0.9rem; padding-top: 0.7rem; border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent); }
+.st-out { margin-top: 1rem; }
+.st-hint { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); font-style: italic; }
+.st-step { background: color-mix(in srgb, var(--c) 6%, var(--panel)); border: 1px solid var(--border);
+  border-left: 3px solid var(--c); border-radius: 4px; padding: 0.6rem 0.85rem; margin-bottom: 0.5rem; }
+.st-step .st-h { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.35rem; }
+.st-step ul { margin: 0; padding-left: 1.1rem; }
+.st-step li { font-family: -apple-system, sans-serif; font-size: 0.88rem; color: var(--fg); line-height: 1.65; }
+.st-step p { font-family: -apple-system, sans-serif; font-size: 0.88rem; color: var(--fg); line-height: 1.55; }
+.st-step b { font-family: ui-monospace, Menlo, monospace; }
+.st-lim { color: #e0b26b; }
+.st-ans { color: var(--c); font-size: 1.02rem; }
+.st-flag { color: var(--muted); font-style: italic; }
+/* ── Thermochemistry (chemistry room only) ─────────────────── */
+.tc-pane { display: none; }
+.tc-pane.on { display: block; }
+.tc-hint { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.8rem; line-height: 1.5; }
+.tc-hint b { color: var(--fg); }
+.tc-lab { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted); min-width: 9rem; }
+.tc-unit { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); }
+.tc-state { color: var(--muted); font-size: 0.85em; }
+.tc-zero { color: var(--muted); font-size: 0.85em; font-style: italic; }
+.tc-sum { border-top: 1px dashed color-mix(in srgb, var(--c) 30%, transparent); margin-top: 0.3rem; padding-top: 0.3rem; }
+.tc-phasenote { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted);
+  line-height: 1.55; margin-top: 0.9rem; padding: 0.6rem 0.8rem;
+  background: color-mix(in srgb, var(--c) 5%, var(--panel)); border: 1px dashed var(--border); border-radius: 4px; }
+.tc-phasenote b { color: var(--fg); }
+.tc-check { font-family: -apple-system, sans-serif; font-size: 0.76rem; color: var(--muted); font-style: italic; margin-top: 0.4rem; }
+.tc-hessrow { display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; margin-bottom: 0.45rem; }
+.tc-heq { flex: 1 1 18rem; font-size: 0.88rem; padding: 0.4rem 0.6rem; }
+.tc-hdh { width: 7rem; }
+.tc-hm { width: 5rem; }
+.tc-hdel { flex: 0 0 auto; padding: 0.4rem 0.6rem; line-height: 1; }
+.tc-heqtxt { font-family: ui-monospace, Menlo, monospace; color: var(--fg); }
+.tc-how { color: var(--muted); font-style: italic; }
+.rt-h { font-size: 1.05rem; font-weight: 600; color: var(--fg); margin: 1.1rem 0 0.3rem; }
+.rt-sub { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--muted); margin-bottom: 0.5rem; }
+/* Larger than the other tables on purpose — these get screen-shared. */
+table.rt-table { width: 100%; max-width: 54rem; border-collapse: collapse; font-family: -apple-system, sans-serif;
+  font-size: 0.92rem; margin-bottom: 0.4rem; }
+table.rt-table th { text-align: left; color: var(--muted); font-size: 0.66rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase; padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid var(--border); }
+table.rt-table td { padding: 0.36rem 0.6rem; border-bottom: 1px solid color-mix(in srgb, var(--border) 50%, transparent); color: var(--fg); vertical-align: baseline; }
+table.rt-table tr:last-child td { border-bottom: none; }
+table.rt-table tbody tr:hover td { background: color-mix(in srgb, var(--c) 10%, transparent); }
+.rt-table .rt-f { font-family: ui-monospace, Menlo, monospace; color: var(--c); white-space: nowrap; }
+.rt-table .rt-val { font-family: ui-monospace, Menlo, monospace; text-align: right; white-space: nowrap; }
+.rt-table .rt-note { color: var(--muted); font-size: 0.82rem; }
+@media print {
+  .rt-h { color: #000; page-break-after: avoid; }
+  table.rt-table { font-size: 10pt; page-break-inside: auto; }
+  table.rt-table th { color: #000; border-bottom: 1px solid #000; }
+  table.rt-table td { color: #000; border-bottom: 1px solid #ddd; }
+  table.rt-table tr { page-break-inside: avoid; }
+  .rt-table .rt-f, .rt-table .rt-val { color: #000; }
+}

@@ -10,6 +10,10 @@ import { R_ATM, R_VALUES, P_UNITS, V_UNITS, T_UNITS, REF_CONDITIONS, GAS_LAWS }
 import { molarMass } from '../chem/formula.js';
 import { esc } from '../format.js';
 import { readState, writeState, readJSON, changedOnly, snapshot } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
+widgetCSS('gaslaws');
 
 function n(x, sig) {
   if (!isFinite(x)) return '—';

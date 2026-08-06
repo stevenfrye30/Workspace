@@ -7,6 +7,9 @@
 import { parseEquation, balanceCheck } from '../chem/formula.js';
 import { esc } from '../format.js';
 import { readState, writeState, readJSON } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
 
 const EXAMPLES = [
   { label: "Al + Cl₂", eq: "2 Al + 3 Cl2 -> 2 AlCl3", amts: ["5.4", "12.0"], actual: "" },

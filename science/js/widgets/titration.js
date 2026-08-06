@@ -14,6 +14,10 @@ import { curve, keyPoints, equivalenceVolume, pHat } from '../chem/titration.js'
 import { KA, KB, INDICATORS } from '../data/chem-tables.js';
 import { esc } from '../format.js';
 import { readState, writeState } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
+widgetCSS('titration');
 
 /* Curve colour: the room accent snapped into the dark-mode lightness band
    (the raw accent sits at L 0.683, just above the 0.67 ceiling). Validated

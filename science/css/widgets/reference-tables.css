@@ -1,0 +1,38 @@
+/* Reference tables. Loaded by js/widgets/reference-tables.js.
+
+   The print rules belong here rather than in the shared kit: they hide
+   every block that is not .rt so the open tab prints as a clean handout,
+   which would blank the page on any other instrument room. */
+
+/* ── Reference tables (reference room only) ─────────────────── */
+.rt-bar { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; margin-bottom: 0.7rem; }
+.rt-search { flex: 1 1 18rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.9rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem; outline: none; }
+.rt-search:focus { border-color: var(--c); }
+/* .rt-btn lives in base.css — the dock uses it on the board too, where this
+   stylesheet is not loaded. */
+.rt-count { font-family: -apple-system, sans-serif; font-size: 0.76rem; color: var(--muted); }
+.rt-pane { display: none; }
+.rt-pane.on { display: block; }
+.rt-pane > .rt-h:first-child { margin-top: 0.2rem; }
+.rt.rt-big table.rt-table { max-width: 68rem; }
+.rt-table .rt-n { color: var(--muted); width: 1.6rem; }
+.rt-verdict { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  border-radius: 999px; padding: 0.08rem 0.5rem; white-space: nowrap; }
+.rt-verdict.soluble { color: #7fd6a0; background: rgba(127,214,160,0.13); border: 1px solid rgba(127,214,160,0.32); }
+.rt-verdict.insoluble { color: #e0906b; background: rgba(224,144,107,0.13); border: 1px solid rgba(224,144,107,0.32); }
+.rt-notes { margin: 0.7rem 0 0; padding-left: 1.1rem; font-family: -apple-system, sans-serif; font-size: 0.84rem; color: var(--muted); line-height: 1.6; }
+/* "Bigger" — one step up for screen-sharing to a student. */
+.rt.rt-big table.rt-table { font-size: 1.18rem; }
+.rt.rt-big table.rt-table td { padding: 0.5rem 0.7rem; }
+.rt.rt-big .rt-table .rt-note { font-size: 1rem; }
+.rt.rt-big .rt-h { font-size: 1.3rem; }
+@media print {
+  .crumb, .r-head, .callout, .rt-bar, .u-tabs, .ws-hub-nav,
+  .block:not(.rt) { display: none !important; }
+  .rt-pane { display: block !important; }
+  .rt { margin: 0; }
+  .rt .block-head p { display: none; }
+  .rt-sub, .rt-table .rt-note, .rt-notes { color: #444; }
+  .rt-verdict { color: #000 !important; background: none !important; border: 1px solid #666 !important; }
+}

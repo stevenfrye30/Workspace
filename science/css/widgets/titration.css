@@ -1,0 +1,35 @@
+/* Titration curves. Loaded by js/widgets/titration.js. */
+
+/* ── Titration curves (chemistry room only) ────────────────── */
+.ti-inputs { margin-bottom: 0.8rem; }
+.ti-views { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.9rem 0; }
+.ti-out { margin-top: 0.4rem; }
+.ti-figure { margin: 0 0 1rem; }
+/* The container grows with the SVG, so the x-axis band is never cropped. */
+.ti-svg { width: 100%; height: auto; display: block;
+  background: var(--panel); border: 1px solid var(--border); border-radius: 4px; }
+/* Recessive chrome: hairline, solid, one step off the surface. */
+.ti-grid { stroke: var(--border); stroke-width: 1; }
+.ti-guide { stroke: color-mix(in srgb, var(--muted) 45%, transparent); stroke-width: 1; }
+.ti-tick { fill: var(--muted); font-family: -apple-system, sans-serif; font-size: 11px;
+  font-variant-numeric: tabular-nums; }
+.ti-axis { fill: var(--muted); font-family: -apple-system, sans-serif; font-size: 12px; }
+.ti-note { fill: var(--muted); font-family: -apple-system, sans-serif; font-size: 11px; font-style: italic; }
+/* Labels wear text ink, never the series colour. */
+.ti-label { fill: var(--fg); font-family: -apple-system, sans-serif; font-size: 12px; font-weight: 600; }
+.ti-curve { fill: none; stroke: #da6828; stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.ti-dot { fill: #da6828; }
+/* 2px surface ring keeps a marker legible where it crosses the line. */
+.ti-ring { fill: none; stroke: var(--panel); stroke-width: 4; }
+.ti-wash { fill: #da6828; opacity: 0.10; }
+.ti-cross { stroke: var(--muted); stroke-width: 1; }
+.ti-cap { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted);
+  margin-top: 0.4rem; min-height: 1.1rem; }
+.ti-cap b { color: var(--fg); font-family: ui-monospace, Menlo, monospace; }
+.ti-table { margin-bottom: 1rem; }
+/* The portrait chart is barely downscaled, so its type can stay modest —
+   but bump it a step so ticks and labels clear ~11px on a phone. */
+.ti-svg.narrow .ti-tick { font-size: 13px; }
+.ti-svg.narrow .ti-axis { font-size: 14px; }
+.ti-svg.narrow .ti-label { font-size: 14px; }
+.ti-svg.narrow .ti-note { font-size: 13px; }

@@ -1,6 +1,9 @@
 import { UNITS, U_PREFIXES, U_SIBASE, U_SIDERIVED, U_CONSTANTS } from '../data/units.js';
 import { esc, uFmt } from '../format.js';
 import { readState, writeState } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
 
 export function block() {
   var prefRows = U_PREFIXES.map(function (p) { return '<tr><td>' + esc(p[0]) + '</td><td class="u-sym">' + esc(p[1]) + '</td><td class="u-val">' + p[2] + '</td></tr>'; }).join("");

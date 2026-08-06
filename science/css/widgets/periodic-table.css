@@ -1,0 +1,83 @@
+/* Periodic table instrument. Loaded by js/widgets/periodic-table.js. */
+
+/* ── Interactive periodic table (periodic-table room only) ───── */
+.pt-wrap { display: grid; grid-template-columns: minmax(0,1fr) 18rem; gap: 1rem; align-items: start; }
+.pt-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 0.7rem; }
+.pt-search { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.82rem; color: var(--fg);
+  background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.4rem 0.6rem; min-width: 12rem; outline: none; }
+.pt-search:focus { border-color: var(--c); }
+.pt-clear { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); background: transparent; border: 1px solid var(--border); border-radius: 4px; padding: 0.35rem 0.6rem; cursor: pointer; }
+.pt-clear:hover { color: var(--fg); border-color: var(--c); }
+.pt-count { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); }
+.pt-scroll { overflow-x: auto; padding-bottom: 0.4rem; }
+.pt-grid { display: grid; grid-template-columns: repeat(18, minmax(2.35rem, 1fr)); gap: 2px; min-width: 46rem; }
+.pt-cell { position: relative; aspect-ratio: 1 / 1; border: 1px solid color-mix(in srgb, var(--cat,#888) 55%, transparent);
+  background: color-mix(in srgb, var(--cat,#888) 20%, var(--panel)); border-radius: 2px; cursor: pointer; padding: 1px 0 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1; text-align: center;
+  transition: transform 0.08s, box-shadow 0.12s, opacity 0.12s; }
+.pt-cell:hover, .pt-cell.sel { transform: translateY(-1px); box-shadow: 0 0 0 1px var(--cat,#fff), 0 4px 10px -4px var(--cat,#000); z-index: 2; }
+.pt-cell .z { font-family: -apple-system, sans-serif; font-size: 0.5rem; color: var(--muted); position: absolute; top: 1px; left: 2px; }
+/* The symbol. This was ".pt-cell .symkey" for a while after the symbol-cabinet
+   rename and matched nothing, so every element symbol in the table rendered at
+   the browser default. The widget emits class="sym"; keep the two in step. */
+.pt-cell .sym { font-family: Georgia, serif; font-weight: 700; font-size: 0.95rem; color: var(--fg); }
+.pt-cell .nm { font-family: -apple-system, sans-serif; font-size: 0.44rem; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pt-cell.dim { opacity: 0.16; }
+/* ── Trend overlay ──────────────────────────────────────────────
+   In trend mode the category hue steps aside for a single-hue ramp built
+   from the room accent, and each tile carries the ink colour that survives
+   on its own step (--sh / --ink are set per tile by the widget). */
+.pt-grid.trend .pt-cell { background: var(--sh, var(--panel)); border-color: color-mix(in srgb, var(--sh, var(--border)) 62%, #000); }
+.pt-grid.trend .pt-cell .sym { color: var(--ink, var(--fg)); }
+.pt-grid.trend .pt-cell .z,
+.pt-grid.trend .pt-cell .nm { color: var(--ink, var(--muted)); opacity: 0.72; }
+.pt-grid.trend .pt-cell:hover, .pt-grid.trend .pt-cell.sel { box-shadow: 0 0 0 1px var(--c), 0 4px 10px -4px #000; }
+/* Never measured — hatched, so an absent value cannot be mistaken for a low one. */
+.pt-grid.trend .pt-cell.nodata {
+  background: repeating-linear-gradient(45deg, var(--panel), var(--panel) 3px, #202c3d 3px, #202c3d 6px);
+  border-color: var(--border);
+}
+.pt-grid.trend .pt-cell.nodata .sym { color: var(--muted); }
+.pt-trends { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.2rem 0 0.6rem; }
+.pt-trend { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--muted); cursor: pointer;
+  padding: 0.28rem 0.62rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+.pt-trend:hover { color: var(--fg); border-color: var(--c); }
+.pt-trend.on { color: #11161f; background: var(--c); border-color: var(--c); }
+.pt-ramp { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 0 0 0.6rem; }
+.pt-ramp-bar { flex: 0 1 13rem; height: 9px; border-radius: 999px; border: 1px solid var(--border); }
+.pt-ramp-end { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--fg); }
+.pt-ramp-note { font-family: -apple-system, sans-serif; font-size: 0.66rem; color: var(--muted); }
+.pt-hint { font-family: -apple-system, sans-serif; font-size: 0.66rem; color: var(--muted); margin: 0 0 0.5rem; }
+.pt-marker { grid-column: 3; display: flex; align-items: center; justify-content: center; font-family: -apple-system, sans-serif; font-size: 0.55rem; color: var(--muted); border: 1px dashed var(--border); border-radius: 2px; }
+.pt-legend { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.8rem 0; }
+.pt-leg { font-family: -apple-system, sans-serif; font-size: 0.6rem; font-weight: 600; color: var(--fg); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.15rem 0.45rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+.pt-leg .sw { width: 9px; height: 9px; border-radius: 2px; }
+.pt-leg.off { opacity: 0.38; }
+.pt-detail { background: var(--panel); border: 1px solid var(--border); border-top: 3px solid var(--cat,var(--c)); border-radius: 4px; padding: 0.85rem 0.95rem; position: sticky; top: 0.6rem; }
+.pt-detail .d-top { display: flex; align-items: baseline; gap: 0.6rem; }
+.pt-detail .d-sym { font-family: Georgia, serif; font-weight: 700; font-size: 2.2rem; color: var(--cat,var(--c)); line-height: 1; }
+.pt-detail .d-z { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); }
+.pt-detail .d-name { font-size: 1.25rem; font-weight: 600; margin-top: 0.1rem; }
+.pt-detail .d-cat { font-family: -apple-system, sans-serif; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cat,var(--c)); margin-top: 0.15rem; }
+.pt-detail dl { display: grid; grid-template-columns: auto 1fr; gap: 0.15rem 0.6rem; margin: 0.7rem 0 0; font-family: -apple-system, sans-serif; font-size: 0.76rem; }
+.pt-detail dt { color: var(--muted); }
+.pt-detail dd { color: var(--fg); }
+.pt-detail .d-desc { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--fg); line-height: 1.45; margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+.pt-detail .d-rel { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); line-height: 1.4; margin-top: 0.5rem; }
+.pt-detail .d-rel b { color: var(--cat,var(--c)); font-weight: 600; }
+/* The row for the trend currently shading the table, so the colour under the
+   cursor has its number called out beside it. */
+.pt-detail dt.on, .pt-detail dd.on { color: var(--cat,var(--c)); font-weight: 600; }
+.pt-detail .d-name:focus-visible { outline: 2px solid var(--cat,var(--c)); outline-offset: 3px; border-radius: 2px; }
+.pt-detail .d-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.45rem;
+  margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+.pt-detail .d-links-lead { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); }
+.pt-detail .d-links a { font-family: -apple-system, sans-serif; font-size: 0.72rem; font-weight: 600; text-decoration: none;
+  color: var(--cat,var(--c)); border: 1px solid color-mix(in srgb, var(--cat,var(--c)) 34%, transparent);
+  background: color-mix(in srgb, var(--cat,var(--c)) 12%, transparent); border-radius: 999px; padding: 0.12rem 0.5rem; }
+.pt-detail .d-links a:hover { border-color: var(--cat,var(--c)); background: color-mix(in srgb, var(--cat,var(--c)) 22%, transparent); }
+@media (max-width: 760px) {
+  .pt-wrap { grid-template-columns: 1fr; }
+  .pt-detail { position: static; }
+}

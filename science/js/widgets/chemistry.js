@@ -8,6 +8,10 @@
 import { molarMass } from '../chem/formula.js';
 import { uFmt } from '../format.js';
 import { readState, writeState, changedOnly, snapshot } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
+widgetCSS('chemistry');
 
 const PANES = {
   molar: {

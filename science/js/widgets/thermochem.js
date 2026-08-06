@@ -7,6 +7,9 @@ import { parseEquation, balanceCheck } from '../chem/formula.js';
 import { SPECIFIC_HEAT, lookupDHf, PHASE_WATER } from '../data/thermo.js';
 import { esc } from '../format.js';
 import { readState, writeState, readJSON, changedOnly, snapshot } from '../share.js';
+import { widgetCSS } from '../widget-css.js';
+
+widgetCSS('instrument');
 
 function n(x, sig) {
   if (!isFinite(x)) return '—';
