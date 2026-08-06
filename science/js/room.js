@@ -79,6 +79,8 @@ async function render(key) {
   h += '<nav class="crumb"><a href="./">Science Lab</a><span class="sep">/</span>' +
        '<span class="here">' + esc(room.name) + '</span></nav>';
 
+  h += pager(key);
+
   /* A hub is a set of doors, so it gets only its name — a kicker, blurb and
      status pill above nine buttons is chrome competing with the choice. */
   /* The heading carries id and tabindex so <main> can be labelled by it and
@@ -268,6 +270,46 @@ async function render(key) {
       }
     }
   });
+}
+
+/* Where a room sits inside its hub, found by asking the manifest rather than
+   by keeping a second ordered list. A room that belongs to no hub — the hubs
+   themselves, the periodic table, the reference tables — gets no pager, which
+   is why this returns an empty string rather than a disabled strip.
+
+   A topic room used to be a dead end: nine doors in, and the only way to the
+   next topic was back out to the hub and in again. */
+function hubOf(key) {
+  const keys = Object.keys(MANIFEST);
+  for (let i = 0; i < keys.length; i++) {
+    const kids = MANIFEST[keys[i]].children;
+    if (kids && kids.indexOf(key) >= 0) return { hub: keys[i], kids: kids };
+  }
+  return null;
+}
+
+function pager(key) {
+  const found = hubOf(key);
+  if (!found) return '';
+  const kids = found.kids, i = kids.indexOf(key);
+  const hub = MANIFEST[found.hub];
+  const link = function (k, dir) {
+    const m = MANIFEST[k];
+    return '<a class="pg-step pg-' + dir + '" href="room.html?room=' + encodeURIComponent(k) + '"' +
+      ' rel="' + (dir === 'prev' ? 'prev' : 'next') + '">' +
+      (dir === 'prev' ? '<span aria-hidden="true">←</span> ' : '') +
+      esc(m.name) +
+      (dir === 'next' ? ' <span aria-hidden="true">→</span>' : '') + '</a>';
+  };
+  return '<nav class="pager" aria-label="' + esc(hub.name) + ' topic rooms">' +
+    (i > 0 ? link(kids[i - 1], 'prev') : '<span class="pg-step pg-none"></span>') +
+    '<span class="pg-here">' +
+      '<a href="room.html?room=' + encodeURIComponent(found.hub) + '">' + esc(hub.name) + '</a>' +
+      '<span class="sep" aria-hidden="true">·</span>' +
+      '<span class="pg-count">' + (i + 1) + ' of ' + kids.length + '</span>' +
+    '</span>' +
+    (i < kids.length - 1 ? link(kids[i + 1], 'next') : '<span class="pg-step pg-none"></span>') +
+    '</nav>';
 }
 
 /* A search result links to room.html?room=…#c-some-card. The card it names is
