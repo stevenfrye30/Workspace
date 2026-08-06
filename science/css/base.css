@@ -33,6 +33,22 @@ body {
 .calc { max-width: 19rem; outline: none; border-radius: 6px; }
 .calc:focus { box-shadow: 0 0 0 2px color-mix(in srgb, var(--c) 55%, transparent); }
 .calc-display { background: #141d29; border: 1px solid var(--border); border-radius: 5px; padding: 0.6rem 0.7rem; margin-bottom: 0.5rem; min-height: 3.4rem; text-align: right; }
+
+/* The angle unit lives in the display because it is the one piece of
+   calculator state that silently changes what an answer means. It shares a
+   flex row with the expression rather than floating over it, so a long
+   expression wraps beside the control instead of underneath it. It is a
+   two-state segmented control rather than one button showing the current
+   mode — a lone "DEG" is ambiguous about whether it reports or promises. */
+.calc-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.5rem; }
+.calc-top .calc-expr { flex: 1; text-align: right; }
+.calc-mode { flex: none; display: inline-flex;
+  border: 1px solid var(--border); border-radius: 999px; overflow: hidden; }
+.calc-mode-btn { font-family: -apple-system, sans-serif; font-size: 0.56rem; font-weight: 700;
+  letter-spacing: 0.06em; color: var(--muted); background: transparent; border: none;
+  padding: 0.14rem 0.42rem; cursor: pointer; }
+.calc-mode-btn:hover { color: var(--fg); }
+.calc-mode-btn.on { color: #11161f; background: var(--c); }
 .calc-expr { font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; font-size: 0.78rem; color: var(--muted); min-height: 1rem; word-break: break-all; }
 .calc-result { font-family: ui-monospace, Menlo, monospace; font-size: 1.5rem; font-weight: 700; color: var(--fg); word-break: break-all; }
 .calc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }
@@ -74,6 +90,9 @@ body {
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 8px; padding: 0.7rem;
   box-shadow: 0 16px 40px -12px rgba(0,0,0,0.65);
+  /* The keypad grew a row of inverse-trig keys; on a short window the panel
+     scrolls rather than running off the bottom of the screen. */
+  max-height: calc(100vh - 4.2rem); overflow-y: auto;
 }
 .dock-panel.open { display: block; }
 .dock-head {
