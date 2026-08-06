@@ -38,7 +38,69 @@ const RAW = [
   [89,"Ac","Actinium","[227]","actinide",3,7],[90,"Th","Thorium",232.04,"actinide",null,7],[91,"Pa","Protactinium",231.04,"actinide",null,7],[92,"U","Uranium",238.03,"actinide",null,7],[93,"Np","Neptunium","[237]","actinide",null,7],[94,"Pu","Plutonium","[244]","actinide",null,7],[95,"Am","Americium","[243]","actinide",null,7],[96,"Cm","Curium","[247]","actinide",null,7],[97,"Bk","Berkelium","[247]","actinide",null,7],[98,"Cf","Californium","[251]","actinide",null,7],[99,"Es","Einsteinium","[252]","actinide",null,7],[100,"Fm","Fermium","[257]","actinide",null,7],[101,"Md","Mendelevium","[258]","actinide",null,7],[102,"No","Nobelium","[259]","actinide",null,7],[103,"Lr","Lawrencium","[266]","actinide",3,7],
   [104,"Rf","Rutherfordium","[267]","transition",4,7],[105,"Db","Dubnium","[268]","transition",5,7],[106,"Sg","Seaborgium","[269]","transition",6,7],[107,"Bh","Bohrium","[270]","transition",7,7],[108,"Hs","Hassium","[269]","transition",8,7],[109,"Mt","Meitnerium","[278]","transition",9,7],[110,"Ds","Darmstadtium","[281]","transition",10,7],[111,"Rg","Roentgenium","[282]","transition",11,7],[112,"Cn","Copernicium","[285]","transition",12,7],[113,"Nh","Nihonium","[286]","unknown",13,7],[114,"Fl","Flerovium","[289]","unknown",14,7],[115,"Mc","Moscovium","[290]","unknown",15,7],[116,"Lv","Livermorium","[293]","unknown",16,7],[117,"Ts","Tennessine","[294]","unknown",17,7],[118,"Og","Oganesson","[294]","unknown",18,7]
 ];
-export const ELEMENTS = RAW.map(function (r) { return { z: r[0], s: r[1], n: r[2], m: r[3], c: r[4], g: r[5], p: r[6] }; });
+/* Periodic properties, for the trend overlay. One row per element in Z order:
+   [electronegativity, covalent radius (pm), first ionisation energy (kJ/mol)].
+   A property that has never been measured for an element is null, and the
+   overlay leaves those tiles unshaded rather than inventing a colour.
+
+   Sources, one per column so the ramp compares like with like:
+   - Electronegativity: Pauling scale, CRC Handbook. He, Ne and Ar have no
+     Pauling value at all (no known compounds when the scale was built), which
+     is itself worth seeing as a hole in the noble-gas column.
+   - Covalent radius: Cordero et al., Dalton Trans., 2008, 2832–2838 — a
+     single self-consistent modern set covering Z 1–96, which is why it is
+     used here in preference to the patchier "empirical" radii. For the
+     transition metals with two listed values the low-spin one is used.
+   - First ionisation energy: NIST Atomic Spectra Database.
+   Beyond Z 96–103 the superheavies have measured ionisation energies but no
+   agreed radii, and past Lr almost nothing is measured. */
+const PROPS = [
+  [2.20, 31, 1312.0],   [null, 28, 2372.3],
+  [0.98, 128, 520.2],   [1.57, 96, 899.5],    [2.04, 84, 800.6],    [2.55, 76, 1086.5],
+  [3.04, 71, 1402.3],   [3.44, 66, 1313.9],   [3.98, 57, 1681.0],   [null, 58, 2080.7],
+  [0.93, 166, 495.8],   [1.31, 141, 737.7],   [1.61, 121, 577.5],   [1.90, 111, 786.5],
+  [2.19, 107, 1011.8],  [2.58, 105, 999.6],   [3.16, 102, 1251.2],  [null, 106, 1520.6],
+  [0.82, 203, 418.8],   [1.00, 176, 589.8],   [1.36, 170, 633.1],   [1.54, 160, 658.8],
+  [1.63, 153, 650.9],   [1.66, 139, 652.9],   [1.55, 139, 717.3],   [1.83, 132, 762.5],
+  [1.88, 126, 760.4],   [1.91, 124, 737.1],   [1.90, 132, 745.5],   [1.65, 122, 906.4],
+  [1.81, 122, 578.8],   [2.01, 120, 762.0],   [2.18, 119, 944.5],   [2.55, 120, 941.0],
+  [2.96, 120, 1139.9],  [3.00, 116, 1350.8],
+  [0.82, 220, 403.0],   [0.95, 195, 549.5],   [1.22, 190, 600.0],   [1.33, 175, 640.1],
+  [1.60, 164, 652.1],   [2.16, 154, 684.3],   [1.90, 147, 702.0],   [2.20, 146, 710.2],
+  [2.28, 142, 719.7],   [2.20, 139, 804.4],   [1.93, 145, 731.0],   [1.69, 144, 867.8],
+  [1.78, 142, 558.3],   [1.96, 139, 708.6],   [2.05, 139, 834.0],   [2.10, 138, 869.3],
+  [2.66, 139, 1008.4],  [2.60, 140, 1170.4],
+  [0.79, 244, 375.7],   [0.89, 215, 502.9],
+  [1.10, 207, 538.1],   [1.12, 204, 534.4],   [1.13, 203, 527.0],   [1.14, 201, 533.1],
+  [null, 199, 540.0],   [1.17, 198, 544.5],   [1.20, 198, 547.1],   [1.20, 196, 593.4],
+  [1.10, 194, 565.8],   [1.22, 192, 573.0],   [1.23, 192, 581.0],   [1.24, 189, 589.3],
+  [1.25, 190, 596.7],   [1.10, 187, 603.4],   [1.27, 187, 523.5],
+  [1.30, 175, 658.5],   [1.50, 170, 761.0],   [2.36, 162, 770.0],   [1.90, 151, 760.0],
+  [2.20, 144, 840.0],   [2.20, 141, 880.0],   [2.28, 136, 870.0],   [2.54, 136, 890.1],
+  [2.00, 132, 1007.1],  [1.62, 145, 589.4],   [2.33, 146, 715.6],   [2.02, 148, 703.0],
+  [2.00, 140, 812.1],   [2.20, 150, 899.0],   [2.20, 150, 1037.0],
+  [0.79, 260, 380.0],   [0.90, 221, 509.3],
+  [1.10, 215, 499.0],   [1.30, 206, 587.0],   [1.50, 200, 568.0],   [1.38, 196, 597.6],
+  [1.36, 190, 604.5],   [1.28, 187, 584.7],   [1.13, 180, 578.0],   [1.28, 169, 581.0],
+  [1.30, null, 601.0],  [1.30, null, 608.0],  [1.30, null, 619.0],  [1.30, null, 627.0],
+  [1.30, null, 635.0],  [1.30, null, 642.0],  [1.30, null, 470.0],
+  [null, null, 580.0],  [null, null, 665.0],  [null, null, 757.0],  [null, null, 740.0],
+  [null, null, 730.0],  [null, null, 800.0],  [null, null, 960.0],  [null, null, 1020.0],
+  [null, null, 1155.0], [null, null, 707.0],  [null, null, 832.0],  [null, null, 538.0],
+  [null, null, 723.0],  [null, null, 743.0],  [null, null, 860.0]
+];
+
+export const ELEMENTS = RAW.map(function (r, i) {
+  const p = PROPS[i] || [null, null, null];
+  return { z: r[0], s: r[1], n: r[2], m: r[3], c: r[4], g: r[5], p: r[6],
+           en: p[0], rad: p[1], ie: p[2] };
+});
+
+/* One row of properties per element, or the two lists have silently drifted
+   apart and every tile past the join is wearing the wrong element's colour. */
+if (PROPS.length !== RAW.length) {
+  console.error('PROPS has ' + PROPS.length + ' rows for ' + RAW.length + ' elements');
+}
 /* Experimentally-established ground-state configurations that plain Aufbau
    filling gets wrong, listed as the orbitals beyond the preceding noble-gas
    core. Chromium and copper are the two every general-chemistry course

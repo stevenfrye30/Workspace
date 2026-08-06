@@ -7,6 +7,19 @@ body {
     var(--bg);
 }
 
+/* Keyboard focus was relying on the browser default, which on this navy panel
+   is a thin dark ring that all but disappears. Everything focusable gets the
+   room accent instead — a mouse click still shows nothing, since :focus-visible
+   only fires for keyboard and other non-pointer focus. */
+:focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
+
+/* An instrument that fails to load or throws on mount says so in its own
+   slot; the rest of the room — the reference cards, the worked examples —
+   is worth more than the tool and must not go down with it. */
+.w-fail { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; color: var(--muted);
+  background: var(--panel); border: 1px solid var(--border); border-left: 3px solid #d9746b;
+  border-radius: 4px; padding: 0.7rem 0.9rem; }
+
 .crumb { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.78rem; font-weight: 600; margin: 0 0 1rem; }
 .crumb a { color: var(--c); text-decoration: none; }
 .crumb a:hover { text-decoration: underline; }
@@ -108,9 +121,41 @@ details.ex[open] > summary::before { content: "\2212"; }
   transition: transform 0.08s, box-shadow 0.12s, opacity 0.12s; }
 .pt-cell:hover, .pt-cell.sel { transform: translateY(-1px); box-shadow: 0 0 0 1px var(--cat,#fff), 0 4px 10px -4px var(--cat,#000); z-index: 2; }
 .pt-cell .z { font-family: -apple-system, sans-serif; font-size: 0.5rem; color: var(--muted); position: absolute; top: 1px; left: 2px; }
-.pt-cell .symkey { font-family: Georgia, serif; font-weight: 700; font-size: 0.95rem; color: var(--fg); }
+/* The symbol. This was ".pt-cell .symkey" for a while after the symbol-cabinet
+   rename and matched nothing, so every element symbol in the table rendered at
+   the browser default. The widget emits class="sym"; keep the two in step. */
+.pt-cell .sym { font-family: Georgia, serif; font-weight: 700; font-size: 0.95rem; color: var(--fg); }
 .pt-cell .nm { font-family: -apple-system, sans-serif; font-size: 0.44rem; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pt-cell.dim { opacity: 0.16; }
+
+/* ── Trend overlay ──────────────────────────────────────────────
+   In trend mode the category hue steps aside for a single-hue ramp built
+   from the room accent, and each tile carries the ink colour that survives
+   on its own step (--sh / --ink are set per tile by the widget). */
+.pt-grid.trend .pt-cell { background: var(--sh, var(--panel)); border-color: color-mix(in srgb, var(--sh, var(--border)) 62%, #000); }
+.pt-grid.trend .pt-cell .sym { color: var(--ink, var(--fg)); }
+.pt-grid.trend .pt-cell .z,
+.pt-grid.trend .pt-cell .nm { color: var(--ink, var(--muted)); opacity: 0.72; }
+.pt-grid.trend .pt-cell:hover, .pt-grid.trend .pt-cell.sel { box-shadow: 0 0 0 1px var(--c), 0 4px 10px -4px #000; }
+/* Never measured — hatched, so an absent value cannot be mistaken for a low one. */
+.pt-grid.trend .pt-cell.nodata {
+  background: repeating-linear-gradient(45deg, var(--panel), var(--panel) 3px, #202c3d 3px, #202c3d 6px);
+  border-color: var(--border);
+}
+.pt-grid.trend .pt-cell.nodata .sym { color: var(--muted); }
+
+.pt-trends { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.2rem 0 0.6rem; }
+.pt-trend { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--muted); cursor: pointer;
+  padding: 0.28rem 0.62rem; border: 1px solid var(--border); border-radius: 999px; background: var(--panel); }
+.pt-trend:hover { color: var(--fg); border-color: var(--c); }
+.pt-trend.on { color: #11161f; background: var(--c); border-color: var(--c); }
+
+.pt-ramp { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 0 0 0.6rem; }
+.pt-ramp-bar { flex: 0 1 13rem; height: 9px; border-radius: 999px; border: 1px solid var(--border); }
+.pt-ramp-end { font-family: -apple-system, sans-serif; font-size: 0.68rem; font-weight: 600; color: var(--fg); }
+.pt-ramp-note { font-family: -apple-system, sans-serif; font-size: 0.66rem; color: var(--muted); }
+
+.pt-hint { font-family: -apple-system, sans-serif; font-size: 0.66rem; color: var(--muted); margin: 0 0 0.5rem; }
 .pt-marker { grid-column: 3; display: flex; align-items: center; justify-content: center; font-family: -apple-system, sans-serif; font-size: 0.55rem; color: var(--muted); border: 1px dashed var(--border); border-radius: 2px; }
 
 .pt-legend { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.8rem 0; }
@@ -131,6 +176,18 @@ details.ex[open] > summary::before { content: "\2212"; }
 .pt-detail .d-desc { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--fg); line-height: 1.45; margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
 .pt-detail .d-rel { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); line-height: 1.4; margin-top: 0.5rem; }
 .pt-detail .d-rel b { color: var(--cat,var(--c)); font-weight: 600; }
+/* The row for the trend currently shading the table, so the colour under the
+   cursor has its number called out beside it. */
+.pt-detail dt.on, .pt-detail dd.on { color: var(--cat,var(--c)); font-weight: 600; }
+.pt-detail .d-name:focus-visible { outline: 2px solid var(--cat,var(--c)); outline-offset: 3px; border-radius: 2px; }
+
+.pt-detail .d-links { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.45rem;
+  margin-top: 0.7rem; padding-top: 0.6rem; border-top: 1px solid var(--border); }
+.pt-detail .d-links-lead { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted); }
+.pt-detail .d-links a { font-family: -apple-system, sans-serif; font-size: 0.72rem; font-weight: 600; text-decoration: none;
+  color: var(--cat,var(--c)); border: 1px solid color-mix(in srgb, var(--cat,var(--c)) 34%, transparent);
+  background: color-mix(in srgb, var(--cat,var(--c)) 12%, transparent); border-radius: 999px; padding: 0.12rem 0.5rem; }
+.pt-detail .d-links a:hover { border-color: var(--cat,var(--c)); background: color-mix(in srgb, var(--cat,var(--c)) 22%, transparent); }
 
 @media (max-width: 760px) { .pt-wrap { grid-template-columns: 1fr; } .pt-detail { position: static; } }
 

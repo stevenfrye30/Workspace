@@ -56,12 +56,29 @@ if (!Object.prototype.hasOwnProperty.call(MANIFEST, key)) {
   });
 }
 
+/* A room that cannot load its own content is a dead page and says so. A room
+   whose *instrument* fails is not: the reference cards and worked examples are
+   still the larger part of what a student came for, so a broken tool degrades
+   to a note in its own slot instead of taking the page down with it. */
+function brokenWidget(path, err) {
+  console.error('Instrument failed: ' + path, err);
+  return {
+    block: function () {
+      return '<section class="block"><p class="w-fail">This tool didn’t load. ' +
+        'The rest of the room still works — try reloading the page.</p></section>';
+    },
+    init: function () {}
+  };
+}
+
 async function render(key) {
   const room = (await import('./rooms/' + key + '.js')).default;
   const specs = (WIDGETS[key] || []).map(function (w) {
     return typeof w === 'string' ? { path: w, opts: {} } : { path: w.path, opts: w.opts || {} };
   });
-  const widgets = await Promise.all(specs.map(function (s) { return import(s.path); }));
+  const widgets = await Promise.all(specs.map(function (s) {
+    return import(s.path).catch(function (err) { return brokenWidget(s.path, err); });
+  }));
 
   document.title = room.name + ' — Science Lab';
   document.documentElement.style.setProperty('--c', room.color);
@@ -114,7 +131,15 @@ async function render(key) {
     }
   }
 
-  widgets.forEach(function (w, i) { h += w.block(specs[i].opts); });
+  /* Each instrument gets its own slot so a failure on mount can be reported
+     exactly where the tool should have been. The wrapper carries no box of
+     its own, so section margins collapse through it as before. */
+  widgets.forEach(function (w, i) {
+    let inner;
+    try { inner = w.block(specs[i].opts); }
+    catch (err) { inner = brokenWidget(specs[i].path, err).block(); }
+    h += '<div class="w-slot" data-slot="' + i + '">' + inner + '</div>';
+  });
 
   /* One list, not two. A room used to print a wall of topic chips that did
      nothing and then a wall of cards saying much the same thing; more than
@@ -193,7 +218,21 @@ async function render(key) {
   if (room.cards && room.cards.length) initRefList();
   if (room.groups) initSymbolCopy();
   if (specs.length) share.initBar();
-  widgets.forEach(function (w, i) { w.init(specs[i].opts); });
+
+  /* One instrument throwing on mount must not stop the ones after it. */
+  widgets.forEach(function (w, i) {
+    try { w.init(specs[i].opts); }
+    catch (err) {
+      console.error('Instrument failed to mount: ' + specs[i].path, err);
+      const slot = main.querySelector('.w-slot[data-slot="' + i + '"]');
+      if (slot) {
+        const p = document.createElement('p');
+        p.className = 'w-fail';
+        p.textContent = 'This tool stopped partway through loading. The rest of the room still works.';
+        slot.appendChild(p);
+      }
+    }
+  });
 }
 
 /* Expand-all flips every topic at once, for reading the sheet rather than
