@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **12** (field `__v` in the data).
+Current schema version: **13** (field `__v` in the data).
 
 ---
 
@@ -53,9 +53,17 @@ idea's/quote's origin, which is left untouched.
 |---|---|
 | `_src` | How the record got here: `manual` (you typed it), `import` (from a backup file), `legacy` (existed before v6 — true origin unknown), `estimate` (reserved for values you flag as approximate). |
 | `_at` | ISO-8601 timestamp of **when the record was entered** — distinct from the `date` it is *about*. Absent on `legacy` records, because inventing a timestamp would be a lie. |
+| `_up` *(v13)* | ISO-8601 timestamp of the **last write** to this record. Equal to `_at` for anything only ever created; later on an edit. Absent on records written before v13. |
 
 Stamping is automatic: `saveState()` stamps any record lacking `_src` with
 `manual` + a real `_at`, so no individual entry form has to remember to do it.
+
+**Why `_at` was not enough.** `_at` means *first entered* and must never move, or the
+record stops saying when it was made. But two devices reconciling the same record need to
+know which version is **newer**, and an upserted record — a Daily Card re-saved at
+midnight, a habit ticked today but defined in March — has an `_at` far older than its last
+change. `_up` answers that, and leaves `_at` telling the truth. It is also what orders the
+dashboard's tracker, so a habit ticked at 9pm lands at 9pm rather than back in March.
 
 **The golden rule this enables: store raw, derive on read.** Records hold observations
 (grams eaten, hours slept, dollars spent), never conclusions ("hit my protein goal").
@@ -143,12 +151,31 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 > renamed — the split is a presentation choice, not a data migration.
 
 - **targets** — `{ kcal, protein_g, water_oz }`. Config, not a record. Current goals only.
-- **food[]** — `{ id, date, foodId, foodName, grams, _src, _at }`. Macros are *not*
-  stored per-entry — they're looked up from the NutriLens library by `foodId` at read time,
-  so a library correction retroactively fixes history. `grams` is the raw observation.
+- **food[]** — `{ id, date, foodId, foodName, grams, portion?, t?, _src, _at, _up }`. Macros
+  are *not* stored per-entry — they're looked up from the NutriLens library by `foodId` at
+  read time, so a library correction retroactively fixes history. `grams` is the raw
+  observation. `portion` *(v13)* records the **named** portion chosen ("1 cup", "1 large
+  egg") purely so the entry can be read back the way it was entered; it is display text, and
+  is cleared the moment grams is typed by hand, so it can never disagree with the number.
+  `foodName` is denormalised so history stays readable if the library is ever unavailable.
 - **water[]** — `{ id, date, oz, t?, ... }`. `t` = optional `HH:MM` time of day; when absent
   the entry's `_at` supplies the timestamp shown in the Health timeline. Hydration keeps every
   timestamped entry (never a single daily total) so the sequence across the day is preserved.
+  Backdated entries carry **no** `t` rather than a fictional one.
+- **drinks[]** *(v13)* — `{ id, date, kind, label, oz?, count, t?, _src, _at, _up }`.
+  Everything drunk that isn't plain water. `kind` is `coffee` or `other`; `label` is what it
+  was called ("Coffee", "green tea") and is the free-text half of `other`. `oz` is the raw
+  amount; `count` is 1 per entry, so a day's coffees can be counted without summing volume.
+  Water stays in its own `water[]` array rather than moving here — pre-v13 hydration history
+  must not be relocated.
+- **substances[]** *(v13)* — `{ id, date, kind, count, oz?, note?, t?, _src, _at, _up }`.
+  `kind` is `alcohol`, `nicotine` or `weed`. `count` is how many (one tap = 1; the detail
+  form can log several at once), `note` is optional free text, and `oz` is present only on
+  alcohol, which is entered by volume.
+  > Alcohol lives here rather than in `drinks[]` even though the dashboard shows it among
+  > the drinks. The grouping in the interface is about what a thing *is*; the store is about
+  > what you would ever want back out of it. Kept beside nicotine and weed, a week's counts
+  > are one query.
 - **sleep[]** — `{ id, date, hours, quality: 1–5, ... }`
 - **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?, ... }`.
   All fields except `type`/`date` optional. Shaped so a future fitness-tracker import (steps,
@@ -158,8 +185,17 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   comfort: 1–5?, note, _src, _at }`. The subjective daily **Body** check-in — how the body
   *feels* (energy, fatigue, soreness/pain, physical comfort), distinct from the measurable
   Health logs. One record per local `date` (saving **upserts**).
-- **customFoods[]** — `{ id, name, category, ...macros per 100 g }`. Definitions you authored.
-- **meals[]** — `{ id, name, items: [{ foodId, foodName, grams }] }`. Reusable bundles.
+- **customFoods[]** — `{ id, name, category, portions: [{ label, grams }], n: {...per 100 g} }`.
+  Definitions you authored. Entered per *serving* and stored per 100 g, so they divide the
+  same way library foods do.
+- **meals[]** — `{ id, name, items: [{ foodId, foodName, grams, portion? }], _src, _at, _up }`.
+  Reusable bundles. Logging one **replays** its items into `food[]` as ordinary entries — a
+  meal is a shortcut for typing, never a record of eating in its own right, so nothing is
+  double-counted and a meal edited later cannot rewrite what you already ate.
+- **favoriteFoods[]** — `string[]` / `number[]` of food ids. **Currently unused.** It has
+  been declared since v1, briefly held pinned foods, and holds nothing now that the food card
+  has no chip row. Left in place rather than removed: it costs nothing and dropping a declared
+  field is the kind of churn §4 exists to prevent.
 
 ### mind
 - **books[]** — `{ id, title, author, status: "want"|"reading"|"finished"|"abandoned", ... }`
@@ -182,7 +218,26 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 - **birthdays[]** — `{ id, name, relation, month, day?, year?, deceased, passedYear?, note, ... }`.
   The standalone forever-register (also exportable on its own as `birthdays.json`/`.md`).
 
+### links *(v13)* — the doors you keep
+- **links[]** — `{ id, label, url, icon?, _src, _at, _up }`. Top-level, not under a life
+  area, because a shortcut belongs to none of them. `url` is stored exactly as typed and is
+  sanitised **on render**, never on save: a bare domain gains `https://`, relative and
+  `mailto:` pass, and `javascript:`/`data:` are refused and simply not drawn. Validating on
+  the way out rather than the way in means an old record can never become unsafe because the
+  rules changed.
+
+### _deleted *(v13)* — tombstones
+- **_deleted[]** — `{ id, at }`. The id of every record removed, and when. Without this, a
+  second device that still holds a deleted record would re-add it on the next sync and
+  deletion would be impossible to make stick. Tombstones age out after 90 days, by which
+  point every device has seen them. This is the one place the data records an **absence**;
+  it holds no content from the deleted record, only its id.
+
 ### completion *(v8)* — the daily doorway
+> **UI note (v13):** the hexagram is gone — the dashboard has no completion ritual and
+> writes nothing here. The store and all its history are preserved untouched, and `self.html`
+> still renders it. Documented as-was, below, because that is what the existing dates mean.
+
 The home screen is a hexagram: a central **Today** hexagon ringed by the six life areas
 (Body, Mind, Health, Relationships, Money, Identity). Each area is confirmed complete for a
 day from *inside* that area ("Complete for Today"). Opening an area, or entering data, never
@@ -330,6 +385,30 @@ means**. So:
   (`days`), defaulting to the derived current home when unset. `items` gets auto-provenance and
   is written in full into `mirror-data.md`. Reshapes/renames nothing; shallow-merge + a `v<12`
   migration backfill `places` for older data.
+- **v13** → **The one-page dashboard.** The app's front door became a single page
+  (`mirror/index.html`); the seven-room version is kept at `self.html` and still reads
+  everything. Four new stores and one new provenance field, **nothing reshaped or renamed**:
+  - `body.drinks[]` — coffee and anything else drunk that isn't plain water.
+  - `body.substances[]` — alcohol, nicotine, weed, by count.
+  - `links[]` — the shortcuts on the dashboard's launchpad.
+  - `_deleted[]` — deletion tombstones, so a future two-device sync can't resurrect what
+    you removed.
+  - `_up` on every record — last-written time, distinct from `_at` (first entered). See §2.
+
+  `body.food[]` gained optional `portion` (the named portion chosen) and `t`;
+  `body.meals[].items[]` gained optional `portion`.
+
+  **Retired from the interface, preserved in the data.** The dashboard stops writing
+  `completion`, and shows nothing for `decisions`, `identity.journal`, `identity.reflections`,
+  `identity.season`, `mind.questions`, `money.netWorth`, `money.goals`,
+  `relationships.followUps` or `relationships.giftIdeas`. Every one keeps its records, its
+  migrations and its place in this document; `self.html` still renders them all. A field
+  falling out of a screen is a presentation choice, and §4 rule 1 does not care about screens.
+
+  Two fields stopped being written and were deliberately **not** cleared, so a re-save cannot
+  blank what is already there: `daily.cards[].one_sentence` and `.body_note`, and
+  `body.checkins[].note` — the dashboard has no free-text field on its pulse card.
+  `daily.cards[]` remains the heartbeat and still receives mood, energy and sleep.
 
 ---
 
@@ -343,14 +422,24 @@ the measurement series:
 - **Identifying / sensitive:** `relationships.*` (names), `identity.journal`, `identity.season`,
   `mind.quotes`/`ideas` free text, expense `note`s, `symptoms` notes, the free-text fields
   of a decision (`title`, `context`, `options`, `reasoning`, `outcome`, `lessons`), and
-  `places` (locations are identifying).
+  `places` (locations are identifying). *(v13)* Add `links[]` — a list of the services
+  someone uses is identifying — `body.drinks[].label`, and `body.substances[].note`.
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
   by category, reading counts, the **structured judgment signals** of a decision
   (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration
   series with no private content once the free text is dropped — and **habit coverage**
   (`domain`, `aim`, and the kept-date series), clean adherence data with only the habit `name`
-  needing to be dropped.
+  needing to be dropped. *(v13)* Add `body.drinks` (`kind`, `oz`, `count`, drop `label`) and
+  `body.substances` (`kind`, `count`, `oz`, drop `note`). Dated intake counts for caffeine,
+  alcohol, nicotine and cannabis alongside sleep and mood, in one person, over years, is
+  among the more genuinely scarce things this record could offer — and it anonymises to
+  nothing but a kind and a number.
+
+  > These are also the most sensitive rows in the file. Structural separability is what
+  > makes them shareable *at all*; without the free text they are numbers, with it they are
+  > a diary. Nothing here is ever shared by the app — it has no network path off the device
+  > except a sync you configure yourself.
 
 A future anonymized export can therefore emit clean CSV of the measurement series with names
 hashed to initials and free-text fields dropped, **without touching the numbers**. Because the
