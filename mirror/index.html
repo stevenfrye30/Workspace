@@ -2484,6 +2484,182 @@ function isForbiddenRepo(owner, repo) {
   return String(repo || '').trim().toLowerCase() === 'workspace';
 }
 
+/* ---- the merge ----------------------------------------------------------
+   Two devices, one record. Mirror's data is overwhelmingly append-only
+   dated rows with unique ids, which is what makes this tractable: almost
+   everything is a union, and only three stores need cleverness.
+
+   Every array falls into one of three kinds:
+
+     BY ID      union on id; on collision the newer _up wins outright.
+     BY DATE    daily.cards, body.checkins, identity.pulse hold ONE row per
+                day and are upserted, so two devices logging Tuesday must
+                collapse to one Tuesday — merged field by field, newer _up
+                winning each contested field, so a field only one side has
+                still survives.
+     SET-ISH    habits.items carry `done[]`, the dates you kept them. A
+                straight newest-wins would throw away the days ticked on the
+                other device, so the record merges but the date set unions.
+
+   Config objects have no _up of their own, so "last writer" is decided by
+   which side holds the most recent stamp anywhere in its tree.
+   ------------------------------------------------------------------------ */
+const TOMBSTONE_DAYS = 90;
+
+/* Missing _up sorts as oldest — correct for rows written before v13. */
+const upOf = (r) => String((r && r._up) || '');
+
+/** Every array of records, and how each must be merged. */
+const MERGE_BY_ID = [
+  ['identity', 'reflections'], ['identity', 'journal'],
+  ['body', 'food'], ['body', 'water'], ['body', 'sleep'], ['body', 'exercise'],
+  ['body', 'symptoms'], ['body', 'customFoods'], ['body', 'meals'],
+  ['body', 'drinks'], ['body', 'substances'],
+  ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
+  ['money', 'categories'], ['money', 'expenses'], ['money', 'subscriptions'],
+  ['money', 'netWorth'], ['money', 'goals'],
+  ['relationships', 'people'], ['relationships', 'followUps'],
+  ['relationships', 'giftIdeas'], ['relationships', 'birthdays'],
+  ['decisions', 'items'], ['places', 'items'],
+];
+const MERGE_BY_DATE = [
+  ['daily', 'cards'], ['body', 'checkins'], ['identity', 'pulse'],
+];
+/** Date-keyed maps: merged per key, so two devices tagging different days
+ *  both keep their day. Wholesale last-writer-wins would drop one. */
+const MERGE_BY_KEY = [['places', 'days'], ['completion', null]];
+/** Plain config: no ids, no dates, so the newer side's version wins whole. */
+const MERGE_CONFIG = [
+  ['body', 'targets'], ['identity', 'values'], ['identity', 'season'],
+  ['home', null], ['calendar', null],
+];
+
+/** The most recent write anywhere in a tree — the proxy for "who wrote last". */
+function latestStamp(s) {
+  let max = '';
+  const walk = (arr) => {
+    if (!Array.isArray(arr)) return;
+    for (const r of arr) { const u = upOf(r); if (u > max) max = u; }
+  };
+  [...MERGE_BY_ID, ...MERGE_BY_DATE].forEach(([a, b]) => walk(s && s[a] && s[a][b]));
+  walk(s && s.habits && s.habits.items);
+  walk(s && s.links);
+  return max;
+}
+
+/** Union the tombstones, dropping any older than 90 days. */
+function mergeTombstones(mine, theirs) {
+  const byId = new Map();
+  for (const t of [...(theirs || []), ...(mine || [])]) {
+    if (!t || t.id == null) continue;
+    const prev = byId.get(t.id);
+    if (!prev || String(t.at || '') > String(prev.at || '')) byId.set(t.id, t);
+  }
+  const cutoff = new Date(Date.now() - TOMBSTONE_DAYS * 864e5).toISOString();
+  return [...byId.values()].filter((t) => String(t.at || '') > cutoff);
+}
+
+/** Deleted, unless the record was written again after the deletion. */
+const alive = (row, dead) => {
+  const killedAt = dead.get(row.id);
+  return !killedAt || upOf(row) > killedAt;
+};
+
+function mergeById(mine, theirs, dead) {
+  const byId = new Map();
+  // theirs first, mine second: on an exact _up tie the local copy wins, which
+  // keeps a device's own view stable rather than flickering on every sync.
+  for (const row of [...(theirs || []), ...(mine || [])]) {
+    if (!row || row.id == null) continue;
+    const prev = byId.get(row.id);
+    if (!prev || upOf(row) >= upOf(prev)) byId.set(row.id, row);
+  }
+  return [...byId.values()].filter((r) => alive(r, dead));
+}
+
+function mergeByDate(mine, theirs, dead) {
+  const byDate = new Map();
+  for (const row of [...(theirs || []), ...(mine || [])]) {
+    if (!row || !row.date) continue;
+    const prev = byDate.get(row.date);
+    if (!prev) { byDate.set(row.date, row); continue; }
+    // Field-level: the newer row's values win, the older row's unique fields
+    // survive. Losing a note because the other device saved sleep later would
+    // be silent data loss.
+    const [older, newer] = upOf(row) >= upOf(prev) ? [prev, row] : [row, prev];
+    byDate.set(row.date, { ...older, ...newer });
+  }
+  return [...byDate.values()].filter((r) => alive(r, dead));
+}
+
+/** Habits merge as records, but `done[]` unions — it is a set of days kept,
+ *  and each device holds only the days it saw. */
+function mergeHabits(mine, theirs, dead) {
+  const byId = new Map();
+  for (const row of [...(theirs || []), ...(mine || [])]) {
+    if (!row || row.id == null) continue;
+    const prev = byId.get(row.id);
+    if (!prev) { byId.set(row.id, { ...row }); continue; }
+    const [older, newer] = upOf(row) >= upOf(prev) ? [prev, row] : [row, prev];
+    byId.set(row.id, {
+      ...older, ...newer,
+      done: [...new Set([...(older.done || []), ...(newer.done || [])])].sort(),
+    });
+  }
+  return [...byId.values()].filter((r) => alive(r, dead));
+}
+
+const pick = (s, a, b) => (b == null ? (s || {})[a] : ((s || {})[a] || {})[b]);
+
+/**
+ * Merge a remote tree into a local one. Order-independent for records;
+ * idempotent when nothing has changed on either side.
+ */
+function mergeStates(mine, theirs) {
+  if (!theirs || typeof theirs !== 'object') return mine;
+  if (!mine || typeof mine !== 'object') return theirs;
+
+  const out = mergeLoaded(JSON.parse(JSON.stringify(mine)));
+  const tombs = mergeTombstones(mine._deleted, theirs._deleted);
+  const dead = new Map(tombs.map((t) => [t.id, String(t.at || '')]));
+  out._deleted = tombs;
+
+  MERGE_BY_ID.forEach(([a, b]) => {
+    out[a] = out[a] || {};
+    out[a][b] = mergeById(pick(mine, a, b), pick(theirs, a, b), dead);
+  });
+  MERGE_BY_DATE.forEach(([a, b]) => {
+    out[a] = out[a] || {};
+    out[a][b] = mergeByDate(pick(mine, a, b), pick(theirs, a, b), dead);
+  });
+  out.links = mergeById(mine.links, theirs.links, dead);
+  out.habits = out.habits || {};
+  out.habits.items = mergeHabits(pick(mine, 'habits', 'items'), pick(theirs, 'habits', 'items'), dead);
+
+  // favoriteFoods is a bag of ids — union is lossless and needs no ordering.
+  out.body.favoriteFoods = [...new Set([...(mine.body?.favoriteFoods || []),
+                                        ...(theirs.body?.favoriteFoods || [])])];
+
+  MERGE_BY_KEY.forEach(([a, b]) => {
+    const m = pick(mine, a, b) || {}, t = pick(theirs, a, b) || {};
+    const merged = { ...t, ...m };     // per key; local wins a contested day
+    if (b == null) out[a] = merged; else { out[a] = out[a] || {}; out[a][b] = merged; }
+  });
+
+  // No _up on a config object, so defer to whichever tree was written last.
+  const theirsNewer = latestStamp(theirs) > latestStamp(mine);
+  if (theirsNewer) {
+    MERGE_CONFIG.forEach(([a, b]) => {
+      const v = pick(theirs, a, b);
+      if (v === undefined) return;
+      if (b == null) out[a] = v; else { out[a] = out[a] || {}; out[a][b] = v; }
+    });
+  }
+
+  out.__v = SCHEMA_VERSION;
+  return out;
+}
+
 /* =============================================================
    INIT
    ============================================================= */
