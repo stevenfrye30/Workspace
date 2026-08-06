@@ -70,12 +70,19 @@ async function render(key) {
   let h = '';
   h += '<nav class="crumb"><a href="./">Science Lab</a><span class="sep">/</span>' +
        '<span class="here">' + esc(room.name) + '</span></nav>';
-  h += '<header class="r-head"><span class="r-glyph">' + room.glyph + '</span>' +
-       '<div class="r-kicker">' + esc(room.kind) + '</div>' +
-       '<h1 class="r-title">' + esc(room.name) + '</h1>' +
-       '<p class="r-blurb">' + esc(room.blurb) + '</p>' +
-       '<div class="r-status"><span class="dot"></span>' +
-       esc(room.status || 'Scaffold ready') + '</div></header>';
+
+  /* A hub is a set of doors, so it gets only its name — a kicker, blurb and
+     status pill above nine buttons is chrome competing with the choice. */
+  if (room.hub) {
+    h += '<header class="r-head r-head-hub"><h1 class="r-title">' + esc(room.name) + '</h1></header>';
+  } else {
+    h += '<header class="r-head"><span class="r-glyph">' + room.glyph + '</span>' +
+         '<div class="r-kicker">' + esc(room.kind) + '</div>' +
+         '<h1 class="r-title">' + esc(room.name) + '</h1>' +
+         '<p class="r-blurb">' + esc(room.blurb) + '</p>' +
+         '<div class="r-status"><span class="dot"></span>' +
+         esc(room.status || 'Scaffold ready') + '</div></header>';
+  }
 
   if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
 
@@ -97,6 +104,15 @@ async function render(key) {
         (t.tools ? '<span class="hub-tool">' + esc(t.tools) + '</span>' : '') +
         '</a>';
     }).join('') + '</div></section>';
+
+    /* One or two small links under the grid, in place of a full
+       Tools & Connections section that would compete with the doors. */
+    if (room.quick) {
+      h += '<div class="quick-row">' + room.quick.map(function (q) {
+        return '<a class="quick" href="room.html?room=' + encodeURIComponent(q.key) + '">' +
+          '<span class="quick-glyph">' + q.glyph + '</span>' + esc(q.name) + ' →</a>';
+      }).join('') + '</div>';
+    }
   }
 
   widgets.forEach(function (w, i) { h += w.block(specs[i].opts); });
@@ -173,15 +189,18 @@ async function render(key) {
       }).join('') + '</div></section>';
   }
 
-  /* Per-room notebook, saved locally as scilab.notes.<room> */
-  const notesPh = room.notesPlaceholder || 'Notes, definitions, reminders…';
-  const notesCls = 'sci-notes' + (room.notesTall ? ' tall' : '');
-  h += '<section class="block"><div class="block-head"><h2>Notes</h2>' +
-    '<span class="tag">Saved locally</span>' +
-    '<p>Private to this browser — autosaves as you type.</p></div>' +
-    '<textarea class="' + notesCls + '" id="sciNotes" placeholder="' + notesPh +
-    '" spellcheck="false"></textarea>' +
-    '<div class="notes-status" id="sciNotesStatus">Notes are stored only in this browser.</div></section>';
+  /* Per-room notebook, saved locally as scilab.notes.<room>. A hub has no
+     content of its own to annotate, so it gets no notebook. */
+  if (!room.hub) {
+    const notesPh = room.notesPlaceholder || 'Notes, definitions, reminders…';
+    const notesCls = 'sci-notes' + (room.notesTall ? ' tall' : '');
+    h += '<section class="block"><div class="block-head"><h2>Notes</h2>' +
+      '<span class="tag">Saved locally</span>' +
+      '<p>Private to this browser — autosaves as you type.</p></div>' +
+      '<textarea class="' + notesCls + '" id="sciNotes" placeholder="' + notesPh +
+      '" spellcheck="false"></textarea>' +
+      '<div class="notes-status" id="sciNotesStatus">Notes are stored only in this browser.</div></section>';
+  }
 
   main.innerHTML = h;
 

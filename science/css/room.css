@@ -246,6 +246,26 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 @media print { .share-bar { display: none; } }
 
 /* ── Hub: big topic buttons instead of one long scroll ─────── */
+/* A hub shows only its name, so the rule under it does the separating. */
+.r-head-hub { padding-bottom: 0.7rem; margin-bottom: 1.1rem; }
+.r-head-hub .r-title { padding-right: 0; }
+
+.quick-row { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: -0.6rem 0 1.5rem; }
+.quick {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; font-weight: 600;
+  text-decoration: none; color: var(--c);
+  background: color-mix(in srgb, var(--c) 10%, var(--panel));
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border-radius: 999px; padding: 0.35rem 0.8rem;
+  transition: background 0.15s, border-color 0.15s, transform 0.12s;
+}
+.quick:hover, .quick:focus-visible {
+  color: var(--fg); border-color: var(--c); transform: translateY(-1px);
+  background: color-mix(in srgb, var(--c) 20%, var(--panel)); outline: none;
+}
+.quick-glyph { font-size: 0.95rem; }
+
 .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: 0.7rem; }
 .hub-card {
   display: flex; flex-direction: column; position: relative;

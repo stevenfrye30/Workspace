@@ -38,12 +38,11 @@ hub: [
     desc: "Oxidation numbers, half-reactions, galvanic cells, cell potential and electrolysis.",
     tools: "Formulas & examples" }
 ],
-links: [
-  { name: "Reference Tables", desc: "Ions, solubility, strong acids, Ka/Kb, thermo — searchable.", href: "room.html?room=reference", tag: "room" },
-  { name: "Periodic Table", desc: "All 118 elements, searchable and filterable.", href: "room.html?room=periodic-table", tag: "room" },
-  { name: "Data, Symbols & Units", desc: "Unit converter, constants and a scientific calculator.", href: "room.html?room=data-analysis", tag: "room" },
-  { name: "Biochemistry", desc: "Where this chemistry meets biology.", href: "room.html?room=biochemistry", tag: "room" },
-  { name: "Lab Methods", desc: "Solution prep, titrations, calibration.", href: "room.html?room=lab-methods", tag: "room" },
-  { name: "Algebra", desc: "Rearrange and solve equations.", href: "room.html?room=math-algebra", tag: "math" }
+/* One link out, not a section of them — everything else on this page is a
+   door into a topic, and the periodic table is the only thing reached for
+   often enough to sit beside them. The rest of the lab is a click away on
+   the home dashboard. */
+quick: [
+  { key: "periodic-table", glyph: "⚛", name: "Periodic Table" }
 ]
 };
