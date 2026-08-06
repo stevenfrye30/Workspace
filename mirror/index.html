@@ -166,6 +166,39 @@
   body.dense .dots { gap: 6px; }
   body.dense .dots button { width: 30px; height: 30px; }
 
+  /* ---------- the sleep track ---------- */
+  .sleeptrack {
+    position: relative; height: 34px; margin-top: 4px; border-radius: 8px;
+    background: var(--panel2); border: 1px solid var(--line);
+    touch-action: none; cursor: pointer;
+  }
+  .sleepfill {
+    position: absolute; top: 0; bottom: 0;
+    background: color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+  .sleephandle {
+    position: absolute; top: 50%; width: 22px; height: 30px; margin-left: -11px;
+    transform: translateY(-50%); border-radius: 7px; cursor: grab;
+    background: var(--accent); border: 1px solid var(--accent); padding: 0;
+    box-shadow: 0 1px 3px rgba(0,0,0,.28);
+  }
+  /* A 22px grip is the right size to look at and the wrong size to hit with a
+     thumb, so the touch target is widened past the paint. Overlap when the two
+     handles are close is harmless — a tap that lands on neither moves whichever
+     is nearer anyway. */
+  .sleephandle::after { content: ''; position: absolute; inset: -8px -12px; }
+  .sleephandle:active { cursor: grabbing; }
+  .sleephandle:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  #sleepWake { background: var(--accent2); border-color: var(--accent2); }
+  .sleepticks {
+    display: flex; justify-content: space-between; margin-top: 3px;
+    font-size: .58rem; color: var(--dim);
+  }
+  .sleepread { flex: 1; min-width: 0; font-size: .8rem; color: var(--ink); }
+  .sleepread b { font-variant-numeric: tabular-nums; }
+  body.dense .sleeptrack { height: 30px; }
+  body.dense .sleephandle { height: 26px; }
+
   /* ---------- chips ---------- */
   .chips { display: flex; gap: 6px; flex-wrap: wrap; }
   .chip {
@@ -231,15 +264,23 @@
      resizes the card. */
   .quick {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-    align-content: center; min-height: 46px;
+    align-content: center; min-height: 40px;
   }
-  body.dense .quick { min-height: 42px; }
-  /* The chosen-form tag gets a line of its own that is ALWAYS there, empty
-     or not. Letting it appear and disappear moved every button under it. */
-  .quicktag { height: 26px; display: flex; align-items: center; margin-bottom: 4px; }
-  .quicktag .chip { padding: 2px 10px; font-size: .72rem; line-height: 1.5; }
+  body.dense .quick { min-height: 36px; }
+  /* The chosen-form tag rides IN the button row rather than on a line of its
+     own — a reserved empty line read as dead space on the four tabs that
+     never use it. One row either way, so the height still cannot move. */
+  .quick.has-tag { grid-template-columns: auto repeat(3, 1fr); }
+  .quick .chip { padding: 2px 9px; font-size: .7rem; align-self: center; }
   .namefield { grid-column: 1 / -1; display: flex; gap: 6px; }
-  .namefield input { flex: 1; min-width: 0; }
+  /* The name field borrows the step buttons' exact box metrics, so the slot is
+     the same height on Other as on every other tab and the card never twitches
+     as you move between them. (Its Enter button is already a `.quick button`.) */
+  .namefield input {
+    flex: 1; min-width: 0;
+    font-size: .8rem; padding: 11px 9px; line-height: 1.15;
+  }
+  body.dense .namefield input { font-size: .76rem; padding: 9px 9px; }
   .quick button {
     cursor: pointer; font: inherit; font-size: .8rem; font-weight: 600; padding: 11px 4px;
     border-radius: 9px; border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
@@ -260,7 +301,6 @@
 
   /* The seven sleep chips wrapped to a second row inside a column, which cost
      nearly 40px on the tallest card in the grid. Narrower chips fit one row. */
-  body.dense #sHours .chip { padding: 5px 9px; font-size: .76rem; }
   body.dense .card > .field:last-child .primary { padding: 8px 15px; }
 
   .icon-btn[disabled] { opacity: .35; cursor: default; }
@@ -535,7 +575,6 @@
   <div class="card boxed" id="intakeCard">
     <h2>Intake <span class="note" id="intakeTotal"></span></h2>
     <div class="tabs" id="intakeTabs"></div>
-    <div class="quicktag" id="intakeTag"></div>
     <div class="quick" id="intakeQuick"></div>
     <details class="fold" id="intakeExactRow">
       <summary>exact amount…</summary>
@@ -573,9 +612,21 @@
     <div class="dotline"><span class="dl">Soreness</span><div class="dots" id="dSore"></div></div>
     <div class="dotline"><span class="dl">Comfort</span><div class="dots" id="dComfort"></div></div>
     <div class="hr"></div>
-    <div class="rowlabel">Sleep <span class="note" id="sleepNote"></span></div>
-    <div class="chips" id="sHours"></div>
-    <div class="dotline" style="margin-top:7px"><span class="dl">Quality</span><div class="dots" id="sQuality"></div></div>
+    <div class="rowlabel">Sleep</div>
+    <div class="sleeptrack" id="sleepTrack">
+      <div class="sleepfill" id="sleepFillA"></div>
+      <div class="sleepfill" id="sleepFillB"></div>
+      <button class="sleephandle" id="sleepBed" type="button" role="slider"
+              aria-label="Bedtime" aria-valuemin="0" aria-valuemax="24"></button>
+      <button class="sleephandle" id="sleepWake" type="button" role="slider"
+              aria-label="Wake time" aria-valuemin="0" aria-valuemax="24"></button>
+    </div>
+    <div class="sleepticks"><span>12a</span><span>6a</span><span>12p</span><span>6p</span><span>12a</span></div>
+    <div class="field inline" style="margin-top:6px">
+      <div class="sleepread" id="sleepRead"></div>
+      <button class="primary" id="sleepEnter">Enter</button>
+    </div>
+    <div class="dotline" style="margin-top:9px"><span class="dl">Quality</span><div class="dots" id="sQuality"></div></div>
     <div class="field inline">
       <button class="primary" id="pSave">Save</button>
       <!-- Symptoms had a card to itself for one button. It is how your body
@@ -939,60 +990,172 @@ function savePulse() {
     stamp(p);
   }
 
-  writeSleep();          // same card, same button — see writeSleep()
-
   saveState();
   $('pulseSaved').textContent = 'saved ✓';
-  setTimeout(() => { renderPulse(); renderSleep(); }, 1400);
-  renderSleep(); renderFeed();
+  setTimeout(() => renderPulse(), 1400);
+  renderFeed();
 }
 
-/* =============================================================
-   SLEEP — chips for the common values, a field for the rest.
-   ============================================================= */
-const SLEEP_CHIPS = [5, 6, 6.5, 7, 7.5, 8, 9];
-let sleepDraft = { hours: null, quality: null };
+/* ---- sleep: a night on a track ----------------------------------------
+   Hour chips asked "how many hours?", which is a sum you have to do in your
+   head at 7am. Two handles on a 24-hour track ask when you went down and
+   when you got up, which is what you actually remember, and the duration
+   falls out.
 
-function sleepFor(d) { return (state.body.sleep || []).find((s) => s.date === d); }
+   Crossing midnight is the normal case, not an edge case: it means the
+   overnight sleep, and it is filed under the WAKE day — the day you are
+   looking at — so you never open Yesterday to record a bedtime. A night
+   that does not cross midnight is a nap.
 
+   Dragging never logs. Enter does. Sleep is the one thing here you tend to
+   fiddle with before it is right, and a control that wrote on every pixel
+   of movement would fill the tracker with noise.
+   ------------------------------------------------------------------------ */
+let bedH = 23;          // hours-of-day, half-hour resolution
+let wakeH = 7;
+let sleepArmed = true;  // false once entered, until a handle moves
+
+const snapHalf = (h) => Math.max(0, Math.min(24, Math.round(h * 2) / 2));
+const sleepDur = () => (wakeH - bedH + 24) % 24;
+/* Two different questions. `wraps` is geometry — does the bar cross the right
+   edge and continue on the left. `isOvernight` is classification — is this the
+   night's sleep or a nap. They agree except at a bedtime of exactly midnight,
+   which does not wrap but is plainly the night rather than an 8-hour nap. */
+const wraps = () => wakeH < bedH;
+const isOvernight = () => wraps() || bedH === 0;
+
+function fmtHour(h) {
+  h = ((h % 24) + 24) % 24;
+  const whole = Math.floor(h);
+  const half = h - whole >= 0.5 ? ':30' : '';
+  const ap = whole < 12 ? 'am' : 'pm';
+  let display = whole % 12; if (display === 0) display = 12;
+  return display + half + ap;
+}
+
+function renderSleep() {
+  const dur = sleepDur();
+  const pct = (h) => (h / 24) * 100;
+  const fillA = $('sleepFillA'), fillB = $('sleepFillB');
+  if (wraps()) {
+    // Two segments: bed -> midnight, midnight -> wake.
+    fillA.style.left = pct(bedH) + '%'; fillA.style.width = pct(24 - bedH) + '%';
+    fillB.style.left = '0%';            fillB.style.width = pct(wakeH) + '%';
+    fillB.hidden = false;
+  } else {
+    fillA.style.left = pct(bedH) + '%'; fillA.style.width = pct(wakeH - bedH) + '%';
+    fillB.hidden = true;
+  }
+  $('sleepBed').style.left = pct(bedH) + '%';
+  $('sleepWake').style.left = pct(wakeH) + '%';
+  $('sleepBed').setAttribute('aria-valuetext', 'Bedtime ' + fmtHour(bedH));
+  $('sleepWake').setAttribute('aria-valuetext', 'Wake ' + fmtHour(wakeH));
+
+  const kind = isOvernight() ? 'last night' : 'nap';
+  $('sleepRead').innerHTML =
+    '<b>' + round1(dur) + ' h</b> · ' + esc(kind) + ' ' +
+    esc(fmtHour(bedH)) + ' → ' + esc(fmtHour(wakeH));
+  const btn = $('sleepEnter');
+  btn.textContent = sleepArmed ? 'Enter' : 'Entered ✓';
+  btn.disabled = !sleepArmed || dur === 0;
+
+  buildDots($('sQuality'), sleepDraft.quality, (v) => { sleepDraft.quality = v; renderSleep(); }, 'Sleep quality');
+}
+
+/** The overnight for a date is single — entering another replaces it. */
+function sleepFor(d) {
+  return (state.body.sleep || []).find((s) => s.date === d && (s.kind || 'overnight') === 'overnight');
+}
+
+function enterSleep() {
+  const dur = sleepDur();
+  if (!dur) return;
+  const overnight = isOvernight();
+  const quality = sleepDraft.quality;
+
+  if (overnight) {
+    let s = sleepFor(day);
+    if (!s) { s = { id: uid(), date: day }; appendRec(state.body.sleep, stamp(s), 'sleep'); }
+    s.hours = dur; s.quality = quality;
+    s.start = bedH; s.end = wakeH; s.kind = 'overnight';
+    stamp(s);
+    // The Daily Card tracks the overnight, so the Weekly Review reads one source.
+    let c = card(day);
+    if (!c) { c = { id: uid(), date: day, tags: [] }; state.daily.cards.push(c); }
+    c.sleep_hours = dur; c.sleep_quality = quality;
+    stamp(c);
+  } else {
+    // A nap is just another entry — no upsert, they stack.
+    appendRec(state.body.sleep, stamp({
+      id: uid(), date: day, hours: dur, quality,
+      start: bedH, end: wakeH, kind: 'nap',
+    }), round1(dur) + ' h nap');
+  }
+  sleepArmed = false;
+  saveState(); renderSleep(); renderFeed();
+  toast(round1(dur) + ' h ' + (overnight ? 'sleep' : 'nap') + ' — tap Undo to take it back');
+}
+
+/** Load the day's overnight back onto the track, if there is one. */
 function loadSleep() {
   const s = sleepFor(day);
   sleepDraft = { hours: s ? s.hours : null, quality: s ? s.quality : null };
+  if (s && s.start != null && s.end != null) { bedH = s.start; wakeH = s.end; sleepArmed = false; }
+  else { sleepArmed = true; }
   renderSleep();
 }
-function renderSleep() {
-  const wrap = $('sHours'); wrap.innerHTML = '';
-  SLEEP_CHIPS.forEach((h) => {
-    const b = document.createElement('button');
-    b.type = 'button'; b.className = 'chip'; b.textContent = h;
-    b.setAttribute('aria-pressed', String(sleepDraft.hours === h));
-    b.onclick = () => { sleepDraft.hours = sleepDraft.hours === h ? null : h; renderSleep(); };
-    wrap.appendChild(b);
+
+/* Pointer drag on the track. Nudging either handle re-arms Enter. */
+function wireSleepTrack() {
+  const track = $('sleepTrack');
+  let dragging = null;
+  const hourAt = (clientX) => {
+    const r = track.getBoundingClientRect();
+    return snapHalf(((clientX - r.left) / r.width) * 24);
+  };
+  const move = (e) => {
+    if (!dragging) return;
+    const h = hourAt(e.clientX);
+    if (dragging === 'bed') bedH = h; else wakeH = h;
+    sleepArmed = true;
+    renderSleep();
+  };
+  const stop = () => {
+    dragging = null;
+    document.removeEventListener('pointermove', move);
+    document.removeEventListener('pointerup', stop);
+  };
+  [['sleepBed', 'bed'], ['sleepWake', 'wake']].forEach(([id, which]) => {
+    $(id).addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dragging = which;
+      document.addEventListener('pointermove', move);
+      document.addEventListener('pointerup', stop);
+    });
+    // Keyboard: the handles are real buttons, so they must move without a mouse.
+    $(id).addEventListener('keydown', (e) => {
+      const step = e.shiftKey ? 1 : 0.5;
+      let d = 0;
+      if (e.key === 'ArrowLeft') d = -step;
+      else if (e.key === 'ArrowRight') d = step;
+      else return;
+      e.preventDefault();
+      const v = snapHalf((which === 'bed' ? bedH : wakeH) + d);
+      if (which === 'bed') bedH = v; else wakeH = v;
+      sleepArmed = true;
+      renderSleep();
+    });
   });
-  buildDots($('sQuality'), sleepDraft.quality, (v) => { sleepDraft.quality = v; renderSleep(); }, 'Sleep quality');
-  const s = sleepFor(day);
-  $('sleepNote').textContent = s ? round1(s.hours) + ' h logged' : '';
-}
-/* Sleep shares the pulse card's one Save button, so this writes only when
-   there is something to write — logging a mood must not demand a sleep
-   figure you don't have. Returns whether anything was written. */
-function writeSleep() {
-  const hours = sleepDraft.hours;
-  if (hours == null) return false;
-
-  let s = sleepFor(day);
-  if (!s) { s = { id: uid(), date: day }; state.body.sleep.push(s); }
-  s.hours = hours; s.quality = sleepDraft.quality;
-  stamp(s);
-
-  // The Daily Card mirrors sleep so the Weekly Review keeps reading one source.
-  let c = card(day);
-  if (!c) { c = { id: uid(), date: day, tags: [] }; state.daily.cards.push(c); }
-  c.sleep_hours = hours; c.sleep_quality = sleepDraft.quality;
-  stamp(c);
-
-  sleepDraft.hours = hours;
-  return true;
+  // Tapping the track moves whichever handle is nearer.
+  track.addEventListener('pointerdown', (e) => {
+    if (e.target.classList.contains('sleephandle')) return;
+    const h = hourAt(e.clientX);
+    const dBed = Math.min(Math.abs(h - bedH), 24 - Math.abs(h - bedH));
+    const dWake = Math.min(Math.abs(h - wakeH), 24 - Math.abs(h - wakeH));
+    if (dBed <= dWake) bedH = h; else wakeH = h;
+    sleepArmed = true;
+    renderSleep();
+  });
 }
 
 /* =============================================================
@@ -1067,8 +1230,7 @@ function renderIntake() {
   });
 
   const el = $('intakeQuick');
-  const tag = $('intakeTag');
-  el.innerHTML = ''; tag.innerHTML = '';
+  el.innerHTML = ''; el.classList.remove('has-tag');
 
   if (intakeTab === 'weed' && !weedForm) {
     // Ask the one question that decides the unit, in the slot itself.
@@ -1098,14 +1260,16 @@ function renderIntake() {
 
   if (intakeTab === 'weed') {
     const f = WEED_FORMS[weedForm];
-    tag.appendChild(chosenTag(f.label, () => { weedForm = null; renderIntake(); }));
+    el.classList.add('has-tag');
+    el.appendChild(chosenTag(f.label, () => { weedForm = null; renderIntake(); }));
     f.steps.forEach((n) => el.appendChild(
       stepButton(String(n), f.unit, () => logIntake(n))));
     $('intakeExact').placeholder = f.unit === 'g' ? 'grams' : 'milligrams';
     return;
   }
   if (intakeTab === 'other') {
-    tag.appendChild(chosenTag(otherLabel, () => { otherLabel = ''; renderIntake(); }));
+    el.classList.add('has-tag');
+    el.appendChild(chosenTag(otherLabel, () => { otherLabel = ''; renderIntake(); }));
     OZ_STEPS.forEach((n) => el.appendChild(stepButton('+' + n, 'oz', () => logIntake(n))));
     $('intakeExact').placeholder = 'ounces';
     return;
@@ -1818,8 +1982,14 @@ function renderFeed() {
   onDay(state.body.symptoms).forEach((r) =>
     push(r, '⚕', r.note, () => dropRecord(state.body.symptoms, r.id, r.note)));
 
-  const s = sleepFor(day);
-  if (s) push(s, '🌙', round1(s.hours) + ' h sleep' + (s.quality ? ' · quality ' + s.quality : ''), null);
+  onDay(state.body.sleep).forEach((r) => {
+    const nap = (r.kind || 'overnight') === 'nap';
+    const when = (r.start != null && r.end != null) ? ' · ' + fmtHour(r.start) + ' → ' + fmtHour(r.end) : '';
+    push(r, nap ? '💤' : '🌙',
+      round1(r.hours) + ' h ' + (nap ? 'nap' : 'sleep') + when +
+      (r.quality ? ' · quality ' + r.quality : ''),
+      () => dropRecord(state.body.sleep, r.id, round1(r.hours) + ' h ' + (nap ? 'nap' : 'sleep')));
+  });
   const c = card(day);
   if (c && (c.mood != null || c.energy != null)) {
     const bits = [];
@@ -3102,6 +3272,8 @@ if (syncConfigured()) {
 $('dYestBtn').onclick = () => setDay(shiftDay(todayStr(), -1));
 $('dPick').onchange = (e) => { if (e.target.value) setDay(e.target.value); };
 $('pSave').onclick = savePulse;
+$('sleepEnter').onclick = enterSleep;
+wireSleepTrack();
 $('exAdd').onclick = addExercise;
 $('exMin').onkeydown = (e) => { if (e.key === 'Enter') addExercise(); };
 $('symAdd').onclick = () => openPop('Note a symptom',
