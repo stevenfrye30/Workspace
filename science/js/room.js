@@ -9,7 +9,7 @@
    are escaped. body / note / callout / example q, steps and ans are authored
    HTML and injected raw. Keep new content on the correct side of that line. */
 
-import { esc } from './format.js';
+import { esc, slug, anchorsFor } from './format.js';
 import { MANIFEST, ALIAS } from './rooms/_manifest.js';
 import * as share from './share.js';
 
@@ -152,11 +152,16 @@ async function render(key) {
       '<p>Click a topic to open it.</p></div>' +
       '<div class="ref-bar"><button class="rt-btn" id="refToggle" type="button" ' +
       'aria-pressed="false">Expand all</button></div>' +
-      '<div class="ref-grid">' + room.cards.map(function (c) {
-        return '<details class="ref-item"><summary>' + esc(c.name) + '</summary>' +
-          '<div class="c-body">' + c.body + '</div>' +
-          (c.note ? '<div class="c-note">' + c.note + '</div>' : '') + '</details>';
-      }).join('') + '</div></section>';
+      '<div class="ref-grid">' + (function () {
+        /* Ids come from the shared helper so a search result's fragment and
+           the card it names cannot drift apart. */
+        const ids = anchorsFor('c', room.cards, function (c) { return c.name; });
+        return room.cards.map(function (c, i) {
+          return '<details class="ref-item" id="' + ids[i] + '"><summary>' + esc(c.name) + '</summary>' +
+            '<div class="c-body">' + c.body + '</div>' +
+            (c.note ? '<div class="c-note">' + c.note + '</div>' : '') + '</details>';
+        }).join('');
+      })() + '</div></section>';
   }
 
   /* Click-to-copy symbol groups, from the ported Symbols room. */
@@ -165,7 +170,7 @@ async function render(key) {
       '<span class="tag">Click to copy</span>' +
       '<p>Click any symbol to copy it to the clipboard.</p></div>' +
       room.groups.map(function (grp) {
-        return '<div class="symkey-group"><div class="symkey-title">' + esc(grp.title) + '</div>' +
+        return '<div class="symkey-group" id="g-' + slug(grp.title) + '"><div class="symkey-title">' + esc(grp.title) + '</div>' +
           '<div class="symkey-grid">' + grp.symbols.map(function (s) {
             return '<button class="symkey" type="button" data-name="' + esc(s.n) + '">' +
               '<span class="symkey-ch">' + s.g + '</span>' +
@@ -179,13 +184,16 @@ async function render(key) {
       esc(room.examplesTitle || 'Worked Examples') + '</h2>' +
       '<span class="tag">Practice</span><p>' +
       esc(room.examplesSub || 'Click to reveal each solution.') + '</p></div>' +
-      '<div class="examples">' + room.examples.map(function (ex) {
-        return '<details class="ex"><summary><span class="ex-q">' + ex.q + '</span></summary>' +
-          '<ul class="ex-steps">' + ex.steps.map(function (s) {
-            return '<li>' + s + '</li>';
-          }).join('') + '</ul>' +
-          '<div class="ex-ans">= ' + ex.ans + '</div></details>';
-      }).join('') + '</div></section>';
+      '<div class="examples">' + (function () {
+        const ids = anchorsFor('x', room.examples, function (e) { return e.q; });
+        return room.examples.map(function (ex, i) {
+          return '<details class="ex" id="' + ids[i] + '"><summary><span class="ex-q">' + ex.q + '</span></summary>' +
+            '<ul class="ex-steps">' + ex.steps.map(function (s) {
+              return '<li>' + s + '</li>';
+            }).join('') + '</ul>' +
+            '<div class="ex-ans">= ' + ex.ans + '</div></details>';
+        }).join('');
+      })() + '</div></section>';
   }
 
   if (room.links && room.links.length) {
@@ -219,6 +227,8 @@ async function render(key) {
   if (room.groups) initSymbolCopy();
   if (specs.length) share.initBar();
 
+  revealHash();
+
   /* One instrument throwing on mount must not stop the ones after it. */
   widgets.forEach(function (w, i) {
     try { w.init(specs[i].opts); }
@@ -233,6 +243,54 @@ async function render(key) {
       }
     }
   });
+}
+
+/* A search result links to room.html?room=…#c-some-card. The card it names is
+   a collapsed <details>, so arriving at it has to open it as well as scroll to
+   it, or the reader lands on a closed box with no sign of why.
+
+   scrollTo over scrollIntoView: the cards sit in a grid whose rows resize as
+   a <details> opens, and scrollIntoView measures before that reflow settles,
+   landing short. Opening first and then measuring from the page top is
+   stable. */
+function revealHash() {
+  const id = decodeURIComponent((location.hash || '').slice(1));
+  if (!id) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  if (el.tagName === 'DETAILS') el.open = true;
+  el.classList.add('hit');
+
+  /* Take the fragment out of the URL before the browser acts on it. Chrome
+     keeps retrying its own fragment scroll as content appears, it fires after
+     ours, and it parks the target hard against the top of the viewport under
+     the fixed nav pill. Removing the fragment leaves it nothing to chase; it
+     goes back once we have settled, so the link a student copies still
+     carries the anchor. replaceState never scrolls, so restoring is safe. */
+  const full = location.href;
+  history.replaceState(null, '', location.pathname + location.search);
+
+  /* Scroll more than once, on purpose. The instruments mount after this runs
+     and a chart appearing above the target pushes it down several hundred
+     pixels, so a single attempt lands the reader in the wrong place on
+     exactly the rooms that have the most to load. Each attempt is a no-op
+     once the element is already where it should be.
+
+     The moment the reader scrolls, types or clicks, they have taken over and
+     we stop moving the page under them. */
+  let userMoved = false;
+  ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (t) {
+    window.addEventListener(t, function () { userMoved = true; }, { passive: true, once: true });
+  });
+  function place() {
+    if (userMoved) return;
+    const want = Math.max(0, el.getBoundingClientRect().top + window.scrollY - 80);
+    if (Math.abs(window.scrollY - want) > 4) window.scrollTo(0, want);
+  }
+  requestAnimationFrame(function () { requestAnimationFrame(place); });
+  [150, 400, 800, 1400].forEach(function (ms) { setTimeout(place, ms); });
+  setTimeout(function () { history.replaceState(null, '', full); }, 1600);
+  setTimeout(function () { el.classList.remove('hit'); }, 3000);
 }
 
 /* Expand-all flips every topic at once, for reading the sheet rather than

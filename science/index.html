@@ -17,6 +17,10 @@
   <div class="page">
     <h1 class="board-title">Science &amp; Math</h1>
 
+    <!-- Search over every room's cards, examples and symbols. The index is
+         built on first focus, not on page load. -->
+    <div id="boardSearch"></div>
+
     <!-- Nine tiles. The periodic table sits at the centre because every
          other room reaches for it. -->
     <div class="board">
@@ -78,6 +82,10 @@
   </div>
 
   <script type="module" src="js/dock.js"></script>
+  <script type="module">
+    import { mountBox } from './js/search.js';
+    mountBox(document.getElementById('boardSearch'));
+  </script>
   <script>
     /* The two shared tiles carry a second destination. A nested <a> is
        invalid inside a tile link, so the secondary target is a span that

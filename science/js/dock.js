@@ -9,6 +9,7 @@
    running total or a half-typed note survives being closed. */
 
 import { mount } from './calc.js';
+import { mountPalette } from './search.js';
 
 const PAD_KEY = 'scilab.notepad';
 const MIGRATED = 'scilab.notepad.migrated';
@@ -47,7 +48,11 @@ const ICON = {
   pencil:
     '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
     'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
-    '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>'
+    '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>',
+  magnifier:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" ' +
+    'stroke-linecap="round" aria-hidden="true">' +
+    '<circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.4 15.4L21 21"/></svg>'
 };
 
 function makeTool(label, icon, title, build) {
@@ -79,7 +84,7 @@ function makeTool(label, icon, title, build) {
   btn.addEventListener('click', function () {
     panel && panel.classList.contains('open') ? close() : open();
   });
-  return { close: close, get panel() { return panel; } };
+  return { open: open, close: close, get panel() { return panel; } };
 }
 
 const tools = [];
@@ -88,8 +93,21 @@ function closeOthers(keep) {
   tools.forEach(function (t) { if (t.panel && t.panel !== keep) t.close(); });
 }
 
-/* Notepad first, calculator last — the dock is a row, so the calculator ends
-   up hard against the top-right corner. */
+/* Search, notepad, calculator — the dock is a row, so the calculator ends up
+   hard against the top-right corner where it has always been. */
+const searchTool = makeTool('Search the lab  (Ctrl K)', ICON.magnifier, 'Search', function (body) {
+  return mountPalette(body, { onClose: function () { searchTool.close(); } });
+});
+tools.push(searchTool);
+
+/* ⌘K / Ctrl-K from anywhere, except while typing into something else. */
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'k' && e.key !== 'K') return;
+  if (!e.metaKey && !e.ctrlKey) return;
+  e.preventDefault();
+  searchTool.open();
+});
+
 tools.push(makeTool('Notepad', ICON.pencil, 'Notepad', function (body) {
   body.innerHTML =
     '<textarea class="pad" id="dockPad" spellcheck="false" ' +

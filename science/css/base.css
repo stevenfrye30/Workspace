@@ -106,8 +106,47 @@ body {
 }
 .dock-close:hover { color: var(--fg); }
 
-/* The notepad is deliberately roomier than the calculator. */
+/* The notepad is deliberately roomier than the calculator, and search wider
+   still — its rows are two lines of prose, not digits. */
 .dock-panel.notepad { width: 22rem; }
+.dock-panel.search { width: 26rem; }
+
+/* ── Lab-wide search: one stylesheet for the board box and the ⌘K palette ── */
+.sbox { position: relative; margin: 0 auto 1.4rem; max-width: 34rem; }
+.sbox-in {
+  width: 100%; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.86rem;
+  color: var(--fg); background: #1a2433; border: 1px solid var(--border);
+  border-radius: 6px; padding: 0.55rem 0.8rem; outline: none;
+}
+.sbox-in::placeholder { color: var(--muted); }
+.sbox-in:focus { border-color: var(--gold); }
+.sbox-res { max-height: 22rem; overflow-y: auto; margin-top: 0.4rem; }
+.sbox-res:empty { display: none; }
+
+.sr-hint { font-family: -apple-system, sans-serif; font-size: 0.74rem; color: var(--muted); padding: 0.5rem 0.2rem; }
+.sr-group { margin-bottom: 0.5rem; }
+.sr-room {
+  display: flex; align-items: center; gap: 0.35rem;
+  font-family: -apple-system, sans-serif; font-size: 0.6rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--c);
+  padding: 0.3rem 0.2rem 0.25rem;
+}
+.sr-hit {
+  display: block; text-decoration: none; border-left: 2px solid transparent;
+  padding: 0.32rem 0.5rem; border-radius: 3px;
+}
+.sr-hit:hover, .sr-hit.on { background: color-mix(in srgb, var(--c) 16%, var(--panel)); border-left-color: var(--c); }
+.sr-kind {
+  font-family: -apple-system, sans-serif; font-size: 0.52rem; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-right: 0.4rem;
+}
+.sr-title { font-family: -apple-system, sans-serif; font-size: 0.8rem; color: var(--fg); }
+.sr-sym { font-family: Georgia, serif; font-size: 0.95rem; color: var(--c); }
+.sr-snip {
+  display: block; font-family: -apple-system, sans-serif; font-size: 0.68rem;
+  color: var(--muted); margin-top: 0.1rem;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
 .pad {
   width: 100%; min-height: 15rem; resize: vertical;
   font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.82rem; line-height: 1.55;

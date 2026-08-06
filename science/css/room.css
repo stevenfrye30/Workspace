@@ -13,6 +13,18 @@ body {
    only fires for keyboard and other non-pointer focus. */
 :focus-visible { outline: 2px solid var(--c); outline-offset: 2px; }
 
+/* Arriving from a search result: mark what you were sent to, briefly, so the
+   answer to "which of these did I click?" is on screen rather than inferred
+   from the scroll position. */
+.hit { animation: hitflash 2.2s ease-out 1; }
+@keyframes hitflash {
+  0%, 55% { box-shadow: 0 0 0 2px var(--c), 0 0 22px -6px var(--c); }
+  100% { box-shadow: 0 0 0 0 transparent; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hit { animation: none; box-shadow: 0 0 0 2px var(--c); }
+}
+
 /* An instrument that fails to load or throws on mount says so in its own
    slot; the rest of the room — the reference cards, the worked examples —
    is worth more than the tool and must not go down with it. */
