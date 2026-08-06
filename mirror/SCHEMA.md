@@ -170,12 +170,16 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   must not be relocated.
 - **substances[]** *(v13)* — `{ id, date, kind, count, oz?, note?, t?, _src, _at, _up }`.
   `kind` is `alcohol`, `nicotine` or `weed`. `count` is how many (one tap = 1; the detail
-  form can log several at once), `note` is optional free text, and `oz` is present only on
-  alcohol, which is entered by volume.
-  > Alcohol lives here rather than in `drinks[]` even though the dashboard shows it among
-  > the drinks. The grouping in the interface is about what a thing *is*; the store is about
-  > what you would ever want back out of it. Kept beside nicotine and weed, a week's counts
-  > are one query.
+  form can log several at once) and `note` is optional free text.
+  `oz` appears only on alcohol entries written between v13's release and the move described
+  below, when alcohol was entered by volume. Those records carry `count: 1` as well, so they
+  count identically to newer ones; the volume is kept because it is what was observed, and
+  the tracker still shows it.
+  > **Alcohol is counted, not measured.** A 12 oz beer and a 1.5 oz shot are one standard
+  > drink each, and that equivalence is the entire point of the measure — ounces throw it
+  > away. It briefly sat among the drinks in the interface, which is why some entries have
+  > `oz`; the store never moved, because counting beside nicotine and weed is what makes a
+  > week's totals one query.
 - **sleep[]** — `{ id, date, hours, quality: 1–5, ... }`
 - **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?, ... }`.
   All fields except `type`/`date` optional. Shaped so a future fitness-tracker import (steps,
@@ -397,6 +401,11 @@ means**. So:
 
   `body.food[]` gained optional `portion` (the named portion chosen) and `t`;
   `body.meals[].items[]` gained optional `portion`.
+
+  **Alcohol moved from the drinks tab to the substances tab** shortly after release, and is
+  now entered by count rather than volume. **No data moved** — it had always been stored in
+  `body.substances[]`; only the interface changed. Entries written in that window carry an
+  `oz` alongside their `count: 1` and still total correctly.
 
   **Retired from the interface, preserved in the data.** The dashboard stops writing
   `completion`, and shows nothing for `decisions`, `identity.journal`, `identity.reflections`,

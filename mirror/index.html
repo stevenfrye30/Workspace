@@ -1005,13 +1005,13 @@ const KINDS = {
   nicotine: { name: 'Nicotine', icon: '🚬', c: 'nicotine', store: 'substances' },
 };
 const intakeMeta = (k) => KINDS[k];          // the tracker reads its icons from here
-const DRINK_TABS = ['water', 'coffee', 'alcohol', 'other'];
-const SUB_TABS   = ['weed', 'nicotine'];
+const DRINK_TABS = ['water', 'coffee', 'other'];
+const SUB_TABS   = ['alcohol', 'nicotine', 'weed'];
 const DRINK_STEPS = [2, 8, 16];              // ounces; compose to anything useful
 const SUB_STEPS   = [1];
 
 let drinkTab = 'water';
-let subTab = 'weed';
+let subTab = 'alcohol';
 let drinkPending = 0;
 let subPending = 0;
 
@@ -1025,10 +1025,14 @@ function entriesOf(kind) {
 /** The day's headline number for a kind, in the unit that kind is about. */
 function totalOf(kind) {
   const rows = entriesOf(kind);
-  if (KINDS[kind].store === 'water' || kind === 'coffee' || kind === 'other' || kind === 'alcohol') {
+  if (kind === 'water' || kind === 'coffee' || kind === 'other') {
     return { n: rows.reduce((a, r) => a + (Number(r.oz) || 0), 0), unit: 'oz' };
   }
-  return { n: rows.reduce((a, r) => a + (Number(r.count) || 1), 0), unit: '' };
+  const n = rows.reduce((a, r) => a + (Number(r.count) || 1), 0);
+  // A 12 oz beer and a 1.5 oz shot are one drink each. Counting is the only
+  // reading of alcohol that carries that equivalence; ounces throw it away.
+  if (kind === 'alcohol') return { n, unit: n === 1 ? 'drink' : 'drinks' };
+  return { n, unit: '' };
 }
 /** How an entry reads in the tracker and in an undo message. */
 function describeIntake(kind, rec) {
@@ -1142,12 +1146,14 @@ function renderSubs() {
   $('subsCard').style.setProperty('--c', 'var(--' + m.c + ')');
   $('subsName').textContent = m.name;
   const t = totalOf(subTab);
-  $('subsTotal').textContent = t.n ? String(round1(t.n)) : '';
+  $('subsTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
   renderTabs($('subTabs'), SUB_TABS, subTab, (k) => { subTab = k; subPending = 0; renderSubs(); });
 
   $('subPending').classList.toggle('zero', !subPending);
   $('subPendingVal').textContent = String(subPending);
-  $('subPendingUnit').textContent = subPending === 1 ? 'time' : 'times';
+  $('subPendingUnit').textContent = subTab === 'alcohol'
+    ? (subPending === 1 ? 'drink' : 'drinks')
+    : (subPending === 1 ? 'time' : 'times');
   renderSteps($('subQuick'), SUB_STEPS, subPending,
     (n) => { subPending += n; renderSubs(); }, commitSub, '');
 
