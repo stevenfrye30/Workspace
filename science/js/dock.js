@@ -29,12 +29,37 @@ function makePanel(cls, title) {
   return p;
 }
 
+/* Icon-only buttons. The emoji forms of these two (🖩, ✎) are a lottery —
+   some platforms render a flat monochrome glyph, some a coloured one, some
+   nothing at all — and a button with no text beside it cannot afford to come
+   up empty. Drawn instead, so they are the same weight everywhere. */
+const ICON = {
+  calculator:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" ' +
+    'stroke-linejoin="round" aria-hidden="true">' +
+    '<rect x="5" y="2.5" width="14" height="19" rx="2.2"/>' +
+    '<rect x="8" y="5.6" width="8" height="3.2" rx="0.8"/>' +
+    '<g fill="currentColor" stroke="none">' +
+    '<circle cx="8.6" cy="12.4" r="1.05"/><circle cx="12" cy="12.4" r="1.05"/><circle cx="15.4" cy="12.4" r="1.05"/>' +
+    '<circle cx="8.6" cy="15.6" r="1.05"/><circle cx="12" cy="15.6" r="1.05"/><circle cx="15.4" cy="15.6" r="1.05"/>' +
+    '<circle cx="8.6" cy="18.8" r="1.05"/><circle cx="12" cy="18.8" r="1.05"/><circle cx="15.4" cy="18.8" r="1.05"/>' +
+    '</g></svg>',
+  pencil:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" ' +
+    'stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+    '<path d="M17 3a2.83 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>'
+};
+
 function makeTool(label, icon, title, build) {
   const btn = document.createElement('button');
   btn.className = 'dock-btn';
   btn.type = 'button';
   btn.setAttribute('aria-expanded', 'false');
-  btn.innerHTML = '<span aria-hidden="true">' + icon + '</span> ' + label;
+  /* No visible text, so the name has to be carried by the label and the
+     tooltip instead. */
+  btn.setAttribute('aria-label', label);
+  btn.title = label;
+  btn.innerHTML = icon;
   dock.appendChild(btn);
 
   let panel = null, api = null;
@@ -63,11 +88,9 @@ function closeOthers(keep) {
   tools.forEach(function (t) { if (t.panel && t.panel !== keep) t.close(); });
 }
 
-tools.push(makeTool('Calculator', '🖩', 'Calculator', function (body) {
-  return mount(body);
-}));
-
-tools.push(makeTool('Notepad', '✎', 'Notepad', function (body) {
+/* Notepad first, calculator last — the dock is a row, so the calculator ends
+   up hard against the top-right corner. */
+tools.push(makeTool('Notepad', ICON.pencil, 'Notepad', function (body) {
   body.innerHTML =
     '<textarea class="pad" id="dockPad" spellcheck="false" ' +
     'placeholder="Anything worth keeping — a formula, a step you keep missing, a question to ask."></textarea>' +
@@ -93,6 +116,10 @@ tools.push(makeTool('Notepad', '✎', 'Notepad', function (body) {
     }, 350);
   });
   return { focus: function () { ta.focus(); } };
+}));
+
+tools.push(makeTool('Calculator', ICON.calculator, 'Calculator', function (body) {
+  return mount(body);
 }));
 
 /* Notes used to be kept per room under scilab.notes.<room>. Fold whatever a
