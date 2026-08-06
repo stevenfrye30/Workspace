@@ -195,10 +195,19 @@ async function render(key) {
   }
 
   if (room.examples) {
-    h += '<section class="block"><div class="block-head"><h2>' +
+    /* The tag used to read "Practice", which now sits beside a Read/Practice
+       control meaning something else entirely. */
+    h += '<section class="block" id="exBlock"><div class="block-head"><h2>' +
       esc(room.examplesTitle || 'Worked Examples') + '</h2>' +
-      '<span class="tag">Practice</span><p>' +
+      '<span class="tag">Examples</span><p>' +
       esc(room.examplesSub || 'Click to reveal each solution.') + '</p></div>' +
+      '<div class="pr-bar">' +
+        '<div class="pr-modes" role="group" aria-label="How to show the examples">' +
+          '<button class="rt-btn pr-mode" type="button" data-mode="read" aria-pressed="true">Read</button>' +
+          '<button class="rt-btn pr-mode" type="button" data-mode="practice" aria-pressed="false">Practice</button>' +
+        '</div>' +
+        '<span class="pr-progress" id="prProgress" role="status" aria-live="polite"></span>' +
+      '</div>' +
       '<div class="examples">' + (function () {
         const ids = anchorsFor('x', room.examples, function (e) { return e.q; });
         return room.examples.map(function (ex, i) {
@@ -236,6 +245,7 @@ async function render(key) {
   if (room.groups) initSymbolCopy();
   if (shareable) share.initBar();
   initOpenState();
+  if (room.examples && room.examples.length) initPractice(key);
 
   /* The page arrives empty and fills in, so focus is still on the document
      when the content appears — a screen reader user would have to walk back
@@ -357,6 +367,124 @@ function revealHash() {
     history.replaceState(null, '', location.pathname + location.search + '#' + id);
   }, 1600);
   setTimeout(function () { el.classList.remove('hit'); }, 3000);
+}
+
+/* Practice mode.
+
+   Every worked example is a question with its full solution one click behind
+   it, which means the examples are read, never attempted — and reading a
+   solution feels like understanding in a way that answering does not.
+
+   Practice hides the solution and gives it back in two stages: the method
+   first, then the answer. One stage would let a stuck student jump to the
+   number and stop; seeing the steps and then predicting the result is the
+   part that does the teaching.
+
+   No content changed to support this — the example data already keeps q,
+   steps and ans apart. Read mode leaves the DOM exactly as it was; the
+   controls are injected on entering Practice and removed on leaving, so the
+   default path is untouched. There is no answer checking and no score: this
+   marks what you have looked at, and nothing else. */
+function initPractice(roomKey) {
+  const block = document.getElementById('exBlock');
+  if (!block) return;
+  const wrap = block.querySelector('.examples');
+  const exs = Array.prototype.slice.call(wrap.querySelectorAll('details.ex'));
+  const modeBtns = Array.prototype.slice.call(block.querySelectorAll('.pr-mode'));
+  const progress = block.querySelector('#prProgress');
+  if (!exs.length) return;
+
+  const KEY = 'scilab.practice.' + roomKey;
+  let state = { mode: 'read', revealed: {} };
+  try {
+    const raw = localStorage.getItem(KEY);
+    if (raw) {
+      const v = JSON.parse(raw);
+      if (v && typeof v === 'object') {
+        state.mode = v.mode === 'practice' ? 'practice' : 'read';
+        state.revealed = v.revealed && typeof v.revealed === 'object' ? v.revealed : {};
+      }
+    }
+  } catch (e) { /* unreadable or disabled storage just means a fresh start */ }
+  function save() {
+    try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function stageOf(ex) { return Math.max(0, Math.min(2, state.revealed[ex.id] | 0)); }
+
+  function paintProgress() {
+    const done = exs.filter(function (ex) { return stageOf(ex) >= 2; }).length;
+    progress.textContent = state.mode === 'practice'
+      ? done + ' of ' + exs.length + ' revealed'
+      : '';
+  }
+
+  function paintOne(ex) {
+    const s = stageOf(ex);
+    ex.classList.remove('pr0', 'pr1', 'pr2');
+    ex.classList.add('pr' + s);
+    const ctrl = ex.querySelector('.pr-ctrl');
+    if (!ctrl) return;
+    const btn = ctrl.querySelector('button');
+    if (s >= 2) { ctrl.hidden = true; return; }
+    ctrl.hidden = false;
+    btn.textContent = s === 0 ? 'Reveal steps' : 'Reveal answer';
+  }
+
+  function addControls() {
+    exs.forEach(function (ex) {
+      if (ex.querySelector('.pr-ctrl')) return;
+      const ctrl = document.createElement('div');
+      ctrl.className = 'pr-ctrl';
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'rt-btn pr-reveal';
+      btn.addEventListener('click', function () {
+        state.revealed[ex.id] = Math.min(2, stageOf(ex) + 1);
+        save();
+        paintOne(ex);
+        paintProgress();
+        /* Focus stays on the control that is still there to be pressed; when
+           the last one goes, hand focus back to the example itself so a
+           keyboard user is not dropped to the top of the document. */
+        if (stageOf(ex) >= 2) { const s = ex.querySelector('summary'); if (s) s.focus(); }
+        else btn.focus();
+      });
+      ctrl.appendChild(btn);
+      /* Ahead of the steps, so the reading order is question, control,
+         method, answer. */
+      const steps = ex.querySelector('.ex-steps');
+      ex.insertBefore(ctrl, steps);
+      paintOne(ex);
+    });
+  }
+
+  function removeControls() {
+    exs.forEach(function (ex) {
+      const c = ex.querySelector('.pr-ctrl');
+      if (c) c.remove();
+      ex.classList.remove('pr0', 'pr1', 'pr2');
+    });
+  }
+
+  function setMode(m) {
+    state.mode = m === 'practice' ? 'practice' : 'read';
+    save();
+    wrap.classList.toggle('practice', state.mode === 'practice');
+    modeBtns.forEach(function (b) {
+      const on = b.getAttribute('data-mode') === state.mode;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-pressed', String(on));
+    });
+    if (state.mode === 'practice') { addControls(); exs.forEach(paintOne); }
+    else removeControls();
+    paintProgress();
+  }
+
+  modeBtns.forEach(function (b) {
+    b.addEventListener('click', function () { setMode(b.getAttribute('data-mode')); });
+  });
+  setMode(state.mode);
 }
 
 /* Which cards and examples are open is state worth sharing: handing over a

@@ -105,6 +105,27 @@ body {
 .ref-item .c-body { font-size: 1rem; line-height: 1.55; margin-top: 0.5rem; }
 .ref-item .c-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.35; }
 
+/* ── Practice mode ──────────────────────────────────────────────
+   Read is the default and leaves everything below untouched; these rules
+   only bite once .examples carries .practice. */
+.pr-bar { display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.5rem; margin: -0.2rem 0 0.7rem; }
+.pr-modes { display: inline-flex; gap: 0.3rem; }
+.pr-modes .rt-btn { font-size: 0.72rem; padding: 0.3rem 0.7rem; }
+.pr-modes .rt-btn.on { color: #11161f; background: var(--c); border-color: var(--c); }
+.pr-progress { font-family: -apple-system, sans-serif; font-size: 0.72rem; color: var(--muted);
+  font-variant-numeric: tabular-nums; }
+
+/* The solution is withheld until asked for, one stage at a time. */
+.examples.practice .ex-steps,
+.examples.practice .ex-ans { display: none; }
+.examples.practice .ex.pr1 .ex-steps { display: block; }
+.examples.practice .ex.pr2 .ex-steps,
+.examples.practice .ex.pr2 .ex-ans { display: block; }
+.pr-ctrl { margin-top: 0.55rem; }
+.pr-ctrl .rt-btn { font-size: 0.72rem; padding: 0.3rem 0.7rem; }
+.examples.practice details.ex[open] { border-color: color-mix(in srgb, var(--c) 45%, var(--border)); }
+
 /* Worked examples (click-to-expand) */
 .examples { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: 0.6rem; }
 details.ex { background: color-mix(in srgb, var(--c) 7%, var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.55rem 0.8rem 0.6rem; }
