@@ -10,6 +10,7 @@
 
 import { mount } from './calc.js';
 import { mountPalette } from './search.js';
+import { copyText } from './share.js';
 
 const PAD_KEY = 'scilab.notepad';
 const MIGRATED = 'scilab.notepad.migrated';
@@ -112,9 +113,50 @@ tools.push(makeTool('Notepad', ICON.pencil, 'Notepad', function (body) {
   body.innerHTML =
     '<textarea class="pad" id="dockPad" spellcheck="false" ' +
     'placeholder="Anything worth keeping — a formula, a step you keep missing, a question to ask."></textarea>' +
+    /* One key, one browser, one machine is a thin place to keep a term's
+       worth of notes. Two ways out, neither of which changes how it is
+       stored. */
+    '<div class="pad-out">' +
+      '<button class="rt-btn" type="button" id="padCopy">Copy all</button>' +
+      '<button class="rt-btn" type="button" id="padSave">Download .txt</button>' +
+    '</div>' +
     '<div class="pad-status" id="dockPadStatus">Saved in this browser only.</div>';
   const ta = body.querySelector('#dockPad');
   const status = body.querySelector('#dockPadStatus');
+  const copyBtn = body.querySelector('#padCopy');
+  const saveBtn = body.querySelector('#padSave');
+
+  /* Confirm on the button itself, where the eye already is — the same place
+     the symbol cabinet and the share bar confirm. */
+  function flash(btn, msg) {
+    const was = btn.textContent;
+    btn.textContent = msg;
+    btn.disabled = true;
+    setTimeout(function () { btn.textContent = was; btn.disabled = false; }, 1400);
+  }
+
+  copyBtn.addEventListener('click', async function () {
+    if (!ta.value.trim()) { flash(copyBtn, 'Nothing yet'); return; }
+    flash(copyBtn, (await copyText(ta.value)) ? 'Copied ✓' : 'Press Ctrl+C');
+  });
+
+  saveBtn.addEventListener('click', function () {
+    if (!ta.value.trim()) { flash(saveBtn, 'Nothing yet'); return; }
+    let url;
+    try {
+      const blob = new Blob([ta.value], { type: 'text/plain;charset=utf-8' });
+      url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = 'science-notes.txt';
+      document.body.appendChild(a); a.click(); a.remove();
+      flash(saveBtn, 'Saved ✓');
+    } catch (e) {
+      flash(saveBtn, 'Could not save');
+    } finally {
+      /* Freed on the next turn of the loop, after the click has been taken. */
+      if (url) setTimeout(function () { URL.revokeObjectURL(url); }, 0);
+    }
+  });
 
   let ok = true;
   try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); }

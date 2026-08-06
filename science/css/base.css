@@ -171,6 +171,17 @@ body {
 }
 .pad:focus { border-color: var(--gold); }
 .pad-status { font-family: -apple-system, sans-serif; font-size: 0.68rem; color: var(--muted); margin-top: 0.35rem; }
+.pad-out { display: flex; gap: 0.4rem; margin-top: 0.45rem; }
+.pad-out .rt-btn { flex: 1; padding: 0.4rem 0.5rem; font-size: 0.72rem; }
+
+/* The small secondary button. It was in room.css, but the dock renders it on
+   the board too, where that stylesheet is never loaded — the same trap the
+   calculator keys fell into. */
+.rt-btn { font-family: -apple-system, sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--muted);
+  background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.45rem 0.8rem; cursor: pointer; }
+.rt-btn:hover { color: var(--fg); border-color: var(--c); }
+.rt-btn:disabled { opacity: 0.75; cursor: default; }
+.rt-btn[aria-pressed="true"] { color: #11161f; background: var(--c); border-color: var(--c); }
 
 @media (max-width: 520px) {
   /* Still a comfortable thumb target — 2rem plus the 0.4rem gap. */

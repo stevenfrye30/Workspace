@@ -468,10 +468,8 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .rt-search { flex: 1 1 18rem; font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.9rem; color: var(--fg);
   background: #1a2433; border: 1px solid var(--border); border-radius: 4px; padding: 0.5rem 0.7rem; outline: none; }
 .rt-search:focus { border-color: var(--c); }
-.rt-btn { font-family: -apple-system, sans-serif; font-size: 0.78rem; font-weight: 600; color: var(--muted);
-  background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 0.45rem 0.8rem; cursor: pointer; }
-.rt-btn:hover { color: var(--fg); border-color: var(--c); }
-.rt-btn[aria-pressed="true"] { color: #11161f; background: var(--c); border-color: var(--c); }
+/* .rt-btn lives in base.css — the dock uses it on the board too, where this
+   stylesheet is not loaded. */
 .rt-count { font-family: -apple-system, sans-serif; font-size: 0.76rem; color: var(--muted); }
 
 .rt-pane { display: none; }

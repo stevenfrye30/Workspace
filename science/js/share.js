@@ -74,6 +74,19 @@ export function bar() {
     '</div>';
 }
 
+/* One clipboard implementation for the whole app. The async API is blocked
+   without a user gesture in some contexts and over plain http, so there is a
+   fallback; anything that copies should get both, which is why this is
+   exported rather than kept private to the share bar. */
+export async function copyText(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    return true;
+  } catch (e) {
+    return legacyCopy(text);
+  }
+}
+
 export function initBar() {
   const btn = document.getElementById('shareCopy');
   const note = document.getElementById('shareNote');
@@ -82,17 +95,7 @@ export function initBar() {
   let t;
 
   btn.addEventListener('click', async function () {
-    const url = location.href;
-    let ok = false;
-    try {
-      await navigator.clipboard.writeText(url);
-      ok = true;
-    } catch (e) {
-      /* Clipboard is blocked without a user gesture in some contexts, and
-         over plain http. Fall back to selecting the text so the reader can
-         still copy it rather than being told nothing happened. */
-      ok = legacyCopy(url);
-    }
+    const ok = await copyText(location.href);
     note.textContent = ok ? 'Copied — paste it to your student.' : 'Press Ctrl+C to copy the selected link.';
     note.classList.toggle('ok', ok);
     clearTimeout(t);
