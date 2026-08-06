@@ -23,7 +23,7 @@ body {
 .tile {
   position: relative; display: flex; flex-direction: column; justify-content: center;
   text-decoration: none; color: inherit; text-align: center;
-  min-height: 10.5rem; padding: 1.1rem 1rem;
+  min-height: 13rem; padding: 1.1rem 1rem;
   background: linear-gradient(155deg, color-mix(in srgb, var(--c) 15%, var(--panel)), var(--panel));
   border: 1px solid var(--border); border-top: 3px solid var(--c);
   border-radius: 5px;
@@ -35,10 +35,26 @@ body {
   outline: none;
 }
 
-/* The centre tile carries the whole accent, so it reads as the anchor. */
+/* The periodic table is what every other room reaches for, so it is the one
+   round thing on the board — a different shape reads faster than a different
+   colour. Sized to the row height and centred, with a ring of its own accent
+   so it sits forward of the eight tiles around it. */
 .tile-center {
-  background: linear-gradient(150deg, color-mix(in srgb, var(--c) 26%, var(--panel)), var(--panel));
-  border: 1px solid var(--c); border-top: 3px solid var(--c);
+  aspect-ratio: 1 / 1;
+  width: 100%; max-width: 13rem; min-height: 0;
+  justify-self: center; align-self: center;
+  border-radius: 50%;
+  padding: 1rem;
+  background:
+    radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--c) 34%, var(--panel)), var(--panel) 72%);
+  border: 2px solid var(--c);
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 10%, transparent),
+              0 12px 34px -14px color-mix(in srgb, var(--c) 80%, transparent);
+}
+.tile-center:hover, .tile-center:focus-visible {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--c) 16%, transparent),
+              0 16px 40px -12px color-mix(in srgb, var(--c) 90%, transparent);
 }
 
 .t-glyph { font-size: 1.9rem; opacity: 0.65; margin-bottom: 0.4rem; }
@@ -47,8 +63,11 @@ body {
   font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.74rem;
   color: var(--muted); margin-top: 0.3rem;
 }
-.tile-center .t-glyph { font-size: 2.4rem; opacity: 0.8; }
-.tile-center .t-name { font-size: 1.4rem; }
+/* Inside a circle the usable width narrows towards the top and bottom, so
+   the type steps down and the label is allowed to wrap onto two lines. */
+.tile-center .t-glyph { font-size: 2.3rem; opacity: 0.85; margin-bottom: 0.25rem; }
+.tile-center .t-name { font-size: 1.16rem; line-height: 1.15; padding: 0 0.4rem; }
+.tile-center .t-sub { font-size: 0.7rem; margin-top: 0.25rem; }
 
 /* Second destination on the two shared tiles. */
 .t-also {
@@ -64,5 +83,13 @@ body {
   outline: none;
 }
 
-@media (max-width: 760px) { .board { grid-template-columns: repeat(2, 1fr); } }
-@media (max-width: 480px) { .board { grid-template-columns: 1fr; } .tile { min-height: 7rem; } }
+@media (max-width: 760px) {
+  .board { grid-template-columns: repeat(2, 1fr); }
+  .tile-center { max-width: 11rem; }
+}
+@media (max-width: 480px) {
+  .board { grid-template-columns: 1fr; }
+  .tile { min-height: 7rem; }
+  /* One column: a full-width circle would be enormous, so cap it. */
+  .tile-center { max-width: 10.5rem; }
+}
