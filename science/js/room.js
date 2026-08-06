@@ -101,9 +101,14 @@ async function render(key) {
 
   if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
 
-  /* Rooms with tools carry a share bar: the tools mirror their inputs into
-     the URL, so copying it hands over the whole worked problem. */
-  if (specs.length) h += share.bar();
+  /* A share bar wherever there is state worth handing over. That used to mean
+     the eight rooms with instruments; it also means any room with cards or
+     examples, because which of those you have open is itself the thing you
+     want to send — "read these four, in this order". A room with neither gets
+     no bar, since its URL says everything about it already. */
+  const shareable = specs.length ||
+    (room.cards && room.cards.length) || (room.examples && room.examples.length);
+  if (shareable) h += share.bar();
 
   /* A hub room leads with big topic buttons instead of a wall of sections.
      A tile targets either an internal room (key) or an outside tool (href). */
@@ -229,7 +234,8 @@ async function render(key) {
 
   if (room.cards && room.cards.length) initRefList();
   if (room.groups) initSymbolCopy();
-  if (specs.length) share.initBar();
+  if (shareable) share.initBar();
+  initOpenState();
 
   /* The page arrives empty and fills in, so focus is still on the document
      when the content appears — a screen reader user would have to walk back
@@ -323,7 +329,6 @@ function revealHash() {
      the fixed nav pill. Removing the fragment leaves it nothing to chase; it
      goes back once we have settled, so the link a student copies still
      carries the anchor. replaceState never scrolls, so restoring is safe. */
-  const full = location.href;
   history.replaceState(null, '', location.pathname + location.search);
 
   /* Scroll more than once, on purpose. The instruments mount after this runs
@@ -345,8 +350,54 @@ function revealHash() {
   }
   requestAnimationFrame(function () { requestAnimationFrame(place); });
   [150, 400, 800, 1400].forEach(function (ms) { setTimeout(place, ms); });
-  setTimeout(function () { history.replaceState(null, '', full); }, 1600);
+  /* Rebuilt from the URL as it stands, not from a snapshot taken before the
+     open-state mirror started writing to it — restoring the snapshot would
+     throw away every card the reader opened while this was pending. */
+  setTimeout(function () {
+    history.replaceState(null, '', location.pathname + location.search + '#' + id);
+  }, 1600);
   setTimeout(function () { el.classList.remove('hit'); }, 3000);
+}
+
+/* Which cards and examples are open is state worth sharing: handing over a
+   room with four cards already expanded, in the order you want them read, is
+   most of what a worked handout is. It rides in the URL beside the tools'
+   inputs under its own prefix, and only open items are listed — a link that
+   named every closed card would be mostly noise.
+
+   The ids come from the search work, so a shared open-state and a shared
+   deep link cannot disagree about what a card is called. */
+function initOpenState() {
+  const cards = Array.prototype.slice.call(document.querySelectorAll('#refList .ref-item'));
+  const exs = Array.prototype.slice.call(document.querySelectorAll('.examples details.ex'));
+  if (!cards.length && !exs.length) return;
+
+  const saved = share.readState('op');
+  function restore(list, param, prefix) {
+    if (!saved[param]) return;
+    const want = Object.create(null);
+    saved[param].split(',').forEach(function (s) { want[prefix + s] = 1; });
+    list.forEach(function (d) { if (want[d.id]) d.open = true; });
+  }
+  restore(cards, 'c', 'c-');
+  restore(exs, 'x', 'x-');
+
+  function idsOf(list, prefix) {
+    return list.filter(function (d) { return d.open; })
+      .map(function (d) { return d.id.slice(prefix.length); }).join(',');
+  }
+
+  let t;
+  function sync() {
+    /* Debounced, because Expand all fires one toggle per card and that should
+       be one URL write rather than twenty-one. replaceState throughout, so
+       opening a card never adds a back-button step. */
+    clearTimeout(t);
+    t = setTimeout(function () {
+      share.writeState('op', { c: idsOf(cards, 'c-'), x: idsOf(exs, 'x-') });
+    }, 60);
+  }
+  cards.concat(exs).forEach(function (d) { d.addEventListener('toggle', sync); });
 }
 
 /* Expand-all flips every topic at once, for reading the sheet rather than
