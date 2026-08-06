@@ -548,11 +548,14 @@
       <div class="chips" id="drinkRecent" style="margin-bottom:7px"></div>
       <input type="text" id="drinkLabel" placeholder="what was it? — tea, juice, soda">
     </div>
-    <div class="pending" id="intakePending">
-      <span class="pv" id="intakePendingVal">0</span><span class="pu" id="intakePendingUnit"></span>
-      <button class="pclear" id="intakeClear" title="Clear">✕</button>
-    </div>
     <div class="quick" id="intakeQuick"></div>
+    <details class="fold">
+      <summary>exact amount…</summary>
+      <div class="field inline">
+        <input type="number" id="intakeExact" min="0" step="0.5" placeholder="amount">
+        <button class="primary" id="intakeExactLog">Log</button>
+      </div>
+    </details>
   </div>
 
   <div class="card narrow">
@@ -1026,7 +1029,6 @@ const COUNT_STEPS = [1];
 const isVolume = (kind) => KINDS[kind].store !== 'substances';
 
 let intakeTab = 'water';
-let intakePending = 0;
 
 function arrOf(kind) {
   const s = KINDS[kind].store;
@@ -1077,7 +1079,7 @@ function addIntake(kind, opts) {
   renderIntake();
   renderFoodTotals(onDay(state.body.food));
   renderFeed();
-  toast('Logged ' + describeIntake(kind, rec));
+  toast(describeIntake(kind, rec) + ' — tap Undo to take it back');
 }
 
 function renderTabs(el, kinds, active, onPick) {
@@ -1118,17 +1120,11 @@ function renderIntake() {
   const t = totalOf(intakeTab);
   $('intakeTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
   renderTabs($('intakeTabs'), INTAKE_TABS, intakeTab, (k) => {
-    intakeTab = k; intakePending = 0; renderIntake();
+    intakeTab = k; renderIntake();
   });
 
   $('drinkLabelRow').hidden = intakeTab !== 'other';
   if (intakeTab === 'other') renderDrinkRecent();
-
-  $('intakePending').classList.toggle('zero', !intakePending);
-  $('intakePendingVal').textContent = round1(intakePending);
-  $('intakePendingUnit').textContent = vol ? 'oz'
-    : intakeTab === 'alcohol' ? (intakePending === 1 ? 'drink' : 'drinks')
-    : (intakePending === 1 ? 'time' : 'times');
 
   const el = $('intakeQuick');
   el.innerHTML = '';
@@ -1136,14 +1132,10 @@ function renderIntake() {
     const b = document.createElement('button');
     b.type = 'button';
     b.innerHTML = '+' + n + (vol ? '<span class="u">oz</span>' : '');
-    b.onclick = () => { intakePending += n; renderIntake(); };
+    b.onclick = () => logIntake(n);          // a tap IS the log
     el.appendChild(b);
   });
-  const enter = document.createElement('button');
-  enter.type = 'button'; enter.className = 'enter'; enter.textContent = 'Enter';
-  enter.disabled = !intakePending;
-  enter.onclick = commitIntake;
-  el.appendChild(enter);
+  $('intakeExact').placeholder = vol ? 'ounces' : 'how many';
 
   // A note belongs with the substance, not the amount, so it gets its own way in.
   if (!vol) {
@@ -1152,18 +1144,18 @@ function renderIntake() {
     note.onclick = () => openForm(m.name, [
       { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
       { key: 'note', label: 'Note', placeholder: 'strain, brand, context…' },
-    ], { count: String(intakePending || 1) }, (v) => {
-      intakePending = 0;
+    ], { count: '1' }, (v) => {
       addIntake(intakeTab, { count: Number(v.count) || 1, note: v.note });
     }, 'Log');
     el.appendChild(note);
   }
 }
 
-function commitIntake() {
-  if (!intakePending) return;
-  const n = intakePending;
-  intakePending = 0;
+/* One tap logs. The adding machine it replaces cost two taps for the
+   commonest action in the app and put a number on screen that meant
+   "not yet". Undo is the safety net that makes committing immediately
+   safe — the toast says so. */
+function logIntake(n) {
   if (isVolume(intakeTab)) {
     const opts = { oz: n };
     if (intakeTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
@@ -1172,6 +1164,12 @@ function commitIntake() {
   } else {
     addIntake(intakeTab, { count: n });
   }
+}
+function logExactIntake() {
+  const n = parseFloat($('intakeExact').value);
+  if (!n || n <= 0) { $('intakeExact').focus(); return; }
+  $('intakeExact').value = '';
+  logIntake(n);
 }
 
 /* =============================================================
@@ -2417,10 +2415,8 @@ $('restoreFile').onchange = (e) => {
 $('nudgeGo').onclick = foreverCopy;
 $('nudgeLater').onclick = () => { $('nudge').hidden = true; };
 $('undoBtn').onclick = doUndo;
-$('intakeClear').onclick = () => { intakePending = 0; renderIntake(); };
-$('intakeCard').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); commitIntake(); }
-});
+$('intakeExactLog').onclick = logExactIntake;
+$('intakeExact').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); logExactIntake(); } };
 $('dTodayBtn').onclick = () => setDay(todayStr());
 refreshNudge();
 $('dYestBtn').onclick = () => setDay(shiftDay(todayStr(), -1));
