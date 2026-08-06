@@ -103,10 +103,6 @@
   body.dense .daily, body.dense .col { gap: 10px; }
   .col > .card { margin-bottom: 0; }
 
-  /* The reference panels: their own masonry, below the instruments. */
-  /* Inside a column now, so a plain stack. */
-  .panels { display: flex; flex-direction: column; gap: 10px; }
-
   /* ---------- cards ---------- */
   .card {
     background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
@@ -453,44 +449,15 @@
   .checkline { display: flex; align-items: center; gap: 7px; margin-top: 11px; font-size: .8rem; color: var(--dim); }
   .checkline input { width: auto; margin: 0; }
 
-  /* The reference panels are real collapsibles. Closed they are one line;
-     they open themselves once, on load, if they have anything to show. */
-  .panels > .card, .panels > details { box-shadow: none; }
-  .panels > details > summary {
-    cursor: pointer; list-style: none; justify-content: center; position: relative;
-    font-size: .68rem; font-weight: 600; text-transform: uppercase;
-    letter-spacing: .1em; color: var(--dim);
-    display: flex; align-items: baseline; gap: 8px;
-  }
-  .panels > details > summary::-webkit-details-marker { display: none; }
-  /* Reference cards read one step quieter than the daily instruments. */
-  .panels > details > summary, .panels > .card > h2 { font-size: .64rem; }
-  .panels > details > summary::after {
-    content: '+'; margin-left: 6px; font-size: .9rem; line-height: 1; color: var(--dim);
-  }
-  .panels > details[open] > summary::after { content: '−'; }
-  .panels > details > summary:hover { color: var(--ink); }
-  .panels > details[open] > summary { margin-bottom: 10px; }
-
   .sum {
     margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400;
     color: var(--dim); font-size: .74rem; text-align: right;
   }
-  .sub { margin-top: 14px; }
-  .sub:first-child { margin-top: 0; }
-  .sub h3 {
-    font-size: .68rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em;
-    color: var(--dim); margin-bottom: 7px; display: flex; align-items: center; gap: 8px;
-  }
-  .sub h3 .act { margin-left: auto; }
   .mini {
     background: var(--panel2); border: 1px solid var(--line); color: var(--dim);
     border-radius: 7px; padding: 3px 9px; font: inherit; font-size: .7rem; cursor: pointer;
   }
   .mini:hover { color: var(--accent); border-color: var(--accent); }
-  .quote { font-size: .84rem; padding: 7px 0; border-bottom: 1px solid var(--line); }
-  .quote:last-child { border-bottom: 0; }
-  .quote .src { display: block; font-size: .7rem; color: var(--dim); margin-top: 2px; }
   .valchips .chip { cursor: default; }
 
   /* ---------- weekly review ---------- */
