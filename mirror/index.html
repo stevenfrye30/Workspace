@@ -289,8 +289,6 @@
   .icon-btn[disabled]:hover { color: var(--dim); border-color: var(--line); }
 
   /* ---------- food ---------- */
-  .totals { margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400; font-variant-numeric: tabular-nums; }
-  .totals b { color: var(--ink); font-weight: 600; }
   .macrobar { display: flex; gap: 8px; margin-bottom: 12px; }
   .macrobar .m { flex: 1 1 0; min-width: 0; }     /* min-width:0 or the numbers push the row wide */
   .macrobar .m .k {
@@ -579,7 +577,7 @@
   <!-- The search box is the whole instrument: no suggestion chips, no fold to
        open first. Type, pick, done. -->
   <div class="card" id="foodCard">
-    <h2>Food <span class="totals" id="foodTotals"></span></h2>
+    <h2>Food</h2>
     <div class="macrobar" id="foodMacros"></div>
     <div class="searchwrap">
       <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
@@ -1091,7 +1089,8 @@ function renderTabs(el, kinds, active, onPick) {
     b.type = 'button';
     b.style.setProperty('--tc', 'var(--' + m.c + ')');
     b.setAttribute('aria-selected', String(k === active));
-    b.innerHTML = m.icon + ' ' + esc(m.name) + (t.n ? '<span class="n">' + round1(t.n) + '</span>' : '');
+    const badge = (k !== 'water' && t.n) ? '<span class="n">' + round1(t.n) + '</span>' : '';
+    b.innerHTML = m.icon + ' ' + esc(m.name) + badge;
     b.onclick = () => onPick(k);
     el.appendChild(b);
   });
@@ -1118,7 +1117,12 @@ function renderIntake() {
   $('intakeCard').style.setProperty('--c', 'var(--' + m.c + ')');
   $('intakeName').textContent = m.name;
   const t = totalOf(intakeTab);
-  $('intakeTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
+  // Water is the only kind with a target, so it is the only one that reads
+  // as a fraction. It appears here and nowhere else on the page.
+  const target = intakeTab === 'water' ? Number((state.body.targets || {}).water_oz) || 0 : 0;
+  $('intakeTotal').textContent = target
+    ? round1(t.n) + ' / ' + target + ' oz'
+    : (t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '');
   renderTabs($('intakeTabs'), INTAKE_TABS, intakeTab, (k) => {
     intakeTab = k; renderIntake();
   });
@@ -1382,10 +1386,6 @@ function renderFoodTotals(rows) {
     const k = kcalOf(e), p = proteinOf(e);
     if (k == null) unknown++; else { kcal += k; protein += p || 0; }
   });
-  $('foodTotals').innerHTML = rows.length
-    ? '<b>' + Math.round(kcal).toLocaleString() + '</b> kcal · <b>' + Math.round(protein) + '</b> g protein' +
-      (unknown ? ' <span class="tiny">(' + unknown + ' unresolved)</span>' : '')
-    : '';
   const cell = (label, val, target, unit) => {
     const pct = target ? Math.min(100, (val / target) * 100) : 0;
     const over = target && val > target;
@@ -1394,11 +1394,11 @@ function renderFoodTotals(rows) {
         '<span class="u">' + (target ? ' / ' + target + unit : unit) + '</span></div>' +
       '<div class="bar"><span class="' + (over ? 'over' : '') + '" style="width:' + pct + '%"></span></div></div>';
   };
-  const water = onDay(state.body.water).reduce((n, r) => n + (Number(r.oz) || 0), 0);
+  // Water belongs to Intake, which shows it against its target. Food shows
+  // what Food knows.
   $('foodMacros').innerHTML =
-    cell('Calories', kcal, t.kcal, ' kcal') +
-    cell('Protein', protein, t.protein_g, ' g') +
-    cell('Water', water, t.water_oz, ' oz');
+    cell('Calories', kcal, t.kcal, unknown ? ' kcal · ' + unknown + ' unresolved' : ' kcal') +
+    cell('Protein', protein, t.protein_g, ' g');
 }
 
 /* ---- meals: the combinations you eat again ----
