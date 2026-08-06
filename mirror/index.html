@@ -446,6 +446,18 @@
   .pop h3 { font-size: .95rem; margin-bottom: 10px; }
   .pop .actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
 
+  .hint { display: block; font-size: .72rem; color: var(--dim); margin-top: 2px; }
+
+  .nudge {
+    display: flex; align-items: center; gap: 9px; flex-wrap: wrap;
+    padding: 8px 12px; margin-bottom: 12px; border-radius: 10px;
+    background: color-mix(in srgb, var(--warn) 12%, var(--panel));
+    border: 1px solid color-mix(in srgb, var(--warn) 32%, transparent);
+    font-size: .78rem; color: var(--ink);
+  }
+  .nudge[hidden] { display: none; }
+  .nudge span { flex: 1; min-width: 12rem; }
+
   .toast {
     position: fixed; left: 50%; bottom: calc(18px + env(safe-area-inset-bottom));
     transform: translateX(-50%) translateY(12px); z-index: 60;
@@ -469,7 +481,7 @@
     <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶<span class="lbl"> Undo</span></button>
     <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
     <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
-    <button class="icon-btn" id="backupBtn" title="Download a copy of all your data">Back up</button>
+    <button class="icon-btn" id="dataBtn" title="Forever-copy, restore, snapshots">Data</button>
   </span>
 </div>
 
@@ -479,6 +491,13 @@
   <div class="launch" id="launch"></div>
   <div class="bdayline" id="bdayLine"></div>
 </div>
+
+<div class="nudge" id="nudge" hidden>
+  <span id="nudgeMsg"></span>
+  <button class="mini" id="nudgeGo">Save a forever-copy</button>
+  <button class="mini" id="nudgeLater" title="Hide until more changes pile up">Later</button>
+</div>
+<input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
 
 <div class="datestrip">
   <span class="lbl">Logging for</span>
@@ -735,12 +754,12 @@ const defaultState = () => ({
   _deleted: [],                             // v13 — tombstones, for sync
 });
 
-function loadState() {
-  let saved = null;
-  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { /* corrupt */ }
+/** Merge a loaded blob onto the current defaults. Every path that brings data
+ *  in — first load, restore from a file, snapshot rollback — goes through
+ *  here, so none of them can miss a backfill the others get. */
+function mergeLoaded(saved) {
   const base = defaultState();
   if (!saved || typeof saved !== 'object') return base;
-
   // Shallow-merge each namespace so new v13 fields are backfilled while every
   // existing key — including ones this dashboard never touches — is preserved.
   const out = { ...base, ...saved };
@@ -749,12 +768,17 @@ function loadState() {
       out[k] = { ...base[k], ...(saved[k] && typeof saved[k] === 'object' ? saved[k] : {}) };
     }
   }
-  // v12 -> v13: three new stores. Purely additive; nothing is reshaped.
+  // v12 -> v13: the new stores. Purely additive; nothing is reshaped.
   if (!Array.isArray(out.body.drinks)) out.body.drinks = [];
   if (!Array.isArray(out.body.substances)) out.body.substances = [];
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
+}
+function loadState() {
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { /* corrupt */ }
+  return mergeLoaded(saved);
 }
 
 let state = loadState();
@@ -772,6 +796,7 @@ function saveState() {
   state.__v = SCHEMA_VERSION;
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    bumpChanges();
   } catch (e) {
     alert('Could not save — this browser is out of storage space, or is in private mode.');
   }
@@ -2075,17 +2100,304 @@ function renderDrawers() {
 }
 
 /* =============================================================
-   BACKUP — the forever-copy habit, in one button.
+   DATA — snapshots, restore, and the forever-copy.
+
+   The dashboard could produce a backup but not read one back, which made
+   the front door a one-way street: a file you cannot restore is not a
+   backup. Everything needed to get data OUT and back IN lives here.
+
+   Three homes, in increasing order of permanence (SCHEMA.md §1):
+     localStorage      the working copy, lost on a cache clear
+     snapshots         undo safety, same browser, last 12
+     the forever-copy  mirror-data.json + .md, kept by you, survives all
    ============================================================= */
+const BACKUP_KEY = 'mirror_backups';
+const MAX_SNAPS = 12;
+const LAST_REPO_KEY = 'mirror_last_repo';
+const CHANGES_KEY = 'mirror_changes_since_repo';
+
+function loadSnaps() {
+  try { return JSON.parse(localStorage.getItem(BACKUP_KEY)) || []; } catch { return []; }
+}
+/** Never destroy without one of these first. */
+function takeSnapshot(reason) {
+  const snaps = loadSnaps();
+  snaps.unshift({ ts: Date.now(), reason, data: JSON.stringify(state) });
+  try { localStorage.setItem(BACKUP_KEY, JSON.stringify(snaps.slice(0, MAX_SNAPS))); }
+  catch { /* snapshots are best-effort; never block the real save */ }
+}
+function changesSinceRepo() { return Number(localStorage.getItem(CHANGES_KEY) || 0); }
+function bumpChanges() {
+  try { localStorage.setItem(CHANGES_KEY, String(changesSinceRepo() + 1)); } catch {}
+}
+
 function download(name, text, type) {
   const blob = new Blob([text], { type: type || 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url; a.download = name; a.click();
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-function backup() {
-  download('mirror-data-' + todayStr() + '.json', JSON.stringify(state, null, 2));
+
+/* ---- the human-readable companion ----
+   mirror-data.json is lossless and is what Restore reads. This is the copy
+   a person can open in fifty years with no app at all, so durable and
+   qualitative content is written in full and only the high-volume logs are
+   summarised — the numbers live in the JSON either way.
+
+   Written fresh rather than copied from self.html, whose version predates
+   v13 and knows nothing of drinks, substances or links. */
+const MD_FULL = [
+  ['Values', () => (state.identity.values || []).map((v) => `- ${v}`)],
+  ['Places', () => (state.places.items || []).map((p) =>
+    `- **${p.name}** — ${p.kind}${p.from ? `, ${p.from}` : ''}${p.to ? `–${p.to}` : (p.from ? '–now' : '')}${p.note ? ` · ${p.note}` : ''}`)],
+  ['People', () => (state.relationships.people || []).map((p) =>
+    `- **${p.name}**${p.relation ? ` — ${p.relation}` : ''}`)],
+  ['Birthdays', () => (state.relationships.birthdays || [])
+    .slice().sort((a, b) => (a.month - b.month) || ((a.day || 0) - (b.day || 0)))
+    .map((b) => `- **${b.name}** — ${MONTHS[b.month - 1] || '?'}${b.day ? ` ${b.day}` : ''}${b.year ? `, ${b.year}` : ''}`)],
+  ['Books', () => (state.mind.books || []).map((b) =>
+    `- **${b.title}**${b.author ? ` — ${b.author}` : ''}${b.status ? ` (${b.status})` : ''}`)],
+  ['Quotes', () => (state.mind.quotes || []).map((q) =>
+    `- "${q.text}"${q.source ? ` — ${q.source}` : ''}${q.date ? ` _(${q.date})_` : ''}`)],
+  ['Ideas', () => (state.mind.ideas || []).map((i) =>
+    `- ${i.text}${i.source ? ` _(${i.source})_` : ''}${i.date ? ` _(${i.date})_` : ''}`)],
+  ['Questions', () => (state.mind.questions || []).map((q) =>
+    `- ${q.q}${q.status ? ` (${q.status})` : ''}${q.note ? ` — ${q.note}` : ''}`)],
+  ['Habits', () => (state.habits.items || []).map((h) => {
+    const done = (h.done || []).slice().sort().reverse();
+    return `- **${h.name}** — kept ${done.length} day${done.length === 1 ? '' : 's'}` +
+           `${h.created ? `, since ${h.created}` : ''}${h.active === false ? ' _(archived)_' : ''}` +
+           (done.length ? `\n  - recent: ${done.slice(0, 10).join(', ')}${done.length > 10 ? ` … (+${done.length - 10} more)` : ''}` : '');
+  })],
+  ['Budget', () => (state.money.categories || []).map((c) =>
+    `- **${c.name}**${c.planned ? ` — ${fmt$(c.planned)} planned` : ''}`)],
+  ['Subscriptions', () => (state.money.subscriptions || []).map((s) =>
+    `- **${s.name}** — ${fmt$(s.amount)} / ${s.cadence || 'monthly'}`)],
+  ['Savings goals', () => (state.money.goals || []).map((g) =>
+    `- **${g.name}** — ${fmt$(g.saved || 0)} of ${fmt$(g.target || 0)}${g.by ? ` by ${g.by}` : ''}`)],
+  ['Net worth', () => (state.money.netWorth || []).slice().reverse().map((n) =>
+    `- **${n.date}** — assets ${fmt$(n.assets)}, liabilities ${fmt$(n.liabilities)}`)],
+  ['Links', () => (state.links || []).map((l) => `- ${l.label} — ${l.url}`)],
+  ['Journal', () => (state.identity.journal || []).slice().reverse().map((j) =>
+    `- **${j.date}**${j.title ? ` — ${j.title}` : ''}${j.text ? `\n  - ${j.text}` : ''}`)],
+  ['Reflections', () => (state.identity.reflections || []).slice().reverse().map((r) =>
+    `- **${r.date}** (${r.period})${r.prompt ? ` — ${r.prompt}` : ''}${r.answer ? `\n  - ${r.answer}` : ''}`)],
+  ['Decisions', () => (state.decisions.items || []).slice().reverse().map((d) =>
+    `- **${d.date}** — ${d.title}${d.confidence != null ? ` (confidence ${d.confidence}/5)` : ''}` +
+    (d.expected ? `\n  - Expected: ${d.expected}` : '') +
+    (d.outcome ? `\n  - Outcome: ${d.outcome}` : '') +
+    (d.lessons ? `\n  - Lesson: ${d.lessons}` : ''))],
+];
+/* High-volume: a count plus the tail. The JSON holds every row. */
+const MD_SUMMARY = [
+  ['Food', () => state.body.food, (r) => `${r.date} — ${r.foodName}, ${r.portion || r.grams + ' g'}`],
+  ['Water', () => state.body.water, (r) => `${r.date} — ${round1(r.oz)} oz`],
+  ['Drinks', () => state.body.drinks, (r) => `${r.date} — ${r.label || r.kind}${r.oz ? `, ${round1(r.oz)} oz` : ''}`],
+  ['Substances', () => state.body.substances, (r) => `${r.date} — ${r.kind} ×${r.count || 1}${r.note ? ` (${r.note})` : ''}`],
+  ['Sleep', () => state.body.sleep, (r) => `${r.date} — ${r.hours} h${r.quality ? `, quality ${r.quality}/5` : ''}`],
+  ['Exercise', () => state.body.exercise, (r) => `${r.date} — ${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`],
+  ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
+  ['Expenses', () => state.money.expenses, (r) => `${r.date} — ${fmt$(r.amount)}${r.note ? ` (${r.note})` : ''}`],
+];
+
+function buildDataMarkdown() {
+  const L = [];
+  const p = (x = '') => L.push(x);
+  const byDateDesc = (a, b) => String(b.date || '').localeCompare(String(a.date || ''));
+
+  p('# Mirror — life record');
+  p('');
+  p(`_Saved ${todayStr()} · schema v${SCHEMA_VERSION} · human-readable companion to ` +
+    '**mirror-data.json**, which is lossless and is what Restore reads._');
+  p('');
+
+  p('## At a glance');
+  p('');
+  const counts = [
+    ['Daily cards', state.daily.cards], ['Food entries', state.body.food],
+    ['Water', state.body.water], ['Drinks', state.body.drinks],
+    ['Substances', state.body.substances], ['Sleep nights', state.body.sleep],
+    ['Exercise sessions', state.body.exercise], ['Symptoms', state.body.symptoms],
+    ['Habits', state.habits.items], ['People', state.relationships.people],
+    ['Birthdays', state.relationships.birthdays], ['Books', state.mind.books],
+    ['Quotes', state.mind.quotes], ['Ideas', state.mind.ideas],
+    ['Expenses', state.money.expenses], ['Places', state.places.items],
+  ];
+  counts.forEach(([k, a]) => p(`- **${k}:** ${Array.isArray(a) ? a.length : 0}`));
+  p('');
+
+  /* The Daily Card is the heartbeat — written in full, newest first, so the
+     Markdown is genuinely readable without the app. */
+  const cards = (state.daily.cards || []).slice().sort(byDateDesc);
+  if (cards.length) {
+    p('## Daily record');
+    p('');
+    cards.forEach((c) => {
+      const head = [
+        c.mood != null ? `mood ${c.mood}` : null,
+        c.energy != null ? `energy ${c.energy}` : null,
+        c.sleep_hours != null ? `sleep ${c.sleep_hours}h` : null,
+        c.sleep_quality != null ? `quality ${c.sleep_quality}/5` : null,
+        (c.tags && c.tags.length) ? `tags: ${c.tags.join(', ')}` : null,
+      ].filter(Boolean).join(', ');
+      p(`- **${c.date}**${head ? ` — ${head}` : ''}`);
+      if (c.one_sentence) p(`  - Today: ${c.one_sentence}`);
+      if (c.body_note) p(`  - Body: ${c.body_note}`);
+      if (c.food_note) p(`  - Food: ${c.food_note}`);
+      if (c.money_note) p(`  - Money: ${c.money_note}`);
+      if (c.social_note) p(`  - People: ${c.social_note}`);
+    });
+    p('');
+  }
+
+  MD_FULL.forEach(([title, rows]) => {
+    const lines = rows().filter(Boolean);
+    if (!lines.length) return;
+    p(`## ${title}`); p('');
+    lines.forEach((l) => p(l));
+    p('');
+  });
+
+  p('## Logs');
+  p('');
+  p('_Summarised here; every row is in the JSON._');
+  p('');
+  MD_SUMMARY.forEach(([title, get, fmt]) => {
+    const arr = get() || [];
+    if (!arr.length) return;
+    const recent = arr.slice().sort(byDateDesc).slice(0, 14);
+    p(`### ${title} — ${arr.length}`);
+    recent.forEach((r) => p(`- ${fmt(r)}`));
+    if (arr.length > recent.length) p(`- _… and ${arr.length - recent.length} more in the JSON._`);
+    p('');
+  });
+
+  return L.join('\n');
+}
+
+/* ---- the forever-copy: two fixed-name files you keep somewhere permanent ---- */
+function foreverCopy() {
+  download('mirror-data.json', JSON.stringify(state, null, 2));
+  // A second programmatic download in the same tick is often swallowed.
+  setTimeout(() => download('mirror-data.md', buildDataMarkdown(), 'text/markdown'), 600);
+  localStorage.setItem(LAST_REPO_KEY, String(Date.now()));
+  localStorage.setItem(CHANGES_KEY, '0');
+  setTimeout(() => { refreshNudge(); toast('Forever-copy saved — keep both files somewhere permanent'); }, 700);
+}
+
+function datedBackup() {
+  download('mirror-' + todayStr() + '.json', JSON.stringify(state, null, 2));
+  toast('Backup downloaded');
+}
+
+/* ---- restore ---- */
+function restoreFromFile(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let obj;
+    try { obj = JSON.parse(reader.result); }
+    catch { alert('That file is not valid JSON, so it is not a Mirror backup.'); return; }
+    if (!obj || typeof obj !== 'object' || (!obj.body && !obj.identity)) {
+      alert('That does not look like a Mirror backup — no body or identity section.');
+      return;
+    }
+    const n = (a) => (Array.isArray(a) ? a.length : 0);
+    const summary = [
+      n(obj.daily && obj.daily.cards) + ' daily cards',
+      n(obj.body && obj.body.food) + ' food entries',
+      n(obj.relationships && obj.relationships.people) + ' people',
+    ].join(', ');
+    if (!confirm('Replace everything in this browser with this backup?\n\n' +
+                 'The file holds ' + summary + '.\n' +
+                 'Your current data is snapshotted first, so this is undoable.')) return;
+    takeSnapshot('before restore');
+    state = mergeLoaded(obj);
+    saveState(); renderAll(); refreshNudge();
+    toast('Restored — ' + summary);
+  };
+  reader.readAsText(file);
+}
+
+/* ---- snapshots ---- */
+function openSnapshots() {
+  const snaps = loadSnaps();
+  openPop('Snapshots',
+    '<div class="tiny" style="margin-bottom:9px">Automatic copies taken before anything destructive. ' +
+    'They live in this browser only — they are not a backup.</div>' +
+    '<div class="list" id="snapList"></div>', null, () => {
+      const box = $('snapList');
+      if (!snaps.length) { box.innerHTML = '<div class="empty">No snapshots yet.</div>'; return; }
+      box.innerHTML = '';
+      snaps.forEach((s) => {
+        const div = document.createElement('div'); div.className = 'row';
+        const when = new Date(s.ts).toLocaleString();
+        div.innerHTML = '<span style="flex:1;min-width:0">' + esc(s.reason || 'snapshot') +
+                        '</span><span class="tiny">' + esc(when) + '</span>';
+        const b = document.createElement('button');
+        b.className = 'mini'; b.type = 'button'; b.textContent = 'Restore';
+        b.onclick = () => {
+          if (!confirm('Roll back to this snapshot? The current state is snapshotted first.')) return;
+          takeSnapshot('before rollback');
+          try {
+            state = mergeLoaded(JSON.parse(s.data));
+            saveState(); renderAll(); closePop(); toast('Rolled back');
+          } catch { alert('That snapshot could not be read.'); }
+        };
+        div.appendChild(b);
+        box.appendChild(div);
+      });
+    });
+}
+
+/* ---- the panel ---- */
+function openData() {
+  const last = Number(localStorage.getItem(LAST_REPO_KEY) || 0);
+  const since = changesSinceRepo();
+  const when = last ? new Date(last).toLocaleDateString() : 'never';
+  openPop('Your data',
+    '<div class="tiny" style="margin-bottom:12px">Everything lives in this browser. ' +
+    'The forever-copy is the only thing that survives a cleared cache, a new laptop, or a lost phone.<br>' +
+    '<b>Last forever-copy:</b> ' + esc(when) +
+    (since ? ' · <b>' + since + '</b> change' + (since === 1 ? '' : 's') + ' since' : '') + '</div>' +
+    '<div class="list" id="dataActions"></div>', null, () => {
+      const box = $('dataActions');
+      const row = (label, note, fn, warn) => {
+        const div = document.createElement('div'); div.className = 'row';
+        div.innerHTML = '<span style="flex:1;min-width:0">' + esc(label) +
+                        '<span class="hint">' + esc(note) + '</span></span>';
+        const b = document.createElement('button');
+        b.className = 'mini'; b.type = 'button'; b.textContent = warn ? 'Erase' : 'Go';
+        if (warn) b.style.color = 'var(--warn)';
+        b.onclick = fn;
+        div.appendChild(b); box.appendChild(div);
+      };
+      box.innerHTML = '';
+      row('Forever-copy', 'mirror-data.json + a readable .md — the archive', () => { closePop(); foreverCopy(); });
+      row('Restore from a file…', 'reads a backup you choose; snapshotted first', () => $('restoreFile').click());
+      row('Snapshots', 'roll back to an automatic in-browser copy', () => { closePop(); openSnapshots(); });
+      row('Download a dated backup', 'mirror-' + todayStr() + '.json', () => { closePop(); datedBackup(); });
+      row('Erase everything', 'wipes this browser; snapshotted first', () => {
+        if (!confirm('Erase ALL Mirror data in this browser?\n\nA snapshot is kept, so it is undoable here — but not on any other device.')) return;
+        if (!confirm('Really sure? Everything in this browser goes.')) return;
+        takeSnapshot('before erase');
+        state = defaultState(); saveState(); renderAll(); closePop(); toast('Erased — undo via Snapshots');
+      }, true);
+    });
+}
+
+/* ---- the nudge ---- */
+function refreshNudge() {
+  const bar = $('nudge');
+  const since = changesSinceRepo();
+  const last = Number(localStorage.getItem(LAST_REPO_KEY) || 0);
+  const stale = last && (Date.now() - last) > 21 * 864e5;
+  if (since < 60 && !stale) { bar.hidden = true; return; }
+  bar.hidden = false;
+  $('nudgeMsg').textContent = last
+    ? since + ' changes since your last forever-copy' + (stale ? ', and it is over three weeks old' : '')
+    : 'You have never saved a forever-copy — this browser is the only copy of your record';
 }
 
 /* =============================================================
@@ -2123,7 +2435,14 @@ $('themeBtn').onclick = () => {
 };
 $('themeBtn').textContent = document.body.classList.contains('theme-dark') ? '☀' : '☾';
 
-$('backupBtn').onclick = backup;
+$('dataBtn').onclick = openData;
+$('restoreFile').onchange = (e) => {
+  const f = e.target.files[0];
+  if (f) { closePop(); restoreFromFile(f); }
+  e.target.value = '';          // so choosing the same file twice still fires
+};
+$('nudgeGo').onclick = foreverCopy;
+$('nudgeLater').onclick = () => { $('nudge').hidden = true; };
 $('undoBtn').onclick = doUndo;
 $('drinkClear').onclick = () => { drinkPending = 0; renderDrinks(); };
 $('subClear').onclick = () => { subPending = 0; renderSubs(); };
@@ -2135,6 +2454,7 @@ $('subsCard').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') { e.preventDefault(); commitSub(); }
 });
 $('dTodayBtn').onclick = () => setDay(todayStr());
+refreshNudge();
 $('dYestBtn').onclick = () => setDay(shiftDay(todayStr(), -1));
 $('dPick').onchange = (e) => { if (e.target.value) setDay(e.target.value); };
 $('pSave').onclick = savePulse;
