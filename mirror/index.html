@@ -212,7 +212,7 @@
 
   .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
   .tabs button {
-    flex: 1 1 4.2rem; min-width: 0; cursor: pointer; font: inherit; font-size: .7rem;
+    flex: 1 1 30%; min-width: 0; cursor: pointer; font: inherit; font-size: .7rem;
     padding: 6px 4px; border-radius: 8px; border: 1px solid var(--line);
     background: var(--panel2); color: var(--dim);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -227,7 +227,19 @@
   body.dense .tabs { gap: 3px; margin-bottom: 8px; }
   body.dense .tabs button { font-size: .66rem; padding: 5px 3px; }
 
-  .quick { display: grid; grid-template-columns: repeat(auto-fit, minmax(62px, 1fr)); gap: 6px; }
+  /* A fixed slot: three buttons whatever the tab, so switching kinds never
+     resizes the card. */
+  .quick {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
+    align-content: center; min-height: 46px;
+  }
+  body.dense .quick { min-height: 42px; }
+  /* The chosen-form tag gets a line of its own that is ALWAYS there, empty
+     or not. Letting it appear and disappear moved every button under it. */
+  .quicktag { height: 26px; display: flex; align-items: center; margin-bottom: 4px; }
+  .quicktag .chip { padding: 2px 10px; font-size: .72rem; line-height: 1.5; }
+  .namefield { grid-column: 1 / -1; display: flex; gap: 6px; }
+  .namefield input { flex: 1; min-width: 0; }
   .quick button {
     cursor: pointer; font: inherit; font-size: .8rem; font-weight: 600; padding: 11px 4px;
     border-radius: 9px; border: 1px solid color-mix(in srgb, var(--c) 35%, transparent);
@@ -239,7 +251,6 @@
   body.dense .quick button { padding: 9px 4px; font-size: .76rem; }
   .quick button .u { font-size: .6rem; font-weight: 400; opacity: .7; margin-left: 1px; }
 
-  #drinkLabelRow { margin-bottom: 8px; }
 
   /* Movement keeps a row of the types you use most. Empty it collapses
      rather than holding open a blank gap between the heading and the
@@ -524,12 +535,9 @@
   <div class="card boxed" id="intakeCard">
     <h2>Intake <span class="note" id="intakeTotal"></span></h2>
     <div class="tabs" id="intakeTabs"></div>
-    <div id="drinkLabelRow" hidden>
-      <div class="chips" id="drinkRecent" style="margin-bottom:7px"></div>
-      <input type="text" id="drinkLabel" placeholder="what was it? — tea, juice, soda">
-    </div>
+    <div class="quicktag" id="intakeTag"></div>
     <div class="quick" id="intakeQuick"></div>
-    <details class="fold">
+    <details class="fold" id="intakeExactRow">
       <summary>exact amount…</summary>
       <div class="field inline">
         <input type="number" id="intakeExact" min="0" step="0.5" placeholder="amount">
@@ -1011,13 +1019,125 @@ const KINDS = {
   weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
 };
 const intakeMeta = (k) => KINDS[k];          // the tracker reads its icons from here
-const INTAKE_TABS = ['water', 'coffee', 'other', 'alcohol', 'nicotine', 'weed'];
-const OZ_STEPS = [2, 8, 16];                 // ounces; compose to anything useful
-const COUNT_STEPS = [1];
-/** Volume or count — the only axis on which the six kinds differ. */
+/* Three buttons, always, whatever the tab — the slot is a fixed height so
+   the card cannot twitch as you move between kinds. Two tabs need a choice
+   before the amounts make sense, and both make it in the same slot rather
+   than in a dialog: weed needs a form (bud is weighed, edibles are dosed),
+   and Other needs a name before "+8 oz" means anything. */
+const INTAKE_TABS = ['water', 'coffee', 'alcohol', 'nicotine', 'weed', 'other'];
+const OZ_STEPS = [2, 8, 16];
+const COUNT_STEPS = [1, 2, 3];
+const WEED_FORMS = {
+  bud:    { label: 'Bud',    unit: 'g',  steps: [0.1, 0.5, 1] },
+  edible: { label: 'Edible', unit: 'mg', steps: [5, 20, 50] },
+};
 const isVolume = (kind) => KINDS[kind].store !== 'substances';
 
 let intakeTab = 'water';
+let weedForm = null;        // 'bud' | 'edible' — chosen in the slot
+let otherLabel = '';        // the name you gave this drink
+
+/** A tag that shows the choice and lets you take it back. */
+function chosenTag(text, onClear) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'chip';
+  b.setAttribute('aria-pressed', 'true');
+  b.innerHTML = esc(text) + ' <span aria-hidden="true">✕</span>';
+  b.title = 'Change';
+  b.onclick = onClear;
+  return b;
+}
+function stepButton(label, unit, onTap) {
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.innerHTML = esc(label) + (unit ? '<span class="u">' + esc(unit) + '</span>' : '');
+  b.onclick = onTap;
+  return b;
+}
+
+function renderIntake() {
+  const m = KINDS[intakeTab];
+  $('intakeCard').style.setProperty('--c', 'var(--' + m.c + ')');
+  // Title stays 'Intake'; the tint is what says which tab you are on.
+  const t = totalOf(intakeTab);
+  $('intakeTotal').textContent = (intakeTab !== 'water' && t.n)
+    ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
+  renderTabs($('intakeTabs'), INTAKE_TABS, intakeTab, (k) => {
+    intakeTab = k; renderIntake();
+  });
+
+  const el = $('intakeQuick');
+  const tag = $('intakeTag');
+  el.innerHTML = ''; tag.innerHTML = '';
+
+  if (intakeTab === 'weed' && !weedForm) {
+    // Ask the one question that decides the unit, in the slot itself.
+    ['bud', 'edible'].forEach((f) => el.appendChild(
+      stepButton(WEED_FORMS[f].label, '', () => { weedForm = f; renderIntake(); })));
+    return;
+  }
+  if (intakeTab === 'other' && !otherLabel) {
+    const wrap = document.createElement('div');
+    wrap.className = 'namefield';
+    const input = document.createElement('input');
+    input.type = 'text'; input.id = 'otherName';
+    input.placeholder = 'what is it? — tea, juice, soda';
+    const go = document.createElement('button');
+    go.className = 'primary'; go.type = 'button'; go.textContent = 'Enter';
+    const take = () => {
+      const v = input.value.trim();
+      if (!v) { input.focus(); return; }
+      otherLabel = v; renderIntake();
+    };
+    go.onclick = take;
+    input.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); take(); } };
+    wrap.appendChild(input); wrap.appendChild(go);
+    el.appendChild(wrap);
+    return;
+  }
+
+  if (intakeTab === 'weed') {
+    const f = WEED_FORMS[weedForm];
+    tag.appendChild(chosenTag(f.label, () => { weedForm = null; renderIntake(); }));
+    f.steps.forEach((n) => el.appendChild(
+      stepButton(String(n), f.unit, () => logIntake(n))));
+    $('intakeExact').placeholder = f.unit === 'g' ? 'grams' : 'milligrams';
+    return;
+  }
+  if (intakeTab === 'other') {
+    tag.appendChild(chosenTag(otherLabel, () => { otherLabel = ''; renderIntake(); }));
+    OZ_STEPS.forEach((n) => el.appendChild(stepButton('+' + n, 'oz', () => logIntake(n))));
+    $('intakeExact').placeholder = 'ounces';
+    return;
+  }
+  const vol = isVolume(intakeTab);
+  (vol ? OZ_STEPS : COUNT_STEPS).forEach((n) => el.appendChild(
+    stepButton('+' + n, vol ? 'oz' : '', () => logIntake(n))));
+  $('intakeExact').placeholder = vol ? 'ounces' : 'how many';
+}
+
+/* One tap logs. Undo is the safety net that makes committing immediately
+   safe — the toast says so. */
+function logIntake(n) {
+  if (intakeTab === 'weed') {
+    const f = WEED_FORMS[weedForm] || WEED_FORMS.bud;
+    addIntake('weed', { count: 1, amount: n, unit: f.unit, form: weedForm || 'bud' });
+    return;
+  }
+  if (isVolume(intakeTab)) {
+    const opts = { oz: n };
+    if (intakeTab === 'other') opts.label = otherLabel || 'Other';
+    addIntake(intakeTab, opts);
+    return;
+  }
+  addIntake(intakeTab, { count: n });
+}
+function logExactIntake() {
+  const n = parseFloat($('intakeExact').value);
+  if (!n || n <= 0) { $('intakeExact').focus(); return; }
+  $('intakeExact').value = '';
+  logIntake(n);
+}
 
 function arrOf(kind) {
   const s = KINDS[kind].store;
@@ -1042,6 +1162,10 @@ function totalOf(kind) {
 function describeIntake(kind, rec) {
   if (kind === 'water') return round1(rec.oz) + ' oz water';
   const bits = [];
+  // Weed carries an amount and a form, so it reads "0.5 g bud".
+  if (rec.amount != null && rec.unit) {
+    return round1(rec.amount) + ' ' + rec.unit + ' ' + (rec.form || KINDS[kind].name.toLowerCase());
+  }
   if (rec.oz) bits.push(round1(rec.oz) + ' oz');
   else if (rec.count > 1) bits.push('×' + rec.count);
   bits.push(rec.label && rec.label !== KINDS[kind].name ? rec.label : KINDS[kind].name.toLowerCase());
@@ -1062,6 +1186,9 @@ function addIntake(kind, opts) {
     rec.kind = kind; rec.count = Number(opts.count) || 1;
     if (opts.oz != null) rec.oz = opts.oz;
     if (opts.note) rec.note = opts.note;
+    // Additive, optional: weed is weighed as bud and dosed as an edible.
+    if (opts.form) rec.form = opts.form;
+    if (opts.amount != null) { rec.amount = opts.amount; rec.unit = opts.unit; }
   }
   appendRec(arrOf(kind), rec, describeIntake(kind, rec));
   saveState();
@@ -1085,84 +1212,6 @@ function renderTabs(el, kinds, active, onPick) {
     b.onclick = () => onPick(k);
     el.appendChild(b);
   });
-}
-
-/* Labels you have used before, so "Other" is one tap the second time. */
-function renderDrinkRecent() {
-  const box = $('drinkRecent');
-  const recent = [...new Set((state.body.drinks || [])
-    .filter((d) => d.kind === 'other' && d.label && d.label !== 'Other')
-    .slice(-40).map((d) => d.label))].slice(-5).reverse();
-  box.innerHTML = '';
-  recent.forEach((label) => {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.type = 'button'; b.textContent = label;
-    b.onclick = () => { $('drinkLabel').value = label; };
-    box.appendChild(b);
-  });
-}
-
-function renderIntake() {
-  const m = KINDS[intakeTab];
-  const vol = isVolume(intakeTab);
-  $('intakeCard').style.setProperty('--c', 'var(--' + m.c + ')');
-  // Title stays 'Intake'; the tint is what says which tab you are on.
-  // The header is always "Intake"; the active tab tints it and the cap.
-  // Water's running total lives in the Food macro bar, against its target.
-  const t = totalOf(intakeTab);
-  $('intakeTotal').textContent = (intakeTab !== 'water' && t.n)
-    ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
-  renderTabs($('intakeTabs'), INTAKE_TABS, intakeTab, (k) => {
-    intakeTab = k; renderIntake();
-  });
-
-  $('drinkLabelRow').hidden = intakeTab !== 'other';
-  if (intakeTab === 'other') renderDrinkRecent();
-
-  const el = $('intakeQuick');
-  el.innerHTML = '';
-  (vol ? OZ_STEPS : COUNT_STEPS).forEach((n) => {
-    const b = document.createElement('button');
-    b.type = 'button';
-    b.innerHTML = '+' + n + (vol ? '<span class="u">oz</span>' : '');
-    b.onclick = () => logIntake(n);          // a tap IS the log
-    el.appendChild(b);
-  });
-  $('intakeExact').placeholder = vol ? 'ounces' : 'how many';
-
-  // A note belongs with the substance, not the amount, so it gets its own way in.
-  if (!vol) {
-    const note = document.createElement('button');
-    note.type = 'button'; note.textContent = '＋ note';
-    note.onclick = () => openForm(m.name, [
-      { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
-      { key: 'note', label: 'Note', placeholder: 'strain, brand, context…' },
-    ], { count: '1' }, (v) => {
-      addIntake(intakeTab, { count: Number(v.count) || 1, note: v.note });
-    }, 'Log');
-    el.appendChild(note);
-  }
-}
-
-/* One tap logs. The adding machine it replaces cost two taps for the
-   commonest action in the app and put a number on screen that meant
-   "not yet". Undo is the safety net that makes committing immediately
-   safe — the toast says so. */
-function logIntake(n) {
-  if (isVolume(intakeTab)) {
-    const opts = { oz: n };
-    if (intakeTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
-    addIntake(intakeTab, opts);
-    if (intakeTab === 'other') $('drinkLabel').value = '';
-  } else {
-    addIntake(intakeTab, { count: n });
-  }
-}
-function logExactIntake() {
-  const n = parseFloat($('intakeExact').value);
-  if (!n || n <= 0) { $('intakeExact').focus(); return; }
-  $('intakeExact').value = '';
-  logIntake(n);
 }
 
 /* =============================================================
