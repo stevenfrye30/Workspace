@@ -2408,6 +2408,83 @@ function refreshNudge() {
 }
 
 /* =============================================================
+   SYNC — one record across devices, via a private GitHub repo.
+
+   Local-first, always. Every write has already landed in localStorage by
+   the time anything here runs; sync is a layer on top. No network, a dead
+   token, an expired PAT — none of it may block or lose a log.
+
+   The token lives in its own localStorage key and is never part of `state`,
+   so it cannot reach mirror-data.json, a backup, or the forever-copy by
+   construction rather than by remembering to strip it.
+
+   Encoding and the sha-conflict protocol are ported from inventory/store.js
+   in this repo, which solved them first.
+   ============================================================= */
+const SYNC_TOKEN_KEY = 'mirror_gh_token';   // this device only, never exported
+const SYNC_CFG_KEY   = 'mirror_gh_cfg';     // { owner, repo, branch, path }
+const SYNC_SHA_KEY   = 'mirror_gh_sha';     // blob sha of the version we last read
+const GH_API = 'https://api.github.com';
+
+/* btoa() throws on anything above U+00FF, so a single "café" or "🌿" in a
+   note would break the push. Encode to UTF-8 bytes first. */
+function b64encode(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = '';
+  for (const b of bytes) bin += String.fromCharCode(b);
+  return btoa(bin);
+}
+function b64decode(b64) {
+  const bin = atob(String(b64).replace(/\s/g, ''));
+  return new TextDecoder().decode(Uint8Array.from(bin, (c) => c.charCodeAt(0)));
+}
+
+/* iOS Private Browsing (and some locked-down configs) accept a write and
+   drop it. A token "saved" there is gone next launch, so probe once and say
+   so rather than pretending the device is synced. */
+function storagePersists() {
+  try {
+    const k = '__mirror_probe__';
+    localStorage.setItem(k, '1');
+    const ok = localStorage.getItem(k) === '1';
+    localStorage.removeItem(k);
+    return ok;
+  } catch { return false; }
+}
+
+function syncCfg() {
+  try { return JSON.parse(localStorage.getItem(SYNC_CFG_KEY)) || null; } catch { return null; }
+}
+function syncToken() {
+  try { return localStorage.getItem(SYNC_TOKEN_KEY) || ''; } catch { return ''; }
+}
+function syncConfigured() {
+  const c = syncCfg();
+  return !!(c && c.owner && c.repo && syncToken());
+}
+function setSyncConfig(cfg, token) {
+  try {
+    localStorage.setItem(SYNC_CFG_KEY, JSON.stringify(cfg));
+    localStorage.setItem(SYNC_TOKEN_KEY, token);
+  } catch { return false; }
+  // Only true if it is actually still there — see storagePersists().
+  return syncToken() === token && !!syncCfg();
+}
+function forgetSync() {
+  try {
+    localStorage.removeItem(SYNC_TOKEN_KEY);
+    localStorage.removeItem(SYNC_CFG_KEY);
+    localStorage.removeItem(SYNC_SHA_KEY);
+  } catch { /* ignore */ }
+}
+
+/* The public Workspace repo serves this page. Syncing a life record into it
+   would publish the lot. Refused by name, not by policy note. */
+function isForbiddenRepo(owner, repo) {
+  return String(repo || '').trim().toLowerCase() === 'workspace';
+}
+
+/* =============================================================
    INIT
    ============================================================= */
 function renderAll() {
