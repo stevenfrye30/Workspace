@@ -212,9 +212,9 @@
   .boxed > h2 { color: var(--c, var(--dim)); }
   .boxed > h2 .note { color: var(--ink); font-weight: 600; }
 
-  .tabs { display: flex; gap: 4px; margin-bottom: 10px; }
+  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
   .tabs button {
-    flex: 1 1 0; min-width: 0; cursor: pointer; font: inherit; font-size: .7rem;
+    flex: 1 1 4.2rem; min-width: 0; cursor: pointer; font: inherit; font-size: .7rem;
     padding: 6px 4px; border-radius: 8px; border: 1px solid var(--line);
     background: var(--panel2); color: var(--dim);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -536,33 +536,23 @@
     </div>
   </div>
 
-  <!-- Drinks — one box, four tabs, and an adding machine. The amount buttons
-       accumulate into a pending total that Enter commits to the tracker, which
-       is why three buttons are enough: +8 +8 is 16, +2 +2 is 4. Nothing about
-       this card's shape changes as you log — the entries land below. -->
-  <div class="card boxed" id="drinksCard">
-    <h2><span id="drinksName">Drinks</span> <span class="note" id="drinksTotal"></span></h2>
-    <div class="tabs" id="drinkTabs"></div>
+  <!-- Intake — one instrument, six tabs. Drinks and Substances were the same
+       control twice; they differ only in the unit each kind is measured in,
+       so that is the only thing the card branches on. Storage is unchanged:
+       water -> body.water, coffee/other -> body.drinks, the rest ->
+       body.substances. -->
+  <div class="card boxed" id="intakeCard">
+    <h2><span id="intakeName">Water</span> <span class="note" id="intakeTotal"></span></h2>
+    <div class="tabs" id="intakeTabs"></div>
     <div id="drinkLabelRow" hidden>
       <div class="chips" id="drinkRecent" style="margin-bottom:7px"></div>
       <input type="text" id="drinkLabel" placeholder="what was it? — tea, juice, soda">
     </div>
-    <div class="pending" id="drinkPending">
-      <span class="pv" id="drinkPendingVal">0</span><span class="pu">oz</span>
-      <button class="pclear" id="drinkClear" title="Clear">✕</button>
+    <div class="pending" id="intakePending">
+      <span class="pv" id="intakePendingVal">0</span><span class="pu" id="intakePendingUnit"></span>
+      <button class="pclear" id="intakeClear" title="Clear">✕</button>
     </div>
-    <div class="quick" id="drinkQuick"></div>
-  </div>
-
-  <!-- Substances — same instrument, counting rather than measuring. -->
-  <div class="card boxed" id="subsCard">
-    <h2><span id="subsName">Substances</span> <span class="note" id="subsTotal"></span></h2>
-    <div class="tabs" id="subTabs"></div>
-    <div class="pending" id="subPending">
-      <span class="pv" id="subPendingVal">0</span><span class="pu" id="subPendingUnit"></span>
-      <button class="pclear" id="subClear" title="Clear">✕</button>
-    </div>
-    <div class="quick" id="subQuick"></div>
+    <div class="quick" id="intakeQuick"></div>
   </div>
 
   <div class="card narrow">
@@ -1006,13 +996,12 @@ function writeSleep() {
 }
 
 /* =============================================================
-   DRINKS + SUBSTANCES — two tabbed instruments over three stores.
+   INTAKE — one tabbed instrument over three stores.
 
-   Each is an adding machine: the amount buttons accumulate into a pending
-   figure, and Enter commits it to the tracker below. That is what makes
-   three buttons enough — +8 +8 is 16, +2 +2 is 4 — and it means the card
-   itself never changes shape as you log, because the entries land in the
-   tracker rather than piling up here.
+   Drinks and Substances were the same control twice: tabs, a pending
+   readout, quick buttons. Six tabs in one card instead, split only by the
+   unit each kind is measured in — volume for the first three, count for
+   the last three.
 
    The UI groups by what a thing IS; storage stays exactly where it was, so
    no history has to move:
@@ -1024,21 +1013,20 @@ function writeSleep() {
 const KINDS = {
   water:    { name: 'Water',    icon: '💧', c: 'water',    store: 'water' },
   coffee:   { name: 'Coffee',   icon: '☕', c: 'coffee',   store: 'drinks' },
-  alcohol:  { name: 'Alcohol',  icon: '🍺', c: 'alcohol',  store: 'substances' },
   other:    { name: 'Other',    icon: '🥤', c: 'other',    store: 'drinks' },
-  weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
+  alcohol:  { name: 'Alcohol',  icon: '🍺', c: 'alcohol',  store: 'substances' },
   nicotine: { name: 'Nicotine', icon: '🚬', c: 'nicotine', store: 'substances' },
+  weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
 };
 const intakeMeta = (k) => KINDS[k];          // the tracker reads its icons from here
-const DRINK_TABS = ['water', 'coffee', 'other'];
-const SUB_TABS   = ['alcohol', 'nicotine', 'weed'];
-const DRINK_STEPS = [2, 8, 16];              // ounces; compose to anything useful
-const SUB_STEPS   = [1];
+const INTAKE_TABS = ['water', 'coffee', 'other', 'alcohol', 'nicotine', 'weed'];
+const OZ_STEPS = [2, 8, 16];                 // ounces; compose to anything useful
+const COUNT_STEPS = [1];
+/** Volume or count — the only axis on which the six kinds differ. */
+const isVolume = (kind) => KINDS[kind].store !== 'substances';
 
-let drinkTab = 'water';
-let subTab = 'alcohol';
-let drinkPending = 0;
-let subPending = 0;
+let intakeTab = 'water';
+let intakePending = 0;
 
 function arrOf(kind) {
   const s = KINDS[kind].store;
@@ -1050,7 +1038,7 @@ function entriesOf(kind) {
 /** The day's headline number for a kind, in the unit that kind is about. */
 function totalOf(kind) {
   const rows = entriesOf(kind);
-  if (kind === 'water' || kind === 'coffee' || kind === 'other') {
+  if (isVolume(kind)) {
     return { n: rows.reduce((a, r) => a + (Number(r.oz) || 0), 0), unit: 'oz' };
   }
   const n = rows.reduce((a, r) => a + (Number(r.count) || 1), 0);
@@ -1086,8 +1074,8 @@ function addIntake(kind, opts) {
   }
   appendRec(arrOf(kind), rec, describeIntake(kind, rec));
   saveState();
-  renderDrinks(); renderSubs();
-  renderFoodTotals(onDay(state.body.food));   // the macro bar carries the day's water
+  renderIntake();
+  renderFoodTotals(onDay(state.body.food));
   renderFeed();
   toast('Logged ' + describeIntake(kind, rec));
 }
@@ -1122,83 +1110,68 @@ function renderDrinkRecent() {
   });
 }
 
-/** Build one instrument's step buttons plus its Enter key. */
-function renderSteps(el, steps, pending, onStep, onEnter, unit) {
+function renderIntake() {
+  const m = KINDS[intakeTab];
+  const vol = isVolume(intakeTab);
+  $('intakeCard').style.setProperty('--c', 'var(--' + m.c + ')');
+  $('intakeName').textContent = m.name;
+  const t = totalOf(intakeTab);
+  $('intakeTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
+  renderTabs($('intakeTabs'), INTAKE_TABS, intakeTab, (k) => {
+    intakeTab = k; intakePending = 0; renderIntake();
+  });
+
+  $('drinkLabelRow').hidden = intakeTab !== 'other';
+  if (intakeTab === 'other') renderDrinkRecent();
+
+  $('intakePending').classList.toggle('zero', !intakePending);
+  $('intakePendingVal').textContent = round1(intakePending);
+  $('intakePendingUnit').textContent = vol ? 'oz'
+    : intakeTab === 'alcohol' ? (intakePending === 1 ? 'drink' : 'drinks')
+    : (intakePending === 1 ? 'time' : 'times');
+
+  const el = $('intakeQuick');
   el.innerHTML = '';
-  steps.forEach((n) => {
+  (vol ? OZ_STEPS : COUNT_STEPS).forEach((n) => {
     const b = document.createElement('button');
     b.type = 'button';
-    b.innerHTML = '+' + n + (unit ? '<span class="u">' + unit + '</span>' : '');
-    b.onclick = () => onStep(n);
+    b.innerHTML = '+' + n + (vol ? '<span class="u">oz</span>' : '');
+    b.onclick = () => { intakePending += n; renderIntake(); };
     el.appendChild(b);
   });
-  const e = document.createElement('button');
-  e.type = 'button'; e.className = 'enter'; e.textContent = 'Enter';
-  e.disabled = !pending;
-  e.onclick = onEnter;
-  el.appendChild(e);
-}
-
-function renderDrinks() {
-  const m = KINDS[drinkTab];
-  $('drinksCard').style.setProperty('--c', 'var(--' + m.c + ')');
-  $('drinksName').textContent = m.name;
-  const t = totalOf(drinkTab);
-  $('drinksTotal').textContent = t.n ? round1(t.n) + ' ' + t.unit : '';
-  renderTabs($('drinkTabs'), DRINK_TABS, drinkTab, (k) => {
-    drinkTab = k; drinkPending = 0; renderDrinks();
-  });
-
-  $('drinkLabelRow').hidden = drinkTab !== 'other';
-  if (drinkTab === 'other') renderDrinkRecent();
-
-  $('drinkPending').classList.toggle('zero', !drinkPending);
-  $('drinkPendingVal').textContent = round1(drinkPending);
-  renderSteps($('drinkQuick'), DRINK_STEPS, drinkPending,
-    (n) => { drinkPending += n; renderDrinks(); }, commitDrink, 'oz');
-}
-function commitDrink() {
-  if (!drinkPending) return;
-  const opts = { oz: drinkPending };
-  if (drinkTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
-  drinkPending = 0;
-  addIntake(drinkTab, opts);
-  if (drinkTab === 'other') $('drinkLabel').value = '';
-}
-
-function renderSubs() {
-  const m = KINDS[subTab];
-  $('subsCard').style.setProperty('--c', 'var(--' + m.c + ')');
-  $('subsName').textContent = m.name;
-  const t = totalOf(subTab);
-  $('subsTotal').textContent = t.n ? round1(t.n) + (t.unit ? ' ' + t.unit : '') : '';
-  renderTabs($('subTabs'), SUB_TABS, subTab, (k) => { subTab = k; subPending = 0; renderSubs(); });
-
-  $('subPending').classList.toggle('zero', !subPending);
-  $('subPendingVal').textContent = String(subPending);
-  $('subPendingUnit').textContent = subTab === 'alcohol'
-    ? (subPending === 1 ? 'drink' : 'drinks')
-    : (subPending === 1 ? 'time' : 'times');
-  renderSteps($('subQuick'), SUB_STEPS, subPending,
-    (n) => { subPending += n; renderSubs(); }, commitSub, '');
+  const enter = document.createElement('button');
+  enter.type = 'button'; enter.className = 'enter'; enter.textContent = 'Enter';
+  enter.disabled = !intakePending;
+  enter.onclick = commitIntake;
+  el.appendChild(enter);
 
   // A note belongs with the substance, not the amount, so it gets its own way in.
-  const note = document.createElement('button');
-  note.type = 'button'; note.textContent = '＋ note';
-  note.onclick = () => openForm(m.name, [
-    { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
-    { key: 'note', label: 'Note', placeholder: 'strain, brand, context…' },
-  ], { count: String(subPending || 1) }, (v) => {
-    subPending = 0;
-    addIntake(subTab, { count: Number(v.count) || 1, note: v.note });
-  }, 'Log');
-  $('subQuick').appendChild(note);
+  if (!vol) {
+    const note = document.createElement('button');
+    note.type = 'button'; note.textContent = '＋ note';
+    note.onclick = () => openForm(m.name, [
+      { key: 'count', label: 'How many', type: 'number', placeholder: '1' },
+      { key: 'note', label: 'Note', placeholder: 'strain, brand, context…' },
+    ], { count: String(intakePending || 1) }, (v) => {
+      intakePending = 0;
+      addIntake(intakeTab, { count: Number(v.count) || 1, note: v.note });
+    }, 'Log');
+    el.appendChild(note);
+  }
 }
-function commitSub() {
-  if (!subPending) return;
-  const n = subPending;
-  subPending = 0;
-  addIntake(subTab, { count: n });
+
+function commitIntake() {
+  if (!intakePending) return;
+  const n = intakePending;
+  intakePending = 0;
+  if (isVolume(intakeTab)) {
+    const opts = { oz: n };
+    if (intakeTab === 'other') opts.label = $('drinkLabel').value.trim() || 'Other';
+    addIntake(intakeTab, opts);
+    if (intakeTab === 'other') $('drinkLabel').value = '';
+  } else {
+    addIntake(intakeTab, { count: n });
+  }
 }
 
 /* =============================================================
@@ -2405,7 +2378,7 @@ function refreshNudge() {
    ============================================================= */
 function renderAll() {
   loadPulse(); loadSleep();
-  renderDrinks(); renderSubs(); renderFoodLog();
+  renderIntake(); renderFoodLog();
   renderExercise(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
@@ -2444,14 +2417,9 @@ $('restoreFile').onchange = (e) => {
 $('nudgeGo').onclick = foreverCopy;
 $('nudgeLater').onclick = () => { $('nudge').hidden = true; };
 $('undoBtn').onclick = doUndo;
-$('drinkClear').onclick = () => { drinkPending = 0; renderDrinks(); };
-$('subClear').onclick = () => { subPending = 0; renderSubs(); };
-// Enter commits whichever instrument you're working in.
-$('drinksCard').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); commitDrink(); }
-});
-$('subsCard').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') { e.preventDefault(); commitSub(); }
+$('intakeClear').onclick = () => { intakePending = 0; renderIntake(); };
+$('intakeCard').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') { e.preventDefault(); commitIntake(); }
 });
 $('dTodayBtn').onclick = () => setDay(todayStr());
 refreshNudge();
