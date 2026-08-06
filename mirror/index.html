@@ -184,7 +184,7 @@
   /* Safety net: a stray long label must never blow out the row. */
 
   /* ---------- inputs ---------- */
-  input[type=text], input[type=number], textarea, select {
+  input[type=text], input[type=number], input[type=password], textarea, select {
     font: inherit; font-size: .88rem; width: 100%;
     padding: 9px 11px; border-radius: 8px;
     border: 1px solid var(--line); background: var(--panel2); color: var(--ink);
@@ -472,6 +472,7 @@
     <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶<span class="lbl"> Undo</span></button>
     <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
     <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
+    <button class="icon-btn" id="syncBtn" title="Sync is off">○</button>
     <button class="icon-btn" id="dataBtn" title="Forever-copy, restore, snapshots">Data</button>
   </span>
 </div>
@@ -784,6 +785,7 @@ function saveState() {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     bumpChanges();
+    schedulePush();          // local first, always; the network catches up
   } catch (e) {
     alert('Could not save — this browser is out of storage space, or is in private mode.');
   }
@@ -2400,11 +2402,20 @@ function refreshNudge() {
   const since = changesSinceRepo();
   const last = Number(localStorage.getItem(LAST_REPO_KEY) || 0);
   const stale = last && (Date.now() - last) > 21 * 864e5;
-  if (since < 60 && !stale) { bar.hidden = true; return; }
+  /* A healthy sync means the record exists in two places, which takes the
+     urgency out — but it is still one account, one provider, one token.
+     Sync is redundancy; the forever-copy is the archive. */
+  const synced = syncConfigured() && syncStatus === 'synced';
+  const threshold = synced ? 400 : 60;
+  if (since < threshold && !(stale && !synced)) { bar.hidden = true; return; }
   bar.hidden = false;
   $('nudgeMsg').textContent = last
-    ? since + ' changes since your last forever-copy' + (stale ? ', and it is over three weeks old' : '')
-    : 'You have never saved a forever-copy — this browser is the only copy of your record';
+    ? since + ' changes since your last forever-copy' +
+      (stale ? ', and it is over three weeks old' : '') +
+      (synced ? ' — sync is redundancy, not an archive' : '')
+    : (synced
+        ? 'Synced across devices, but never archived — sync is not a backup'
+        : 'You have never saved a forever-copy — this browser is the only copy of your record');
 }
 
 /* =============================================================
@@ -2424,6 +2435,7 @@ function refreshNudge() {
 const SYNC_TOKEN_KEY = 'mirror_gh_token';   // this device only, never exported
 const SYNC_CFG_KEY   = 'mirror_gh_cfg';     // { owner, repo, branch, path }
 const SYNC_SHA_KEY   = 'mirror_gh_sha';     // blob sha of the version we last read
+const SYNC_LAST_KEY  = 'mirror_gh_last';    // when a push last succeeded     // blob sha of the version we last read
 const GH_API = 'https://api.github.com';
 
 /* btoa() throws on anything above U+00FF, so a single "café" or "🌿" in a
@@ -2660,6 +2672,309 @@ function mergeStates(mine, theirs) {
   return out;
 }
 
+/* ---- the GitHub contents API ----
+   One file in one private repo. The protocol is the one inventory/store.js
+   established: every read hands back the blob sha it read, every write
+   carries that sha, and GitHub refuses a write whose sha has moved on. A
+   conflict is therefore always DETECTED — resolving it is ours, below. */
+function ghUrl() {
+  const c = syncCfg();
+  return GH_API + '/repos/' + encodeURIComponent(c.owner) + '/' +
+         encodeURIComponent(c.repo) + '/contents/' + (c.path || 'mirror-data.json');
+}
+function ghHeaders() {
+  return {
+    Authorization: 'Bearer ' + syncToken(),
+    Accept: 'application/vnd.github+json',
+    'X-GitHub-Api-Version': '2022-11-28',
+  };
+}
+function ghAuthError(status) {
+  return new Error(status === 404
+    ? 'Repo or file not found — check owner/repo, and that mirror-data.json exists.'
+    : 'GitHub rejected the token (' + status + '). It may have expired, or it may ' +
+      'not have Contents: read and write on this repo.');
+}
+
+/** Returns { state, sha }. state is null when the file is the empty {} seed. */
+async function ghLoad() {
+  const c = syncCfg();
+  const res = await fetch(ghUrl() + '?ref=' + encodeURIComponent(c.branch || 'main') +
+                          '&t=' + Date.now(), { headers: ghHeaders(), cache: 'no-store' });
+  if (res.status === 404 || res.status === 401 || res.status === 403) throw ghAuthError(res.status);
+  if (!res.ok) throw new Error('GitHub said ' + res.status);
+  const body = await res.json();
+  let parsed;
+  try { parsed = JSON.parse(b64decode(body.content)); }
+  catch { throw new Error('mirror-data.json is not valid JSON — refusing to merge it.'); }
+  if (!parsed || typeof parsed !== 'object' || !Object.keys(parsed).length) {
+    return { state: null, sha: body.sha };     // the {} you seeded it with
+  }
+  return { state: parsed, sha: body.sha };
+}
+
+/** Throws err.conflict when the sha has moved on. Returns the new sha. */
+async function ghPut(obj, sha) {
+  const c = syncCfg();
+  const res = await fetch(ghUrl(), {
+    method: 'PUT',
+    headers: { ...ghHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      message: 'mirror ' + new Date().toISOString().slice(0, 16).replace('T', ' '),
+      content: b64encode(JSON.stringify(obj, null, 2)),
+      branch: c.branch || 'main',
+      ...(sha ? { sha } : {}),
+    }),
+  });
+  if (res.status === 409 || res.status === 422) {
+    const e = new Error('the remote changed first'); e.conflict = true; throw e;
+  }
+  if (res.status === 404 || res.status === 401 || res.status === 403) throw ghAuthError(res.status);
+  if (!res.ok) throw new Error('GitHub said ' + res.status);
+  return (await res.json()).content.sha;
+}
+
+/** Setup-time check: reachable, and PRIVATE. */
+async function ghCheckRepo(owner, repo, token) {
+  const res = await fetch(GH_API + '/repos/' + encodeURIComponent(owner) + '/' + encodeURIComponent(repo), {
+    headers: { Authorization: 'Bearer ' + token, Accept: 'application/vnd.github+json',
+               'X-GitHub-Api-Version': '2022-11-28' },
+  });
+  if (res.status === 404) throw new Error('Not found. Check owner/repo, and that the token can see this repo.');
+  if (res.status === 401 || res.status === 403) throw ghAuthError(res.status);
+  if (!res.ok) throw new Error('GitHub said ' + res.status);
+  const r = await res.json();
+  if (!r.private) {
+    throw new Error('That repo is PUBLIC. Mirror will not sync a life record to a public repo.');
+  }
+  return r;
+}
+
+/* ---- the engine ----
+   Local-first: state is already in localStorage before any of this runs. A
+   dead network, an expired token or no configuration at all must leave the
+   app working exactly as it does today. */
+const PUSH_DEBOUNCE = 4000;
+const MAX_CONFLICT_RETRIES = 2;
+
+let syncStatus = 'off';        // off | synced | syncing | offline | conflict | error
+let syncDetail = '';
+let pushTimer = null;
+let applyingRemote = false;    // a pull's own saveState must not trigger a push
+let syncBusy = false;
+
+function setSync(status, detail) {
+  syncStatus = status; syncDetail = detail || '';
+  renderSyncPill();
+}
+
+/* Belt and braces. The token lives outside `state` so it cannot be here —
+   but anything token-shaped that ever ends up in the tree must not leave
+   the device either. The calendar integration is the reason this exists. */
+function scrubForSync(s) {
+  const clone = JSON.parse(JSON.stringify(s));
+  const strip = (o) => {
+    if (!o || typeof o !== 'object') return;
+    for (const k of Object.keys(o)) {
+      if (/token|secret|password|access_key|client_id/i.test(k)) delete o[k];
+      else strip(o[k]);
+    }
+  };
+  strip(clone);
+  return clone;
+}
+
+/** Compare only what sync is about, so cosmetic churn never causes a push. */
+function syncFingerprint(s) {
+  const parts = [];
+  [...MERGE_BY_ID, ...MERGE_BY_DATE].forEach(([a, b]) => parts.push(JSON.stringify(pick(s, a, b) || [])));
+  parts.push(JSON.stringify(s.links || []), JSON.stringify(pick(s, 'habits', 'items') || []));
+  parts.push(JSON.stringify(s._deleted || []), JSON.stringify(pick(s, 'body', 'targets') || {}));
+  parts.push(JSON.stringify(pick(s, 'identity', 'values') || []));
+  return parts.join('|');
+}
+
+/** Pull, merge, and push back only if we ended up ahead. */
+async function syncPull(quiet) {
+  if (!syncConfigured() || syncBusy) return;
+  if (!navigator.onLine) { setSync('offline'); return; }
+  syncBusy = true;
+  if (!quiet) setSync('syncing');
+  try {
+    const { state: remote, sha } = await ghLoad();
+    localStorage.setItem(SYNC_SHA_KEY, sha || '');
+    if (remote) {
+      const merged = mergeStates(state, remote);
+      const changed = syncFingerprint(merged) !== syncFingerprint(state);
+      applyingRemote = true;
+      state = merged;
+      saveState();
+      applyingRemote = false;
+      if (changed) renderAll();
+      // We are ahead of the remote whenever the merge added anything of ours.
+      if (syncFingerprint(merged) !== syncFingerprint(remote)) {
+        syncBusy = false; await pushNow(); return;
+      }
+    } else {
+      // Empty seed: this device's record becomes the starting point.
+      syncBusy = false; await pushNow(); return;
+    }
+    setSync('synced');
+  } catch (err) {
+    setSync('error', err.message);
+  } finally {
+    syncBusy = false;
+  }
+}
+
+/** Push, and on a stale sha re-pull, re-merge and try again. Never clobbers. */
+async function pushNow(attempt) {
+  attempt = attempt || 0;
+  if (!syncConfigured()) return;
+  if (!navigator.onLine) { setSync('offline'); return; }
+  if (syncBusy) return;
+  syncBusy = true;
+  setSync('syncing');
+  try {
+    const sha = localStorage.getItem(SYNC_SHA_KEY) || null;
+    const newSha = await ghPut(scrubForSync(state), sha);
+    localStorage.setItem(SYNC_SHA_KEY, newSha);
+    localStorage.setItem(SYNC_LAST_KEY, String(Date.now()));
+    setSync('synced');
+  } catch (err) {
+    if (err.conflict && attempt < MAX_CONFLICT_RETRIES) {
+      setSync('conflict');
+      try {
+        const { state: remote, sha } = await ghLoad();
+        applyingRemote = true;
+        state = mergeStates(state, remote || {});
+        saveState();
+        applyingRemote = false;
+        localStorage.setItem(SYNC_SHA_KEY, sha || '');
+        renderAll();
+        syncBusy = false;
+        return await pushNow(attempt + 1);
+      } catch (err2) {
+        setSync('error', err2.message);
+      }
+    } else {
+      setSync(err.conflict ? 'conflict' : 'error', err.message);
+    }
+  } finally {
+    syncBusy = false;
+  }
+}
+
+/** Coalesce a burst of logging into one push. */
+function schedulePush() {
+  if (!syncConfigured() || applyingRemote) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(() => pushNow(), PUSH_DEBOUNCE);
+}
+
+/* ---- the pill ----
+   One glyph in the tools row. It is the only place sync is allowed to
+   interrupt: everything else about it happens quietly or not at all. */
+const SYNC_LOOK = {
+  off:      { g: '○', c: 'var(--dim)',     t: 'Sync is off — this device only. Tap to set it up.' },
+  synced:   { g: '●', c: 'var(--accent2)', t: 'Synced' },
+  syncing:  { g: '◔', c: 'var(--accent)',  t: 'Syncing…' },
+  offline:  { g: '○', c: 'var(--dim)',     t: 'Offline — your logs are saved here and will sync when you are back.' },
+  conflict: { g: '◑', c: 'var(--warn)',    t: 'Merging a change from another device…' },
+  error:    { g: '●', c: 'var(--warn)',    t: 'Sync problem' },
+};
+function renderSyncPill() {
+  const b = $('syncBtn');
+  if (!b) return;
+  const look = SYNC_LOOK[syncStatus] || SYNC_LOOK.off;
+  b.textContent = look.g;
+  b.style.color = look.c;
+  b.title = look.t + (syncDetail ? ' — ' + syncDetail : '');
+  b.setAttribute('aria-label', 'Sync: ' + syncStatus);
+}
+
+/* ---- setup ---- */
+function openSyncSetup() {
+  const c = syncCfg() || {};
+  const on = syncConfigured();
+  openPop('Sync across devices',
+    '<div class="tiny" style="margin-bottom:11px">' +
+      'One record on every device, through a file in a <b>private</b> GitHub repo. ' +
+      'Logging always lands on this device first — sync catches up, and never gets in the way.' +
+    '</div>' +
+    (on ? '<div class="tiny" style="margin-bottom:11px">Connected to <b>' +
+            esc(c.owner + '/' + c.repo) + '</b> · <span id="syncStateLine">' + esc(syncStatus) + '</span></div>' : '') +
+    '<div class="rowlabel">Repository</div>' +
+    '<input type="text" id="syncRepo" placeholder="your-username/mirror-data" autocomplete="off">' +
+    '<div class="rowlabel">Fine-grained token</div>' +
+    '<input type="password" id="syncTok" placeholder="' +
+      (on ? 'saved on this device — paste again to replace' : 'github_pat_…') + '" autocomplete="off">' +
+    '<div class="tiny" style="margin-top:8px">Contents: read and write, on that one repo. ' +
+      'It is stored on this device only and never written into your data, a backup, or the repo. ' +
+      'Fine-grained tokens expire — the pill turns amber when yours does.</div>' +
+    '<div class="tiny" id="syncTest" style="margin-top:9px"></div>' +
+    '<div class="chips" style="margin-top:10px">' +
+      '<button class="mini" id="syncTestBtn">Test &amp; connect</button>' +
+      '<button class="mini" id="syncNowBtn">Sync now</button>' +
+      (on ? '<button class="mini" id="syncOffBtn">Disconnect</button>' : '') +
+    '</div>',
+    null,
+    () => {
+      if (c.owner && c.repo) $('syncRepo').value = c.owner + '/' + c.repo;
+      const say = (msg, bad) => {
+        $('syncTest').innerHTML = esc(msg);
+        $('syncTest').style.color = bad ? 'var(--warn)' : 'var(--accent2)';
+      };
+
+      $('syncTestBtn').onclick = async () => {
+        const raw = $('syncRepo').value.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '');
+        const [owner, repo] = raw.split('/').map((x) => (x || '').trim());
+        const tok = $('syncTok').value.trim() || syncToken();
+        if (!owner || !repo) return say('Enter it as owner/repo.', true);
+        if (isForbiddenRepo(owner, repo)) {
+          return say('Not Workspace — that repo is public and serves this page.', true);
+        }
+        if (!tok) return say('Paste a token.', true);
+        if (!storagePersists()) {
+          return say('This browser will not keep the token (private mode?), so sync cannot hold.', true);
+        }
+        say('Checking…');
+        try {
+          await ghCheckRepo(owner, repo, tok);
+          if (!setSyncConfig({ owner, repo, branch: 'main', path: 'mirror-data.json' }, tok)) {
+            return say('Could not save the token on this device.', true);
+          }
+          say('Connected to ' + owner + '/' + repo + ' — syncing…');
+          setSync('syncing');
+          await syncPull();
+          say(syncStatus === 'synced' ? 'Synced.' : (syncDetail || syncStatus), syncStatus !== 'synced');
+          refreshNudge();
+        } catch (err) {
+          forgetSync();
+          say(err.message, true);
+        }
+      };
+
+      $('syncNowBtn').onclick = async () => {
+        if (!syncConfigured()) return say('Connect first.', true);
+        say('Syncing…');
+        await syncPull();
+        say(syncStatus === 'synced' ? 'Synced.' : (syncDetail || syncStatus), syncStatus !== 'synced');
+        refreshNudge();
+      };
+
+      const off = $('syncOffBtn');
+      if (off) off.onclick = () => {
+        if (!confirm('Disconnect this device?\n\nYour record stays here and in the repo — only the token is removed from this browser.')) return;
+        forgetSync();
+        setSync('off');
+        closePop();
+        refreshNudge();
+        toast('Disconnected — this device only');
+      };
+    });
+}
+
 /* =============================================================
    INIT
    ============================================================= */
@@ -2697,6 +3012,7 @@ $('themeBtn').textContent = document.body.classList.contains('theme-dark') ? '�
 $('themeColor').content = document.body.classList.contains('theme-dark') ? '#1c1e24' : '#8a6a3e';
 
 $('dataBtn').onclick = openData;
+$('syncBtn').onclick = openSyncSetup;
 $('restoreFile').onchange = (e) => {
   const f = e.target.files[0];
   if (f) { closePop(); restoreFromFile(f); }
@@ -2709,6 +3025,21 @@ $('intakeExactLog').onclick = logExactIntake;
 $('intakeExact').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); logExactIntake(); } };
 $('dTodayBtn').onclick = () => setDay(todayStr());
 refreshNudge();
+
+/* Sync boots last and quietly: the app is already usable, and a pull that
+   fails must change nothing. */
+if (syncConfigured()) {
+  setSync('syncing');
+  syncPull();
+  window.addEventListener('online', () => syncPull(true));
+  window.addEventListener('offline', () => setSync('offline'));
+  // Coming back to the tab is the moment the other device's changes matter.
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') syncPull(true);
+  });
+} else {
+  renderSyncPill();
+}
 $('dYestBtn').onclick = () => setDay(shiftDay(todayStr(), -1));
 $('dPick').onchange = (e) => { if (e.target.value) setDay(e.target.value); };
 $('pSave').onclick = savePulse;
