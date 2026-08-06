@@ -30,12 +30,5 @@ examples: [
 ],
 links: [
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
-],
-sections: [
-  { title: "Limits", items: ["Definition & intuition", "One-sided limits", "Limits at infinity", "Continuity"] },
-  { title: "Derivatives", items: ["Power, product, quotient, chain rules", "Implicit differentiation", "Higher-order derivatives", "Rates & optimization"] },
-  { title: "Integrals", items: ["Antiderivatives", "Definite integrals & area", "Substitution & parts", "Numerical integration"] },
-  { title: "Series", items: ["Sequences & convergence", "Power & Taylor series", "Fourier preview"] },
-  { title: "Visual explanations", items: ["Tangent-line visuals", "Area-under-curve visuals"] }
 ]
 };

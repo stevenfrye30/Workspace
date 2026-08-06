@@ -220,17 +220,6 @@ async function render(key) {
       }).join('') + '</div></section>';
   }
 
-  /* An outline of the territory, carried over from the Math rooms. */
-  if (room.sections) {
-    h += '<section class="block"><div class="block-head"><h2>What this covers</h2>' +
-      '<span class="tag">Outline</span></div><div class="sec-grid">' +
-      room.sections.map(function (s) {
-        return '<div class="sec-card"><div class="sec-title">' + esc(s.title) + '</div><ul>' +
-          s.items.map(function (i) { return '<li>' + esc(i) + '</li>'; }).join('') +
-          '</ul></div>';
-      }).join('') + '</div></section>';
-  }
-
   main.innerHTML = h;
 
   /* The landmark is named by the room it currently holds, so a screen reader

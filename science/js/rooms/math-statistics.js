@@ -33,13 +33,5 @@ examples: [
 ],
 links: [
   { name: "Send data to Time-Series Lab", desc: "Hand a trace to the Time-Series Lab.", href: "room.html?room=math-time-series", tag: "room" },
-],
-sections: [
-  { title: "Distributions", items: ["Normal, binomial, Poisson", "PDF / CDF views", "Parameters & shape"] },
-  { title: "Descriptive statistics", items: ["Mean, median, mode", "Variance & standard deviation", "Quartiles & outliers"] },
-  { title: "Regression", items: ["Linear & polynomial fit", "Correlation", "Residuals & R²"] },
-  { title: "Probability", items: ["Rules & combinatorics", "Conditional probability", "Bayes' theorem"] },
-  { title: "Hypothesis testing", items: ["t-tests & ANOVA", "p-values & confidence intervals", "Effect size"] },
-  { title: "Visual summaries", items: ["Histograms & box plots", "Scatter & fit overlays"] }
 ]
 };

@@ -35,11 +35,5 @@ examples: [
 links: [
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
   { name: "Send wave to Time-Series Lab", desc: "Analyze a wave as a signal.", href: "room.html?room=math-time-series", tag: "room" },
-],
-sections: [
-  { title: "Unit circle", items: ["Radians & degrees", "Reference angles", "Exact values"] },
-  { title: "Identities", items: ["Pythagorean identities", "Angle sum & difference", "Double & half angle"] },
-  { title: "Sine / cosine / tangent", items: ["Graphs & periods", "Amplitude & phase", "Inverse trig"] },
-  { title: "Waves & angles", items: ["Wave parameters", "Phase shifts", "Applications"] }
 ]
 };

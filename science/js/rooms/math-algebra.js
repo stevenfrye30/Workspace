@@ -25,12 +25,5 @@ examples: [
 ],
 links: [
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
-],
-sections: [
-  { title: "Equations", items: ["Linear & quadratic solving", "Systems of equations", "Inequalities", "Step-by-step worked examples"] },
-  { title: "Factoring", items: ["Common factors & grouping", "Quadratic factoring", "Polynomial division", "Roots & the factor theorem"] },
-  { title: "Functions", items: ["Domain & range", "Transformations", "Composition & inverses", "Graph behaviour"] },
-  { title: "Symbolic manipulation", items: ["Simplification & expansion", "Substitution", "Rearranging formulas"] },
-  { title: "Notes & examples", items: ["Saved derivations", "Reusable templates"] }
 ]
 };

@@ -44,12 +44,5 @@ examples: [
 links: [
   { name: "Send wave to Time-Series Lab", desc: "Analyze a signal over time.", href: "room.html?room=math-time-series", tag: "room" },
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
-],
-sections: [
-  { title: "Formulas", items: ["Formula library", "Units & dimensional analysis", "Physical constants"] },
-  { title: "Mechanics", items: ["Kinematics", "Forces & Newton's laws", "Energy & momentum"] },
-  { title: "Electricity", items: ["Circuits (Ohm, Kirchhoff)", "Fields & potential", "Capacitance & current"] },
-  { title: "Waves", items: ["Wave equation", "Frequency, wavelength, speed", "Interference & resonance"] },
-  { title: "Symbolic & numeric tools", items: ["Solve for any variable", "Plug-in calculators"] }
 ]
 };

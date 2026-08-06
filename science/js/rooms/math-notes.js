@@ -32,13 +32,5 @@ links: [
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
   { name: "Send data note to Time-Series Lab", desc: "Open the signal console.", href: "room.html?room=math-time-series", tag: "room" },
   { name: "Open Symbols room", desc: "Grab notation to copy.", href: "room.html?room=math-symbols", tag: "room" },
-],
-notesTall: true,
-notesPlaceholder: "# Formula&#10;&#10;# Meaning&#10;&#10;# Example&#10;&#10;# When to use&#10;&#10;# Common mistake",
-sections: [
-  { title: "Personal notes", items: ["Free-form math notes", "Tagged by topic"] },
-  { title: "Formula library", items: ["Saved formulas", "Quick reference"] },
-  { title: "Examples", items: ["Worked examples", "Reusable templates"] },
-  { title: "Definitions", items: ["Glossary of terms", "Concept explanations"] }
 ]
 };

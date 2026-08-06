@@ -35,13 +35,5 @@ examples: [
 ],
 links: [
   { name: "Open Statistics", desc: "Summarize values in the Statistics room.", href: "room.html?room=math-statistics", tag: "room" },
-],
-sections: [
-  { title: "Data input", items: ["Upload CSV", "Paste data", "Multiple named traces"] },
-  { title: "Plot & view", items: ["Plot trace", "Stock-style trend view", "Electrophysiology trace view"] },
-  { title: "Processing", items: ["Smooth / filter data", "Baseline calculation", "Detect peaks / events"] },
-  { title: "Measurements", items: ["Amplitude", "Frequency", "Decay", "Area under curve"] },
-  { title: "Comparison & trends", items: ["Compare across traces", "Repeated measurements", "Trend analysis"] },
-  { title: "Export", items: ["Export notes / results"] }
 ]
 };

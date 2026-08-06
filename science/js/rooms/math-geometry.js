@@ -35,11 +35,5 @@ examples: [
 ],
 links: [
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
-],
-sections: [
-  { title: "Shapes", items: ["Triangles, circles, polygons", "Area & perimeter", "Surface area & volume"] },
-  { title: "Theorems", items: ["Pythagoras", "Similarity & congruence", "Circle theorems"] },
-  { title: "Coordinate geometry", items: ["Distance & midpoint", "Lines & slopes", "Conic sections"] },
-  { title: "Diagrams", items: ["Construction sketches", "Labeled figures"] }
 ]
 };

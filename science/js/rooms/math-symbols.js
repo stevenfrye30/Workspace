@@ -92,11 +92,5 @@ examples: [
 ],
 links: [
   { name: "Desmos graphing calculator", desc: "Plot any expression — opens Desmos in a new tab.", href: "https://www.desmos.com/calculator", tag: "math" },
-],
-sections: [
-  { title: "Greek letters", items: ["Lower & uppercase", "Names & pronunciation", "Common uses"] },
-  { title: "Operators", items: ["∑ ∏ ∫ ∂ ∇", "Relations (≤ ≥ ≈ ≠)", "Set & logic symbols"] },
-  { title: "Common notation", items: ["Subscripts & superscripts", "Vectors & matrices", "Function notation"] },
-  { title: "Copyable symbols", items: ["Click to copy (planned)", "Meaning where useful"] }
 ]
 };

@@ -306,15 +306,6 @@ table.u-table tr:hover td { background: color-mix(in srgb, var(--c) 8%, transpar
 .st-ans { color: var(--c); font-size: 1.02rem; }
 .st-flag { color: var(--muted); font-style: italic; }
 
-/* ── Section outline (ported Math rooms) ───────────────────── */
-.sec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0.7rem; }
-.sec-card { background: color-mix(in srgb, var(--c) 6%, var(--panel)); border: 1px solid var(--border);
-  border-left: 3px solid var(--c); border-radius: 4px; padding: 0.7rem 0.85rem 0.75rem; }
-.sec-title { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.68rem; font-weight: 700;
-  letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.4rem; }
-.sec-card ul { margin: 0; padding-left: 1rem; }
-.sec-card li { font-family: -apple-system, sans-serif; font-size: 0.78rem; color: var(--muted); line-height: 1.55; }
-
 /* ── Symbol cabinet (Symbols room) ─────────────────────────── */
 .symkey-group { margin-bottom: 1.1rem; }
 .symkey-title { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.68rem; font-weight: 700;
