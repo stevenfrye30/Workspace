@@ -21,7 +21,29 @@
                           grid, plus center for the round one and also for a
                           second destination rendered beside it.
      home.sub             authored HTML, so it may carry markup like K<sub>a</sub>.
-                          A hub with no sub gets its child count instead. */
+                          A hub with no sub gets its child count instead.
+
+   ── Naming ────────────────────────────────────────────────────────────────
+   A room key says where the room sits:
+
+     a hub's child   <hub-prefix>-<topic>    chem-titration, math-calculus
+     everything else bare                    biology, reference, lab-methods
+
+   The prefix is the hub's own key, abbreviated where the full one would be
+   unwieldy: chemistry uses chem-, math uses math-. HUB_PREFIX below records
+   that, and the check under it fails loudly if a key ever stops matching.
+
+   This reads as half-systematic from a file listing, and it was tempting to
+   "fix" it by prefixing biology and physics too — but there is nothing to
+   prefix them with. They have no parent; they are top-level board tiles, so
+   a prefix would be inventing a hierarchy the app does not have. The reverse,
+   stripping chem- and math-, would rename seventeen rooms and cost seventeen
+   ALIAS entries to buy a file listing that no longer groups a subject
+   together. All 27 keys already satisfy the rule as written, so nothing is
+   renamed and no shared link changes. */
+
+/* The prefix each hub's children carry. */
+export const HUB_PREFIX = { chemistry: 'chem-', math: 'math-' };
 
 export const MANIFEST = {
   "chemistry": {
@@ -99,8 +121,36 @@ export const MANIFEST = {
     widgets: ["./widgets/units.js"] }
 };
 
-/* Retired keys kept as redirects. */
+/* Retired keys kept as redirects. Every rename must leave one behind: these
+   keys are in URLs people have already been handed. */
 export const ALIAS = { "symbols-units": "data-analysis" };
+
+/* The naming rule, enforced rather than described. A key that drifts out of
+   step with the structure is the kind of thing nobody notices until a link
+   is already wrong, so it complains at load. */
+(function checkNaming() {
+  const parentOf = {};
+  Object.keys(MANIFEST).forEach(function (h) {
+    (MANIFEST[h].children || []).forEach(function (c) { parentOf[c] = h; });
+  });
+  Object.keys(MANIFEST).forEach(function (k) {
+    const parent = parentOf[k];
+    if (parent) {
+      const pre = HUB_PREFIX[parent];
+      if (pre && k.indexOf(pre) !== 0) {
+        console.error('Room key "' + k + '" is a child of ' + parent +
+                      ' and should start with "' + pre + '"');
+      }
+    } else {
+      Object.keys(HUB_PREFIX).forEach(function (h) {
+        if (k !== h && k.indexOf(HUB_PREFIX[h]) === 0) {
+          console.error('Room key "' + k + '" wears the ' + h +
+                        ' prefix but is not one of its children');
+        }
+      });
+    }
+  });
+})();
 
 /* Board tiles in grid order. Derived, so adding a home entry is all it takes
    to put a room on the board. */
