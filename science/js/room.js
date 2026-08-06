@@ -20,7 +20,6 @@ const WIDGETS = {
   'periodic-table': ['./widgets/periodic-table.js'],
   'reference': ['./widgets/reference-tables.js'],
   'data-analysis': ['./widgets/units.js'],
-  'notes': ['./widgets/notes-library.js'],
 
   /* Chemistry is a hub of topic rooms; the instruments live in those. */
   'chem-moles': ['./widgets/stoichiometry.js',
@@ -117,21 +116,21 @@ async function render(key) {
 
   widgets.forEach(function (w, i) { h += w.block(specs[i].opts); });
 
-  if (room.topics) {
-    h += '<section class="block"><div class="block-head"><h2>Core Topics</h2>' +
-      '<span class="tag">Map</span><p>The territory this room covers.</p></div>' +
-      '<div class="topic-grid">' + room.topics.map(function (t) {
-        return '<span class="topic">' + esc(t) + '</span>';
-      }).join('') + '</div></section>';
-  }
-
-  if (room.cards) {
-    h += '<section class="block"><div class="block-head"><h2>Reference Cards</h2>' +
-      '<span class="tag">Bench notes</span><p>Compact reminders for the bench.</p></div>' +
-      '<div class="card-grid">' + room.cards.map(function (c) {
-        return '<div class="card"><div class="c-name">' + esc(c.name) + '</div>' +
+  /* One list, not two. A room used to print a wall of topic chips that did
+     nothing and then a wall of cards saying much the same thing; more than
+     half the chips had no card behind them at all. The card titles are the
+     topics now — click one to open it. Expand all is there because a tutor
+     screen-sharing wants the whole sheet visible at once. */
+  if (room.cards && room.cards.length) {
+    h += '<section class="block ref" id="refList"><div class="block-head">' +
+      '<h2>Reference</h2><span class="tag">' + room.cards.length + ' topics</span>' +
+      '<p>Click a topic to open it.</p></div>' +
+      '<div class="ref-bar"><button class="rt-btn" id="refToggle" type="button" ' +
+      'aria-pressed="false">Expand all</button></div>' +
+      '<div class="ref-grid">' + room.cards.map(function (c) {
+        return '<details class="ref-item"><summary>' + esc(c.name) + '</summary>' +
           '<div class="c-body">' + c.body + '</div>' +
-          (c.note ? '<div class="c-note">' + c.note + '</div>' : '') + '</div>';
+          (c.note ? '<div class="c-note">' + c.note + '</div>' : '') + '</details>';
       }).join('') + '</div></section>';
   }
 
@@ -189,25 +188,26 @@ async function render(key) {
       }).join('') + '</div></section>';
   }
 
-  /* Per-room notebook, saved locally as scilab.notes.<room>. A hub has no
-     content of its own to annotate, so it gets no notebook. */
-  if (!room.hub) {
-    const notesPh = room.notesPlaceholder || 'Notes, definitions, reminders…';
-    const notesCls = 'sci-notes' + (room.notesTall ? ' tall' : '');
-    h += '<section class="block"><div class="block-head"><h2>Notes</h2>' +
-      '<span class="tag">Saved locally</span>' +
-      '<p>Private to this browser — autosaves as you type.</p></div>' +
-      '<textarea class="' + notesCls + '" id="sciNotes" placeholder="' + notesPh +
-      '" spellcheck="false"></textarea>' +
-      '<div class="notes-status" id="sciNotesStatus">Notes are stored only in this browser.</div></section>';
-  }
-
   main.innerHTML = h;
 
-  initNotes(key);
+  if (room.cards && room.cards.length) initRefList();
   if (room.groups) initSymbolCopy();
   if (specs.length) share.initBar();
   widgets.forEach(function (w, i) { w.init(specs[i].opts); });
+}
+
+/* Expand-all flips every topic at once, for reading the sheet rather than
+   looking one thing up. The label reports what the button will do next. */
+function initRefList() {
+  const btn = document.getElementById('refToggle');
+  if (!btn) return;
+  const items = document.querySelectorAll('#refList .ref-item');
+  btn.addEventListener('click', function () {
+    const expand = btn.getAttribute('aria-pressed') !== 'true';
+    items.forEach(function (d) { d.open = expand; });
+    btn.setAttribute('aria-pressed', String(expand));
+    btn.textContent = expand ? 'Collapse all' : 'Expand all';
+  });
 }
 
 /* Copy a symbol on click, confirming on the button itself so the feedback
@@ -234,23 +234,3 @@ function initSymbolCopy() {
   });
 }
 
-function initNotes(roomKey) {
-  const ta = document.getElementById('sciNotes');
-  const status = document.getElementById('sciNotesStatus');
-  if (!ta) return;
-  const storeKey = 'scilab.notes.' + roomKey;
-  let ok = true;
-  try { const p = '__t'; window.localStorage.setItem(p, '1'); window.localStorage.removeItem(p); }
-  catch (e) { ok = false; }
-  if (!ok) { status.textContent = 'Saving unavailable in this browser context.'; return; }
-  try { ta.value = window.localStorage.getItem(storeKey) || ''; } catch (e) {}
-  let t;
-  ta.addEventListener('input', function () {
-    status.textContent = 'Saving…';
-    clearTimeout(t);
-    t = setTimeout(function () {
-      try { window.localStorage.setItem(storeKey, ta.value); status.textContent = 'Saved locally ✓'; }
-      catch (e) { status.textContent = 'Could not save (storage full?).'; }
-    }, 350);
-  });
-}

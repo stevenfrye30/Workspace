@@ -4,12 +4,6 @@ export default {
 name: "Gases", kind: "Chemistry · the gas phase", glyph: "🎈", color: "#e0794b",
 blurb: "Pressure, volume, temperature and amount, and the one equation that ties them together — plus partial pressures and why lighter gases escape faster.",
 status: "Live — ideal, combined, Dalton and Graham solvers",
-topics: [
-  "Pressure & its units", "Boyle's law", "Charles's law", "Gay-Lussac's law",
-  "Avogadro's law", "Combined gas law", "Ideal gas law", "The gas constant R",
-  "Molar volume & STP", "Gas density", "Dalton's partial pressures",
-  "Mole fraction", "Graham's effusion", "Gas stoichiometry", "Real vs ideal gases"
-],
 cards: [
   { name: "Ideal gas law", body: "PV = nRT", note: "R = 0.0821 L·atm/mol·K  (8.314 J/mol·K). Temperature must be in kelvin, and R must match your pressure unit." },
   { name: "Combined gas law", body: "P₁V₁/T₁ = P₂V₂/T₂", note: "Boyle, Charles and Gay-Lussac are all this equation with one quantity held constant." },

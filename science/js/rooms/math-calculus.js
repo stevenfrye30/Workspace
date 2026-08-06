@@ -4,11 +4,6 @@ export default {
 name: "Calculus", kind: "Change", glyph: "∫", color: "#8b93d0",
 blurb: "Limits, derivatives, integrals, and series — a working reference with the core rules, worked examples, and room to grow.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Limits", "Continuity", "Derivatives", "Derivative rules", "Applications of derivatives",
-  "Integrals", "Antiderivatives", "Definite integrals", "Area under a curve",
-  "Sequences & series", "Taylor series", "Differential equations (intro)"
-],
 cards: [
   { name: "Limit — idea & notation", body: "lim<sub>x&rarr;a</sub> f(x) = L", note: "f(x) heads toward L as x heads toward a — even if f(a) is undefined." },
   { name: "Power rule", body: "(x<sup>n</sup>)&prime; = n&middot;x<sup>n&minus;1</sup>", note: "" },

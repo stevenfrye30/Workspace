@@ -4,12 +4,6 @@ export default {
 name: "Thermochemistry", kind: "Chemistry · energy", glyph: "🔥", color: "#e0794b",
 blurb: "Where the heat goes — warming things up, the enthalpy of a reaction, Hess's law, and what decides whether a reaction happens on its own.",
 status: "Live — calorimetry, ΔH°rxn and Hess's law solvers",
-topics: [
-  "System & surroundings", "Heat vs temperature", "Specific heat", "Calorimetry",
-  "Enthalpy ΔH", "Endothermic & exothermic", "Standard enthalpy of formation",
-  "Hess's law", "Bond enthalpies", "Phase changes", "Heating curves",
-  "Entropy ΔS", "Gibbs free energy", "Spontaneity"
-],
 cards: [
   { name: "Heat and temperature change", body: "q = m·c·ΔT, where ΔT = T<sub>final</sub> − T<sub>initial</sub>", note: "c for water = 4.184 J/(g·°C). Positive q = absorbed, negative q = released." },
   { name: "Heat is not temperature", body: "Temperature measures average kinetic energy; heat is energy transferred because of a temperature difference.", note: "A bathtub and a cup at the same temperature hold very different amounts of heat." },

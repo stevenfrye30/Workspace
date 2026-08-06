@@ -4,11 +4,6 @@ export default {
 name: "Moles & Stoichiometry", kind: "Chemistry · counting", glyph: "⚖️", color: "#e0794b",
 blurb: "The mole is chemistry's counting unit, and stoichiometry is what you do with it — mass to moles, mole ratios from a balanced equation, and which reactant runs out first.",
 status: "Live — limiting reagent solver and molar-mass calculator",
-topics: [
-  "The mole", "Avogadro's number", "Molar mass", "Mass ↔ moles", "Percent composition",
-  "Empirical formula", "Molecular formula", "Balancing equations", "Mole ratios",
-  "Limiting reagent", "Theoretical yield", "Percent yield"
-],
 cards: [
   { name: "Mole relationship", body: "n = m / M", note: "moles = mass ÷ molar mass. Rearrange for whichever one you need." },
   { name: "Avogadro's number", body: "N<sub>A</sub> = 6.022 × 10²³ /mol", note: "particles per mole — the bridge between counting and weighing." },

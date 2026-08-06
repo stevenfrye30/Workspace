@@ -4,11 +4,6 @@ export default {
 name: "Statistics", kind: "Data", glyph: "📊", color: "#8b93d0",
 blurb: "Descriptive stats, distributions, probability, and inference — a working reference for real data, from coursework to research and signal analysis.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Descriptive statistics", "Mean, median, mode", "Variance & SD", "Distributions",
-  "Normal distribution", "Z-scores", "Probability", "Sampling", "Confidence intervals",
-  "Hypothesis testing", "Correlation", "Regression", "P-values", "Effect sizes"
-],
 cards: [
   { name: "Mean", body: 'x&#772; = <span class="frac"><span class="num">&Sigma; x<sub>i</sub></span><span class="den">n</span></span>', note: "Add the values, divide by how many." },
   { name: "Median (concept)", body: "sort data &rarr; the middle value", note: "For an even count, average the two middle values. Robust to outliers." },

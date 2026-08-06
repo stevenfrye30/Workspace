@@ -45,47 +45,63 @@ body {
 .calc-btn.eq { background: var(--c); color: #11161f; border-color: var(--c); font-weight: 700; }
 .calc-btn.wide { grid-column: span 2; }
 
-/* ── The always-there calculator ────────────────────────────────────────
-   Pinned top-right, opposite the hub pill at top-left, on every page. */
-.calcdock-btn {
+/* ── The dock: tools that sit above the page, not inside it ──────────────
+   Top-right, opposite the hub pill at top-left. */
+.dock {
   position: fixed; top: 0.6rem; right: 0.6rem; z-index: 99998;
-  display: inline-flex; align-items: center; gap: 0.4rem;
+  display: flex; gap: 0.4rem;
+}
+.dock-btn {
+  display: inline-flex; align-items: center; gap: 0.35rem;
   font: 600 12px/1 -apple-system, "Segoe UI", system-ui, sans-serif;
   color: var(--fg); background: color-mix(in srgb, var(--gold) 16%, var(--panel));
   border: 1px solid color-mix(in srgb, var(--gold) 40%, transparent);
-  border-radius: 999px; padding: 0.5rem 0.85rem; cursor: pointer;
+  border-radius: 999px; padding: 0.5rem 0.8rem; cursor: pointer;
   box-shadow: 0 2px 10px -4px rgba(0,0,0,0.5);
   transition: transform 0.12s, border-color 0.2s, background 0.2s;
 }
-.calcdock-btn:hover { transform: translateY(-1px); border-color: var(--gold);
+.dock-btn:hover { transform: translateY(-1px); border-color: var(--gold);
   background: color-mix(in srgb, var(--gold) 26%, var(--panel)); }
+.dock-btn[aria-expanded="true"] {
+  background: color-mix(in srgb, var(--gold) 32%, var(--panel)); border-color: var(--gold); }
 
-.calcdock-panel {
+.dock-panel {
   position: fixed; top: 3.3rem; right: 0.6rem; z-index: 99997;
   width: 19.5rem; display: none;
   background: var(--panel); border: 1px solid var(--border);
   border-radius: 8px; padding: 0.7rem;
   box-shadow: 0 16px 40px -12px rgba(0,0,0,0.65);
 }
-.calcdock-panel.open { display: block; }
-.calcdock-head {
+.dock-panel.open { display: block; }
+.dock-head {
   display: flex; align-items: center; justify-content: space-between;
   font: 700 0.64rem/1 -apple-system, sans-serif; letter-spacing: 0.12em;
   text-transform: uppercase; color: var(--muted); margin-bottom: 0.55rem;
 }
-.calcdock-close {
+.dock-close {
   font-size: 1.1rem; line-height: 1; color: var(--muted);
   background: none; border: none; cursor: pointer; padding: 0 0.2rem;
 }
-.calcdock-close:hover { color: var(--fg); }
+.dock-close:hover { color: var(--fg); }
 
-@media (max-width: 480px) {
-  .calcdock-btn { padding: 0.45rem 0.6rem; font-size: 11px; }
-  .calcdock-panel { left: 0.6rem; right: 0.6rem; width: auto; }
+/* The notepad is deliberately roomier than the calculator. */
+.dock-panel.notepad { width: 22rem; }
+.pad {
+  width: 100%; min-height: 15rem; resize: vertical;
+  font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.82rem; line-height: 1.55;
+  color: var(--fg); background: #1a2433; border: 1px solid var(--border);
+  border-radius: 5px; padding: 0.6rem 0.7rem; outline: none;
+}
+.pad:focus { border-color: var(--gold); }
+.pad-status { font-family: -apple-system, sans-serif; font-size: 0.68rem; color: var(--muted); margin-top: 0.35rem; }
+
+@media (max-width: 520px) {
+  .dock-btn { padding: 0.45rem 0.6rem; font-size: 11px; }
+  .dock-panel, .dock-panel.notepad { left: 0.6rem; right: 0.6rem; width: auto; }
 }
 
 @media print {
   body { background: #fff; color: #000; }
   .page { max-width: none; padding: 0; }
-  .calcdock-btn, .calcdock-panel { display: none !important; }
+  .dock, .dock-panel { display: none !important; }
 }

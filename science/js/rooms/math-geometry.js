@@ -4,11 +4,6 @@ export default {
 name: "Geometry", kind: "Form", glyph: "△", color: "#8b93d0",
 blurb: "Shapes, theorems, and coordinate geometry — a visual reference that ties figures (△ ○ □) to formulas and to algebra.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Points, lines & planes", "Angles", "Triangles", "Polygons", "Circles", "Perimeter",
-  "Area", "Surface area", "Volume", "Coordinate geometry", "Distance formula", "Midpoint formula",
-  "Slope & parallel/perpendicular", "Transformations", "Similarity", "Congruence", "Proofs", "Right-triangle geometry"
-],
 cards: [
   { name: "Distance formula", body: "d = &radic;[ (x<sub>2</sub> &minus; x<sub>1</sub>)<sup>2</sup> + (y<sub>2</sub> &minus; y<sub>1</sub>)<sup>2</sup> ]", note: "Straight-line distance between two points." },
   { name: "Midpoint formula", body: 'M = ( <span class="frac"><span class="num">x<sub>1</sub> + x<sub>2</sub></span><span class="den">2</span></span> , <span class="frac"><span class="num">y<sub>1</sub> + y<sub>2</sub></span><span class="den">2</span></span> )', note: "Average of the endpoints." },

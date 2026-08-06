@@ -30,7 +30,6 @@ export const MANIFEST = {
   "neuroscience": { name: "Neuroscience", glyph: "🧠", color: "#e06b8b" },
   "lab-methods": { name: "Lab Methods", glyph: "🔬", color: "#b8a24c" },
   "data-analysis": { name: "Data, Symbols & Units", glyph: "📊", color: "#5fb0a8" },
-  "notes": { name: "Notes & Study Library", glyph: "📓", color: "#c2b280" },
 };
 
 /* Retired keys kept as redirects. */

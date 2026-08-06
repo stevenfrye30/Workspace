@@ -4,12 +4,6 @@ export default {
 name: "Equilibrium & Kinetics", kind: "Chemistry · rates and balance", glyph: "⚖", color: "#e0794b",
 blurb: "How far a reaction goes, and how fast it gets there — two different questions that students routinely mix up.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Reversible reactions", "Dynamic equilibrium", "Equilibrium constant K",
-  "Kc and Kp", "Reaction quotient Q", "ICE tables", "Le Chatelier's principle",
-  "Common ion effect", "Ksp", "Reaction rate", "Rate law", "Reaction order",
-  "Integrated rate laws", "Half-life", "Activation energy", "Catalysts"
-],
 cards: [
   { name: "Dynamic equilibrium", body: "Forward and reverse rates become equal — concentrations stop changing, but both reactions continue.", note: "Equilibrium is not the reaction stopping." },
   { name: "Equilibrium constant", body: "K = [products] / [reactants]", note: "Each term raised to its coefficient. Pure solids and liquids are left out." },

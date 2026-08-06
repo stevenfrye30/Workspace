@@ -4,11 +4,6 @@ export default {
 name: "Notes & Formulas", kind: "Library", glyph: "✎", color: "#8b93d0",
 blurb: "Your personal formula vault and study notebook — collect, save, and reuse math from every room in one place.",
 status: "Your notebook — autosaves locally",
-topics: [
-  "Personal notes", "Formula library", "Saved definitions", "Worked examples", "Reusable explanations",
-  "Theorem notes", "Study reminders", "Problem-solving strategies", "Notation reminders", "Common mistakes",
-  "Graphing notes", "Statistics notes", "Physics notes", "Time-series notes", "Saved snippets", "Review lists"
-],
 cards: [
   { name: "Algebra essentials", body: 'x = <span class="frac"><span class="num">&minus;b &plusmn; &radic;(b<sup>2</sup> &minus; 4ac)</span><span class="den">2a</span></span><br>m = (y<sub>2</sub> &minus; y<sub>1</sub>) / (x<sub>2</sub> &minus; x<sub>1</sub>)<br>y &minus; y<sub>1</sub> = m(x &minus; x<sub>1</sub>)', note: "Full room: Algebra." },
   { name: "Calculus essentials", body: "(x<sup>n</sup>)&prime; = n x<sup>n&minus;1</sup><br>&int;<sub>a</sub><sup>b</sup> f = F(b) &minus; F(a)<br>[f(g)]&prime; = f&prime;(g)&middot;g&prime;", note: "Full room: Calculus." },

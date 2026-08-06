@@ -4,12 +4,6 @@ export default {
 name: "Data, Symbols & Units", kind: "Evidence & notation", glyph: "📊", color: "#5fb0a8",
 blurb: "The bench reference for turning measurements into conclusions — experimental design, statistics, traces, and error — plus the shared units, symbols, and notation of science.",
 status: "Live — unit converter, constants and notation",
-topics: [
-  "Experimental design", "Variables", "Controls", "Replicates", "Graphing", "Statistics",
-  "Time-series analysis", "Error & uncertainty", "Significant figures", "SI base units",
-  "Derived units", "Prefixes", "Scientific notation", "Greek letters", "Chemistry notation",
-  "Biology notation", "Ephys notation", "Imaging notation", "Constants"
-],
 cards: [
   { name: "Controls", body: "Positive & negative controls · vehicle · blinding · randomization.", note: "" },
   { name: "Variables", body: "Independent (you change) · dependent (you measure) · controlled (held constant) · confounders.", note: "" },

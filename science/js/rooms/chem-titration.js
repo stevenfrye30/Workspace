@@ -4,11 +4,6 @@ export default {
 name: "Titration", kind: "Chemistry · analysis", glyph: "⚗️", color: "#e0794b",
 blurb: "Adding measured titrant and reading the curve that results — equivalence, half-equivalence, the buffer region, and picking an indicator that changes where it matters.",
 status: "Live — curve, table and indicator picker",
-topics: [
-  "Titration setup", "Analyte & titrant", "Equivalence point", "Endpoint",
-  "Half-equivalence", "Buffer region", "Titration curves", "Indicators",
-  "Strong–strong", "Weak acid–strong base", "Weak base–strong acid", "Polyprotic acids"
-],
 cards: [
   { name: "Equivalence point", body: "Where moles of titrant = moles of analyte.", note: "Equivalence means <b>stoichiometrically equal</b>, not pH 7 — only strong + strong lands on 7." },
   { name: "Endpoint vs equivalence", body: "The endpoint is where the indicator changes colour; equivalence is the true stoichiometric point.", note: "A well-chosen indicator makes the two nearly coincide." },

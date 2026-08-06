@@ -4,10 +4,6 @@ export default {
 name: "Algebra", kind: "Structure", glyph: "x²", color: "#8b93d0",
 blurb: "Equations, factoring, functions, and symbolic manipulation — a working reference with rules, worked examples, and room to grow.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Equations", "Inequalities", "Factoring", "Functions", "Exponents",
-  "Radicals", "Logarithms", "Systems of equations", "Polynomials", "Rational expressions"
-],
 cards: [
   { name: "Slope formula", body: 'm = <span class="frac"><span class="num">y<sub>2</sub> &minus; y<sub>1</sub></span><span class="den">x<sub>2</sub> &minus; x<sub>1</sub></span></span>', note: "Rate of change between two points." },
   { name: "Slope-intercept form", body: "y = mx + b", note: "m is slope, b is the y-intercept." },

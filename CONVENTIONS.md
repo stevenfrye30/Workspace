@@ -94,8 +94,12 @@ not appear on a public-facing index, sidebar, or sitemap.
     buttons instead of content, and the nine `chem-*` rooms hold the
     actual tools. A `WIDGETS` entry may be `{path, opts}` so one widget
     module (the calculators) serves several rooms with different tabs.
-    `science/index.html` is the **home dashboard** — every room as a
-    button, grouped Chemistry / Science / Math.
+    `science/index.html` is the **home dashboard** — a 3x3 board with the
+    periodic table at its centre. A room lists its `cards` as one
+    click-to-open Reference list; there is no separate topic-chip array
+    (topics with no card are parked in `science/CONTENT_BACKLOG.md`).
+    The calculator and notepad live in `js/dock.js`, top-right on every
+    page — rooms carry no notes box of their own.
 - `math/` — **RETIRED as a separate app.** Its nine rooms moved into
   `science/js/rooms/` as `math-*` (its physics room replaced the old
   Science bridge room and kept the `physics` key). `math/index.html` and

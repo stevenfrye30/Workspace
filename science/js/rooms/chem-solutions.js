@@ -4,11 +4,6 @@ export default {
 name: "Solutions & Concentration", kind: "Chemistry · mixtures", glyph: "🧫", color: "#e0794b",
 blurb: "Moles per litre, and what happens when you add water — molarity, dilution, solution stoichiometry, and the rules for what actually dissolves.",
 status: "Live — molarity and dilution solvers",
-topics: [
-  "Solute & solvent", "Molarity", "Molality", "Dilution", "Solution stoichiometry",
-  "Solubility rules", "Precipitation", "Net ionic equations", "Spectator ions",
-  "Parts per million", "Preparing a solution"
-],
 cards: [
   { name: "Molarity", body: "M = mol / L", note: "moles of solute per litre of <b>solution</b> — not per litre of solvent." },
   { name: "Dilution", body: "M₁V₁ = M₂V₂", note: "Moles of solute don't change when you add water, so concentration × volume is conserved." },

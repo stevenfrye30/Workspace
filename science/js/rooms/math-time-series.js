@@ -5,12 +5,6 @@ name: "Time-Series Lab", kind: "Signal", glyph: "〜", color: "#8b93d0",
 blurb: "A data & signal console for anything measured over time — electrophysiology traces, stock data, repeated measures, and sensor streams.",
 status: "Reference — formulas and worked examples",
 callout: "<b>Future-facing data lab.</b> Upload &amp; analysis aren't wired up yet — this is the working reference and the plan. Built to grow into a real console for ephys traces, stock data, and repeated measures.",
-topics: [
-  "Time-series data", "Traces", "Sampling rate", "Baseline", "Amplitude", "Frequency",
-  "Period", "Trend", "Noise", "Smoothing", "Filtering", "Peaks", "Events", "Decay",
-  "Area under curve", "Rolling averages", "Autocorrelation", "Stationarity",
-  "Stock-style trends", "Electrophysiology traces"
-],
 cards: [
   { name: "Sampling interval & rate", body: 'f<sub>s</sub> = <span class="frac"><span class="num">1</span><span class="den">&Delta;t</span></span>', note: "f<sub>s</sub> in Hz (samples/sec); &Delta;t is the time between samples." },
   { name: "Period & frequency", body: 'f = <span class="frac"><span class="num">1</span><span class="den">T</span></span>', note: "T in seconds, f in Hz. Equivalently T = 1/f." },

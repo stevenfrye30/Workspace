@@ -4,12 +4,6 @@ export default {
 name: "Trigonometry", kind: "Angle", glyph: "∿", color: "#8b93d0",
 blurb: "The bridge between angles, triangles, the unit circle, and waves (∿) — θ, π, sin, cos, tan, and the graphs they trace.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Angles", "Degrees & radians", "Unit circle", "Sine", "Cosine", "Tangent",
-  "Reciprocal functions", "Right-triangle ratios", "Special angles", "Trig identities",
-  "Inverse trig", "Graphing trig", "Amplitude", "Period", "Phase shift", "Vertical shift",
-  "Waves", "Law of sines", "Law of cosines"
-],
 cards: [
   { name: "Degree / radian conversion", body: 'rad = deg &middot; <span class="frac"><span class="num">&pi;</span><span class="den">180&deg;</span></span>,&nbsp; deg = rad &middot; <span class="frac"><span class="num">180&deg;</span><span class="den">&pi;</span></span>', note: "180&deg; = &pi; radians." },
   { name: "SOH-CAH-TOA", body: 'sin &theta; = <span class="frac"><span class="num">opp</span><span class="den">hyp</span></span>,&nbsp; cos &theta; = <span class="frac"><span class="num">adj</span><span class="den">hyp</span></span>,&nbsp; tan &theta; = <span class="frac"><span class="num">opp</span><span class="den">adj</span></span>', note: "Right-triangle ratios." },

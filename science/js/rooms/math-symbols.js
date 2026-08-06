@@ -5,11 +5,6 @@ name: "Symbols", kind: "Notation", glyph: "π", color: "#8b93d0",
 blurb: "A notation cabinet for writing math — Greek letters, operators, and notation from every field, each a click away to copy.",
 status: "Click any symbol to copy",
 callout: "Click any symbol to copy it. For symbols while graphing, Desmos has its own on-screen keyboard.",
-topics: [
-  "Greek letters", "Operators", "Comparison symbols", "Set notation", "Logic symbols",
-  "Calculus notation", "Statistics notation", "Probability notation", "Geometry symbols",
-  "Trigonometry symbols", "Physics symbols", "Arrows", "Subscripts & superscripts", "Typography"
-],
 groups: [
   { title: "Greek lowercase", symbols: [
     { g: "&alpha;", n: "alpha" }, { g: "&beta;", n: "beta" }, { g: "&gamma;", n: "gamma" }, { g: "&delta;", n: "delta" },

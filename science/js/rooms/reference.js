@@ -8,11 +8,6 @@ name: "Reference Tables", kind: "Lookup", glyph: "📋", color: "#5f9ea0",
    use proper <sub> markup. */
 blurb: "The tables you stop and look up mid-problem — polyatomic ions, solubility rules, strong acids and bases, and Ka / Kb values. Built to be searched during a session and printed as a handout after one.",
 status: "Live — searchable, screen-share sized, printable",
-topics: [
-  "Polyatomic ions", "Oxyanion naming", "Ionic formulas", "Solubility rules",
-  "Precipitation", "Net ionic equations", "Strong acids", "Strong bases",
-  "Weak acids", "Ka and pKa", "Kb and pKb", "Buffers"
-],
 cards: [
   { name: "Writing an ionic formula", body: "Balance the charges — criss-cross, then reduce.<br>Ca<sup>2+</sup> + PO<sub>4</sub><sup>3−</sup> → Ca<sub>3</sub>(PO<sub>4</sub>)<sub>2</sub>", note: "Keep a polyatomic ion in parentheses when you need more than one of it." },
   { name: "Naming an ionic compound", body: "Cation name, then anion name. Transition metals take a Roman numeral for their charge.", note: "FeCl<sub>3</sub> = iron(III) chloride, not iron trichloride." },

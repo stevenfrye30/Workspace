@@ -4,12 +4,6 @@ export default {
 name: "Redox & Electrochemistry", kind: "Chemistry · electron transfer", glyph: "🔋", color: "#e0794b",
 blurb: "Reactions that move electrons, and the cells that put that movement to work — oxidation numbers, half-reactions, batteries and electrolysis.",
 status: "Reference — formulas and worked examples",
-topics: [
-  "Oxidation & reduction", "Oxidation numbers", "Oxidising & reducing agents",
-  "Half-reactions", "Balancing redox", "Galvanic cells", "Cell notation",
-  "Standard reduction potentials", "Cell potential E°", "Nernst equation",
-  "Electrolysis", "Faraday's laws", "Corrosion"
-],
 cards: [
   { name: "Redox (OIL RIG)", body: "Oxidation Is Loss, Reduction Is Gain of e⁻", note: "The oxidising agent is itself reduced; the reducing agent is itself oxidised." },
   { name: "Oxidation numbers", body: "Free element 0 · monatomic ion = its charge · O usually −2 · H usually +1 · sum = overall charge", note: "Peroxides make O −1; metal hydrides make H −1." },

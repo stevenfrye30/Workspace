@@ -33,16 +33,28 @@ body {
 .block-head .tag { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--c); margin-left: 0.55rem; vertical-align: 0.15em; }
 .block-head p { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
 
-.topic-grid { display: flex; flex-wrap: wrap; gap: 0.4rem; }
-.topic { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.8rem; font-weight: 600; color: var(--fg);
-  background: color-mix(in srgb, var(--c) 12%, var(--panel)); border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
-  border-left: 3px solid var(--c); border-radius: 3px; padding: 0.32rem 0.65rem; }
 
-.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.7rem; }
-.card { background: linear-gradient(155deg, color-mix(in srgb, var(--c) 12%, var(--panel)), var(--panel)); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem 0.85rem 0.75rem; }
-.card .c-name { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--c); margin-bottom: 0.45rem; }
-.card .c-body { font-size: 1rem; line-height: 1.55; }
-.card .c-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.35; }
+/* ── Reference: the topics ARE the cards, collapsed ─────────── */
+.ref-bar { display: flex; justify-content: flex-end; margin: -0.4rem 0 0.6rem; }
+.ref-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); gap: 0.5rem; align-items: start; }
+.ref-item {
+  background: linear-gradient(155deg, color-mix(in srgb, var(--c) 11%, var(--panel)), var(--panel));
+  border: 1px solid var(--border); border-left: 3px solid var(--c);
+  border-radius: 4px; padding: 0.55rem 0.75rem;
+  transition: border-color 0.15s;
+}
+.ref-item:hover { border-color: color-mix(in srgb, var(--c) 55%, var(--border)); }
+.ref-item > summary {
+  cursor: pointer; list-style: none;
+  font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.84rem; font-weight: 600;
+  color: var(--fg); display: flex; gap: 0.45rem; align-items: baseline;
+}
+.ref-item > summary::-webkit-details-marker { display: none; }
+.ref-item > summary::before { content: "+"; color: var(--c); font-weight: 700; }
+.ref-item[open] > summary::before { content: "\2212"; }
+.ref-item[open] { border-color: color-mix(in srgb, var(--c) 45%, var(--border)); }
+.ref-item .c-body { font-size: 1rem; line-height: 1.55; margin-top: 0.5rem; }
+.ref-item .c-note { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.72rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.35; }
 
 /* Worked examples (click-to-expand) */
 .examples { display: grid; grid-template-columns: repeat(auto-fill, minmax(16.5rem, 1fr)); gap: 0.6rem; }
@@ -77,11 +89,6 @@ details.ex[open] > summary::before { content: "\2212"; }
 .lnk .l-badge { position: absolute; top: 0.5rem; right: 0.55rem; font-family: -apple-system, sans-serif; font-size: 0.52rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--c); background: color-mix(in srgb, var(--c) 14%, transparent); border: 1px solid color-mix(in srgb, var(--c) 32%, transparent); border-radius: 999px; padding: 0.1rem 0.4rem; }
 
-.sci-notes { width: 100%; min-height: 150px; resize: vertical; font-family: ui-monospace, "Cascadia Code", monospace; font-size: 0.85rem; line-height: 1.5;
-  color: var(--fg); background: color-mix(in srgb, var(--c) 6%, #1a2433); border: 1px solid var(--border); border-radius: 4px; padding: 0.7rem 0.8rem; outline: none; }
-.sci-notes:focus { border-color: var(--c); }
-.sci-notes.tall { min-height: 280px; }
-.notes-status { font-family: -apple-system, "Segoe UI", sans-serif; font-size: 0.7rem; color: var(--muted); margin-top: 0.4rem; }
 
 /* ── Interactive periodic table (periodic-table room only) ───── */
 .pt-wrap { display: grid; grid-template-columns: minmax(0,1fr) 18rem; gap: 1rem; align-items: start; }

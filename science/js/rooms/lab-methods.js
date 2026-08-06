@@ -5,13 +5,6 @@ name: "Lab Methods", kind: "Shared methods hub", glyph: "🔬", color: "#b8a24c"
 blurb: "The shared methods hub — the bench skills every experiment leans on, gathered in one place: safety, documentation, solution and buffer prep, pipetting, controls, calibration, troubleshooting, and data quality. Specialized techniques are introduced here, but increasingly live inside their own discipline areas.",
 status: "Reference — shared bench skills",
 callout: "<b>A shared hub, not the final home for every method.</b> Core bench skills — safety, lab notebook, solution &amp; buffer prep, pipetting, controls, calibration, troubleshooting, data quality — live here for good. Specialized methods are introduced here but will increasingly be surfaced inside their own areas: <b>Chemistry</b>, <b>Organic Chemistry</b>, <b>Analytical Chemistry</b>, <b>Biochemistry</b>, <b>Biology</b>, <b>Neuroscience &amp; Ephys</b>, and <b>Data</b> methods. (No single Lab Methods subject exists in the archive — method material is scattered across clusters; the links below point to the nearest.)",
-topics: [
-  "Lab safety", "PPE", "Lab notebook", "Pipetting", "Solution prep", "Buffers", "pH",
-  "Sterile technique", "Controls", "Replicates", "Calibration", "Troubleshooting", "Data quality",
-  "Microscopy", "Fluorescence imaging", "Calcium imaging", "GCaMP", "iGluSnFR", "Patch clamp",
-  "Electrophysiology setup", "Whole-cell recording", "Protein purification", "Chromatography",
-  "Enzyme assays", "Gel electrophoresis", "Immunostaining / Western", "Cell culture"
-],
 cards: [
   { name: "How this hub works", body: "<b>Shared</b> bench skills — safety, notebook, solution &amp; buffer prep, pipetting, controls, calibration, troubleshooting, data quality — live here permanently. <b>Specialized</b> methods are introduced here, then surfaced inside their discipline area: Chemistry, Organic, Analytical, Biochemistry, Biology, Neuroscience &amp; Ephys, and Data methods.", note: "One place to learn a technique; the discipline room for its specifics." },
   { name: "PPE & safety mindset", body: "Gloves, goggles, coat; know your reagents (read the SDS); right waste stream; sharps care.", note: "Safety is part of reproducibility, not box-ticking." },

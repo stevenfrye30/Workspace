@@ -4,11 +4,6 @@ export default {
 name: "Acids, Bases & Buffers", kind: "Chemistry · proton transfer", glyph: "🧴", color: "#e0794b",
 blurb: "Strong versus weak, the pH scale, and why a buffer resists change — the topic that decides whether equilibrium ever makes sense.",
 status: "Live — pH and buffer solvers",
-topics: [
-  "Arrhenius & Brønsted–Lowry", "Conjugate pairs", "Strong acids", "Strong bases",
-  "Weak acids", "Ka and Kb", "The pH scale", "pOH", "Kw", "Buffers",
-  "Henderson–Hasselbalch", "Buffer capacity", "Salt hydrolysis"
-],
 cards: [
   { name: "Brønsted–Lowry", body: "An acid donates H⁺; a base accepts it.", note: "Every acid has a conjugate base, formed by losing that proton." },
   { name: "pH and pOH", body: "pH = −log[H⁺] · pH + pOH = 14", note: "At 25 °C. Each pH unit is a factor of ten in [H⁺]." },

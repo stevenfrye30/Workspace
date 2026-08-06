@@ -4,12 +4,6 @@ export default {
 name: "Biochemistry", kind: "Molecules of life", glyph: "🧬", color: "#7fb0d0",
 blurb: "The bridge from Chemistry to Biology — water and pH become amino acids, enzymes, membranes, metabolism, and the molecules that carry information.",
 status: "Reference — molecular cards and worked examples",
-topics: [
-  "Water & pH", "Buffers", "Amino acids", "Protein structure", "Enzymes", "Enzyme kinetics",
-  "Carbohydrates", "Lipids", "Membranes", "DNA & RNA", "Nucleotides", "Transcription & translation",
-  "Metabolism", "Glycolysis", "TCA cycle", "Oxidative phosphorylation", "ATP", "Signaling",
-  "Receptors", "Redox biology", "Macromolecules", "Molecular interactions"
-],
 cards: [
   { name: "Amino acid structure", body: "Central Cα bonded to —NH₂ (amino), —COOH (carboxyl), —H, and a variable R side chain.", note: "The R group sets polarity, charge, and chemistry." },
   { name: "Peptide bond", body: "Amide bond: carboxyl of one residue + amino of the next, releasing H₂O.", note: "Condensation; chain runs N → C." },

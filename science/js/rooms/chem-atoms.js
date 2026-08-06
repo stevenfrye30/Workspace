@@ -4,13 +4,6 @@ export default {
 name: "Atoms, Bonding & Trends", kind: "Chemistry · structure", glyph: "⚛", color: "#e0794b",
 blurb: "What atoms are made of, how they join, and why the periodic table's patterns fall out of electron arrangement.",
 status: "Reference — pairs with the interactive periodic table",
-topics: [
-  "Protons, neutrons, electrons", "Isotopes", "Atomic mass", "Ions",
-  "Electron configuration", "Valence electrons", "Orbitals & shells",
-  "Periodic trends", "Atomic radius", "Ionization energy", "Electronegativity",
-  "Ionic bonding", "Covalent bonding", "Metallic bonding", "Polarity",
-  "Lewis structures", "Molecular geometry", "Intermolecular forces"
-],
 cards: [
   { name: "What is in an atom", body: "Protons set the element, neutrons set the isotope, electrons set the chemistry.", note: "Atomic number = protons. Mass number = protons + neutrons." },
   { name: "Ions", body: "Metals lose electrons to form cations (+); nonmetals gain them to form anions (−).", note: "Charge = protons − electrons." },

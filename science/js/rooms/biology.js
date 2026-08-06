@@ -4,12 +4,6 @@ export default {
 name: "Biology", kind: "Life", glyph: "🌿", color: "#6fae5f",
 blurb: "The broad life-science room — cells, genes, immunity, the body, plants, and evolution.",
 status: "Reference — cards and worked examples",
-topics: [
-  "Cells", "Organelles", "Membranes", "Membrane transport", "DNA & genes", "Replication",
-  "Transcription", "Translation", "Genetics", "Gene regulation", "Cell cycle", "Cell death",
-  "Cancer biology", "Evolution", "Physiology", "Homeostasis", "Immune system", "Vaccines",
-  "Plants", "Molecular biology", "Bioinformatics", "Experimental controls"
-],
 cards: [
   { name: "Cell theory", body: "All living things are made of cells; cells arise from cells; the cell is life's basic unit.", note: "" },
   { name: "Prokaryotes vs eukaryotes", body: "Prokaryote: no nucleus or membrane-bound organelles (bacteria, archaea). Eukaryote: nucleus + organelles.", note: "" },

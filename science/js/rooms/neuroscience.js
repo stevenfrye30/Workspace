@@ -5,13 +5,6 @@ name: "Neuroscience", kind: "Signals", glyph: "🧠", color: "#e06b8b",
 blurb: "Neurons, synapses, and the electrical & optical signals they produce — a bench notebook for patch clamp, calcium/glutamate imaging, and trace analysis.",
 status: "Reference — ephys and imaging, with worked examples",
 callout: "<b>Bench-oriented & educational.</b> This room mirrors real ephys/imaging workflow and connects it to the Time-Series and Statistics tools in Math Lab. (General reference — no private lab data.)",
-topics: [
-  "Neurons", "Glia", "Membrane potential", "Ion gradients", "Ions: Na⁺ K⁺ Ca²⁺ Cl⁻", "Action potentials",
-  "Synapses", "Neurotransmitters", "Receptors", "Excitatory & inhibitory", "EPSCs & IPSCs", "mEPSCs",
-  "Evoked responses", "Synaptic plasticity", "Patch clamp", "Voltage clamp", "Current clamp",
-  "Access resistance", "Membrane resistance", "Capacitance", "Holding current", "Calcium imaging",
-  "Glutamate imaging", "GCaMP", "iGluSnFR", "Signal traces", "Time-series analysis"
-],
 cards: [
   { name: "Resting membrane potential", body: "V<sub>m</sub> ≈ −65 to −70 mV — set by ion gradients and selective permeability (mostly K⁺ at rest).", note: "" },
   { name: "Nernst equation", body: "E<sub>ion</sub> = (RT/zF)·ln([ion]<sub>out</sub>/[ion]<sub>in</sub>) ≈ (61/z)·log₁₀(out/in) mV at 37 °C.", note: "Equilibrium potential for a single ion." },
