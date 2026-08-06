@@ -14,7 +14,38 @@ cards: [
   { name: "Will it precipitate?", body: "Swap the partners, then check each product against the solubility rules. Anything insoluble is your precipitate.", note: "No insoluble product means no reaction." },
   { name: "Strong or weak?", body: "If the acid is one of the six on the strong list, it ionises completely. Everything else needs K<sub>a</sub>.", note: "Strong acid ⇒ [H⁺] = the acid's concentration. No equilibrium needed." },
   { name: "Conjugate pairs", body: "K<sub>a</sub> × K<sub>b</sub> = K<sub>w</sub> = 1.0 × 10⁻¹⁴<br>pK<sub>a</sub> + pK<sub>b</sub> = 14.00", note: "The stronger the acid, the weaker its conjugate base." },
-  { name: "Choosing a buffer", body: "Pick an acid whose pK<sub>a</sub> is within about 1 unit of your target pH.", note: "Equal [A⁻] and [HA] puts pH exactly at pK<sub>a</sub>." }
+  { name: "Choosing a buffer", body: "Pick an acid whose pK<sub>a</sub> is within about 1 unit of your target pH.", note: "Equal [A⁻] and [HA] puts pH exactly at pK<sub>a</sub>." },
+
+  /* The cards below are deliberately method, not data. Polyatomic ions, the
+     oxyanion pattern, solubility, the strong acid/base lists and Ka/Kb are
+     already in this room as searchable, printable tables in the instrument
+     above; copying those 174 rows into cards would give the room two versions
+     of the same chemistry to drift apart. These teach how to use the tables
+     and name which tab to open. */
+
+  { name: "Which table do I need?",
+    body: "Charge on a formula unit → <b>Polyatomic ions</b>.<br>Will it precipitate → <b>Solubility</b>.<br>Does it ionise completely → <b>Strong acids &amp; bases</b>.<br>How far does it ionise → <b>K<sub>a</sub> / K<sub>b</sub></b>.<br>Heat or spontaneity → <b>Thermo</b>.",
+    note: "The search box above covers all of them at once, so a formula you can't place will find its own table." },
+
+  { name: "Net ionic equations",
+    body: "1. Balance the molecular equation.<br>2. Split every <b>soluble strong electrolyte</b> into ions — strong acids, strong bases, soluble salts.<br>3. Leave solids, liquids, gases and weak electrolytes whole.<br>4. Cancel anything identical on both sides.",
+    note: "What cancels are the spectators. AgNO<sub>3</sub> + NaCl reduces to Ag<sup>+</sup> + Cl<sup>−</sup> → AgCl(s); Na<sup>+</sup> and NO<sub>3</sub><sup>−</sup> never reacted." },
+
+  { name: "Naming an oxyanion series",
+    body: "Four rungs, one oxygen apart, same central atom:<br><b>per</b>‑…‑<b>ate</b>  ClO<sub>4</sub><sup>−</sup><br>…‑<b>ate</b>  ClO<sub>3</sub><sup>−</sup><br>…‑<b>ite</b>  ClO<sub>2</sub><sup>−</sup><br><b>hypo</b>‑…‑<b>ite</b>  ClO<sup>−</sup>",
+    note: "The charge never changes down the ladder — only the oxygen count does. Memorise the ‑ate rung and count from it." },
+
+  { name: "The polyatomic ions to learn first",
+    body: "Almost all of them are anions. Learn the −1 set (nitrate, hydroxide, acetate, the halogen ‑ates), the −2 set (sulfate, carbonate), and phosphate at −3.",
+    note: "The ‑ite partners then come free — one fewer oxygen, same charge. Ammonium NH<sub>4</sub><sup>+</sup> is the one you'll meet as a cation." },
+
+  { name: "Charge traps",
+    body: "NH<sub>4</sub><sup>+</sup> is the only common polyatomic <b>cation</b> — everything else in the table is negative.<br>Sulfate SO<sub>4</sub><sup>2−</sup> vs sulfite SO<sub>3</sub><sup>2−</sup>. Nitrate NO<sub>3</sub><sup>−</sup> vs nitrite NO<sub>2</sub><sup>−</sup>.",
+    note: "A hydrogen‑ prefix adds one H<sup>+</sup> and moves the charge a step toward zero: carbonate CO<sub>3</sub><sup>2−</sup> → hydrogen carbonate HCO<sub>3</sub><sup>−</sup>." },
+
+  { name: "Reading a Ka value",
+    body: "Bigger K<sub>a</sub> = stronger acid = more ionised.<br>pK<sub>a</sub> = −log K<sub>a</sub>, so a <b>lower</b> pK<sub>a</sub> is stronger.<br>One pK<sub>a</sub> unit is a factor of ten.",
+    note: "Only the six strong acids let you read [H⁺] straight off the concentration; everything else needs the equilibrium. If ionisation runs past about 5% of the starting concentration, the usual approximation has broken and you need the quadratic." }
 ],
 examples: [
   { q: "Name Cu(NO₃)₂", steps: ["NO₃⁻ is nitrate, charge −1", "Two nitrates ⇒ −2 total, so Cu must be +2"], ans: "<b>copper(II) nitrate</b>" },
