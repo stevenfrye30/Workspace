@@ -1,0 +1,110 @@
+{
+ "_schema": "Room content. The renderer's trust boundary, enforced in room.js:",
+ "_plain": "PLAIN TEXT, escaped on render: cards[].name, groups[].title, groups[].symbols[].n",
+ "_raw": "RAW AUTHORED HTML, injected as-is: cards[].body, cards[].note, examples[].q, examples[].steps[], examples[].ans, groups[].symbols[].g",
+ "_rule": "Anything moved between those two lists changes what the browser does with it. Plain fields must never contain markup; raw fields are trusted and must never hold anything a reader typed.",
+ "cards": [
+  {
+   "name": "Mole relationship",
+   "body": "n = m / M",
+   "note": "moles = mass ÷ molar mass. Rearrange for whichever one you need."
+  },
+  {
+   "name": "Avogadro's number",
+   "body": "N<sub>A</sub> = 6.022 × 10²³ /mol",
+   "note": "particles per mole — the bridge between counting and weighing."
+  },
+  {
+   "name": "Percent composition",
+   "body": "%X = (mass of X / molar mass) × 100",
+   "note": ""
+  },
+  {
+   "name": "Empirical formula",
+   "body": "smallest whole-number mole ratio of the elements",
+   "note": "% → assume 100 g → moles → divide by the smallest → multiply up to whole numbers."
+  },
+  {
+   "name": "Molecular formula",
+   "body": "molecular = empirical × n, where n = (molecular mass) / (empirical mass)",
+   "note": "You need a measured molar mass to get from one to the other."
+  },
+  {
+   "name": "Balancing equations",
+   "body": "Same count of every element on both sides. Change coefficients only — never subscripts.",
+   "note": "Changing a subscript changes the substance."
+  },
+  {
+   "name": "Mole ratio",
+   "body": "The coefficients of a balanced equation are a ratio of <b>moles</b>, not masses.",
+   "note": "This is the step students skip; masses never go straight into a ratio."
+  },
+  {
+   "name": "Limiting reagent",
+   "body": "Convert each reactant to how much product it could make. The smallest wins.",
+   "note": "It runs out first and caps the yield; the rest is left over."
+  },
+  {
+   "name": "Percent yield",
+   "body": "% yield = (actual / theoretical) × 100",
+   "note": "Above 100% usually means the product is still wet."
+  }
+ ],
+ "examples": [
+  {
+   "q": "Molar mass of H₂O",
+   "steps": [
+    "H: 2 × 1.008 = 2.016",
+    "O: 1 × 16.00 = 16.00",
+    "Add them"
+   ],
+   "ans": "<b>18.02 g/mol</b>"
+  },
+  {
+   "q": "Convert 36 g of H₂O to moles",
+   "steps": [
+    "n = m / M = 36 / 18.02"
+   ],
+   "ans": "≈ <b>2.0 mol</b>"
+  },
+  {
+   "q": "Balance  H₂ + O₂ → H₂O",
+   "steps": [
+    "Balance O with 2 H₂O",
+    "Balance H with 2 H₂"
+   ],
+   "ans": "<b>2 H₂ + O₂ → 2 H₂O</b>"
+  },
+  {
+   "q": "From 4 mol H₂ in  2 H₂ + O₂ → 2 H₂O",
+   "steps": [
+    "H₂ : H₂O ratio = 2 : 2 = 1 : 1"
+   ],
+   "ans": "<b>4 mol H₂O</b> (consumes 2 mol O₂)"
+  },
+  {
+   "q": "Empirical formula of 40.0% C, 6.7% H, 53.3% O",
+   "steps": [
+    "Assume 100 g: 40.0 g C, 6.7 g H, 53.3 g O",
+    "Moles: 3.33, 6.65, 3.33",
+    "Divide by 3.33: 1, 2, 1"
+   ],
+   "ans": "<b>CH₂O</b>"
+  },
+  {
+   "q": "Molecular formula if that compound has M = 180 g/mol",
+   "steps": [
+    "Empirical mass CH₂O = 30.03",
+    "n = 180 / 30.03 = 6"
+   ],
+   "ans": "<b>C₆H₁₂O₆</b> — glucose"
+  },
+  {
+   "q": "Percent composition of oxygen in H₂O",
+   "steps": [
+    "16.00 / 18.02 × 100"
+   ],
+   "ans": "<b>88.8% O</b>"
+  }
+ ]
+}

@@ -1,0 +1,191 @@
+{
+ "_schema": "Room content. The renderer's trust boundary, enforced in room.js:",
+ "_plain": "PLAIN TEXT, escaped on render: cards[].name, groups[].title, groups[].symbols[].n",
+ "_raw": "RAW AUTHORED HTML, injected as-is: cards[].body, cards[].note, examples[].q, examples[].steps[], examples[].ans, groups[].symbols[].g",
+ "_rule": "Anything moved between those two lists changes what the browser does with it. Plain fields must never contain markup; raw fields are trusted and must never hold anything a reader typed.",
+ "cards": [
+  {
+   "name": "Cell theory",
+   "body": "All living things are made of cells; cells arise from cells; the cell is life's basic unit.",
+   "note": ""
+  },
+  {
+   "name": "Prokaryotes vs eukaryotes",
+   "body": "Prokaryote: no nucleus or membrane-bound organelles (bacteria, archaea). Eukaryote: nucleus + organelles.",
+   "note": ""
+  },
+  {
+   "name": "Organelles",
+   "body": "Nucleus (DNA) · mitochondria (ATP) · ER (synthesis) · Golgi (sorting) · ribosomes (translation) · lysosomes (degradation) · chloroplast (photosynthesis).",
+   "note": ""
+  },
+  {
+   "name": "Membrane structure",
+   "body": "Phospholipid bilayer + embedded proteins (fluid mosaic); selectively permeable.",
+   "note": ""
+  },
+  {
+   "name": "Passive vs active transport",
+   "body": "Passive: down the gradient, no ATP (diffusion, osmosis, facilitated). Active: against the gradient, uses ATP (pumps).",
+   "note": ""
+  },
+  {
+   "name": "DNA structure",
+   "body": "Antiparallel double helix; A–T (2 H-bonds), G–C (3); sugar-phosphate backbone.",
+   "note": ""
+  },
+  {
+   "name": "Central dogma",
+   "body": "DNA → (transcription) → RNA → (translation) → protein.",
+   "note": ""
+  },
+  {
+   "name": "Genotype vs phenotype",
+   "body": "Genotype = the alleles carried. Phenotype = the observable trait (genotype + environment).",
+   "note": ""
+  },
+  {
+   "name": "Mutations",
+   "body": "Changes in DNA — point (silent, missense, nonsense), insertions/deletions (frameshift). The source of variation.",
+   "note": ""
+  },
+  {
+   "name": "Mendelian genetics",
+   "body": "Dominant/recessive alleles; segregation; independent assortment. Predict with Punnett squares.",
+   "note": ""
+  },
+  {
+   "name": "Gene regulation",
+   "body": "Promoters, enhancers, transcription factors; operons (prokaryotes); epigenetics.",
+   "note": ""
+  },
+  {
+   "name": "Cell cycle",
+   "body": "G1 → S (DNA replication) → G2 → M (mitosis), gated by checkpoints.",
+   "note": ""
+  },
+  {
+   "name": "Apoptosis",
+   "body": "Programmed (controlled) cell death via caspases — vs necrosis (uncontrolled).",
+   "note": ""
+  },
+  {
+   "name": "Cancer basics",
+   "body": "Loss of cell-cycle control: oncogenes (gain-of-function) + tumor-suppressor loss (e.g. p53).",
+   "note": ""
+  },
+  {
+   "name": "Immune system overview",
+   "body": "Barriers → innate → adaptive; key cells: B cells, T cells, macrophages.",
+   "note": ""
+  },
+  {
+   "name": "Innate vs adaptive",
+   "body": "Innate: fast, nonspecific. Adaptive: slower, specific, with memory (B & T cells).",
+   "note": ""
+  },
+  {
+   "name": "Antibodies",
+   "body": "Y-shaped proteins; the variable region binds a specific antigen epitope. Made by B/plasma cells.",
+   "note": ""
+  },
+  {
+   "name": "Vaccines",
+   "body": "Train adaptive immunity with a safe antigen → memory cells → fast response on real exposure.",
+   "note": ""
+  },
+  {
+   "name": "Homeostasis",
+   "body": "Maintaining stable internal conditions, usually by negative feedback.",
+   "note": ""
+  },
+  {
+   "name": "Natural selection",
+   "body": "Variation + heritability + differential survival/reproduction → adaptation over generations.",
+   "note": ""
+  },
+  {
+   "name": "Bioinformatics / BLAST",
+   "body": "Align sequences to find homology; BLAST searches databases for similar sequences; build phylogenetic trees.",
+   "note": ""
+  }
+ ],
+ "examples": [
+  {
+   "q": "Identify the organelle from its job",
+   "steps": [
+    "\"Makes ATP\" → mitochondrion",
+    "\"Sorts & ships proteins\" → Golgi",
+    "\"Builds protein\" → ribosome"
+   ],
+   "ans": "match <b>function → organelle</b>"
+  },
+  {
+   "q": "Passive or active transport?",
+   "steps": [
+    "Glucose via a carrier, down its gradient → facilitated (passive)",
+    "Na⁺/K⁺ pump, against the gradient, uses ATP → active"
+   ],
+   "ans": "down = <b>passive</b>; against + ATP = <b>active</b>"
+  },
+  {
+   "q": "Trace DNA to protein",
+   "steps": [
+    "Gene → transcription → mRNA",
+    "mRNA → translation (ribosome + tRNA) → polypeptide",
+    "Fold → functional protein"
+   ],
+   "ans": "DNA → RNA → <b>protein</b>"
+  },
+  {
+   "q": "Punnett square: Aa × Aa",
+   "steps": [
+    "Gametes: A, a from each parent",
+    "Offspring: 1 AA : 2 Aa : 1 aa"
+   ],
+   "ans": "<b>3 : 1</b> dominant : recessive phenotype"
+  },
+  {
+   "q": "Effect of a point mutation",
+   "steps": [
+    "Silent: same amino acid",
+    "Missense: different amino acid",
+    "Nonsense: premature stop codon"
+   ],
+   "ans": "impact ranges from <b>none → severe</b>"
+  },
+  {
+   "q": "Antibody–antigen binding",
+   "steps": [
+    "Variable region (paratope) binds a specific epitope",
+    "Lock-and-key specificity"
+   ],
+   "ans": "tags the antigen for <b>destruction</b>"
+  },
+  {
+   "q": "Why does a vaccine work?",
+   "steps": [
+    "Safe antigen primes B & T cells",
+    "Memory cells persist",
+    "Real exposure → fast, strong response"
+   ],
+   "ans": "pre-built <b>immune memory</b>"
+  },
+  {
+   "q": "Connect membrane transport to Biochemistry",
+   "steps": [
+    "Na⁺/K⁺-ATPase hydrolyzes ATP",
+    "Pumps 3 Na⁺ out / 2 K⁺ in"
+   ],
+   "ans": "active transport runs on <b>ATP</b> — see Biochemistry"
+  },
+  {
+   "q": "Connect biology data to analysis",
+   "steps": [
+    "Gel, qPCR, growth-curve, assay data",
+    "Plot, control, and test it"
+   ],
+   "ans": "use <b>Data & Analysis</b> + Math Lab"
+  }
+ ]
+}

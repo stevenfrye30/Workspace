@@ -27,10 +27,15 @@ export function ensureIndex() {
 
 async function build() {
   const keys = Object.keys(MANIFEST);
+  /* Fetched, not imported. The index used to pull in all 26 room modules and
+     execute them just to read three arrays; the content is JSON now, so this
+     is 26 data fetches with no module evaluation and no JS parsing — which is
+     the whole point of moving the content out.
+
+     A room whose content fails to load costs its own entries, not the index. */
   const mods = await Promise.all(keys.map(function (k) {
-    /* A room that fails to import must cost its own entries, not the index. */
-    return import('./rooms/' + k + '.js')
-      .then(function (m) { return m.default; })
+    return fetch(new URL('./rooms/data/' + k + '.json', import.meta.url))
+      .then(function (r) { return r.ok ? r.json() : null; })
       .catch(function (err) { console.error('Search: could not index ' + k, err); return null; });
   }));
 

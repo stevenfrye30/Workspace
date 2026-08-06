@@ -58,14 +58,49 @@ function brokenWidget(path, err) {
   };
 }
 
+/* Cards, examples and symbol groups are data, fetched rather than imported.
+
+   They were HTML strings inside a JS object literal, which meant a missing
+   comma took down a whole subject and editing a card meant editing code. As
+   JSON they can be checked, generated and read by the search index without
+   parsing JavaScript.
+
+   A content file that fails to load is treated like an instrument that fails,
+   not like a room that fails: the header, the hub doors and the links are
+   still worth rendering. */
+async function loadContent(key) {
+  let res;
+  try {
+    res = await fetch(new URL('./rooms/data/' + key + '.json', import.meta.url));
+  } catch (err) {
+    console.error('Room content failed to load: ' + key, err);
+    return null;
+  }
+  /* A hub has no content file and is not supposed to — 404 means "this room
+     has nothing to show", which is a fact, not a fault. Only a file that
+     exists and will not parse is worth complaining about. */
+  if (res.status === 404) return {};
+  if (!res.ok) { console.error('Room content HTTP ' + res.status + ': ' + key); return null; }
+  try {
+    return await res.json();
+  } catch (err) {
+    console.error('Room content is not valid JSON: ' + key, err);
+    return null;
+  }
+}
+
 async function render(key) {
   const meta = MANIFEST[key];
-  /* Display fields come from the manifest, content from the module. A module
-     no longer carries its own name, glyph or colour, so there is one place to
-     change them and nothing to keep in step. */
-  const room = Object.assign({}, (await import('./rooms/' + key + '.js')).default, {
+  /* Display fields come from the manifest, prose and structure from the
+     module, content from JSON — one place to change each. */
+  const [mod, content] = await Promise.all([
+    import('./rooms/' + key + '.js').then(function (m) { return m.default; }),
+    loadContent(key)
+  ]);
+  const room = Object.assign({}, mod, content || {}, {
     name: meta.name, glyph: meta.glyph, color: meta.color, children: meta.children
   });
+  const contentFailed = content === null;
   const specs = (meta.widgets || []).map(function (w) {
     return typeof w === 'string' ? { path: w, opts: {} } : { path: w.path, opts: w.opts || {} };
   });
@@ -101,6 +136,11 @@ async function render(key) {
   }
 
   if (room.callout) h += '<div class="callout">' + room.callout + '</div>';
+
+  if (contentFailed) {
+    h += '<p class="w-fail">This room’s reference cards and examples didn’t load. ' +
+      'Its tools and links still work — try reloading the page.</p>';
+  }
 
   /* A share bar wherever there is state worth handing over. That used to mean
      the eight rooms with instruments; it also means any room with cards or

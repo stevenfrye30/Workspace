@@ -41,6 +41,35 @@ topics are lower than the card count alone suggests.
 | `physics` | 23 | 20 | 10 | 0 | 13 |
 | `reference` | 12 | 12 | 7 | 0 | 0 |
 
+| Room | Topics were | Cards | Examples | Groups | Uncovered |
+|---|---|---|---|---|---|
+| `biochemistry` | 22 | 19 | 10 | 0 | 16 |
+| `biology` | 22 | 21 | 9 | 0 | 13 |
+| `chem-acids` | 13 | 10 | 7 | 0 | 8 |
+| `chem-atoms` | 18 | 11 | 6 | 0 | 12 |
+| `chem-equilibrium` | 16 | 13 | 7 | 0 | 6 |
+| `chem-gases` | 15 | 9 | 6 | 0 | 12 |
+| `chem-moles` | 12 | 9 | 7 | 0 | 4 |
+| `chem-redox` | 13 | 11 | 6 | 0 | 6 |
+| `chem-solutions` | 11 | 8 | 5 | 0 | 4 |
+| `chem-thermo` | 14 | 10 | 7 | 0 | 8 |
+| `chem-titration` | 12 | 8 | 5 | 0 | 8 |
+| `data-analysis` | 19 | 15 | 0 | 0 | 6 |
+| `lab-methods` | 27 | 21 | 10 | 0 | 8 |
+| `math-algebra` | 10 | 9 | 5 | 0 | 9 |
+| `math-calculus` | 12 | 12 | 7 | 0 | 9 |
+| `math-geometry` | 18 | 16 | 8 | 0 | 12 |
+| `math-notes` | 16 | 10 | 7 | 0 | 14 |
+| `math-statistics` | 14 | 14 | 8 | 0 | 8 |
+| `math-symbols` | 14 | 0 | 9 | 13 | 14 |
+| `math-time-series` | 20 | 14 | 9 | 0 | 12 |
+| `math-trigonometry` | 19 | 14 | 9 | 0 | 11 |
+| `neuroscience` | 27 | 21 | 10 | 0 | 19 |
+| `periodic-table` | 27 | 20 | 8 | 0 | 0 |
+| `physics` | 23 | 20 | 10 | 0 | 13 |
+| `reference` | 12 | 12 | 7 | 0 | 0 |
+| **total** | | **327** | **182** | **13** | **232** |
+
 ## periodic-table — done
 
 All nine real topics on this list are written. The rest of what was here was
@@ -380,4 +409,3 @@ tool carries 174 rows under these exact headings.
 | Ka and pKa | instrument — Ka table · card Reading a Ka value |
 | Kb and pKb | instrument — Kb table · card Conjugate pairs |
 | Buffers | card Choosing a buffer |
-

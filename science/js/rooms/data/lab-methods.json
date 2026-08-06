@@ -1,0 +1,202 @@
+{
+ "_schema": "Room content. The renderer's trust boundary, enforced in room.js:",
+ "_plain": "PLAIN TEXT, escaped on render: cards[].name, groups[].title, groups[].symbols[].n",
+ "_raw": "RAW AUTHORED HTML, injected as-is: cards[].body, cards[].note, examples[].q, examples[].steps[], examples[].ans, groups[].symbols[].g",
+ "_rule": "Anything moved between those two lists changes what the browser does with it. Plain fields must never contain markup; raw fields are trusted and must never hold anything a reader typed.",
+ "cards": [
+  {
+   "name": "How this hub works",
+   "body": "<b>Shared</b> bench skills — safety, notebook, solution &amp; buffer prep, pipetting, controls, calibration, troubleshooting, data quality — live here permanently. <b>Specialized</b> methods are introduced here, then surfaced inside their discipline area: Chemistry, Organic, Analytical, Biochemistry, Biology, Neuroscience &amp; Ephys, and Data methods.",
+   "note": "One place to learn a technique; the discipline room for its specifics."
+  },
+  {
+   "name": "PPE & safety mindset",
+   "body": "Gloves, goggles, coat; know your reagents (read the SDS); right waste stream; sharps care.",
+   "note": "Safety is part of reproducibility, not box-ticking."
+  },
+  {
+   "name": "Pipetting accuracy",
+   "body": "Pre-wet tips · first stop to aspirate, second to dispense · hold vertical · no bubbles · calibrate.",
+   "note": "Verify small volumes by mass."
+  },
+  {
+   "name": "Solution prep workflow",
+   "body": "moles → mass (m = nM) · dissolve in &lt; final volume · bring to volume in a volumetric flask · label.",
+   "note": "Label: name, conc, date, initials."
+  },
+  {
+   "name": "Buffer prep workflow",
+   "body": "Pick a buffer with pK<sub>a</sub> within ±1 of target · mix acid + conjugate base · adjust pH · bring to volume.",
+   "note": "Check final pH at the working temperature."
+  },
+  {
+   "name": "pH adjustment",
+   "body": "Calibrate the meter (2–3 points) · add acid/base slowly while stirring · let it equilibrate · approach gradually.",
+   "note": "Never overshoot."
+  },
+  {
+   "name": "Microscopy basics",
+   "body": "Köhler illumination · match objective & immersion · NA sets resolution · clean optics · focus, then contrast.",
+   "note": ""
+  },
+  {
+   "name": "Fluorescence imaging",
+   "body": "Match the filter set to the fluorophore (ex/em) · minimize photobleaching & phototoxicity · set baseline F₀.",
+   "note": "Control for autofluorescence."
+  },
+  {
+   "name": "Patch clamp workflow",
+   "body": "Pull & polish pipette · fill with internal · approach with positive pressure · form GΩ seal · break in → whole-cell.",
+   "note": "Then watch R<sub>a</sub>, R<sub>m</sub>, C<sub>m</sub>."
+  },
+  {
+   "name": "Whole-cell recording QC",
+   "body": "GΩ seal before break-in · stable R<sub>a</sub> · steady holding current · healthy R<sub>m</sub>.",
+   "note": "Discard runaway recordings."
+  },
+  {
+   "name": "Rₐ / seal / holding current",
+   "body": "R<sub>a</sub> (series) filters fast events — compensate & track % change · GΩ seal = quality · holding-current drift = health change.",
+   "note": ""
+  },
+  {
+   "name": "Calcium imaging workflow",
+   "body": "Express GCaMP · choose baseline F₀ · ΔF/F = (F − F₀)/F₀ · correct motion & bleaching · define ROIs · threshold events.",
+   "note": ""
+  },
+  {
+   "name": "iGluSnFR / glutamate imaging",
+   "body": "Sensor reports extracellular glutamate (release) · same ΔF/F pipeline · fast kinetics — match the frame rate · ROI at the synapse.",
+   "note": ""
+  },
+  {
+   "name": "Protein purification",
+   "body": "Lyse → clarify → capture (affinity) → polish (size / ion-exchange) → concentrate. Keep it cold; add protease inhibitors.",
+   "note": "Check purity on a gel."
+  },
+  {
+   "name": "Chromatography",
+   "body": "Affinity (His-tag / Ni) · ion-exchange (charge) · size-exclusion (size). Load → wash → elute; watch A<sub>280</sub>.",
+   "note": ""
+  },
+  {
+   "name": "Enzyme assay setup",
+   "body": "Fix [enzyme], vary [substrate] · measure the initial (linear) rate · include blanks · control T & pH · fit Michaelis–Menten.",
+   "note": ""
+  },
+  {
+   "name": "Gel electrophoresis",
+   "body": "SDS-PAGE separates proteins by size; agarose for DNA. Run a ladder; stain (Coomassie / EtBr); size from migration.",
+   "note": ""
+  },
+  {
+   "name": "Controls & replicates",
+   "body": "Positive (expected signal) · negative / vehicle (no signal) · internal controls. Technical vs biological replicates — report n.",
+   "note": ""
+  },
+  {
+   "name": "Troubleshooting logic",
+   "body": "Change ONE variable · check controls & reagents first · reproduce the failure · log what you tried.",
+   "note": ""
+  },
+  {
+   "name": "Lab notebook standards",
+   "body": "Date · aim · materials & lot numbers · exact protocol & settings · observations · raw-data location · conclusion.",
+   "note": "Write it as you go; reproducible by a stranger."
+  },
+  {
+   "name": "Data quality checklist",
+   "body": "Baseline stable? · SNR acceptable? · controls passed? · n adequate? · units & calibration correct? · artifacts flagged?",
+   "note": ""
+  }
+ ],
+ "examples": [
+  {
+   "q": "Make 1 L of 0.5 M NaCl",
+   "steps": [
+    "moles = 0.5 mol/L × 1 L = 0.5 mol",
+    "mass = n × M = 0.5 × 58.44",
+    "Dissolve, then bring to 1 L"
+   ],
+   "ans": "<b>29.2 g</b> NaCl"
+  },
+  {
+   "q": "Dilute: 100 mL of 0.2 M from a 2 M stock",
+   "steps": [
+    "M₁V₁ = M₂V₂",
+    "V₁ = (0.2 × 100) / 2"
+   ],
+   "ans": "<b>10 mL</b> stock + 90 mL solvent"
+  },
+  {
+   "q": "Adjust a buffer to pH 7.4 safely",
+   "steps": [
+    "Calibrate the meter first",
+    "Add acid/base dropwise while stirring",
+    "Wait for equilibration; approach gradually"
+   ],
+   "ans": "creep up — <b>don't overshoot</b>"
+  },
+  {
+   "q": "Troubleshoot weak fluorescence",
+   "steps": [
+    "Check expression/labeling & filter-set match",
+    "Raise excitation/exposure carefully",
+    "Rule out bleaching, focus, autofluorescence"
+   ],
+   "ans": "work a <b>systematic checklist</b>"
+  },
+  {
+   "q": "Troubleshoot a noisy ephys trace",
+   "steps": [
+    "Check grounding & Faraday cage",
+    "Hunt 50/60 Hz line noise & loose connections",
+    "Check seal quality and R<sub>a</sub>"
+   ],
+   "ans": "isolate the <b>noise source</b>, one at a time"
+  },
+  {
+   "q": "Interpret access-resistance drift",
+   "steps": [
+    "R<sub>a</sub> rises over the recording",
+    "Partial reseal / clog / declining health",
+    "Track % change vs start"
+   ],
+   "ans": "if R<sub>a</sub> change is large, <b>flag / exclude</b>"
+  },
+  {
+   "q": "Choose controls for a drug-on-EPSC test",
+   "steps": [
+    "Positive: a known agonist",
+    "Negative: vehicle / no drug",
+    "Plus a time control (no manipulation)"
+   ],
+   "ans": "<b>positive + vehicle + time</b> controls"
+  },
+  {
+   "q": "Document an experiment",
+   "steps": [
+    "Date · aim · materials + lot numbers",
+    "Protocol & instrument settings",
+    "Observations · raw-data path · conclusion"
+   ],
+   "ans": "a <b>reproducible</b> notebook entry"
+  },
+  {
+   "q": "Connect raw trace data to analysis",
+   "steps": [
+    "Export the trace (time, value) with units (mV/pA/ms)",
+    "Apply error reporting & notation"
+   ],
+   "ans": "→ <b>Data, Symbols & Units</b>"
+  },
+  {
+   "q": "Connect patch clamp data to Neuroscience",
+   "steps": [
+    "mEPSC / evoked events, R<sub>a</sub> / R<sub>m</sub>",
+    "Map onto the ephys reference & Time-Series tools"
+   ],
+   "ans": "→ <b>Neuroscience & Ephys</b>"
+  }
+ ]
+}

@@ -1,0 +1,119 @@
+{
+ "_schema": "Room content. The renderer's trust boundary, enforced in room.js:",
+ "_plain": "PLAIN TEXT, escaped on render: cards[].name, groups[].title, groups[].symbols[].n",
+ "_raw": "RAW AUTHORED HTML, injected as-is: cards[].body, cards[].note, examples[].q, examples[].steps[], examples[].ans, groups[].symbols[].g",
+ "_rule": "Anything moved between those two lists changes what the browser does with it. Plain fields must never contain markup; raw fields are trusted and must never hold anything a reader typed.",
+ "cards": [
+  {
+   "name": "Heat and temperature change",
+   "body": "q = m·c·ΔT, where ΔT = T<sub>final</sub> − T<sub>initial</sub>",
+   "note": "c for water = 4.184 J/(g·°C). Positive q = absorbed, negative q = released."
+  },
+  {
+   "name": "Heat is not temperature",
+   "body": "Temperature measures average kinetic energy; heat is energy transferred because of a temperature difference.",
+   "note": "A bathtub and a cup at the same temperature hold very different amounts of heat."
+  },
+  {
+   "name": "Endothermic vs exothermic",
+   "body": "Exothermic: releases heat, ΔH &lt; 0, surroundings warm up.<br>Endothermic: absorbs heat, ΔH &gt; 0, surroundings cool down.",
+   "note": "The sign is from the system's point of view, not yours."
+  },
+  {
+   "name": "Enthalpy from formation values",
+   "body": "ΔH°<sub>rxn</sub> = Σ n·ΔH°<sub>f</sub>(products) − Σ n·ΔH°<sub>f</sub>(reactants)",
+   "note": "An element in its standard state has ΔH°<sub>f</sub> = 0, so those terms drop out."
+  },
+  {
+   "name": "Hess's law",
+   "body": "Enthalpy is a state function — ΔH depends only on start and end, not the route.",
+   "note": "Reverse a step ⇒ flip the sign. Double a step ⇒ double its ΔH."
+  },
+  {
+   "name": "Phase changes",
+   "body": "q = n·ΔH<sub>fus</sub> or n·ΔH<sub>vap</sub>. Water: 6.02 kJ/mol to melt, 40.7 kJ/mol to boil.",
+   "note": "Temperature holds constant during a phase change, so q = mcΔT does not apply there."
+  },
+  {
+   "name": "Heating curve",
+   "body": "Sloped where temperature rises (q = mcΔT), flat where a phase changes (q = nΔH).",
+   "note": "A full heating-curve problem is a sum of both kinds of segment."
+  },
+  {
+   "name": "Calorimetry",
+   "body": "Heat lost by one thing = heat gained by the other: −q<sub>hot</sub> = q<sub>cold</sub>",
+   "note": "In a coffee-cup calorimeter the solution absorbs the reaction's heat."
+  },
+  {
+   "name": "Entropy",
+   "body": "ΔS measures how spread out the energy and matter are.",
+   "note": "Gas &gt; liquid &gt; solid; more particles means more entropy."
+  },
+  {
+   "name": "Gibbs free energy",
+   "body": "ΔG = ΔH − TΔS · ΔG = −RT ln K",
+   "note": "ΔG &lt; 0 ⇒ spontaneous. Temperature decides which term wins."
+  }
+ ],
+ "examples": [
+  {
+   "q": "Heat to warm 100 g of water from 25 °C to 75 °C",
+   "steps": [
+    "ΔT = 75 − 25 = 50 °C",
+    "q = m·c·ΔT = 100 × 4.184 × 50"
+   ],
+   "ans": "<b>20 920 J = 20.9 kJ</b> absorbed"
+  },
+  {
+   "q": "Final temperature after adding 5 000 J to 200 g of water at 20 °C",
+   "steps": [
+    "ΔT = q / (m·c) = 5000 / (200 × 4.184) = 5.98 °C",
+    "T = 20 + 5.98"
+   ],
+   "ans": "<b>26.0 °C</b>"
+  },
+  {
+   "q": "ΔH°rxn for CH₄(g) + 2 O₂(g) → CO₂(g) + 2 H₂O(l)",
+   "steps": [
+    "Products: −393.5 + 2(−285.8) = −965.1 kJ",
+    "Reactants: −74.6 + 2(0) = −74.6 kJ",
+    "Subtract: −965.1 − (−74.6)"
+   ],
+   "ans": "<b>−890.5 kJ</b> — exothermic"
+  },
+  {
+   "q": "Why is O₂(g) worth zero in that sum?",
+   "steps": [
+    "ΔH°f is the enthalpy to form 1 mol from its elements",
+    "O₂(g) already <i>is</i> the element in its standard state",
+    "Forming it from itself costs nothing"
+   ],
+   "ans": "ΔH°<sub>f</sub> of any element in its standard state = <b>0</b>"
+  },
+  {
+   "q": "Hess: find ΔH for C(s) + ½O₂(g) → CO(g)",
+   "steps": [
+    "C(s) + O₂ → CO₂, ΔH = −393.5 kJ",
+    "CO + ½O₂ → CO₂, ΔH = −283.0 kJ — reverse it: +283.0",
+    "Add: −393.5 + 283.0"
+   ],
+   "ans": "<b>−110.5 kJ</b>"
+  },
+  {
+   "q": "Heat to melt 18.0 g of ice at 0 °C",
+   "steps": [
+    "n = 18.0 / 18.02 = 1.00 mol",
+    "q = n·ΔH_fus = 1.00 × 6.02 kJ/mol"
+   ],
+   "ans": "<b>6.02 kJ</b> — with no temperature change"
+  },
+  {
+   "q": "Is a reaction with ΔH &lt; 0 and ΔS &gt; 0 spontaneous?",
+   "steps": [
+    "ΔG = ΔH − TΔS",
+    "ΔH negative, −TΔS negative"
+   ],
+   "ans": "<b>always spontaneous</b>, at every temperature"
+  }
+ ]
+}
