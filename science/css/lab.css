@@ -14,14 +14,19 @@ body {
   border-bottom: 1px solid var(--gold);
 }
 
-/* The dashboard is one screenful, so it does not need the tall bottom
-   gutter the scrolling room pages use. */
-.page:has(.board) { padding-bottom: 1.4rem; }
+/* The dashboard is one screenful, so it does not need the tall gutters the
+   scrolling room pages use. The search box costs about 60px that the board
+   did not previously have to find, so the chrome around the tiles gives it
+   back — the tiles themselves are untouched at 9.75rem, since shrinking
+   those is what would actually be noticed. Board page only. */
+.page:has(.board) { padding-top: 1.8rem; padding-bottom: 1.2rem; }
+.page:has(.board) .board-title { margin-bottom: 0.6rem; }
+.page:has(.board) .sbox { margin-bottom: 1rem; }
 
 .board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 0.7rem;
+  gap: 0.6rem;
 }
 
 /* Each grid position is a cell, not a bare tile, so a tile with a second
