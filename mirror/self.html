@@ -2077,7 +2077,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 16;
+const SCHEMA_VERSION = 17;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -2094,14 +2094,14 @@ const RECORD_ARRAYS = [
   ['relationships','people'], ['relationships','followUps'],
   ['relationships','giftIdeas'], ['relationships','birthdays'],
   ['daily','cards'], ['decisions','items'], ['habits','items'], ['places','items'],
-  ['body','hygiene'], ['body','exerciseTypes'],
+  ['body','hygiene'], ['body','exerciseTypes'], ['body','workouts'],
 ];
 function nowISO(){ return new Date().toISOString(); }
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
-  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [], drinks: [], substances: [], hygiene: [], exerciseTypes: [] },
+  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [], drinks: [], substances: [], hygiene: [], exerciseTypes: [], workouts: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
@@ -2280,6 +2280,16 @@ function migrate(s) {
     s.body = s.body || {};
     if (!Array.isArray(s.body.exerciseTypes)) s.body.exerciseTypes = [];
     v = 16;
+  }
+  // v16 -> v17: body.workouts[] — the dashboard's saved workouts, `{ id, name,
+  // items: [{ type, minutes? }] }`. Shortcuts that replay into exercise[] when
+  // logged, never records of moving in their own right — the same contract as
+  // meals. Nothing here surfaces them; this app only guarantees a save from
+  // this side cannot drop them.
+  if (v < 17) {
+    s.body = s.body || {};
+    if (!Array.isArray(s.body.workouts)) s.body.workouts = [];
+    v = 17;
   }
   s.__v = SCHEMA_VERSION;
   return s;
@@ -2695,10 +2705,11 @@ function buildDataMarkdown() {
   }
   if (s.body.customFoods?.length) { p(''); p(`### Your foods`); s.body.customFoods.forEach(f => p(`- **${f.name}**`)); }
   if (s.body.meals?.length) { p(''); p(`### Saved meals`); s.body.meals.forEach(m => p(`- **${m.name}** (${(m.items||[]).length} items)`)); }
+  if (s.body.workouts?.length) { p(''); p(`### Saved workouts`); s.body.workouts.forEach(w => p(`- **${w.name}** (${(w.items||[]).length} exercises${(w.items||[]).some(i=>i.minutes) ? `, ${(w.items||[]).reduce((n,i)=>n+(Number(i.minutes)||0),0)} min` : ''})`)); }
   [['Food','food', x=>`${(x.qty > 1 ? x.qty + '× ' : '')}${x.foodName||x.name||x.foodId||'?'} · ${x.grams||'?'} g` +
       `${x.mealName ? ` (${x.mealName})` : ''}`],
    ['Sleep','sleep', x=>`${x.hours}h · quality ${x.quality||'–'}`],
-   ['Exercise','exercise', x=>`${x.type} · ${x.minutes} min`],
+   ['Exercise','exercise', x=>`${x.type} · ${x.minutes} min${x.workoutName ? ` (${x.workoutName})` : ''}`],
    ['Water','water', x=>`${x.oz} oz`]
   ].forEach(([label,key,fmt]) => {
     const arr = s.body[key]; if (!arr?.length) return;

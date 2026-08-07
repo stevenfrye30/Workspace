@@ -28,8 +28,10 @@
     Intake    six tabs, a fixed three-button slot with a min-height, one
               fold. What it shows branches on the TAB you are on, never on
               what is in the log; the counts on the tabs are values.
-    Movement  three controls: Type, minutes, Log. The types live behind the
-              Type button because on the card they were a growing chip row.
+    Movement  two fixed rows: Type, minutes, Log, then Build and Workouts.
+              The types live behind the Type button because on the card they
+              were a growing chip row; the workouts you save live behind
+              Workouts the same way, and the list never surfaces on the card.
     How       five dot rows, a sleep track, two buttons — fixed. The "saved"
               note in the heading is absolutely positioned, so it costs no
               layout, and Enter -> "Entered ✓" is a button changing state.
@@ -449,9 +451,10 @@
      Meals takes the row and the accent; "your own food" is a square that
      carries its name in title/aria-label rather than in ink. */
   /* 1 1 0, not 1 1 auto: Build and Meals split the row down the middle
-     whatever their words happen to measure. */
-  .foodactions { display: flex; gap: 8px; margin-top: 9px; }
-  .foodactions .grow { flex: 1 1 0; min-width: 0; }
+     whatever their words happen to measure. `.exactions` is the same row on
+     the Movement card — Build and Workouts — and shares every rule. */
+  .foodactions, .exactions { display: flex; gap: 8px; margin-top: 9px; }
+  .foodactions .grow, .exactions .grow { flex: 1 1 0; min-width: 0; }
   .sqbtn {
     flex: 0 0 40px; display: grid; place-items: center; padding: 0;
     background: var(--panel2); border: 1px solid var(--line); color: var(--dim);
@@ -802,11 +805,14 @@
     </details>
   </div>
 
-  <!-- Three controls, and only ever these three. The activities you do live
+  <!-- Two fixed rows, and only ever these two. The activities you do live
        behind Type, the way meals live behind Meals: on the card they were a
        chip row that grew with your history and pushed everything under it
        down (THE INVARIANT, top of file). The Type button's label is the
-       pick for the log you are making right now and resets after it. -->
+       pick for the log you are making right now and resets after it.
+       Below it, the food card's anatomy repeated: the direct path first,
+       then Build and Workouts splitting a row — you build a workout once
+       and log it for months, so Workouts takes the fill. -->
   <div class="card narrow" id="movementCard">
     <h2>Movement</h2>
     <div class="exrow">
@@ -814,6 +820,10 @@
       <input type="number" id="exMin" min="1" step="1" placeholder="min"
              aria-label="Minutes">
       <button class="secondary" id="exAdd" type="button">Log</button>
+    </div>
+    <div class="exactions">
+      <button class="secondary grow" id="wkBuildBtn" type="button">Build</button>
+      <button class="primary grow" id="wkListBtn" type="button">Workouts</button>
     </div>
   </div>
   </div>
@@ -912,7 +922,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 16;
+const SCHEMA_VERSION = 17;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -965,6 +975,7 @@ const defaultState = () => ({
     drinks: [], substances: [],            // v13
     hygiene: [],                           // v15
     exerciseTypes: [],                     // v16
+    workouts: [],                          // v17
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
   money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
@@ -1001,6 +1012,8 @@ function mergeLoaded(saved) {
   if (!Array.isArray(out.body.hygiene)) out.body.hygiene = [];
   // v15 -> v16: the movement types you keep. Also purely additive.
   if (!Array.isArray(out.body.exerciseTypes)) out.body.exerciseTypes = [];
+  // v16 -> v17: saved workouts. Also purely additive.
+  if (!Array.isArray(out.body.workouts)) out.body.workouts = [];
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -2334,6 +2347,223 @@ function addExercise() {
   toast('Logged ' + type);
 }
 
+/* ---- workouts: the sessions you repeat ----
+   The Food card's meals machinery, repeated for movement — same two doors,
+   same contract. Build one deliberately from the type list, or keep a day
+   you have already logged when it turns out to be worth repeating. */
+function workoutMin(w) {
+  return (w.items || []).reduce((n, it) => n + (Number(it.minutes) || 0), 0);
+}
+/** Replay a workout into exercise[] as ordinary entries.
+ *
+ *  A workout stays a shortcut for typing and never becomes a record of moving
+ *  in its own right (SCHEMA.md §3, same contract as meals) — so editing the
+ *  workout tomorrow cannot rewrite what you did today. The entries share a
+ *  `workoutLogId`, which lets the Tracker show the one session you did
+ *  instead of the rows it took to record it. */
+function logWorkout(w) {
+  const logId = uid();
+  const added = [];
+  (w.items || []).forEach((it) => {
+    const rec = stamp({
+      id: uid(), date: day, type: it.type,
+      minutes: it.minutes != null ? it.minutes : null, time: stampTime(),
+      workoutLogId: logId, workoutName: w.name,
+    });
+    state.body.exercise.push(rec);
+    added.push(rec.id);
+  });
+  if (!added.length) { toast('That workout has no exercises in it yet'); return; }
+  // One press of Undo takes back the session, not one exercise of it.
+  pushUndo(w.name, () => added.forEach((id) => {
+    const i = state.body.exercise.findIndex((r) => r.id === id);
+    if (i >= 0) state.body.exercise.splice(i, 1);
+  }));
+  saveState(); renderFeed();
+  toast('Logged ' + w.name);
+}
+
+/* ---- the workout builder ---- */
+let wkDraft = [];        // [{ type, minutes|null }]
+let wkEditing = null;    // the workout being edited, or null for a new one
+
+function openWorkoutBuilder(existing) {
+  wkEditing = existing || null;
+  wkDraft = existing
+    ? (existing.items || []).map((i) => ({ type: i.type, minutes: i.minutes != null ? i.minutes : null }))
+    : [];
+
+  openPop(existing ? 'Edit workout' : 'New workout',
+    '<input type="text" id="wkName" placeholder="what do you call it? — leg day, morning run…">' +
+    /* Two ways to fill the list, same as a meal: pick from the types when you
+       know the plan, or take a day you have already logged when it turns out
+       to be worth repeating. */
+    '<div class="rowlabel splitlabel">Add exercises' +
+      '<button class="mini" id="wkToday" type="button">＋ From today’s movement</button></div>' +
+    '<div class="searchwrap">' +
+      '<input type="text" id="wkSearch" placeholder="Search types, or name a new one…" autocomplete="off">' +
+      '<div class="results flat" id="wkResults"></div>' +
+    '</div>' +
+    '<div class="meals" id="wkItems"></div>' +
+    '<div class="tiny" id="wkTotal" style="margin-top:8px"></div>',
+    () => {
+      const name = $('wkName').value.trim();
+      if (!name || !wkDraft.length) return false;
+      // Minutes are optional per exercise; a blank one is simply not written.
+      const items = wkDraft.map((i) => (i.minutes != null ? { type: i.type, minutes: i.minutes } : { type: i.type }));
+      if (wkEditing) {
+        wkEditing.name = name;
+        wkEditing.items = items;
+        stamp(wkEditing);
+        saveState(); toast('Saved ' + name);
+      } else {
+        appendRec(state.body.workouts, stamp({ id: uid(), name, items }), 'workout “' + name + '”');
+        saveState(); toast('Saved ' + name);
+      }
+      wkDraft = []; wkEditing = null;
+    },
+    () => {
+      if (existing) $('wkName').value = existing.name || '';
+
+      const total = () => {
+        const min = wkDraft.reduce((n, it) => n + (Number(it.minutes) || 0), 0);
+        $('wkTotal').textContent = wkDraft.length
+          ? plural(wkDraft.length, 'exercise') + (min ? ' · ' + min + ' min' : '')
+          : '';
+      };
+      const paint = () => {
+        const box = $('wkItems');
+        box.innerHTML = '';
+        if (!wkDraft.length) {
+          box.innerHTML = '<div class="empty">No exercises yet — pick from the list above.</div>';
+        }
+        wkDraft.forEach((it, idx) => {
+          const div = document.createElement('div'); div.className = 'mealrow';
+          div.innerHTML = '<div class="mh"><span class="nm">' + esc(it.type) + '</span></div>';
+          const act = document.createElement('div'); act.className = 'ma';
+          const m = document.createElement('input');
+          m.type = 'number'; m.min = '1'; m.step = '1'; m.placeholder = 'min';
+          if (it.minutes != null) m.value = it.minutes;
+          m.style.cssText = 'width:72px;padding:5px 7px;font-size:.78rem';
+          m.title = 'minutes'; m.setAttribute('aria-label', 'Minutes of ' + it.type);
+          m.oninput = () => {
+            const v = parseInt(m.value, 10);
+            it.minutes = v > 0 ? v : null;
+            total();
+          };
+          const sp = document.createElement('span'); sp.className = 'sp';
+          const x = document.createElement('button');
+          x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
+          x.setAttribute('aria-label', 'Remove ' + it.type);
+          x.onclick = () => { wkDraft.splice(idx, 1); paint(); };
+          act.appendChild(m); act.appendChild(sp); act.appendChild(x);
+          div.appendChild(act);
+          box.appendChild(div);
+        });
+        total();
+      };
+
+      /* The whole type list shows before anything is typed — it is short,
+         and it is the same list the Type button offers, so the builder and
+         the card cannot know different exercises. */
+      const search = $('wkSearch');
+      const addToDraft = (t) => {
+        wkDraft.push({ type: t, minutes: null });
+        search.value = ''; showResults();
+        paint(); search.focus();
+      };
+      const showResults = () => {
+        const box = $('wkResults');
+        const raw = search.value.trim();
+        const q = raw.toLowerCase();
+        box.innerHTML = '';
+        const all = exTypes();
+        if (raw && !all.some((t) => t.toLowerCase() === q)) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.textContent = '＋ Add “' + raw + '”';
+          b.onclick = () => addToDraft(raw);
+          box.appendChild(b);
+        }
+        all.filter((t) => !q || t.toLowerCase().includes(q)).forEach((t) => {
+          const b = document.createElement('button');
+          b.type = 'button'; b.textContent = t;
+          b.onclick = () => addToDraft(t);
+          box.appendChild(b);
+        });
+      };
+      search.oninput = showResults;
+      search.onkeydown = (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const first = $('wkResults').querySelector('button');
+          if (first) first.click();
+        }
+      };
+
+      /* Adds the day to the list you are building rather than replacing it,
+         and you drop what was not part of the session with the ✕ beside
+         each. A workout already logged today arrives as its exercises,
+         which is what it is in the data. */
+      $('wkToday').onclick = () => {
+        const rows = onDay(state.body.exercise);
+        if (!rows.length) { toast('Nothing logged today to take'); return; }
+        rows.forEach((r) => wkDraft.push({ type: r.type, minutes: r.minutes != null ? r.minutes : null }));
+        paint();
+        toast('Took ' + plural(rows.length, 'exercise') + ' from today');
+      };
+
+      showResults();
+      paint();
+      $('wkName').focus();
+    },
+    'Save workout');
+}
+
+/* Each row is its own little form: Add logs it, nothing is pending when you
+   leave — so the footer is a plain Done, exactly as it is for Meals. */
+function openWorkouts() {
+  openPop('Workouts',
+    '<div class="meals" id="wkList"></div>',
+    null,
+    () => {
+      const box = $('wkList');
+      const paint = () => {
+        box.innerHTML = '';
+        const live = state.body.workouts || [];
+        if (!live.length) {
+          box.innerHTML = '<div class="empty">No workouts yet — use Build.</div>';
+          return;
+        }
+        live.slice().reverse().forEach((w) => {
+          const min = workoutMin(w);
+          const div = document.createElement('div'); div.className = 'mealrow';
+          div.innerHTML = '<div class="mh"><span class="nm">' + esc(w.name) + '</span>' +
+            '<span class="tiny">' + plural((w.items || []).length, 'exercise') +
+            (min ? ' · ' + min + ' min' : '') + '</span></div>';
+          const act = document.createElement('div'); act.className = 'ma';
+          const add = document.createElement('button');
+          add.className = 'primary sm'; add.type = 'button'; add.textContent = 'Add';
+          add.setAttribute('aria-label', 'Log ' + w.name);
+          add.onclick = () => logWorkout(w);
+          const sp = document.createElement('span'); sp.className = 'sp';
+          const edit = document.createElement('button');
+          edit.className = 'mini'; edit.type = 'button'; edit.textContent = 'Edit';
+          edit.setAttribute('aria-label', 'Edit ' + w.name);
+          edit.onclick = () => openWorkoutBuilder(w);
+          const x = document.createElement('button');
+          x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Delete workout';
+          x.setAttribute('aria-label', 'Delete the workout ' + w.name);
+          x.onclick = () => { dropRecord(state.body.workouts, w.id, w.name); saveState(); paint(); };
+          act.appendChild(add); act.appendChild(sp); act.appendChild(edit); act.appendChild(x);
+          div.appendChild(act);
+          box.appendChild(div);
+        });
+      };
+      paint();
+    });
+}
+
 /* =============================================================
    HABITS — tap what you kept. Only the kept dates are stored;
    no streak, no miss, nothing to feel bad about (SCHEMA.md v11).
@@ -2469,9 +2699,27 @@ function renderFeed() {
   onDay(state.body.substances).forEach((r) =>
     push(r, (intakeMeta(r.kind) || {}).icon || '•', describeIntake(r.kind, r),
       () => dropRecord(state.body.substances, r.id, describeIntake(r.kind, r))));
-  onDay(state.body.exercise).forEach((r) =>
+  /* A workout was replayed into its exercises, which is what it is in the
+     data — but not what you did. The rows that share a `workoutLogId`
+     collapse back into the one session, exactly as a meal's rows do. */
+  const workouts = new Map();
+  onDay(state.body.exercise).forEach((r) => {
+    if (r.workoutLogId) {
+      const g = workouts.get(r.workoutLogId) || { rows: [], first: r };
+      g.rows.push(r); workouts.set(r.workoutLogId, g);
+      return;
+    }
     push(r, '🏃', r.type + (r.minutes ? ' · ' + r.minutes + ' min' : ''),
-      () => dropRecord(state.body.exercise, r.id, r.type)));
+      () => dropRecord(state.body.exercise, r.id, r.type));
+  });
+  workouts.forEach((g) => {
+    const min = g.rows.reduce((n, r) => n + (Number(r.minutes) || 0), 0);
+    const label = g.first.workoutName || 'workout';
+    push(g.first, '🏋', label + (min ? ' · ' + min + ' min' : ''),
+      // Removing the line removes the session: every row it stood for, each
+      // with its own tombstone, and one press of Undo to put it all back.
+      () => dropGroup(state.body.exercise, g.rows, label));
+  });
   /* A meal was replayed into its ingredients, which is what it is in the
      data — but not what you did. The rows that share a `mealLogId` collapse
      back into the one thing you ate. */
@@ -2958,6 +3206,11 @@ const MD_FULL = [
     `- **${n.date}** — assets ${fmt$(n.assets)}, liabilities ${fmt$(n.liabilities)}`)],
   ['Movement types kept', () => (state.body.exerciseTypes || [])
     .filter((r) => r.fav).map((r) => `- ${r.name}`)],
+  ['Workouts', () => (state.body.workouts || []).map((w) => {
+    const min = workoutMin(w);
+    return `- **${w.name}** — ${plural((w.items || []).length, 'exercise')}${min ? `, ${min} min` : ''}` +
+      `: ${(w.items || []).map((it) => it.type + (it.minutes ? ` ${it.minutes}m` : '')).join(', ')}`;
+  })],
   ['Links', () => (state.links || []).map((l) => `- ${l.label} — ${l.url}`)],
   ['Journal', () => (state.identity.journal || []).slice().reverse().map((j) =>
     `- **${j.date}**${j.title ? ` — ${j.title}` : ''}${j.text ? `\n  - ${j.text}` : ''}`)],
@@ -2983,7 +3236,7 @@ const MD_SUMMARY = [
     `${(r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep'}` +
     `${r.start != null && r.end != null ? `, ${fmtHour(r.start)}–${fmtHour(r.end)}` : ''}` +
     `${r.quality ? `, quality ${r.quality}/5` : ''}`],
-  ['Exercise', () => state.body.exercise, (r) => `${r.date} — ${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`],
+  ['Exercise', () => state.body.exercise, (r) => `${r.date} — ${r.type}${r.minutes ? `, ${r.minutes} min` : ''}${r.workoutName ? ` (${r.workoutName})` : ''}`],
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
   ['Hygiene', () => state.body.hygiene, (r) =>
     `${r.date} — ${HYGIENE_MARKS.filter(([k]) => r[k] === true).map(([, , name]) => name)
@@ -3309,6 +3562,7 @@ const MERGE_BY_ID = [
   ['body', 'food'], ['body', 'water'], ['body', 'sleep'], ['body', 'exercise'],
   ['body', 'symptoms'], ['body', 'customFoods'], ['body', 'meals'],
   ['body', 'drinks'], ['body', 'substances'], ['body', 'exerciseTypes'],
+  ['body', 'workouts'],
   ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
   ['money', 'categories'], ['money', 'expenses'], ['money', 'income'], ['money', 'subscriptions'],
   ['money', 'netWorth'], ['money', 'goals'],
@@ -3831,6 +4085,8 @@ wireSleepTrack();
 $('exAdd').onclick = addExercise;
 $('exTypeBtn').onclick = openExTypes;
 $('exMin').onkeydown = (e) => { if (e.key === 'Enter') addExercise(); };
+$('wkBuildBtn').onclick = () => openWorkoutBuilder(null);
+$('wkListBtn').onclick = openWorkouts;
 $('symAdd').onclick = () => openPop('Note a symptom',
   '<input type="text" id="popSym" placeholder="headache, sore throat, nausea…">', () => {
     const note = $('popSym').value.trim();

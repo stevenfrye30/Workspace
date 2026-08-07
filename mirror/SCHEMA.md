@@ -199,9 +199,14 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   > `oz`; the store never moved, because counting beside nicotine and weed is what makes a
   > week's totals one query.
 - **sleep[]** — `{ id, date, hours, quality: 1–5, ... }`
-- **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?, ... }`.
+- **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?,
+  workoutLogId?, workoutName?, ... }`.
   All fields except `type`/`date` optional. Shaped so a future fitness-tracker import (steps,
   heart rate, workouts, active minutes) can add fields without reshaping existing records.
+  - `workoutLogId` / `workoutName` *(v17)* — set on every entry a **workout** was replayed
+    into (see `workouts[]` below). `workoutLogId` is shared by exactly the entries of one
+    logging of one workout, which is what lets the Tracker show them as the one session you
+    did and remove them as a group. The same tag, by the same rule, as `food[].mealLogId`.
 - **symptoms[]** — `{ id, date, note, ... }`. Free-text, sparse, high-value context.
 - **exerciseTypes[]** *(v16)* — `{ id, name, fav, _src, _at, _up }`. The movement types you
   have **kept**, so they sit at the top of the type list instead of being hunted for. A
@@ -218,6 +223,15 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
     made on purpose.
   - Excluded from the Overview's "days kept" and "recently added" for that reason: starring
     a type is not a thing you did on a day.
+- **workouts[]** *(v17)* — `{ id, name, items: [{ type, minutes? }], _src, _at, _up }`.
+  Reusable sessions — `meals[]` repeated for movement, under the same contract. Logging one
+  **replays** its items into `exercise[]` as ordinary entries — a workout is a shortcut for
+  typing, never a record of moving in its own right, so nothing is double-counted and a
+  workout edited later cannot rewrite what you already did. The resulting entries are
+  stamped with `workoutLogId` / `workoutName` so the Tracker can show one line ("Leg day ·
+  45 min") while the data stays a list of ordinary exercises. `minutes` on an item is an
+  optional default carried into each replayed entry; an item without one replays with
+  `minutes: null`, exactly as a single log with the box left blank would.
 - **checkins[]** *(v8)* — `{ id, date, energy: 1–5?, fatigue: 1–5?, soreness: 1–5?,
   comfort: 1–5?, note, _src, _at }`. The subjective daily **Body** check-in — how the body
   *feels* (energy, fatigue, soreness/pain, physical comfort), distinct from the measurable
@@ -505,6 +519,20 @@ means**. So:
   itself is still **derived** from `exercise[].type` at read time, so no history was migrated
   into it and none needs to be. `self.html` surfaces none of it and only guarantees a save
   from that side cannot drop it. Starred types are written into `mirror-data.md`.
+- **v17** → **Saved workouts.** Adds one store, `body.workouts[]` — `{ id, name,
+  items: [{ type, minutes? }] }`, merged by id like every other record array — and two
+  optional fields on `exercise[]`: `workoutLogId` / `workoutName`, the tag a replayed
+  workout leaves on its entries, by the same rule as v14's `mealLogId` / `mealName`.
+  This is the Food card's Build/Meals machinery repeated for Movement, under the same
+  contract: **workouts replay into `exercise[]` as ordinary entries and are shortcuts,
+  never records** — editing one later cannot rewrite what you already did, and the Tracker
+  collapses one logging's entries into the one session you did. Purely additive: nothing
+  is reshaped or renamed, the shallow-merge in `loadState` plus a `v<17` migration backfill
+  the array, and entries written before v17 read exactly as they always did. `self.html`
+  surfaces none of it and only guarantees a save from that side cannot drop it. Saved
+  workouts are written into both forever-copies: `mirror-data.json` losslessly, and
+  `mirror-data.md` in full — a workout reads as prose ("Leg day — 3 exercises, 45 min:
+  Squat 20m, …") with no app at all.
 
 ---
 
@@ -523,6 +551,8 @@ the measurement series:
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
   *(v15)* `body.hygiene` (five booleans a day, identifying nothing),
   *(v16)* `body.exerciseTypes` (activity names; drop them and the exercise series is unchanged),
+  *(v17)* `body.workouts` (activity names and minutes, identifying nothing; same footing as
+  the exercise series they replay into),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
   by category, reading counts, the **structured judgment signals** of a decision
   (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration
