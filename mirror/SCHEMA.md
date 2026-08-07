@@ -150,7 +150,12 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 > storage namespace stays `body.*` for all of them so pre-v8 history is never moved or
 > renamed — the split is a presentation choice, not a data migration.
 
-- **targets** — `{ kcal, protein_g, water_oz }`. Config, not a record. Current goals only.
+- **targets** — `{ kcal, protein_g, water_oz, weight_lb }`. Config, not a record. Current
+  goals only. `weight_lb` *(v18, default 180)* is not a goal but the one bodily input the
+  Movement card's ≈kcal estimate needs; it lives here because it is edited the way targets
+  are (rarely, in the Data popover) and merges the way targets do (config, newest side wins).
+  It is **not** a weight log — a weight series would be a record array, and this is one
+  current number.
 - **food[]** — `{ id, date, foodId, foodName, grams, portion?, qty?, t?,
   mealLogId?, mealName?, mealQty?, _src, _at, _up }`. Macros
   are *not* stored per-entry — they're looked up from the NutriLens library by `foodId` at
@@ -200,29 +205,55 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   > week's totals one query.
 - **sleep[]** — `{ id, date, hours, quality: 1–5, ... }`
 - **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?,
-  workoutLogId?, workoutName?, ... }`.
+  workoutLogId?, workoutName?, cat?, distanceMi?, kcalEst?, moves?, label?, ... }`.
   All fields except `type`/`date` optional. Shaped so a future fitness-tracker import (steps,
   heart rate, workouts, active minutes) can add fields without reshaping existing records.
   - `workoutLogId` / `workoutName` *(v17)* — set on every entry a **workout** was replayed
     into (see `workouts[]` below). `workoutLogId` is shared by exactly the entries of one
     logging of one workout, which is what lets the Tracker show them as the one session you
     did and remove them as a group. The same tag, by the same rule, as `food[].mealLogId`.
+  - `cat` *(v18)* — `walk | run | bike | lift | stretch | other`, written by the Movement
+    card's quick-log. One Enter there = ONE record: the session is a single thing you did,
+    with its parts inside it — deliberately unlike a workout, which replays into one entry
+    per exercise. `type` is still always set (the category's label, or Other's typed
+    `label`), so every pre-v18 consumer — `self.html`, Records, exports, the weekly
+    review's minutes — reads these entries with no change at all.
+  - `distanceMi` *(v18)* — cardio distance, unit in the name on purpose. The older
+    free-form `distance` (v8, no unit ever defined) is untouched and still read on legacy
+    rows; new quick-log entries write `distanceMi` only.
+  - `intensity` *(declared v8, first written v18)* — 1–5 from the effort dots.
+  - `moves` *(v18)* — `[{ name, reps? }]`, Lift and Stretch sessions' parts. Raw
+    observations: names as tapped, reps only where poured.
+  - `label` *(v18)* — Other's typed name ("Pickleball"). Copied into `type` so the entry
+    reads as what it was everywhere; `cat: 'other'` is what keeps the category honest.
+  - `kcalEst` *(v18)* — the MET-based estimate the app showed at Enter (see §4 v18 for the
+    formula). Display provenance, like `qty`: nothing derives from it except display, and
+    it is never recomputed retroactively — a later weight change alters future estimates
+    only. Deleting every `kcalEst` would lose nothing measured.
 - **symptoms[]** — `{ id, date, note, ... }`. Free-text, sparse, high-value context.
-- **exerciseTypes[]** *(v16)* — `{ id, name, fav, _src, _at, _up }`. The movement types you
-  have **kept**, so they sit at the top of the type list instead of being hunted for. A
-  preference, not an observation — but stored as records rather than a flag map so it merges
-  by `id` with the same last-writer-wins `_up` as everything else, instead of flip-flopping
-  between devices the way a per-key config would.
-  - A record is created the first time you star a type and then **stays**, with `fav`
-    flipping. Un-starring never deletes it: to a merge, "I unpinned this" and "I never had
-    this" must not look the same, or the unpin returns on the next sync. Same reasoning as
-    `hygiene[]` above.
-  - It is **not the list** — the list is this, plus every `type` in `exercise[]`, plus a
-    built-in starting set, deduped on case at read time. So a type you logged once is offered
-    again without anything being written here, and this store only ever holds a decision you
-    made on purpose.
-  - Excluded from the Overview's "days kept" and "recently added" for that reason: starring
-    a type is not a thing you did on a day.
+- **exerciseTypes[]** *(v16; grew `cat`/`gone` in v18)* — `{ id, name, fav?, cat?, gone?,
+  _src, _at, _up }`. Names worth offering again. A preference store, not an observation —
+  records rather than a flag map so it merges by `id` with the same last-writer-wins `_up`
+  as everything else, instead of flip-flopping between devices the way a per-key config
+  would.
+  - `cat` *(v18)* — which Movement window a name belongs to: `lift` moves, `stretch` areas,
+    `other` activities. Records without `cat` are the v16-era general type list; they still
+    feed the workout builder and are otherwise dormant.
+  - `gone` *(v18)* — "I deleted this remembered name." Deletion in the windows' edit mode
+    writes `gone: true` rather than dropping the record, and deleting a never-touched
+    stretch seed *creates* its record with `gone: true` — a seed has no record to
+    tombstone. Re-adding the same name flips it back. Same reasoning as `fav` and the
+    hygiene booleans: to a merge, "I removed this" and "I never had this" must not look
+    the same, or the deletion resurrects on the next sync.
+  - `fav` *(v16)* — **dormant since v18.** The ★ lived in the Type popover, which the
+    quick-log replaced; nothing writes `fav` now, existing values are preserved and still
+    merge, and a future surface may read them again. Never repurpose, never drop (§4).
+  - The windows are **not this store alone** — stretch has a seeded starting set that costs
+    no records, and the workout builder's list still adds every `type` in `exercise[]` plus
+    its own seeds, deduped on case at read time. This store only ever holds a decision you
+    made on purpose: a name you added, kept, or removed.
+  - Excluded from the Overview's "days kept" and "recently added" for that reason: naming
+    a move is not a thing you did on a day.
 - **workouts[]** *(v17)* — `{ id, name, items: [{ type, minutes? }], _src, _at, _up }`.
   Reusable sessions — `meals[]` repeated for movement, under the same contract. Logging one
   **replays** its items into `exercise[]` as ordinary entries — a workout is a shortcut for
@@ -533,6 +564,30 @@ means**. So:
   workouts are written into both forever-copies: `mirror-data.json` losslessly, and
   `mirror-data.md` in full — a workout reads as prose ("Leg day — 3 exercises, 45 min:
   Squat 20m, …") with no app at all.
+- **v18** → **The Movement quick-log.** The card became six category tiles (walk / run /
+  bike / lift / stretch / other) over a fixed-height fill slot, and the Intake card lost
+  its "exact amount" fold. Additive only; nothing reshaped, renamed, or migrated:
+  - `exercise[]` gains optional `cat`, `distanceMi`, `intensity` (declared since v8, first
+    written now), `moves: [{ name, reps? }]`, `label`, and `kcalEst` — see each in §3.
+    **One Enter = one record**: a session is a single entry with its parts inside it,
+    where a workout (v17) replays into one entry per exercise. `type` is always still
+    written — the category label, or Other's typed name — so every pre-v18 reader is
+    untouched.
+  - `kcalEst` is the estimate the app showed at Enter: kcal/min = MET × 3.5 × kg / 200
+    (METs walk 3.3 · run 8.5 · bike 7 · lift 4.5 · stretch 2.3 · other 5), scaled by
+    intensity (0.7 + 0.15 × dots), flat per-mile (85 / 105 / 35) when cardio has distance
+    and no time. Display provenance only; never recomputed retroactively.
+  - `exerciseTypes[]` gains optional `cat` (which window a remembered name belongs to) and
+    `gone` (deleted-by-you, so a merge cannot resurrect it; a deleted seed gets a record
+    that exists only to say so). `fav` goes dormant — preserved, merged, no longer written.
+  - `targets` gains `weight_lb` (default 180), the estimate's one input — config, edited
+    in the Data popover, merged like the rest of `targets`.
+  - Merge kinds are UNCHANGED: `exercise` and `exerciseTypes` already union by id,
+    `targets` is already config — the new fields simply ride along.
+  - The old Type popover and its ★ went; the seeded type list still feeds the workout
+    builder. `self.html` surfaces none of the new fields and only guarantees a save from
+    that side cannot drop them; its exercise summaries in `mirror-data.md` read the new
+    entries fine because `type` and `minutes` mean what they always meant.
 
 ---
 
@@ -553,6 +608,9 @@ the measurement series:
   *(v16)* `body.exerciseTypes` (activity names; drop them and the exercise series is unchanged),
   *(v17)* `body.workouts` (activity names and minutes, identifying nothing; same footing as
   the exercise series they replay into),
+  *(v18)* the quick-log fields (`cat`, `distanceMi`, `intensity`, `kcalEst`, `moves`,
+  `label`, `targets.weight_lb`) — activity structure and effort, the same footing as the
+  series they extend, with `label`/move names carrying the exerciseTypes caveat above,
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
   by category, reading counts, the **structured judgment signals** of a decision
   (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration

@@ -34,9 +34,14 @@ So each card is a set of controls with a door beside it. The food card has **Bui
 **Meals** side by side, because making a meal and logging one are different jobs: Build is the
 recipe editor (search, per-ingredient `− n +`, or take today's eating wholesale), Meals is the
 saved list, where each row is a `− n +` and an `Add` — two helpings is one tap and lands as one
-Tracker line. **Movement** is the same shape: `Type` opens the list of activities — a starting
-set, plus everything you have ever logged, with a ★ to keep the ones you do most at the top —
-while the card itself stays three controls. **Hygiene** is five glyphs you tap on the days you
+Tracker line. **Movement** is two rows of four tiles — Walk · Run · Bike · Lift · Stretch ·
+Other, plus the 📋 Workouts and ＋ Build doors — over a fill slot whose height never changes.
+Tap a category and log the session right on the card: chips *add* into a dashed running total
+(tap the readout to zero it), cardio takes time and miles, Lift keeps your moves as chips in a
+window that scrolls inside itself — tap one to pour reps into it — Stretch toggles areas,
+Other asks what it was and remembers the answer, and a dim `≈ kcal` line guesses the cost
+(MET-based, from the body weight set in **Data**) before one Enter writes the whole session as
+one entry, one Tracker line. **Hygiene** is five glyphs you tap on the days you
 did them, and tap again if you didn't. One tap logs a glass of water; sleep is two handles on a
 24-hour track, so you say when you went down and got up rather than doing the arithmetic;
 `Undo` in the header takes back the last thing you did, including a deletion.
@@ -163,7 +168,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v16**.
+**schema v18**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is

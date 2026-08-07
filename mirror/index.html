@@ -3573,7 +3573,9 @@ const MD_SUMMARY = [
     `${(r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep'}` +
     `${r.start != null && r.end != null ? `, ${fmtHour(r.start)}–${fmtHour(r.end)}` : ''}` +
     `${r.quality ? `, quality ${r.quality}/5` : ''}`],
-  ['Exercise', () => state.body.exercise, (r) => `${r.date} — ${r.type}${r.minutes ? `, ${r.minutes} min` : ''}${r.workoutName ? ` (${r.workoutName})` : ''}`],
+  ['Exercise', () => state.body.exercise, (r) => `${r.date} — ` +
+    (r.cat ? moveLine(r) : `${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`) +
+    `${r.workoutName ? ` (${r.workoutName})` : ''}`],
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
   ['Hygiene', () => state.body.hygiene, (r) =>
     `${r.date} — ${HYGIENE_MARKS.filter(([k]) => r[k] === true).map(([, , name]) => name)
