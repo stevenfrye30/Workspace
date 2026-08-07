@@ -128,6 +128,8 @@
 
   .rowlabel { font-size: .78rem; color: var(--dim); margin: 10px 0 5px; }
   .rowlabel:first-of-type { margin-top: 0; }
+  /* A section label with its own small action on the end of it. */
+  .rowlabel.splitlabel { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .hr { height: 1px; background: var(--line); margin: 11px 0 9px; }
 
   /* ---------- folds: the keyboard-only parts ---------- */
@@ -224,6 +226,17 @@
   }
   body.theme-dark button.primary { color: #1c1e24; }
   button.primary:hover { filter: brightness(1.08); }
+  /* The same button at the same size, without the fill — for a pair where one
+     side is the daily act and the other is the occasional one. Padding is a
+     pixel short of .primary's on each side so the 1px border lands them on
+     exactly the same box. */
+  button.secondary {
+    background: var(--panel2); color: var(--ink); border: 1px solid var(--line);
+    border-radius: 8px; padding: 9px 17px; font: inherit; font-size: .85rem;
+    font-weight: 600; cursor: pointer;
+  }
+  button.secondary:hover { border-color: var(--accent); color: var(--accent); }
+  button.secondary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   /* ---------- tabbed, colour-tinted boxes (drinks + substances) ----------
      The whole card takes the active tab's hue, so what you're about to log
@@ -365,8 +378,10 @@
   /* The two ways into the food card, weighted by how often each is used.
      Meals takes the row and the accent; "your own food" is a square that
      carries its name in title/aria-label rather than in ink. */
+  /* 1 1 0, not 1 1 auto: Build and Meals split the row down the middle
+     whatever their words happen to measure. */
   .foodactions { display: flex; gap: 8px; margin-top: 9px; }
-  .foodactions .grow { flex: 1 1 auto; }
+  .foodactions .grow { flex: 1 1 0; min-width: 0; }
   .sqbtn {
     flex: 0 0 40px; display: grid; place-items: center; padding: 0;
     background: var(--panel2); border: 1px solid var(--line); color: var(--dim);
@@ -671,11 +686,15 @@
       <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
       <div class="results" id="foodResults"></div>
     </div>
-    <!-- Meals is how most days actually get logged, so it is the button on
-         this card. Defining a food of your own is the rarer, one-off act and
-         keeps the square beside it — the name lives in title/aria-label. -->
+    <!-- Making a meal and logging one are different jobs, so they are
+         different buttons rather than one door with the other hidden behind
+         it. They split the row equally; only the fill separates them, because
+         you build a meal once and log it for months. Defining a food of your
+         own stays the rarer, one-off act and keeps the square on the end —
+         its name lives in title/aria-label. -->
     <div class="foodactions">
-      <button class="primary grow" id="mealsBtn">Meals</button>
+      <button class="secondary grow" id="buildBtn" type="button">Build</button>
+      <button class="primary grow" id="mealsBtn" type="button">Meals</button>
       <button class="sqbtn" id="customFoodBtn" type="button"
               title="Add your own food" aria-label="Add your own food">＋</button>
     </div>
@@ -1853,7 +1872,12 @@ function openMealBuilder(existing) {
 
   openPop(existing ? 'Edit meal' : 'New meal',
     '<input type="text" id="mbName" placeholder="what do you call it? — breakfast, post-gym…">' +
-    '<div class="rowlabel">Add foods</div>' +
+    /* Two ways to fill the list, and they suit different moments: search for
+       it when you know the recipe, or take a day you have already logged when
+       it turns out to be worth repeating. The second rides on the label of the
+       section it belongs to, so it never moves when results appear. */
+    '<div class="rowlabel splitlabel">Add foods' +
+      '<button class="mini" id="mbToday" type="button">＋ From today’s food</button></div>' +
     '<div class="searchwrap">' +
       '<input type="text" id="mbSearch" placeholder="Search foods…" autocomplete="off">' +
       '<div class="results flat" id="mbResults"></div>' +
@@ -1967,6 +1991,24 @@ function openMealBuilder(existing) {
           if (first) first.click();
         }
       };
+
+      /* Adds the day to the list you are building rather than replacing it,
+         and you drop what was not part of the meal with the ✕ beside each —
+         a day's eating is rarely exactly one meal. A meal already logged
+         today arrives as its ingredients, which is what it is in the data. */
+      $('mbToday').onclick = () => {
+        const rows = onDay(state.body.food);
+        if (!rows.length) { toast('Nothing logged today to take'); return; }
+        rows.forEach((r) => {
+          const it = { foodId: r.foodId, foodName: r.foodName,
+                       grams: r.grams, portion: r.portion || r.portionLabel || '' };
+          if (timesOf(r) > 1) it.qty = timesOf(r);
+          mealDraft.push(it);
+        });
+        paint();
+        toast('Took ' + plural(rows.length, 'food') + ' from today');
+      };
+
       paint();
       $('mbName').focus();
     },
@@ -1982,10 +2024,7 @@ function openMeals() {
   // intention, and a stepper you did not set is a quantity you did not choose.
   const count = new Map();
   openPop('Meals',
-    '<div class="meals" id="mealList"></div>' +
-    '<div class="chips" style="margin-top:10px">' +
-      '<button class="mini" id="mealNew">＋ New meal</button>' +
-      '<button class="mini" id="mealSaveToday">＋ From today’s food</button></div>',
+    '<div class="meals" id="mealList"></div>',
     null,
     () => {
       const box = $('mealList');
@@ -1993,7 +2032,7 @@ function openMeals() {
         box.innerHTML = '';
         const live = state.body.meals || [];
         if (!live.length) {
-          box.innerHTML = '<div class="empty">No meals yet. Build one, or keep a day you have already logged.</div>';
+          box.innerHTML = '<div class="empty">No meals yet — use Build.</div>';
           return;
         }
         live.slice().reverse().forEach((m) => {
@@ -2024,23 +2063,6 @@ function openMeals() {
         });
       };
       paint();
-      $('mealNew').onclick = () => openMealBuilder(null);
-      $('mealSaveToday').onclick = () => {
-        const rows = onDay(state.body.food);
-        if (!rows.length) { toast('Nothing logged today to save'); return; }
-        // Seed the builder rather than saving blind, so you can drop the
-        // things that were not part of the meal. A meal already logged today
-        // arrives as its ingredients, which is what it is in the data.
-        mealDraft = rows.map((r) => {
-          const it = { foodId: r.foodId, foodName: r.foodName,
-                       grams: r.grams, portion: r.portion || r.portionLabel || '' };
-          if (timesOf(r) > 1) it.qty = timesOf(r);
-          return it;
-        });
-        const seeded = { name: '', items: mealDraft };
-        openMealBuilder(seeded);
-        mealEditing = null;          // seeded, but saving creates a new meal
-      };
     });
 }
 
@@ -3623,6 +3645,7 @@ $('symAdd').onclick = () => openPop('Note a symptom',
   });
 $('customFoodBtn').onclick = () => { loadFoods(); openCustomFood(); };
 $('mealsBtn').onclick = openMeals;
+$('buildBtn').onclick = () => openMealBuilder(null);
 $('foodSearch').onfocus = () => loadFoods();
 $('foodSearch').oninput = (e) => {
   loadFoods().then(() => renderResults(e.target.value));

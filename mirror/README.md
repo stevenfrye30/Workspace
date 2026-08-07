@@ -24,8 +24,10 @@ intake · habits · movement · food · hygiene · sleep), a row of link pills o
 in the order you made it — and the week in review beneath it.
 
 The instruments never change shape as you log. Entries land in the Tracker, not in the card
-you typed into, so the thing you are aiming at never moves. **Meals** is the food card's main
-button: each saved meal has a `− n +` beside it, so two helpings is one tap and lands as one
+you typed into, so the thing you are aiming at never moves. The food card has **Build** and
+**Meals** side by side, because making a meal and logging one are different jobs: Build is the
+recipe editor (search, per-ingredient `− n +`, or take today's eating wholesale), Meals is the
+saved list, where each row is a `− n +` and an `Add`. Two helpings is one tap and lands as one
 Tracker line. **Hygiene** is five glyphs you tap on the days you did them, and tap again
 if you didn't. One tap logs a glass of water;
 sleep is two handles on a 24-hour track, so you say when you went down and got up rather than
