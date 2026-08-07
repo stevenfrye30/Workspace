@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **15** (field `__v` in the data).
+Current schema version: **16** (field `__v` in the data).
 
 ---
 
@@ -203,6 +203,21 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   All fields except `type`/`date` optional. Shaped so a future fitness-tracker import (steps,
   heart rate, workouts, active minutes) can add fields without reshaping existing records.
 - **symptoms[]** — `{ id, date, note, ... }`. Free-text, sparse, high-value context.
+- **exerciseTypes[]** *(v16)* — `{ id, name, fav, _src, _at, _up }`. The movement types you
+  have **kept**, so they sit at the top of the type list instead of being hunted for. A
+  preference, not an observation — but stored as records rather than a flag map so it merges
+  by `id` with the same last-writer-wins `_up` as everything else, instead of flip-flopping
+  between devices the way a per-key config would.
+  - A record is created the first time you star a type and then **stays**, with `fav`
+    flipping. Un-starring never deletes it: to a merge, "I unpinned this" and "I never had
+    this" must not look the same, or the unpin returns on the next sync. Same reasoning as
+    `hygiene[]` above.
+  - It is **not the list** — the list is this, plus every `type` in `exercise[]`, plus a
+    built-in starting set, deduped on case at read time. So a type you logged once is offered
+    again without anything being written here, and this store only ever holds a decision you
+    made on purpose.
+  - Excluded from the Overview's "days kept" and "recently added" for that reason: starring
+    a type is not a thing you did on a day.
 - **checkins[]** *(v8)* — `{ id, date, energy: 1–5?, fatigue: 1–5?, soreness: 1–5?,
   comfort: 1–5?, note, _src, _at }`. The subjective daily **Body** check-in — how the body
   *feels* (energy, fatigue, soreness/pain, physical comfort), distinct from the measurable
@@ -481,6 +496,15 @@ means**. So:
   backfill the array for older data. `self.html` surfaces none of it and only guarantees a
   save from that side cannot drop it. Counts appear in the weekly review and in
   `mirror-data.md`; **not** in Records, which is for things you look up rather than tally.
+- **v16** → **Movement types you keep.** Adds one store, `body.exerciseTypes[]` —
+  `{ id, name, fav }`, merged by id like every other record array. It exists because the
+  Movement card used to show a chip row of your recently-logged types, which made the front
+  layer of the app change shape according to your data; the types moved into a popover, and
+  the ones you star are kept here. Purely additive: nothing is reshaped or renamed, the
+  shallow-merge in `loadState` plus a `v<16` migration backfill the array, and the type list
+  itself is still **derived** from `exercise[].type` at read time, so no history was migrated
+  into it and none needs to be. `self.html` surfaces none of it and only guarantees a save
+  from that side cannot drop it. Starred types are written into `mirror-data.md`.
 
 ---
 
@@ -498,6 +522,7 @@ the measurement series:
   someone uses is identifying — `body.drinks[].label`, and `body.substances[].note`.
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
   *(v15)* `body.hygiene` (five booleans a day, identifying nothing),
+  *(v16)* `body.exerciseTypes` (activity names; drop them and the exercise series is unchanged),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
   by category, reading counts, the **structured judgment signals** of a decision
   (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration

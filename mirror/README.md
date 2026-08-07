@@ -23,16 +23,23 @@ intake · habits · movement · food · hygiene · sleep), a row of link pills o
 (person · book · idea · place · money · values), then the **Tracker** — every entry of the day
 in the order you made it — and the week in review beneath it.
 
-The instruments never change shape as you log. Entries land in the Tracker, not in the card
-you typed into, so the thing you are aiming at never moves. The food card has **Build** and
+**The instruments never change shape as you log** — the numbers move, the shape does not. No
+chip, row or button on a card appears or shifts because of something you recorded, and entries
+land in the Tracker rather than in the card you typed into, so the thing you are aiming at is
+always where it was. What grows lives one layer in: the popovers, the Tracker, Records and the
+Overview. It is written down at the top of `index.html` as the invariant every card is audited
+against.
+
+So each card is a set of controls with a door beside it. The food card has **Build** and
 **Meals** side by side, because making a meal and logging one are different jobs: Build is the
 recipe editor (search, per-ingredient `− n +`, or take today's eating wholesale), Meals is the
-saved list, where each row is a `− n +` and an `Add`. Two helpings is one tap and lands as one
-Tracker line. **Hygiene** is five glyphs you tap on the days you did them, and tap again
-if you didn't. One tap logs a glass of water;
-sleep is two handles on a 24-hour track, so you say when you went down and got up rather than
-doing the arithmetic; `Undo` in the header takes back the last thing you did, including a
-deletion.
+saved list, where each row is a `− n +` and an `Add` — two helpings is one tap and lands as one
+Tracker line. **Movement** is the same shape: `Type` opens the list of activities — a starting
+set, plus everything you have ever logged, with a ★ to keep the ones you do most at the top —
+while the card itself stays three controls. **Hygiene** is five glyphs you tap on the days you
+did them, and tap again if you didn't. One tap logs a glass of water; sleep is two handles on a
+24-hour track, so you say when you went down and got up rather than doing the arithmetic;
+`Undo` in the header takes back the last thing you did, including a deletion.
 
 Clicking the title opens the **Overview** — what the record adds up to: days kept, sleep
 average, this month's money, habits over the last seven days, the values you keep, and the last
@@ -156,7 +163,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v15**.
+**schema v16**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is

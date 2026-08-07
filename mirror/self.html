@@ -2077,7 +2077,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 15;
+const SCHEMA_VERSION = 16;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -2094,14 +2094,14 @@ const RECORD_ARRAYS = [
   ['relationships','people'], ['relationships','followUps'],
   ['relationships','giftIdeas'], ['relationships','birthdays'],
   ['daily','cards'], ['decisions','items'], ['habits','items'], ['places','items'],
-  ['body','hygiene'],
+  ['body','hygiene'], ['body','exerciseTypes'],
 ];
 function nowISO(){ return new Date().toISOString(); }
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
-  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [], drinks: [], substances: [], hygiene: [] },
+  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [], drinks: [], substances: [], hygiene: [], exerciseTypes: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
@@ -2271,6 +2271,15 @@ function migrate(s) {
     s.body = s.body || {};
     if (!Array.isArray(s.body.hygiene)) s.body.hygiene = [];
     v = 15;
+  }
+  // v15 -> v16: body.exerciseTypes[] — the movement types the dashboard keeps
+  // at the top of its type list, `{ id, name, fav }`. A preference, stored as
+  // records so it merges by id like everything else. Nothing here surfaces it;
+  // this app only guarantees a save from this side cannot drop it.
+  if (v < 16) {
+    s.body = s.body || {};
+    if (!Array.isArray(s.body.exerciseTypes)) s.body.exerciseTypes = [];
+    v = 16;
   }
   s.__v = SCHEMA_VERSION;
   return s;
@@ -2672,6 +2681,10 @@ function buildDataMarkdown() {
   const t = s.body.targets || {};
   p(''); p(`**Daily targets:** ${t.kcal||'–'} kcal · ${t.protein_g||'–'} g protein · ${t.water_oz||'–'} oz water`);
   if (s.body.symptoms?.length) { p(''); p(`### Symptoms & notes`); s.body.symptoms.slice().sort(byDateDesc).forEach(x => p(`- ${x.date}: ${x.note}`)); }
+  if (s.body.exerciseTypes?.some(r => r.fav)) {
+    p(''); p(`### Movement types kept`);
+    s.body.exerciseTypes.filter(r => r.fav).forEach(r => p(`- ${r.name}`));
+  }
   if (s.body.hygiene?.length) {
     const HY = [['brush_am','Brush AM'],['brush_pm','Brush PM'],['floss','Floss'],['shower','Shower'],['haircut','Haircut']];
     p(''); p(`### Hygiene — recent ${Math.min(14, s.body.hygiene.length)} of ${s.body.hygiene.length}`);

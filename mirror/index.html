@@ -1,4 +1,48 @@
 <!DOCTYPE html>
+<!--
+  ══════════════════════════════════════════════════════════════════════════
+  THE INVARIANT — the front layer is a control panel.
+
+  Nothing on an instrument card may appear, disappear, move or resize
+  because of what has been logged or saved. Not a chip, not a row, not a
+  button, not a label. The card you reach for is the same shape after a
+  hundred entries as it was before the first, so the thing you are aiming
+  at is where it was last time.
+
+  VALUES MAY CHANGE; GEOMETRY MAY NOT. The macro bar's numbers move, the
+  Intake tabs carry a running count, the sleep button turns to "Entered ✓" —
+  all fine, because none of them moves anything. A row of chips that grew
+  with the activities you had logged is not fine, and is why this is
+  written down: the button you were reaching for shifted down the card
+  because of something you did last week.
+
+  Data grows in the deeper layers only — the popovers, the Tracker,
+  Records, the Overview. That is what they are for.
+
+  AUDITED, and where each card stands:
+    Food      macro bar (three fixed cells, numbers only), search, three
+              fixed buttons. No list — it had one, and it grew. The status
+              line under it speaks for the food library's network state,
+              never for your data.
+    Hygiene   five buttons, always five; a mark is a fill, not a row.
+    Intake    six tabs, a fixed three-button slot with a min-height, one
+              fold. What it shows branches on the TAB you are on, never on
+              what is in the log; the counts on the tabs are values.
+    Movement  three controls: Type, minutes, Log. The types live behind the
+              Type button because on the card they were a growing chip row.
+    How       five dot rows, a sleep track, two buttons — fixed. The "saved"
+              note in the heading is absolutely positioned, so it costs no
+              layout, and Enter -> "Entered ✓" is a button changing state.
+    Log grid  six tiles, always six.
+
+  Two things OUTSIDE the instrument cards do still change with data, both in
+  the launchpad column, both deliberate: the birthday line appears when a
+  birthday is near, and the launchpad grows a pill per link you add. They
+  are a notice and a set of doors rather than instruments. If either ever
+  needs to obey this too, it moves behind a button the way Movement's
+  types did.
+  ══════════════════════════════════════════════════════════════════════════
+-->
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -302,11 +346,37 @@
   .quick button .u { font-size: .6rem; font-weight: 400; opacity: .7; margin-left: 1px; }
 
 
-  /* Movement keeps a row of the types you use most. Empty it collapses
-     rather than holding open a blank gap between the heading and the
-     fields — the reservation only made sense when a fold sat below it. */
-  #exChips:empty { display: none; }
-  #exChips { margin-bottom: 9px; }
+  /* ---------- movement ----------
+     Type takes the row the way Meals does; minutes is a fixed box; Log
+     commits. Three controls, one line, no matter what is in the log. */
+  .exrow { display: flex; gap: 8px; align-items: stretch; }
+  .exrow .grow { flex: 1 1 0; min-width: 0; }
+  /* A long type name shortens rather than widening its button. */
+  .exrow #exTypeBtn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .exrow input { flex: 0 0 74px; width: 74px; text-align: center; }
+
+  /* The type list, one layer in, where a list is allowed to grow. */
+  .extypes { display: flex; flex-direction: column; }
+  .extype { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--line); }
+  .extype:last-child { border-bottom: 0; }
+  .extype .pick {
+    flex: 1; min-width: 0; text-align: left; padding: 9px 2px;
+    background: none; border: 0; color: var(--ink); font: inherit; font-size: .86rem;
+    cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .extype .pick:hover { color: var(--accent); }
+  .extype .pick[aria-pressed="true"] { color: var(--accent); font-weight: 600; }
+  .extype .star {
+    flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center;
+    padding: 0; background: none; border: 0; border-radius: 8px;
+    color: var(--dim); font: inherit; font-size: .95rem; line-height: 1; cursor: pointer;
+  }
+  .extype .star:hover { color: var(--accent); }
+  .extype .star[aria-pressed="true"] { color: var(--accent); }
+  .extype .pick:focus-visible, .extype .star:focus-visible {
+    outline: 2px solid var(--accent); outline-offset: -2px;
+  }
+  .addtype { margin-top: 10px; }
 
   /* The seven sleep chips wrapped to a second row inside a column, which cost
      nearly 40px on the tallest card in the grid. Narrower chips fit one row. */
@@ -732,18 +802,19 @@
     </details>
   </div>
 
-  <div class="card narrow">
+  <!-- Three controls, and only ever these three. The activities you do live
+       behind Type, the way meals live behind Meals: on the card they were a
+       chip row that grew with your history and pushed everything under it
+       down (THE INVARIANT, top of file). The Type button's label is the
+       pick for the log you are making right now and resets after it. -->
+  <div class="card narrow" id="movementCard">
     <h2>Movement</h2>
-    <div class="chips" id="exChips"></div>
-    <div class="field inline" id="exRow">
-      <input type="text" id="exType" placeholder="walk, lift, yoga">
-      <input type="number" id="exMin" min="1" step="1" placeholder="min" style="max-width:74px">
-      <button class="primary" id="exAdd">Log</button>
+    <div class="exrow">
+      <button class="primary grow" id="exTypeBtn" type="button">Type</button>
+      <input type="number" id="exMin" min="1" step="1" placeholder="min"
+             aria-label="Minutes">
+      <button class="secondary" id="exAdd" type="button">Log</button>
     </div>
-    <details class="fold" id="exOtherFold" hidden>
-      <summary>other…</summary>
-      <div class="field" id="exOtherWrap"></div>
-    </details>
   </div>
   </div>
 
@@ -841,7 +912,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 15;
+const SCHEMA_VERSION = 16;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -893,6 +964,7 @@ const defaultState = () => ({
     favoriteFoods: [], customFoods: [], meals: [], checkins: [],
     drinks: [], substances: [],            // v13
     hygiene: [],                           // v15
+    exerciseTypes: [],                     // v16
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
   money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
@@ -927,6 +999,8 @@ function mergeLoaded(saved) {
   if (!Array.isArray(out.body.substances)) out.body.substances = [];
   // v14 -> v15: the hygiene marks. Purely additive; nothing is reshaped.
   if (!Array.isArray(out.body.hygiene)) out.body.hygiene = [];
+  // v15 -> v16: the movement types you keep. Also purely additive.
+  if (!Array.isArray(out.body.exerciseTypes)) out.body.exerciseTypes = [];
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -2098,50 +2172,164 @@ function openCustomFood() {
 }
 
 /* =============================================================
-   MOVEMENT
+   MOVEMENT — a control panel, not a history.
+
+   The card used to keep a row of chips of the five types you had logged
+   most recently. It read well and it broke THE INVARIANT (top of file):
+   the row appeared the first time you logged anything, and the fields
+   under it moved down the card because of what you had done last week.
+
+   So the types moved one layer in, behind the Type button, where a list
+   is allowed to be as long as your history. What is left on the card is
+   three controls that will be the same three controls in ten years.
    ============================================================= */
-function recentExTypes() {
-  const seen = [];
-  (state.body.exercise || []).slice(-60).reverse().forEach((e) => {
-    const t = (e.type || '').trim();
-    if (t && !seen.includes(t)) seen.push(t);
-  });
-  return seen.slice(0, 5);
+/* A starting set, so the list is useful on the first day and you are not
+   made to name your own walking. They are only suggestions: none is
+   stored until you log it or keep it. */
+const EX_SEEDS = ['Walk', 'Run', 'Lift', 'Bike', 'Swim', 'Yoga', 'Pickleball',
+                  'Hike', 'Stretch', 'Row', 'Climb', 'Sport'];
+
+/** The type chosen for the log being made right now. Never persisted, and
+ *  cleared the moment it becomes an entry — the card face holds no state. */
+let exPick = '';
+
+/** Every type worth offering: the ones you have kept, the ones you have
+ *  logged, then the seeds. Deduped on case, because "Walk" and "walk" are
+ *  one activity, and first spelling seen wins so your own wording survives. */
+function exTypes() {
+  const out = new Map();
+  const add = (t) => {
+    const s = String(t || '').trim();
+    if (!s) return;
+    const k = s.toLowerCase();
+    if (!out.has(k)) out.set(k, s);
+  };
+  (state.body.exerciseTypes || []).forEach((r) => add(r.name));
+  (state.body.exercise || []).slice().reverse().forEach((e) => add(e.type));
+  EX_SEEDS.forEach(add);
+  return [...out.values()];
 }
-function renderExercise() {
-  const chips = $('exChips'); chips.innerHTML = '';
-  const types = recentExTypes();
-  types.forEach((t) => {
-    const b = document.createElement('button');
-    b.className = 'chip'; b.type = 'button'; b.textContent = t;
-    b.setAttribute('aria-pressed', String($('exType').value.trim().toLowerCase() === t.toLowerCase()));
-    b.onclick = () => { $('exType').value = t; renderExercise(); $('exMin').focus(); };
-    chips.appendChild(b);
-  });
-  /* Once you have a few usual activities the free-text box is the rare case,
-     so it moves behind "other…" and the row is just minutes and Log. The
-     input is MOVED, not duplicated, so its value and handlers come with it —
-     one source of truth for the type either way. */
-  const useChips = types.length > 0;
-  $('exOtherFold').hidden = !useChips;
-  const type = $('exType');
-  if (useChips) {
-    if (type.parentElement !== $('exOtherWrap')) $('exOtherWrap').appendChild(type);
-  } else if (type.parentElement !== $('exRow')) {
-    $('exRow').insertBefore(type, $('exMin'));
+function exTypeRec(name) {
+  const k = String(name || '').trim().toLowerCase();
+  return (state.body.exerciseTypes || []).find((r) => String(r.name).toLowerCase() === k);
+}
+const isExFav = (name) => { const r = exTypeRec(name); return !!(r && r.fav); };
+
+/** Keep a type at the top of the list, or stop. The record is made on the
+ *  first star and then stays, `fav` flipping rather than the record coming
+ *  and going: to a merge, "I unpinned this" and "I never had this" must not
+ *  look the same, or an unpin comes back on the next sync. */
+function toggleExFav(name) {
+  let r = exTypeRec(name);
+  if (!r) {
+    r = stamp({ id: uid(), name: String(name).trim(), fav: false });
+    state.body.exerciseTypes.push(r);
   }
+  r.fav = !r.fav;
+  stamp(r);
+  saveState();
+}
+
+function renderExercise() {
+  const b = $('exTypeBtn');
+  if (!b) return;
+  b.textContent = exPick || 'Type';
+  const label = exPick ? 'Logging ' + exPick + ' — tap to change'
+                       : 'Choose what you did';
+  b.title = label;
+  b.setAttribute('aria-label', label);
+}
+
+function pickExType(name) {
+  exPick = String(name || '').trim();
+  closePop();
+  renderExercise();
+  $('exMin').focus();
+}
+
+/** One row of the type list: the name, and the star that keeps it. */
+function exTypeRow(name, repaint) {
+  const div = document.createElement('div');
+  div.className = 'extype';
+  const pick = document.createElement('button');
+  pick.className = 'pick'; pick.type = 'button'; pick.textContent = name;
+  pick.setAttribute('aria-pressed', String(name.toLowerCase() === exPick.toLowerCase()));
+  pick.onclick = () => pickExType(name);
+  const on = isExFav(name);
+  const star = document.createElement('button');
+  star.className = 'star'; star.type = 'button'; star.textContent = on ? '★' : '☆';
+  star.title = on ? 'Stop keeping ' + name : 'Keep ' + name + ' at the top';
+  star.setAttribute('aria-label', star.title);
+  star.setAttribute('aria-pressed', String(on));
+  star.onclick = () => { toggleExFav(name); repaint(); };
+  div.appendChild(pick); div.appendChild(star);
+  return div;
+}
+
+/* One field does both jobs: it filters the list, and when what you typed is
+   not in the list it offers to make it. A separate "add" box would have you
+   decide which one you wanted before you had finished typing. */
+function openExTypes() {
+  openPop('Movement',
+    '<input type="text" id="exSearch" placeholder="Search, or name a new one…" autocomplete="off">' +
+    '<div id="exLists"></div>',
+    null,
+    () => {
+      const search = $('exSearch');
+      const paint = () => {
+        const raw = search.value.trim();
+        const q = raw.toLowerCase();
+        const all = exTypes();
+        const hit = (t) => !q || t.toLowerCase().includes(q);
+        const favs = all.filter((t) => isExFav(t) && hit(t));
+        const rest = all.filter((t) => !isExFav(t) && hit(t));
+        const box = $('exLists');
+        box.innerHTML = '';
+
+        if (raw && !all.some((t) => t.toLowerCase() === q)) {
+          const add = document.createElement('button');
+          add.className = 'mini addtype'; add.type = 'button';
+          add.textContent = '＋ Add “' + raw + '”';
+          add.onclick = () => pickExType(raw);
+          box.appendChild(add);
+        }
+        const section = (label, list) => {
+          if (!list.length) return;
+          const h = document.createElement('div');
+          h.className = 'rowlabel'; h.textContent = label;
+          box.appendChild(h);
+          const wrap = document.createElement('div'); wrap.className = 'extypes';
+          list.forEach((t) => wrap.appendChild(exTypeRow(t, paint)));
+          box.appendChild(wrap);
+        };
+        section('Favorites', favs);
+        section(favs.length ? 'Everything else' : 'Types', rest);
+      };
+      search.oninput = paint;
+      // Enter takes the obvious thing: the type you are making, or the first
+      // one you matched. (openPop leaves a field that has its own handler alone.)
+      search.onkeydown = (e) => {
+        if (e.key !== 'Enter') return;
+        e.preventDefault();
+        const first = $('exLists').querySelector('.addtype, .extype .pick');
+        if (first) first.click();
+      };
+      paint();
+    });
 }
 
 function addExercise() {
-  const type = $('exType').value.trim();
-  if (!type) { $('exType').focus(); return; }
+  const type = exPick.trim();
+  // Nothing to log without knowing what it was — so open the one control
+  // that answers that, rather than refusing quietly.
+  if (!type) { openExTypes(); return; }
   const min = parseInt($('exMin').value, 10);
   const rec = stamp({
     id: uid(), date: day, type,
     minutes: isNaN(min) ? null : min, time: stampTime(),
   });
   appendRec(state.body.exercise, rec, type + (rec.minutes ? ' · ' + rec.minutes + ' min' : ''));
-  $('exType').value = ''; $('exMin').value = '';
+  exPick = ''; $('exMin').value = '';
   saveState(); renderExercise(); renderFeed();
   toast('Logged ' + type);
 }
@@ -2401,7 +2589,12 @@ function openPop(title, bodyHTML, onConfirm, afterRender, okLabel) {
   };
   const first = pop.querySelector('input[type=text]');
   if (first) first.focus();
+  /* Enter means "the obvious thing", and in a plain form that is the OK
+     button. A field that has already said what Enter means to it — pick the
+     first search result, make the type you just named — keeps its own
+     answer; this used to overwrite it, silently, after afterRender ran. */
   pop.querySelectorAll('input').forEach((i) => {
+    if (i.onkeydown) return;
     i.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); $('popOk').click(); } };
   });
 }
@@ -2763,6 +2956,8 @@ const MD_FULL = [
     `- **${g.name}** — ${fmt$(g.saved || 0)} of ${fmt$(g.target || 0)}${g.by ? ` by ${g.by}` : ''}`)],
   ['Net worth', () => (state.money.netWorth || []).slice().reverse().map((n) =>
     `- **${n.date}** — assets ${fmt$(n.assets)}, liabilities ${fmt$(n.liabilities)}`)],
+  ['Movement types kept', () => (state.body.exerciseTypes || [])
+    .filter((r) => r.fav).map((r) => `- ${r.name}`)],
   ['Links', () => (state.links || []).map((l) => `- ${l.label} — ${l.url}`)],
   ['Journal', () => (state.identity.journal || []).slice().reverse().map((j) =>
     `- **${j.date}**${j.title ? ` — ${j.title}` : ''}${j.text ? `\n  - ${j.text}` : ''}`)],
@@ -3113,7 +3308,7 @@ const MERGE_BY_ID = [
   ['identity', 'reflections'], ['identity', 'journal'],
   ['body', 'food'], ['body', 'water'], ['body', 'sleep'], ['body', 'exercise'],
   ['body', 'symptoms'], ['body', 'customFoods'], ['body', 'meals'],
-  ['body', 'drinks'], ['body', 'substances'],
+  ['body', 'drinks'], ['body', 'substances'], ['body', 'exerciseTypes'],
   ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
   ['money', 'categories'], ['money', 'expenses'], ['money', 'income'], ['money', 'subscriptions'],
   ['money', 'netWorth'], ['money', 'goals'],
@@ -3634,6 +3829,7 @@ $('pSave').onclick = savePulse;
 $('sleepEnter').onclick = enterSleep;
 wireSleepTrack();
 $('exAdd').onclick = addExercise;
+$('exTypeBtn').onclick = openExTypes;
 $('exMin').onkeydown = (e) => { if (e.key === 'Enter') addExercise(); };
 $('symAdd').onclick = () => openPop('Note a symptom',
   '<input type="text" id="popSym" placeholder="headache, sore throat, nausea…">', () => {
@@ -3893,8 +4089,12 @@ $('logValues').onclick = () => {
    never disagree with the record it describes.
    ============================================================= */
 /* Every array of records, borrowed from the merge table so a store added
-   there is never silently missing here. */
-const ALL_STORES = [...MERGE_BY_ID, ...MERGE_BY_DATE];
+   there is never silently missing here — less the ones that are settings
+   wearing a record's clothes. Keeping "Pickleball" at the top of a list is
+   a preference; it is not a thing you did, and a day you did it on is not
+   a day you kept the record. */
+const NOT_ENTRIES = new Set(['exerciseTypes']);
+const ALL_STORES = [...MERGE_BY_ID, ...MERGE_BY_DATE].filter(([, b]) => !NOT_ENTRIES.has(b));
 
 /** One line for any record, whatever store it came out of. */
 function recordLabel(r, store) {
@@ -3981,9 +4181,12 @@ $('overviewBtn').onclick = () => {
      check-in, the pulse) are upserted once per day and one of them is created
      as a side effect of logging sleep. Listing those as things you "added"
      would be reporting your own bookkeeping back to you. */
-  MERGE_BY_ID.forEach(([a, b]) => (pick(state, a, b) || []).forEach((r) => {
-    if (r && r._at) recent.push({ r, at: r._at, store: b || a });
-  }));
+  MERGE_BY_ID.forEach(([a, b]) => {
+    if (NOT_ENTRIES.has(b)) return;
+    (pick(state, a, b) || []).forEach((r) => {
+      if (r && r._at) recent.push({ r, at: r._at, store: b || a });
+    });
+  });
   recent.sort((x, y) => String(y.at).localeCompare(String(x.at)));
   const RECENT_IC = {
     people: '🧑', birthdays: '🎂', books: '📕', quotes: '❝', ideas: '💡',
