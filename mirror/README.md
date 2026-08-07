@@ -182,6 +182,9 @@ they contain.
 - [`DASHBOARD_PLAN.md`](./DASHBOARD_PLAN.md) — why the dashboard is shaped the way it is.
 - `sw.js` — network-first for the document (so a shipped fix is not shadowed by a cached
   page), cache-first for everything else, and it never intercepts the GitHub API.
+- [`tests/`](./tests/) — browser-level acceptance suites (Playwright/Chromium, synthetic
+  data only): `python mirror/tests/run_all.py`. Every substantive change ships against
+  these; see the folder's README for what each suite covers.
 
 Outside its original workspace hub the food library and the `← Workspace` link simply do not
 resolve, and the app adapts. There are no hard external dependencies.

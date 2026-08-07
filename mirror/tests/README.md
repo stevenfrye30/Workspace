@@ -1,0 +1,38 @@
+# Mirror's tests
+
+Browser-level acceptance suites. Every substantive change to Mirror since the
+one-page dashboard has shipped against harnesses like these; this folder is
+those harnesses, made portable and kept with the code they verify.
+
+## Running them
+
+```sh
+pip install playwright
+playwright install chromium
+python mirror/tests/run_all.py        # from anywhere; paths are repo-relative
+```
+
+Each suite is self-contained: it serves the repo root on its own port with
+`http.server`, drives a throwaway Chromium (Playwright), and seeds **synthetic
+data only** — your real record is never read or written, because localStorage
+lives inside the disposable browser profile. Suites run in a fixed timezone
+(`America/Indiana/Indianapolis`) so local-date logic is deterministic.
+
+## What each covers
+
+| Suite | Covers |
+|---|---|
+| `validate_movement.py` | Movement card v3: the eight tiles, the hard-height fill slot (face byte-identical across every state × theme × density), accumulator exactness, one-Enter-one-record, moves/reps/edit machinery, workout replay + group undo, kcal estimate, v17→v19 migration, self.html round-trip, 390 px |
+| `validate_v19_round.py` | Intake sub-forms (alcohol/nicotine forms, fixed heights across all tabs and steps), sleep wording ban, hygiene brush counter + merge union, column order, weekly review pickup |
+| `validate_review_fixes.py` | One regression test per finding of the 2026-08 review pass: targets spread on self.html, canonical move casing, edit-survives-sync-pull, intensity clamp, session-counting week, gone-tombstones in the builder list, focus ring, and the rest |
+| `validate_connections.py` | The Connections engine: exact group averages, the both-groups-3+ and 0.35 gates, direction tinting, hedge language on every row, substance signals, weekday card, empty state, derived-not-stored |
+
+## Conventions
+
+- A suite prints `PASS`/`FAIL` per check and exits non-zero on any failure.
+- Ports are per-suite (8130–8137) so suites can run back to back.
+- Seeds are hand-built state blobs pinned to older schema versions on purpose —
+  migration is part of what's under test. When `SCHEMA_VERSION` bumps, the
+  version assertions here are expected to need the same one-line bump.
+- The food library (`../nutrilens/foods.json`) is optional; suites treat its
+  absence the way the app does.
