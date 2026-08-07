@@ -191,18 +191,21 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   amount; `count` is 1 per entry, so a day's coffees can be counted without summing volume.
   Water stays in its own `water[]` array rather than moving here — pre-v13 hydration history
   must not be relocated.
-- **substances[]** *(v13)* — `{ id, date, kind, count, oz?, note?, t?, _src, _at, _up }`.
+- **substances[]** *(v13)* — `{ id, date, kind, count, oz?, form?, note?, t?, _src, _at, _up }`.
   `kind` is `alcohol`, `nicotine` or `weed`. `count` is how many (one tap = 1; the detail
   form can log several at once) and `note` is optional free text.
-  `oz` appears only on alcohol entries written between v13's release and the move described
-  below, when alcohol was entered by volume. Those records carry `count: 1` as well, so they
-  count identically to newer ones; the volume is kept because it is what was observed, and
-  the tracker still shows it.
+  - `form` *(weed since v13; alcohol & nicotine since v19)* — what shape the thing took:
+    `bud | edible` for weed, `beer | wine | shot` for alcohol, `zyn | vape | cig` for
+    nicotine. Display detail, like a food's named portion: totals never branch on it, and a
+    record without one (anything pre-v19) reads as its kind, exactly as before.
+  - `oz` *(alcohol)* — the pour. First written in the v13 window when alcohol briefly sat
+    among the drinks; **deliberately back since v19** alongside `form`, because the pour is
+    what was observed. Every alcohol entry still carries `count: 1` per log whatever the
+    ounces:
   > **Alcohol is counted, not measured.** A 12 oz beer and a 1.5 oz shot are one standard
   > drink each, and that equivalence is the entire point of the measure — ounces throw it
-  > away. It briefly sat among the drinks in the interface, which is why some entries have
-  > `oz`; the store never moved, because counting beside nicotine and weed is what makes a
-  > week's totals one query.
+  > away. The ounces are kept as observation; the count is the reading, and counting beside
+  > nicotine and weed is what makes a week's totals one query.
 - **sleep[]** — `{ id, date, hours, quality: 1–5, ... }`
 - **exercise[]** — `{ id, date, type, minutes?, time?, distance?, intensity?, note?,
   workoutLogId?, workoutName?, cat?, distanceMi?, kcalEst?, moves?, label?, ... }`.
@@ -588,6 +591,14 @@ means**. So:
     builder. `self.html` surfaces none of the new fields and only guarantees a save from
     that side cannot drop them; its exercise summaries in `mirror-data.md` read the new
     entries fine because `type` and `minutes` mean what they always meant.
+- **v19** → **Intake sub-forms.** The Intake card gains a permanently reserved tag line
+  (the chosen sub-form, ✕ to change; blank on tabs that need no choice) so the slot is one
+  height on every tab and step. Additive only:
+  - `substances[].form` extends from weed to **alcohol** (`beer | wine | shot`) and
+    **nicotine** (`zyn | vape | cig`). Records without it read as their kind, as before.
+  - `substances[].oz` returns on alcohol **on purpose** — the pour is the observation; the
+    reading is still `count: 1` per log (see the store's entry in §3).
+  - Merge kinds unchanged — substances already union by id; the new fields ride along.
 
 ---
 

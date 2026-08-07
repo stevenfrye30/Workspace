@@ -2077,7 +2077,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 18;
+const SCHEMA_VERSION = 19;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -2298,6 +2298,12 @@ function migrate(s) {
   // which is why this app reads the new entries with no change. This side
   // only guarantees a save cannot drop them.
   if (v < 18) { v = 18; }
+  // v18 -> v19: OPTIONAL fields only — `form` on alcohol/nicotine substance
+  // records, `oz` returning on alcohol, a `brush` counter on hygiene[] (the
+  // dashboard's one-brush hygiene row; brush_am/brush_pm stay readable and
+  // are simply no longer written). Nothing to backfill; this side only
+  // guarantees a save cannot drop any of it.
+  if (v < 19) { v = 19; }
   s.__v = SCHEMA_VERSION;
   return s;
 }

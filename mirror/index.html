@@ -307,18 +307,20 @@
   body.dense .tabs { gap: 3px; margin-bottom: 8px; }
   body.dense .tabs button { font-size: .66rem; padding: 5px 3px; }
 
-  /* A fixed slot: three buttons whatever the tab, so switching kinds never
-     resizes the card. */
+  /* The chosen-sub-form line, permanently reserved (blank most of the time)
+     — a HARD height, per the invariant, so choosing Beer or clearing it
+     cannot move the button row an inch. */
+  .itag { height: 26px; overflow: hidden; display: flex; align-items: center; margin-bottom: 5px; }
+  body.dense .itag { height: 24px; }
+  .itag .chip { padding: 2px 9px; font-size: .7rem; }
+  /* A fixed slot: one row of buttons whatever the tab and whatever the step,
+     so switching kinds or picking a form never resizes the card. HARD
+     height + overflow hidden, per the invariant. */
   .quick {
     display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px;
-    align-content: center; min-height: 40px;
+    align-content: center; height: 42px; overflow: hidden;
   }
-  body.dense .quick { min-height: 36px; }
-  /* The chosen-form tag rides IN the button row rather than on a line of its
-     own — a reserved empty line read as dead space on the four tabs that
-     never use it. One row either way, so the height still cannot move. */
-  .quick.has-tag { grid-template-columns: auto repeat(3, 1fr); }
-  .quick .chip { padding: 2px 9px; font-size: .7rem; align-self: center; }
+  body.dense .quick { height: 38px; }
   .namefield { grid-column: 1 / -1; display: flex; gap: 6px; }
   /* The name field borrows the step buttons' exact box metrics, so the slot is
      the same height on Other as on every other tab and the card never twitches
@@ -868,6 +870,11 @@
   <div class="card boxed" id="intakeCard">
     <h2>Intake <span class="note" id="intakeTotal"></span></h2>
     <div class="tabs" id="intakeTabs"></div>
+    <!-- The tag line is PERMANENTLY reserved: it shows the chosen sub-form
+         (Beer, Zyn, Bud, the drink you named) with a ✕ to change it, and
+         stays blank on the tabs that need no choice — so the slot is the
+         same height on every tab and every step of every sub-form. -->
+    <div class="itag" id="intakeTag"></div>
     <div class="quick" id="intakeQuick"></div>
     <!-- No "exact amount…" fold: it expanded the card when opened, which is
          exactly what THE INVARIANT forbids. The quick buttons are the only
@@ -990,7 +997,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 18;
+const SCHEMA_VERSION = 19;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -1090,6 +1097,9 @@ function mergeLoaded(saved) {
     out.body.targets = { kcal: 2200, protein_g: 80, water_oz: 64 };
   }
   if (!Number(out.body.targets.weight_lb)) out.body.targets.weight_lb = 180;
+  // v18 -> v19: OPTIONAL fields only — `form` on alcohol/nicotine substances
+  // (weed had it since v13), `oz` returning on alcohol deliberately, and a
+  // `brush` counter on hygiene[] — so there is nothing to backfill.
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -1491,14 +1501,14 @@ function wireSleepTrack() {
    Drinks and Substances were the same control twice. Six tabs in one card
    instead, split only by the unit each kind is measured in — volume for the
    first three, count for the last three. A tap on a quick button logs
-   immediately; exact amounts live behind the fold.
+   immediately; there is no other path.
 
    The UI groups by what a thing IS; storage stays exactly where it was, so
    no history has to move:
      water            -> body.water[]       { oz }
      coffee / other   -> body.drinks[]      { kind, label, oz, count }
-     alcohol          -> body.substances[]  { kind, count, oz }
-     weed / nicotine  -> body.substances[]  { kind, count, note }
+     alcohol          -> body.substances[]  { kind, count, oz, form }
+     weed / nicotine  -> body.substances[]  { kind, count, note, form }
    ============================================================= */
 const KINDS = {
   water:    { name: 'Water',    icon: '💧', c: 'water',    store: 'water' },
@@ -1509,11 +1519,14 @@ const KINDS = {
   weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
 };
 const intakeMeta = (k) => KINDS[k];          // the tracker reads its icons from here
-/* Three buttons, always, whatever the tab — the slot is a fixed height so
-   the card cannot twitch as you move between kinds. Two tabs need a choice
-   before the amounts make sense, and both make it in the same slot rather
-   than in a dialog: weed needs a form (bud is weighed, edibles are dosed),
-   and Other needs a name before "+8 oz" means anything. */
+/* One row of buttons, always, whatever the tab — the slot is a fixed height
+   so the card cannot twitch as you move between kinds. Four tabs need a
+   choice before the amounts mean anything — what FORM the thing took: a
+   beer and a shot are both one drink but very different pours, a Zyn and a
+   cigar are different acts, bud is weighed while edibles are dosed, and
+   Other needs a name before "+8 oz" says anything. Each choice is made in
+   the same button row and then lives on the reserved tag line above it,
+   with a ✕ to change — never a dialog, never a second row. */
 const INTAKE_TABS = ['water', 'coffee', 'alcohol', 'nicotine', 'weed', 'other'];
 const OZ_STEPS = [2, 8, 16];
 const COUNT_STEPS = [1, 2, 3];
@@ -1521,10 +1534,21 @@ const WEED_FORMS = {
   bud:    { label: 'Bud',    unit: 'g',  steps: [0.1, 0.5, 1] },
   edible: { label: 'Edible', unit: 'mg', steps: [5, 20, 50] },
 };
+/* Alcohol pours by the form's own steps — a shot's "+16 oz" would be absurd.
+   The count still increments by 1 per log whatever the ounces, because a
+   12 oz beer and a 1.5 oz shot are one standard drink each (SCHEMA v13). */
+const ALC_FORMS = {
+  beer: { label: 'Beer', steps: [2, 8, 16] },
+  wine: { label: 'Wine', steps: [2, 8, 16] },
+  shot: { label: 'Shot', steps: [1, 1.5, 2] },
+};
+const NIC_FORMS = { zyn: 'Zyn', vape: 'Vape', cig: 'Cig(ar)' };
 const isVolume = (kind) => KINDS[kind].store !== 'substances';
 
 let intakeTab = 'water';
 let weedForm = null;        // 'bud' | 'edible' — chosen in the slot
+let alcForm = null;         // 'beer' | 'wine' | 'shot'
+let nicForm = null;         // 'zyn' | 'vape' | 'cig'
 let otherLabel = '';        // the name you gave this drink
 
 /** A tag that shows the choice and lets you take it back. */
@@ -1557,8 +1581,33 @@ function renderIntake() {
   });
 
   const el = $('intakeQuick');
-  el.innerHTML = ''; el.classList.remove('has-tag');
+  const tagLine = $('intakeTag');
+  el.innerHTML = '';
+  tagLine.innerHTML = '';
+  const tag = (label, onClear) => tagLine.appendChild(chosenTag(label, onClear));
 
+  if (intakeTab === 'alcohol') {
+    if (!alcForm) {
+      Object.keys(ALC_FORMS).forEach((f) => el.appendChild(
+        stepButton(ALC_FORMS[f].label, '', () => { alcForm = f; renderIntake(); })));
+      return;
+    }
+    tag(ALC_FORMS[alcForm].label, () => { alcForm = null; renderIntake(); });
+    ALC_FORMS[alcForm].steps.forEach((n) => el.appendChild(
+      stepButton('+' + n, 'oz', () => logIntake(n))));
+    return;
+  }
+  if (intakeTab === 'nicotine') {
+    if (!nicForm) {
+      Object.keys(NIC_FORMS).forEach((f) => el.appendChild(
+        stepButton(NIC_FORMS[f], '', () => { nicForm = f; renderIntake(); })));
+      return;
+    }
+    tag(NIC_FORMS[nicForm], () => { nicForm = null; renderIntake(); });
+    COUNT_STEPS.forEach((n) => el.appendChild(
+      stepButton('+' + n, '', () => logIntake(n))));
+    return;
+  }
   if (intakeTab === 'weed' && !weedForm) {
     // Ask the one question that decides the unit, in the slot itself.
     ['bud', 'edible'].forEach((f) => el.appendChild(
@@ -1587,21 +1636,17 @@ function renderIntake() {
 
   if (intakeTab === 'weed') {
     const f = WEED_FORMS[weedForm];
-    el.classList.add('has-tag');
-    el.appendChild(chosenTag(f.label, () => { weedForm = null; renderIntake(); }));
+    tag(f.label, () => { weedForm = null; renderIntake(); });
     f.steps.forEach((n) => el.appendChild(
       stepButton(String(n), f.unit, () => logIntake(n))));
     return;
   }
   if (intakeTab === 'other') {
-    el.classList.add('has-tag');
-    el.appendChild(chosenTag(otherLabel, () => { otherLabel = ''; renderIntake(); }));
+    tag(otherLabel, () => { otherLabel = ''; renderIntake(); });
     OZ_STEPS.forEach((n) => el.appendChild(stepButton('+' + n, 'oz', () => logIntake(n))));
     return;
   }
-  const vol = isVolume(intakeTab);
-  (vol ? OZ_STEPS : COUNT_STEPS).forEach((n) => el.appendChild(
-    stepButton('+' + n, vol ? 'oz' : '', () => logIntake(n))));
+  OZ_STEPS.forEach((n) => el.appendChild(stepButton('+' + n, 'oz', () => logIntake(n))));
 }
 
 /* One tap logs. Undo is the safety net that makes committing immediately
@@ -1612,13 +1657,19 @@ function logIntake(n) {
     addIntake('weed', { count: 1, amount: n, unit: f.unit, form: weedForm || 'bud' });
     return;
   }
-  if (isVolume(intakeTab)) {
-    const opts = { oz: n };
-    if (intakeTab === 'other') opts.label = otherLabel || 'Other';
-    addIntake(intakeTab, opts);
+  if (intakeTab === 'alcohol') {
+    // The pour in ounces AND the form — but always ONE drink to the count,
+    // because that equivalence is the entire point of counting (SCHEMA v13).
+    addIntake('alcohol', { count: 1, oz: n, form: alcForm || 'beer' });
     return;
   }
-  addIntake(intakeTab, { count: n });
+  if (intakeTab === 'nicotine') {
+    addIntake('nicotine', { count: n, form: nicForm || 'cig' });
+    return;
+  }
+  const opts = { oz: n };
+  if (intakeTab === 'other') opts.label = otherLabel || 'Other';
+  addIntake(intakeTab, opts);
 }
 function arrOf(kind) {
   const s = KINDS[kind].store;
@@ -1649,7 +1700,10 @@ function describeIntake(kind, rec) {
   }
   if (rec.oz) bits.push(round1(rec.oz) + ' oz');
   else if (rec.count > 1) bits.push('×' + rec.count);
-  bits.push(rec.label && rec.label !== KINDS[kind].name ? rec.label : KINDS[kind].name.toLowerCase());
+  // A record that knows its form reads as the form: "8 oz beer", "×2 zyn".
+  // Records from before forms existed keep reading as the kind.
+  bits.push(rec.label && rec.label !== KINDS[kind].name ? rec.label
+            : (rec.form || KINDS[kind].name.toLowerCase()));
   if (rec.note) bits.push('· ' + rec.note);
   return bits.join(' ');
 }
@@ -3567,8 +3621,8 @@ const MD_SUMMARY = [
   ['Water', () => state.body.water, (r) => `${r.date} — ${round1(r.oz)} oz`],
   ['Drinks', () => state.body.drinks, (r) => `${r.date} — ${r.label || r.kind}${r.oz ? `, ${round1(r.oz)} oz` : ''}`],
   ['Substances', () => state.body.substances, (r) => `${r.date} — ${r.kind} ×${r.count || 1}` +
-    `${r.amount ? `, ${round1(r.amount)}${r.unit || ''}` : ''}${r.form ? ` (${r.form})` : ''}` +
-    `${r.note ? ` — ${r.note}` : ''}`],
+    `${r.amount ? `, ${round1(r.amount)}${r.unit || ''}` : ''}${r.oz ? `, ${round1(r.oz)} oz` : ''}` +
+    `${r.form ? ` (${r.form})` : ''}${r.note ? ` — ${r.note}` : ''}`],
   ['Sleep', () => state.body.sleep, (r) => `${r.date} — ${r.hours} h ` +
     `${(r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep'}` +
     `${r.start != null && r.end != null ? `, ${fmtHour(r.start)}–${fmtHour(r.end)}` : ''}` +
