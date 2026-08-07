@@ -66,7 +66,7 @@
   :root {
     --bg:#f6f1e6; --panel:#fffdf7; --panel2:#efe8d8;
     --ink:#2a2620; --dim:#7a6f5e; --line:rgba(42,38,32,.12);
-    --accent:#8a6a3e; --accent2:#5b7a55; --warn:#a85a3a;
+    --accent:#8a6a3e; --accent2:#5b7a55; --warn:#a85a3a; --gold:#b8912f;
     --shadow:0 1px 2px rgba(42,38,32,.05);
     --water:#4a7a9b; --coffee:#7a5232; --other:#3e7070;
     --alcohol:#7a4a7a; --nicotine:#6b6b6b; --weed:#4a7a4a;
@@ -74,7 +74,7 @@
   body.theme-dark {
     --bg:#1c1e24; --panel:#24262e; --panel2:#2d3039;
     --ink:#e8e4dc; --dim:#9a948a; --line:rgba(232,228,220,.1);
-    --accent:#c89b60; --accent2:#8fb080; --warn:#d87a5a;
+    --accent:#c89b60; --accent2:#8fb080; --warn:#d87a5a; --gold:#d4b054;
     --shadow:0 1px 2px rgba(0,0,0,.25);
     --water:#7aa8c8; --coffee:#b08055; --other:#6ba0a0;
     --alcohol:#a87aa8; --nicotine:#9a9a9a; --weed:#7aab7a;
@@ -397,7 +397,55 @@
   }
   .exread.zero { color: var(--dim); border-color: var(--line); }
   .exread:hover { border-color: var(--warn); color: var(--warn); }
+  .exchip[disabled], .exread[disabled] { opacity: .4; cursor: default; }
+  .exchip[disabled]:hover { border-color: var(--line); }
+  .exread[disabled]:hover { border-color: var(--line); color: var(--dim); }
   .expanel .dots { gap: 5px; }
+  .expanel .dots button { width: 34px; height: 34px; }
+  body.dense .expanel .dots button { width: 28px; height: 28px; }
+  /* Remembered moves: the one list on the card, so it lives in a window of
+     fixed height that scrolls inside itself, scrollbar hidden — it can hold
+     fifty moves and the card is none the taller. */
+  .moveswin {
+    flex: 1 1 auto; min-width: 0; height: 56px; overflow-y: auto;
+    scrollbar-width: none;
+    display: flex; flex-wrap: wrap; gap: 4px; align-content: flex-start;
+  }
+  .moveswin::-webkit-scrollbar { display: none; }
+  .exline.moves { align-items: flex-start; }
+  .exline.moves .exlab { display: flex; flex-direction: column; gap: 3px; padding-top: 2px; }
+  .exedit {
+    align-self: flex-start; padding: 1px 5px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--line); background: none; color: var(--dim);
+    font: inherit; font-size: .58rem; text-transform: lowercase; letter-spacing: 0;
+  }
+  .exedit:hover { border-color: var(--accent); color: var(--accent); }
+  .exedit[aria-pressed="true"] { border-color: var(--warn); color: var(--warn); }
+  .mv {
+    padding: 4px 9px; border-radius: 999px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel2); color: var(--ink);
+    font: inherit; font-size: .7rem; white-space: nowrap; max-width: 100%;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .mv:hover { border-color: var(--accent); }
+  .mv.in { background: color-mix(in srgb, var(--accent) 14%, var(--panel2)); }
+  /* Selected = tinted with the gold border the reps are pouring into. */
+  .mv.sel {
+    background: color-mix(in srgb, var(--gold) 18%, var(--panel2));
+    border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); font-weight: 600;
+  }
+  .mv.new { border-style: dashed; background: var(--panel); color: var(--accent); }
+  .mv.del { border-color: var(--warn); color: var(--warn); background: none; }
+  /* The name fields sit in rows that chips otherwise occupy, so they take
+     the chip row's exact height — swapping one in must not move a pixel. */
+  .exnamein {
+    flex: 1; min-width: 0; font: inherit; font-size: .74rem;
+    height: 31px; padding: 0 8px;
+  }
+  body.dense .exchip, body.dense .exread { padding: 5px 2px; }
+  body.dense .exnamein { height: 29px; }
+  body.dense .expanel { gap: 5px; }
+  body.dense .moveswin { height: 52px; }
   .exspace { flex: 1; }
   .exkcal {
     height: 15px; flex: 0 0 15px; font-size: .68rem; color: var(--dim);
@@ -2243,6 +2291,53 @@ const EXCATS = {
 const DIST_STEPS = [0.5, 1, 3, 10];
 const REPS_STEPS = [1, 5, 10, 25];
 
+/* ---- remembered moves ----
+   The chips in the Lift / Stretch / Other windows. Backed by
+   body.exerciseTypes[] records carrying a `cat`; stretch starts from a
+   seeded set of areas that are only suggestions — no record exists until
+   you name, log or delete one. Deleting writes `gone: true` rather than
+   dropping the record, for the same reason `fav` never deleted: to a merge,
+   "I removed this" and "I never had this" must not look the same, and a
+   seed has no record to tombstone. */
+const STRETCH_SEEDS = ['Hamstrings', 'Hips', 'Back', 'Neck', 'Shoulders'];
+
+function moveRecsFor(cat) {
+  return (state.body.exerciseTypes || []).filter((r) => (r.cat || '') === cat);
+}
+function movesFor(cat) {
+  const recs = moveRecsFor(cat);
+  const rec = (n) => recs.find((r) => String(r.name).toLowerCase() === n.toLowerCase());
+  const out = [];
+  const seen = new Set();
+  (cat === 'stretch' ? STRETCH_SEEDS : []).forEach((n) => {
+    const r = rec(n);
+    if (r && r.gone) return;
+    const nm = r ? r.name : n;
+    out.push(nm); seen.add(nm.toLowerCase());
+  });
+  recs.forEach((r) => {
+    if (r.gone || seen.has(String(r.name).toLowerCase())) return;
+    out.push(r.name); seen.add(String(r.name).toLowerCase());
+  });
+  return out;
+}
+function rememberMove(cat, name) {
+  const nm = String(name || '').trim();
+  if (!nm) return;
+  const r = moveRecsFor(cat).find((x) => String(x.name).toLowerCase() === nm.toLowerCase());
+  if (!r) state.body.exerciseTypes.push(stamp({ id: uid(), name: nm, cat }));
+  else if (r.gone) { r.gone = false; stamp(r); }
+  else return;                        // already remembered; nothing to write
+  saveState();
+}
+function forgetMove(cat, name) {
+  const nm = String(name || '').trim();
+  let r = moveRecsFor(cat).find((x) => String(x.name).toLowerCase() === nm.toLowerCase());
+  if (!r) { r = { id: uid(), name: nm, cat }; state.body.exerciseTypes.push(r); }
+  r.gone = true; stamp(r);
+  saveState();
+}
+
 /** The category open right now, and its accumulating session. Runtime only,
  *  never persisted; discarded on collapse, written only by Enter. */
 let exCat = '';
@@ -2300,6 +2395,146 @@ function timeRow(meta, s) {
     () => updSess((x) => { x.min = 0; }));
 }
 
+/** Reps pour into the SELECTED move (the gold-bordered chip); with nothing
+ *  selected the row sits dim, because there is nowhere to pour. */
+function repsRow(s) {
+  const sel = s.moves.find((m) => m.name === s.sel);
+  const row = accRow('Reps', REPS_STEPS, (n) => '+' + n,
+    (n) => updSess((x) => {
+      const m = x.moves.find((mm) => mm.name === x.sel);
+      if (m) m.reps = (m.reps || 0) + n;
+    }),
+    () => '×' + (sel ? (sel.reps || 0) : 0), () => !sel || !sel.reps,
+    () => updSess((x) => {
+      const m = x.moves.find((mm) => mm.name === x.sel);
+      if (m) m.reps = 0;
+    }));
+  if (!sel) row.querySelectorAll('.exchip, .exread').forEach((b) => { b.disabled = true; });
+  return row;
+}
+
+/** The moves window: label + edit toggle in the label column, chips in a
+ *  fixed-height window that scrolls inside itself. `mode` is what a tap
+ *  means — 'reps' adds+selects, 'plain' toggles, 'fill' fills the name
+ *  field. Edit mode turns every chip into its own delete button. */
+function movesRow(label, cat, s, mode) {
+  const row = document.createElement('div'); row.className = 'exline moves';
+  const labcol = document.createElement('span'); labcol.className = 'exlab';
+  const t = document.createElement('span'); t.textContent = label;
+  const ed = document.createElement('button');
+  ed.className = 'exedit'; ed.type = 'button';
+  ed.textContent = s.edit ? 'done' : 'edit';
+  ed.setAttribute('aria-pressed', String(s.edit));
+  ed.title = s.edit ? 'Stop deleting' : 'Delete remembered ones';
+  ed.onclick = () => updSess((x) => { x.edit = !x.edit; x.adding = false; });
+  labcol.appendChild(t); labcol.appendChild(ed);
+  row.appendChild(labcol);
+
+  const win = document.createElement('div'); win.className = 'moveswin';
+  movesFor(cat).forEach((name) => {
+    const b = document.createElement('button'); b.type = 'button';
+    const m = s.moves.find((mm) => mm.name === name);
+    if (s.edit) {
+      b.className = 'mv del'; b.textContent = '✕ ' + name;
+      b.title = 'Delete “' + name + '” permanently';
+      b.onclick = () => {
+        forgetMove(cat, name);
+        updSess((x) => {
+          x.moves = x.moves.filter((mm) => mm.name !== name);
+          if (x.sel === name) x.sel = x.moves.length ? x.moves[x.moves.length - 1].name : '';
+        });
+      };
+    } else if (mode === 'fill') {
+      b.className = 'mv' + (s.name.trim().toLowerCase() === name.toLowerCase() ? ' sel' : '');
+      b.textContent = name;
+      b.onclick = () => updSess((x) => { x.name = name; });
+    } else {
+      b.className = 'mv' + (m ? (mode === 'reps' && s.sel === name ? ' sel' : ' in') : '');
+      b.textContent = name + (m && m.reps ? ' ×' + m.reps : '');
+      b.setAttribute('aria-pressed', String(!!m));
+      b.onclick = () => updSess((x) => {
+        const mm = x.moves.find((q) => q.name === name);
+        if (!mm) {
+          x.moves.push(mode === 'reps' ? { name, reps: 0 } : { name });
+          if (mode === 'reps') x.sel = name;
+        } else if (mode !== 'reps' || x.sel === name) {
+          // in a plain window any tap toggles out; in reps, only the selected one
+          x.moves = x.moves.filter((q) => q.name !== name);
+          if (x.sel === name) x.sel = x.moves.length ? x.moves[x.moves.length - 1].name : '';
+        } else {
+          x.sel = name;
+        }
+      });
+    }
+    win.appendChild(b);
+  });
+  if (!s.edit && mode !== 'fill') {
+    const add = document.createElement('button'); add.type = 'button';
+    add.className = 'mv new'; add.textContent = '＋ new';
+    add.title = 'Name a new one';
+    add.onclick = () => {
+      updSess((x) => { x.adding = true; });
+      const i = $('exNewName'); if (i) i.focus();
+    };
+    win.appendChild(add);
+  }
+  row.appendChild(win);
+  return row;
+}
+
+/** The "＋ new" name field. It SWAPS IN for the row below the window (reps
+ *  for Lift, time for Stretch) so opening it costs no height. Enter adds,
+ *  Esc cancels; the draft survives repaints in the session. */
+function newMoveRow(cat, s, mode) {
+  const row = document.createElement('div'); row.className = 'exline';
+  const input = document.createElement('input');
+  input.type = 'text'; input.id = 'exNewName'; input.className = 'exnamein';
+  input.placeholder = (mode === 'plain' ? 'name the area' : 'name the move') + ' — Enter adds, Esc cancels';
+  input.value = s.newName || '';
+  input.oninput = () => { if (exSess) exSess.newName = input.value; };
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const nm = input.value.trim();
+      if (!nm) return;
+      rememberMove(cat, nm);
+      updSess((x) => {
+        x.adding = false; x.newName = '';
+        if (!x.moves.some((m) => m.name.toLowerCase() === nm.toLowerCase())) {
+          x.moves.push(mode === 'reps' ? { name: nm, reps: 0 } : { name: nm });
+          if (mode === 'reps') x.sel = nm;
+        }
+      });
+    }
+    if (e.key === 'Escape') {
+      e.preventDefault(); e.stopPropagation();
+      updSess((x) => { x.adding = false; x.newName = ''; });
+    }
+  };
+  row.appendChild(input);
+  return row;
+}
+
+/** Other's name field. Typing must not repaint the panel — a repaint would
+ *  eat the keyboard focus — so it only refreshes what depends on it. */
+function otherNameRow(s) {
+  const row = document.createElement('div'); row.className = 'exline';
+  const input = document.createElement('input');
+  input.type = 'text'; input.id = 'exOtherName'; input.className = 'exnamein';
+  input.placeholder = 'What was it? — pickleball, kayak, shoveling…';
+  input.setAttribute('aria-label', 'What was it?');
+  input.value = s.name;
+  input.oninput = () => { if (exSess) { exSess.name = input.value; refreshEnterState(); } };
+  row.appendChild(input);
+  return row;
+}
+
+/** The bits that depend on session content but must not cost a repaint. */
+function refreshEnterState() {
+  const b = $('exEnter');
+  if (b) b.disabled = !canEnter();
+}
+
 /** Can this session be entered yet? Content rules per category. */
 function canEnter() {
   const s = exSess;
@@ -2329,7 +2564,25 @@ function renderMovement() {
   const s = exSess;
   const panel = document.createElement('div'); panel.className = 'expanel';
 
-  panel.appendChild(timeRow(meta, s));
+  /* Row order per category — the same grammar throughout, so the hand
+     learns one card: what (moves/name) · how much (reps/time/distance) ·
+     how hard (dots) · Enter. */
+  if (meta.named) {
+    panel.appendChild(otherNameRow(s));
+    panel.appendChild(movesRow('Saved', 'other', s, 'fill'));
+  }
+  if (meta.moves) {
+    panel.appendChild(movesRow(meta.moves === 'reps' ? 'Moves' : 'Areas', exCat, s, meta.moves));
+  }
+  if (meta.moves === 'reps') {
+    panel.appendChild(s.adding ? newMoveRow(exCat, s, 'reps') : repsRow(s));
+  }
+  // Stretch has no reps row, so its "＋ new" field swaps in for Time.
+  if (meta.moves === 'plain' && s.adding) {
+    panel.appendChild(newMoveRow(exCat, s, 'plain'));
+  } else {
+    panel.appendChild(timeRow(meta, s));
+  }
   if (meta.dist) {
     panel.appendChild(accRow('Dist', DIST_STEPS, (n) => '+' + n,
       (n) => updSess((x) => { x.mi = round1(x.mi + n); }),
@@ -2382,6 +2635,17 @@ function logMove() {
   };
   if (meta.dist && s.mi > 0) rec.distanceMi = round1(s.mi);
   if (s.dots) rec.intensity = s.dots;
+  if (meta.moves && s.moves.length) {
+    rec.moves = s.moves.map((m) =>
+      (meta.moves === 'reps' && m.reps > 0) ? { name: m.name, reps: m.reps } : { name: m.name });
+  }
+  if (meta.named) {
+    // The typed name is what you did; the category stays Other. Whatever
+    // gets logged is remembered as a chip for next time.
+    rec.label = s.name.trim();
+    rec.type = rec.label || 'Other';
+    rememberMove('other', rec.label);
+  }
   stamp(rec);
   appendRec(state.body.exercise, rec, moveLine(rec));
   saveState(); renderFeed();
