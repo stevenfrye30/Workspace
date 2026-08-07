@@ -834,7 +834,7 @@
 
      Each column is its own stack, so a long food list cannot stretch the one
      beside it. Stacked on a phone the DOM order is already the priority order:
-     Food, Intake, Movement, How you are, then the rest. -->
+     Food, Intake, Hygiene, Movement, How you are, then the rest. -->
 <div class="daily">
 
   <div class="col">
@@ -863,19 +863,11 @@
     <div class="foodstatus" id="foodStatus"></div>
   </div>
 
-  <!-- Five things you either did today or didn't. Under Food because it is
-       the other half of looking after yourself, and because column 1 had the
-       room the moment the food list left it. -->
-  <div class="card" id="hygieneCard">
-    <h2>Hygiene</h2>
-    <div class="hyg" id="hygRows"></div>
-  </div>
-  </div>
-
-  <div class="col">
-  <!-- Intake — one instrument, six tabs. Drinks and Substances were the same
-       control twice; they differ only in the unit each kind is measured in,
-       so that is the only thing the card branches on. Storage is unchanged:
+  <!-- Intake — one instrument, six tabs. Under Food because they are the two
+       things logged all day long, and drinks are the other half of eating.
+       Drinks and Substances were the same control twice; they differ only in
+       the unit each kind is measured in, so that is the only thing the card
+       branches on. Storage is unchanged:
        water -> body.water, coffee/other -> body.drinks, the rest ->
        body.substances. -->
   <div class="card boxed" id="intakeCard">
@@ -890,6 +882,16 @@
     <!-- No "exact amount…" fold: it expanded the card when opened, which is
          exactly what THE INVARIANT forbids. The quick buttons are the only
          path; an unusual amount is a couple of taps instead of a form. -->
+  </div>
+  </div>
+
+  <div class="col">
+  <!-- Four things you either did today or didn't (and one you count). One
+       fixed row; over Movement because together they are the body column —
+       upkeep above, effort below. -->
+  <div class="card" id="hygieneCard">
+    <h2>Hygiene</h2>
+    <div class="hyg" id="hygRows"></div>
   </div>
 
   <!-- Two rows of four, then a fixed fill slot. Six category tiles fill the
