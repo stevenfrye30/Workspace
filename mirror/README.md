@@ -41,8 +41,10 @@ Tap a category and log the session right on the card: chips *add* into a dashed 
 window that scrolls inside itself — tap one to pour reps into it — Stretch toggles areas,
 Other asks what it was and remembers the answer, and a dim `≈ kcal` line guesses the cost
 (MET-based, from the body weight set in **Data**) before one Enter writes the whole session as
-one entry, one Tracker line. **Hygiene** is five glyphs you tap on the days you
-did them, and tap again if you didn't. One tap logs a glass of water; sleep is two handles on a
+one entry, one Tracker line. **Hygiene** is one
+compact row — Shower and Haircut squares around a stacked Brush / Floss pair; Brush counts
+per press (twice a day is two Tracker lines), the others toggle, and tapping again takes a
+mark back. One tap logs a glass of water; sleep is two handles on a
 24-hour track, so you say when you went down and got up rather than doing the arithmetic;
 `Undo` in the header takes back the last thing you did, including a deletion.
 

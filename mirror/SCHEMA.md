@@ -282,17 +282,26 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   Logging a meal **n** times over multiplies each item's `grams` and `qty` by n and stamps
   the resulting entries with `mealLogId` / `mealName` / `mealQty` — so the Tracker can show
   one line while the data stays a list of ordinary foods that resolve their own nutrients.
-- **hygiene[]** *(v15)* — `{ id, date, brush_am?, brush_pm?, floss?, shower?, haircut?,
-  _src, _at, _up }`. One record per local `date` (marking **upserts**), each field a boolean.
-  Three states, and the difference between them matters:
+- **hygiene[]** *(v15; `brush` added v19)* — `{ id, date, brush?, brush_am?, brush_pm?,
+  floss?, shower?, haircut?, _src, _at, _up }`. One record per local `date` (marking
+  **upserts**). `floss` / `shower` / `haircut` are booleans with three states, and the
+  difference between them matters:
   **absent** = never touched; **`true`** = marked done; **`false`** = explicitly un-marked.
   Un-marking writes `false` rather than deleting the field **on purpose**: these records
   merge field by field (§ the by-date rule), and a missing field cannot beat another
   device's `true` — dropping it would make "I un-marked that" indistinguishable from "I
   never heard about it," and the un-mark would silently come back on the next sync.
+  - `brush` *(v19)* — a **counter**, not a toggle: each press logs one brushing and lands
+    as its own Tracker line, each undoable, because twice a day is the ordinary case and a
+    boolean could only ever say "at least once". It merges by the same field-by-field rule
+    as its neighbours — the newer write wins the field — which is the trade the booleans
+    already made: two devices marking the same day resolve to the later save, and a press
+    lost that way is the same loss a contested boolean always risked.
+  - `brush_am` / `brush_pm` *(v15)* — **readable forever, never written since v19** (§4
+    rule 1). Old records keep showing in the Tracker and both forever-copies; weekly
+    counts add them to `brush` so a week spanning the change still totals honestly.
   Raw observations only: no streak, score or "days since" is stored. The weekly review
-  derives counts on read (brushed *n* of a possible 14, flossed *n* of 7), the same
-  descriptive, no-target way it treats everything else.
+  derives counts on read, the same descriptive, no-target way it treats everything else.
 - **favoriteFoods[]** — `string[]` / `number[]` of food ids. **Currently unused.** It has
   been declared since v1, briefly held pinned foods, and holds nothing now that the food card
   has no chip row. Left in place rather than removed: it costs nothing and dropping a declared
@@ -591,14 +600,22 @@ means**. So:
     builder. `self.html` surfaces none of the new fields and only guarantees a save from
     that side cannot drop them; its exercise summaries in `mirror-data.md` read the new
     entries fine because `type` and `minutes` mean what they always meant.
-- **v19** → **Intake sub-forms.** The Intake card gains a permanently reserved tag line
-  (the chosen sub-form, ✕ to change; blank on tabs that need no choice) so the slot is one
-  height on every tab and step. Additive only:
-  - `substances[].form` extends from weed to **alcohol** (`beer | wine | shot`) and
-    **nicotine** (`zyn | vape | cig`). Records without it read as their kind, as before.
-  - `substances[].oz` returns on alcohol **on purpose** — the pour is the observation; the
+- **v19** → **Intake sub-forms, one brush, and sleep with no adjectives.** Additive only:
+  - The Intake card gains a permanently reserved tag line (the chosen sub-form, ✕ to
+    change; blank on tabs that need no choice) so the slot is one height on every tab and
+    step. `substances[].form` extends from weed to **alcohol** (`beer | wine | shot`) and
+    **nicotine** (`zyn | vape | cig`); records without it read as their kind, as before.
+    `substances[].oz` returns on alcohol **on purpose** — the pour is the observation; the
     reading is still `count: 1` per log (see the store's entry in §3).
-  - Merge kinds unchanged — substances already union by id; the new fields ride along.
+  - `hygiene[].brush` — a per-press **counter** replacing the two brush booleans in the
+    interface. `brush_am` / `brush_pm` stay readable forever and are simply no longer
+    written; weekly counts add old to new. The card becomes one fixed row (Shower and
+    Haircut squares around a stacked Brush / Floss pair).
+  - **Sleep wording**: "last night" / "overnight" / "nap" left every label, Tracker line
+    and export line — sleep is only ever *sleep* in ink. The `kind` field and the
+    upsert-vs-stack behaviour it drives are unchanged; it just never surfaces.
+  - Merge kinds unchanged — substances union by id, hygiene merges by date field-by-field;
+    every new field rides the rule its store already had.
 
 ---
 
@@ -615,7 +632,7 @@ the measurement series:
   `places` (locations are identifying). *(v13)* Add `links[]` — a list of the services
   someone uses is identifying — `body.drinks[].label`, and `body.substances[].note`.
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
-  *(v15)* `body.hygiene` (five booleans a day, identifying nothing),
+  *(v15)* `body.hygiene` (a handful of daily marks and a brush count, identifying nothing),
   *(v16)* `body.exerciseTypes` (activity names; drop them and the exercise series is unchanged),
   *(v17)* `body.workouts` (activity names and minutes, identifying nothing; same footing as
   the exercise series they replay into),

@@ -24,7 +24,8 @@
               fixed buttons. No list — it had one, and it grew. The status
               line under it speaks for the food library's network state,
               never for your data.
-    Hygiene   five buttons, always five; a mark is a fill, not a row.
+    Hygiene   four buttons in one fixed row, always four; a mark is a fill
+              and Brush a count on a fixed button — never a row.
     Intake    six tabs and a fixed three-button slot — fully static; the
               "exact amount" fold went, because opening it grew the card.
               What the slot shows branches on the TAB you are on, never on
@@ -504,15 +505,14 @@
   .foodstatus { font-size: .72rem; color: var(--dim); font-style: italic; }
 
   /* ---------- hygiene ----------
-     Five glyphs in two rows. No words in ink: a label beside each would be
-     three lines of text explaining five taps, and an icon-only control's
-     name belongs in title/aria-label, which is where these keep theirs.
-     A mark is a fill, never a row, so the card cannot grow. 44px is the
-     floor in both densities — a touch target is not a place to save space. */
-  .hyg { display: flex; flex-direction: column; gap: 8px; }
-  .hyg .hrow { display: flex; gap: 8px; }
+     One compact row, a HARD height: Shower and Haircut as full-height
+     squares around a stacked Brush / Floss pair. The stack's buttons are
+     half-height but WIDE — the touch target trades height for the whole
+     middle column. No words in ink: an icon-only control's name belongs in
+     title/aria-label, which is where these keep theirs. A mark is a fill
+     (and Brush a count), never a row, so the card cannot grow. */
+  .hyg { display: flex; gap: 8px; height: 58px; overflow: hidden; }
   .hyg button {
-    flex: 1 1 0; min-width: 44px; min-height: 44px;
     display: grid; place-items: center; padding: 0;
     background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
     font: inherit; font-size: 1.15rem; line-height: 1; cursor: pointer;
@@ -522,6 +522,17 @@
   .hyg button:active { transform: scale(.96); }
   .hyg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .hyg button[aria-pressed="true"] { background: var(--accent2); border-color: var(--accent2); }
+  .hyg .sq { flex: 0 0 58px; height: 58px; }
+  .hyg .hstack {
+    flex: 1 1 auto; min-width: 0;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .hyg .hstack button {
+    flex: 1 1 0; min-height: 0; font-size: .95rem;
+    display: flex; align-items: center; justify-content: center; gap: 2px;
+  }
+  /* The live count is a value on a fixed button, not a layout change. */
+  .hyg .cnt { font-size: .68rem; font-weight: 600; }
 
   /* The two ways into the food card, weighted by how often each is used.
      Meals takes the row and the accent; "your own food" is a square that
@@ -2999,7 +3010,7 @@ function renderHabits() {
 }
 
 /* =============================================================
-   HYGIENE — five marks, one record per day.
+   HYGIENE — four marks, one record per day.
 
    Stored the way the other once-a-day rows are: upserted by date and merged
    field by field, so two devices marking two different things on the same day
@@ -3010,12 +3021,16 @@ function renderHabits() {
    it would make "I un-marked that" indistinguishable from "I never heard
    about it" — and the un-mark would silently come back. Absent still means
    never touched, which is a third thing and worth keeping distinct.
-   ============================================================= */
-const HYGIENE = [
-  [['brush_am', '🪥', 'Brush AM'], ['brush_pm', '🪥', 'Brush PM'], ['floss', '🧵', 'Floss']],
-  [['shower', '🚿', 'Shower'], ['haircut', '✂️', 'Haircut']],
+
+   BRUSH is a COUNTER, not a toggle (v19): each press logs one brushing and
+   lands as its own Tracker line, each undoable. The old brush_am/brush_pm
+   booleans stay readable forever and are simply no longer written. */
+const HYGIENE_TOGGLES = [
+  ['shower', '🚿', 'Shower'], ['floss', '🧵', 'Floss'], ['haircut', '✂️', 'Haircut'],
 ];
-const HYGIENE_MARKS = HYGIENE.flat();
+/* v15-era marks: readable in the Tracker and exports, never written since v19. */
+const HYGIENE_LEGACY = [['brush_am', '🪥', 'Brush AM'], ['brush_pm', '🪥', 'Brush PM']];
+const HYGIENE_MARKS = [...HYGIENE_TOGGLES, ...HYGIENE_LEGACY];
 
 function hygieneOn(d) { return (state.body.hygiene || []).find((h) => h.date === d); }
 
@@ -3024,19 +3039,50 @@ function renderHygiene() {
   if (!box) return;
   const rec = hygieneOn(day) || {};
   box.innerHTML = '';
-  HYGIENE.forEach((row) => {
-    const div = document.createElement('div'); div.className = 'hrow';
-    row.forEach(([key, glyph, name]) => {
-      const b = document.createElement('button');
-      b.type = 'button'; b.textContent = glyph;
-      // The two brushes are the same glyph; only the name tells them apart.
-      b.title = name; b.setAttribute('aria-label', name);
-      b.setAttribute('aria-pressed', String(rec[key] === true));
-      b.onclick = () => toggleHygiene(key, name);
-      div.appendChild(b);
-    });
-    box.appendChild(div);
-  });
+  const toggle = (key, glyph, name, cls) => {
+    const b = document.createElement('button');
+    b.type = 'button'; if (cls) b.className = cls;
+    b.textContent = glyph;
+    b.title = name; b.setAttribute('aria-label', name);
+    b.setAttribute('aria-pressed', String(rec[key] === true));
+    b.onclick = () => toggleHygiene(key, name);
+    return b;
+  };
+  box.appendChild(toggle('shower', '🚿', 'Shower', 'sq'));
+  const stack = document.createElement('div'); stack.className = 'hstack';
+  const n = Number(rec.brush) || 0;
+  const brush = document.createElement('button');
+  brush.type = 'button';
+  brush.innerHTML = '🪥' + (n ? '<span class="cnt">×' + n + '</span>' : '');
+  brush.title = 'Brush — each press logs one';
+  brush.setAttribute('aria-label', 'Brush — logged ' + n + ' today, press to add one');
+  brush.setAttribute('aria-pressed', String(n > 0));
+  brush.onclick = pressBrush;
+  stack.appendChild(brush);
+  stack.appendChild(toggle('floss', '🧵', 'Floss', ''));
+  box.appendChild(stack);
+  box.appendChild(toggle('haircut', '✂️', 'Haircut', 'sq'));
+}
+
+/** One press, one brushing. A counter rather than a toggle, because twice a
+ *  day is the ordinary case and a toggle could only ever say "at least once". */
+function pressBrush() {
+  let rec = hygieneOn(day);
+  if (!rec) { rec = { id: uid(), date: day }; state.body.hygiene.push(rec); }
+  rec.brush = (Number(rec.brush) || 0) + 1;
+  stamp(rec);
+  pushUndo('brushing', () => { rec.brush = Math.max(0, (Number(rec.brush) || 0) - 1); stamp(rec); });
+  saveState(); renderHygiene(); renderFeed();
+  toast('Brushed' + (rec.brush > 1 ? ' ×' + rec.brush : '') + ' — tap Undo to take it back');
+}
+/** The Tracker line's ✕: takes back ONE press, undoably — the same act as
+ *  pressing, reversed. Saving and redrawing is the caller's job. */
+function unbrush() {
+  const rec = hygieneOn(day);
+  if (!rec || !(Number(rec.brush) > 0)) return;
+  rec.brush = Number(rec.brush) - 1;
+  stamp(rec);
+  pushUndo('removing a brushing', () => { rec.brush = (Number(rec.brush) || 0) + 1; stamp(rec); });
 }
 
 /** Set one mark, undoably. Saving and redrawing is left to the caller, so the
@@ -3141,9 +3187,16 @@ function renderFeed() {
      sit together in the order they are listed on the card. Removing one here
      un-marks it — the same act as tapping it again, and undoable the same way. */
   const hyg = hygieneOn(day);
-  if (hyg) HYGIENE_MARKS.forEach(([key, glyph, name]) => {
-    if (hyg[key] === true) push(hyg, glyph, name, () => setHygiene(key, name, false));
-  });
+  if (hyg) {
+    HYGIENE_MARKS.forEach(([key, glyph, name]) => {
+      if (hyg[key] === true) push(hyg, glyph, name, () => setHygiene(key, name, false));
+    });
+    // Each brushing is its own line — that is what "a counter, not a toggle"
+    // buys. The ✕ takes back one press, exactly as pressing added one.
+    for (let i = 0, n = Number(hyg.brush) || 0; i < n; i++) {
+      push(hyg, '🪥', 'Brush', unbrush);
+    }
+  }
 
   onDay(state.body.sleep).forEach((r) => {
     const when = (r.start != null && r.end != null) ? ' · ' + fmtHour(r.start) + ' → ' + fmtHour(r.end) : '';
@@ -3480,6 +3533,10 @@ function renderWeek() {
   // a 0 in Alcohol does — as what happened, not as a failure.
   const hyg = inWeek(state.body.hygiene);
   const marks = (k) => hyg.filter((h) => h[k] === true).length;
+  // Brush is a counter since v19; the v15 am/pm booleans still count for
+  // weeks that span the change.
+  const brushes = hyg.reduce((n, h) =>
+    n + (Number(h.brush) || 0) + (h.brush_am === true ? 1 : 0) + (h.brush_pm === true ? 1 : 0), 0);
 
   const cell = (k, v, u) => '<div class="c"><div class="k">' + k + '</div><div class="v">' +
     (v == null ? '—' : v) + (u ? '<span class="u"> ' + u + '</span>' : '') + '</div></div>';
@@ -3493,7 +3550,7 @@ function renderWeek() {
     cell('Movement', ex.length, ex.length ? 'x · ' + exMin + ' min' + (exKcal ? ' · ≈' + exKcal + ' kcal' : '') : '') +
     cell('Alcohol', cnt('alcohol'), '') +
     cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '') +
-    cell('Brushed', marks('brush_am') + marks('brush_pm'), 'of 14') +
+    cell('Brushed', brushes, '') +
     cell('Flossed', marks('floss'), 'of 7') +
     cell('Showers', marks('shower'), '') +
     cell('Haircut', marks('haircut'), '');
@@ -3632,9 +3689,11 @@ const MD_SUMMARY = [
     (r.cat ? moveLine(r) : `${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`) +
     `${r.workoutName ? ` (${r.workoutName})` : ''}`],
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
-  ['Hygiene', () => state.body.hygiene, (r) =>
-    `${r.date} — ${HYGIENE_MARKS.filter(([k]) => r[k] === true).map(([, , name]) => name)
-      .join(', ') || 'nothing marked'}`],
+  ['Hygiene', () => state.body.hygiene, (r) => {
+    const bits = Number(r.brush) ? ['Brush ×' + Number(r.brush)] : [];
+    HYGIENE_MARKS.forEach(([k, , name]) => { if (r[k] === true) bits.push(name); });
+    return `${r.date} — ${bits.join(', ') || 'nothing marked'}`;
+  }],
   ['Expenses', () => state.money.expenses, (r) => `${r.date} — ${fmt$(r.amount)}${r.note ? ` (${r.note})` : ''}`],
   ['Income', () => state.money.income, (r) => `${r.date} — +${fmt$(r.amount)}${r.source ? `, ${r.source}` : ''}${r.note ? ` (${r.note})` : ''}`],
 ];

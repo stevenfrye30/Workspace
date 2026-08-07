@@ -2713,6 +2713,7 @@ function buildDataMarkdown() {
     p(''); p(`### Hygiene — recent ${Math.min(14, s.body.hygiene.length)} of ${s.body.hygiene.length}`);
     recent(s.body.hygiene).forEach(x => {
       const done = HY.filter(([k]) => x[k] === true).map(([, name]) => name);
+      if (Number(x.brush)) done.unshift(`Brush ×${Number(x.brush)}`);   // v19 counter
       p(`- ${x.date}: ${done.length ? done.join(', ') : 'nothing marked'}`);
     });
   }
