@@ -1038,7 +1038,7 @@ const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
   body: {
     food: [], water: [], sleep: [], exercise: [], symptoms: [],
-    targets: { kcal: 2200, protein_g: 80, water_oz: 64 },
+    targets: { kcal: 2200, protein_g: 80, water_oz: 64, weight_lb: 180 },
     favoriteFoods: [], customFoods: [], meals: [], checkins: [],
     drinks: [], substances: [],            // v13
     hygiene: [],                           // v15
@@ -1082,9 +1082,14 @@ function mergeLoaded(saved) {
   if (!Array.isArray(out.body.exerciseTypes)) out.body.exerciseTypes = [];
   // v16 -> v17: saved workouts. Also purely additive.
   if (!Array.isArray(out.body.workouts)) out.body.workouts = [];
-  // v17 -> v18: the movement quick-log. New OPTIONAL fields only — cat /
+  // v17 -> v18: the movement quick-log. New OPTIONAL fields — cat /
   // distanceMi / intensity / kcalEst / moves / label on exercise[], cat /
-  // gone on exerciseTypes[] — so there is nothing to backfill.
+  // gone on exerciseTypes[] — need no backfill; the one config addition,
+  // targets.weight_lb (the ≈kcal estimate's only input), gets its default.
+  if (!out.body.targets || typeof out.body.targets !== 'object') {
+    out.body.targets = { kcal: 2200, protein_g: 80, water_oz: 64 };
+  }
+  if (!Number(out.body.targets.weight_lb)) out.body.targets.weight_lb = 180;
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -2291,6 +2296,25 @@ const EXCATS = {
 const DIST_STEPS = [0.5, 1, 3, 10];
 const REPS_STEPS = [1, 5, 10, 25];
 
+/* ---- the calorie estimate ----
+   MET-based and display-only: kcal/min = MET × 3.5 × kg / 200, scaled by
+   intensity (0.7 + 0.15 × dots; no dots = 1). Distance-only cardio falls
+   back to flat per-mile constants. Stored on the record as `kcalEst` the
+   way `qty` is stored — provenance of what the app showed you, deriving
+   nothing, never recomputed retroactively. */
+const MET = { walk: 3.3, run: 8.5, bike: 7, lift: 4.5, stretch: 2.3, other: 5 };
+const KCAL_PER_MILE = { walk: 85, run: 105, bike: 35 };
+function weightLb() { return Number((state.body.targets || {}).weight_lb) || 180; }
+function kcalEstimate(cat, s) {
+  const factor = s.dots ? (0.7 + 0.15 * s.dots) : 1;
+  if (s.min > 0) {
+    const kg = weightLb() * 0.45359;
+    return Math.round((MET[cat] || 5) * 3.5 * kg / 200 * s.min * factor);
+  }
+  if (s.mi > 0 && KCAL_PER_MILE[cat]) return Math.round(KCAL_PER_MILE[cat] * s.mi * factor);
+  return 0;
+}
+
 /* ---- remembered moves ----
    The chips in the Lift / Stretch / Other windows. Backed by
    body.exerciseTypes[] records carrying a `cat`; stretch starts from a
@@ -2597,6 +2621,8 @@ function renderMovement() {
   // Reserved height whether or not there is an estimate to show, so the
   // line appearing cannot move Enter.
   const kcal = document.createElement('div'); kcal.className = 'exkcal'; kcal.id = 'exKcal';
+  const est = kcalEstimate(exCat, s);
+  kcal.textContent = est ? '≈ ' + est + ' kcal' : '';
   panel.appendChild(kcal);
 
   const enter = document.createElement('button');
@@ -2646,6 +2672,8 @@ function logMove() {
     rec.type = rec.label || 'Other';
     rememberMove('other', rec.label);
   }
+  const est = kcalEstimate(exCat, s);
+  if (est) rec.kcalEst = est;
   stamp(rec);
   appendRec(state.body.exercise, rec, moveLine(rec));
   saveState(); renderFeed();
@@ -3389,6 +3417,7 @@ function renderWeek() {
   const water = inWeek(state.body.water).reduce((n, r) => n + (Number(r.oz) || 0), 0);
   const ex = inWeek(state.body.exercise);
   const exMin = ex.reduce((n, e) => n + (Number(e.minutes) || 0), 0);
+  const exKcal = ex.reduce((n, e) => n + (Number(e.kcalEst) || 0), 0);
   const subs = inWeek(state.body.substances);
   const cnt = (k) => subs.filter((s) => s.kind === k).reduce((n, s) => n + (Number(s.count) || 1), 0);
   // Counts of a thing done, never a target missed: a 0 here reads the same way
@@ -3405,7 +3434,7 @@ function renderWeek() {
     cell('Energy', energy == null ? null : round1(energy), 'avg') +
     cell('Sleep', sleeps.length ? round1(avg(sleeps)) : null, 'h avg') +
     cell('Water', Math.round(water / 7), 'oz/day') +
-    cell('Movement', ex.length, ex.length ? 'x · ' + exMin + ' min' : '') +
+    cell('Movement', ex.length, ex.length ? 'x · ' + exMin + ' min' + (exKcal ? ' · ≈' + exKcal + ' kcal' : '') : '') +
     cell('Alcohol', cnt('alcohol'), '') +
     cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '') +
     cell('Brushed', marks('brush_am') + marks('brush_pm'), 'of 14') +
@@ -3730,6 +3759,25 @@ function openData() {
       row('Restore from a file…', 'reads a backup you choose; snapshotted first', () => $('restoreFile').click());
       row('Snapshots', 'roll back to an automatic in-browser copy', () => { closePop(); openSnapshots(); });
       row('Download a dated backup', 'mirror-' + todayStr() + '.json', () => { closePop(); datedBackup(); });
+      /* Config, not data-safety — but a whole card for one number would be
+         absurd, and this is the one popover that is "settings". */
+      const wrow = document.createElement('div'); wrow.className = 'row';
+      wrow.innerHTML = '<span style="flex:1;min-width:0">Body weight' +
+                       '<span class="hint">only feeds the ≈kcal estimate on Movement</span></span>';
+      const wi = document.createElement('input');
+      wi.type = 'number'; wi.min = '50'; wi.max = '500'; wi.step = '1';
+      wi.value = weightLb();
+      wi.style.cssText = 'width:64px;padding:5px 7px;font-size:.8rem;text-align:center';
+      wi.setAttribute('aria-label', 'Body weight in pounds');
+      wi.onchange = () => {
+        const v = Math.round(Number(wi.value));
+        if (v >= 50 && v <= 500) {
+          state.body.targets.weight_lb = v;
+          saveState(); toast('Body weight: ' + v + ' lb');
+        } else { wi.value = weightLb(); }
+      };
+      const unit = document.createElement('span'); unit.className = 'tiny'; unit.textContent = 'lb';
+      wrow.appendChild(wi); wrow.appendChild(unit); box.appendChild(wrow);
       row('Erase everything', 'wipes this browser; snapshotted first', () => {
         if (!confirm('Erase ALL Mirror data in this browser?\n\nA snapshot is kept, so it is undoable here — but not on any other device.')) return;
         if (!confirm('Really sure? Everything in this browser goes.')) return;
