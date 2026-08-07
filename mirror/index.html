@@ -25,8 +25,9 @@
               line under it speaks for the food library's network state,
               never for your data.
     Hygiene   five buttons, always five; a mark is a fill, not a row.
-    Intake    six tabs, a fixed three-button slot with a min-height, one
-              fold. What it shows branches on the TAB you are on, never on
+    Intake    six tabs and a fixed three-button slot — fully static; the
+              "exact amount" fold went, because opening it grew the card.
+              What the slot shows branches on the TAB you are on, never on
               what is in the log; the counts on the tabs are values.
     Movement  two fixed rows: Type, minutes, Log, then Build and Workouts.
               The types live behind the Type button because on the card they
@@ -177,17 +178,6 @@
   /* A section label with its own small action on the end of it. */
   .rowlabel.splitlabel { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .hr { height: 1px; background: var(--line); margin: 11px 0 9px; }
-
-  /* ---------- folds: the keyboard-only parts ---------- */
-  .fold { margin-top: 9px; }
-  .fold > summary {
-    cursor: pointer; list-style: none; font-size: .73rem; color: var(--dim);
-    padding: 3px 0; display: flex; align-items: center; gap: 6px;
-  }
-  .fold > summary::-webkit-details-marker { display: none; }
-  .fold > summary::before { content: '▸'; transition: transform .15s; }
-  .fold[open] > summary::before { transform: rotate(90deg); }
-  .fold > summary:hover { color: var(--accent); }
 
   /* ---------- dot rows (1-5 scales) ----------
      Label beside the dots, not above: five stacked scales used to cost ten
@@ -796,13 +786,9 @@
     <h2>Intake <span class="note" id="intakeTotal"></span></h2>
     <div class="tabs" id="intakeTabs"></div>
     <div class="quick" id="intakeQuick"></div>
-    <details class="fold" id="intakeExactRow">
-      <summary>exact amount…</summary>
-      <div class="field inline">
-        <input type="number" id="intakeExact" min="0" step="0.5" placeholder="amount">
-        <button class="primary" id="intakeExactLog">Log</button>
-      </div>
-    </details>
+    <!-- No "exact amount…" fold: it expanded the card when opened, which is
+         exactly what THE INVARIANT forbids. The quick buttons are the only
+         path; an unusual amount is a couple of taps instead of a form. -->
   </div>
 
   <!-- Two fixed rows, and only ever these two. The activities you do live
@@ -1515,20 +1501,17 @@ function renderIntake() {
     el.appendChild(chosenTag(f.label, () => { weedForm = null; renderIntake(); }));
     f.steps.forEach((n) => el.appendChild(
       stepButton(String(n), f.unit, () => logIntake(n))));
-    $('intakeExact').placeholder = f.unit === 'g' ? 'grams' : 'milligrams';
     return;
   }
   if (intakeTab === 'other') {
     el.classList.add('has-tag');
     el.appendChild(chosenTag(otherLabel, () => { otherLabel = ''; renderIntake(); }));
     OZ_STEPS.forEach((n) => el.appendChild(stepButton('+' + n, 'oz', () => logIntake(n))));
-    $('intakeExact').placeholder = 'ounces';
     return;
   }
   const vol = isVolume(intakeTab);
   (vol ? OZ_STEPS : COUNT_STEPS).forEach((n) => el.appendChild(
     stepButton('+' + n, vol ? 'oz' : '', () => logIntake(n))));
-  $('intakeExact').placeholder = vol ? 'ounces' : 'how many';
 }
 
 /* One tap logs. Undo is the safety net that makes committing immediately
@@ -1547,13 +1530,6 @@ function logIntake(n) {
   }
   addIntake(intakeTab, { count: n });
 }
-function logExactIntake() {
-  const n = parseFloat($('intakeExact').value);
-  if (!n || n <= 0) { $('intakeExact').focus(); return; }
-  $('intakeExact').value = '';
-  logIntake(n);
-}
-
 function arrOf(kind) {
   const s = KINDS[kind].store;
   return s === 'water' ? state.body.water : s === 'drinks' ? state.body.drinks : state.body.substances;
@@ -4058,8 +4034,6 @@ $('restoreFile').onchange = (e) => {
 $('nudgeGo').onclick = foreverCopy;
 $('nudgeLater').onclick = () => { $('nudge').hidden = true; };
 $('undoBtn').onclick = doUndo;
-$('intakeExactLog').onclick = logExactIntake;
-$('intakeExact').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); logExactIntake(); } };
 $('dTodayBtn').onclick = () => setDay(todayStr());
 refreshNudge();
 
