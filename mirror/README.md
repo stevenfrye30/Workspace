@@ -23,12 +23,13 @@ intake · habits · movement · food · hygiene · sleep), a row of link pills o
 (person · book · idea · place · money · values), then the **Tracker** — every entry of the day
 in the order you made it — and the week in review beneath it.
 
-**The instruments never change shape as you log** — the numbers move, the shape does not. No
-chip, row or button on a card appears or shifts because of something you recorded, and entries
-land in the Tracker rather than in the card you typed into, so the thing you are aiming at is
-always where it was. What grows lives one layer in: the popovers, the Tracker, Records and the
-Overview. It is written down at the top of `index.html` as the invariant every card is audited
-against.
+**The instruments never change shape as you log** — values move, geometry does not. Nothing
+on a card grows or shifts a control because of something you recorded: entries land in the
+Tracker rather than in the card you typed into, and the one list that lives on a card face —
+the remembered moves on Movement — sits in a window of fixed height that scrolls inside
+itself, so the thing you are aiming at is always where it was. What else grows lives one
+layer in: the popovers, the Tracker, Records and the Overview. It is written down at the top
+of `index.html` as the invariant every card is audited against.
 
 So each card is a set of controls with a door beside it. The food card has **Build** and
 **Meals** side by side, because making a meal and logging one are different jobs: Build is the
@@ -170,7 +171,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v18**.
+**schema v19**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is

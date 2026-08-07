@@ -520,7 +520,10 @@
   }
   .hyg button:hover { border-color: var(--accent2); }
   .hyg button:active { transform: scale(.96); }
-  .hyg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* Inset, because the row clips at its hard height — a ring drawn outside
+     the border box would lose its top and bottom and keyboard focus would
+     be unreadable. */
+  .hyg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
   .hyg button[aria-pressed="true"] { background: var(--accent2); border-color: var(--accent2); }
   .hyg .sq { flex: 0 0 58px; height: 58px; }
   .hyg .hstack {
@@ -2111,9 +2114,13 @@ function openMealBuilder(existing) {
       const name = $('mbName').value.trim();
       if (!name || !mealDraft.length) return false;
       if (mealEditing) {
-        mealEditing.name = name;
-        mealEditing.items = mealDraft.map((i) => ({ ...i }));
-        stamp(mealEditing);
+        // Re-find by id, for the same reason the workout builder does: a
+        // background sync pull may have replaced this object mid-edit.
+        let live = (state.body.meals || []).find((m) => m.id === mealEditing.id);
+        if (!live) { live = mealEditing; state.body.meals.push(live); }
+        live.name = name;
+        live.items = mealDraft.map((i) => ({ ...i }));
+        stamp(live);
         saveState(); toast('Saved ' + name);
       } else {
         appendRec(state.body.meals, stamp({
@@ -2338,13 +2345,21 @@ const EX_SEEDS = ['Walk', 'Run', 'Lift', 'Bike', 'Swim', 'Yoga', 'Pickleball',
 /** Every type worth offering in the workout builder: the moves you have
  *  remembered, the types you have logged, then the seeds. Deduped on case,
  *  because "Walk" and "walk" are one activity, and first spelling seen wins
- *  so your own wording survives. Moves you deleted (`gone`) stay gone. */
+ *  so your own wording survives. Moves you deleted (`gone`) stay gone
+ *  EVERYWHERE — the history and seed passes honor the tombstone too, or
+ *  "delete permanently" would resurrect here for every name ever logged. */
 function exTypes() {
+  const live = new Set(), gone = new Set();
+  (state.body.exerciseTypes || []).forEach((r) => {
+    const k = String(r.name || '').trim().toLowerCase();
+    if (k) (r.gone ? gone : live).add(k);
+  });
   const out = new Map();
   const add = (t) => {
     const s = String(t || '').trim();
     if (!s) return;
     const k = s.toLowerCase();
+    if (gone.has(k) && !live.has(k)) return;
     if (!out.has(k)) out.set(k, s);
   };
   (state.body.exerciseTypes || []).forEach((r) => { if (!r.gone) add(r.name); });
@@ -2592,11 +2607,18 @@ function newMoveRow(cat, s, mode) {
       const nm = input.value.trim();
       if (!nm) return;
       rememberMove(cat, nm);
+      // The chips render canonical casing; the session must speak the same
+      // name, or typing "squat" beside a "Squat" chip splits one move into
+      // two that no longer refer to each other.
+      const canon = movesFor(cat).find((t) => t.toLowerCase() === nm.toLowerCase()) || nm;
       updSess((x) => {
         x.adding = false; x.newName = '';
-        if (!x.moves.some((m) => m.name.toLowerCase() === nm.toLowerCase())) {
-          x.moves.push(mode === 'reps' ? { name: nm, reps: 0 } : { name: nm });
-          if (mode === 'reps') x.sel = nm;
+        const have = x.moves.find((m) => m.name.toLowerCase() === canon.toLowerCase());
+        if (!have) {
+          x.moves.push(mode === 'reps' ? { name: canon, reps: 0 } : { name: canon });
+          if (mode === 'reps') x.sel = canon;
+        } else if (mode === 'reps') {
+          x.sel = have.name;
         }
       });
     }
@@ -2618,7 +2640,12 @@ function otherNameRow(s) {
   input.placeholder = 'What was it? — pickleball, kayak, shoveling…';
   input.setAttribute('aria-label', 'What was it?');
   input.value = s.name;
-  input.oninput = () => { if (exSess) { exSess.name = input.value; refreshEnterState(); } };
+  input.oninput = () => {
+    if (!exSess) return;
+    exSess.name = input.value;
+    refreshEnterState();
+    refreshOtherChips();
+  };
   row.appendChild(input);
   return row;
 }
@@ -2627,6 +2654,15 @@ function otherNameRow(s) {
 function refreshEnterState() {
   const b = $('exEnter');
   if (b) b.disabled = !canEnter();
+}
+/** Typing over the name must move the gold highlight too — a targeted class
+ *  pass, not a repaint, because a repaint would eat the keyboard focus. */
+function refreshOtherChips() {
+  if (!exSess || exCat !== 'other' || exSess.edit) return;
+  const want = exSess.name.trim().toLowerCase();
+  document.querySelectorAll('#exSlot .moveswin .mv').forEach((b) => {
+    b.classList.toggle('sel', b.textContent.trim().toLowerCase() === want);
+  });
 }
 
 /** Can this session be entered yet? Content rules per category. */
@@ -2647,6 +2683,10 @@ function renderMovement() {
   wrap.querySelectorAll('[data-excat]').forEach((b) =>
     b.setAttribute('aria-pressed', String(b.dataset.excat === exCat)));
   const slot = $('exSlot');
+  // The moves window scrolls inside itself; a rebuild must not snap it back
+  // to the top on every accumulator tap.
+  const prevWin = slot.querySelector('.moveswin');
+  const keepScroll = prevWin ? prevWin.scrollTop : 0;
   slot.innerHTML = '';
   if (!exCat) {
     const empty = document.createElement('div');
@@ -2703,6 +2743,8 @@ function renderMovement() {
   panel.appendChild(enter);
 
   slot.appendChild(panel);
+  const win = slot.querySelector('.moveswin');
+  if (win && keepScroll) win.scrollTop = keepScroll;
 }
 
 /** How a quick-log entry reads back — in the Tracker, in an undo message,
@@ -2715,7 +2757,10 @@ function moveLine(r) {
     bits.push(r.moves.map((m) => m.name + (m.reps ? ' ×' + m.reps : '')).join(', '));
   }
   if (r.kcalEst) bits.push('≈' + r.kcalEst + ' kcal');
-  if (r.intensity) bits.push('●'.repeat(r.intensity) + '○'.repeat(5 - r.intensity));
+  // Clamped, because this renders whatever a restore hands it: intensity 6
+  // must not throw mid-Tracker and blank the whole day.
+  const dots = Math.min(5, Math.round(Number(r.intensity)));
+  if (dots > 0) bits.push('●'.repeat(dots) + '○'.repeat(5 - dots));
   return bits.join(' · ');
 }
 
@@ -2817,9 +2862,14 @@ function openWorkoutBuilder(existing) {
       // Minutes are optional per exercise; a blank one is simply not written.
       const items = wkDraft.map((i) => (i.minutes != null ? { type: i.type, minutes: i.minutes } : { type: i.type }));
       if (wkEditing) {
-        wkEditing.name = name;
-        wkEditing.items = items;
-        stamp(wkEditing);
+        // Re-find by id: a background sync pull may have replaced the row
+        // object while the popover was open, and an edit written to a
+        // detached object would vanish while still toasting "Saved".
+        let live = (state.body.workouts || []).find((w) => w.id === wkEditing.id);
+        if (!live) { live = wkEditing; state.body.workouts.push(live); }
+        live.name = name;
+        live.items = items;
+        stamp(live);
         saveState(); toast('Saved ' + name);
       } else {
         appendRec(state.body.workouts, stamp({ id: uid(), name, items }), 'workout “' + name + '”');
@@ -2856,6 +2906,10 @@ function openWorkoutBuilder(existing) {
             it.minutes = v > 0 ? v : null;
             total();
           };
+          // openPop's Enter→Save wiring only reaches inputs that exist at
+          // open time; these are made per paint, so wire them the same way
+          // or Enter means two different things in one popover.
+          m.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); $('popOk').click(); } };
           const sp = document.createElement('span'); sp.className = 'sp';
           const x = document.createElement('button');
           x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
@@ -3030,7 +3084,10 @@ function renderHabits() {
 const HYGIENE_TOGGLES = [
   ['shower', '🚿', 'Shower'], ['floss', '🧵', 'Floss'], ['haircut', '✂️', 'Haircut'],
 ];
-/* v15-era marks: readable in the Tracker and exports, never written since v19. */
+/* v15-era marks: readable in the Tracker and exports. The card never writes
+   them since v19; the Tracker's ✕ on an old day's line (and its Undo) still
+   does, because un-marking must write the explicit false the field-by-field
+   merge requires — deletion would resurrect on sync. */
 const HYGIENE_LEGACY = [['brush_am', '🪥', 'Brush AM'], ['brush_pm', '🪥', 'Brush PM']];
 const HYGIENE_MARKS = [...HYGIENE_TOGGLES, ...HYGIENE_LEGACY];
 
@@ -3529,6 +3586,15 @@ function renderWeek() {
   const ex = inWeek(state.body.exercise);
   const exMin = ex.reduce((n, e) => n + (Number(e.minutes) || 0), 0);
   const exKcal = ex.reduce((n, e) => n + (Number(e.kcalEst) || 0), 0);
+  // A workout replays one session into a row per exercise; the week counts
+  // the session once, exactly as the Tracker shows it.
+  const seenWk = new Set();
+  const exCount = ex.reduce((n, e) => {
+    if (!e.workoutLogId) return n + 1;
+    if (seenWk.has(e.workoutLogId)) return n;
+    seenWk.add(e.workoutLogId);
+    return n + 1;
+  }, 0);
   const subs = inWeek(state.body.substances);
   const cnt = (k) => subs.filter((s) => s.kind === k).reduce((n, s) => n + (Number(s.count) || 1), 0);
   // Counts of a thing done, never a target missed: a 0 here reads the same way
@@ -3549,7 +3615,7 @@ function renderWeek() {
     cell('Energy', energy == null ? null : round1(energy), 'avg') +
     cell('Sleep', sleeps.length ? round1(avg(sleeps)) : null, 'h avg') +
     cell('Water', Math.round(water / 7), 'oz/day') +
-    cell('Movement', ex.length, ex.length ? 'x · ' + exMin + ' min' + (exKcal ? ' · ≈' + exKcal + ' kcal' : '') : '') +
+    cell('Movement', exCount, exCount ? 'x · ' + exMin + ' min' + (exKcal ? ' · ≈' + exKcal + ' kcal' : '') : '') +
     cell('Alcohol', cnt('alcohol'), '') +
     cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '') +
     cell('Brushed', brushes, '') +
@@ -3892,6 +3958,9 @@ function openData() {
         if (v >= 50 && v <= 500) {
           state.body.targets.weight_lb = v;
           saveState(); toast('Body weight: ' + v + ' lb');
+          // An armed Movement panel is showing an estimate computed at the
+          // old weight; repaint it so kcalEst is always the number shown.
+          renderMovement();
         } else { wi.value = weightLb(); }
       };
       const unit = document.createElement('span'); unit.className = 'tiny'; unit.textContent = 'lb';
@@ -4836,7 +4905,10 @@ function recordLabel(r, store) {
   if (store === 'sleep') {
     return round1(r.hours) + ' h sleep';
   }
-  if (store === 'exercise') return (r.type || 'movement') + (r.minutes ? ' \u00b7 ' + r.minutes + ' min' : '');
+  if (store === 'exercise') {
+    return r.cat ? moveLine(r)
+                 : (r.type || 'movement') + (r.minutes ? ' \u00b7 ' + r.minutes + ' min' : '');
+  }
   if (store === 'expenses') return fmt$(r.amount) + (r.note ? ' \u00b7 ' + r.note : '');
   if (store === 'income') return '+' + fmt$(r.amount) + (r.source ? ' \u00b7 ' + r.source : '');
   if (store === 'subscriptions') return r.name + ' \u00b7 ' + fmt$(r.amount) + '/' + (r.cadence || 'monthly');

@@ -224,7 +224,12 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   - `distanceMi` *(v18)* — cardio distance, unit in the name on purpose. The older
     free-form `distance` (v8, no unit ever defined) is untouched and still read on legacy
     rows; new quick-log entries write `distanceMi` only.
-  - `intensity` *(declared v8, first written v18)* — 1–5 from the effort dots.
+  - `intensity` — **two vocabularies share this field**, honestly: `self.html` has written
+    the strings `easy | moderate | hard` since v8, and the quick-log writes the numbers
+    1–5 from the effort dots since v18. Nothing normalizes retroactively (§4 rule 1), so a
+    consumer must accept both — treat a non-numeric value as one of the three words and
+    never `Number()` it blind. The dashboard's own renderers clamp to numeric and simply
+    omit the dots for word-valued rows.
   - `moves` *(v18)* — `[{ name, reps? }]`, Lift and Stretch sessions' parts. Raw
     observations: names as tapped, reps only where poured.
   - `label` *(v18)* — Other's typed name ("Pickleball"). Copied into `type` so the entry
@@ -297,9 +302,12 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
     as its neighbours — the newer write wins the field — which is the trade the booleans
     already made: two devices marking the same day resolve to the later save, and a press
     lost that way is the same loss a contested boolean always risked.
-  - `brush_am` / `brush_pm` *(v15)* — **readable forever, never written since v19** (§4
-    rule 1). Old records keep showing in the Tracker and both forever-copies; weekly
-    counts add them to `brush` so a week spanning the change still totals honestly.
+  - `brush_am` / `brush_pm` *(v15)* — **readable forever; the card no longer writes them
+    since v19** (§4 rule 1). One writer deliberately remains: the Tracker's ✕ on an old
+    day's line (and that removal's Undo) still writes the explicit `false`/`true` the
+    field-by-field merge requires — un-marking by deletion would resurrect on sync. Old
+    records keep showing in the Tracker and both forever-copies; weekly counts add them
+    to `brush` so a week spanning the change still totals honestly.
   Raw observations only: no streak, score or "days since" is stored. The weekly review
   derives counts on read, the same descriptive, no-target way it treats everything else.
 - **favoriteFoods[]** — `string[]` / `number[]` of food ids. **Currently unused.** It has
@@ -608,9 +616,10 @@ means**. So:
     `substances[].oz` returns on alcohol **on purpose** — the pour is the observation; the
     reading is still `count: 1` per log (see the store's entry in §3).
   - `hygiene[].brush` — a per-press **counter** replacing the two brush booleans in the
-    interface. `brush_am` / `brush_pm` stay readable forever and are simply no longer
-    written; weekly counts add old to new. The card becomes one fixed row (Shower and
-    Haircut squares around a stacked Brush / Floss pair).
+    interface. `brush_am` / `brush_pm` stay readable forever; the card no longer writes
+    them, though the Tracker's ✕ on an old day's line still un-marks with the explicit
+    `false` the merge rule requires. Weekly counts add old to new. The card becomes one
+    fixed row (Shower and Haircut squares around a stacked Brush / Floss pair).
   - **Sleep wording**: "last night" / "overnight" / "nap" left every label, Tracker line
     and export line — sleep is only ever *sleep* in ink. The `kind` field and the
     upsert-vs-stack behaviour it drives are unchanged; it just never surfaces.

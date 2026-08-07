@@ -1228,7 +1228,7 @@
   </div>
 
   <div class="section">
-    <div class="section-head"><h2>Sleep</h2><span class="act tiny">Last night</span></div>
+    <div class="section-head"><h2>Sleep</h2></div>
     <div class="card">
       <div class="form">
         <label>Hours<input type="number" id="sleepHours" min="0" max="24" step="0.25"></label>
@@ -2723,7 +2723,7 @@ function buildDataMarkdown() {
   [['Food','food', x=>`${(x.qty > 1 ? x.qty + '× ' : '')}${x.foodName||x.name||x.foodId||'?'} · ${x.grams||'?'} g` +
       `${x.mealName ? ` (${x.mealName})` : ''}`],
    ['Sleep','sleep', x=>`${x.hours}h · quality ${x.quality||'–'}`],
-   ['Exercise','exercise', x=>`${x.type}${x.minutes ? ` · ${x.minutes} min` : ''}${x.distanceMi ? ` · ${x.distanceMi} mi` : ''}${x.kcalEst ? ` · ≈${x.kcalEst} kcal` : ''}${x.workoutName ? ` (${x.workoutName})` : ''}`],
+   ['Exercise','exercise', x=>`${x.type}${x.minutes ? ` · ${x.minutes} min` : ''}${x.distanceMi ? ` · ${x.distanceMi} mi` : ''}${x.moves && x.moves.length ? ` · ${x.moves.map(m=>m.name+(m.reps?` ×${m.reps}`:'')).join(', ')}` : ''}${x.kcalEst ? ` · ≈${x.kcalEst} kcal` : ''}${x.workoutName ? ` (${x.workoutName})` : ''}`],
    ['Water','water', x=>`${x.oz} oz`]
   ].forEach(([label,key,fmt]) => {
     const arr = s.body[key]; if (!arr?.length) return;
@@ -3958,7 +3958,10 @@ document.getElementById('targetsCancel').onclick = () => {
   document.getElementById('targetsForm').style.display = 'none';
 };
 document.getElementById('targetsSave').onclick = () => {
+  // Spread first: targets carries fields this form doesn't show (weight_lb,
+  // v18) and a save from this side must never drop them.
   state.body.targets = {
+    ...state.body.targets,
     kcal: Number(document.getElementById('tgtKcal').value) || DEFAULT_TARGETS.kcal,
     protein_g: Number(document.getElementById('tgtProtein').value) || DEFAULT_TARGETS.protein_g,
     water_oz: Number(document.getElementById('tgtWater').value) || DEFAULT_TARGETS.water_oz,
@@ -6363,7 +6366,7 @@ function buildTimelineEvents() {
   (state.body.sleep || []).forEach(s =>
     push(s.date, 0, 'sleep', 'Sleep', `Slept ${s.hours}h`, s.quality ? `quality ${s.quality}/5` : ''));
   (state.body.exercise || []).forEach(x =>
-    push(x.date, 0, 'exercise', 'Exercise', `${x.type} · ${x.minutes} min`));
+    push(x.date, 0, 'exercise', 'Exercise', `${x.type}${x.minutes ? ` · ${x.minutes} min` : ''}`));
   (state.body.symptoms || []).forEach(s =>
     push(s.date, 0, 'symptom', 'Note', s.note));
 
