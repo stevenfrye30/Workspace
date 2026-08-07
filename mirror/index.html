@@ -340,13 +340,6 @@
      positioned dropdown would be clipped by it. */
   .results.flat { position: static; max-height: 190px; margin-top: 6px; box-shadow: none; }
 
-  .foodrow { display: flex; align-items: baseline; gap: 8px; font-size: .85rem; padding: 7px 0; border-bottom: 1px solid var(--line); }
-  .foodrow:last-child { border-bottom: 0; }
-  .foodrow .nm { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .foodrow .g { font-size: .72rem; color: var(--dim); font-variant-numeric: tabular-nums; }
-  .foodrow .kc { font-size: .74rem; color: var(--dim); font-variant-numeric: tabular-nums; min-width: 52px; text-align: right; }
-  .foodrow .x { background: none; border: 0; color: var(--dim); cursor: pointer; font: inherit; }
-  .foodrow .x:hover { color: var(--warn); }
   .foodstatus { font-size: .72rem; color: var(--dim); font-style: italic; }
 
   /* The two ways into the food card, weighted by how often each is used.
@@ -664,8 +657,10 @@
       <button class="sqbtn" id="customFoodBtn" type="button"
               title="Add your own food" aria-label="Add your own food">＋</button>
     </div>
+    <!-- No list here on purpose. What you log lands in the Tracker, like
+         everything else on this page, so the card you are aiming at is the
+         same height after a meal as it was before one. -->
     <div class="foodstatus" id="foodStatus"></div>
-    <div class="list" id="foodLog"></div>
   </div>
   </div>
 
@@ -1474,7 +1469,7 @@ function addIntake(kind, opts) {
   appendRec(arrOf(kind), rec, describeIntake(kind, rec));
   saveState();
   renderIntake();
-  renderFoodTotals(onDay(state.body.food));
+  renderFoodTotals();
   renderFeed();
   toast(describeIntake(kind, rec) + ' — tap Undo to take it back');
 }
@@ -1527,7 +1522,9 @@ function loadFoods() {
       foodsIndex = { list, byId: new Map(list.map((f) => [f.id, f])) };
       indexCustomFoods();
       $('foodStatus').textContent = '';
-      renderFoodLog();
+      // The Tracker is now the only place the day's eating is shown, so it has
+      // to be redrawn when the nutrients it reads finally arrive.
+      renderFoodTotals(); renderFeed();
     })
     .catch(() => {
       // Opened as a file://, or served without the library beside it. Custom
@@ -1535,7 +1532,7 @@ function loadFoods() {
       foodsIndex = foodsIndex || { list: [], byId: new Map() };
       indexCustomFoods();
       $('foodStatus').textContent = 'Food library unavailable — your own foods still work.';
-      renderFoodLog();
+      renderFoodTotals(); renderFeed();
     });
   return foodsPromise;
 }
@@ -1580,7 +1577,7 @@ function logFood(foodId, foodName, grams, portionLabel, qty) {
   if (times > 1) rec.qty = times;
   const label = (times > 1 ? times + '× ' : '') + shortName(foodName, 24);
   appendRec(state.body.food, rec, label);
-  saveState(); renderFoodLog(); renderFeed();
+  saveState(); renderFoodTotals(); renderFeed();
   toast('Logged ' + label);
 }
 /** How many of a thing a record stands for; absent means one. */
@@ -1735,34 +1732,14 @@ function openPortion(foodId, foodName) {
     }, 'Log');
 }
 
-/* Column 1 is Food, so the day's eating belongs in it — the Tracker keeps
-   its copy in entry order, this one is the meal. */
-function renderFoodLog() {
+/* The Food card is an instrument, not a ledger. It kept the day's eating in
+   a list below the search box, which grew a row per entry and pushed the
+   card — and the column under it — down the page as the day went on. Every
+   other card on this page holds still while you use it, and this one now
+   does too: the macro bar is three fixed cells, and the day's eating is in
+   the Tracker with everything else you logged. */
+function renderFoodTotals() {
   const rows = onDay(state.body.food);
-  const list = $('foodLog');
-  if (list) {
-    list.innerHTML = '';
-    if (!rows.length) {
-      list.innerHTML = '<div class="empty">Nothing logged for ' + fmtDay(day) + '.</div>';
-    } else {
-      rows.slice().reverse().forEach((e) => {
-        const div = document.createElement('div'); div.className = 'foodrow';
-        const kc = kcalOf(e);
-        div.title = e.foodName;
-        div.innerHTML = '<span class="nm">' + (timesOf(e) > 1 ? timesOf(e) + '× ' : '') +
-          esc(shortName(e.foodName, 99)) + '</span>' +
-          '<span class="g">' + esc(e.portion || (round1(e.grams) + ' g')) + '</span>' +
-          '<span class="kc">' + (kc == null ? '—' : Math.round(kc) + ' kcal') + '</span>';
-        const x = document.createElement('button');
-        x.className = 'x'; x.type = 'button'; x.textContent = '✕';
-        x.onclick = () => { dropRecord(state.body.food, e.id, e.foodName); saveState(); renderFoodLog(); renderFeed(); };
-        div.appendChild(x); list.appendChild(div);
-      });
-    }
-  }
-  renderFoodTotals(rows);
-}
-function renderFoodTotals(rows) {
   const t = state.body.targets || {};
   let kcal = 0, protein = 0, unknown = 0;
   rows.forEach((e) => {
@@ -1828,7 +1805,7 @@ function logMeal(meal, qty) {
     const i = state.body.food.findIndex((r) => r.id === id);
     if (i >= 0) state.body.food.splice(i, 1);
   }));
-  saveState(); renderFoodLog(); renderFeed();
+  saveState(); renderFoodTotals(); renderFeed();
   toast('Logged ' + label);
 }
 
@@ -3415,7 +3392,7 @@ function openSyncSetup() {
    ============================================================= */
 function renderAll() {
   loadPulse(); loadSleep();
-  renderIntake(); renderFoodLog();
+  renderIntake(); renderFoodTotals();
   renderExercise(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
