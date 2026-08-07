@@ -348,6 +348,19 @@
   .foodrow .x { background: none; border: 0; color: var(--dim); cursor: pointer; font: inherit; }
   .foodrow .x:hover { color: var(--warn); }
   .foodstatus { font-size: .72rem; color: var(--dim); font-style: italic; }
+
+  /* The two ways into the food card, weighted by how often each is used.
+     Meals takes the row and the accent; "your own food" is a square that
+     carries its name in title/aria-label rather than in ink. */
+  .foodactions { display: flex; gap: 8px; margin-top: 9px; }
+  .foodactions .grow { flex: 1 1 auto; }
+  .sqbtn {
+    flex: 0 0 40px; display: grid; place-items: center; padding: 0;
+    background: var(--panel2); border: 1px solid var(--line); color: var(--dim);
+    border-radius: 8px; font: inherit; font-size: 1rem; line-height: 1; cursor: pointer;
+  }
+  .sqbtn:hover { color: var(--accent); border-color: var(--accent); }
+  .sqbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .pinbtn { background: none; border: 0; cursor: pointer; font: inherit; font-size: .95rem; color: var(--dim); padding: 0 4px; }
   .pinbtn.on { color: var(--accent); }
 
@@ -603,9 +616,13 @@
       <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
       <div class="results" id="foodResults"></div>
     </div>
-    <div class="chips" style="margin-top:9px">
-      <button class="mini" id="mealsBtn">Meals</button>
-      <button class="mini" id="customFoodBtn">＋ Your own food</button>
+    <!-- Meals is how most days actually get logged, so it is the button on
+         this card. Defining a food of your own is the rarer, one-off act and
+         keeps the square beside it — the name lives in title/aria-label. -->
+    <div class="foodactions">
+      <button class="primary grow" id="mealsBtn">Meals</button>
+      <button class="sqbtn" id="customFoodBtn" type="button"
+              title="Add your own food" aria-label="Add your own food">＋</button>
     </div>
     <div class="foodstatus" id="foodStatus"></div>
     <div class="list" id="foodLog"></div>
