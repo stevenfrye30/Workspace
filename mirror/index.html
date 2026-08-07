@@ -16,8 +16,9 @@
   written down: the button you were reaching for shifted down the card
   because of something you did last week.
 
-  Data grows in the deeper layers only — the popovers, the Tracker,
-  Records, the Overview. That is what they are for.
+  Data grows in the deeper layers only — the popovers, the Tracker, the
+  week review and Connections, Records, the Overview. That is what they
+  are for.
 
   AUDITED, and where each card stands:
     Food      macro bar (three fixed cells, numbers only), search, three
@@ -724,6 +725,20 @@
   .wknote .l:last-child { border-bottom: 0; }
   .wknote .l .dt { font-size: .68rem; color: var(--dim); margin-right: 7px; }
 
+  /* ---------- connections ----------
+     The record talking back: how you felt on days with and without a
+     thing. Tinted by direction, worded as association, never cause. */
+  .conn { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  @media (max-width: 520px) { .conn { grid-template-columns: 1fr; } }
+  .conn .c { background: var(--panel2); border-radius: 9px; padding: 8px 10px; }
+  .conn .c .k { font-size: .62rem; text-transform: uppercase; letter-spacing: .06em; color: var(--dim); }
+  .conn .c .v { font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .conn .c .v .u { font-size: .68rem; color: var(--dim); font-weight: 400; }
+  .conn .c.good .v { color: var(--accent2); }
+  .conn .c.warn .v { color: var(--warn); }
+  .conn .c .p { font-size: .72rem; color: var(--dim); line-height: 1.35; margin-top: 2px; }
+  .conn .empty { grid-column: 1 / -1; }
+
   /* ---------- popover ---------- */
   .pop-back { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: 40; display: none; }
   .pop-back.open { display: block; }
@@ -989,6 +1004,16 @@
   <div class="wk" id="wkCells"></div>
   <div class="wkdays" id="wkDays"></div>
   <div class="wknote" id="wkNotes"></div>
+</div>
+
+<!-- Connections — the record talking back, and the payoff for keeping it.
+     The one place the app draws conclusions, and it hedges on purpose:
+     differences in how you felt on days with and without a thing, over the
+     last 90 days, derived at read time and stored nowhere. Ported from
+     self.html's Reflect engine, verbatim in its judgments. -->
+<div class="card" id="drawerConn">
+  <h2>Connections <span class="sum" id="sumConn"></span></h2>
+  <div class="conn" id="connCells"></div>
 </div>
 
 <div class="foot">
@@ -3638,8 +3663,150 @@ function renderWeek() {
   $('sumWeek').textContent = cards.length + ' of 7 days logged';
 }
 
+/* =============================================================
+   CONNECTIONS — the record talking back.
+
+   Ported from self.html's Reflect engine, verbatim in its judgments.
+   The outcome is one number, "how you felt" — mood + energy averaged,
+   Daily Card first, then pulse — measured over the last 90 days against
+   signals from every store. A signal only speaks when both of its groups
+   hold 3+ days and the difference is at least 0.35; the top six by size
+   are shown, tinted by direction, and every sentence says "association,
+   not proof", because n-of-90 with no controls is exactly that.
+   Derived on read, stored nowhere — it cannot disagree with the record.
+   ============================================================= */
+function renderConnections() {
+  const box = $('connCells');
+  if (!box) return;
+
+  const range = [];
+  for (let i = 0; i < 90; i++) range.push(shiftDay(todayStr(), -i));
+
+  const cardByDate = new Map((state.daily.cards || []).map((c) => [c.date, c]));
+  const pulseByDate = new Map((state.identity.pulse || []).map((p) => [p.date, p]));
+  const feel = (d) => {
+    const c = cardByDate.get(d), p = pulseByDate.get(d);
+    const mood = (c && c.mood != null) ? c.mood : (p ? p.mood : null);
+    const energy = (c && c.energy != null) ? c.energy : (p ? p.energy : null);
+    if (mood != null && energy != null) return (mood + energy) / 2;
+    return mood != null ? mood : (energy != null ? energy : null);
+  };
+  const feelDays = range.filter((d) => feel(d) != null);
+  const avg = (a) => a.reduce((s, n) => s + n, 0) / a.length;
+
+  /* Per-day facts, indexed once — this runs on every renderDrawers and
+     must stay cheap against years of records. */
+  const sleepByDate = new Map();
+  (state.body.sleep || []).forEach((s) => {
+    const prev = sleepByDate.get(s.date);
+    if (!prev || (s.kind || 'overnight') === 'overnight') sleepByDate.set(s.date, s);
+  });
+  const exDays = new Set((state.body.exercise || []).map((e) => e.date));
+  const t = state.body.targets || {};
+  const proteinByDate = new Map();
+  (state.body.food || []).forEach((e) => {
+    const p = proteinOf(e);
+    if (p == null) return;
+    proteinByDate.set(e.date, (proteinByDate.get(e.date) || 0) + p);
+  });
+  const waterByDate = new Map();
+  (state.body.water || []).forEach((w) => {
+    waterByDate.set(w.date, (waterByDate.get(w.date) || 0) + (Number(w.oz) || 0));
+  });
+  const subDays = (kind) => new Set((state.body.substances || [])
+    .filter((r) => r.kind === kind).map((r) => r.date));
+  const alc = subDays('alcohol'), nic = subDays('nicotine'), weedDays = subDays('weed');
+  // The current home, the way self.html derives it: the most recently
+  // started 'home' whose stay hasn't ended. Never stored.
+  const homes = (state.places.items || [])
+    .filter((p) => p.kind === 'home' && p.from && (!p.to || p.to >= todayStr()))
+    .sort((a, b) => String(b.from).localeCompare(String(a.from)));
+  const curHome = homes.length ? homes[0].name : null;
+  const daysMap = (state.places && state.places.days) || {};
+  const expByDate = {};
+  (state.money.expenses || []).forEach((e) => {
+    expByDate[e.date] = (expByDate[e.date] || 0) + Number(e.amount || 0);
+  });
+  const spends = Object.values(expByDate).filter((v) => v > 0).sort((a, b) => a - b);
+  const spendMed = spends.length ? spends[Math.floor(spends.length / 2)] : 0;
+
+  /* Each signal: test(date) -> true / false / null (that day says nothing
+     about this signal). The substance signals are new here — the Intake
+     card made those series first-class, so they get to speak too. */
+  const pTarget = Math.round((Number(t.protein_g) || 80) * 0.8);
+  const wTarget = Math.round((Number(t.water_oz) || 64) * 0.8);
+  const signals = [
+    { key: 'Slept 7h+', on: 'nights of 7h+ sleep',
+      test: (d) => { const s = sleepByDate.get(d); return s ? s.hours >= 7 : null; } },
+    { key: 'Slept well', on: 'quality-4+ nights',
+      test: (d) => { const s = sleepByDate.get(d); return (s && s.quality) ? s.quality >= 4 : null; } },
+    { key: 'Moved', on: 'days you moved', test: (d) => exDays.has(d) },
+    { key: 'Hit protein', on: 'days of ' + pTarget + 'g+ protein',
+      test: (d) => { const p = proteinByDate.get(d); return p ? p >= pTarget : null; } },
+    { key: 'Well hydrated', on: 'days of ' + wTarget + 'oz+ water',
+      test: (d) => { const w = waterByDate.get(d); return w ? w >= wTarget : null; } },
+    { key: 'Drank', on: 'days with alcohol', test: (d) => (alc.size ? alc.has(d) : null) },
+    { key: 'Nicotine', on: 'days with nicotine', test: (d) => (nic.size ? nic.has(d) : null) },
+    { key: 'Weed', on: 'days with weed', test: (d) => (weedDays.size ? weedDays.has(d) : null) },
+    { key: 'Away from home', on: 'days away from home',
+      test: (d) => { const pl = daysMap[d]; return pl ? pl !== curHome : null; } },
+    { key: 'Spent more', on: 'higher-spend days',
+      test: (d) => { const v = expByDate[d]; return (spendMed > 0 && v > 0) ? v > spendMed : null; } },
+  ];
+  (state.habits.items || []).filter((h) => h.active !== false).forEach((h) => {
+    const done = new Set(h.done || []);
+    const start = [h.created, ...(h.done || [])].filter(Boolean).sort()[0] || null;
+    signals.push({ key: 'Kept “' + h.name + '”', on: 'days you kept “' + h.name + '”',
+                   test: (d) => ((start && d >= start) ? done.has(d) : null) });
+  });
+
+  const found = [];
+  for (const sig of signals) {
+    const on = [], off = [];
+    for (const d of feelDays) {
+      const r = sig.test(d);
+      if (r === null) continue;
+      (r ? on : off).push(feel(d));
+    }
+    if (on.length >= 3 && off.length >= 3) {
+      const hi = avg(on), lo = avg(off), diff = hi - lo;
+      if (Math.abs(diff) >= 0.35) found.push({ sig, hi, lo, diff, nOn: on.length, nOff: off.length });
+    }
+  }
+  found.sort((a, b) => Math.abs(b.diff) - Math.abs(a.diff));
+
+  const rows = found.slice(0, 6).map((f) =>
+    '<div class="c ' + (f.diff > 0 ? 'good' : 'warn') + '"><div class="k">' + esc(f.sig.key) + '</div>' +
+    '<div class="v">' + f.hi.toFixed(1) + ' <span class="u">vs</span> ' + f.lo.toFixed(1) + '</div>' +
+    '<div class="p">You felt <b>' + (f.diff > 0 ? 'better' : 'worse') + '</b> on ' + esc(f.sig.on) +
+    ' — ' + f.nOn + ' vs ' + f.nOff + ' days. A gentle association, not proof.</div></div>');
+
+  // Best and lowest weekday, from the same outcome.
+  const dow = [[], [], [], [], [], [], []];
+  const dowNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  feelDays.forEach((d) => dow[new Date(d + 'T00:00').getDay()].push(feel(d)));
+  const scored = dow.map((a, i) => ({ day: dowNames[i], avg: a.length ? avg(a) : 0, n: a.length }))
+    .filter((x) => x.n >= 2);
+  if (scored.length >= 3) {
+    scored.sort((a, b) => b.avg - a.avg);
+    const best = scored[0], worst = scored[scored.length - 1];
+    rows.push('<div class="c"><div class="k">Weekday</div>' +
+      '<div class="v">' + best.day + ' <span class="u">best · ' + worst.day + ' lowest</span></div>' +
+      '<div class="p"><b>' + best.day + '</b> avg ' + best.avg.toFixed(1) +
+      ' · <b>' + worst.day + '</b> avg ' + worst.avg.toFixed(1) + '</div></div>');
+  }
+
+  $('sumConn').textContent = feelDays.length
+    ? 'from ' + feelDays.length + ' felt day' + (feelDays.length === 1 ? '' : 's') + ' of the last 90'
+    : '';
+  box.innerHTML = rows.length
+    ? rows.join('')
+    : '<div class="empty">Connections need a couple of weeks of mood and energy plus logs across ' +
+      'the cards before the record starts talking back. Every card you fill makes these sharper.</div>';
+}
+
 function renderDrawers() {
-  renderLaunch(); renderBirthdayLine(); renderWeek();
+  renderLaunch(); renderBirthdayLine(); renderWeek(); renderConnections();
 }
 
 /* =============================================================

@@ -21,7 +21,10 @@ silently repurposed — see [`SCHEMA.md`](./SCHEMA.md), the decoder ring for you
 **The dashboard** is one page in four bands: fixed instruments at the top (how you are ·
 intake · habits · movement · food · hygiene · sleep), a row of link pills over the six-tile **log grid**
 (person · book · idea · place · money · values), then the **Tracker** — every entry of the day
-in the order you made it — and the week in review beneath it.
+in the order you made it — with the week in review and **Connections** beneath it. Connections
+is the record talking back: differences in how you felt on days with and without sleep,
+movement, protein, alcohol, a habit kept — drawn from your last 90 days at read time, stored
+nowhere, and always worded as a gentle association, never proof.
 
 **The instruments never change shape as you log** — values move, geometry does not. Nothing
 on a card grows or shifts a control because of something you recorded: entries land in the
