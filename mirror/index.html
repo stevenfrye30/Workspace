@@ -1388,9 +1388,11 @@ function renderSleep() {
   $('sleepBed').setAttribute('aria-valuetext', 'Bedtime ' + fmtHour(bedH));
   $('sleepWake').setAttribute('aria-valuetext', 'Wake ' + fmtHour(wakeH));
 
-  const kind = isOvernight() ? 'last night' : 'nap';
+  // Sleep is only ever "sleep" in ink — the times say the rest. The
+  // overnight/daytime split still decides upsert-vs-stack below; it just
+  // never gets a word.
   $('sleepRead').innerHTML =
-    '<b>' + round1(dur) + ' h</b> · ' + esc(kind) + ' ' +
+    '<b>' + round1(dur) + ' h</b> · ' +
     esc(fmtHour(bedH)) + ' → ' + esc(fmtHour(wakeH));
   const btn = $('sleepEnter');
   btn.textContent = sleepArmed ? 'Enter' : 'Entered ✓';
@@ -1422,15 +1424,16 @@ function enterSleep() {
     c.sleep_hours = dur; c.sleep_quality = quality;
     stamp(c);
   } else {
-    // A nap is just another entry — no upsert, they stack.
+    // Daytime sleep is just another entry — no upsert, they stack. The
+    // `kind` field keeps the distinction for the data; no label ever says it.
     appendRec(state.body.sleep, stamp({
       id: uid(), date: day, hours: dur, quality,
       start: bedH, end: wakeH, kind: 'nap',
-    }), round1(dur) + ' h nap');
+    }), round1(dur) + ' h sleep');
   }
   sleepArmed = false;
   saveState(); renderSleep(); renderFeed();
-  toast(round1(dur) + ' h ' + (overnight ? 'sleep' : 'nap') + ' — tap Undo to take it back');
+  toast(round1(dur) + ' h sleep — tap Undo to take it back');
 }
 
 /** Load the day's overnight back onto the track, if there is one. */
@@ -3143,12 +3146,11 @@ function renderFeed() {
   });
 
   onDay(state.body.sleep).forEach((r) => {
-    const nap = (r.kind || 'overnight') === 'nap';
     const when = (r.start != null && r.end != null) ? ' · ' + fmtHour(r.start) + ' → ' + fmtHour(r.end) : '';
-    push(r, nap ? '💤' : '🌙',
-      round1(r.hours) + ' h ' + (nap ? 'nap' : 'sleep') + when +
+    push(r, '🌙',
+      round1(r.hours) + ' h sleep' + when +
       (r.quality ? ' · quality ' + r.quality : ''),
-      () => dropRecord(state.body.sleep, r.id, round1(r.hours) + ' h ' + (nap ? 'nap' : 'sleep')));
+      () => dropRecord(state.body.sleep, r.id, round1(r.hours) + ' h sleep'));
   });
   const c = card(day);
   if (c && (c.mood != null || c.energy != null)) {
@@ -3623,8 +3625,7 @@ const MD_SUMMARY = [
   ['Substances', () => state.body.substances, (r) => `${r.date} — ${r.kind} ×${r.count || 1}` +
     `${r.amount ? `, ${round1(r.amount)}${r.unit || ''}` : ''}${r.oz ? `, ${round1(r.oz)} oz` : ''}` +
     `${r.form ? ` (${r.form})` : ''}${r.note ? ` — ${r.note}` : ''}`],
-  ['Sleep', () => state.body.sleep, (r) => `${r.date} — ${r.hours} h ` +
-    `${(r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep'}` +
+  ['Sleep', () => state.body.sleep, (r) => `${r.date} — ${r.hours} h sleep` +
     `${r.start != null && r.end != null ? `, ${fmtHour(r.start)}–${fmtHour(r.end)}` : ''}` +
     `${r.quality ? `, quality ${r.quality}/5` : ''}`],
   ['Exercise', () => state.body.exercise, (r) => `${r.date} — ` +
@@ -4772,7 +4773,7 @@ function recordLabel(r, store) {
     return (r.kind || 'substance') + (r.amount ? ' \u00b7 ' + round1(r.amount) + (r.unit || '') : '');
   }
   if (store === 'sleep') {
-    return round1(r.hours) + ' h ' + ((r.kind || 'overnight') === 'nap' ? 'nap' : 'sleep');
+    return round1(r.hours) + ' h sleep';
   }
   if (store === 'exercise') return (r.type || 'movement') + (r.minutes ? ' \u00b7 ' + r.minutes + ' min' : '');
   if (store === 'expenses') return fmt$(r.amount) + (r.note ? ' \u00b7 ' + r.note : '');
