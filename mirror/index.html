@@ -29,10 +29,12 @@
               "exact amount" fold went, because opening it grew the card.
               What the slot shows branches on the TAB you are on, never on
               what is in the log; the counts on the tabs are values.
-    Movement  two fixed rows: Type, minutes, Log, then Build and Workouts.
-              The types live behind the Type button because on the card they
-              were a growing chip row; the workouts you save live behind
-              Workouts the same way, and the list never surfaces on the card.
+    Movement  two rows of four tiles (six categories + the Workouts and
+              Build doors) over a fill slot with a HARD height and overflow
+              hidden — never min-height, which drifts. Values in the slot
+              move (readouts, chip labels, Enter's state); its box never
+              does. Lists that grow (remembered moves) live in fixed-height
+              windows that scroll internally.
     How       five dot rows, a sleep track, two buttons — fixed. The "saved"
               note in the heading is absolutely positioned, so it costs no
               layout, and Enter -> "Entered ✓" is a button changing state.
@@ -339,36 +341,70 @@
 
 
   /* ---------- movement ----------
-     Type takes the row the way Meals does; minutes is a fixed box; Log
-     commits. Three controls, one line, no matter what is in the log. */
-  .exrow { display: flex; gap: 8px; align-items: stretch; }
-  .exrow .grow { flex: 1 1 0; min-width: 0; }
-  /* A long type name shortens rather than widening its button. */
-  .exrow #exTypeBtn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .exrow input { flex: 0 0 74px; width: 74px; text-align: center; }
+     Two rows of four tiles — six categories and the two workout doors —
+     over a fill slot with a HARD height and overflow hidden. Values in the
+     slot change; its box never does. Never min-height: it drifts. */
+  .excats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .excat {
+    min-width: 0; padding: 8px 2px; border-radius: 9px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel2); color: var(--ink);
+    font: inherit; font-size: .72rem; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+    transition: background .12s, border-color .12s;
+  }
+  .excat:hover { border-color: var(--accent); }
+  .excat[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--accent) 16%, var(--panel2));
+    border-color: var(--accent); color: var(--accent); font-weight: 600;
+  }
+  /* The doors: dashed border, accent text — openings, not categories. */
+  .excat.door { border-style: dashed; background: var(--panel); color: var(--accent); }
+  body.dense .excat { padding: 7px 2px; font-size: .68rem; }
 
-  /* The type list, one layer in, where a list is allowed to grow. */
-  .extypes { display: flex; flex-direction: column; }
-  .extype { display: flex; align-items: center; gap: 6px; border-bottom: 1px solid var(--line); }
-  .extype:last-child { border-bottom: 0; }
-  .extype .pick {
-    flex: 1; min-width: 0; text-align: left; padding: 9px 2px;
-    background: none; border: 0; color: var(--ink); font: inherit; font-size: .86rem;
-    cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  .exslot {
+    height: 248px;              /* HARD height + overflow hidden, per the invariant */
+    overflow: hidden;
+    margin-top: 9px;
+    display: flex; flex-direction: column;
   }
-  .extype .pick:hover { color: var(--accent); }
-  .extype .pick[aria-pressed="true"] { color: var(--accent); font-weight: 600; }
-  .extype .star {
-    flex: 0 0 auto; width: 34px; height: 34px; display: grid; place-items: center;
-    padding: 0; background: none; border: 0; border-radius: 8px;
-    color: var(--dim); font: inherit; font-size: .95rem; line-height: 1; cursor: pointer;
+  body.dense .exslot { height: 228px; }
+  .exempty {
+    flex: 1; display: grid; place-items: center;
+    color: var(--dim); font-style: italic; font-size: .8rem;
   }
-  .extype .star:hover { color: var(--accent); }
-  .extype .star[aria-pressed="true"] { color: var(--accent); }
-  .extype .pick:focus-visible, .extype .star:focus-visible {
-    outline: 2px solid var(--accent); outline-offset: -2px;
+  .expanel { flex: 1; display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+  .exline { display: flex; align-items: center; gap: 5px; min-width: 0; }
+  .exlab {
+    flex: 0 0 46px; font-size: .6rem; text-transform: uppercase;
+    letter-spacing: .05em; color: var(--dim);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
-  .addtype { margin-top: 10px; }
+  .exchip {
+    flex: 1 1 0; min-width: 0; padding: 6px 2px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel2); color: var(--ink);
+    font: inherit; font-size: .72rem; font-weight: 600; text-align: center; white-space: nowrap;
+  }
+  .exchip:hover { border-color: var(--accent); }
+  .exchip:active { transform: scale(.95); }
+  /* The running total: dashed because it is a readout, not a button — but
+     tapping it clears the accumulator, and hover says so. */
+  .exread {
+    flex: 0 0 56px; padding: 6px 2px; border-radius: 8px; cursor: pointer;
+    border: 1px dashed color-mix(in srgb, var(--accent) 55%, transparent);
+    background: none; color: var(--ink);
+    font: inherit; font-size: .72rem; font-weight: 600; text-align: center;
+    font-variant-numeric: tabular-nums; white-space: nowrap; overflow: hidden;
+  }
+  .exread.zero { color: var(--dim); border-color: var(--line); }
+  .exread:hover { border-color: var(--warn); color: var(--warn); }
+  .expanel .dots { gap: 5px; }
+  .exspace { flex: 1; }
+  .exkcal {
+    height: 15px; flex: 0 0 15px; font-size: .68rem; color: var(--dim);
+    text-align: right; font-variant-numeric: tabular-nums;
+  }
+  .exenter { width: 100%; }
+  .exenter[disabled] { opacity: .45; cursor: default; }
 
   /* The seven sleep chips wrapped to a second row inside a column, which cost
      nearly 40px on the tallest card in the grid. Narrower chips fit one row. */
@@ -441,10 +477,9 @@
      Meals takes the row and the accent; "your own food" is a square that
      carries its name in title/aria-label rather than in ink. */
   /* 1 1 0, not 1 1 auto: Build and Meals split the row down the middle
-     whatever their words happen to measure. `.exactions` is the same row on
-     the Movement card — Build and Workouts — and shares every rule. */
-  .foodactions, .exactions { display: flex; gap: 8px; margin-top: 9px; }
-  .foodactions .grow, .exactions .grow { flex: 1 1 0; min-width: 0; }
+     whatever their words happen to measure. */
+  .foodactions { display: flex; gap: 8px; margin-top: 9px; }
+  .foodactions .grow { flex: 1 1 0; min-width: 0; }
   .sqbtn {
     flex: 0 0 40px; display: grid; place-items: center; padding: 0;
     background: var(--panel2); border: 1px solid var(--line); color: var(--dim);
@@ -791,26 +826,25 @@
          path; an unusual amount is a couple of taps instead of a form. -->
   </div>
 
-  <!-- Two fixed rows, and only ever these two. The activities you do live
-       behind Type, the way meals live behind Meals: on the card they were a
-       chip row that grew with your history and pushed everything under it
-       down (THE INVARIANT, top of file). The Type button's label is the
-       pick for the log you are making right now and resets after it.
-       Below it, the food card's anatomy repeated: the direct path first,
-       then Build and Workouts splitting a row — you build a workout once
-       and log it for months, so Workouts takes the fill. -->
+  <!-- Two rows of four, then a fixed fill slot. Six category tiles fill the
+       slot with that category's quick-log; Workouts and Build are the two
+       doors to the saved sessions — dashed, because they are doors, not
+       categories. The slot is a HARD height with overflow hidden (never
+       min-height, which drifts), so nothing that happens inside it can move
+       the card face (THE INVARIANT, top of file). -->
   <div class="card narrow" id="movementCard">
     <h2>Movement</h2>
-    <div class="exrow">
-      <button class="primary grow" id="exTypeBtn" type="button">Type</button>
-      <input type="number" id="exMin" min="1" step="1" placeholder="min"
-             aria-label="Minutes">
-      <button class="secondary" id="exAdd" type="button">Log</button>
+    <div class="excats" id="exCats">
+      <button class="excat" type="button" data-excat="walk">🚶 Walk</button>
+      <button class="excat" type="button" data-excat="run">🏃 Run</button>
+      <button class="excat" type="button" data-excat="bike">🚴 Bike</button>
+      <button class="excat door" type="button" id="wkListBtn" title="Saved workouts">📋 Workouts</button>
+      <button class="excat" type="button" data-excat="lift">🏋 Lift</button>
+      <button class="excat" type="button" data-excat="stretch">🧘 Stretch</button>
+      <button class="excat" type="button" data-excat="other">✳️ Other</button>
+      <button class="excat door" type="button" id="wkBuildBtn" title="Build a workout">＋ Build</button>
     </div>
-    <div class="exactions">
-      <button class="secondary grow" id="wkBuildBtn" type="button">Build</button>
-      <button class="primary grow" id="wkListBtn" type="button">Workouts</button>
-    </div>
+    <div class="exslot" id="exSlot"></div>
   </div>
   </div>
 
@@ -908,7 +942,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 17;
+const SCHEMA_VERSION = 18;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -1000,6 +1034,9 @@ function mergeLoaded(saved) {
   if (!Array.isArray(out.body.exerciseTypes)) out.body.exerciseTypes = [];
   // v16 -> v17: saved workouts. Also purely additive.
   if (!Array.isArray(out.body.workouts)) out.body.workouts = [];
+  // v17 -> v18: the movement quick-log. New OPTIONAL fields only — cat /
+  // distanceMi / intensity / kcalEst / moves / label on exercise[], cat /
+  // gone on exerciseTypes[] — so there is nothing to backfill.
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -2163,28 +2200,22 @@ function openCustomFood() {
 /* =============================================================
    MOVEMENT — a control panel, not a history.
 
-   The card used to keep a row of chips of the five types you had logged
-   most recently. It read well and it broke THE INVARIANT (top of file):
-   the row appeared the first time you logged anything, and the fields
-   under it moved down the card because of what you had done last week.
-
-   So the types moved one layer in, behind the Type button, where a list
-   is allowed to be as long as your history. What is left on the card is
-   three controls that will be the same three controls in ten years.
+   Two rows of four tiles pick a category; the category's quick-log fills
+   a slot whose height never changes. Everything in the slot is an
+   ACCUMULATOR: a chip adds its face value to a running total in the
+   dashed readout at the row's right, the readout taps back to zero, and
+   nothing is written until Enter. One Enter = one exercise[] record —
+   the session you did, not a row per chip.
    ============================================================= */
-/* A starting set, so the list is useful on the first day and you are not
-   made to name your own walking. They are only suggestions: none is
-   stored until you log it or keep it. */
+/* A starting set for the workout builder's type list, so it is useful on
+   the first day. Only suggestions: none is stored until you use it. */
 const EX_SEEDS = ['Walk', 'Run', 'Lift', 'Bike', 'Swim', 'Yoga', 'Pickleball',
                   'Hike', 'Stretch', 'Row', 'Climb', 'Sport'];
 
-/** The type chosen for the log being made right now. Never persisted, and
- *  cleared the moment it becomes an entry — the card face holds no state. */
-let exPick = '';
-
-/** Every type worth offering: the ones you have kept, the ones you have
- *  logged, then the seeds. Deduped on case, because "Walk" and "walk" are
- *  one activity, and first spelling seen wins so your own wording survives. */
+/** Every type worth offering in the workout builder: the moves you have
+ *  remembered, the types you have logged, then the seeds. Deduped on case,
+ *  because "Walk" and "walk" are one activity, and first spelling seen wins
+ *  so your own wording survives. Moves you deleted (`gone`) stay gone. */
 function exTypes() {
   const out = new Map();
   const add = (t) => {
@@ -2193,134 +2224,170 @@ function exTypes() {
     const k = s.toLowerCase();
     if (!out.has(k)) out.set(k, s);
   };
-  (state.body.exerciseTypes || []).forEach((r) => add(r.name));
+  (state.body.exerciseTypes || []).forEach((r) => { if (!r.gone) add(r.name); });
   (state.body.exercise || []).slice().reverse().forEach((e) => add(e.type));
   EX_SEEDS.forEach(add);
   return [...out.values()];
 }
-function exTypeRec(name) {
-  const k = String(name || '').trim().toLowerCase();
-  return (state.body.exerciseTypes || []).find((r) => String(r.name).toLowerCase() === k);
-}
-const isExFav = (name) => { const r = exTypeRec(name); return !!(r && r.fav); };
 
-/** Keep a type at the top of the list, or stop. The record is made on the
- *  first star and then stays, `fav` flipping rather than the record coming
- *  and going: to a merge, "I unpinned this" and "I never had this" must not
- *  look the same, or an unpin comes back on the next sync. */
-function toggleExFav(name) {
-  let r = exTypeRec(name);
-  if (!r) {
-    r = stamp({ id: uid(), name: String(name).trim(), fav: false });
-    state.body.exerciseTypes.push(r);
-  }
-  r.fav = !r.fav;
-  stamp(r);
-  saveState();
-}
+/* The six categories. `time` chips differ where the natural session does:
+   a walk grows by twenties, a set of stretches by fives. */
+const EXCATS = {
+  walk:    { label: 'Walk',    icon: '🚶', time: [2, 5, 20, 30], dist: true },
+  run:     { label: 'Run',     icon: '🏃', time: [2, 5, 20, 30], dist: true },
+  bike:    { label: 'Bike',    icon: '🚴', time: [2, 5, 20, 30], dist: true },
+  lift:    { label: 'Lift',    icon: '🏋', time: [1, 5, 10, 25], moves: 'reps' },
+  stretch: { label: 'Stretch', icon: '🧘', time: [1, 5, 10, 25], moves: 'plain' },
+  other:   { label: 'Other',   icon: '✳️', time: [2, 5, 20, 30], named: true },
+};
+const DIST_STEPS = [0.5, 1, 3, 10];
+const REPS_STEPS = [1, 5, 10, 25];
 
-function renderExercise() {
-  const b = $('exTypeBtn');
-  if (!b) return;
-  b.textContent = exPick || 'Type';
-  const label = exPick ? 'Logging ' + exPick + ' — tap to change'
-                       : 'Choose what you did';
-  b.title = label;
-  b.setAttribute('aria-label', label);
+/** The category open right now, and its accumulating session. Runtime only,
+ *  never persisted; discarded on collapse, written only by Enter. */
+let exCat = '';
+let exSess = null;
+const freshSess = () => ({ min: 0, mi: 0, dots: 0, moves: [], sel: '', name: '', adding: false, edit: false });
+
+function pickCat(cat) {
+  exCat = (exCat === cat) ? '' : cat;    // tap the open one again to collapse
+  exSess = exCat ? freshSess() : null;
+  renderMovement();
 }
 
-function pickExType(name) {
-  exPick = String(name || '').trim();
-  closePop();
-  renderExercise();
-  $('exMin').focus();
+/** Every mutation of the session goes through here: read-modify-write in one
+ *  synchronous step, then one repaint — so rapid taps can never drop. */
+function updSess(fn) {
+  if (!exSess) return;
+  fn(exSess);
+  renderMovement();
 }
 
-/** One row of the type list: the name, and the star that keeps it. */
-function exTypeRow(name, repaint) {
-  const div = document.createElement('div');
-  div.className = 'extype';
-  const pick = document.createElement('button');
-  pick.className = 'pick'; pick.type = 'button'; pick.textContent = name;
-  pick.setAttribute('aria-pressed', String(name.toLowerCase() === exPick.toLowerCase()));
-  pick.onclick = () => pickExType(name);
-  const on = isExFav(name);
-  const star = document.createElement('button');
-  star.className = 'star'; star.type = 'button'; star.textContent = on ? '★' : '☆';
-  star.title = on ? 'Stop keeping ' + name : 'Keep ' + name + ' at the top';
-  star.setAttribute('aria-label', star.title);
-  star.setAttribute('aria-pressed', String(on));
-  star.onclick = () => { toggleExFav(name); repaint(); };
-  div.appendChild(pick); div.appendChild(star);
-  return div;
-}
-
-/* One field does both jobs: it filters the list, and when what you typed is
-   not in the list it offers to make it. A separate "add" box would have you
-   decide which one you wanted before you had finished typing. */
-function openExTypes() {
-  openPop('Movement',
-    '<input type="text" id="exSearch" placeholder="Search, or name a new one…" autocomplete="off">' +
-    '<div id="exLists"></div>',
-    null,
-    () => {
-      const search = $('exSearch');
-      const paint = () => {
-        const raw = search.value.trim();
-        const q = raw.toLowerCase();
-        const all = exTypes();
-        const hit = (t) => !q || t.toLowerCase().includes(q);
-        const favs = all.filter((t) => isExFav(t) && hit(t));
-        const rest = all.filter((t) => !isExFav(t) && hit(t));
-        const box = $('exLists');
-        box.innerHTML = '';
-
-        if (raw && !all.some((t) => t.toLowerCase() === q)) {
-          const add = document.createElement('button');
-          add.className = 'mini addtype'; add.type = 'button';
-          add.textContent = '＋ Add “' + raw + '”';
-          add.onclick = () => pickExType(raw);
-          box.appendChild(add);
-        }
-        const section = (label, list) => {
-          if (!list.length) return;
-          const h = document.createElement('div');
-          h.className = 'rowlabel'; h.textContent = label;
-          box.appendChild(h);
-          const wrap = document.createElement('div'); wrap.className = 'extypes';
-          list.forEach((t) => wrap.appendChild(exTypeRow(t, paint)));
-          box.appendChild(wrap);
-        };
-        section('Favorites', favs);
-        section(favs.length ? 'Everything else' : 'Types', rest);
-      };
-      search.oninput = paint;
-      // Enter takes the obvious thing: the type you are making, or the first
-      // one you matched. (openPop leaves a field that has its own handler alone.)
-      search.onkeydown = (e) => {
-        if (e.key !== 'Enter') return;
-        e.preventDefault();
-        const first = $('exLists').querySelector('.addtype, .extype .pick');
-        if (first) first.click();
-      };
-      paint();
-    });
-}
-
-function addExercise() {
-  const type = exPick.trim();
-  // Nothing to log without knowing what it was — so open the one control
-  // that answers that, rather than refusing quietly.
-  if (!type) { openExTypes(); return; }
-  const min = parseInt($('exMin').value, 10);
-  const rec = stamp({
-    id: uid(), date: day, type,
-    minutes: isNaN(min) ? null : min, time: stampTime(),
+/* ---- the rows the panels are made of ---- */
+/** label · chips · dashed readout. Chips ADD; the readout taps to zero. */
+function accRow(label, steps, fmtChip, onAdd, readText, isZero, onClear) {
+  const row = document.createElement('div'); row.className = 'exline';
+  const lab = document.createElement('span'); lab.className = 'exlab'; lab.textContent = label;
+  row.appendChild(lab);
+  steps.forEach((n) => {
+    const b = document.createElement('button');
+    b.className = 'exchip'; b.type = 'button'; b.textContent = fmtChip(n);
+    b.setAttribute('aria-label', 'Add ' + n + ' to ' + label);
+    b.onclick = () => onAdd(n);
+    row.appendChild(b);
   });
-  appendRec(state.body.exercise, rec, type + (rec.minutes ? ' · ' + rec.minutes + ' min' : ''));
-  exPick = ''; $('exMin').value = '';
-  saveState(); renderExercise(); renderFeed();
-  toast('Logged ' + type);
+  const read = document.createElement('button');
+  read.className = 'exread' + (isZero() ? ' zero' : ''); read.type = 'button';
+  read.textContent = readText();
+  read.title = 'Tap to clear'; read.setAttribute('aria-label', label + ' so far: ' + readText() + ' — tap to clear');
+  read.onclick = onClear;
+  row.appendChild(read);
+  return row;
+}
+function dotRow(value, onPick) {
+  const row = document.createElement('div'); row.className = 'exline';
+  const lab = document.createElement('span'); lab.className = 'exlab'; lab.textContent = 'Intensity';
+  const dots = document.createElement('div'); dots.className = 'dots';
+  buildDots(dots, value || null, onPick, 'Intensity');
+  row.appendChild(lab); row.appendChild(dots);
+  return row;
+}
+
+function timeRow(meta, s) {
+  return accRow('Time', meta.time, (n) => '+' + n,
+    (n) => updSess((x) => { x.min += n; }),
+    () => s.min + 'm', () => s.min === 0,
+    () => updSess((x) => { x.min = 0; }));
+}
+
+/** Can this session be entered yet? Content rules per category. */
+function canEnter() {
+  const s = exSess;
+  if (!s) return false;
+  const meta = EXCATS[exCat] || {};
+  if (meta.dist) return s.min > 0 || s.mi > 0;
+  if (meta.moves === 'reps') return s.min > 0 || s.moves.some((m) => m.reps > 0);
+  if (meta.moves === 'plain') return s.min > 0 || s.moves.length > 0;
+  if (meta.named) return !!s.name.trim() && (s.min > 0 || s.dots > 0);
+  return s.min > 0;
+}
+
+function renderMovement() {
+  const wrap = $('exCats');
+  if (!wrap) return;
+  wrap.querySelectorAll('[data-excat]').forEach((b) =>
+    b.setAttribute('aria-pressed', String(b.dataset.excat === exCat)));
+  const slot = $('exSlot');
+  slot.innerHTML = '';
+  if (!exCat) {
+    const empty = document.createElement('div');
+    empty.className = 'exempty'; empty.textContent = 'Pick what you did.';
+    slot.appendChild(empty);
+    return;
+  }
+  const meta = EXCATS[exCat];
+  const s = exSess;
+  const panel = document.createElement('div'); panel.className = 'expanel';
+
+  panel.appendChild(timeRow(meta, s));
+  if (meta.dist) {
+    panel.appendChild(accRow('Dist', DIST_STEPS, (n) => '+' + n,
+      (n) => updSess((x) => { x.mi = round1(x.mi + n); }),
+      () => round1(s.mi) + 'mi', () => s.mi === 0,
+      () => updSess((x) => { x.mi = 0; })));
+  }
+  panel.appendChild(dotRow(s.dots, (v) => updSess((x) => { x.dots = v || 0; })));
+
+  const space = document.createElement('div'); space.className = 'exspace';
+  panel.appendChild(space);
+
+  // Reserved height whether or not there is an estimate to show, so the
+  // line appearing cannot move Enter.
+  const kcal = document.createElement('div'); kcal.className = 'exkcal'; kcal.id = 'exKcal';
+  panel.appendChild(kcal);
+
+  const enter = document.createElement('button');
+  enter.className = 'primary exenter'; enter.type = 'button'; enter.id = 'exEnter';
+  enter.textContent = 'Enter';
+  enter.disabled = !canEnter();
+  enter.onclick = logMove;
+  panel.appendChild(enter);
+
+  slot.appendChild(panel);
+}
+
+/** How a quick-log entry reads back — in the Tracker, in an undo message,
+ *  in the forever-copy. Every optional field earns its clause. */
+function moveLine(r) {
+  const bits = [r.cat === 'other' ? (r.label || r.type) : r.type];
+  if (r.minutes) bits.push(r.minutes + ' min');
+  if (r.distanceMi) bits.push(round1(r.distanceMi) + ' mi');
+  if (r.moves && r.moves.length) {
+    bits.push(r.moves.map((m) => m.name + (m.reps ? ' ×' + m.reps : '')).join(', '));
+  }
+  if (r.kcalEst) bits.push('≈' + r.kcalEst + ' kcal');
+  if (r.intensity) bits.push('●'.repeat(r.intensity) + '○'.repeat(5 - r.intensity));
+  return bits.join(' · ');
+}
+
+/** One Enter, one record. The session is a single thing you did — unlike a
+ *  workout, which replays into one entry per exercise on purpose. */
+function logMove() {
+  if (!canEnter()) return;
+  const meta = EXCATS[exCat];
+  const s = exSess;
+  const rec = {
+    id: uid(), date: day, cat: exCat, type: meta.label,
+    minutes: s.min > 0 ? s.min : null, time: stampTime(),
+  };
+  if (meta.dist && s.mi > 0) rec.distanceMi = round1(s.mi);
+  if (s.dots) rec.intensity = s.dots;
+  stamp(rec);
+  appendRec(state.body.exercise, rec, moveLine(rec));
+  saveState(); renderFeed();
+  exCat = ''; exSess = null;
+  renderMovement();
+  toast('Logged ' + moveLine(rec));
 }
 
 /* ---- workouts: the sessions you repeat ----
@@ -2685,8 +2752,9 @@ function renderFeed() {
       g.rows.push(r); workouts.set(r.workoutLogId, g);
       return;
     }
-    push(r, '🏃', r.type + (r.minutes ? ' · ' + r.minutes + ' min' : ''),
-      () => dropRecord(state.body.exercise, r.id, r.type));
+    const icon = (r.cat && EXCATS[r.cat]) ? EXCATS[r.cat].icon : '🏃';
+    const text = r.cat ? moveLine(r) : r.type + (r.minutes ? ' · ' + r.minutes + ' min' : '');
+    push(r, icon, text, () => dropRecord(state.body.exercise, r.id, r.cat ? (r.label || r.type) : r.type));
   });
   workouts.forEach((g) => {
     const min = g.rows.reduce((n, r) => n + (Number(r.minutes) || 0), 0);
@@ -3994,7 +4062,7 @@ function openSyncSetup() {
 function renderAll() {
   loadPulse(); loadSleep();
   renderIntake(); renderFoodTotals();
-  renderExercise(); renderHygiene(); renderHabits(); renderSymptoms(); renderFeed();
+  renderMovement(); renderHygiene(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
 
@@ -4056,9 +4124,10 @@ $('dPick').onchange = (e) => { if (e.target.value) setDay(e.target.value); };
 $('pSave').onclick = savePulse;
 $('sleepEnter').onclick = enterSleep;
 wireSleepTrack();
-$('exAdd').onclick = addExercise;
-$('exTypeBtn').onclick = openExTypes;
-$('exMin').onkeydown = (e) => { if (e.key === 'Enter') addExercise(); };
+$('exCats').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-excat]');
+  if (b) pickCat(b.dataset.excat);
+});
 $('wkBuildBtn').onclick = () => openWorkoutBuilder(null);
 $('wkListBtn').onclick = openWorkouts;
 $('symAdd').onclick = () => openPop('Note a symptom',
