@@ -361,6 +361,46 @@
   }
   .sqbtn:hover { color: var(--accent); border-color: var(--accent); }
   .sqbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- the quantity stepper ----------
+     One control, three places: a meal about to be logged, an ingredient in
+     one, a portion in the picker. It reads as a single object rather than
+     three buttons, because it is answering one question. */
+  .qty {
+    display: inline-flex; align-items: center; flex: 0 0 auto;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 8px;
+  }
+  .qty button {
+    width: 30px; height: 30px; display: grid; place-items: center; padding: 0;
+    background: none; border: 0; border-radius: 7px; color: var(--ink);
+    font: inherit; font-size: .95rem; line-height: 1; cursor: pointer;
+  }
+  .qty button:hover:not([disabled]) { color: var(--accent); }
+  .qty button[disabled] { opacity: .32; cursor: default; }
+  .qty button:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .qty .q {
+    min-width: 22px; text-align: center; font-size: .82rem; font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ---------- meal rows (the list, and the builder's ingredients) ----------
+     Name on its own line, controls under it. One line would fit on a laptop
+     and overflow a phone, and the popover is 92vw wide there. */
+  .meals { margin-top: 10px; }
+  .mealrow { padding: 9px 0; border-bottom: 1px solid var(--line); }
+  .mealrow:last-child { border-bottom: 0; }
+  .mealrow .mh { display: flex; align-items: baseline; gap: 8px; margin-bottom: 7px; }
+  .mealrow .mh .nm {
+    flex: 1; min-width: 0; font-size: .86rem;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .mealrow .mh .tiny { white-space: nowrap; }
+  .mealrow .ma { display: flex; align-items: center; gap: 7px; }
+  .mealrow .ma .sp { flex: 1; min-width: 4px; }
+  .mealrow .ma input { width: auto; }
+  .mealrow .ma .x { background: none; border: 0; color: var(--dim); cursor: pointer; font: inherit; }
+  .mealrow .ma .x:hover { color: var(--warn); }
+  button.primary.sm { padding: 7px 16px; font-size: .8rem; }
   .pinbtn { background: none; border: 0; cursor: pointer; font: inherit; font-size: .95rem; color: var(--dim); padding: 0 4px; }
   .pinbtn.on { color: var(--accent); }
 
@@ -757,7 +797,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 13;
+const SCHEMA_VERSION = 14;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -933,6 +973,46 @@ function dropRecord(arr, id, label) {
     const j = state._deleted.findIndex((t) => t.id === id);
     if (j >= 0) state._deleted.splice(j, 1);
   });
+}
+
+/** Remove several records as one act: a tombstone each, one press to undo.
+ *  A meal is five rows in the data and one thing you ate — taking it back
+ *  five times over would be reporting the bookkeeping back at you. */
+function dropGroup(arr, recs, label) {
+  const before = undoStack.length;
+  recs.forEach((r) => dropRecord(arr, r.id, label));
+  const mine = undoStack.splice(Math.min(before, undoStack.length));
+  if (mine.length) {
+    pushUndo('removing ' + label, () => mine.slice().reverse().forEach((u) => u.revert()));
+  }
+}
+
+/* ---------- the quantity stepper ----------
+   − n +  . Used wherever "how many of these" is the question: a meal you are
+   about to log, an ingredient inside one, a portion in the picker. Minimum 1,
+   because logging none of something is not a thing you can do. */
+function stepper(value, onChange, name) {
+  const n = Math.max(1, Math.round(Number(value) || 1));
+  const wrap = document.createElement('div');
+  wrap.className = 'qty';
+  const mk = (glyph, delta, label) => {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = glyph;
+    b.title = label;
+    b.setAttribute('aria-label', label + (name ? ' — ' + name : ''));
+    b.onclick = () => onChange(Math.max(1, n + delta));
+    return b;
+  };
+  const less = mk('−', -1, 'One fewer');
+  less.disabled = n <= 1;
+  const out = document.createElement('span');
+  out.className = 'q'; out.textContent = n;
+  // The live count has to reach a screen reader too — the buttons only say
+  // which way they move it.
+  out.setAttribute('aria-live', 'polite');
+  out.setAttribute('aria-label', n + (name ? ' × ' + name : ''));
+  wrap.appendChild(less); wrap.appendChild(out); wrap.appendChild(mk('＋', 1, 'One more'));
+  return wrap;
 }
 
 /* ---------- selected day ---------- */
@@ -1486,15 +1566,33 @@ function proteinOf(entry) {
   return n && n.protein_g != null ? (n.protein_g * entry.grams) / 100 : null;
 }
 
-function logFood(foodId, foodName, grams, portionLabel) {
+/* `qty` is how many of the named portion this entry stands for. It is display
+   and provenance only — `grams` is always the total actually eaten, so nothing
+   derived ever multiplies by it and no reading of this record can double-count.
+   Same meaning self.html has given the field since before v13. */
+function logFood(foodId, foodName, grams, portionLabel, qty) {
+  const times = Math.max(1, Math.round(Number(qty) || 1));
   const rec = stamp({
     id: uid(), date: day, foodId, foodName,
     grams: Math.round(grams * 10) / 10,
     portion: portionLabel || '', t: stampTime(),
   });
-  appendRec(state.body.food, rec, shortName(foodName, 24));
+  if (times > 1) rec.qty = times;
+  const label = (times > 1 ? times + '× ' : '') + shortName(foodName, 24);
+  appendRec(state.body.food, rec, label);
   saveState(); renderFoodLog(); renderFeed();
-  toast('Logged ' + shortName(foodName, 24));
+  toast('Logged ' + label);
+}
+/** How many of a thing a record stands for; absent means one. */
+const timesOf = (r) => Math.max(1, Math.round(Number(r && r.qty) || 1));
+/** How a food entry reads back: "2× Egg · 1 large egg · 155 kcal".
+ *  `portionLabel` is self.html's older name for `portion`; read both. */
+function foodLine(r) {
+  const times = timesOf(r);
+  const kc = kcalOf(r);
+  return (times > 1 ? times + '× ' : '') + shortName(r.foodName || 'food', 28) +
+    ' · ' + (r.portion || r.portionLabel || round1(r.grams) + ' g') +
+    (kc == null ? '' : ' · ' + Math.round(kc) + ' kcal');
 }
 
 /* ---- search ----
@@ -1570,22 +1668,31 @@ function renderResults(q) {
   });
 }
 
-/* ---- portion picker ---- */
+/* ---- portion picker ----
+   Grams stays the number that is stored. The stepper above it is a multiplier
+   on the chosen portion — three eggs is a thing you know, 150 g of egg is a
+   thing you would have to work out — and it simply drives the grams field. */
 function openPortion(foodId, foodName) {
   const f = foodsIndex && foodsIndex.byId.get(foodId);
   const name = (f && f.name) || foodName || 'food';
   const portions = (f && f.portions) || [];
+  let unit = portions[0] ? portions[0].grams : 100;   // grams in one of them
+  let count = 1;
 
   openPop(name,
     (portions.length ? '<div class="rowlabel">Portion</div><div class="chips" id="popPortions"></div>' : '') +
+    '<div class="rowlabel">How many</div><div id="popQty"></div>' +
     '<div class="rowlabel">Grams</div><input type="number" id="popGrams" min="1" step="1" value="' +
-      (portions[0] ? portions[0].grams : 100) + '">' +
+      unit + '">' +
     '<div class="tiny" id="popKcal" style="margin-top:8px"></div>' +
     '',
     () => {
       const g = parseFloat($('popGrams').value);
       if (!g || g <= 0) return false;
-      logFood(foodId, name, g, chosenLabel);
+      // Grams typed by hand is the total you meant; the multiple no longer
+      // describes it, so it is not recorded as one.
+      const times = Math.abs(g - round1(unit * count)) < 0.05 ? count : 1;
+      logFood(foodId, name, g, chosenLabel, times);
     },
     () => {
       const gEl = $('popGrams');
@@ -1596,7 +1703,19 @@ function openPortion(foodId, foodName) {
           ? Math.round((n.kcal * g) / 100) + ' kcal · ' + Math.round((n.protein_g || 0) * g / 100) + ' g protein'
           : '';
       };
+      const paintQty = () => {
+        const box = $('popQty'); box.innerHTML = '';
+        box.appendChild(stepper(count, (v) => {
+          count = v; gEl.value = round1(unit * v); showKcal(); paintQty();
+        }, name));
+      };
+      // Typing keeps the readout live; the multiple is re-based on the way out,
+      // so the field never loses focus mid-number.
       gEl.oninput = () => { chosenLabel = ''; showKcal(); };
+      gEl.onchange = () => {
+        const g = parseFloat(gEl.value);
+        if (g > 0) { unit = g; count = 1; paintQty(); }
+      };
       if (portions.length) {
         const box = $('popPortions');
         portions.slice(0, 8).forEach((p, i) => {
@@ -1604,14 +1723,15 @@ function openPortion(foodId, foodName) {
           b.className = 'chip'; b.type = 'button'; b.textContent = p.label;
           b.setAttribute('aria-pressed', String(i === 0));
           b.onclick = () => {
-            gEl.value = p.grams; chosenLabel = p.label; showKcal();
+            unit = p.grams; count = 1;
+            gEl.value = p.grams; chosenLabel = p.label; showKcal(); paintQty();
             [...box.children].forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
           };
           box.appendChild(b);
         });
         chosenLabel = portions[0].label;
       }
-      showKcal();
+      paintQty(); showKcal();
     }, 'Log');
 }
 
@@ -1629,7 +1749,8 @@ function renderFoodLog() {
         const div = document.createElement('div'); div.className = 'foodrow';
         const kc = kcalOf(e);
         div.title = e.foodName;
-        div.innerHTML = '<span class="nm">' + esc(shortName(e.foodName, 99)) + '</span>' +
+        div.innerHTML = '<span class="nm">' + (timesOf(e) > 1 ? timesOf(e) + '× ' : '') +
+          esc(shortName(e.foodName, 99)) + '</span>' +
           '<span class="g">' + esc(e.portion || (round1(e.grams) + ' g')) + '</span>' +
           '<span class="kc">' + (kc == null ? '—' : Math.round(kc) + ' kcal') + '</span>';
         const x = document.createElement('button');
@@ -1675,15 +1796,40 @@ function mealKcal(meal) {
     return n + (nut && nut.kcal != null ? (nut.kcal * it.grams) / 100 : 0);
   }, 0);
 }
-function logMeal(meal) {
-  // Each food pushes its own undo; collapse them so undoing a meal is one
-  // press rather than one per ingredient.
-  const before = undoStack.length;
-  (meal.items || []).forEach((it) => logFood(it.foodId, it.foodName, it.grams, it.portion));
-  const mine = undoStack.splice(Math.min(before, undoStack.length));
-  if (mine.length) pushUndo(meal.name, () => { mine.slice().reverse().forEach((u) => u.revert()); });
-  closePop();
-  toast('Logged ' + meal.name);
+/** Replay a meal into food[] as ordinary entries, `qty` times over.
+ *
+ *  A meal stays a shortcut for typing and never becomes a record of eating in
+ *  its own right (SCHEMA.md §3) — so nutrients still resolve per ingredient at
+ *  read time, and editing the meal tomorrow cannot rewrite what you ate today.
+ *  What is new is that the entries share a `mealLogId`, which lets the Tracker
+ *  show the one thing you ate instead of the five rows it took to record it.
+ *
+ *  The popover stays open: each row commits itself, and Done is what closes it. */
+function logMeal(meal, qty) {
+  const times = Math.max(1, Math.round(Number(qty) || 1));
+  const logId = uid();
+  const added = [];
+  (meal.items || []).forEach((it) => {
+    const each = Math.max(1, Math.round(Number(it.qty) || 1)) * times;
+    const rec = stamp({
+      id: uid(), date: day, foodId: it.foodId, foodName: it.foodName,
+      grams: Math.round(it.grams * times * 10) / 10,
+      portion: it.portion || '', t: stampTime(),
+      mealLogId: logId, mealName: meal.name, mealQty: times,
+    });
+    if (each > 1) rec.qty = each;
+    state.body.food.push(rec);
+    added.push(rec.id);
+  });
+  if (!added.length) { toast('That meal has no foods in it yet'); return; }
+  const label = (times > 1 ? times + '× ' : '') + meal.name;
+  // One press of Undo takes back the meal, not one ingredient of it.
+  pushUndo(label, () => added.forEach((id) => {
+    const i = state.body.food.findIndex((r) => r.id === id);
+    if (i >= 0) state.body.food.splice(i, 1);
+  }));
+  saveState(); renderFoodLog(); renderFeed();
+  toast('Logged ' + label);
 }
 
 /* ---- the builder ---- */
@@ -1702,7 +1848,7 @@ function openMealBuilder(existing) {
       '<input type="text" id="mbSearch" placeholder="Search foods…" autocomplete="off">' +
       '<div class="results flat" id="mbResults"></div>' +
     '</div>' +
-    '<div class="list" id="mbItems"></div>' +
+    '<div class="meals" id="mbItems"></div>' +
     '<div class="tiny" id="mbTotal" style="margin-top:8px"></div>',
     () => {
       const name = $('mbName').value.trim();
@@ -1730,20 +1876,36 @@ function openMealBuilder(existing) {
           box.innerHTML = '<div class="empty">No foods yet — search above and tap to add.</div>';
         }
         mealDraft.forEach((it, idx) => {
-          const div = document.createElement('div'); div.className = 'row';
-          div.innerHTML = '<span style="flex:1;min-width:0">' + esc(shortName(it.foodName, 26)) + '</span>';
+          const times = Math.max(1, Math.round(Number(it.qty) || 1));
+          const unit = it.grams / times;              // grams in one of them
+          const div = document.createElement('div'); div.className = 'mealrow';
+          div.innerHTML = '<div class="mh"><span class="nm">' +
+            esc(shortName(it.foodName, 30)) + '</span>' +
+            (it.portion ? '<span class="tiny">' + esc(it.portion) + '</span>' : '') + '</div>';
+          const act = document.createElement('div'); act.className = 'ma';
+          act.appendChild(stepper(times, (v) => {
+            it.qty = v; it.grams = Math.round(unit * v * 10) / 10;
+            if (v === 1) delete it.qty;
+            paint();
+          }, it.foodName));
           const g = document.createElement('input');
-          g.type = 'number'; g.min = '1'; g.step = '1'; g.value = it.grams;
-          g.style.cssText = 'width:66px;padding:4px 6px;font-size:.78rem';
-          g.title = 'grams';
+          g.type = 'number'; g.min = '1'; g.step = '1'; g.value = round1(it.grams);
+          g.style.cssText = 'width:72px;padding:5px 7px;font-size:.78rem';
+          g.title = 'grams'; g.setAttribute('aria-label', 'Grams of ' + it.foodName);
+          // Live while typing; re-based on the way out. A hand-typed number is
+          // the whole amount, so the named portion and the multiple both go.
           g.oninput = () => {
             const v = parseFloat(g.value);
-            if (v > 0) { it.grams = v; it.portion = ''; total(); }
+            if (v > 0) { it.grams = v; it.portion = ''; delete it.qty; total(); }
           };
+          g.onchange = () => paint();
+          const sp = document.createElement('span'); sp.className = 'sp';
           const x = document.createElement('button');
           x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Remove';
+          x.setAttribute('aria-label', 'Remove ' + it.foodName);
           x.onclick = () => { mealDraft.splice(idx, 1); paint(); };
-          div.appendChild(g); div.appendChild(x);
+          act.appendChild(g); act.appendChild(sp); act.appendChild(x);
+          div.appendChild(act);
           box.appendChild(div);
         });
         total();
@@ -1801,10 +1963,16 @@ function openMealBuilder(existing) {
     'Save meal');
 }
 
+/* Each row is its own little form: how many, then Add. Nothing here is
+   pending when you leave, so the footer is a plain Done rather than a Save
+   that would imply the row you already logged had not been. */
 function openMeals() {
   loadFoods();
+  // Reset every time the popover opens: yesterday's "3×" is not a standing
+  // intention, and a stepper you did not set is a quantity you did not choose.
+  const count = new Map();
   openPop('Meals',
-    '<div class="list" id="mealList"></div>' +
+    '<div class="meals" id="mealList"></div>' +
     '<div class="chips" style="margin-top:10px">' +
       '<button class="mini" id="mealNew">＋ New meal</button>' +
       '<button class="mini" id="mealSaveToday">＋ From today’s food</button></div>',
@@ -1819,21 +1987,29 @@ function openMeals() {
           return;
         }
         live.slice().reverse().forEach((m) => {
-          const div = document.createElement('div'); div.className = 'row';
-          const kc = Math.round(mealKcal(m));
-          div.innerHTML = '<span style="flex:1;min-width:0">' + esc(m.name) + '</span>' +
-            '<span class="tiny">' + (m.items || []).length + ' items' +
-            (kc ? ' · ' + kc + ' kcal' : '') + '</span>';
-          const log = document.createElement('button');
-          log.className = 'mini'; log.type = 'button'; log.textContent = 'Log';
-          log.onclick = () => logMeal(m);
+          const times = Math.max(1, Math.round(count.get(m.id) || 1));
+          const kc = Math.round(mealKcal(m) * times);
+          const div = document.createElement('div'); div.className = 'mealrow';
+          div.innerHTML = '<div class="mh"><span class="nm">' + esc(m.name) + '</span>' +
+            '<span class="tiny">' + plural((m.items || []).length, 'item') +
+            (kc ? ' · ' + kc + ' kcal' : '') + '</span></div>';
+          const act = document.createElement('div'); act.className = 'ma';
+          act.appendChild(stepper(times, (v) => { count.set(m.id, v); paint(); }, m.name));
+          const add = document.createElement('button');
+          add.className = 'primary sm'; add.type = 'button'; add.textContent = 'Add';
+          add.setAttribute('aria-label', 'Log ' + times + ' × ' + m.name);
+          add.onclick = () => { logMeal(m, count.get(m.id) || 1); paint(); };
+          const sp = document.createElement('span'); sp.className = 'sp';
           const edit = document.createElement('button');
           edit.className = 'mini'; edit.type = 'button'; edit.textContent = 'Edit';
+          edit.setAttribute('aria-label', 'Edit ' + m.name);
           edit.onclick = () => openMealBuilder(m);
           const x = document.createElement('button');
           x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Delete meal';
+          x.setAttribute('aria-label', 'Delete the meal ' + m.name);
           x.onclick = () => { dropRecord(state.body.meals, m.id, m.name); saveState(); paint(); };
-          div.appendChild(log); div.appendChild(edit); div.appendChild(x);
+          act.appendChild(add); act.appendChild(sp); act.appendChild(edit); act.appendChild(x);
+          div.appendChild(act);
           box.appendChild(div);
         });
       };
@@ -1843,9 +2019,14 @@ function openMeals() {
         const rows = onDay(state.body.food);
         if (!rows.length) { toast('Nothing logged today to save'); return; }
         // Seed the builder rather than saving blind, so you can drop the
-        // things that were not part of the meal.
-        mealDraft = rows.map((r) => ({ foodId: r.foodId, foodName: r.foodName,
-                                       grams: r.grams, portion: r.portion || '' }));
+        // things that were not part of the meal. A meal already logged today
+        // arrives as its ingredients, which is what it is in the data.
+        mealDraft = rows.map((r) => {
+          const it = { foodId: r.foodId, foodName: r.foodName,
+                       grams: r.grams, portion: r.portion || r.portionLabel || '' };
+          if (timesOf(r) > 1) it.qty = timesOf(r);
+          return it;
+        });
         const seeded = { name: '', items: mealDraft };
         openMealBuilder(seeded);
         mealEditing = null;          // seeded, but saving creates a new meal
@@ -2010,11 +2191,26 @@ function renderFeed() {
   onDay(state.body.exercise).forEach((r) =>
     push(r, '🏃', r.type + (r.minutes ? ' · ' + r.minutes + ' min' : ''),
       () => dropRecord(state.body.exercise, r.id, r.type)));
+  /* A meal was replayed into its ingredients, which is what it is in the
+     data — but not what you did. The rows that share a `mealLogId` collapse
+     back into the one thing you ate. */
+  const meals = new Map();
   onDay(state.body.food).forEach((r) => {
-    const kc = kcalOf(r);
-    push(r, '🍽', shortName(r.foodName || 'food', 28) +
-      ' · ' + (r.portion || round1(r.grams) + ' g') + (kc == null ? '' : ' · ' + Math.round(kc) + ' kcal'),
-      () => dropRecord(state.body.food, r.id, r.foodName));
+    if (r.mealLogId) {
+      const g = meals.get(r.mealLogId) || { rows: [], first: r };
+      g.rows.push(r); meals.set(r.mealLogId, g);
+      return;
+    }
+    push(r, '🍽', foodLine(r), () => dropRecord(state.body.food, r.id, r.foodName));
+  });
+  meals.forEach((g) => {
+    const kc = g.rows.reduce((n, r) => n + (kcalOf(r) || 0), 0);
+    const times = Math.max(1, Math.round(Number(g.first.mealQty) || 1));
+    const label = (times > 1 ? times + '× ' : '') + (g.first.mealName || 'meal');
+    push(g.first, '🍱', label + (kc ? ' · ' + Math.round(kc) + ' kcal' : ''),
+      // Removing the line removes the meal: every row it stood for, each with
+      // its own tombstone, and one press of Undo to put it all back.
+      () => dropGroup(state.body.food, g.rows, label));
   });
   onDay(state.body.symptoms).forEach((r) =>
     push(r, '⚕', r.note, () => dropRecord(state.body.symptoms, r.id, r.note)));
@@ -2432,7 +2628,9 @@ const MD_FULL = [
 ];
 /* High-volume: a count plus the tail. The JSON holds every row. */
 const MD_SUMMARY = [
-  ['Food', () => state.body.food, (r) => `${r.date} — ${r.foodName}, ${r.portion || r.grams + ' g'}`],
+  ['Food', () => state.body.food, (r) => `${r.date} — ` +
+    `${timesOf(r) > 1 ? timesOf(r) + '× ' : ''}${r.foodName}, ` +
+    `${r.portion || r.portionLabel || r.grams + ' g'}${r.mealName ? ` (${r.mealName})` : ''}`],
   ['Water', () => state.body.water, (r) => `${r.date} — ${round1(r.oz)} oz`],
   ['Drinks', () => state.body.drinks, (r) => `${r.date} — ${r.label || r.kind}${r.oz ? `, ${round1(r.oz)} oz` : ''}`],
   ['Substances', () => state.body.substances, (r) => `${r.date} — ${r.kind} ×${r.count || 1}` +

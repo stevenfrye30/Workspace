@@ -151,13 +151,31 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 > renamed — the split is a presentation choice, not a data migration.
 
 - **targets** — `{ kcal, protein_g, water_oz }`. Config, not a record. Current goals only.
-- **food[]** — `{ id, date, foodId, foodName, grams, portion?, t?, _src, _at, _up }`. Macros
+- **food[]** — `{ id, date, foodId, foodName, grams, portion?, qty?, t?,
+  mealLogId?, mealName?, mealQty?, _src, _at, _up }`. Macros
   are *not* stored per-entry — they're looked up from the NutriLens library by `foodId` at
   read time, so a library correction retroactively fixes history. `grams` is the raw
   observation. `portion` *(v13)* records the **named** portion chosen ("1 cup", "1 large
   egg") purely so the entry can be read back the way it was entered; it is display text, and
   is cleared the moment grams is typed by hand, so it can never disagree with the number.
   `foodName` is denormalised so history stays readable if the library is ever unavailable.
+  - `qty` — **how many** of that named portion the entry stands for ("2 × 1 large egg").
+    Absent means one. Like `portion` it is read-back detail: **`grams` is always the total
+    actually eaten**, so nothing derived ever multiplies by `qty` and no reader of this
+    record can double-count. Written by `self.html` since before v13 and by the dashboard
+    from v14; both compute `grams = unit × qty` and store the product.
+  - `portionLabel` — `self.html`'s **older name for `portion`**. Same meaning, same use.
+    Both are read wherever an entry is displayed; neither is rewritten into the other,
+    because silently rewriting old records is the thing §4 exists to prevent.
+  - `mealLogId` / `mealName` / `mealQty` *(v14)* — set on every entry a **meal** was
+    replayed into (see `meals[]` below). `mealLogId` is shared by exactly the entries of one
+    logging, so the Tracker can show the one meal you ate rather than the five rows it took
+    to record it; `mealQty` is how many of the meal that logging was. Removing that Tracker
+    line removes every entry it stood for, each with its own tombstone.
+  - `n`, `category` — written by `self.html` only. `n` is a per-100 g nutrient **snapshot**
+    taken at logging time; the dashboard ignores it and derives from `foodId` instead, so a
+    library correction reaches dashboard-written history and not snapshot-carrying history.
+    Documented because the field exists in real data, not because it is the pattern to copy.
 - **water[]** — `{ id, date, oz, t?, ... }`. `t` = optional `HH:MM` time of day; when absent
   the entry's `_at` supplies the timestamp shown in the Health timeline. Hydration keeps every
   timestamped entry (never a single daily total) so the sequence across the day is preserved.
@@ -192,10 +210,15 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
 - **customFoods[]** — `{ id, name, category, portions: [{ label, grams }], n: {...per 100 g} }`.
   Definitions you authored. Entered per *serving* and stored per 100 g, so they divide the
   same way library foods do.
-- **meals[]** — `{ id, name, items: [{ foodId, foodName, grams, portion? }], _src, _at, _up }`.
+- **meals[]** — `{ id, name, items: [{ foodId, foodName, grams, portion?, qty? }], _src, _at, _up }`.
   Reusable bundles. Logging one **replays** its items into `food[]` as ordinary entries — a
   meal is a shortcut for typing, never a record of eating in its own right, so nothing is
   double-counted and a meal edited later cannot rewrite what you already ate.
+  An item's `qty` *(v14)* is the same read-back detail it is on a food entry: how many of
+  that ingredient's named portion the recipe calls for, with `grams` already the total.
+  Logging a meal **n** times over multiplies each item's `grams` and `qty` by n and stamps
+  the resulting entries with `mealLogId` / `mealName` / `mealQty` — so the Tracker can show
+  one line while the data stays a list of ordinary foods that resolve their own nutrients.
 - **favoriteFoods[]** — `string[]` / `number[]` of food ids. **Currently unused.** It has
   been declared since v1, briefly held pinned foods, and holds nothing now that the food card
   has no chip row. Left in place rather than removed: it costs nothing and dropping a declared
@@ -421,6 +444,23 @@ means**. So:
   blank what is already there: `daily.cards[].one_sentence` and `.body_note`, and
   `body.checkins[].note` — the dashboard has no free-text field on its pulse card.
   `daily.cards[]` remains the heartbeat and still receives mood, energy and sleep.
+- **v14** → **quantities, and a meal that reads as one thing.** No store is reshaped or
+  renamed, and every field below is optional — an entry written before v14 reads exactly as
+  it always did.
+  - `body.food[].qty` and `body.meals[].items[].qty` — how many of a named portion. `grams`
+    stays the total actually eaten, so **nothing derived multiplies by `qty`**; it exists so
+    an entry reads back the way it was entered ("2 × 1 large egg"). `qty` is not new to the
+    data — `self.html` has written it alongside `portionLabel` since before v13. v14 is
+    where the dashboard started writing it too, and where it got written down here.
+  - `body.food[].mealLogId` / `.mealName` / `.mealQty` — the tag a replayed meal leaves on
+    its entries. **Meals still replay into `food[]` as ordinary entries**; the tag only lets
+    the Tracker collapse them into the one line you actually ate, and lets removing that
+    line remove all of them together. Keeping the replay is deliberate: it is what makes a
+    meal's nutrients resolve per ingredient at read time, and what keeps editing a meal from
+    rewriting what you already ate.
+  - Also written down for the first time, unchanged: `body.food[].portionLabel` (`self.html`'s
+    older name for `portion`), and `body.food[].n` / `.category` (`self.html`'s per-entry
+    nutrient snapshot). Both predate this version; documenting them is not a change to them.
 
 ---
 
