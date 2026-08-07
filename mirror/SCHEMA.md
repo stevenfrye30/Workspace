@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **13** (field `__v` in the data).
+Current schema version: **15** (field `__v` in the data).
 
 ---
 
@@ -37,8 +37,8 @@ file.
 - `mirror-data.md` — **human-readable companion.** Openable in 50 years with no app at all.
   **Daily Cards** (the heartbeat) and durable/qualitative content (values, reflections,
   journal, books, quotes, people, birthdays, goals, net worth) are written in full;
-  high-frequency logs (food, sleep, water, exercise, expenses) are summarised with a count +
-  recent entries. The JSON holds the rest.
+  high-frequency logs (food, sleep, water, exercise, hygiene, expenses) are summarised with a
+  count + recent entries. The JSON holds the rest.
 
 ---
 
@@ -219,6 +219,17 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   Logging a meal **n** times over multiplies each item's `grams` and `qty` by n and stamps
   the resulting entries with `mealLogId` / `mealName` / `mealQty` — so the Tracker can show
   one line while the data stays a list of ordinary foods that resolve their own nutrients.
+- **hygiene[]** *(v15)* — `{ id, date, brush_am?, brush_pm?, floss?, shower?, haircut?,
+  _src, _at, _up }`. One record per local `date` (marking **upserts**), each field a boolean.
+  Three states, and the difference between them matters:
+  **absent** = never touched; **`true`** = marked done; **`false`** = explicitly un-marked.
+  Un-marking writes `false` rather than deleting the field **on purpose**: these records
+  merge field by field (§ the by-date rule), and a missing field cannot beat another
+  device's `true` — dropping it would make "I un-marked that" indistinguishable from "I
+  never heard about it," and the un-mark would silently come back on the next sync.
+  Raw observations only: no streak, score or "days since" is stored. The weekly review
+  derives counts on read (brushed *n* of a possible 14, flossed *n* of 7), the same
+  descriptive, no-target way it treats everything else.
 - **favoriteFoods[]** — `string[]` / `number[]` of food ids. **Currently unused.** It has
   been declared since v1, briefly held pinned foods, and holds nothing now that the food card
   has no chip row. Left in place rather than removed: it costs nothing and dropping a declared
@@ -461,6 +472,15 @@ means**. So:
   - Also written down for the first time, unchanged: `body.food[].portionLabel` (`self.html`'s
     older name for `portion`), and `body.food[].n` / `.category` (`self.html`'s per-entry
     nutrient snapshot). Both predate this version; documenting them is not a change to them.
+- **v15** → **Hygiene.** Adds one store, `body.hygiene[]` — five booleans per local date
+  (`brush_am`, `brush_pm`, `floss`, `shower`, `haircut`), upserted like the other once-a-day
+  rows and merged **by date, field by field**, so two devices marking two different things
+  on the same day both keep theirs. Un-marking writes `false` and never deletes the field;
+  see the store's entry in §3 for why that distinction is load-bearing rather than fussy.
+  Nothing is reshaped or renamed; the shallow-merge in `loadState` plus a `v<15` migration
+  backfill the array for older data. `self.html` surfaces none of it and only guarantees a
+  save from that side cannot drop it. Counts appear in the weekly review and in
+  `mirror-data.md`; **not** in Records, which is for things you look up rather than tally.
 
 ---
 
@@ -477,6 +497,7 @@ the measurement series:
   `places` (locations are identifying). *(v13)* Add `links[]` — a list of the services
   someone uses is identifying — `body.drinks[].label`, and `body.substances[].note`.
 - **Shareable measurement series:** dated numeric logs — `body.food` (by foodId + grams),
+  *(v15)* `body.hygiene` (five booleans a day, identifying nothing),
   `sleep`, `water`, `exercise`, `pulse` (mood/energy), `money.netWorth` & `expenses` amounts
   by category, reading counts, the **structured judgment signals** of a decision
   (`domain`, `confidence`, `result`, `same_again`, decide/review dates) — a rare calibration

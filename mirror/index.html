@@ -342,6 +342,26 @@
 
   .foodstatus { font-size: .72rem; color: var(--dim); font-style: italic; }
 
+  /* ---------- hygiene ----------
+     Five glyphs in two rows. No words in ink: a label beside each would be
+     three lines of text explaining five taps, and an icon-only control's
+     name belongs in title/aria-label, which is where these keep theirs.
+     A mark is a fill, never a row, so the card cannot grow. 44px is the
+     floor in both densities — a touch target is not a place to save space. */
+  .hyg { display: flex; flex-direction: column; gap: 8px; }
+  .hyg .hrow { display: flex; gap: 8px; }
+  .hyg button {
+    flex: 1 1 0; min-width: 44px; min-height: 44px;
+    display: grid; place-items: center; padding: 0;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
+    font: inherit; font-size: 1.15rem; line-height: 1; cursor: pointer;
+    transition: background .12s, border-color .12s, transform .1s;
+  }
+  .hyg button:hover { border-color: var(--accent2); }
+  .hyg button:active { transform: scale(.96); }
+  .hyg button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .hyg button[aria-pressed="true"] { background: var(--accent2); border-color: var(--accent2); }
+
   /* The two ways into the food card, weighted by how often each is used.
      Meals takes the row and the accent; "your own food" is a square that
      carries its name in title/aria-label rather than in ink. */
@@ -662,6 +682,14 @@
          same height after a meal as it was before one. -->
     <div class="foodstatus" id="foodStatus"></div>
   </div>
+
+  <!-- Five things you either did today or didn't. Under Food because it is
+       the other half of looking after yourself, and because column 1 had the
+       room the moment the food list left it. -->
+  <div class="card" id="hygieneCard">
+    <h2>Hygiene</h2>
+    <div class="hyg" id="hygRows"></div>
+  </div>
   </div>
 
   <div class="col">
@@ -792,7 +820,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 14;
+const SCHEMA_VERSION = 15;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -843,6 +871,7 @@ const defaultState = () => ({
     targets: { kcal: 2200, protein_g: 80, water_oz: 64 },
     favoriteFoods: [], customFoods: [], meals: [], checkins: [],
     drinks: [], substances: [],            // v13
+    hygiene: [],                           // v15
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
   money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
@@ -875,6 +904,8 @@ function mergeLoaded(saved) {
   // v12 -> v13: the new stores. Purely additive; nothing is reshaped.
   if (!Array.isArray(out.body.drinks)) out.body.drinks = [];
   if (!Array.isArray(out.body.substances)) out.body.substances = [];
+  // v14 -> v15: the hygiene marks. Purely additive; nothing is reshaped.
+  if (!Array.isArray(out.body.hygiene)) out.body.hygiene = [];
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -2134,6 +2165,67 @@ function renderHabits() {
 }
 
 /* =============================================================
+   HYGIENE — five marks, one record per day.
+
+   Stored the way the other once-a-day rows are: upserted by date and merged
+   field by field, so two devices marking two different things on the same day
+   both keep theirs rather than one overwriting the other.
+
+   Un-marking writes `false`; it does not drop the field. A missing field
+   cannot beat another device's `true` in a field-by-field merge, so dropping
+   it would make "I un-marked that" indistinguishable from "I never heard
+   about it" — and the un-mark would silently come back. Absent still means
+   never touched, which is a third thing and worth keeping distinct.
+   ============================================================= */
+const HYGIENE = [
+  [['brush_am', '🪥', 'Brush AM'], ['brush_pm', '🪥', 'Brush PM'], ['floss', '🧵', 'Floss']],
+  [['shower', '🚿', 'Shower'], ['haircut', '✂️', 'Haircut']],
+];
+const HYGIENE_MARKS = HYGIENE.flat();
+
+function hygieneOn(d) { return (state.body.hygiene || []).find((h) => h.date === d); }
+
+function renderHygiene() {
+  const box = $('hygRows');
+  if (!box) return;
+  const rec = hygieneOn(day) || {};
+  box.innerHTML = '';
+  HYGIENE.forEach((row) => {
+    const div = document.createElement('div'); div.className = 'hrow';
+    row.forEach(([key, glyph, name]) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.textContent = glyph;
+      // The two brushes are the same glyph; only the name tells them apart.
+      b.title = name; b.setAttribute('aria-label', name);
+      b.setAttribute('aria-pressed', String(rec[key] === true));
+      b.onclick = () => toggleHygiene(key, name);
+      div.appendChild(b);
+    });
+    box.appendChild(div);
+  });
+}
+
+/** Set one mark, undoably. Saving and redrawing is left to the caller, so the
+ *  card and the Tracker's ✕ can both use it. Returns false if nothing moved. */
+function setHygiene(key, name, on) {
+  let rec = hygieneOn(day);
+  if (!rec) { rec = { id: uid(), date: day }; state.body.hygiene.push(rec); }
+  const was = rec[key] === true;
+  if (was === on) return false;
+  rec[key] = on;
+  stamp(rec);
+  pushUndo((on ? '' : 'un-marking ') + name, () => { rec[key] = was; stamp(rec); });
+  return true;
+}
+function toggleHygiene(key, name) {
+  const rec = hygieneOn(day);
+  const on = !(rec && rec[key] === true);
+  if (!setHygiene(key, name, on)) return;
+  saveState(); renderHygiene(); renderFeed();
+  toast(on ? name : name + ' un-marked');
+}
+
+/* =============================================================
    SYMPTOMS — sparse, free text, high value.
    ============================================================= */
 function renderSymptoms() { /* symptoms live in the tracker; nothing to draw here */ }
@@ -2191,6 +2283,14 @@ function renderFeed() {
   });
   onDay(state.body.symptoms).forEach((r) =>
     push(r, '⚕', r.note, () => dropRecord(state.body.symptoms, r.id, r.note)));
+
+  /* The marks all hang off one record per day, so they share its `_up` and
+     sit together in the order they are listed on the card. Removing one here
+     un-marks it — the same act as tapping it again, and undoable the same way. */
+  const hyg = hygieneOn(day);
+  if (hyg) HYGIENE_MARKS.forEach(([key, glyph, name]) => {
+    if (hyg[key] === true) push(hyg, glyph, name, () => setHygiene(key, name, false));
+  });
 
   onDay(state.body.sleep).forEach((r) => {
     const nap = (r.kind || 'overnight') === 'nap';
@@ -2479,6 +2579,10 @@ function renderWeek() {
   const exMin = ex.reduce((n, e) => n + (Number(e.minutes) || 0), 0);
   const subs = inWeek(state.body.substances);
   const cnt = (k) => subs.filter((s) => s.kind === k).reduce((n, s) => n + (Number(s.count) || 1), 0);
+  // Counts of a thing done, never a target missed: a 0 here reads the same way
+  // a 0 in Alcohol does — as what happened, not as a failure.
+  const hyg = inWeek(state.body.hygiene);
+  const marks = (k) => hyg.filter((h) => h[k] === true).length;
 
   const cell = (k, v, u) => '<div class="c"><div class="k">' + k + '</div><div class="v">' +
     (v == null ? '—' : v) + (u ? '<span class="u"> ' + u + '</span>' : '') + '</div></div>';
@@ -2491,7 +2595,11 @@ function renderWeek() {
     cell('Water', Math.round(water / 7), 'oz/day') +
     cell('Movement', ex.length, ex.length ? 'x · ' + exMin + ' min' : '') +
     cell('Alcohol', cnt('alcohol'), '') +
-    cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '');
+    cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '') +
+    cell('Brushed', marks('brush_am') + marks('brush_pm'), 'of 14') +
+    cell('Flossed', marks('floss'), 'of 7') +
+    cell('Showers', marks('shower'), '') +
+    cell('Haircut', marks('haircut'), '');
 
   $('wkDays').innerHTML = days.map((d) => {
     const on = cards.some((c) => c.date === d);
@@ -2619,6 +2727,9 @@ const MD_SUMMARY = [
     `${r.quality ? `, quality ${r.quality}/5` : ''}`],
   ['Exercise', () => state.body.exercise, (r) => `${r.date} — ${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`],
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
+  ['Hygiene', () => state.body.hygiene, (r) =>
+    `${r.date} — ${HYGIENE_MARKS.filter(([k]) => r[k] === true).map(([, , name]) => name)
+      .join(', ') || 'nothing marked'}`],
   ['Expenses', () => state.money.expenses, (r) => `${r.date} — ${fmt$(r.amount)}${r.note ? ` (${r.note})` : ''}`],
   ['Income', () => state.money.income, (r) => `${r.date} — +${fmt$(r.amount)}${r.source ? `, ${r.source}` : ''}${r.note ? ` (${r.note})` : ''}`],
 ];
@@ -2640,6 +2751,7 @@ function buildDataMarkdown() {
     ['Daily cards', state.daily.cards], ['Food entries', state.body.food],
     ['Water', state.body.water], ['Drinks', state.body.drinks],
     ['Substances', state.body.substances], ['Sleep nights', state.body.sleep],
+    ['Hygiene days', state.body.hygiene],
     ['Exercise sessions', state.body.exercise], ['Symptoms', state.body.symptoms],
     ['Habits', state.habits.items], ['People', state.relationships.people],
     ['Birthdays', state.relationships.birthdays], ['Books', state.mind.books],
@@ -2948,6 +3060,7 @@ const MERGE_BY_ID = [
 ];
 const MERGE_BY_DATE = [
   ['daily', 'cards'], ['body', 'checkins'], ['identity', 'pulse'],
+  ['body', 'hygiene'],
 ];
 /** Date-keyed maps: merged per key, so two devices tagging different days
  *  both keep their day. Wholesale last-writer-wins would drop one. */
@@ -3393,7 +3506,7 @@ function openSyncSetup() {
 function renderAll() {
   loadPulse(); loadSleep();
   renderIntake(); renderFoodTotals();
-  renderExercise(); renderHabits(); renderSymptoms(); renderFeed();
+  renderExercise(); renderHygiene(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
 

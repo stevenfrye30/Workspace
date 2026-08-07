@@ -19,14 +19,15 @@ silently repurposed — see [`SCHEMA.md`](./SCHEMA.md), the decoder ring for you
 | **`self.html`** | The older seven-room version, on the same data. |
 
 **The dashboard** is one page in four bands: fixed instruments at the top (how you are ·
-intake · habits · movement · food · sleep), a row of link pills over the six-tile **log grid**
+intake · habits · movement · food · hygiene · sleep), a row of link pills over the six-tile **log grid**
 (person · book · idea · place · money · values), then the **Tracker** — every entry of the day
 in the order you made it — and the week in review beneath it.
 
 The instruments never change shape as you log. Entries land in the Tracker, not in the card
 you typed into, so the thing you are aiming at never moves. **Meals** is the food card's main
 button: each saved meal has a `− n +` beside it, so two helpings is one tap and lands as one
-Tracker line. One tap logs a glass of water;
+Tracker line. **Hygiene** is five glyphs you tap on the days you did them, and tap again
+if you didn't. One tap logs a glass of water;
 sleep is two handles on a 24-hour track, so you say when you went down and got up rather than
 doing the arithmetic; `Undo` in the header takes back the last thing you did, including a
 deletion.
@@ -153,7 +154,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v14**.
+**schema v15**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is
