@@ -105,6 +105,16 @@
     background: var(--bg);
   }
   .top h1 { font-size: 1.05rem; font-weight: 600; letter-spacing: .01em; text-align: center; }
+  .top .mid { display: flex; align-items: baseline; justify-content: center; gap: 9px; min-width: 0; }
+  /* A label that happens to be tappable — dashed underline, not a fifth
+     filled chip; the tools row already carries four of those. */
+  .daychip {
+    background: none; border: 0; border-bottom: 1px dashed var(--dim);
+    color: var(--dim); font: inherit; font-size: .78rem; line-height: 1.2;
+    padding: 0 1px 1px; cursor: pointer; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; max-width: 9.5em;
+  }
+  .daychip:hover { color: var(--accent); border-bottom-color: var(--accent); }
   .top .home {
     justify-self: start; display: inline-flex; align-items: center; gap: 5px;
     text-decoration: none; color: var(--dim); font-size: .78rem;
@@ -127,19 +137,12 @@
   }
   .icon-btn:hover { color: var(--ink); border-color: var(--accent); }
 
-  /* ---------- date strip ---------- */
-  /* A plain inline row, not a panel: it is a control, not a section. */
-  .datestrip {
-    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-    padding: 0; margin-bottom: 14px;
-  }
-  .datestrip .lbl { font-size: .7rem; color: var(--dim); text-transform: uppercase; letter-spacing: .07em; }
-  .datestrip input[type=date] {
-    font: inherit; font-size: .78rem; padding: 3px 6px; border-radius: 6px;
+  /* The day pop's date input; the warning shows in the same pop, under it. */
+  .pop input[type=date] {
+    font: inherit; font-size: .78rem; padding: 5px 8px; border-radius: 6px;
     border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    width: 100%;
   }
-  body.dense .datestrip { margin-bottom: 12px; }
-  body.dense .datestrip .chip { padding: 4px 11px; }
   .backdate-warn { width: 100%; font-size: .74rem; color: var(--warn); }
 
   /* ---------- the daily grid ----------
@@ -819,7 +822,13 @@
 
 <div class="top">
   <a class="home" href="../" title="Back to the workspace"><span class="arw">←</span><span class="lbl">Workspace</span></a>
-  <h1><button type="button" id="overviewBtn" title="What this adds up to">Mirror</button></h1>
+  <!-- The date lives beside the title now — a label that happens to be
+       tappable, not a fifth filled button. The old strip of chips went with
+       the box rail's arrival; the pop it opens does everything it did. -->
+  <div class="mid">
+    <h1><button type="button" id="overviewBtn" title="What this adds up to">Mirror</button></h1>
+    <button type="button" id="dayBtn" class="daychip" title="Change the day you are logging for">Today</button>
+  </div>
   <span class="tools">
     <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶<span class="lbl"> Undo</span></button>
     <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
@@ -835,14 +844,6 @@
   <button class="mini" id="nudgeLater" title="Hide until more changes pile up">Later</button>
 </div>
 <input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
-
-<div class="datestrip">
-  <span class="lbl">Logging for</span>
-  <button class="chip" id="dTodayBtn">Today</button>
-  <button class="chip" id="dYestBtn">Yesterday</button>
-  <input type="date" id="dPick">
-  <div class="backdate-warn" id="backdateWarn" hidden></div>
-</div>
 
 <!-- ============ THE DAILY GRID ============ -->
 <!-- Four assigned columns, ordered by how often each is touched, rather than
@@ -1278,16 +1279,57 @@ function stepper(value, onChange, name) {
 
 /* ---------- selected day ---------- */
 let day = todayStr();
+/* True while the header should follow the calendar across midnight. Picking
+   any explicit day parks the app on it; picking Today (or the rollover
+   itself) resumes following. */
+let followingToday = true;
 
+function dayLabel(iso) {
+  if (iso === todayStr()) return 'Today';
+  if (iso === shiftDay(todayStr(), -1)) return 'Yesterday';
+  return fmtDay(iso);
+}
+function refreshDayWarn() {
+  const warn = $('backdateWarn');            // lives in the day pop; may be closed
+  if (!warn) return;
+  if (day === todayStr()) { warn.hidden = true; }
+  else {
+    warn.hidden = false;
+    warn.textContent = 'Backdating — everything is being logged for ' + fmtDay(day) + '.';
+  }
+}
 function setDay(iso) {
   day = iso;
-  $('dPick').value = iso;
-  $('dTodayBtn').setAttribute('aria-pressed', String(iso === todayStr()));
-  $('dYestBtn').setAttribute('aria-pressed', String(iso === shiftDay(todayStr(), -1)));
-  const warn = $('backdateWarn');
-  if (iso === todayStr()) { warn.hidden = true; }
-  else { warn.hidden = false; warn.textContent = 'Backdating — everything below is being logged for ' + fmtDay(iso) + '.'; }
+  followingToday = (iso === todayStr());
+  const b = $('dayBtn');
+  if (b) b.textContent = dayLabel(iso);
+  const pick = $('dPick');                   // also in the pop
+  if (pick) pick.value = iso;
+  refreshDayWarn();
   renderAll();
+}
+
+/* The old date strip, folded into a pop: Today, Yesterday, or any date —
+   the same three roads, none of them a new picker. */
+function openDayPop() {
+  openPop('Logging for',
+    '<div style="display:flex;gap:8px">' +
+      '<button class="chip" id="dTodayRow" type="button">Today</button>' +
+      '<button class="chip" id="dYestRow" type="button">Yesterday</button>' +
+    '</div>' +
+    '<div class="rowlabel" style="margin-top:12px">Or pick a date</div>' +
+    '<input type="date" id="dPick">' +
+    '<div class="backdate-warn" id="backdateWarn" hidden style="margin-top:9px"></div>',
+    null,
+    () => {
+      $('dTodayRow').setAttribute('aria-pressed', String(day === todayStr()));
+      $('dYestRow').setAttribute('aria-pressed', String(day === shiftDay(todayStr(), -1)));
+      $('dTodayRow').onclick = () => { setDay(todayStr()); closePop(); };
+      $('dYestRow').onclick = () => { setDay(shiftDay(todayStr(), -1)); closePop(); };
+      $('dPick').value = day;
+      $('dPick').onchange = (e) => { if (e.target.value) { setDay(e.target.value); closePop(); } };
+      refreshDayWarn();
+    });
 }
 /* Time-of-day only makes sense on the day it happened. Backfilled entries get
    no `t`, rather than a fictional one. */
@@ -4768,7 +4810,7 @@ $('restoreFile').onchange = (e) => {
 $('nudgeGo').onclick = foreverCopy;
 $('nudgeLater').onclick = () => { $('nudge').hidden = true; };
 $('undoBtn').onclick = doUndo;
-$('dTodayBtn').onclick = () => setDay(todayStr());
+$('dayBtn').onclick = openDayPop;
 refreshNudge();
 
 /* Sync boots last and quietly: the app is already usable, and a pull that
@@ -4785,8 +4827,6 @@ if (syncConfigured()) {
 } else {
   renderSyncPill();
 }
-$('dYestBtn').onclick = () => setDay(shiftDay(todayStr(), -1));
-$('dPick').onchange = (e) => { if (e.target.value) setDay(e.target.value); };
 $('pSave').onclick = savePulse;
 $('sleepEnter').onclick = enterSleep;
 wireSleepTrack();
@@ -5196,9 +5236,10 @@ $('overviewBtn').onclick = () => {
 $('popBack').onclick = closePop;
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closePop(); });
 
-// A day can roll over while the app sits open on a phone overnight.
+// A day can roll over while the app sits open on a phone overnight. Only
+// follow it when the user hasn't parked the app on an explicit day.
 setInterval(() => {
-  if (day !== todayStr() && $('dTodayBtn').getAttribute('aria-pressed') === 'true') setDay(todayStr());
+  if (followingToday && day !== todayStr()) setDay(todayStr());
 }, 60000);
 
 setDay(todayStr());
