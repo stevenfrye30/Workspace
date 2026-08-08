@@ -83,6 +83,36 @@ def regen_images():
            f"{len(diffs)} differ e.g. {diffs[:4]}; {len(missing)} not produced e.g. {missing[:4]}")
 
 
+def regen_series():
+    """archive/build_series.py from the texts' front-matter."""
+    gen = REPO / "archive" / "build_series.py"
+    out = REPO / "archive" / "series.json"
+    if not gen.exists():
+        skip("archive: rebuild series.json and diff", "build_series.py missing")
+        return
+    with tempfile.TemporaryDirectory() as td:
+        work = Path(td) / "archive"
+        work.mkdir(parents=True)
+        shutil.copy2(gen, work / gen.name)
+        shutil.copytree(REPO / "archive" / "texts", work / "texts")
+        r = subprocess.run([sys.executable, gen.name, "--write"], cwd=str(work),
+                           capture_output=True, text=True)
+        ok("archive: build_series.py runs", r.returncode == 0, (r.stderr or r.stdout)[-300:])
+        if r.returncode != 0:
+            return
+        ok("archive: series.json regenerates byte-identically",
+           out.exists() and filecmp.cmp(out, work / "series.json", shallow=False),
+           "series.json is stale — a text was added or retitled without re-running "
+           "archive/build_series.py")
+        data = json.loads(out.read_text(encoding="utf-8"))
+        n_texts = len(list((REPO / "archive" / "texts").glob("*.md")))
+        # Every part must be a text that exists, or the contents list 404s.
+        missing = [p["id"] for w in data["works"].values() for p in w["parts"]
+                   if not (REPO / "archive" / "texts" / (p["id"] + ".md")).exists()]
+        ok("archive: every listed part exists on disk", not missing, str(missing[:5]))
+        print(f"     {n_texts} texts, {len(data['works'])} works, {len(data['of'])} in a series")
+
+
 def regen_foods():
     """merge_extra.py must already have folded every curated record in."""
     src = REPO / "nutrilens"
@@ -228,6 +258,7 @@ def main():
     print("=" * 72)
     regen_images()
     regen_foods()
+    regen_series()
     print()
     print("=" * 72)
     print("ASSERT — invariants that keep the 2026-08-08 rot from returning")

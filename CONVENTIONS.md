@@ -69,6 +69,7 @@ the answer to "is this file generated, and can anyone rebuild it?"
 |---|---|---|---|
 | `images/index.html`, `artists.html`, `timeline.html`, `all.html`, `works.json`, `regions/*.html`, `artists/*.html` (1,886) | `images/data/*.json` (11 files) | `images/build.py` | **YES** — both tracked. `python images/build.py` reproduces all of it byte-for-byte |
 | `nutrilens/foods.json` | `nutrilens/foods-extra.json` + the USDA base already in the file | `nutrilens/merge_extra.py` (idempotent, folds by id) | **YES** — both tracked |
+| `archive/series.json` | the front-matter titles in `archive/texts/*.md` | `archive/build_series.py` | **YES** — both tracked |
 | `philosophy/index.html`'s `<script id="app-data">` block | `projects/culture/Philosophy/data.json` | `tools/embed_philosophy.py` | no — source and generator are outside the repo |
 | `flags/index.html` | `projects/culture/flags/Countries_Flags_Facts.html` (189 MB) | `projects/culture/flags/_build_cdn.py` — **broken**: its `SRC` path predates the move into `culture/` | no — and not by anyone, until that path is fixed |
 | `graph/atlas_graph.json`, `atlas/registry.json` | `Atlas/` | `Atlas/tools/sync_atlas_graph.py` — **guarded**: the hub is 22 nodes against the source's 14, so it refuses to run | no |

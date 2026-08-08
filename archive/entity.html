@@ -318,6 +318,66 @@
       margin: -0.4rem 0 1.6rem;
       max-width: var(--measure);
     }
+
+    /* Series contents: the other parts of the work this text belongs to.
+       `shelves.md` links only a work's first part, because a shelf is an
+       entrance and not an index — so 148 of the 269 texts had no click path
+       at all. This is that index, and it is the same quiet typed metadata as
+       Contributes-to above: no card, no border, no new colour. The current
+       part is marked rather than linked, so the list also says where you are. */
+    .text-series {
+      margin: 0.5rem 0 2rem;
+      max-width: var(--measure);
+    }
+    .text-series h2 {
+      font-size: 0.72rem !important;
+      margin: 0 0 0.4rem !important;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .text-series ol {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .text-series li {
+      margin: 0.15rem 0;
+      font-size: 0.95rem;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+    .text-series a.ts-link    { color: inherit; }
+    .text-series a.ts-link:hover { color: var(--accent); }
+    /* Where you are: the archive already uses weight, not colour, to say
+       "this one" — so does this. */
+    .text-series li.ts-here {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    /* Previous / next, at the foot of the reading. A single line, the same
+       register as the shelf-status note: present, not loud. */
+    .text-series-nav {
+      margin: 2.5rem 0 0.5rem;
+      max-width: var(--measure);
+      font-size: 0.88rem;
+      color: var(--muted);
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .text-series-nav a { color: inherit; }
+    .text-series-nav a:hover { color: var(--accent); }
+    .text-series-nav .tsn-dir {
+      color: var(--muted);
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-right: 0.4em;
+    }
+    .text-series-nav .tsn-next { margin-left: auto; text-align: right; }
   </style>
   <link rel="stylesheet" href="../_shared/hub-nav.css">
 </head>
@@ -1437,6 +1497,91 @@
         }
       }
 
+      // ---------- series navigation ----------
+      //
+      // A work's parts are listed in archive/series.json, built by
+      // archive/build_series.py from the front-matter titles. The series is
+      // DERIVED (from the id, ordered by its numbers) because no front-matter
+      // key names the individual work: `part_of` is the shelf — `upanishads`
+      // holds 116 texts across a dozen Upanishads — and `library_chapter` is
+      // the chapter of the source volume, identical across all 46
+      // Brihadaranyaka parts. See that script's docstring for the full survey.
+      //
+      // Optional, like the graph files: no series.json, or a text that belongs
+      // to no multi-part work, renders nothing at all.
+
+      function renderSeriesContents(article, work, currentId) {
+        var wrap = document.createElement("nav");
+        wrap.className = "text-series";
+        wrap.setAttribute("aria-label", "Parts of " + work.title);
+
+        var h2 = document.createElement("h2");
+        h2.textContent = work.title;
+        wrap.appendChild(h2);
+
+        var ol = document.createElement("ol");
+        work.parts.forEach(function (part) {
+          var li = document.createElement("li");
+          if (part.id === currentId) {
+            // Marked, not linked — a link to the page you are on is a dead end.
+            li.className = "ts-here";
+            li.textContent = part.label;
+            li.setAttribute("aria-current", "true");
+          } else {
+            var a = document.createElement("a");
+            a.className = "ts-link";
+            a.href = "entity.html?id=" + encodeURIComponent(part.id);
+            a.textContent = part.label;
+            li.appendChild(a);
+          }
+          ol.appendChild(li);
+        });
+        wrap.appendChild(ol);
+
+        // Sits with the other head metadata, under the title and its status
+        // line, so the reading itself still starts where it always did.
+        var anchor = article.querySelector("h1");
+        var status = article.querySelector(".shelf-status");
+        if (status) anchor = status;
+        if (anchor && anchor.nextSibling) {
+          article.insertBefore(wrap, anchor.nextSibling);
+        } else if (anchor) {
+          article.appendChild(wrap);
+        } else {
+          article.insertBefore(wrap, article.firstChild);
+        }
+      }
+
+      function renderSeriesNav(article, work, currentId) {
+        var i = -1;
+        work.parts.forEach(function (p, n) { if (p.id === currentId) i = n; });
+        if (i < 0) return;
+        var prev = i > 0 ? work.parts[i - 1] : null;
+        var next = i < work.parts.length - 1 ? work.parts[i + 1] : null;
+        if (!prev && !next) return;
+
+        var nav = document.createElement("nav");
+        nav.className = "text-series-nav";
+        nav.setAttribute("aria-label", work.title + " — previous and next");
+
+        function side(part, dir, cls) {
+          var span = document.createElement("span");
+          span.className = cls;
+          var label = document.createElement("span");
+          label.className = "tsn-dir";
+          label.textContent = dir;
+          var a = document.createElement("a");
+          a.href = "entity.html?id=" + encodeURIComponent(part.id);
+          a.textContent = part.label;
+          span.appendChild(label);
+          span.appendChild(a);
+          return span;
+        }
+        if (prev) nav.appendChild(side(prev, "Previous", "tsn-prev"));
+        if (next) nav.appendChild(side(next, "Next", "tsn-next"));
+        article.appendChild(nav);
+      }
+
       // ---------- main ----------
 
       fetch("./texts/" + id + ".md", { cache: "no-cache" })
@@ -1474,12 +1619,30 @@
               .catch(function () { return null; }),
             fetch("../graph/node_grounding_rules.json", { cache: "no-cache" })
               .then(function (r) { return r.ok ? r.json() : null; })
+              .catch(function () { return null; }),
+            // Appended, not inserted: the four above are read positionally
+            // below, so a new entry belongs at the end.
+            fetch("./series.json", { cache: "no-cache" })
+              .then(function (r) { return r.ok ? r.json() : null; })
               .catch(function () { return null; })
           ]).then(function (results) {
             var graph = results[0];
             var rawMap = results[1] || {};
             var rawPhrases = results[2] || {};
             var rawRules = results[3] || {};
+            var series = results[4] || null;
+
+            // Series contents + prev/next. Rendered before the graph layers
+            // so the head metadata order stays title → status → series, and
+            // so a missing/!ok series.json can never hold up the reading.
+            if (series && series.of && series.works) {
+              var workKey = series.of[id];
+              var work = workKey ? series.works[workKey] : null;
+              if (work && work.parts && work.parts.length > 1) {
+                renderSeriesContents(target, work, id);
+                renderSeriesNav(target, work, id);
+              }
+            }
 
             var mapping = {};
             Object.keys(rawMap).forEach(function (k) {
