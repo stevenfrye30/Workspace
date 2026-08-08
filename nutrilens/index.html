@@ -293,11 +293,19 @@
 <div class="cmp-overlay" id="cmpOverlay"></div>
 <div id="glossPop"></div>
 
-<script src="foods.js"></script>
 <script>
-const D = window.NUTRI_DATA;
-const FOODS = D.foods;
-const UNITS = D.nutrient_units;
+/* The library is FETCHED, not compiled in.
+ *
+ * There used to be a `foods.js` beside `foods.json` — the same records twice,
+ * one wrapped in `window.NUTRI_DATA = …`. Nothing generated the .js from the
+ * .json, so when the .json grew the .js didn't: it sat four months behind, and
+ * this page quietly searched 1,270 foods while Mirror searched 1,472 out of the
+ * same folder. Two copies of one corpus with no build step between them will
+ * always drift, so the fix was to stop having two.
+ *
+ * This page now reads exactly what Mirror reads. `merge_extra.py` writes
+ * `foods.json` and there is nothing else to remember to rebuild. */
+let D = null, FOODS = [], UNITS = {};
 
 // FDA Daily Values
 const DV = {
@@ -1182,11 +1190,31 @@ function wireLabelScan() {
 wireLabelScan();
 
 // ---------- Init ----------
-renderCategories();
-renderGrid();
-readUrl();
-if (activeFood) { const f = FOODS.find(x => x.id === activeFood); if (f) showDetail(f); }
-updateCmpBar();
+/* Everything above is wiring; nothing reads FOODS until the fetch lands, so the
+   whole first paint waits on one request. If it fails we say so plainly rather
+   than rendering an empty grid that looks like a library with no food in it. */
+async function boot() {
+  try {
+    const res = await fetch('foods.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    D = await res.json();
+    FOODS = D.foods || [];
+    UNITS = D.nutrient_units || {};
+  } catch (err) {
+    document.getElementById('status').innerHTML =
+      '<b>Food library unavailable</b> — foods.json did not load (' +
+      String(err.message || err) + '). Serve this folder over http(s); ' +
+      'a browser will not fetch it from a file:// page.';
+    document.getElementById('topStats').textContent = '';
+    return;
+  }
+  renderCategories();
+  renderGrid();
+  readUrl();
+  if (activeFood) { const f = FOODS.find(x => x.id === activeFood); if (f) showDetail(f); }
+  updateCmpBar();
+}
+boot();
 </script>
 </body>
 </html>
