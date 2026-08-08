@@ -127,10 +127,11 @@
       <input type="file" id="fileInput" accept=".json,application/json">
     </div>
     <p class="help-block">
-      Or use the bundled multi-tradition sample (Buddhist + Upanishadic
-      + Stoic + Platonic):
+      The Concept Graph loads automatically from
+      <code>atlas_graph.json</code> — the same file the Graph page and the
+      archive reading view read. Reload it here after it changes:
     </p>
-    <button id="loadSample" style="width:100%">load bundled sample</button>
+    <button id="loadSample" style="width:100%">reload the graph</button>
 
     <h2>Clusters <span class="small" id="clusterCount" style="font-weight:normal;text-transform:none;letter-spacing:0;"></span></h2>
     <div id="clusterList">
@@ -277,41 +278,35 @@ function titleCase(s) {
 }
 
 // ============================================================
-//  Embedded sample (auto-generated from examples/multi_corpus)
+//  The graph, fetched
 // ============================================================
-const EMBEDDED_SAMPLE = {
-  "nodes": [
-    {"id":"OM-028a568b","type":"OM","subtype":"monism","label":"all-is-one","axes":["absolute","non-duality"],"operation":"assert","corpus_locators":["plato/republic:2","upanishads/chandogya:3","upanishads/kena:3"]},
-    {"id":"IM-0dc1c8dd","type":"IM","subtype":"self-as-illusion","label":"self-is-illusion","axes":["non-self","self"],"operation":"negate","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
-    {"id":"CS-1ad1dc09","type":"CS","subtype":"renunciation","label":"renunciation-of-world","axes":["renunciation","world"],"operation":"dissolve","corpus_locators":["buddhist/dhammapada-3:3","buddhist/prajnaparamita:2"]},
-    {"id":"LM-36ebce29","type":"LM","subtype":"liberation-by-realization","label":"liberation-by-realization","axes":["absolute","freedom","non-duality"],"operation":"align","corpus_locators":["upanishads/chandogya:3","upanishads/kena:3"]},
-    {"id":"LM-59d26971","type":"LM","subtype":"liberation-by-ethical-conduct","label":"liberation-by-ethical-conduct","axes":["discipline","freedom"],"operation":"align","corpus_locators":["epictetus/discourses:1","epictetus/discourses:2"]},
-    {"id":"IM-6657916a","type":"IM","subtype":"self-as-substance","label":"self-is-permanent-substance","axes":["permanence","self"],"operation":"assert","corpus_locators":["plato/republic:2","upanishads/chandogya:1","upanishads/kena:1"]},
-    {"id":"IM-69f621d6","type":"IM","subtype":"self-as-process","label":"self-as-process-of-aggregates","axes":["impermanence","self"],"operation":"situate","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
-    {"id":"LM-9ea458a9","type":"LM","subtype":"liberation-by-knowledge","label":"liberation-by-knowledge","axes":["absolute","freedom","knowledge"],"operation":"align","corpus_locators":["plato/republic:1","upanishads/chandogya:2","upanishads/kena:2"]},
-    {"id":"LM-c101ae16","type":"LM","subtype":"liberation-by-cessation","label":"liberation-by-cessation","axes":["freedom","impermanence","non-self"],"operation":"dissolve","corpus_locators":["buddhist/dhammapada-3:2","buddhist/prajnaparamita:2"]},
-    {"id":"IM-c2113c94","type":"IM","subtype":"self-as-witness","label":"self-witness-of-experience","axes":["knowledge","self"],"operation":"situate","corpus_locators":["plato/republic:2","upanishads/chandogya:1","upanishads/chandogya:2","upanishads/kena:1","upanishads/kena:2"]},
-    {"id":"OM-e1f9907b","type":"OM","subtype":"non-self","label":"non-self-ontology","axes":["impermanence","non-self"],"operation":"negate","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
-    {"id":"CS-fd9b8818","type":"CS","subtype":"cognitive-regulation","label":"discipline-of-mind","axes":["discipline","knowledge"],"operation":"regulate","corpus_locators":["buddhist/dhammapada-3:3","buddhist/prajnaparamita:3","epictetus/discourses:2"]},
-    {"id":"CM-fe58aea2","type":"CM","subtype":"conditioned-arising","label":"conditioned-arising","axes":["cause","effect","impermanence"],"operation":"produce","corpus_locators":["buddhist/dhammapada-3:2","buddhist/prajnaparamita:3"]}
-  ],
-  "edges": [
-    {"id":"E-0001","type":"causal-dependency","source":"CM-fe58aea2","target":"LM-c101ae16","rationale":"CM grounds LM via shared causal/freedom axes","corpus_locators":["buddhist/dhammapada-3:2"]},
-    {"id":"E-0002","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"CM-fe58aea2","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":[]},
-    {"id":"E-0003","type":"inversion","source":"IM-0dc1c8dd","target":"IM-6657916a","rationale":"IM nodes with opposed self/non-self axes and reversed operations","corpus_locators":[]},
-    {"id":"E-0004","type":"contradiction","source":"IM-0dc1c8dd","target":"IM-6657916a","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
-    {"id":"E-0005","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"IM-0dc1c8dd","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
-    {"id":"E-0006","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"IM-69f621d6","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":["buddhist/dhammapada-3:1","buddhist/prajnaparamita:1"]},
-    {"id":"E-0007","type":"contradiction","source":"LM-36ebce29","target":"LM-c101ae16","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
-    {"id":"E-0008","type":"functional-overlap","source":"LM-36ebce29","target":"OM-028a568b","rationale":"cross-type axis overlap","corpus_locators":["upanishads/chandogya:3","upanishads/kena:3"]},
-    {"id":"E-0009","type":"hierarchical-refinement","source":"OM-028a568b","target":"LM-36ebce29","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":["upanishads/chandogya:3","upanishads/kena:3"]},
-    {"id":"E-0010","type":"contradiction","source":"LM-59d26971","target":"LM-c101ae16","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
-    {"id":"E-0011","type":"contradiction","source":"LM-9ea458a9","target":"LM-c101ae16","rationale":"same node-type with reversed operation and shared axis","corpus_locators":[]},
-    {"id":"E-0012","type":"hierarchical-refinement","source":"OM-028a568b","target":"LM-9ea458a9","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":[]},
-    {"id":"E-0013","type":"functional-overlap","source":"LM-c101ae16","target":"OM-e1f9907b","rationale":"cross-type axis overlap","corpus_locators":[]},
-    {"id":"E-0014","type":"hierarchical-refinement","source":"OM-e1f9907b","target":"LM-c101ae16","rationale":"OM grounds non-OM node via shared structural axis","corpus_locators":[]}
-  ]
-};
+/* This file used to carry a hardcoded `EMBEDDED_SAMPLE` — 13 nodes and 14
+   edges pasted in from examples/multi_corpus — and it never fetched anything.
+   The canonical graph sits right beside it at atlas_graph.json with 22 nodes
+   and 29 edges, which is what graph.js and archive/entity.html both read. So
+   the Visualizer contradicted the Graph page in the same room: nine structural
+   claims and fifteen relations were invisible here, six shared nodes
+   under-reported their textual evidence (33 locators instead of 58), and no
+   node carried any of the four time fields, so nothing time-based could work
+   at all.
+
+   It reads the real file now. Same source as its neighbours, one copy. */
+const GRAPH_URL = "atlas_graph.json";
+
+async function loadCanonicalGraph() {
+  const status = document.getElementById("status");
+  status.textContent = "loading " + GRAPH_URL + "…";
+  try {
+    const res = await fetch(GRAPH_URL, { cache: "no-cache" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    buildCytoscape(await res.json());
+  } catch (err) {
+    // Say what failed. A silent empty canvas reads as "the graph is empty",
+    // which is a different and much more alarming claim.
+    status.textContent = "could not load " + GRAPH_URL + " (" +
+      (err.message || err) + ") — open a file instead";
+  }
+}
 
 // ============================================================
 //  State
@@ -541,6 +536,14 @@ function buildCytoscape(json) {
         operation: n.operation || "",
         axes: n.axes || [],
         sources: n.corpus_sources || n.corpus_locators || [],
+        /* The old embedded sample had no time fields, so the mapping never
+           carried them and they were dropped on arrival. The canonical graph
+           has all four on every node, so they come through now — nothing here
+           reads them yet, but the data reaching the page is the data. */
+        domain: n.domain || "",
+        timestamp: n.timestamp || "",
+        time_start: n.time_start || "",
+        time_end: n.time_end || "",
         parent: presentTypes.has(n.type) ? "cluster-" + n.type : undefined,
       }
     });
@@ -1114,9 +1117,7 @@ document.getElementById("fileInput").addEventListener("change", evt => {
   reader.readAsText(file);
 });
 
-document.getElementById("loadSample").addEventListener("click", () => {
-  buildCytoscape(EMBEDDED_SAMPLE);
-});
+document.getElementById("loadSample").addEventListener("click", loadCanonicalGraph);
 
 document.getElementById("relayout").addEventListener("click", () => {
   if (!cy) return;
@@ -1131,7 +1132,7 @@ document.getElementById("layoutSel").addEventListener("change", () => {
 //  Boot
 // ============================================================
 buildFilterUI();
-buildCytoscape(EMBEDDED_SAMPLE);
+loadCanonicalGraph();
 </script>
 </body>
 </html>
