@@ -18,13 +18,18 @@ silently repurposed — see [`SCHEMA.md`](./SCHEMA.md), the decoder ring for you
 | **`records.html`** | Everything you have ever entered, searchable in one place. |
 | **`self.html`** | The older seven-room version, on the same data. |
 
-**The dashboard** is one page in four bands: fixed instruments at the top (how you are ·
-intake · habits · movement · food · hygiene · sleep), a row of link pills over the six-tile **log grid**
-(person · book · idea · place · money · values), then the **Tracker** — every entry of the day
-in the order you made it — with the week in review and **Connections** beneath it. Connections
-is the record talking back: differences in how you felt on days with and without sleep,
-movement, protein, alcohol, a habit kept — drawn from your last 90 days at read time, stored
-nowhere, and always worded as a gentle association, never proof.
+**The dashboard** is a set of **boxes you arrange**. A rail under the header holds one chip
+per box — Food · Intake · Movement · Hygiene · How you are · Blood glucose · Log grid — in a
+fixed catalogue order: click a chip (or a box's `−`) to minimise it, click again to reopen
+(reopened boxes land at the end). Drag a box by its `⠿` to reorder — long-press on a phone,
+`Alt+←/→` on a focused header — and the arrangement is remembered per device
+(`mirror_layout_v1`, chrome not data: it never enters a backup or sync). The day you are
+logging for sits beside the title; below the boxes, a row of link pills, then the always-on
+report band: the **Tracker** — every entry of the day in the order you made it — the week in
+review, and **Connections**. Connections is the record talking back: differences in how you
+felt on days with and without sleep, movement, protein, alcohol, a habit kept — drawn from
+your last 90 days at read time, stored nowhere, and always worded as a gentle association,
+never proof.
 
 **The instruments never change shape as you log** — values move, geometry does not. Nothing
 on a card grows or shifts a control because of something you recorded: entries land in the
@@ -50,7 +55,9 @@ compact row — Shower and Haircut squares around a stacked Brush / Floss pair; 
 per press (twice a day is two Tracker lines), the others toggle, and tapping again takes a
 mark back. One tap logs a glass of water; sleep is two handles on a
 24-hour track, so you say when you went down and got up rather than doing the arithmetic;
-`Undo` in the header takes back the last thing you did, including a deletion.
+**Blood glucose** is one number and a Log button — mg/dL, the day's readings dotted by range
+in a fixed window — because a reading is all it should ask for. `Undo` in the header takes
+back the last thing you did, including a deletion.
 
 Clicking the title opens the **Overview** — what the record adds up to: days kept, sleep
 average, this month's money, habits over the last seven days, the values you keep, and the last
@@ -174,7 +181,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v19**.
+**schema v20**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is

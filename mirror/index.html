@@ -77,6 +77,7 @@
     --shadow:0 1px 2px rgba(42,38,32,.05);
     --water:#4a7a9b; --coffee:#7a5232; --other:#3e7070;
     --alcohol:#7a4a7a; --nicotine:#6b6b6b; --weed:#4a7a4a;
+    --glucose:#a85a66;
   }
   body.theme-dark {
     --bg:#1c1e24; --panel:#24262e; --panel2:#2d3039;
@@ -85,6 +86,7 @@
     --shadow:0 1px 2px rgba(0,0,0,.25);
     --water:#7aa8c8; --coffee:#b08055; --other:#6ba0a0;
     --alcohol:#a87aa8; --nicotine:#9a9a9a; --weed:#7aab7a;
+    --glucose:#c87a86;
   }
   body {
     background: var(--bg); color: var(--ink);
@@ -200,6 +202,27 @@
     font: inherit; font-size: 1rem; line-height: 1; padding: 0 3px;
   }
   .minb:hover { color: var(--warn); }
+
+  /* ---------- blood glucose ---------- */
+  .bgrow { display: flex; gap: 8px; align-items: stretch; }
+  .bgrow input { flex: 1 1 0; min-width: 0; text-align: center; }
+  .bgrow .bgunit { align-self: center; font-size: .74rem; color: var(--dim); flex: 0 0 auto; }
+  .bgslot {
+    height: 128px;             /* HARD height + overflow hidden, per the invariant */
+    overflow: hidden; margin-top: 10px;
+    display: flex; flex-direction: column; gap: 3px;
+  }
+  .bgr { display: flex; align-items: center; gap: 7px; font-size: .82rem; }
+  .bgr .dot { width: 8px; height: 8px; border-radius: 999px; flex: 0 0 auto; }
+  .bgr .v { font-weight: 600; font-variant-numeric: tabular-nums; }
+  .bgr .t { margin-left: auto; color: var(--dim); font-size: .72rem; font-variant-numeric: tabular-nums; }
+  .bgempty { color: var(--dim); font-style: italic; font-size: .78rem; }
+  .bgshake { animation: bgshake .3s; }
+  @keyframes bgshake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); } 50% { transform: translateX(4px); }
+    75% { transform: translateX(-2px); }
+  }
 
   /* ---------- cards ---------- */
   .card {
@@ -1017,6 +1040,22 @@
     </div>
   </div>
 
+  <!-- Blood glucose — one field, one unit, one list. A reading and nothing
+       else, by request: no context tag, no insulin, no note — the Tracker
+       already carries the time. -->
+  <div class="card boxed" id="glucoseCard" style="--c: var(--glucose)">
+    <h2><span class="grab" aria-hidden="true">⠿</span>Blood glucose<button class="minb" type="button">−</button></h2>
+    <div class="bgrow">
+      <input type="number" id="bgVal" min="20" max="600" step="1" inputmode="numeric"
+             aria-label="Blood glucose in mg/dL">
+      <span class="bgunit">mg/dL</span>
+      <button class="primary" id="bgLog" type="button">Log</button>
+    </div>
+    <!-- HARD 128px, overflow hidden: twenty readings cost the same height
+         as one. The forever-copy and the Tracker hold the full day. -->
+    <div class="bgslot" id="bgList"></div>
+  </div>
+
   <!-- Six things you log, one tap each. Not four drawers you open first. -->
   <div class="card" id="logGridCard">
     <h2><span class="grab" aria-hidden="true">⠿</span>Log grid<button class="minb" type="button">−</button></h2>
@@ -1089,7 +1128,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 19;
+const SCHEMA_VERSION = 20;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -1143,6 +1182,7 @@ const defaultState = () => ({
     hygiene: [],                           // v15
     exerciseTypes: [],                     // v16
     workouts: [],                          // v17
+    glucose: [],                           // v20
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
   money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
@@ -1192,6 +1232,8 @@ function mergeLoaded(saved) {
   // v18 -> v19: OPTIONAL fields only — `form` on alcohol/nicotine substances
   // (weed had it since v13), `oz` returning on alcohol deliberately, and a
   // `brush` counter on hygiene[] — so there is nothing to backfill.
+  // v19 -> v20: blood glucose readings. Purely additive.
+  if (!Array.isArray(out.body.glucose)) out.body.glucose = [];
   if (!Array.isArray(out.links)) out.links = [];
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
@@ -3287,6 +3329,69 @@ function toggleHygiene(key, name) {
 function renderSymptoms() { /* symptoms live in the tracker; nothing to draw here */ }
 
 /* =============================================================
+   BLOOD GLUCOSE — a reading and nothing else (v20).
+
+   One integer, always mg/dL: a single-unit reading does not store a unit
+   field, and mmol/L later is a derived display, not a migration. `at` is
+   the reading's own local timestamp with offset; a BACKDATED reading gets
+   the date alone, because a clock time would be fiction — the same honesty
+   rule `t` follows everywhere else.
+   ============================================================= */
+const BG_HIGH = 140;
+const BG_LOW = 70;
+
+function localNowISO() {
+  const d = new Date();
+  const off = -d.getTimezoneOffset();
+  const p = (n) => String(Math.abs(n)).padStart(2, '0');
+  return toLocalISO(d) + 'T' + p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) +
+         (off >= 0 ? '+' : '-') + p(Math.trunc(Math.abs(off) / 60)) + ':' + p(Math.abs(off) % 60);
+}
+const bgDay = (r) => String(r.at || '').slice(0, 10);
+const bgTime = (r) => {
+  const s = String(r.at || '');
+  return s.length > 10 ? s.slice(11, 16) : '';
+};
+const bgDotColor = (v) =>
+  v > BG_HIGH ? 'var(--warn)' : (v < BG_LOW ? 'var(--accent)' : 'var(--accent2)');
+
+function logGlucose() {
+  const el = $('bgVal');
+  const v = Math.round(Number(el.value));
+  if (!el.value.trim() || !(v >= 20 && v <= 600)) {
+    // Reject silently: the shake says "not that", a toast would say it twice.
+    el.classList.remove('bgshake');
+    void el.offsetWidth;                     // restart the animation
+    el.classList.add('bgshake');
+    return;
+  }
+  const rec = stamp({ id: uid(), mgdl: v, at: day === todayStr() ? localNowISO() : day });
+  appendRec(state.body.glucose, rec, 'Blood glucose ' + v + ' mg/dL');
+  el.value = '';
+  saveState(); renderGlucose(); renderFeed();
+  toast('Blood glucose ' + v + ' mg/dL — tap Undo to take it back');
+}
+
+function renderGlucose() {
+  const box = $('bgList');
+  if (!box) return;
+  const rows = (state.body.glucose || []).filter((r) => bgDay(r) === day)
+    .slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  box.innerHTML = '';
+  if (!rows.length) {
+    box.innerHTML = '<div class="bgempty">Nothing logged today.</div>';
+    return;
+  }
+  rows.forEach((r) => {
+    const div = document.createElement('div'); div.className = 'bgr';
+    div.innerHTML = '<span class="dot" style="background:' + bgDotColor(Number(r.mgdl)) + '"></span>' +
+      '<span class="v">' + Number(r.mgdl) + '</span>' +
+      '<span class="t">' + esc(bgTime(r)) + '</span>';
+    box.appendChild(div);
+  });
+}
+
+/* =============================================================
    THE TRACKER — every instrument empties into here.
 
    Ordered by _at (when you entered it), not by t (the time of day it is
@@ -3358,6 +3463,13 @@ function renderFeed() {
   });
   onDay(state.body.symptoms).forEach((r) =>
     push(r, '⚕', r.note, () => dropRecord(state.body.symptoms, r.id, r.note)));
+  /* Glucose keys on its own `at` (it has no `date` field); the reading's
+     clock time rides the row the way `t` does everywhere else. */
+  (state.body.glucose || []).filter((r) => bgDay(r) === day).forEach((r) => rows.push({
+    at: (r._up || r._at) || '', t: bgTime(r), ic: '🩸',
+    tx: 'Blood glucose ' + r.mgdl + ' mg/dL',
+    del: () => dropRecord(state.body.glucose, r.id, 'Blood glucose ' + r.mgdl + ' mg/dL'),
+  }));
 
   /* The marks all hang off one record per day, so they share its `_up` and
      sit together in the order they are listed on the card. Removing one here
@@ -3722,6 +3834,10 @@ function renderWeek() {
   // weeks that span the change.
   const brushes = hyg.reduce((n, h) =>
     n + (Number(h.brush) || 0) + (h.brush_am === true ? 1 : 0) + (h.brush_pm === true ? 1 : 0), 0);
+  // Glucose keys on its own `at`; the cell only exists when there is a reading.
+  const bgWeek = (state.body.glucose || []).filter((r) => days.includes(String(r.at || '').slice(0, 10)));
+  const bgAvg = bgWeek.length
+    ? Math.round(bgWeek.reduce((n, r) => n + Number(r.mgdl || 0), 0) / bgWeek.length) : 0;
 
   const cell = (k, v, u) => '<div class="c"><div class="k">' + k + '</div><div class="v">' +
     (v == null ? '—' : v) + (u ? '<span class="u"> ' + u + '</span>' : '') + '</div></div>';
@@ -3733,6 +3849,7 @@ function renderWeek() {
     cell('Sleep', sleeps.length ? round1(avg(sleeps)) : null, 'h avg') +
     cell('Water', Math.round(water / 7), 'oz/day') +
     cell('Movement', exCount, exCount ? 'x · ' + exMin + ' min' + (exKcal ? ' · ≈' + exKcal + ' kcal' : '') : '') +
+    (bgWeek.length ? cell('Glucose', bgWeek.length, '× · avg ' + bgAvg) : '') +
     cell('Alcohol', cnt('alcohol'), '') +
     cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '') +
     cell('Brushed', brushes, '') +
@@ -4016,6 +4133,8 @@ const MD_SUMMARY = [
     (r.cat ? moveLine(r) : `${r.type}${r.minutes ? `, ${r.minutes} min` : ''}`) +
     `${r.workoutName ? ` (${r.workoutName})` : ''}`],
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
+  ['Blood glucose', () => state.body.glucose, (r) =>
+    `${String(r.at || '').slice(0, 10)} — ${r.mgdl} mg/dL${bgTime(r) ? ` at ${bgTime(r)}` : ''}`],
   ['Hygiene', () => state.body.hygiene, (r) => {
     const bits = Number(r.brush) ? ['Brush ×' + Number(r.brush)] : [];
     HYGIENE_MARKS.forEach(([k, , name]) => { if (r[k] === true) bits.push(name); });
@@ -4044,6 +4163,7 @@ function buildDataMarkdown() {
     ['Substances', state.body.substances], ['Sleep nights', state.body.sleep],
     ['Hygiene days', state.body.hygiene],
     ['Exercise sessions', state.body.exercise], ['Symptoms', state.body.symptoms],
+    ['Glucose readings', state.body.glucose],
     ['Habits', state.habits.items], ['People', state.relationships.people],
     ['Birthdays', state.relationships.birthdays], ['Books', state.mind.books],
     ['Quotes', state.mind.quotes], ['Ideas', state.mind.ideas],
@@ -4364,7 +4484,7 @@ const MERGE_BY_ID = [
   ['body', 'food'], ['body', 'water'], ['body', 'sleep'], ['body', 'exercise'],
   ['body', 'symptoms'], ['body', 'customFoods'], ['body', 'meals'],
   ['body', 'drinks'], ['body', 'substances'], ['body', 'exerciseTypes'],
-  ['body', 'workouts'],
+  ['body', 'workouts'], ['body', 'glucose'],
   ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
   ['money', 'categories'], ['money', 'expenses'], ['money', 'income'], ['money', 'subscriptions'],
   ['money', 'netWorth'], ['money', 'goals'],
@@ -4820,7 +4940,7 @@ function openSyncSetup() {
 function renderAll() {
   loadPulse(); loadSleep();
   renderIntake(); renderFoodTotals();
-  renderMovement(); renderHygiene(); renderHabits(); renderSymptoms(); renderFeed();
+  renderMovement(); renderHygiene(); renderGlucose(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
 
@@ -5077,6 +5197,8 @@ if (syncConfigured()) {
   renderSyncPill();
 }
 $('pSave').onclick = savePulse;
+$('bgLog').onclick = logGlucose;
+$('bgVal').onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); logGlucose(); } };
 $('sleepEnter').onclick = enterSleep;
 wireSleepTrack();
 $('exCats').addEventListener('click', (e) => {
@@ -5365,6 +5487,7 @@ function recordLabel(r, store) {
     return r.cat ? moveLine(r)
                  : (r.type || 'movement') + (r.minutes ? ' \u00b7 ' + r.minutes + ' min' : '');
   }
+  if (store === 'glucose') return 'Blood glucose ' + r.mgdl + ' mg/dL';
   if (store === 'expenses') return fmt$(r.amount) + (r.note ? ' \u00b7 ' + r.note : '');
   if (store === 'income') return '+' + fmt$(r.amount) + (r.source ? ' \u00b7 ' + r.source : '');
   if (store === 'subscriptions') return r.name + ' \u00b7 ' + fmt$(r.amount) + '/' + (r.cadence || 'monthly');
@@ -5450,6 +5573,7 @@ $('overviewBtn').onclick = () => {
     expenses: '💵', income: '💰', categories: '📊', subscriptions: '🔁',
     items: '📍', food: '🍽', water: '💧', drinks: '🥤', substances: '◍',
     sleep: '🌙', exercise: '🏃', symptoms: '⚕', meals: '🍱', customFoods: '🍳',
+    glucose: '🩸',
   };
   const rows = recent.slice(0, 10).map(({ r, at, store }) =>
     '<div class="r"><span class="ic">' + (RECENT_IC[store] || '·') + '</span>' +

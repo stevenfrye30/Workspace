@@ -239,6 +239,16 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
     it is never recomputed retroactively — a later weight change alters future estimates
     only. Deleting every `kcalEst` would lose nothing measured.
 - **symptoms[]** — `{ id, date, note, ... }`. Free-text, sparse, high-value context.
+- **glucose[]** *(v20)* — `{ id, mgdl, at, _src, _at, _up }`. Blood-glucose readings — a
+  reading and nothing else: no context tag, no insulin, no note. `mgdl` is an **integer,
+  always mg/dL** — a single-unit reading does not store a unit field, and mmol/L later is a
+  derived display, not a migration. `at` is the reading's own **local ISO timestamp with
+  offset** ("2026-08-07T12:40:00-05:00"); a **backdated** reading stores the date alone,
+  because a clock time would be fiction — the same honesty rule `t` follows everywhere
+  else. The day a reading belongs to is `at`'s first ten characters; this is the one store
+  without a separate `date` field. Display thresholds are constants, not data:
+  `BG_HIGH = 140`, `BG_LOW = 70` tint the card's dots and store nothing. Merges by id like
+  every other record array; undo and the Tracker's ✕ remove by `id`.
 - **exerciseTypes[]** *(v16; grew `cat`/`gone` in v18)* — `{ id, name, fav?, cat?, gone?,
   _src, _at, _up }`. Names worth offering again. A preference store, not an observation —
   records rather than a flag map so it merges by `id` with the same last-writer-wins `_up`
@@ -625,6 +635,17 @@ means**. So:
     upsert-vs-stack behaviour it drives are unchanged; it just never surfaces.
   - Merge kinds unchanged — substances union by id, hygiene merges by date field-by-field;
     every new field rides the rule its store already had.
+- **v20** → **Blood glucose, and the dashboard becomes arrangeable.** One new store,
+  `body.glucose[]` (see §3) — additive, merged by id, carried untouched by `self.html`,
+  Records and both forever-copies. The dashboard's cards became **boxes**: a rail of chips
+  opens and minimises them, drag (or Alt+arrows) reorders them, and the four assigned
+  columns became one flow grid. None of that touches this document's subject: the
+  arrangement lives in **`localStorage['mirror_layout_v1']`** — `{ order: [...ids],
+  open: {id: bool} }` — which is *device chrome, not life data*. It sits **outside
+  `state`** on purpose, so it reaches neither the forever-copy nor sync: two devices are
+  allowed different desks. Unknown ids in a stored order are dropped; catalogue ids
+  missing from it are appended in catalogue order and default to open, so a future box
+  appears rather than hides. Losing this key loses an arrangement, never a record.
 
 ---
 
