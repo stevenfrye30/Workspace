@@ -26,6 +26,7 @@ lives inside the disposable browser profile. Suites run in a fixed timezone
 | `validate_v19_round.py` | Intake sub-forms (alcohol/nicotine forms, fixed heights across all tabs and steps), sleep wording ban, hygiene brush counter + merge union, column order, weekly review pickup |
 | `validate_review_fixes.py` | One regression test per finding of the 2026-08 review pass: targets spread on self.html, canonical move casing, edit-survives-sync-pull, intensity clamp, session-counting week, gone-tombstones in the builder list, focus ring, and the rest |
 | `validate_connections.py` | The Connections engine: exact group averages, the both-groups-3+ and 0.35 gates, direction tinting, hedge language on every row, substance signals, weekday card, empty state, derived-not-stored |
+| `validate_search.py` | Food search in both apps that read the library (Mirror's `tokenRank` + aliases and NutriLens' `filterSort` are separate implementations): the stemmer's rules, plural queries reaching singular rows and back, and guards that literal matches did not regress |
 | `validate_v20_boxes.py` | The v20 spec's ten acceptance checks, one block each: the header's day chip and pop, the seven-chip rail, minimise/reopen-appends, drag with mouse + long-press + Alt+arrows with reload persistence, the all-closed grid, Blood glucose (Enter/Log/Tracker/forever-copy/undo, hard 128px slot), `mirror_layout_v1` absent from the forever-copy, v19→v20 migration, and the self.html glucose round-trip |
 
 ## Conventions

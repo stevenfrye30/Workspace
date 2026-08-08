@@ -2036,14 +2036,69 @@ function foodLine(r) {
    WHOLE-WORD match now outranks a prefix-of-a-longer-word: "egg" matches the
    word "Egg," in "Egg, hard-boiled" before it matches the start of "Eggnog". */
 const WORD_EDGE = /[\s,()\-/]/;
+
+/* ---- plural folding ----
+   The library says "Nuts, cashew nuts, raw" and people type "cashews"; it
+   says "Cherries, sweet, raw" and people type "cherry". Folding plurals off
+   BOTH sides of the comparison repaired a whole class of misses — cashews,
+   pistachios, mashed potatoes — without adding a single row, which makes it
+   the cheapest coverage in the app.
+
+   Deliberately crude, and only ever a FALLBACK: a stem is never displayed,
+   never stored, and never consulted until the literal comparison has already
+   failed. So a wrong stem ("molasses" → "molass") costs nothing, while a
+   right one ("fries" → "fry") earns a lot, and no match that worked before
+   can break. */
+function singularWord(w) {
+  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';    // cherries → cherry
+  if (w.length > 4 && w.endsWith('oes')) return w.slice(0, -2);          // potatoes → potato
+  if (w.length > 4 && /(ch|sh|s|x|z)es$/.test(w)) return w.slice(0, -2); // peaches → peach
+  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1);  // cashews → cashew
+  return w;
+}
+/* Cached: this runs over the whole library on every keystroke, but there are
+   only ~1400 names and they never change, so each is stemmed once. */
+const singCache = new Map();
+function singularize(s) {
+  let v = singCache.get(s);
+  if (v === undefined) { v = s.replace(/[a-z]+/g, singularWord); singCache.set(s, v); }
+  return v;
+}
+
 /** How well one word matches a name: 0 exact, 1 whole word, 2 word-prefix, 3 buried, -1 absent. */
-function tokenRank(name, t) {
+function rankIn(name, t) {
   const i = name.indexOf(t);
   if (i < 0) return { rank: -1, pos: -1 };
   const startsWord = i === 0 || WORD_EDGE.test(name[i - 1]);
   const after = name[i + t.length];
   const endsWord = after === undefined || WORD_EDGE.test(after);
   return { rank: name === t ? 0 : (startsWord && endsWord) ? 1 : startsWord ? 2 : 3, pos: i };
+}
+/** rankIn, then the same comparison with plurals folded off either side. */
+function tokenRank(name, t) {
+  const direct = rankIn(name, t);
+  if (direct.rank >= 0) return direct;
+  const ts = singularize(t), ns = singularize(name);
+  if (ts !== t) {
+    const r = rankIn(name, ts);
+    if (r.rank >= 0) return r;
+  }
+  if (ns !== name) {
+    for (const cand of (ts !== t ? [ts, t] : [t])) {
+      const r = rankIn(ns, cand);
+      if (r.rank >= 0) return r;
+    }
+  }
+  return { rank: -1, pos: -1 };
+}
+/** Aliases are a bag of words, not a name, so they only need containment —
+ *  folded the same way, for the same reason. */
+function aliasHas(alias, t) {
+  if (alias.includes(t)) return true;
+  const ts = singularize(t);
+  if (ts !== t && alias.includes(ts)) return true;
+  const as = singularize(alias);
+  return as !== alias && (as.includes(t) || (ts !== t && as.includes(ts)));
 }
 function searchFoods(q) {
   if (!foodsIndex || !q) return [];
@@ -2065,7 +2120,7 @@ function searchFoods(q) {
     const each = tokens.map((t) => {
       const r = tokenRank(name, t);
       if (r.rank >= 0) return r;
-      return alias.includes(t) ? { rank: 4, pos: 0 } : { rank: -1, pos: -1 };
+      return aliasHas(alias, t) ? { rank: 4, pos: 0 } : { rank: -1, pos: -1 };
     });
     if (each.some((r) => r.rank < 0)) continue;
     // The worst word decides the tier, so a stray buried word can't flatter a match.

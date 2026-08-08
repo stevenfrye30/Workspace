@@ -506,12 +506,37 @@ function macroBar(f) {
     </div>
     <div class="macro-labels"><span>P ${fmt(f.protein_g)}g</span><span>F ${fmt(f.fat_g)}g</span><span>C ${fmt(f.carbs_g)}g</span></div>`;
 }
+/* Plural folding. The library says "cashew nuts" and people type "cashews";
+   it says "Cherries" and people type "cherry". Folding plurals off both sides
+   of the comparison costs nothing and finds rows that were already here.
+   Only a FALLBACK — consulted after the literal match fails, so it can add a
+   result but never remove one. Same rules as mirror/index.html. */
+function singularWord(w) {
+  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
+  if (w.length > 4 && w.endsWith('oes')) return w.slice(0, -2);
+  if (w.length > 4 && /(ch|sh|s|x|z)es$/.test(w)) return w.slice(0, -2);
+  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1);
+  return w;
+}
+const singCache = new Map();
+function singularize(s) {
+  let v = singCache.get(s);
+  if (v === undefined) { v = s.replace(/[a-z]+/g, singularWord); singCache.set(s, v); }
+  return v;
+}
+function nameMatches(name, q) {
+  if (name.includes(q)) return true;
+  const qs = singularize(q);
+  if (qs !== q && name.includes(qs)) return true;
+  const ns = singularize(name);
+  return ns !== name && (ns.includes(q) || (qs !== q && ns.includes(qs)));
+}
 function filterSort() {
   const q = query.trim().toLowerCase();
   let list = FOODS.filter(f => {
     if (activeCat === '__fav__') return favs.has(f.id);
     if (activeCat && f.category !== activeCat) return false;
-    if (q && !f.name.toLowerCase().includes(q)) return false;
+    if (q && !nameMatches(f.name.toLowerCase(), q)) return false;
     return true;
   });
   const get = (f, k) => (f[k] == null ? -1 : f[k]);
