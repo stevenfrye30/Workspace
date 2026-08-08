@@ -53,6 +53,56 @@ integrity reports, metadata audits, issue dashboards.
 These pages may exist as HTML and be locally served, but they should
 not appear on a public-facing index, sidebar, or sitemap.
 
+## Generated artifacts
+
+Some files in this repo are **written by a script, not by hand**. Editing one
+directly is silently pointless: the next run overwrites it, or — far more
+common here — nobody ever runs it again and the file quietly rots.
+
+That is not hypothetical. `nutrilens/foods.js` was compiled from `foods.json`
+in April and never rebuilt, so the NutriLens page searched 1,270 foods while
+Mirror searched 1,472 out of the same folder, for four months, with nothing
+failing. A 2026-08-08 audit found four more of the same shape. This table is
+the answer to "is this file generated, and can anyone rebuild it?"
+
+| Artifact (in this repo) | Source | Generator | Fresh clone can rebuild? |
+|---|---|---|---|
+| `images/index.html`, `artists.html`, `timeline.html`, `all.html`, `works.json`, `regions/*.html`, `artists/*.html` (1,886) | `images/data/*.json` (11 files) | `images/build.py` | **YES** — both tracked. `python images/build.py` reproduces all of it byte-for-byte |
+| `nutrilens/foods.json` | `nutrilens/foods-extra.json` + the USDA base already in the file | `nutrilens/merge_extra.py` (idempotent, folds by id) | **YES** — both tracked |
+| `philosophy/index.html`'s `<script id="app-data">` block | `projects/culture/Philosophy/data.json` | `tools/embed_philosophy.py` | no — source and generator are outside the repo |
+| `flags/index.html` | `projects/culture/flags/Countries_Flags_Facts.html` (189 MB) | `projects/culture/flags/_build_cdn.py` — **broken**: its `SRC` path predates the move into `culture/` | no — and not by anyone, until that path is fixed |
+| `graph/atlas_graph.json`, `atlas/registry.json` | `Atlas/` | `Atlas/tools/sync_atlas_graph.py` — **guarded**: the hub is 22 nodes against the source's 14, so it refuses to run | no |
+| `data/phonetics.js` | the pre-retirement `sound-map/index.html` — **gone** | `_internal/build_phonetics.py` (gitignored) | no — unrebuildable by anyone, including here. Live on the Sound Map doorway |
+| `sound-map/corpus.json` | — | its generator was deleted; recoverable only from git history | no |
+| `cosmos/index.html`, `emoji-games/{games,emojis}.js`, `language/**`, `masri/**`, `inventory/*` | their `projects/` originals | `tools/publish_worlds.py` (manifest `tools/worlds_manifest.json`), except inventory which uses its own allowlisting `deploy.py` | no — sources are outside the repo |
+
+**`images/` is the only pipeline a fresh clone can fully rebuild.** Everything
+else needs `projects/`, `Atlas/` or `tools/`, none of which are in this git
+repo — the parent workspace is not a repo at all. Treat that asymmetry as the
+standing risk: a clone of this repo is a *deployable* copy of the site, not a
+*reproducible* one.
+
+Rules that follow from the above:
+
+1. **Never hand-edit a generated artifact.** Fix the source and re-run.
+   If the generator is broken or gone, say so in the file's own header (see
+   `_internal/build_soundmap.py` for the format) rather than editing around it.
+2. **Never publish downward into a canonical hub copy.** Where the hub has
+   become the source of truth — nutrilens' food data, `graph/`, `images/` —
+   the publish entry is marked `mode: none` or the generator refuses. Read a
+   dry run before using `--force`.
+3. **One copy of a corpus, not two.** Two files holding the same data with no
+   build step between them will drift; the fix is to delete one and fetch the
+   other. `foods.js` and `philosophy/data.json` were both removed this way.
+4. **A drift check exists** — `mirror/tests/validate_artifacts.py` regenerates
+   what is rebuildable into a temp directory and diffs it, and asserts the
+   invariants above. Run it (or `mirror/tests/run_all.py`) before a push that
+   touches any row of this table.
+
+`SOURCE_MAP.md` at the parent-workspace root is the fuller version of this
+table, including the `projects/` side. It is **not in this repo**, which is
+itself an instance of the asymmetry above.
+
 ## How to retire a surface
 
 1. Move the file or directory into `_legacy/` (or `_internal/`,
