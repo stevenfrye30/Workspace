@@ -2048,7 +2048,15 @@ const WORD_EDGE = /[\s,()\-/]/;
    never stored, and never consulted until the literal comparison has already
    failed. So a wrong stem ("molasses" → "molass") costs nothing, while a
    right one ("fries" → "fry") earns a lot, and no match that worked before
-   can break. */
+   can break.
+
+   FOUR COPIES OF THESE RULES EXIST, one per page that searches text, because
+   each page's matcher is different and these apps are deliberately single-file
+   with no external dependencies (see README.md). If you change a rule here,
+   change it in:
+       mirror/self.html       (_foldedMatchScore — ranked whole-query matcher)
+       mirror/records.html    (textMatches — phrase matcher over every store)
+       nutrilens/index.html   (nameMatches — phrase matcher over names) */
 function singularWord(w) {
   if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';    // cherries → cherry
   if (w.length > 4 && w.endsWith('oes')) return w.slice(0, -2);          // potatoes → potato

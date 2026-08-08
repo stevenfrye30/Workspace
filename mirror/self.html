@@ -3248,21 +3248,69 @@ function _foodMatchScore(text, Q, wordRe) {
   if (text.includes(Q)) return 3;
   return null;
 }
+
+/* ---- plural folding ----
+   The library says "Nuts, cashew nuts, raw" and people type "cashews"; it says
+   "Cherries, sweet, raw" and people type "cherry". Folding plurals off BOTH
+   sides of the comparison finds rows that were already here, without adding a
+   single record.
+
+   FOUR COPIES OF THESE RULES EXIST, one per page that searches text, because
+   each page's matcher is different and mirror's apps are deliberately
+   single-file with no external dependencies (see mirror/README.md). If you
+   change a rule here, change it in:
+       mirror/index.html      (tokenRank / aliasHas — per-token matcher)
+       mirror/records.html    (textMatches — phrase matcher over every store)
+       nutrilens/index.html   (nameMatches — phrase matcher over names)
+   Deliberately crude, and strictly a FALLBACK: a stem is never displayed,
+   never stored, and never consulted until the literal comparison has already
+   failed, so a wrong stem costs nothing and no match that worked can break. */
+function singularWord(w) {
+  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';    // cherries -> cherry
+  if (w.length > 4 && w.endsWith('oes')) return w.slice(0, -2);          // potatoes -> potato
+  if (w.length > 4 && /(ch|sh|s|x|z)es$/.test(w)) return w.slice(0, -2); // peaches -> peach
+  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1);  // cashews -> cashew
+  return w;
+}
+const _singCache = new Map();
+function singularize(s) {
+  let v = _singCache.get(s);
+  if (v === undefined) { v = s.replace(/[a-z]+/g, singularWord); _singCache.set(s, v); }
+  return v;
+}
+/** _foodMatchScore, then the same comparison with plurals folded off either side. */
+function _foldedMatchScore(text, Q, wordRe, Qs, wordReS) {
+  let s = _foodMatchScore(text, Q, wordRe);
+  if (s != null) return s;
+  if (Qs !== Q) {
+    s = _foodMatchScore(text, Qs, wordReS);
+    if (s != null) return s;
+  }
+  const ts = singularize(text);
+  if (ts === text) return null;
+  s = _foodMatchScore(ts, Q, wordRe);
+  if (s != null) return s;
+  return (Qs !== Q) ? _foodMatchScore(ts, Qs, wordReS) : null;
+}
+
 function rankedFoods(q, limit = 40) {
   const Q = q.toLowerCase().trim();
-  const wordRe = new RegExp('\\b' + Q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  const reEsc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const wordRe = new RegExp('\\b' + reEsc(Q));
+  const Qs = singularize(Q);
+  const wordReS = Qs === Q ? wordRe : new RegExp('\\b' + reEsc(Qs));
   const recent = recentFoodIdSet(40);
   const custom = new Set((state.body.customFoods || []).map(c => c.id));
   const scored = [];
   for (const f of foodPool()) {
     const name = f.name.toLowerCase();
-    let s = _foodMatchScore(name, Q, wordRe);
+    let s = _foldedMatchScore(name, Q, wordRe, Qs, wordReS);
     if (s == null) {
       // no name match — try search aliases (e.g. "boiled egg", "evoo", "pb"), ranked just
       // below an equivalent real-name match so clean names still win.
       const aliases = (f.n && Array.isArray(f.n.aliases)) ? f.n.aliases : (Array.isArray(f.aliases) ? f.aliases : []);
       let best = null;
-      for (const a of aliases) { const as = _foodMatchScore(String(a).toLowerCase(), Q, wordRe); if (as != null && (best == null || as < best)) best = as; }
+      for (const a of aliases) { const as = _foldedMatchScore(String(a).toLowerCase(), Q, wordRe, Qs, wordReS); if (as != null && (best == null || as < best)) best = as; }
       if (best == null) continue;
       s = best + 0.15;
     }

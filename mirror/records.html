@@ -281,10 +281,45 @@ function catName(id) {
 let activeTab = 'all';
 let query = '';
 
+/* ---- plural folding ----
+   One search runs over every store here, so "books" should find a title that
+   says "book" and "cherries" should find "cherry". Folding plurals off BOTH
+   sides of the comparison does that without touching a record.
+
+   FOUR COPIES OF THESE RULES EXIST, one per page that searches text, because
+   each page's matcher is different and mirror's apps are deliberately
+   single-file with no external dependencies (see mirror/README.md). If you
+   change a rule here, change it in:
+       mirror/index.html      (tokenRank / aliasHas — per-token matcher)
+       mirror/self.html       (_foldedMatchScore — ranked whole-query matcher)
+       nutrilens/index.html   (nameMatches — phrase matcher over names)
+   Strictly a FALLBACK: never displayed, never stored, never consulted until
+   the literal comparison has already failed, so nothing that matched can break. */
+function singularWord(w) {
+  if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
+  if (w.length > 4 && w.endsWith('oes')) return w.slice(0, -2);
+  if (w.length > 4 && /(ch|sh|s|x|z)es$/.test(w)) return w.slice(0, -2);
+  if (w.length > 3 && w.endsWith('s') && !w.endsWith('ss')) return w.slice(0, -1);
+  return w;
+}
+const singCache = new Map();
+function singularize(s) {
+  let v = singCache.get(s);
+  if (v === undefined) { v = s.replace(/[a-z]+/g, singularWord); singCache.set(s, v); }
+  return v;
+}
+function textMatches(text, q) {
+  if (text.includes(q)) return true;
+  const qs = singularize(q);
+  if (qs !== q && text.includes(qs)) return true;
+  const ts = singularize(text);
+  return ts !== text && (ts.includes(q) || (qs !== q && ts.includes(qs)));
+}
+
 function matching(sec) {
   const rows = (sec.arr() || []).slice();
   const q = query.trim().toLowerCase();
-  const hits = q ? rows.filter((r) => String(sec.text(r) || '').toLowerCase().includes(q)) : rows;
+  const hits = q ? rows.filter((r) => textMatches(String(sec.text(r) || '').toLowerCase(), q)) : rows;
   return sec.sort ? hits.sort(sec.sort) : hits;
 }
 
@@ -343,7 +378,7 @@ function renderSections() {
   // chip row rather than a table.
   const vals = state.identity.values || [];
   if ((activeTab === 'all' || activeTab === 'places') && vals.length &&
-      (!query || vals.some((v) => v.toLowerCase().includes(query.trim().toLowerCase())))) {
+      (!query || vals.some((v) => textMatches(v.toLowerCase(), query.trim().toLowerCase())))) {
     anything = true;
     const wrap = document.createElement('div'); wrap.className = 'sect';
     wrap.innerHTML = '<h2>Values<span class="cnt">' + vals.length + '</span></h2>' +

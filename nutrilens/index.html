@@ -510,7 +510,14 @@ function macroBar(f) {
    it says "Cherries" and people type "cherry". Folding plurals off both sides
    of the comparison costs nothing and finds rows that were already here.
    Only a FALLBACK — consulted after the literal match fails, so it can add a
-   result but never remove one. Same rules as mirror/index.html. */
+   result but never remove one.
+
+   FOUR COPIES OF THESE RULES EXIST, one per page that searches text, because
+   each page's matcher is different and these apps are deliberately single-file
+   with no external dependencies. If you change a rule here, change it in:
+       mirror/index.html      (tokenRank / aliasHas — per-token matcher)
+       mirror/self.html       (_foldedMatchScore — ranked whole-query matcher)
+       mirror/records.html    (textMatches — phrase matcher over every store) */
 function singularWord(w) {
   if (w.length > 4 && w.endsWith('ies')) return w.slice(0, -3) + 'y';
   if (w.length > 4 && w.endsWith('oes')) return w.slice(0, -2);
