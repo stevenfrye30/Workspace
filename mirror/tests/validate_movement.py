@@ -88,7 +88,7 @@ with sync_playwright() as pw:
     # ---- migration ----
     page.evaluate("() => saveState()")
     s0 = st(page)
-    ok("v19 stamped", s0["__v"] == 19)
+    ok("v20 stamped", s0["__v"] == 20)
     ok("weight_lb backfilled to 180", s0["body"]["targets"]["weight_lb"] == 180)
 
     # ---- THE GEOMETRY MATRIX: every state, byte-identical face ----
@@ -217,7 +217,7 @@ with sync_playwright() as pw:
     page2.evaluate("() => saveState()")
     page2.wait_for_timeout(150)
     after = json.loads(page2.evaluate("() => localStorage.getItem('mirror_v1')"))
-    ok("self.html loads clean at v19", not p2err and after.get("__v") == 19, "; ".join(p2err[:2]))
+    ok("self.html loads clean at v20", not p2err and after.get("__v") == 20, "; ".join(p2err[:2]))
     diffs = []
     for k in before:
         if k == "calendar": continue      # self backfills integration defaults; documented config, not data

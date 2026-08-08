@@ -26,11 +26,12 @@ lives inside the disposable browser profile. Suites run in a fixed timezone
 | `validate_v19_round.py` | Intake sub-forms (alcohol/nicotine forms, fixed heights across all tabs and steps), sleep wording ban, hygiene brush counter + merge union, column order, weekly review pickup |
 | `validate_review_fixes.py` | One regression test per finding of the 2026-08 review pass: targets spread on self.html, canonical move casing, edit-survives-sync-pull, intensity clamp, session-counting week, gone-tombstones in the builder list, focus ring, and the rest |
 | `validate_connections.py` | The Connections engine: exact group averages, the both-groups-3+ and 0.35 gates, direction tinting, hedge language on every row, substance signals, weekday card, empty state, derived-not-stored |
+| `validate_v20_boxes.py` | The v20 spec's ten acceptance checks, one block each: the header's day chip and pop, the seven-chip rail, minimise/reopen-appends, drag with mouse + long-press + Alt+arrows with reload persistence, the all-closed grid, Blood glucose (Enter/Log/Tracker/forever-copy/undo, hard 128px slot), `mirror_layout_v1` absent from the forever-copy, v19→v20 migration, and the self.html glucose round-trip |
 
 ## Conventions
 
 - A suite prints `PASS`/`FAIL` per check and exits non-zero on any failure.
-- Ports are per-suite (8130–8137) so suites can run back to back.
+- Ports are per-suite (8130–8141) so suites can run back to back.
 - Seeds are hand-built state blobs pinned to older schema versions on purpose —
   migration is part of what's under test. When `SCHEMA_VERSION` bumps, the
   version assertions here are expected to need the same one-line bump.
