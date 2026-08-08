@@ -43,11 +43,16 @@
     Log grid  six tiles, always six.
 
   Two things OUTSIDE the instrument cards do still change with data, both in
-  the launchpad column, both deliberate: the birthday line appears when a
-  birthday is near, and the launchpad grows a pill per link you add. They
-  are a notice and a set of doors rather than instruments. If either ever
-  needs to obey this too, it moves behind a button the way Movement's
-  types did.
+  the launchpad row between the boxes and the Tracker, both deliberate: the
+  birthday line appears when a birthday is near, and the launchpad grows a
+  pill per link you add. They are a notice and a set of doors rather than
+  instruments. If either ever needs to obey this too, it moves behind a
+  button the way Movement's types did.
+
+  Since v20 the boxes themselves are the user's to arrange — open, minimise
+  and drag live in localStorage mirror_layout_v1 (device chrome, never life
+  data) — but ARRANGING is the only thing that moves them. Within a box the
+  invariant holds exactly as written above.
   ══════════════════════════════════════════════════════════════════════════
 -->
 <html lang="en">
@@ -145,17 +150,56 @@
   }
   .backdate-warn { width: 100%; font-size: .74rem; color: var(--warn); }
 
+  /* ---------- the box rail ----------
+     One chip per box, in FIXED catalogue order — the rail must never move
+     under the user's finger, however the dashboard is arranged. */
+  .rail {
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .rail .lbl { font-size: .7rem; color: var(--dim); text-transform: uppercase; letter-spacing: .07em; margin-right: 2px; }
+  .railchip {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 4px 11px; border-radius: 999px; cursor: pointer;
+    font: inherit; font-size: .74rem; line-height: 1.3; white-space: nowrap;
+  }
+  .railchip .ic { line-height: 1; }
+  .railchip[aria-pressed="true"] {
+    background: color-mix(in srgb, var(--accent) 14%, var(--panel));
+    border: 1px solid var(--accent); color: var(--ink);
+  }
+  .railchip[aria-pressed="false"] {
+    background: none; border: 1px solid var(--line); color: var(--dim);
+  }
+  .railchip[aria-pressed="false"] .ic { opacity: .45; }
+  body.dense .rail { margin-bottom: 12px; }
+
   /* ---------- the daily grid ----------
-     CSS columns rather than grid: cards are wildly different heights, and
-     this is the one layout that packs them without leaving holes. */
-  /* Four assigned columns, priority-ordered. Each is an independent stack —
-     align-items:start keeps a tall column from stretching its neighbours. */
-  .daily { display: grid; grid-template-columns: 1fr; gap: 12px; align-items: start; }
-  @media (min-width: 900px)  { .daily { grid-template-columns: 1fr 1fr; } }
-  @media (min-width: 1240px) { body.dense .daily { grid-template-columns: repeat(4, 1fr); } }
-  .col { display: flex; flex-direction: column; gap: 12px; min-width: 0; }
-  body.dense .daily, body.dense .col { gap: 10px; }
-  .col > .card { margin-bottom: 0; }
+     One flow grid, user-ordered. Assigned columns and a user-chosen order
+     cannot both be true, so the columns went. align-items:start keeps a
+     tall box from stretching its row; every fill slot inside a card still
+     holds its HARD height, so the flow only ever reflows whole boxes. */
+  .daily {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
+    gap: 12px; align-items: start;
+  }
+  /* Closed boxes stay in the DOM (hidden), so :empty can never match —
+     the all-closed state is named instead, and the grid's gap-sized ghost
+     row goes with it. */
+  .daily.allclosed { display: none; }
+  .daily > .card { margin-bottom: 0; min-width: 0; }
+  .card[hidden] { display: none; }
+  body.dense .daily { gap: 10px; }
+  .card.dragging { opacity: .55; }
+  .grab {
+    cursor: grab; color: var(--dim); font-size: .82rem; line-height: 1;
+    user-select: none; -webkit-user-select: none;
+  }
+  .minb {
+    background: none; border: 0; color: var(--dim); cursor: pointer;
+    font: inherit; font-size: 1rem; line-height: 1; padding: 0 3px;
+  }
+  .minb:hover { color: var(--warn); }
 
   /* ---------- cards ---------- */
   .card {
@@ -163,19 +207,22 @@
     padding: 14px; margin-bottom: 12px; box-shadow: var(--shadow);
   }
   body.dense .card { padding: 11px; margin-bottom: 10px; border-radius: 10px; }
+  /* Left-aligned since v20: the drag handle and the minimise button need
+     somewhere to live, and a centred title has no edges. */
   .card > h2 {
     font-size: .72rem; font-weight: 600; text-transform: uppercase;
     letter-spacing: .1em; color: var(--dim); margin-bottom: 12px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    position: relative; text-align: center; min-height: 1.1em;
+    display: flex; align-items: center; justify-content: flex-start; gap: 7px;
+    text-align: left; min-height: 1.1em; min-width: 0;
   }
-  /* Pinned rather than laid out, so a long note cannot shove the title
-     off-centre. */
   .card > h2 .note, .card > h2 .sum {
-    position: absolute; right: 0; top: 50%; transform: translateY(-50%);
-    margin-left: 0; max-width: 55%; overflow: hidden; text-overflow: ellipsis;
-    white-space: nowrap;
+    margin-left: auto; min-width: 0; max-width: 55%;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
   }
+  /* When a note already claimed the right edge, the minimise button just
+     sits after it rather than fighting it for the auto margin. */
+  .card > h2 .minb { margin-left: auto; flex: 0 0 auto; }
+  .card > h2 .note + .minb, .card > h2 .sum + .minb { margin-left: 0; }
   body.dense .card > h2 { font-size: .66rem; margin-bottom: 8px; }
   .card > h2 .note { text-transform: none; letter-spacing: 0; font-weight: 400; }
   .saved { color: var(--accent2); }
@@ -845,20 +892,26 @@
 </div>
 <input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
 
+<!-- ============ THE BOX RAIL ============ -->
+<!-- One chip per box, FIXED catalogue order (never the dashboard order — the
+     rail must not move under the user's finger). Open chips are tinted;
+     closed chips grey. Click toggles the box below. -->
+<div class="rail">
+  <span class="lbl">Boxes</span>
+  <span class="railchips" id="railChips" style="display:contents"></span>
+</div>
+
 <!-- ============ THE DAILY GRID ============ -->
-<!-- Four assigned columns, ordered by how often each is touched, rather than
-     masonry. Masonry packs tightly but decides placement by height — which is
-     how the drink controls once ended up below the fold. Assigned columns cost
-     a little whitespace and never move.
+<!-- One flow grid of draggable boxes, in the order the user keeps them
+     (localStorage mirror_layout_v1 — device chrome, never life data, never
+     in the forever-copy or sync). Opening a box appends it; minimising
+     removes it; ⠿ drags it; Alt+arrows move a focused header. The HTML
+     below is the CATALOGUE order — renderBoxes() re-parents to the saved
+     order at boot, which preserves every handler. -->
+<div class="daily" id="dailyGrid">
 
-     Each column is its own stack, so a long food list cannot stretch the one
-     beside it. Stacked on a phone the DOM order is already the priority order:
-     Food, Intake, Hygiene, Movement, How you are, then the rest. -->
-<div class="daily">
-
-  <div class="col">
   <div class="card" id="foodCard">
-    <h2>Food</h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Food<button class="minb" type="button">−</button></h2>
     <div class="macrobar" id="foodMacros"></div>
     <div class="searchwrap">
       <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
@@ -890,7 +943,7 @@
        water -> body.water, coffee/other -> body.drinks, the rest ->
        body.substances. -->
   <div class="card boxed" id="intakeCard">
-    <h2>Intake <span class="note" id="intakeTotal"></span></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Intake <span class="note" id="intakeTotal"></span><button class="minb" type="button">−</button></h2>
     <div class="tabs" id="intakeTabs"></div>
     <!-- The tag line is PERMANENTLY reserved: it shows the chosen sub-form
          (Beer, Zyn, Bud, the drink you named) with a ✕ to change it, and
@@ -902,14 +955,10 @@
          exactly what THE INVARIANT forbids. The quick buttons are the only
          path; an unusual amount is a couple of taps instead of a form. -->
   </div>
-  </div>
 
-  <div class="col">
-  <!-- Four things you either did today or didn't (and one you count). One
-       fixed row; over Movement because together they are the body column —
-       upkeep above, effort below. -->
+  <!-- Four things you either did today or didn't (and one you count). -->
   <div class="card" id="hygieneCard">
-    <h2>Hygiene</h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Hygiene<button class="minb" type="button">−</button></h2>
     <div class="hyg" id="hygRows"></div>
   </div>
 
@@ -920,7 +969,7 @@
        min-height, which drifts), so nothing that happens inside it can move
        the card face (THE INVARIANT, top of file). -->
   <div class="card narrow" id="movementCard">
-    <h2>Movement</h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Movement<button class="minb" type="button">−</button></h2>
     <div class="excats" id="exCats">
       <button class="excat" type="button" data-excat="walk">🚶 Walk</button>
       <button class="excat" type="button" data-excat="run">🏃 Run</button>
@@ -933,14 +982,12 @@
     </div>
     <div class="exslot" id="exSlot"></div>
   </div>
-  </div>
 
-  <div class="col">
   <!-- How you are — one form replacing three that each asked for mood and
        energy separately (the old Today pulse, the Body check-in, and the
        Daily Card), with sleep folded in so it doesn't need its own card. -->
-  <div class="card">
-    <h2>How you are <span class="note saved" id="pulseSaved"></span></h2>
+  <div class="card" id="pulseCard">
+    <h2><span class="grab" aria-hidden="true">⠿</span>How you are <span class="note saved" id="pulseSaved"></span><button class="minb" type="button">−</button></h2>
     <div class="dotline"><span class="dl">Mood</span><div class="dots" id="dMood"></div></div>
     <div class="dotline"><span class="dl">Energy</span><div class="dots" id="dEnergy"></div></div>
     <div class="dotline"><span class="dl">Fatigue</span><div class="dots" id="dFatigue"></div></div>
@@ -969,27 +1016,30 @@
       <button class="chip ghost" id="symAdd">＋ Symptom</button>
     </div>
   </div>
-  </div>
 
-  <div class="col">
-    <div class="launchrow">
-      <div class="launch" id="launch"></div>
-      <div class="bdayline" id="bdayLine"></div>
-    </div>
   <!-- Six things you log, one tap each. Not four drawers you open first. -->
-  <div class="loggrid">
-    <button class="logtile" id="logPerson" type="button"><span class="ic">🧑</span>Person</button>
-    <button class="logtile" id="logBook"   type="button"><span class="ic">📕</span>Book</button>
-    <button class="logtile" id="logIdea"   type="button"><span class="ic">💡</span>Idea</button>
-    <button class="logtile" id="logPlace"  type="button"><span class="ic">📍</span>Place</button>
-    <button class="logtile wide" id="logMoney"  type="button"><span class="ic">💵</span>Money</button>
-    <button class="logtile wide" id="logValues" type="button"><span class="ic">✦</span>Values</button>
-  </div>
+  <div class="card" id="logGridCard">
+    <h2><span class="grab" aria-hidden="true">⠿</span>Log grid<button class="minb" type="button">−</button></h2>
+    <div class="loggrid">
+      <button class="logtile" id="logPerson" type="button"><span class="ic">🧑</span>Person</button>
+      <button class="logtile" id="logBook"   type="button"><span class="ic">📕</span>Book</button>
+      <button class="logtile" id="logIdea"   type="button"><span class="ic">💡</span>Idea</button>
+      <button class="logtile" id="logPlace"  type="button"><span class="ic">📍</span>Place</button>
+      <button class="logtile wide" id="logMoney"  type="button"><span class="ic">💵</span>Money</button>
+      <button class="logtile wide" id="logValues" type="button"><span class="ic">✦</span>Values</button>
+    </div>
   </div>
 
 </div>
 
 <!-- ============ LAUNCHPAD ============ -->
+<!-- Doors and a notice, not instruments — they stay outside the box system,
+     between the boxes and the Tracker, whatever the boxes are doing. -->
+<div class="launchrow">
+  <div class="launch" id="launch"></div>
+  <div class="bdayline" id="bdayLine"></div>
+</div>
+
 <!-- ============ THE TRACKER ============ -->
 <!-- Every instrument above empties into here, in the order you entered things
      — by entry time, not clock time, so a backdated entry doesn't jump the
@@ -4773,6 +4823,205 @@ function renderAll() {
   renderMovement(); renderHygiene(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
+
+/* =============================================================
+   BOXES — open, minimise, reorder.
+
+   The seven instrument boxes are the openable set; the Tracker, This week
+   and Connections are the report band below and stay always-on. Layout is
+   DEVICE CHROME, not life data: it lives in its own localStorage key,
+   never inside `state`, so it reaches neither the forever-copy nor sync —
+   two devices are allowed different desks.
+   ============================================================= */
+const BOXES = [
+  { id: 'food',     name: 'Food',          icon: '🍽', el: 'foodCard' },
+  { id: 'intake',   name: 'Intake',        icon: '🥤', el: 'intakeCard' },
+  { id: 'movement', name: 'Movement',      icon: '🏃', el: 'movementCard' },
+  { id: 'hygiene',  name: 'Hygiene',       icon: '🚿', el: 'hygieneCard' },
+  { id: 'pulse',    name: 'How you are',   icon: '◉',  el: 'pulseCard' },
+  { id: 'glucose',  name: 'Blood glucose', icon: '🩸', el: 'glucoseCard' },
+  { id: 'loggrid',  name: 'Log grid',      icon: '＋', el: 'logGridCard' },
+];
+const LAYOUT_KEY = 'mirror_layout_v1';
+
+/** Unknown ids in a stored order are dropped; catalogue ids missing from it
+ *  are appended in catalogue order and default to OPEN — a future box should
+ *  appear, not hide. */
+function loadLayout() {
+  let raw = null;
+  try { raw = JSON.parse(localStorage.getItem(LAYOUT_KEY)); } catch { /* chrome, not data */ }
+  const ids = BOXES.map((b) => b.id);
+  const order = (raw && Array.isArray(raw.order) ? raw.order : []).filter((id) => ids.includes(id));
+  ids.forEach((id) => { if (!order.includes(id)) order.push(id); });
+  const open = {};
+  ids.forEach((id) => {
+    open[id] = (raw && raw.open && typeof raw.open[id] === 'boolean') ? raw.open[id] : true;
+  });
+  return { order, open };
+}
+let layout = loadLayout();
+function saveLayout() {
+  try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(layout)); } catch { /* best effort */ }
+}
+const boxMeta = (id) => BOXES.find((b) => b.id === id);
+const boxNode = (id) => { const m = boxMeta(id); return m ? $(m.el) : null; };
+
+function renderRail() {
+  const wrap = $('railChips');
+  wrap.innerHTML = '';
+  BOXES.forEach((b) => {                      // catalogue order, always
+    if (!boxNode(b.id)) return;               // a box this build doesn't ship
+    const chip = document.createElement('button');
+    chip.type = 'button'; chip.className = 'railchip';
+    const on = !!layout.open[b.id];
+    chip.setAttribute('aria-pressed', String(on));
+    chip.title = b.name + (on ? ' — open; click to minimise' : ' — closed; click to open');
+    chip.innerHTML = '<span class="ic">' + b.icon + '</span>' + esc(b.name);
+    chip.onclick = () => toggleBox(b.id, !layout.open[b.id]);
+    wrap.appendChild(chip);
+  });
+}
+
+/** appendChild MOVES nodes and keeps their handlers — the boxes are
+ *  re-parented into the saved order, never rebuilt. */
+function renderBoxes() {
+  const grid = $('dailyGrid');
+  layout.order.forEach((id) => {
+    const el = boxNode(id);
+    if (!el) return;
+    el.hidden = !layout.open[id];
+    grid.appendChild(el);
+  });
+  grid.classList.toggle('allclosed',
+    !layout.order.some((id) => layout.open[id] && boxNode(id)));
+  renderRail();
+}
+
+function toggleBox(id, open) {
+  layout.open[id] = open;
+  // Opening APPENDS: something already on the desk never reshuffles.
+  if (open) layout.order = layout.order.filter((x) => x !== id).concat(id);
+  saveLayout();
+  renderBoxes();
+}
+
+function commitOrderFromDom() {
+  layout.order = [...$('dailyGrid').children]
+    .map((el) => el.dataset.box).filter(Boolean);
+  saveLayout();
+}
+
+/** Keyboard reorder: one VISIBLE slot left or right — hopping over closed
+ *  boxes would read as nothing happening. */
+function moveBox(id, delta) {
+  const visible = layout.order.filter((x) => layout.open[x]);
+  const i = visible.indexOf(id);
+  const j = i + delta;
+  if (i < 0 || j < 0 || j >= visible.length) return;
+  const a = layout.order.indexOf(id), b = layout.order.indexOf(visible[j]);
+  layout.order[a] = visible[j]; layout.order[b] = id;
+  saveLayout();
+  renderBoxes();
+  const h = boxNode(id) && boxNode(id).querySelector('h2');
+  if (h) h.focus();                            // re-parenting dropped focus
+}
+
+/* ---- drag: HTML5 for the mouse, long-press pointer events for touch ---- */
+let dragId = null;
+let touchDragId = null;
+
+function liveReorder(over) {
+  const dragged = boxNode(dragId || touchDragId);
+  if (!dragged || dragged === over) return;
+  const kids = [...over.parentElement.children];
+  if (kids.indexOf(dragged) < kids.indexOf(over)) over.after(dragged);
+  else over.before(dragged);
+}
+
+function wireBox(meta) {
+  const el = $(meta.el);
+  if (!el) return;
+  el.dataset.box = meta.id;
+
+  const h2 = el.querySelector('h2');
+  h2.tabIndex = 0;
+  h2.title = meta.name + ' — drag ⠿ to reorder · Alt+←/→ moves it';
+  h2.addEventListener('keydown', (e) => {
+    if (!e.altKey || (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight')) return;
+    e.preventDefault();
+    moveBox(meta.id, e.key === 'ArrowLeft' ? -1 : 1);
+  });
+  const minb = el.querySelector(':scope > h2 .minb');
+  minb.title = 'Minimise ' + meta.name;
+  minb.setAttribute('aria-label', 'Minimise ' + meta.name);
+  minb.onclick = () => toggleBox(meta.id, false);
+
+  /* The whole box is the drag target; the ⠿ is affordance. A drag must
+     never steal from the controls, so anything interactive under the
+     pointer vetoes it before it starts. */
+  const interactive = (t) => !!(t && t.closest &&
+    t.closest('input, button, select, textarea, a, .sleeptrack, .dots'));
+
+  let lpTimer = null;
+  el.addEventListener('pointerdown', (e) => {
+    el.draggable = e.pointerType === 'mouse' && !interactive(e.target);
+    if (e.pointerType !== 'touch' || interactive(e.target)) return;
+    lpTimer = setTimeout(() => {
+      lpTimer = null;
+      touchDragId = meta.id;
+      el.classList.add('dragging');
+      try { el.setPointerCapture(e.pointerId); } catch { /* already up */ }
+    }, 350);
+  });
+  el.addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'touch') return;
+    if (!touchDragId) {
+      // moved before the long press finished: it was a scroll, not a drag
+      if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
+      return;
+    }
+    if (touchDragId !== meta.id) return;
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const over = under && under.closest('#dailyGrid > .card');
+    if (over && over !== el) liveReorder(over);
+  });
+  const endTouch = () => {
+    if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; }
+    if (touchDragId === meta.id) {
+      touchDragId = null;
+      el.classList.remove('dragging');
+      commitOrderFromDom();
+    }
+  };
+  el.addEventListener('pointerup', endTouch);
+  el.addEventListener('pointercancel', endTouch);
+  // Scroll suppression while a touch drag is live needs the touch pipeline.
+  el.addEventListener('touchmove', (e) => { if (touchDragId) e.preventDefault(); }, { passive: false });
+  el.addEventListener('contextmenu', (e) => { if (touchDragId) e.preventDefault(); });
+
+  el.addEventListener('dragstart', (e) => {
+    dragId = meta.id;
+    el.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', meta.id);
+    e.dataTransfer.effectAllowed = 'move';
+  });
+  el.addEventListener('dragend', () => {
+    el.classList.remove('dragging');
+    dragId = null;
+    el.draggable = false;
+    commitOrderFromDom();
+  });
+  el.addEventListener('dragover', (e) => {
+    if (!dragId || dragId === meta.id) return;
+    e.preventDefault();                       // reorder live, commit on drop
+    e.dataTransfer.dropEffect = 'move';
+    liveReorder(el);
+  });
+}
+BOXES.forEach(wireBox);
+$('dailyGrid').addEventListener('dragover', (e) => { if (dragId) e.preventDefault(); });
+$('dailyGrid').addEventListener('drop', (e) => { if (dragId) e.preventDefault(); });
+renderBoxes();
 
 /* ---- density: compact vs roomy, remembered per device ----
    A laptop wants three tight columns; a phone in one hand wants bigger
