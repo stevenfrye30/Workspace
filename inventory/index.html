@@ -69,6 +69,15 @@
 
     <div class="toolsrow">
       <input type="search" id="search" placeholder="Search stock…" aria-label="Search stock">
+      <label class="sortpick" title="How the list below is carved up">
+        <span>Group</span>
+        <select id="stockSort" aria-label="How to group the list">
+          <option value="type">Supplies, then gear</option>
+          <option value="az">A–Z</option>
+          <option value="similar">Similar things</option>
+          <option value="location">Where it lives</option>
+        </select>
+      </label>
       <label class="check"><input type="checkbox" id="hideOut"> Hide out-of-stock</label>
       <span class="spacer"></span>
       <span class="counts" id="stockCounts"></span>

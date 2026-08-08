@@ -191,9 +191,15 @@ function emojiFor(item) {
 
 let state = { version: 1, items: [], blueprints: [], areas: [] };
 let view = 'stock';
-let area = 'all';
+/* Set properly in boot(), once state (and therefore the area list) is loaded.
+ * You land in the first area — the kitchen — not in Everything. */
+let area = '';
 let quickKind = 'consumable';
 let saveTimer = null;
+
+/* How the stock list is carved up. Remembered per browser. */
+const STOCK_SORTS = new Set(['type', 'az', 'similar', 'location']);
+let stockSort = 'type';
 
 /* ------------------------------------------------------------------ utils */
 
@@ -235,6 +241,19 @@ function fmtQty(n) {
 function areaName(id) {
   const a = state.areas.find((x) => x.id === id);
   return a ? a.name : id;
+}
+
+/** Where you land: the first area, which is the kitchen unless you've
+ *  reordered them. Falls back to Everything only if there are no areas. */
+function defaultArea() {
+  return (state.areas && state.areas[0] && state.areas[0].id) || 'all';
+}
+
+/** A sync can delete an area out from under us — don't strand the view on a
+ *  scope that no longer exists. */
+function ensureAreaValid() {
+  if (area === 'all') return;
+  if (!state.areas.some((a) => a.id === area)) area = defaultArea();
 }
 
 /* ---------------------------------------------------------- freshness */
@@ -697,6 +716,7 @@ function render() {
 }
 
 function renderInner() {
+  ensureAreaValid();
   renderAreas();
   document.querySelectorAll('.view').forEach((v) => v.classList.add('hidden'));
   $('view-' + view).classList.remove('hidden');
@@ -712,15 +732,18 @@ function renderInner() {
   if (view === 'blueprints') renderBlueprints();
 }
 
+/* Real areas first — the kitchen leads, because that's where you actually
+ * stand when you open this. Everything is a rarely-wanted catch-all, so it
+ * sits off on the right, out of the way of the pills you tap daily. */
 function renderAreas() {
   const bar = $('areaBar');
   bar.innerHTML = '';
-  const mk = (id, label) => {
-    const b = el('button', 'areabtn' + (area === id ? ' active' : ''), label);
+  const mk = (id, label, cls) => {
+    const b = el('button', 'areabtn' + (cls ? ' ' + cls : '') +
+                (area === id ? ' active' : ''), label);
     b.onclick = () => { area = id; render(); };
     bar.appendChild(b);
   };
-  mk('all', 'Everything');
   state.areas.forEach((a) => mk(a.id, a.name));
   const add = el('button', 'areabtn add', '+ area');
   add.onclick = () => {
@@ -733,6 +756,7 @@ function renderAreas() {
     save(); render();
   };
   bar.appendChild(add);
+  mk('all', 'Everything', 'all');
 }
 
 function itemsInScope() {
@@ -772,21 +796,137 @@ function renderStock() {
     return;
   }
 
-  const groups = [
-    ['Supplies', items.filter((i) => i.kind !== 'durable')],
-    ['Gear', items.filter((i) => i.kind === 'durable')],
-  ];
-  for (const [title, list] of groups) {
+  for (const [title, list] of groupStock(items)) {
     if (!list.length) continue;
-    list.sort(byName);
     const g = el('div', 'group');
-    const h = el('div', 'group-head');
-    h.appendChild(el('h2', null, title));
-    h.appendChild(el('span', 'n', String(list.length)));
-    g.appendChild(h);
+    /* A–Z is one flat run — a lone heading over the whole list says nothing. */
+    if (title) {
+      const h = el('div', 'group-head');
+      h.appendChild(el('h2', null, title));
+      h.appendChild(el('span', 'n', String(list.length)));
+      g.appendChild(h);
+    }
     list.forEach((it) => g.appendChild(itemRow(it)));
     box.appendChild(g);
   }
+}
+
+/* ------------------------------------------------------ stock grouping */
+
+/** Carve the stock list up the way the picker asks for.
+ *  Returns [[heading|null, items], …] — every mode sorts alphabetically
+ *  inside a group, so the list is always scannable. */
+function groupStock(items) {
+  const sorted = items.slice().sort(byName);
+  if (stockSort === 'az') return [[null, sorted]];
+  if (stockSort === 'location') return groupByLocation(sorted);
+  if (stockSort === 'similar') return groupBySimilarity(sorted);
+  return [
+    ['Supplies', sorted.filter((i) => i.kind !== 'durable')],
+    ['Gear', sorted.filter((i) => i.kind === 'durable')],
+  ];
+}
+
+function titleCase(s) {
+  return String(s || '').replace(/\b[a-z]/g, (c) => c.toUpperCase());
+}
+
+/* `singular()` is tuned for matching, not for reading, and it turns "leaves"
+ * into "leave" and "loaves" into "loave". Harmless as a lookup key, ugly as a
+ * heading — so headings get patched here rather than by touching the stemmer
+ * the whole Make engine depends on. */
+const LABEL_FIX = { leave: 'leaf', loave: 'loaf', halve: 'half',
+                    shelve: 'shelf', knive: 'knife', wive: 'wife' };
+function groupLabel(key) {
+  const words = String(key || '').split(' ');
+  const last = words[words.length - 1];
+  if (LABEL_FIX[last]) words[words.length - 1] = LABEL_FIX[last];
+  return titleCase(words.join(' '));
+}
+
+/** By the shelf it's on. Anything without a location is honestly labelled
+ *  and parked at the end rather than silently folded in somewhere. */
+function groupByLocation(sorted) {
+  const buckets = new Map();
+  const homeless = [];
+  for (const it of sorted) {
+    const loc = String(it.location || '').trim();
+    if (!loc) { homeless.push(it); continue; }
+    const key = norm(loc);
+    if (!buckets.has(key)) buckets.set(key, { label: loc, list: [] });
+    buckets.get(key).list.push(it);
+  }
+  const out = [...buckets.values()]
+    .sort((a, b) => a.label.localeCompare(b.label))
+    .map((b) => [titleCase(b.label), b.list]);
+  if (homeless.length) out.push(['No place set', homeless]);
+  return out;
+}
+
+/** Cluster like with like — every flour together, every oil, every pan.
+ *
+ *  This reuses the blueprint matching tokenizer rather than inventing a
+ *  second vocabulary, so "similar" here means exactly what "satisfies the
+ *  same requirement" means in Make. Three kinds of key are eligible:
+ *  head nouns (`derived`), explicit tags, and one-word names — a plain
+ *  `flour` has no head noun to generalise to but should still land in the
+ *  flour pile. Multi-word product names are skipped; they're unique to one
+ *  item and would only ever form a group of one.
+ *
+ *  It's a heuristic. Odd pairings happen; tag an item to overrule it. */
+function similarityKeys(it) {
+  const keys = new Set();
+  const tok = itemTokens(it);
+  for (const t of tok.derived) keys.add(singular(t));
+  for (const t of tok.exact) if (!t.includes(' ')) keys.add(singular(t));
+  (it.tags || []).forEach((t) => { const n = norm(t); if (n) keys.add(singular(n)); });
+  keys.delete('');
+  return keys;
+}
+
+function groupBySimilarity(sorted) {
+  // How many items each candidate key could speak for.
+  const weight = new Map();
+  const perItem = sorted.map((it) => {
+    const keys = similarityKeys(it);
+    for (const k of keys) weight.set(k, (weight.get(k) || 0) + 1);
+    return { it, keys };
+  });
+
+  /* Each item joins the biggest pile it qualifies for. Ties go to the
+   * plainest key — `flour` over `all purpose flour`, the same instinct
+   * buildIndex uses when crediting an item — then alphabetically, so the
+   * same stock always groups the same way. */
+  const better = (k, best) => {
+    const wk = weight.get(k), wb = weight.get(best);
+    if (wk !== wb) return wk > wb;
+    if (k.length !== best.length) return k.length < best.length;
+    return k < best;
+  };
+  const buckets = new Map();
+  const loners = [];
+  for (const { it, keys } of perItem) {
+    let best = null;
+    for (const k of keys) {
+      if (weight.get(k) < 2) continue;
+      if (!best || better(k, best)) best = k;
+    }
+    if (!best) { loners.push(it); continue; }
+    if (!buckets.has(best)) buckets.set(best, []);
+    buckets.get(best).push(it);
+  }
+
+  /* A key can look popular in the tally and still end up with one item,
+   * because everything else it counted went to a bigger pile. Those are
+   * singletons like any other. */
+  const groups = [];
+  for (const [key, list] of buckets) {
+    if (list.length < 2) loners.push(list[0]);
+    else groups.push([groupLabel(key), list]);
+  }
+  groups.sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+  if (loners.length) groups.push(['Everything else', loners.sort(byName)]);
+  return groups;
 }
 
 /* A quiet one-line "use these soon" bar above the stock list. Collapsed by
@@ -1293,6 +1433,16 @@ function wire() {
 
   $('search').oninput = renderStock;
   $('hideOut').onchange = renderStock;
+
+  const saved = localStorage.getItem('inventory_stocksort');
+  if (STOCK_SORTS.has(saved)) stockSort = saved;
+  $('stockSort').value = stockSort;
+  $('stockSort').onchange = () => {
+    const v = $('stockSort').value;
+    stockSort = STOCK_SORTS.has(v) ? v : 'type';
+    try { localStorage.setItem('inventory_stocksort', stockSort); } catch { /* full */ }
+    renderStock();
+  };
   $('makeSearch').oninput = () => renderMake(evaluateAll());
   $('showAllMake').onchange = () => renderMake(evaluateAll());
   $('bpSearch').oninput = renderBlueprints;
@@ -1527,6 +1677,7 @@ function openSetup() {
   }
 
   state = normalizeState(res.state);
+  area = defaultArea();
   wire();
   wireSync();
   resetBpForm();
