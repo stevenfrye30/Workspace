@@ -30,11 +30,12 @@ lives inside the disposable browser profile. Suites run in a fixed timezone
 | `validate_artifacts.py` | Generated-artifact drift: regenerates `images/`, `nutrilens/foods.json` and `archive/series.json` into a temp dir with the real generators and diffs, then asserts the CONVENTIONS invariants (one food corpus, no embedded graph, the four stemmers agreeing) |
 | `validate_search.py` | Food search in both apps that read the library (Mirror's `tokenRank` + aliases and NutriLens' `filterSort` are separate implementations): the stemmer's rules, plural queries reaching singular rows and back, and guards that literal matches did not regress |
 | `validate_v20_boxes.py` | The v20 spec's ten acceptance checks, one block each: the header's day chip and pop, the seven-chip rail, minimise/reopen-appends, drag with mouse + long-press + Alt+arrows with reload persistence, the all-closed grid, Blood glucose (Enter/Log/Tracker/forever-copy/undo, hard 128px slot), `mirror_layout_v1` absent from the forever-copy, v19→v20 migration, and the self.html glucose round-trip |
+| `validate_v21_edit.py` | The v21 spec's thirteen acceptance checks, A1–A13: the `✎ Edit` toggle (position, `aria-pressed`, Escape's precedence behind a pop, no persistence), normal mode holding no rail/handle/`✕` at all, the routine box's hard 110px grid and permanently-reserved 34px number row, add/retire/rename with marks keeping the field names they always wrote, the Glucose tile and the Blood glucose card proving to be one record, meds (tab order, own hue, 88px slot, dose-set-once, own weekly line, not substances), hiding tabs/tiles/scales into `mirror_layout_v1` and never into the record, custom scales riding `checkins[].extra` while built-ins keep their fields, meals as tiles on the food face, the four new stores' merge behaviour (including the rename that `latestStamp` has to see), the self.html and records.html round-trips, and a geometry sweep asserting no card grows as data enters in either theme × density plus 390px |
 
 ## Conventions
 
 - A suite prints `PASS`/`FAIL` per check and exits non-zero on any failure.
-- Ports are per-suite (8130–8141) so suites can run back to back.
+- Ports are per-suite (8130–8142) so suites can run back to back.
 - Seeds are hand-built state blobs pinned to older schema versions on purpose —
   migration is part of what's under test. When `SCHEMA_VERSION` bumps, the
   version assertions here are expected to need the same one-line bump.

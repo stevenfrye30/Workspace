@@ -20,27 +20,48 @@
   week review and Connections, Records, the Overview. That is what they
   are for.
 
+  From v21 the cards are also the user's to DEFINE — name the routine box,
+  add a mark or a scale, hide a tab. That does not weaken the rule, it
+  sharpens it: a control the user chose is still a control, so every list
+  they can add to sits in a HARD-height window that scrolls inside itself.
+  The twentieth meal, the ninth routine tile and the sixth scale each cost
+  the card exactly nothing.
+
   AUDITED, and where each card stands:
-    Food      macro bar (three fixed cells, numbers only), search, three
-              fixed buttons. No list — it had one, and it grew. The status
-              line under it speaks for the food library's network state,
-              never for your data.
-    Hygiene   four buttons in one fixed row, always four; a mark is a fill
-              and Brush a count on a fixed button — never a row.
-    Intake    six tabs and a fixed three-button slot — fully static; the
-              "exact amount" fold went, because opening it grew the card.
-              What the slot shows branches on the TAB you are on, never on
-              what is in the log; the counts on the tabs are values.
+    Food      macro bar (three fixed cells, numbers only), search, the meal
+              tiles in a HARD 112px window that scrolls (v21 — a meal is now
+              the control, replacing a "Meals" button that was a door in
+              front of a door), then two fixed buttons. No log list — it had
+              one, and it grew. The status line under it speaks for the food
+              library's network state, never for your data.
+    Upkeep    the routine box (was Hygiene). A 4-across tile grid at a HARD
+              110px — eight tiles show, the ninth scrolls — over a number row
+              that is PERMANENTLY reserved at 34px whether or not a
+              measurement is selected. A mark is a fill and a count is a
+              number on a fixed tile, never a row. The heading is the box's
+              name, which the user may change.
+    Intake    seven tabs in a 4-column grid (v21: Meds made seven, and seven
+              at three-across would have been three rows — four-across holds
+              them in the two rows the six used) over a fixed three-button
+              slot. The "exact amount" fold went, because opening it grew the
+              card. What the slot shows branches on the TAB you are on, never
+              on what is in the log; the counts on the tabs are values.
+              ONE EXCEPTION, and the only per-tab height in the app: Meds
+              swaps the 26px tag line + 42px button row for a HARD 88px list,
+              because a dose is not a quantity you tap up and down. That is
+              15px, chosen by which tab you are on, never by what you logged.
     Movement  two rows of four tiles (six categories + the Workouts and
               Build doors) over a fill slot with a HARD height and overflow
               hidden — never min-height, which drifts. Values in the slot
               move (readouts, chip labels, Enter's state); its box never
               does. Lists that grow (remembered moves) live in fixed-height
               windows that scroll internally.
-    How       five dot rows, a sleep track, two buttons — fixed. The "saved"
-              note in the heading is absolutely positioned, so it costs no
-              layout, and Enter -> "Entered ✓" is a button changing state.
-    Log grid  six tiles, always six.
+    How       the scales in a HARD 150px window that scrolls (v21 — the list
+              is the user's to add to, so its window cannot be), a sleep
+              track, two buttons. The "saved" note in the heading is
+              absolutely positioned, so it costs no layout, and
+              Enter -> "Entered ✓" is a button changing state.
+    Log grid  six tiles, less any the user has hidden.
 
   Two things OUTSIDE the instrument cards do still change with data, both in
   the launchpad row between the boxes and the Tracker, both deliberate: the
@@ -53,6 +74,14 @@
   and drag live in localStorage mirror_layout_v1 (device chrome, never life
   data) — but ARRANGING is the only thing that moves them. Within a box the
   invariant holds exactly as written above.
+
+  EDIT MODE (v21) is the one licensed exception, and it is licensed because
+  it is the opposite case: while `body.editing` is on, cards may grow, since
+  what appears is new furniture (✕ corners, an add row, a retired tile coming
+  back) rather than data arriving. It is a session state, never persisted, so
+  the card you reach for tomorrow is the one you left. Everything that can
+  change what the dashboard IS lives behind it — the rail, every ⠿, every −,
+  every ✕ — which is why the ordinary view has nothing on it but controls.
   ══════════════════════════════════════════════════════════════════════════
 -->
 <html lang="en">
@@ -70,6 +99,11 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪞</text></svg>">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  /* `hidden` must win. Half the controls on this page are display:flex or
+     display:grid, and a display rule in a class beats the UA's [hidden] —
+     so without this, setting .hidden on a tab slot or a log tile does
+     nothing at all and two panels show at once. */
+  [hidden] { display: none !important; }
   :root {
     --bg:#f6f1e6; --panel:#fffdf7; --panel2:#efe8d8;
     --ink:#2a2620; --dim:#7a6f5e; --line:rgba(42,38,32,.12);
@@ -77,7 +111,7 @@
     --shadow:0 1px 2px rgba(42,38,32,.05);
     --water:#4a7a9b; --coffee:#7a5232; --other:#3e7070;
     --alcohol:#7a4a7a; --nicotine:#6b6b6b; --weed:#4a7a4a;
-    --glucose:#a85a66;
+    --glucose:#a85a66; --meds:#8a6a8a;
   }
   body.theme-dark {
     --bg:#1c1e24; --panel:#24262e; --panel2:#2d3039;
@@ -86,7 +120,7 @@
     --shadow:0 1px 2px rgba(0,0,0,.25);
     --water:#7aa8c8; --coffee:#b08055; --other:#6ba0a0;
     --alcohol:#a87aa8; --nicotine:#9a9a9a; --weed:#7aab7a;
-    --glucose:#c87a86;
+    --glucose:#c87a86; --meds:#b08db0;
   }
   body {
     background: var(--bg); color: var(--ink);
@@ -129,10 +163,11 @@
   }
   .top .home:hover { color: var(--accent); border-color: var(--line); background: var(--panel); }
   .top .tools { justify-self: end; display: flex; align-items: center; gap: 6px; }
-  /* On a phone the four tools plus a labelled link overrun the row, so the
-     words drop away and the glyphs carry it. */
+  /* On a phone the tools plus a labelled link overrun the row, so the words
+     drop away and the glyphs carry it. #editBtn joined them at v21: left
+     labelled it wrapped to two lines and made the whole header taller. */
   @media (max-width: 560px) {
-    .top .home .lbl, .top #undoBtn .lbl { display: none; }
+    .top .home .lbl, .top #undoBtn .lbl, .top #editBtn .lbl { display: none; }
     .top .home { padding: 5px 7px; }
     .top .tools { gap: 4px; }
     .icon-btn { padding: 5px 7px; }
@@ -203,6 +238,95 @@
   }
   .minb:hover { color: var(--warn); }
 
+  /* ---------- EDIT MODE ----------
+     The dashboard has two states, and only one of them is a control panel.
+
+     Normally every affordance for changing what the dashboard IS — the rail,
+     the drag handles, the minimise buttons, the ✕ that hides a tile, the ＋
+     that adds one — is absent, not merely faint: a control panel should hold
+     nothing but the controls you press to log. `body.editing` puts them all
+     back at once, which is why they are gathered under one class here instead
+     of being toggled one by one in script.
+
+     Edit mode is the ONE licensed exception to THE INVARIANT (top of file):
+     while it is on, cards may grow, because the ✕ corners and the add rows
+     are new furniture rather than logged data. Turning it off returns every
+     card to the height it had before. */
+  .rail, .grab, .minb, .editnote { display: none; }
+  body.editing .rail { display: flex; }
+  body.editing .grab { display: inline; }
+  body.editing .minb { display: inline-block; }
+  body.editing .editnote { display: block; }
+  /* A faint accent edge is the whole signal: it says "this is live" without
+     recolouring anything a value is drawn in. */
+  body.editing .daily > .card { border-color: rgba(200, 155, 96, .4); }
+  .editnote {
+    font-size: .72rem; color: var(--dim); margin-bottom: 12px; line-height: 1.5;
+  }
+  /* Hidden-but-showing-because-you-are-editing. Dashed and faint says "this is
+     off" without pretending to be a live control. */
+  .tabs button.off, .logtile.off { border-style: dashed; opacity: .45; }
+  /* THE CORNER ✕ — one class, every tile that can be switched off: intake
+     tabs, log-grid tiles, routine tiles, meal tiles. It never deletes a
+     record; it takes a control off this screen (or retires a definition),
+     which is why it is deliberately the same glyph in the same corner
+     everywhere.
+
+     NOT named `.tx`: the Tracker has owned that class for its text span since
+     the first version, and an unscoped `.tx { position: absolute }` reaches
+     into every row of it and shoves the day's log off the right edge. */
+  .cornx {
+    position: absolute; top: -6px; right: -6px; width: 18px; height: 18px;
+    display: grid; place-items: center; padding: 0; z-index: 1;
+    border-radius: 50%; background: var(--panel);
+    /* --dim, not --line: this circle must read against a --panel tile (the Log
+       grid) as well as a --panel2 one (the tabs), and at 12% opacity on the
+       paler of the two it vanishes — which would make the only way back from
+       hiding something invisible. Same reason the glyph is --ink. */
+    border: 1px solid var(--dim); color: var(--ink);
+    font: inherit; font-size: .62rem; font-weight: 400; letter-spacing: 0;
+    text-transform: none; line-height: 1; cursor: pointer;
+  }
+  .cornx:hover { color: var(--warn); border-color: var(--warn); }
+  /* :not(.cornx) matters: `body.editing .tabs button` out-specifies the corner's
+     own rule and would hand it `position: relative`, at which point it lays out
+     as an ordinary child, sits under the tab's label and makes the tab grow. */
+  body.editing .tabs button:not(.cornx), body.editing .logtile,
+  .hyg button, .mealtile { position: relative; }
+  /* `.hyg button` and `.tabs button` are DESCENDANT selectors, so they also
+     match this nested corner button and hand it their own position, padding,
+     font and colours. Coming later in the sheet is not enough — the corner has
+     to out-specify them. Getting this wrong does not look like a CSS bug: the
+     corner lays out as an ordinary flex child and sits on top of the tile's
+     name, which reads as "the label is broken".
+
+     In `.hyg` and `.mealtiles` it also tucks INSIDE the tile rather than
+     overhanging it, because both live in windows that clip what leaves them. */
+  .hyg button.cornx, .tabs button.cornx {
+    position: absolute; width: 18px; height: 18px;
+    min-height: 0; gap: 0; padding: 0; font-size: .62rem; line-height: 1;
+    display: grid; place-items: center; z-index: 1;
+    background: var(--panel); border: 1px solid var(--dim); border-radius: 50%;
+    color: var(--ink); transform: none;
+  }
+  /* A tab is barely taller than the corner, so tucking it inside would cover
+     the last letters of "Alcohol" and "Nicotine". It overhangs instead — there
+     is room above the row, and the reserved tag line below it is empty. */
+  .tabs button.cornx { top: -6px; right: -6px; }
+  /* A routine tile has room, and its window clips anything that leaves it. */
+  .hyg button.cornx { top: 1px; right: 1px; }
+  .hyg button.cornx:hover, .tabs button.cornx:hover {
+    color: var(--warn); border-color: var(--warn); background: var(--panel);
+  }
+  .mealtile .cornx { top: 1px; right: 1px; }
+  /* A tab clips its own label with overflow:hidden, which would also clip a
+     corner button sitting outside the box — so while editing it does not. */
+  body.editing .tabs button:not(.cornx), body.editing .logtile { overflow: visible; }
+  #editBtn[aria-pressed="true"] {
+    background: var(--accent); border-color: var(--accent); color: #fff;
+  }
+  body.theme-dark #editBtn[aria-pressed="true"] { color: #1c1e24; }
+
   /* ---------- blood glucose ---------- */
   .bgrow { display: flex; gap: 8px; align-items: stretch; }
   .bgrow input { flex: 1 1 0; min-width: 0; text-align: center; }
@@ -259,9 +383,47 @@
   /* ---------- dot rows (1-5 scales) ----------
      Label beside the dots, not above: five stacked scales used to cost ten
      lines of height, which is most of why the card felt long. */
-  .dotline { display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
-  .dotline .dl { flex: 0 0 4.4rem; font-size: .74rem; color: var(--dim); }
+  /* HARD height + internal scroll, per the invariant: the number of scales is
+     the user's to change, so the height of the window that holds them cannot
+     be. Scrollbar hidden, like Movement's remembered-moves window.
+
+     150px is FIVE rows of 30, which is why the dots inside this window are
+     26px rather than the 38px they were when the five were the only five. The
+     arithmetic is the point: the built-in scales all have to be visible at a
+     glance, or the card got worse for everyone in order to be extensible. A
+     sixth scale is what scrolls. */
+  .dotlines { height: 150px; overflow-y: auto; scrollbar-width: none; }
+  .dotlines::-webkit-scrollbar { display: none; }
+  .dotlines .dots button { width: 26px; height: 26px; }
+  .dotlines .dotline { margin-bottom: 4px; }
+  .dotline { position: relative; display: flex; align-items: center; gap: 9px; margin-bottom: 5px; }
+  .dotline .dl {
+    flex: 0 0 4.4rem; font-size: .74rem; color: var(--dim);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
   .dotline .dots { flex: 1; min-width: 0; }
+  .dotline.off { opacity: .45; }
+  .dotline.off .dl { font-style: italic; }
+  /* Inside a scroll window, so inset — an outside ring would be clipped. */
+  .dotline .sx {
+    flex: 0 0 auto; width: 18px; height: 18px; display: grid; place-items: center;
+    padding: 0; border-radius: 50%; border: 1px solid var(--dim);
+    background: var(--panel2); color: var(--ink); font-size: .6rem; line-height: 1;
+    cursor: pointer;
+  }
+  .dotline .sx:hover { color: var(--warn); border-color: var(--warn); }
+  .dotline .sx:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+  .scaleadd { display: flex; gap: 6px; margin-bottom: 5px; }
+  .scaleadd input { flex: 1 1 auto; min-width: 0; font-size: .78rem; padding: 6px 8px; }
+  .scaleadd button {
+    flex: 0 0 auto; padding: 6px 11px; border-radius: 8px; cursor: pointer;
+    border: 1px dashed var(--line); background: var(--panel2); color: var(--dim);
+    font: inherit; font-size: .74rem;
+  }
+  .scaleadd button:hover { border-color: var(--accent); color: var(--accent); }
+  /* Dense: five rows of 26 (22px dots + 4px). */
+  body.dense .dotlines { height: 130px; }
+  body.dense .dotlines .dots button { width: 22px; height: 22px; }
   body.dense .dotline { gap: 7px; margin-bottom: 4px; }
   body.dense .dotline .dl { flex-basis: 3.9rem; font-size: .7rem; }
 
@@ -365,10 +527,15 @@
   .boxed > h2 { color: var(--c, var(--dim)); }
   .boxed > h2 .note { color: var(--ink); font-weight: 600; }
 
-  .tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
+  /* FOUR columns, not a wrapping flex row of three. Meds made seven tabs, and
+     seven across three-per-row is three rows — the tab block would have grown
+     for every tab, on every device, to make room for one. Four across holds
+     seven in the same two rows the six used, so the card face does not move.
+     The last cell of row two is simply empty. */
+  .tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; margin-bottom: 10px; }
   .tabs button {
-    flex: 1 1 30%; min-width: 0; cursor: pointer; font: inherit; font-size: .7rem;
-    padding: 6px 4px; border-radius: 8px; border: 1px solid var(--line);
+    min-width: 0; cursor: pointer; font: inherit; font-size: .66rem;
+    padding: 6px 3px; border-radius: 8px; border: 1px solid var(--line);
     background: var(--panel2); color: var(--dim);
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     transition: background .14s, color .14s, border-color .14s;
@@ -380,7 +547,7 @@
   body.theme-dark .tabs button[aria-selected="true"] { color: #1c1e24; }
   .tabs button .n { font-size: .62rem; opacity: .75; margin-left: 3px; }
   body.dense .tabs { gap: 3px; margin-bottom: 8px; }
-  body.dense .tabs button { font-size: .66rem; padding: 5px 3px; }
+  body.dense .tabs button { font-size: .62rem; padding: 5px 2px; }
 
   /* The chosen-sub-form line, permanently reserved (blank most of the time)
      — a HARD height, per the invariant, so choosing Beer or clearing it
@@ -415,6 +582,44 @@
   body.theme-dark .quick button:hover { color: #1c1e24; }
   body.dense .quick button { padding: 9px 4px; font-size: .76rem; }
   .quick button .u { font-size: .6rem; font-weight: 400; opacity: .7; margin-left: 1px; }
+
+  /* ---------- meds (v21) ----------
+     A dose is not a quantity you tap up and down, so this tab does not use the
+     three-button slot: it lists what you take and you tap the one you took.
+
+     GEOMETRY NOTE, and the only place in this card where the face differs by
+     tab: the med list is a HARD 88px and replaces the 26px tag line + 42px
+     button row, so the Intake card is 15px taller on Meds than on the other
+     six tabs. That is driven by which tab you chose, never by what you logged
+     — a tenth medication scrolls inside the 88px exactly the way a tenth
+     glucose reading scrolls inside its 128px. */
+  /* 88px is exactly THREE rows of 28 with 2px between — the same arithmetic the
+     scale window uses. A slot whose height is not a whole number of rows shows
+     a row sliced in half at rest, which reads as a rendering fault rather than
+     as "there is more below". */
+  .medslot { height: 88px; overflow: hidden; overflow-y: auto; display: flex; flex-direction: column; gap: 2px; }
+  .medrow {
+    display: flex; align-items: center; gap: 7px; flex: 0 0 auto; height: 28px;
+    padding: 0 8px; border-radius: 8px; cursor: pointer;
+    border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+    background: var(--panel); color: var(--ink); font: inherit; font-size: .78rem;
+    text-align: left; width: 100%;
+  }
+  .medrow:hover { border-color: var(--c); }
+  .medrow:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+  .medrow .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .medrow .ds { color: var(--dim); font-size: .7rem; flex: 0 0 auto; }
+  /* Today's doses, right-aligned: a value on a fixed row, not a new row. */
+  .medrow .n { margin-left: auto; flex: 0 0 auto; font-size: .68rem; color: var(--c); font-weight: 600; }
+  .medrow.retired { border-style: dashed; opacity: .45; }
+  .medrow .rx {
+    flex: 0 0 auto; width: 18px; height: 18px; display: grid; place-items: center;
+    padding: 0; border-radius: 50%; border: 1px solid var(--dim);
+    background: var(--panel2); color: var(--ink); font-size: .6rem; line-height: 1;
+  }
+  .medrow .rx:hover { color: var(--warn); border-color: var(--warn); }
+  .medadd { border-style: dashed; color: var(--dim); justify-content: center; }
+  .medempty { color: var(--dim); font-style: italic; font-size: .76rem; padding: 2px 2px 0; }
 
 
   /* ---------- movement ----------
@@ -585,31 +790,65 @@
      middle column. No words in ink: an icon-only control's name belongs in
      title/aria-label, which is where these keep theirs. A mark is a fill
      (and Brush a count), never a row, so the card cannot grow. */
-  .hyg { display: flex; gap: 8px; height: 58px; overflow: hidden; }
+  /* Four across, two rows tall, then it scrolls: 2×52 + 6 = 110. A ninth
+     tile must never make the card taller, so the height is hard and the
+     overflow is the grid's problem, not the layout's. */
+  .hyg {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px;
+    height: 110px; overflow: hidden; overflow-y: auto; align-content: start;
+  }
   .hyg button {
-    display: grid; place-items: center; padding: 0;
+    position: relative; height: 52px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1px; padding: 0;
     background: var(--panel2); border: 1px solid var(--line); border-radius: 10px;
-    font: inherit; font-size: 1.15rem; line-height: 1; cursor: pointer;
+    color: var(--ink);
+    font: inherit; font-size: 1.05rem; line-height: 1; cursor: pointer;
     transition: background .12s, border-color .12s, transform .1s;
   }
   .hyg button:hover { border-color: var(--accent2); }
   .hyg button:active { transform: scale(.96); }
-  /* Inset, because the row clips at its hard height — a ring drawn outside
+  /* Inset, because the grid clips at its hard height — a ring drawn outside
      the border box would lose its top and bottom and keyboard focus would
      be unreadable. */
   .hyg button:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
   .hyg button[aria-pressed="true"] { background: var(--accent2); border-color: var(--accent2); }
-  .hyg .sq { flex: 0 0 58px; height: 58px; }
-  .hyg .hstack {
-    flex: 1 1 auto; min-width: 0;
-    display: flex; flex-direction: column; gap: 4px;
-  }
-  .hyg .hstack button {
-    flex: 1 1 0; min-height: 0; font-size: .95rem;
-    display: flex; align-items: center; justify-content: center; gap: 2px;
-  }
-  /* The live count is a value on a fixed button, not a layout change. */
+  /* A measurement is a door to the number row, not a state — so it takes the
+     accent as an outline when selected rather than filling like a mark. */
+  .hyg button.sel { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .hyg .rn { font-size: .58rem; letter-spacing: .02em; color: var(--dim); max-width: 100%;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 0 2px; }
+  .hyg button[aria-pressed="true"] .rn { color: var(--ink); }
+  /* The live count is a value on a fixed-size button, not a layout change. */
   .hyg .cnt { font-size: .68rem; font-weight: 600; }
+  .hyg .addt { border-style: dashed; color: var(--dim); }
+  /* Retired items are visible ONLY in edit mode, where they read as available
+     rather than active — the way back for something switched off by mistake. */
+  .hyg button.retired { border-style: dashed; opacity: .45; }
+
+  /* PERMANENTLY RESERVED. Empty it holds the hint; selected it holds the
+     field. Same 34px either way — the card cannot notice. */
+  .hygnum {
+    height: 34px; margin-top: 7px; overflow: hidden;
+    display: flex; align-items: center; gap: 6px;
+    font-size: .72rem; color: var(--dim);
+  }
+  .hygnum input {
+    width: 78px; flex: 0 0 78px; padding: 5px 7px;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 7px;
+    color: var(--ink); font: inherit; font-size: .8rem;
+  }
+  .hygnum .u { font-size: .7rem; color: var(--dim); }
+  .hygnum button {
+    padding: 5px 10px; border-radius: 7px; border: 1px solid var(--accent2);
+    background: var(--accent2); color: var(--ink); font: inherit; font-size: .72rem;
+    cursor: pointer;
+  }
+  /* Clicking the routine's name renames it — but only in edit mode, so the
+     heading is inert type the rest of the time. */
+  body.editing #routineName {
+    cursor: text; border-bottom: 1px dashed var(--accent); padding-bottom: 1px;
+  }
 
   /* The two ways into the food card, weighted by how often each is used.
      Meals takes the row and the accent; "your own food" is a square that
@@ -650,6 +889,37 @@
   /* ---------- meal rows (the list, and the builder's ingredients) ----------
      Name on its own line, controls under it. One line would fit on a laptop
      and overflow a phone, and the popover is 92vw wide there. */
+  /* ---------- meal tiles on the food card face (v21) ----------
+     Three rows of two, then it scrolls: 3×34 + 2×5 = 112. HARD, per the
+     invariant — the twentieth meal must cost the card no height at all. */
+  .mealtiles {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px;
+    height: 112px; margin-top: 10px; overflow: hidden; overflow-y: auto;
+    align-content: start; scrollbar-width: none;
+  }
+  .mealtiles::-webkit-scrollbar { display: none; }
+  .mealtile {
+    position: relative; height: 34px; min-width: 0; padding: 0 8px;
+    display: flex; align-items: center; gap: 5px;
+    background: var(--panel2); border: 1px solid var(--line); border-radius: 9px;
+    color: var(--ink); font: inherit; font-size: .74rem; cursor: pointer;
+    text-align: left;
+    transition: background .12s, border-color .12s, transform .1s;
+  }
+  .mealtile:hover { border-color: var(--accent); }
+  .mealtile:active { transform: scale(.97); }
+  .mealtile:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+  .mealtile .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  /* kcal is a value on a fixed tile, not a second line. */
+  .mealtile .kc { margin-left: auto; flex: 0 0 auto; font-size: .64rem; color: var(--dim); }
+  /* Spans both columns: an empty state is a sentence, not a tile. */
+  .mealtiles .mempty {
+    grid-column: 1 / -1; color: var(--dim); font-style: italic; font-size: .76rem;
+    align-self: center;
+  }
+  body.dense .mealtiles { height: 104px; }
+  body.dense .mealtile { height: 32px; }
+
   .meals { margin-top: 10px; }
   .mealrow { padding: 9px 0; border-bottom: 1px solid var(--line); }
   .mealrow:last-child { border-bottom: 0; }
@@ -903,6 +1173,12 @@
     <button class="icon-btn" id="undoBtn" title="Nothing to undo" disabled>↶<span class="lbl"> Undo</span></button>
     <button class="icon-btn" id="densityBtn" title="Compact / roomy">▣</button>
     <button class="icon-btn" id="themeBtn" title="Toggle light / dark">☾</button>
+    <!-- Every affordance for changing what the dashboard IS lives behind this
+         one switch, so the ordinary view stays a control panel with nothing on
+         it but controls. It is a session state, not a setting: a reload leaves
+         edit mode, because you edit deliberately and log by habit. -->
+    <button class="icon-btn" id="editBtn" aria-pressed="false"
+            title="Rearrange and choose what shows">✎<span class="lbl"> Edit</span></button>
     <button class="icon-btn" id="syncBtn" title="Sync is off">○</button>
     <button class="icon-btn" id="dataBtn" title="Forever-copy, restore, snapshots">Data</button>
   </span>
@@ -915,10 +1191,19 @@
 </div>
 <input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
 
+<!-- Shown only while editing. One line, because the affordances it describes
+     are visible at the same moment it is. -->
+<div class="editnote" id="editNote">
+  Editing: drag <span aria-hidden="true">⠿</span> to reorder, <span aria-hidden="true">−</span> to
+  put a box away, <span aria-hidden="true">✕</span> to hide something you never use.
+  Nothing here deletes a record. Press <kbd>Esc</kbd> when you are done.
+</div>
+
 <!-- ============ THE BOX RAIL ============ -->
 <!-- One chip per box, FIXED catalogue order (never the dashboard order — the
      rail must not move under the user's finger). Open chips are tinted;
-     closed chips grey. Click toggles the box below. -->
+     closed chips grey. Click toggles the box below. Edit mode only since v21:
+     choosing which boxes exist is editing, not logging. -->
 <div class="rail">
   <span class="lbl">Boxes</span>
   <span class="railchips" id="railChips" style="display:contents"></span>
@@ -940,15 +1225,19 @@
       <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
       <div class="results" id="foodResults"></div>
     </div>
-    <!-- Making a meal and logging one are different jobs, so they are
-         different buttons rather than one door with the other hidden behind
-         it. They split the row equally; only the fill separates them, because
-         you build a meal once and log it for months. Defining a food of your
-         own stays the rarer, one-off act and keeps the square on the end —
-         its name lives in title/aria-label. -->
+    <!-- The meals themselves, on the face (v21). A button labelled "Meals"
+         that opened a list of meals was a door in front of a door: the thing
+         you wanted was always one tap further away than it needed to be. Now
+         a meal IS the control — tap it and it is logged.
+
+         Three rows show and the rest scrolls inside a HARD height, so a
+         twentieth meal costs the card nothing. In edit mode a tap opens the
+         builder instead of logging, and ✕ removes the meal. -->
+    <div class="mealtiles" id="mealTiles"></div>
+    <!-- Building a meal and defining a food of your own are both occasional,
+         one-off acts, so they share the row under the meals. -->
     <div class="foodactions">
-      <button class="secondary grow" id="buildBtn" type="button">Build</button>
-      <button class="primary grow" id="mealsBtn" type="button">Meals</button>
+      <button class="secondary grow" id="buildBtn" type="button">Build a meal</button>
       <button class="sqbtn" id="customFoodBtn" type="button"
               title="Add your own food" aria-label="Add your own food">＋</button>
     </div>
@@ -977,12 +1266,22 @@
     <!-- No "exact amount…" fold: it expanded the card when opened, which is
          exactly what THE INVARIANT forbids. The quick buttons are the only
          path; an unusual amount is a couple of taps instead of a form. -->
+    <!-- Meds get a list instead of the button slot, because a dose is not a
+         quantity you tap up and down: you tap the thing you took. Hard 88px,
+         and it replaces the two rows above rather than joining them. -->
+    <div class="medslot" id="intakeMeds" hidden></div>
   </div>
 
-  <!-- Four things you either did today or didn't (and one you count). -->
+  <!-- The routine box (v21): the things you keep track of doing, defined by
+       you. Marks are done/not-done, counts tally presses, measurements take a
+       number. The tile grid is a HARD height — eight tiles show, the ninth
+       scrolls — and the number row below it is ALWAYS present whether or not a
+       measurement is selected, because a row that appears on tap is exactly
+       the geometry change THE INVARIANT forbids. -->
   <div class="card" id="hygieneCard">
-    <h2><span class="grab" aria-hidden="true">⠿</span>Hygiene<button class="minb" type="button">−</button></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span><span id="routineName">Upkeep</span><button class="minb" type="button">−</button></h2>
     <div class="hyg" id="hygRows"></div>
+    <div class="hygnum" id="hygNum"></div>
   </div>
 
   <!-- Two rows of four, then a fixed fill slot. Six category tiles fill the
@@ -1011,11 +1310,11 @@
        Daily Card), with sleep folded in so it doesn't need its own card. -->
   <div class="card" id="pulseCard">
     <h2><span class="grab" aria-hidden="true">⠿</span>How you are <span class="note saved" id="pulseSaved"></span><button class="minb" type="button">−</button></h2>
-    <div class="dotline"><span class="dl">Mood</span><div class="dots" id="dMood"></div></div>
-    <div class="dotline"><span class="dl">Energy</span><div class="dots" id="dEnergy"></div></div>
-    <div class="dotline"><span class="dl">Fatigue</span><div class="dots" id="dFatigue"></div></div>
-    <div class="dotline"><span class="dl">Soreness</span><div class="dots" id="dSore"></div></div>
-    <div class="dotline"><span class="dl">Comfort</span><div class="dots" id="dComfort"></div></div>
+    <!-- The scales live in a HARD 150px window that scrolls inside itself, so
+         adding a sixth or a sixteenth scale costs the card no height at all.
+         That is the whole reason it scrolls rather than stacks: a list you can
+         add to and a card that never grows cannot both be true otherwise. -->
+    <div class="dotlines" id="pulseScales"></div>
     <div class="hr"></div>
     <div class="rowlabel">Sleep</div>
     <div class="sleeptrack" id="sleepTrack">
@@ -1128,7 +1427,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 20;
+const SCHEMA_VERSION = 21;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -1172,6 +1471,26 @@ function plural(n, one, many) { return n + ' ' + (n === 1 ? one : (many || one +
 /* ---------- state ---------- */
 /* The full tree, including stores this dashboard does not surface. They are
    listed so a save from here can never drop data that self.html wrote. */
+/* The routine box's built-in items (v21).
+ *
+ * Declared HERE, above defaultState and the loadState() call below it, because
+ * mergeLoaded seeds from it during that call — a const declared further down
+ * the file is still in its temporal dead zone at that moment and throws. The
+ * `home.widgets` default was written inline for exactly this reason.
+ *
+ * `kind`: 'mark' toggles, 'count' increments, 'measure' takes a number.
+ * `store`: where a measurement writes. 'body.glucose' makes the Glucose tile
+ * and the Blood glucose card two doors onto ONE record — never two piles.
+ */
+const ROUTINE_SEED = [
+  { id: 'brush',   name: 'Brush',   icon: '🪥',  kind: 'count' },
+  { id: 'shower',  name: 'Shower',  icon: '🚿',  kind: 'mark' },
+  { id: 'floss',   name: 'Floss',   icon: '🧵',  kind: 'mark' },
+  { id: 'haircut', name: 'Haircut', icon: '✂️', kind: 'mark' },
+  { id: 'glucose', name: 'Glucose', icon: '🩸', kind: 'measure',
+    unit: 'mg/dL', store: 'body.glucose', gone: true },
+];
+
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
   body: {
@@ -1183,6 +1502,27 @@ const defaultState = () => ({
     exerciseTypes: [],                     // v16
     workouts: [],                          // v17
     glucose: [],                           // v20
+    /* v21 — the routine box the user defines. `items` is a PREFERENCE store
+       (like exerciseTypes): merged by id, retired with `gone`, never deleted.
+       The four built-ins carry TODAY'S ids, so every hygiene[] record ever
+       written keeps working untouched.
+
+       Named "Upkeep", not "Hygiene": once the box can hold body weight and a
+       glucose reading, hygiene is the wrong word for it — which was the
+       argument for making the name editable in the first place. Nobody ever
+       CHOSE "Hygiene"; it was hardcoded, so replacing it takes nothing away.
+       A name the user has actually set is preserved on upgrade. */
+    /* Seeded HERE as well as in mergeLoaded, because mergeLoaded returns this
+       object untouched when there is nothing saved — a brand-new profile would
+       otherwise open with an empty box. Copies, not the shared seed objects:
+       stamping an item must not write through to the constant. */
+    routine: { name: 'Upkeep', items: ROUTINE_SEED.map((s) => ({ ...s })) },
+    measurements: [],                      // v21
+    medTypes: [],                          // v21 — name + dose, set once
+    meds: [],                              // v21 — one row per dose taken
+    /* v21 — extra 1-5 scales on the "How you are" card. A definition store,
+       like medTypes: the ratings themselves ride `extra` on the check-in. */
+    scales: [],
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
   money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
@@ -1229,6 +1569,33 @@ function mergeLoaded(saved) {
     out.body.targets = { kcal: 2200, protein_g: 80, water_oz: 64 };
   }
   if (!Number(out.body.targets.weight_lb)) out.body.targets.weight_lb = 180;
+  /* v20 -> v21: the routine box, measurements, and meds. Purely additive.
+
+     The seeded item ids are EXACTLY the hygiene[] field names this app has
+     always written — brush, shower, floss, haircut — so an upgrading record
+     needs no migration at all: the tiles simply describe the marks that were
+     already there. (The spec's example JSON wrote `shave`/🪒; the live field
+     is `haircut`/✂️, and "exactly today's ids" is the rule that matters.)
+
+     Glucose ships as a routine item too, but `gone: true` — present and
+     discoverable in edit mode, off by default, so nobody who is happy with
+     the Blood glucose card sees a change. */
+  if (!out.body.routine || typeof out.body.routine !== 'object') out.body.routine = {};
+  // v20 had no name field at all, so an upgrading record always lands here and
+  // gets "Upkeep". A name already present is one the user set — leave it.
+  if (typeof out.body.routine.name !== 'string' || !out.body.routine.name) {
+    out.body.routine.name = 'Upkeep';
+  }
+  if (!Array.isArray(out.body.routine.items)) out.body.routine.items = [];
+  ROUTINE_SEED.forEach((seed) => {
+    if (!out.body.routine.items.some((it) => it && it.id === seed.id)) {
+      out.body.routine.items.push({ ...seed });
+    }
+  });
+  if (!Array.isArray(out.body.measurements)) out.body.measurements = [];
+  if (!Array.isArray(out.body.medTypes)) out.body.medTypes = [];
+  if (!Array.isArray(out.body.meds)) out.body.meds = [];
+  if (!Array.isArray(out.body.scales)) out.body.scales = [];
   // v18 -> v19: OPTIONAL fields only — `form` on alcohol/nicotine substances
   // (weed had it since v13), `oz` returning on alcohol deliberately, and a
   // `brush` counter on hygiene[] — so there is nothing to backfill.
@@ -1375,6 +1742,11 @@ let day = todayStr();
    any explicit day parks the app on it; picking Today (or the rollover
    itself) resumes following. */
 let followingToday = true;
+/* v21. Session state, never stored: while true the dashboard shows the
+   affordances for changing itself, and cards are allowed to grow. Read by
+   every renderer that has an edit-mode form, so it lives up here with `day`
+   rather than beside any one of them. */
+let editing = false;
 
 function dayLabel(iso) {
   if (iso === todayStr()) return 'Today';
@@ -1456,7 +1828,18 @@ function buildDots(el, value, onPick, name) {
    identity.pulse[]   mood + energy, kept for existing history
    All three upsert by date, so re-saving a day never duplicates it.
    ============================================================= */
-let pulse = { mood: null, energy: null, fatigue: null, soreness: null, comfort: null };
+let pulse = { mood: null, energy: null, fatigue: null, soreness: null, comfort: null, extra: {} };
+
+/* The five that ship. Each keeps the FIELD it has always written — mood and
+   energy on the daily card, the other three on the check-in — because
+   Connections, This week and every export read those field names. A built-in
+   can be hidden but never removed: hiding is chrome (mirror_layout_v1), so the
+   field and its history are untouched by it. */
+const PULSE_BUILTINS = [
+  ['mood', 'Mood'], ['energy', 'Energy'], ['fatigue', 'Fatigue'],
+  ['soreness', 'Soreness'], ['comfort', 'Comfort'],
+];
+const scalesLive = () => (state.body.scales || []).filter((s) => s && !s.gone);
 
 function card(d) { return state.daily.cards.find((c) => c.date === d); }
 function checkin(d) { return state.body.checkins.find((c) => c.date === d); }
@@ -1469,17 +1852,111 @@ function loadPulse() {
     fatigue: ck.fatigue ?? null,
     soreness: ck.soreness ?? null,
     comfort: ck.comfort ?? null,
+    extra: { ...(ck.extra || {}) },
   };
   renderPulse();
 }
 function renderPulse() {
-  buildDots($('dMood'), pulse.mood, (v) => { pulse.mood = v; renderPulse(); }, 'Mood');
-  buildDots($('dEnergy'), pulse.energy, (v) => { pulse.energy = v; renderPulse(); }, 'Energy');
-  buildDots($('dFatigue'), pulse.fatigue, (v) => { pulse.fatigue = v; renderPulse(); }, 'Fatigue');
-  buildDots($('dSore'), pulse.soreness, (v) => { pulse.soreness = v; renderPulse(); }, 'Soreness');
-  buildDots($('dComfort'), pulse.comfort, (v) => { pulse.comfort = v; renderPulse(); }, 'Comfort');
+  const box = $('pulseScales');
+  box.innerHTML = '';
+
+  const row = (label, value, onPick, extras) => {
+    const line = document.createElement('div');
+    line.className = 'dotline' + (extras && extras.off ? ' off' : '');
+    const dl = document.createElement('span');
+    dl.className = 'dl'; dl.textContent = label; dl.title = label;
+    const dots = document.createElement('div');
+    dots.className = 'dots';
+    line.appendChild(dl); line.appendChild(dots);
+    buildDots(dots, value, onPick, label);
+    if (extras && extras.corner) line.appendChild(extras.corner);
+    box.appendChild(line);
+  };
+
+  PULSE_BUILTINS.forEach(([key, label]) => {
+    const hkey = 'scale:' + key;
+    const off = isHidden(hkey);
+    if (off && !editing) return;
+    row(label, pulse[key], (v) => { pulse[key] = v; renderPulse(); },
+        { off, corner: editing ? hideCorner(hkey, label, 'sx') : null });
+  });
+
+  scalesLive().forEach((s) => {
+    row(s.name, pulse.extra[s.id] ?? null, (v) => {
+      if (v == null) delete pulse.extra[s.id]; else pulse.extra[s.id] = v;
+      renderPulse();
+    }, { corner: editing ? retireScaleBtn(s) : null });
+  });
+
+  if (editing) {
+    const wrap = document.createElement('div');
+    wrap.className = 'scaleadd';
+    const inp = document.createElement('input');
+    inp.type = 'text'; inp.id = 'scaleNew'; inp.placeholder = 'Another scale — e.g. Focus, Pain';
+    inp.setAttribute('aria-label', 'Name a new 1–5 scale');
+    const go = document.createElement('button');
+    go.type = 'button'; go.textContent = '＋ Add';
+    const take = () => addScale(inp.value.trim());
+    go.onclick = take;
+    inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); take(); } };
+    wrap.appendChild(inp); wrap.appendChild(go);
+    box.appendChild(wrap);
+
+    const note = document.createElement('div');
+    note.className = 'hint';
+    note.textContent = 'Custom scales are recorded but don’t appear in Connections yet.';
+    box.appendChild(note);
+  }
+
   const c = card(day);
   $('pulseSaved').textContent = c ? 'saved' : '';
+}
+
+/** A custom scale is yours, so its ✕ RETIRES it rather than hiding it: the
+ *  ratings you gave it stay in every record, and it can come back. A built-in
+ *  cannot be retired — there is nothing to retire, it is part of the app. */
+function retireScaleBtn(s) {
+  const b = document.createElement('button');
+  b.type = 'button'; b.className = 'sx'; b.textContent = '✕';
+  b.title = 'Retire ' + s.name + ' — the ratings you gave it are kept';
+  b.setAttribute('aria-label', 'Retire ' + s.name);
+  b.onclick = (e) => {
+    e.stopPropagation();
+    s.gone = true; stamp(s);
+    pushUndo('retiring ' + s.name, () => { s.gone = false; stamp(s); });
+    saveState(); renderPulse();
+    toast(s.name + ' retired — every rating is kept');
+  };
+  return b;
+}
+
+function addScale(name) {
+  if (!name) { const i = $('scaleNew'); if (i) i.focus(); return; }
+  // A retired scale with this name comes BACK rather than being duplicated.
+  const back = (state.body.scales || []).find((s) =>
+    s.gone && s.name.toLowerCase() === name.toLowerCase());
+  if (back) {
+    back.gone = false; stamp(back);
+    saveState(); renderPulse();
+    toast(back.name + ' is back');
+    return;
+  }
+  const taken = new Set([
+    ...PULSE_BUILTINS.map(([k]) => k),
+    ...(state.body.scales || []).map((s) => s.id),
+  ]);
+  let id = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'scale';
+  if (taken.has(id)) { let n = 2; while (taken.has(id + n)) n++; id += n; }
+  const s = stamp({ id, name });
+  state.body.scales.push(s);
+  pushUndo('adding ' + name, () => {
+    const i = state.body.scales.findIndex((x) => x.id === s.id);
+    if (i >= 0) state.body.scales.splice(i, 1);
+  });
+  saveState(); renderPulse();
+  const inp = $('scaleNew');
+  if (inp) { inp.value = ''; inp.focus(); }
+  toast(name + ' added');
 }
 function savePulse() {
   // The free-text fields were removed from this card; any note already on a
@@ -1493,6 +1970,16 @@ function savePulse() {
   if (!ck) { ck = { id: uid(), date: day }; state.body.checkins.push(ck); }
   ck.energy = pulse.energy; ck.fatigue = pulse.fatigue;
   ck.soreness = pulse.soreness; ck.comfort = pulse.comfort;
+  /* Custom scales ride one `extra` object rather than becoming fields, so the
+     record's shape stays predictable no matter what anyone names a scale.
+
+     The cost, stated plainly: MERGE_BY_DATE merges checkins field by field, and
+     `extra` is ONE field — so two devices rating two different custom scales on
+     the same day keep only the newer object. Built-in scales are unaffected;
+     they are still their own fields. Only written when non-empty, so a record
+     that never had a custom scale never grows the key. */
+  if (Object.keys(pulse.extra || {}).length) ck.extra = { ...pulse.extra };
+  else delete ck.extra;
   stamp(ck);
 
   if (pulse.mood != null || pulse.energy != null) {
@@ -1687,11 +2174,18 @@ function wireSleepTrack() {
      coffee / other   -> body.drinks[]      { kind, label, oz, count }
      alcohol          -> body.substances[]  { kind, count, oz, form }
      weed / nicotine  -> body.substances[]  { kind, count, note, form }
+     meds (v21)       -> body.meds[]        { typeId, name, dose }
+
+   MEDS ARE NOT A SUBSTANCE. They share the card because "what went into me
+   today" is one question, but they get their own store, their own colour and
+   their own weekly line — anything that folded a prescription in with
+   alcohol and nicotine would be making a claim about the person taking it.
    ============================================================= */
 const KINDS = {
   water:    { name: 'Water',    icon: '💧', c: 'water',    store: 'water' },
   coffee:   { name: 'Coffee',   icon: '☕', c: 'coffee',   store: 'drinks' },
   other:    { name: 'Other',    icon: '🥤', c: 'other',    store: 'drinks' },
+  meds:     { name: 'Meds',     icon: '💊', c: 'meds',     store: 'meds' },
   alcohol:  { name: 'Alcohol',  icon: '🍺', c: 'alcohol',  store: 'substances' },
   nicotine: { name: 'Nicotine', icon: '🚬', c: 'nicotine', store: 'substances' },
   weed:     { name: 'Weed',     icon: '🌿', c: 'weed',     store: 'substances' },
@@ -1705,7 +2199,9 @@ const intakeMeta = (k) => KINDS[k];          // the tracker reads its icons from
    Other needs a name before "+8 oz" says anything. Each choice is made in
    the same button row and then lives on the reserved tag line above it,
    with a ✕ to change — never a dialog, never a second row. */
-const INTAKE_TABS = ['water', 'coffee', 'alcohol', 'nicotine', 'weed', 'other'];
+/* Meds sit after Other and before Alcohol: the everyday things first, then the
+   ones you may or may not want counted. */
+const INTAKE_TABS = ['water', 'coffee', 'other', 'meds', 'alcohol', 'nicotine', 'weed'];
 const OZ_STEPS = [2, 8, 16];
 const COUNT_STEPS = [1, 2, 3];
 const WEED_FORMS = {
@@ -1721,7 +2217,10 @@ const ALC_FORMS = {
   shot: { label: 'Shot', steps: [1, 1.5, 2] },
 };
 const NIC_FORMS = { zyn: 'Zyn', vape: 'Vape', cig: 'Cig(ar)' };
-const isVolume = (kind) => KINDS[kind].store !== 'substances';
+/* Meds are neither: a dose is a dose, not ounces and not a tally of the same
+   thing. Naming them here rather than letting `!== 'substances'` decide keeps
+   the question "what unit is this measured in" answerable for every tab. */
+const isVolume = (kind) => KINDS[kind].store !== 'substances' && KINDS[kind].store !== 'meds';
 
 let intakeTab = 'water';
 let weedForm = null;        // 'bud' | 'edible' — chosen in the slot
@@ -1748,6 +2247,9 @@ function stepButton(label, unit, onTap) {
 }
 
 function renderIntake() {
+  /* A tab you hid cannot be the tab you are on. Water is not hideable, so the
+     fallback is always there — that is the reason it is not hideable. */
+  if (isHidden('tab:' + intakeTab) && !editing) intakeTab = 'water';
   const m = KINDS[intakeTab];
   $('intakeCard').style.setProperty('--c', 'var(--' + m.c + ')');
   // Title stays 'Intake'; the tint is what says which tab you are on.
@@ -1763,6 +2265,14 @@ function renderIntake() {
   el.innerHTML = '';
   tagLine.innerHTML = '';
   const tag = (label, onClear) => tagLine.appendChild(chosenTag(label, onClear));
+
+  /* Meds swap the tag line and the button slot for a list of what you take.
+     One of the two shapes is always showing, never both and never neither. */
+  const meds = intakeTab === 'meds';
+  $('intakeMeds').hidden = !meds;
+  tagLine.hidden = meds;
+  el.hidden = meds;
+  if (meds) { renderMeds(); return; }
 
   if (intakeTab === 'alcohol') {
     if (!alcForm) {
@@ -1827,6 +2337,113 @@ function renderIntake() {
   OZ_STEPS.forEach((n) => el.appendChild(stepButton('+' + n, 'oz', () => logIntake(n))));
 }
 
+/* ---- meds (v21) ----
+   Two stores, deliberately: `medTypes[]` is what you take (name + dose, set
+   once and then never retyped) and `meds[]` is each dose you actually took.
+   The same split as exerciseTypes/exercise and meals/food — a definition is
+   not a record, and conflating them is how a "shortcut" ends up in a history.
+
+   Retiring a type keeps every dose ever logged, and every logged dose carries
+   its own `name` and `dose` so the Tracker and the forever-copy can still read
+   a medication you stopped taking years ago. */
+const medTypes = () => state.body.medTypes || [];
+const medTypesLive = () => medTypes().filter((m) => m && !m.gone);
+
+function renderMeds() {
+  const box = $('intakeMeds');
+  box.innerHTML = '';
+  const today = onDay(state.body.meds);
+  const list = medTypes().filter((m) => m && (!m.gone || editing));
+
+  if (!list.length) {
+    const p = document.createElement('div');
+    p.className = 'medempty';
+    p.textContent = 'Nothing here yet. Add what you take and one tap logs a dose.';
+    box.appendChild(p);
+  }
+
+  list.forEach((m) => {
+    const n = today.filter((r) => r.typeId === m.id).length;
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'medrow' + (m.gone ? ' retired' : '');
+    row.dataset.medId = m.id;
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = m.name;
+    row.appendChild(nm);
+    if (m.dose) { const d = document.createElement('span'); d.className = 'ds'; d.textContent = m.dose; row.appendChild(d); }
+    const cnt = document.createElement('span'); cnt.className = 'n';
+    cnt.textContent = n ? '✓' + (n > 1 ? ' ×' + n : '') : '';
+    row.appendChild(cnt);
+    row.title = m.gone ? m.name + ' — retired' : 'Log a dose of ' + m.name;
+    row.setAttribute('aria-label', m.name + (m.dose ? ' ' + m.dose : '') +
+      (n ? ' — ' + n + ' today' : ' — none today') + (m.gone ? ', retired' : ''));
+    row.onclick = () => (m.gone ? retireMed(m, false) : logMed(m));
+    if (editing) {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'rx'; x.textContent = m.gone ? '＋' : '✕';
+      x.title = (m.gone ? 'Put back ' : 'Retire ') + m.name;
+      x.setAttribute('aria-label', (m.gone ? 'Restore ' : 'Retire ') + m.name);
+      x.onclick = (e) => { e.stopPropagation(); retireMed(m, !m.gone); };
+      row.appendChild(x);
+    }
+    box.appendChild(row);
+  });
+
+  /* The add row stays out of edit mode, like Food's "＋ your own food": you
+     cannot log a dose of something you have no way to name. */
+  const add = document.createElement('button');
+  add.type = 'button'; add.className = 'medrow medadd';
+  add.textContent = '＋ Add a medication';
+  add.onclick = addMedType;
+  box.appendChild(add);
+}
+
+/** One tap, one dose. The name and dose ride the record so it stays readable
+ *  after the type is retired or renamed. */
+function logMed(m) {
+  const rec = stamp({
+    id: uid(), date: day, t: stampTime(),
+    typeId: m.id, name: m.name, dose: m.dose || '',
+  });
+  const line = m.name + (m.dose ? ' ' + m.dose : '');
+  appendRec(state.body.meds, rec, line);
+  saveState(); renderIntake(); renderFeed();
+  toast(line + ' — tap Undo to take it back');
+}
+
+function retireMed(m, gone) {
+  const was = !!m.gone;
+  if (was === gone) return;
+  m.gone = gone;
+  stamp(m);
+  pushUndo((gone ? 'retiring ' : 'restoring ') + m.name, () => { m.gone = was; stamp(m); });
+  saveState(); renderIntake();
+  toast(m.name + (gone ? ' retired — every dose logged is kept' : ' is back'));
+}
+
+function addMedType() {
+  openPop('Add a medication',
+    '<div class="field"><input type="text" id="popMedName" autocomplete="off" ' +
+      'placeholder="Name — e.g. Metformin"></div>' +
+    '<div class="field"><input type="text" id="popMedDose" autocomplete="off" ' +
+      'placeholder="Dose — e.g. 500 mg"></div>' +
+    '<div class="field"><span class="hint">The dose is typed once. After this, ' +
+      'one tap logs that you took it.</span></div>',
+    () => {
+      const name = $('popMedName').value.trim();
+      if (!name) return false;
+      const dose = $('popMedDose').value.trim();
+      const m = stamp({ id: uid(), name, dose });
+      state.body.medTypes.push(m);
+      pushUndo('adding ' + name, () => {
+        const i = state.body.medTypes.findIndex((x) => x.id === m.id);
+        if (i >= 0) state.body.medTypes.splice(i, 1);
+      });
+      saveState(); renderIntake();
+      toast(name + ' added');
+    });
+}
+
 /* One tap logs. Undo is the safety net that makes committing immediately
    safe — the toast says so. */
 function logIntake(n) {
@@ -1851,10 +2468,15 @@ function logIntake(n) {
 }
 function arrOf(kind) {
   const s = KINDS[kind].store;
-  return s === 'water' ? state.body.water : s === 'drinks' ? state.body.drinks : state.body.substances;
+  if (s === 'water') return state.body.water;
+  if (s === 'drinks') return state.body.drinks;
+  if (s === 'meds') return state.body.meds;
+  return state.body.substances;
 }
 function entriesOf(kind) {
-  return kind === 'water' ? onDay(state.body.water) : onDay(arrOf(kind)).filter((r) => r.kind === kind);
+  // water and meds have a store to themselves, so every row in it is theirs.
+  if (kind === 'water' || kind === 'meds') return onDay(arrOf(kind));
+  return onDay(arrOf(kind)).filter((r) => r.kind === kind);
 }
 /** The day's headline number for a kind, in the unit that kind is about. */
 function totalOf(kind) {
@@ -1862,6 +2484,9 @@ function totalOf(kind) {
   if (isVolume(kind)) {
     return { n: rows.reduce((a, r) => a + (Number(r.oz) || 0), 0), unit: 'oz' };
   }
+  // Doses, counted. Not milligrams: two different pills summed by mass is a
+  // number that means nothing.
+  if (kind === 'meds') return { n: rows.length, unit: rows.length === 1 ? 'dose' : 'doses' };
   const n = rows.reduce((a, r) => a + (Number(r.count) || 1), 0);
   // A 12 oz beer and a 1.5 oz shot are one drink each. Counting is the only
   // reading of alcohol that carries that equivalence; ounces throw it away.
@@ -1915,14 +2540,20 @@ function renderTabs(el, kinds, active, onPick) {
   el.innerHTML = '';
   kinds.forEach((k) => {
     const m = KINDS[k];
+    const key = 'tab:' + k;
+    const off = isHidden(key);
+    if (off && !editing) return;         // absent, not faint, in normal use
     const t = totalOf(k);
     const b = document.createElement('button');
     b.type = 'button';
+    if (off) b.classList.add('off');
     b.style.setProperty('--tc', 'var(--' + m.c + ')');
     b.setAttribute('aria-selected', String(k === active));
     const badge = (k !== 'water' && t.n) ? '<span class="n">' + round1(t.n) + '</span>' : '';
     b.innerHTML = esc(m.name) + badge;   // colour identifies the kind
     b.onclick = () => onPick(k);
+    // Water has no corner: it is the tab everything falls back to.
+    if (editing && k !== 'water') b.appendChild(hideCorner(key, m.name, 'cornx'));
     el.appendChild(b);
   });
 }
@@ -1961,7 +2592,7 @@ function loadFoods() {
       $('foodStatus').textContent = '';
       // The Tracker is now the only place the day's eating is shown, so it has
       // to be redrawn when the nutrients it reads finally arrive.
-      renderFoodTotals(); renderFeed();
+      renderFoodTotals(); renderMealTiles(); renderFeed();
     })
     .catch(() => {
       // Opened as a file://, or served without the library beside it. Custom
@@ -1969,7 +2600,7 @@ function loadFoods() {
       foodsIndex = foodsIndex || { list: [], byId: new Map() };
       indexCustomFoods();
       $('foodStatus').textContent = 'Food library unavailable — your own foods still work.';
-      renderFoodTotals(); renderFeed();
+      renderFoodTotals(); renderMealTiles(); renderFeed();
     });
   return foodsPromise;
 }
@@ -2343,12 +2974,12 @@ function openMealBuilder(existing) {
         live.name = name;
         live.items = mealDraft.map((i) => ({ ...i }));
         stamp(live);
-        saveState(); toast('Saved ' + name);
+        saveState(); renderMealTiles(); toast('Saved ' + name);
       } else {
         appendRec(state.body.meals, stamp({
           id: uid(), name, items: mealDraft.map((i) => ({ ...i })),
         }), 'meal “' + name + '”');
-        saveState(); toast('Saved ' + name);
+        saveState(); renderMealTiles(); toast('Saved ' + name);
       }
       mealDraft = []; mealEditing = null;
     },
@@ -2467,55 +3098,59 @@ function openMealBuilder(existing) {
     'Save meal');
 }
 
-/* Each row is its own little form: how many, then Add. Nothing here is
-   pending when you leave, so the footer is a plain Done rather than a Save
-   that would imply the row you already logged had not been. */
-function openMeals() {
-  loadFoods();
-  // Reset every time the popover opens: yesterday's "3×" is not a standing
-  // intention, and a stepper you did not set is a quantity you did not choose.
-  const count = new Map();
-  openPop('Meals',
-    '<div class="meals" id="mealList"></div>',
-    null,
-    () => {
-      const box = $('mealList');
-      const paint = () => {
-        box.innerHTML = '';
-        const live = state.body.meals || [];
-        if (!live.length) {
-          box.innerHTML = '<div class="empty">No meals yet — use Build.</div>';
-          return;
-        }
-        live.slice().reverse().forEach((m) => {
-          const times = Math.max(1, Math.round(count.get(m.id) || 1));
-          const kc = Math.round(mealKcal(m) * times);
-          const div = document.createElement('div'); div.className = 'mealrow';
-          div.innerHTML = '<div class="mh"><span class="nm">' + esc(m.name) + '</span>' +
-            '<span class="tiny">' + plural((m.items || []).length, 'item') +
-            (kc ? ' · ' + kc + ' kcal' : '') + '</span></div>';
-          const act = document.createElement('div'); act.className = 'ma';
-          act.appendChild(stepper(times, (v) => { count.set(m.id, v); paint(); }, m.name));
-          const add = document.createElement('button');
-          add.className = 'primary sm'; add.type = 'button'; add.textContent = 'Add';
-          add.setAttribute('aria-label', 'Log ' + times + ' × ' + m.name);
-          add.onclick = () => { logMeal(m, count.get(m.id) || 1); paint(); };
-          const sp = document.createElement('span'); sp.className = 'sp';
-          const edit = document.createElement('button');
-          edit.className = 'mini'; edit.type = 'button'; edit.textContent = 'Edit';
-          edit.setAttribute('aria-label', 'Edit ' + m.name);
-          edit.onclick = () => openMealBuilder(m);
-          const x = document.createElement('button');
-          x.className = 'x'; x.type = 'button'; x.textContent = '✕'; x.title = 'Delete meal';
-          x.setAttribute('aria-label', 'Delete the meal ' + m.name);
-          x.onclick = () => { dropRecord(state.body.meals, m.id, m.name); saveState(); paint(); };
-          act.appendChild(add); act.appendChild(sp); act.appendChild(edit); act.appendChild(x);
-          div.appendChild(act);
-          box.appendChild(div);
-        });
+/* The meals, on the card face (v21).
+ *
+ * There is no popover any more and no quantity stepper. A tap logs the meal
+ * once; two taps log it twice, and each is its own undoable line in the
+ * Tracker — the same contract every other control on this page has. The
+ * stepper was the only place in the app where you set a number before
+ * pressing the thing, and it existed only because the meals lived behind a
+ * door that was expensive to open twice.
+ */
+function renderMealTiles() {
+  const box = $('mealTiles');
+  if (!box) return;
+  box.innerHTML = '';
+  const live = state.body.meals || [];
+  if (!live.length) {
+    const p = document.createElement('div');
+    p.className = 'mempty';
+    p.textContent = 'Meals you build appear here.';
+    box.appendChild(p);
+    return;
+  }
+  // Newest first: the meal you just built is the one you are about to log.
+  live.slice().reverse().forEach((m) => {
+    const kc = Math.round(mealKcal(m));
+    const b = document.createElement('button');
+    b.type = 'button'; b.className = 'mealtile'; b.dataset.mealId = m.id;
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = m.name;
+    b.appendChild(nm);
+    if (kc) { const k = document.createElement('span'); k.className = 'kc'; k.textContent = kc + ' kcal'; b.appendChild(k); }
+    const items = plural((m.items || []).length, 'item');
+    b.title = editing ? 'Edit ' + m.name : 'Log ' + m.name + ' — ' + items + (kc ? ', ' + kc + ' kcal' : '');
+    b.setAttribute('aria-label', (editing ? 'Edit ' : 'Log ') + m.name + ' — ' + items +
+      (kc ? ', ' + kc + ' kcal' : ''));
+    // A tap logs; a tap while editing opens the builder. Same tile, and which
+    // one it is is never ambiguous, because edit mode is a visible state.
+    b.onclick = () => (editing ? openMealBuilder(m) : logMeal(m, 1));
+    if (editing) {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'cornx'; x.textContent = '✕';
+      x.title = 'Remove the meal ' + m.name;
+      // Worth being exact in the label: this deletes a SHORTCUT. Every meal
+      // you ever logged stays in body.food, because logging replayed it there.
+      x.setAttribute('aria-label', 'Remove the meal ' + m.name +
+        ' — meals you already logged are kept');
+      x.onclick = (e) => {
+        e.stopPropagation();
+        dropRecord(state.body.meals, m.id, m.name);
+        saveState(); renderMealTiles();
       };
-      paint();
-    });
+      b.appendChild(x);
+    }
+    box.appendChild(b);
+  });
 }
 
 /* ---- your own food ---- */
@@ -3288,7 +3923,8 @@ function renderHabits() {
 }
 
 /* =============================================================
-   HYGIENE — four marks, one record per day.
+   THE ROUTINE BOX — the things you keep track of doing.
+   (Through v20 this was HYGIENE: four fixed marks, one record per day.)
 
    Stored the way the other once-a-day rows are: upserted by date and merged
    field by field, so two devices marking two different things on the same day
@@ -3302,68 +3938,318 @@ function renderHabits() {
 
    BRUSH is a COUNTER, not a toggle (v19): each press logs one brushing and
    lands as its own Tracker line, each undoable. The old brush_am/brush_pm
-   booleans stay readable forever and are simply no longer written. */
-const HYGIENE_TOGGLES = [
-  ['shower', '🚿', 'Shower'], ['floss', '🧵', 'Floss'], ['haircut', '✂️', 'Haircut'],
-];
+   booleans stay readable forever and are simply no longer written.
+
+   ---- v21: the box is now DEFINED BY THE USER ----
+
+   The four fixed marks became `body.routine.items`, seeded with EXACTLY the
+   ids this app has always written (brush, shower, floss, haircut), so every
+   hygiene[] row ever saved keeps working with no migration: the items simply
+   describe marks that were already in the record. `items` is a preference
+   store — merged by id, retired with `gone: true`, never spliced — because
+   "I switched this off" and "I never had this" must not look the same to a
+   merge, the lesson exerciseTypes taught.
+
+   An item is one of three kinds:
+     mark      done / not done. Writes `true`/`false` on the day's record.
+     count     each press logs one. Writes an integer.
+     measure   takes a number, and is therefore NOT a field on the day
+               record but a row of its own — with a `store` saying where.
+               `store: 'body.glucose'` means the tile and the Blood glucose
+               card are two doors onto ONE record, never two piles.
+   ------------------------------------------------------------------------ */
 /* v15-era marks: readable in the Tracker and exports. The card never writes
    them since v19; the Tracker's ✕ on an old day's line (and its Undo) still
    does, because un-marking must write the explicit false the field-by-field
-   merge requires — deletion would resurrect on sync. */
+   merge requires — deletion would resurrect on sync.
+
+   The v15 shower/floss/haircut table that used to sit here is gone: those
+   three are ROUTINE ITEMS now, under the same ids, so ROUTINE_SEED is the
+   single list and there is no second copy to drift from it. */
 const HYGIENE_LEGACY = [['brush_am', '🪥', 'Brush AM'], ['brush_pm', '🪥', 'Brush PM']];
-const HYGIENE_MARKS = [...HYGIENE_TOGGLES, ...HYGIENE_LEGACY];
 
 function hygieneOn(d) { return (state.body.hygiene || []).find((h) => h.date === d); }
+
+/* ---- reading the definition ---- */
+const routineName = () => (state.body.routine && state.body.routine.name) || 'Upkeep';
+const routineItems = () => (state.body.routine && state.body.routine.items) || [];
+const routineLive = () => routineItems().filter((it) => it && !it.gone);
+/** Marks and counts — the kinds that live as fields on the day's record.
+ *  Includes RETIRED items, because a day already marked must keep reading
+ *  correctly in the Tracker and the forever-copy after you switch it off. */
+const routineMarks = () => routineItems().filter((it) => it && it.kind !== 'measure');
+const routineItem = (id) => routineItems().find((it) => it && it.id === id);
+
+/** Which measurement the number row is aimed at. Module state, not stored:
+ *  it is a cursor, not a preference. */
+let routineSel = '';
 
 function renderHygiene() {
   const box = $('hygRows');
   if (!box) return;
+  const title = $('routineName');
+  if (title) title.textContent = routineName();
   const rec = hygieneOn(day) || {};
   box.innerHTML = '';
-  const toggle = (key, glyph, name, cls) => {
+
+  // Retired items are only on the card in edit mode, where they are the way
+  // back for something switched off by mistake.
+  const items = routineItems().filter((it) => it && (!it.gone || editing));
+  items.forEach((it) => {
     const b = document.createElement('button');
-    b.type = 'button'; if (cls) b.className = cls;
-    b.textContent = glyph;
-    b.title = name; b.setAttribute('aria-label', name);
-    b.setAttribute('aria-pressed', String(rec[key] === true));
-    b.onclick = () => toggleHygiene(key, name);
-    return b;
-  };
-  box.appendChild(toggle('shower', '🚿', 'Shower', 'sq'));
-  const stack = document.createElement('div'); stack.className = 'hstack';
-  const n = Number(rec.brush) || 0;
-  const brush = document.createElement('button');
-  brush.type = 'button';
-  brush.innerHTML = '🪥' + (n ? '<span class="cnt">×' + n + '</span>' : '');
-  brush.title = 'Brush — each press logs one';
-  brush.setAttribute('aria-label', 'Brush — logged ' + n + ' today, press to add one');
-  brush.setAttribute('aria-pressed', String(n > 0));
-  brush.onclick = pressBrush;
-  stack.appendChild(brush);
-  stack.appendChild(toggle('floss', '🧵', 'Floss', ''));
-  box.appendChild(stack);
-  box.appendChild(toggle('haircut', '✂️', 'Haircut', 'sq'));
+    b.type = 'button';
+    b.dataset.rid = it.id;
+    if (it.gone) b.className = 'retired';
+    const n = Number(rec[it.id]) || 0;
+    const on = it.kind === 'count' ? n > 0 : rec[it.id] === true;
+    const label = document.createElement('span');
+    label.className = 'ic';
+    label.textContent = it.icon || '•';
+    b.appendChild(label);
+    if (it.kind === 'count' && n) {
+      const c = document.createElement('span'); c.className = 'cnt';
+      c.textContent = '×' + n; b.appendChild(c);
+    }
+    const nm = document.createElement('span');
+    nm.className = 'rn'; nm.textContent = it.name;
+    b.appendChild(nm);
+
+    if (it.kind === 'measure') {
+      const has = measureToday(it);
+      b.title = it.name + (it.unit ? ' — ' + it.unit : '');
+      b.setAttribute('aria-label', it.name + (has ? ' — ' + has + (it.unit ? ' ' + it.unit : '') + ' today' : ' — no reading today'));
+      if (routineSel === it.id) b.classList.add('sel');
+      b.onclick = () => { routineSel = (routineSel === it.id ? '' : it.id); renderHygiene(); focusNum(); };
+    } else {
+      b.title = it.name + (it.kind === 'count' ? ' — each press logs one' : '');
+      b.setAttribute('aria-label', it.kind === 'count'
+        ? it.name + ' — logged ' + n + ' today, press to add one'
+        : it.name);
+      b.setAttribute('aria-pressed', String(on));
+      b.onclick = () => (it.kind === 'count' ? pressCount(it) : toggleHygiene(it.id, it.name));
+    }
+
+    // Edit mode adds the retire/restore corner. Retiring keeps every record.
+    if (editing) {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'cornx'; x.textContent = it.gone ? '＋' : '✕';
+      x.title = (it.gone ? 'Put ' : 'Retire ') + it.name;
+      x.setAttribute('aria-label', (it.gone ? 'Restore ' : 'Retire ') + it.name);
+      x.onclick = (e) => { e.stopPropagation(); retireRoutine(it, !it.gone); };
+      b.appendChild(x);
+    }
+    box.appendChild(b);
+  });
+
+  if (editing) {
+    const add = document.createElement('button');
+    add.type = 'button'; add.className = 'addt';
+    add.innerHTML = '<span class="ic">＋</span><span class="rn">Add</span>';
+    add.title = 'Add something to ' + routineName();
+    add.setAttribute('aria-label', 'Add something to ' + routineName());
+    add.onclick = addRoutineItem;
+    box.appendChild(add);
+  }
+  renderRoutineNum();
 }
 
-/** One press, one brushing. A counter rather than a toggle, because twice a
+/** The reserved number row. Present in both states at the same 34px: a hint
+ *  when nothing is selected, the field when something is. */
+function renderRoutineNum() {
+  const row = $('hygNum');
+  if (!row) return;
+  row.innerHTML = '';
+  const it = routineSel ? routineItem(routineSel) : null;
+  if (!it || it.kind !== 'measure') {
+    routineSel = '';
+    const measures = routineLive().filter((x) => x.kind === 'measure').length;
+    row.textContent = measures
+      ? 'Tap a measurement to enter today’s number.'
+      : 'Marks only. Add a measurement in Edit to enter numbers here.';
+    return;
+  }
+  const lab = document.createElement('span');
+  const had = measureToday(it);
+  lab.textContent = it.name + (had ? ' · ' + had + (it.unit ? ' ' + it.unit : '') : '');
+  const inp = document.createElement('input');
+  inp.type = 'number'; inp.id = 'hygNumVal'; inp.inputMode = 'decimal';
+  // Not the unit: the unit is already printed beside the field, and a
+  // placeholder repeating it reads as though the box wants the word "lb".
+  inp.placeholder = 'number';
+  inp.setAttribute('aria-label', it.name + (it.unit ? ' in ' + it.unit : ''));
+  inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); logMeasure(it); } };
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.textContent = 'Log';
+  btn.onclick = () => logMeasure(it);
+  row.appendChild(inp);
+  if (it.unit) { const u = document.createElement('span'); u.className = 'u'; u.textContent = it.unit; row.appendChild(u); }
+  row.appendChild(btn);
+  row.appendChild(lab);
+}
+const focusNum = () => { const i = $('hygNumVal'); if (i) i.focus(); };
+
+/** Today's value for a measurement, whichever store it routes to. */
+function measureToday(it) {
+  if (it.store === 'body.glucose') {
+    const rows = (state.body.glucose || []).filter((r) => bgDay(r) === day);
+    return rows.length ? Number(rows[rows.length - 1].mgdl) : '';
+  }
+  const rows = (state.body.measurements || []).filter((r) => r.itemId === it.id && r.date === day);
+  return rows.length ? Number(rows[rows.length - 1].value) : '';
+}
+
+/** Write one measurement. `store` decides which record it becomes — the tile
+ *  is a door onto an existing store, never a second copy of it. */
+function logMeasure(it) {
+  const el = $('hygNumVal');
+  if (!el) return;
+  const raw = el.value.trim();
+  const v = Number(raw);
+  if (!raw || !isFinite(v)) { el.focus(); return; }
+  // addGlucoseReading redraws this very row, so `el` is gone by the time it
+  // returns — nothing to clear, and nothing left to focus.
+  if (it.store === 'body.glucose') { if (!addGlucoseReading(Math.round(v))) el.focus(); return; }
+  const rec = stamp({
+    id: uid(), date: day, itemId: it.id, name: it.name,
+    value: v, unit: it.unit || '',
+    at: day === todayStr() ? localNowISO() : day,
+  });
+  const line = it.name + ' ' + v + (it.unit ? ' ' + it.unit : '');
+  appendRec(state.body.measurements, rec, line);
+  el.value = '';
+  saveState(); renderHygiene(); renderFeed();
+  toast(line + ' — tap Undo to take it back');
+}
+
+/** One press, one occurrence. A counter rather than a toggle, because twice a
  *  day is the ordinary case and a toggle could only ever say "at least once". */
-function pressBrush() {
+function pressCount(it) {
   let rec = hygieneOn(day);
   if (!rec) { rec = { id: uid(), date: day }; state.body.hygiene.push(rec); }
-  rec.brush = (Number(rec.brush) || 0) + 1;
+  rec[it.id] = (Number(rec[it.id]) || 0) + 1;
   stamp(rec);
-  pushUndo('brushing', () => { rec.brush = Math.max(0, (Number(rec.brush) || 0) - 1); stamp(rec); });
+  pushUndo(it.name.toLowerCase(), () => {
+    rec[it.id] = Math.max(0, (Number(rec[it.id]) || 0) - 1); stamp(rec);
+  });
   saveState(); renderHygiene(); renderFeed();
-  toast('Brushed' + (rec.brush > 1 ? ' ×' + rec.brush : '') + ' — tap Undo to take it back');
+  const n = Number(rec[it.id]);
+  toast(it.name + (n > 1 ? ' ×' + n : '') + ' — tap Undo to take it back');
 }
 /** The Tracker line's ✕: takes back ONE press, undoably — the same act as
  *  pressing, reversed. Saving and redrawing is the caller's job. */
-function unbrush() {
+function uncount(key, name) {
   const rec = hygieneOn(day);
-  if (!rec || !(Number(rec.brush) > 0)) return;
-  rec.brush = Number(rec.brush) - 1;
+  if (!rec || !(Number(rec[key]) > 0)) return;
+  rec[key] = Number(rec[key]) - 1;
   stamp(rec);
-  pushUndo('removing a brushing', () => { rec.brush = (Number(rec.brush) || 0) + 1; stamp(rec); });
+  pushUndo('removing one ' + name.toLowerCase(), () => {
+    rec[key] = (Number(rec[key]) || 0) + 1; stamp(rec);
+  });
+}
+
+/* ---- defining the box ---- */
+
+/** Retire or restore, undoably. `gone` is a flag, not a deletion: the records
+ *  stay, and so does the item, so a sync cannot resurrect the switched-off. */
+function retireRoutine(it, gone) {
+  const was = !!it.gone;
+  if (was === gone) return;
+  it.gone = gone;
+  stamp(it);
+  if (gone && routineSel === it.id) routineSel = '';
+  pushUndo((gone ? 'retiring ' : 'restoring ') + it.name, () => { it.gone = was; stamp(it); });
+  saveState(); renderHygiene(); renderFeed();
+  toast(it.name + (gone ? ' retired — its records are kept' : ' is back'));
+}
+
+/** A slug that cannot collide with an existing item or a field the day record
+ *  already uses, because a mark's id IS its field name. */
+function routineId(name) {
+  const base = String(name).toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'item';
+  const taken = new Set([...routineItems().map((it) => it.id), 'id', 'date', '_src', '_at', '_up']);
+  if (!taken.has(base)) return base;
+  let n = 2;
+  while (taken.has(base + n)) n++;
+  return base + n;
+}
+
+const ROUTINE_KINDS = [
+  ['mark', 'Mark', 'done or not done'],
+  ['count', 'Count', 'each press logs one'],
+  ['measure', 'Measurement', 'you type a number'],
+];
+
+function addRoutineItem() {
+  let kind = 'mark';
+  const kindRow = ROUTINE_KINDS.map(([k, label, hint]) =>
+    '<button type="button" class="chip" data-rk="' + k + '" title="' + esc(hint) + '" ' +
+    'aria-pressed="' + (k === kind) + '">' + label + '</button>').join('');
+  openPop('Add to ' + esc(routineName()),
+    '<div class="field"><input type="text" id="popRName" autocomplete="off" ' +
+      'placeholder="e.g. Stretch, Vitamins, Weight"></div>' +
+    '<div class="field inline" id="popRKind">' + kindRow + '</div>' +
+    '<div class="field"><input type="text" id="popRIcon" autocomplete="off" ' +
+      'placeholder="Icon, optional — e.g. 🧘"></div>' +
+    '<div class="field" id="popRUnitWrap"><input type="text" id="popRUnit" autocomplete="off" ' +
+      'placeholder="Unit — lb, mg/dL"></div>' +
+    '<div class="field"><span class="hint" id="popRHint"></span></div>',
+    () => {
+      const name = $('popRName').value.trim();
+      if (!name) return false;
+      const item = { id: routineId(name), name, icon: $('popRIcon').value.trim() || '•', kind };
+      if (kind === 'measure') {
+        const u = $('popRUnit').value.trim();
+        if (u) item.unit = u;
+      }
+      state.body.routine.items.push(stamp(item));
+      /* Undo of an ADD may splice: the item has never been synced, has no
+         records, and was a mistake a second ago. Retirement is for items with
+         a history — this one has none. */
+      pushUndo('adding ' + name, () => {
+        const i = state.body.routine.items.findIndex((x) => x.id === item.id);
+        if (i >= 0) state.body.routine.items.splice(i, 1);
+      });
+      saveState(); renderHygiene();
+      toast(name + ' added to ' + routineName());
+    },
+    () => {
+      const row = $('popRKind');
+      const paint = () => {
+        row.querySelectorAll('[data-rk]').forEach((o) =>
+          o.setAttribute('aria-pressed', String(o.dataset.rk === kind)));
+        // Visibility, not display: the pop keeps its height when the kind changes.
+        $('popRUnitWrap').style.visibility = (kind === 'measure' ? 'visible' : 'hidden');
+        $('popRHint').textContent = (ROUTINE_KINDS.find(([k]) => k === kind) || [])[2] || '';
+      };
+      row.querySelectorAll('[data-rk]').forEach((b) => {
+        b.onclick = () => { kind = b.dataset.rk; paint(); };
+      });
+      paint();
+    });
+}
+
+/** Rename the box. Edit mode only; the heading is inert type otherwise. */
+function renameRoutine() {
+  openPop('Rename this box',
+    '<div class="field"><input type="text" id="popRoutine" autocomplete="off" value="' +
+      esc(routineName()) + '"></div>' +
+    '<div class="field"><span class="hint">Only the heading changes. ' +
+      'Every record stays exactly where it is.</span></div>',
+    () => {
+      const name = $('popRoutine').value.trim();
+      if (!name) return false;
+      const was = routineName();
+      if (name === was) return;
+      state.body.routine.name = name;
+      /* The name has no _up of its own, so the config rule ("whichever tree
+         was written last") needs a stamp somewhere in this tree — otherwise a
+         rename alone is invisible to the merge and the other device wins. */
+      const items = state.body.routine.items;
+      if (items.length) stamp(items[items.length - 1]);
+      pushUndo('renaming the box', () => { state.body.routine.name = was; });
+      saveState(); renderHygiene(); renderRail(); renderWeek();
+      toast('Now called ' + name);
+    });
 }
 
 /** Set one mark, undoably. Saving and redrawing is left to the caller, so the
@@ -3418,21 +4304,31 @@ const bgTime = (r) => {
 const bgDotColor = (v) =>
   v > BG_HIGH ? 'var(--warn)' : (v < BG_LOW ? 'var(--accent)' : 'var(--accent2)');
 
+/** The ONE write path for a reading, so the card's field and the routine box's
+ *  Glucose tile are two doors onto one record rather than two piles. Returns
+ *  false if the value is out of range and nothing was written. */
+function addGlucoseReading(v) {
+  if (!(v >= 20 && v <= 600)) return false;
+  const rec = stamp({ id: uid(), mgdl: v, at: day === todayStr() ? localNowISO() : day });
+  appendRec(state.body.glucose, rec, 'Blood glucose ' + v + ' mg/dL');
+  // renderHygiene too: the routine box's Glucose tile reads the same store, so
+  // a reading typed on the card has to show up on the tile and vice versa.
+  saveState(); renderGlucose(); renderHygiene(); renderFeed();
+  toast('Blood glucose ' + v + ' mg/dL — tap Undo to take it back');
+  return true;
+}
+
 function logGlucose() {
   const el = $('bgVal');
   const v = Math.round(Number(el.value));
-  if (!el.value.trim() || !(v >= 20 && v <= 600)) {
+  if (!el.value.trim() || !addGlucoseReading(v)) {
     // Reject silently: the shake says "not that", a toast would say it twice.
     el.classList.remove('bgshake');
     void el.offsetWidth;                     // restart the animation
     el.classList.add('bgshake');
     return;
   }
-  const rec = stamp({ id: uid(), mgdl: v, at: day === todayStr() ? localNowISO() : day });
-  appendRec(state.body.glucose, rec, 'Blood glucose ' + v + ' mg/dL');
   el.value = '';
-  saveState(); renderGlucose(); renderFeed();
-  toast('Blood glucose ' + v + ' mg/dL — tap Undo to take it back');
 }
 
 function renderGlucose() {
@@ -3481,6 +4377,13 @@ function renderFeed() {
   onDay(state.body.substances).forEach((r) =>
     push(r, (intakeMeta(r.kind) || {}).icon || '•', describeIntake(r.kind, r),
       () => dropRecord(state.body.substances, r.id, describeIntake(r.kind, r))));
+  /* Each dose reads from the record's OWN name and dose, not from the type it
+     came from — so a medication you have since retired or renamed still reads
+     correctly on the day you took it. */
+  onDay(state.body.meds).forEach((r) => {
+    const line = r.name + (r.dose ? ' ' + r.dose : '');
+    push(r, '💊', line, () => dropRecord(state.body.meds, r.id, line));
+  });
   /* A workout was replayed into its exercises, which is what it is in the
      data — but not what you did. The rows that share a `workoutLogId`
      collapse back into the one session, exactly as a meal's rows do. */
@@ -3539,15 +4442,31 @@ function renderFeed() {
      un-marks it — the same act as tapping it again, and undoable the same way. */
   const hyg = hygieneOn(day);
   if (hyg) {
-    HYGIENE_MARKS.forEach(([key, glyph, name]) => {
+    /* Read the routine's own definition, so a mark you added shows up here
+       too — and RETIRED items are included, because a day already marked has
+       to keep reading correctly after you switch the item off. */
+    routineMarks().forEach((it) => {
+      if (it.kind === 'count') {
+        // Each press is its own line — that is what "a counter, not a toggle"
+        // buys. The ✕ takes back one press, exactly as pressing added one.
+        for (let i = 0, n = Number(hyg[it.id]) || 0; i < n; i++) {
+          push(hyg, it.icon || '•', it.name, () => uncount(it.id, it.name));
+        }
+      } else if (hyg[it.id] === true) {
+        push(hyg, it.icon || '•', it.name, () => setHygiene(it.id, it.name, false));
+      }
+    });
+    // The v15 am/pm booleans are no longer written but stay readable forever.
+    HYGIENE_LEGACY.forEach(([key, glyph, name]) => {
       if (hyg[key] === true) push(hyg, glyph, name, () => setHygiene(key, name, false));
     });
-    // Each brushing is its own line — that is what "a counter, not a toggle"
-    // buys. The ✕ takes back one press, exactly as pressing added one.
-    for (let i = 0, n = Number(hyg.brush) || 0; i < n; i++) {
-      push(hyg, '🪥', 'Brush', unbrush);
-    }
   }
+
+  (state.body.measurements || []).filter((r) => r.date === day).forEach((r) => {
+    const line = r.name + ' ' + r.value + (r.unit ? ' ' + r.unit : '');
+    push(r, (routineItem(r.itemId) || {}).icon || '📏', line,
+      () => dropRecord(state.body.measurements, r.id, line));
+  });
 
   onDay(state.body.sleep).forEach((r) => {
     const when = (r.start != null && r.end != null) ? ' · ' + fmtHour(r.start) + ' → ' + fmtHour(r.end) : '';
@@ -3901,6 +4820,14 @@ function renderWeek() {
   const bgWeek = (state.body.glucose || []).filter((r) => days.includes(String(r.at || '').slice(0, 10)));
   const bgAvg = bgWeek.length
     ? Math.round(bgWeek.reduce((n, r) => n + Number(r.mgdl || 0), 0) / bgWeek.length) : 0;
+  /* Meds get a line of their own rather than joining the substances one — see
+     the note on KINDS. Doses counted, not milligrams summed. */
+  const medWeek = inWeek(state.body.meds);
+  /* A retired mark keeps its records but loses its cell: a week that still
+     said "Flossed 0 of 7" about something switched off months ago would be
+     reporting on a question no longer being asked. */
+  const liveMark = (id) => routineLive().some((it) => it.id === id);
+  const markName = (id, fallback) => (routineItem(id) || {}).name || fallback;
 
   const cell = (k, v, u) => '<div class="c"><div class="k">' + k + '</div><div class="v">' +
     (v == null ? '—' : v) + (u ? '<span class="u"> ' + u + '</span>' : '') + '</div></div>';
@@ -3913,12 +4840,13 @@ function renderWeek() {
     cell('Water', Math.round(water / 7), 'oz/day') +
     cell('Movement', exCount, exCount ? 'x · ' + exMin + ' min' + (exKcal ? ' · ≈' + exKcal + ' kcal' : '') : '') +
     (bgWeek.length ? cell('Glucose', bgWeek.length, '× · avg ' + bgAvg) : '') +
+    (medWeek.length ? cell('Doses', medWeek.length, '') : '') +
     cell('Alcohol', cnt('alcohol'), '') +
     cell('Nicotine / weed', cnt('nicotine') + ' / ' + cnt('weed'), '') +
-    cell('Brushed', brushes, '') +
-    cell('Flossed', marks('floss'), 'of 7') +
-    cell('Showers', marks('shower'), '') +
-    cell('Haircut', marks('haircut'), '');
+    (liveMark('brush') ? cell('Brushed', brushes, '') : '') +
+    (liveMark('floss') ? cell(markName('floss', 'Flossed'), marks('floss'), 'of 7') : '') +
+    (liveMark('shower') ? cell(markName('shower', 'Showers'), marks('shower'), '') : '') +
+    (liveMark('haircut') ? cell(markName('haircut', 'Haircut'), marks('haircut'), '') : '');
 
   $('wkDays').innerHTML = days.map((d) => {
     const on = cards.some((c) => c.date === d);
@@ -4198,9 +5126,24 @@ const MD_SUMMARY = [
   ['Symptoms', () => state.body.symptoms, (r) => `${r.date} — ${r.note}`],
   ['Blood glucose', () => state.body.glucose, (r) =>
     `${String(r.at || '').slice(0, 10)} — ${r.mgdl} mg/dL${bgTime(r) ? ` at ${bgTime(r)}` : ''}`],
-  ['Hygiene', () => state.body.hygiene, (r) => {
-    const bits = Number(r.brush) ? ['Brush ×' + Number(r.brush)] : [];
-    HYGIENE_MARKS.forEach(([k, , name]) => { if (r[k] === true) bits.push(name); });
+  ['Medication', () => state.body.meds, (r) =>
+    `${r.date} — ${r.name}${r.dose ? ` ${r.dose}` : ''}${bgTime(r) ? ` at ${bgTime(r)}` : ''}`],
+  ['Measurements', () => state.body.measurements, (r) =>
+    `${r.date} — ${r.name} ${r.value}${r.unit ? ` ${r.unit}` : ''}`],
+  /* The routine box's own heading, because the user may have renamed it —
+     a forever-copy that says "Hygiene" when the app says "Upkeep" reads like
+     someone else's file. Marks are listed from routine.items rather than the
+     old fixed table, so a mark the user added appears here too. */
+  [() => routineName(), () => state.body.hygiene, (r) => {
+    const bits = [];
+    routineMarks().forEach((it) => {
+      if (it.kind === 'count') { if (Number(r[it.id])) bits.push(`${it.name} ×${Number(r[it.id])}`); }
+      else if (r[it.id] === true) bits.push(it.name);
+    });
+    // The v15 am/pm booleans last, exactly as the Tracker reads them. A record
+    // that predates the counter must stay readable in the export forever —
+    // dropping them here would quietly rewrite what those days said.
+    HYGIENE_LEGACY.forEach(([k, , name]) => { if (r[k] === true) bits.push(name); });
     return `${r.date} — ${bits.join(', ') || 'nothing marked'}`;
   }],
   ['Expenses', () => state.money.expenses, (r) => `${r.date} — ${fmt$(r.amount)}${r.note ? ` (${r.note})` : ''}`],
@@ -4224,9 +5167,10 @@ function buildDataMarkdown() {
     ['Daily cards', state.daily.cards], ['Food entries', state.body.food],
     ['Water', state.body.water], ['Drinks', state.body.drinks],
     ['Substances', state.body.substances], ['Sleep nights', state.body.sleep],
-    ['Hygiene days', state.body.hygiene],
+    [routineName() + ' days', state.body.hygiene],
     ['Exercise sessions', state.body.exercise], ['Symptoms', state.body.symptoms],
     ['Glucose readings', state.body.glucose],
+    ['Doses taken', state.body.meds], ['Measurements', state.body.measurements],
     ['Habits', state.habits.items], ['People', state.relationships.people],
     ['Birthdays', state.relationships.birthdays], ['Books', state.mind.books],
     ['Quotes', state.mind.quotes], ['Ideas', state.mind.ideas],
@@ -4275,7 +5219,8 @@ function buildDataMarkdown() {
     const arr = get() || [];
     if (!arr.length) return;
     const recent = arr.slice().sort(byDateDesc).slice(0, 14);
-    p(`### ${title} — ${arr.length}`);
+    // A title may be a thunk — the routine box's heading is whatever it's named.
+    p(`### ${typeof title === 'function' ? title() : title} — ${arr.length}`);
     recent.forEach((r) => p(`- ${fmt(r)}`));
     if (arr.length > recent.length) p(`- _… and ${arr.length - recent.length} more in the JSON._`);
     p('');
@@ -4548,6 +5493,8 @@ const MERGE_BY_ID = [
   ['body', 'symptoms'], ['body', 'customFoods'], ['body', 'meals'],
   ['body', 'drinks'], ['body', 'substances'], ['body', 'exerciseTypes'],
   ['body', 'workouts'], ['body', 'glucose'],
+  ['body', 'measurements'], ['body', 'medTypes'], ['body', 'meds'],   // v21
+  ['body', 'scales'],                                                 // v21
   ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
   ['money', 'categories'], ['money', 'expenses'], ['money', 'income'], ['money', 'subscriptions'],
   ['money', 'netWorth'], ['money', 'goals'],
@@ -4578,6 +5525,12 @@ function latestStamp(s) {
   [...MERGE_BY_ID, ...MERGE_BY_DATE].forEach(([a, b]) => walk(s && s[a] && s[a][b]));
   walk(s && s.habits && s.habits.items);
   walk(s && s.links);
+  /* The routine's items are merged as a special case, so they are in neither
+     table — and without them a RENAME is invisible here. `routine.name` is
+     decided by this function, renaming stamps the newest item to record that
+     the tree was written, and if that stamp is never read the other device
+     always wins and the new name silently reverts. */
+  walk(s && s.body && s.body.routine && s.body.routine.items);
   return max;
 }
 
@@ -4674,6 +5627,15 @@ function mergeStates(mine, theirs) {
   out.body.favoriteFoods = [...new Set([...(mine.body?.favoriteFoods || []),
                                         ...(theirs.body?.favoriteFoods || [])])];
 
+  /* body.routine is HALF config, half record store, so it cannot go in either
+     table: `items` merges by id (a preference store, exactly like
+     exerciseTypes — retirement travels as `gone: true`, which is why nothing
+     here is ever spliced out), while `name` is a single string with no _up of
+     its own and follows the same last-writer rule as the other config. */
+  out.body.routine = out.body.routine || {};
+  out.body.routine.items = mergeById(mine.body?.routine?.items,
+                                     theirs.body?.routine?.items, dead);
+
   MERGE_BY_KEY.forEach(([a, b]) => {
     const m = pick(mine, a, b) || {}, t = pick(theirs, a, b) || {};
     const merged = { ...t, ...m };     // per key; local wins a contested day
@@ -4688,6 +5650,8 @@ function mergeStates(mine, theirs) {
       if (v === undefined) return;
       if (b == null) out[a] = v; else { out[a] = out[a] || {}; out[a][b] = v; }
     });
+    const theirName = theirs.body?.routine?.name;
+    if (theirName) out.body.routine.name = theirName;
   }
 
   out.__v = SCHEMA_VERSION;
@@ -5002,7 +5966,7 @@ function openSyncSetup() {
    ============================================================= */
 function renderAll() {
   loadPulse(); loadSleep();
-  renderIntake(); renderFoodTotals();
+  renderIntake(); renderFoodTotals(); renderMealTiles(); renderLogGrid();
   renderMovement(); renderHygiene(); renderGlucose(); renderHabits(); renderSymptoms(); renderFeed();
   renderDrawers();
 }
@@ -5020,16 +5984,42 @@ const BOXES = [
   { id: 'food',     name: 'Food',          icon: '🍽', el: 'foodCard' },
   { id: 'intake',   name: 'Intake',        icon: '🥤', el: 'intakeCard' },
   { id: 'movement', name: 'Movement',      icon: '🏃', el: 'movementCard' },
-  { id: 'hygiene',  name: 'Hygiene',       icon: '🚿', el: 'hygieneCard' },
+  /* The routine box's rail name is whatever the user called it, so the chip and
+     the card heading can never disagree. The catalogue name is the fallback for
+     a profile that predates the rename. */
+  { id: 'hygiene',  name: 'Upkeep',        icon: '🚿', el: 'hygieneCard',
+    label: () => routineName() },
   { id: 'pulse',    name: 'How you are',   icon: '◉',  el: 'pulseCard' },
   { id: 'glucose',  name: 'Blood glucose', icon: '🩸', el: 'glucoseCard' },
   { id: 'loggrid',  name: 'Log grid',      icon: '＋', el: 'logGridCard' },
 ];
 const LAYOUT_KEY = 'mirror_layout_v1';
 
+/* What may be hidden, and what may not (v21).
+
+   Hiding is DEVICE CHROME, not data: it says "don't show me this control",
+   which is a fact about this screen, not about the person. So it lives here in
+   mirror_layout_v1 with the box order, out of the forever-copy and out of
+   sync — the same reasoning that kept box order out of them.
+
+   Water and the Tracker's own tiles are not in this list on purpose: the app
+   must always have a tab to fall back to, and the fallback cannot itself be
+   hideable or there is nothing left to show. */
+const HIDEABLE = [
+  ...INTAKE_TABS.filter((k) => k !== 'water').map((k) => 'tab:' + k),
+  'tile:logPerson', 'tile:logBook', 'tile:logIdea', 'tile:logPlace',
+  'tile:logMoney', 'tile:logValues',
+  /* A built-in scale hides rather than retiring, because its FIELD is part of
+     the schema and read by Connections and every export — there is nothing to
+     retire. A custom scale is the opposite: it is a definition you made, so it
+     retires in body.scales with `gone`. */
+  ...PULSE_BUILTINS.map(([k]) => 'scale:' + k),
+];
+
 /** Unknown ids in a stored order are dropped; catalogue ids missing from it
  *  are appended in catalogue order and default to OPEN — a future box should
- *  appear, not hide. */
+ *  appear, not hide. Same rule for `hidden`: a key this build does not know is
+ *  dropped rather than kept, so a typo cannot outlive the build that made it. */
 function loadLayout() {
   let raw = null;
   try { raw = JSON.parse(localStorage.getItem(LAYOUT_KEY)); } catch { /* chrome, not data */ }
@@ -5040,11 +6030,56 @@ function loadLayout() {
   ids.forEach((id) => {
     open[id] = (raw && raw.open && typeof raw.open[id] === 'boolean') ? raw.open[id] : true;
   });
-  return { order, open };
+  const hidden = {};
+  HIDEABLE.forEach((k) => { if (raw && raw.hidden && raw.hidden[k] === true) hidden[k] = true; });
+  return { order, open, hidden };
 }
 let layout = loadLayout();
 function saveLayout() {
   try { localStorage.setItem(LAYOUT_KEY, JSON.stringify(layout)); } catch { /* best effort */ }
+}
+
+/* ---- hiding a control you never use (v21) ---- */
+const isHidden = (key) => layout.hidden[key] === true;
+function setHidden(key, on) {
+  if (on) layout.hidden[key] = true; else delete layout.hidden[key];
+  saveLayout();
+  renderIntake(); renderLogGrid(); renderPulse();
+}
+/** The corner button that hides or restores a control. Same shape everywhere,
+ *  so ✕ always means "off this screen" and never "delete this record". */
+function hideCorner(key, name, cls) {
+  const x = document.createElement('button');
+  const off = isHidden(key);
+  x.type = 'button'; x.className = cls;
+  x.textContent = off ? '＋' : '✕';
+  x.title = off ? 'Show ' + name + ' again' : 'Hide ' + name + ' on this device';
+  x.setAttribute('aria-label', (off ? 'Show ' : 'Hide ') + name);
+  x.onclick = (e) => { e.stopPropagation(); e.preventDefault(); setHidden(key, !off); };
+  return x;
+}
+
+/** The six tiles are wired once, by id, at the bottom of this file — so this
+ *  shows and hides the existing nodes rather than rebuilding them, and every
+ *  handler survives. Same reasoning as renderBoxes re-parenting. */
+const LOG_TILES = [
+  ['logPerson', 'Person'], ['logBook', 'Book'], ['logIdea', 'Idea'],
+  ['logPlace', 'Place'], ['logMoney', 'Money'], ['logValues', 'Values'],
+];
+function renderLogGrid() {
+  LOG_TILES.forEach(([id, name]) => {
+    const el = $(id);
+    if (!el) return;
+    const key = 'tile:' + id;
+    const off = isHidden(key);
+    // Hidden means ABSENT in normal use and dashed-faint while editing, so the
+    // way back is visible exactly when you are looking for it.
+    el.hidden = off && !editing;
+    el.classList.toggle('off', off);
+    const old = el.querySelector('.cornx');
+    if (old) old.remove();
+    if (editing) el.appendChild(hideCorner(key, name, 'cornx'));
+  });
 }
 const boxMeta = (id) => BOXES.find((b) => b.id === id);
 const boxNode = (id) => { const m = boxMeta(id); return m ? $(m.el) : null; };
@@ -5058,8 +6093,9 @@ function renderRail() {
     chip.type = 'button'; chip.className = 'railchip';
     const on = !!layout.open[b.id];
     chip.setAttribute('aria-pressed', String(on));
-    chip.title = b.name + (on ? ' — open; click to minimise' : ' — closed; click to open');
-    chip.innerHTML = '<span class="ic">' + b.icon + '</span>' + esc(b.name);
+    const name = b.label ? b.label() : b.name;
+    chip.title = name + (on ? ' — open; click to minimise' : ' — closed; click to open');
+    chip.innerHTML = '<span class="ic">' + b.icon + '</span>' + esc(name);
     chip.onclick = () => toggleBox(b.id, !layout.open[b.id]);
     wrap.appendChild(chip);
   });
@@ -5232,6 +6268,32 @@ $('themeBtn').onclick = () => {
 $('themeBtn').textContent = document.body.classList.contains('theme-dark') ? '☀' : '☾';
 $('themeColor').content = document.body.classList.contains('theme-dark') ? '#1c1e24' : '#8a6a3e';
 
+/* ---- edit mode (v21) ----
+   Deliberately NOT persisted. Density and theme are how you like the app to
+   look and belong in localStorage; edit mode is something you are doing right
+   now, and a dashboard that reopened tomorrow still covered in ✕ buttons would
+   be a worse control panel than one you re-enter in a tap. */
+function setEditing(on) {
+  editing = !!on;
+  document.body.classList.toggle('editing', editing);
+  const b = $('editBtn');
+  b.setAttribute('aria-pressed', String(editing));
+  b.innerHTML = editing ? '✓<span class="lbl"> Done</span>' : '✎<span class="lbl"> Edit</span>';
+  b.title = editing ? 'Finish editing' : 'Rearrange and choose what shows';
+  // Every surface that grows an affordance in edit mode redraws itself.
+  renderHygiene(); renderIntake(); renderLogGrid(); renderPulse(); renderMealTiles();
+}
+$('editBtn').onclick = () => setEditing(!editing);
+/* Escape leaves edit mode — but only when it is not closing something else
+   first, or you would lose the mode every time you dismissed a pop. */
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !editing) return;
+  if ($('pop').style.display === 'block') return;
+  setEditing(false);
+});
+/* The heading renames the box, and only while editing — otherwise it is type. */
+$('routineName').onclick = () => { if (editing) renameRoutine(); };
+
 $('dataBtn').onclick = openData;
 $('syncBtn').onclick = openSyncSetup;
 $('restoreFile').onchange = (e) => {
@@ -5279,7 +6341,6 @@ $('symAdd').onclick = () => openPop('Note a symptom',
     toast('Noted');
   });
 $('customFoodBtn').onclick = () => { loadFoods(); openCustomFood(); };
-$('mealsBtn').onclick = openMeals;
 $('buildBtn').onclick = () => openMealBuilder(null);
 $('foodSearch').onfocus = () => loadFoods();
 $('foodSearch').oninput = (e) => {

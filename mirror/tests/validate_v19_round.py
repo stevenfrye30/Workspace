@@ -74,7 +74,7 @@ with sync_playwright() as pw:
     page.wait_for_timeout(400)
     ok("loads clean on a v18 blob", not page_errors, "; ".join(page_errors[:2]))
     page.evaluate("() => saveState()")
-    ok("v20 stamped", st(page)["__v"] == 20)
+    ok("v21 stamped", st(page)["__v"] == 21)
 
     # ---- box order (v20 superseded the assigned columns with a user-ordered
     # flow grid; the fresh-profile default is the catalogue order) ----
@@ -136,7 +136,7 @@ with sync_playwright() as pw:
 
     # ---- hygiene: brush presses, tracker lines, undo, legacy, height ----
     hh = hyg_h(page)
-    brush = page.locator("#hygRows .hstack button").first
+    brush = page.locator("#hygRows button[data-rid=brush]")
     brush.click(); page.wait_for_timeout(70)
     brush.click(); page.wait_for_timeout(70)
     ok("two presses -> brush:2", next(h for h in st(page)["body"]["hygiene"] if h["date"] == today)["brush"] == 2)
@@ -208,7 +208,7 @@ with sync_playwright() as pw:
     page2.evaluate("() => saveState()")
     page2.wait_for_timeout(150)
     after = json.loads(page2.evaluate("() => localStorage.getItem('mirror_v1')"))
-    ok("self.html loads clean at v20", not p2err and after.get("__v") == 20, "; ".join(p2err[:2]))
+    ok("self.html loads clean at v21", not p2err and after.get("__v") == 21, "; ".join(p2err[:2]))
     diffs = [k for k in before if k != "calendar"
              and json.dumps(before[k], sort_keys=True) != json.dumps(after.get(k), sort_keys=True)]
     ok("self.html round-trip zero-diff", not diffs, str(diffs))

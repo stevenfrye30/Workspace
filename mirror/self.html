@@ -2077,7 +2077,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 20;
+const SCHEMA_VERSION = 21;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -2095,13 +2095,20 @@ const RECORD_ARRAYS = [
   ['relationships','giftIdeas'], ['relationships','birthdays'],
   ['daily','cards'], ['decisions','items'], ['habits','items'], ['places','items'],
   ['body','hygiene'], ['body','exerciseTypes'], ['body','workouts'], ['body','glucose'],
+  // v21. `routine` is an OBJECT ({name, items}), not an array, so it is not
+  // listed here — the provenance stamper only ever walks arrays of records.
+  ['body','measurements'], ['body','medTypes'], ['body','meds'], ['body','scales'],
 ];
 function nowISO(){ return new Date().toISOString(); }
 
 const DEFAULT_TARGETS = { kcal: 2200, protein_g: 80, water_oz: 64 };
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
-  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [], drinks: [], substances: [], hygiene: [], exerciseTypes: [], workouts: [], glucose: [] },
+  body:     { food: [], water: [], sleep: [], exercise: [], symptoms: [], targets: { ...DEFAULT_TARGETS }, favoriteFoods: [], customFoods: [], meals: [], checkins: [], drinks: [], substances: [], hygiene: [], exerciseTypes: [], workouts: [], glucose: [],
+                // v21 — the dashboard's routine box, measurements, meds and extra scales.
+                // Nothing here surfaces them; these exist so a save from this side
+                // cannot drop them (the weight_lb rule).
+                routine: { name: 'Upkeep', items: [] }, measurements: [], medTypes: [], meds: [], scales: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
@@ -2311,6 +2318,27 @@ function migrate(s) {
     s.body = s.body || {};
     if (!Array.isArray(s.body.glucose)) s.body.glucose = [];
     v = 20;
+  }
+  /* v20 -> v21: the routine box the user defines (body.routine {name, items}),
+     body.measurements[], body.medTypes[] + body.meds[], and body.scales[] —
+     the extra 1-5 scales, whose ratings ride an OPTIONAL `extra` object on
+     body.checkins[] rows. Nothing on this page surfaces any of it; this app
+     only guarantees a save from this side cannot drop it (the weight_lb rule).
+
+     The routine's items are NOT seeded here. The dashboard seeds them, and
+     seeding from two places would race: this side would write four items with
+     today's ids into a record the dashboard has not opened yet, and any
+     divergence between the two lists becomes a duplicate tile after a merge. */
+  if (v < 21) {
+    s.body = s.body || {};
+    if (!s.body.routine || typeof s.body.routine !== 'object') s.body.routine = { name: 'Upkeep', items: [] };
+    if (typeof s.body.routine.name !== 'string' || !s.body.routine.name) s.body.routine.name = 'Upkeep';
+    if (!Array.isArray(s.body.routine.items)) s.body.routine.items = [];
+    if (!Array.isArray(s.body.measurements)) s.body.measurements = [];
+    if (!Array.isArray(s.body.medTypes)) s.body.medTypes = [];
+    if (!Array.isArray(s.body.meds)) s.body.meds = [];
+    if (!Array.isArray(s.body.scales)) s.body.scales = [];
+    v = 21;
   }
   s.__v = SCHEMA_VERSION;
   return s;

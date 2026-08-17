@@ -26,6 +26,13 @@ def stored(page):
 
 CATALOGUE = ["food", "intake", "movement", "hygiene", "pulse", "glucose", "loggrid"]
 
+def edit_on(page):
+    """v21: the rail, the drag handles and the minus buttons only exist while
+    editing, and edit mode is deliberately not persisted — so every reload in
+    this suite has to ask for them back."""
+    if page.locator("#editBtn").get_attribute("aria-pressed") != "true":
+        page.click("#editBtn"); page.wait_for_timeout(150)
+
 with sync_playwright() as pw:
     browser = pw.chromium.launch()
     ctx = browser.new_context(timezone_id="America/Indiana/Indianapolis",
@@ -54,13 +61,19 @@ with sync_playwright() as pw:
     page.click("#dayBtn"); page.wait_for_timeout(120); page.click("#dTodayRow"); page.wait_for_timeout(150)
 
     # ---- A2: rail — seven chips in catalogue order; toggling adds/removes ----
+    # v21: the rail and the minimise buttons are edit-mode affordances — choosing
+    # which boxes exist is editing, not logging — so this block edits first. The
+    # fourth chip now reads the routine box's own name, which defaults to Upkeep.
+    ok("A2: rail is absent until you edit", not page.locator(".rail").is_visible())
+    page.click("#editBtn"); page.wait_for_timeout(150)
+    ok("A2: editing shows the rail", page.locator(".rail").is_visible())
     chips = page.evaluate("""() => [...document.querySelectorAll('#railChips .railchip')]
       .map(b => b.textContent.replace(b.querySelector('.ic').textContent, '').trim())""")
     ok("A2: seven chips, catalogue order",
-       chips == ["Food", "Intake", "Movement", "Hygiene", "How you are", "Blood glucose", "Log grid"], str(chips))
-    page.locator("#railChips .railchip", has_text="Hygiene").click(); page.wait_for_timeout(100)
+       chips == ["Food", "Intake", "Movement", "Upkeep", "How you are", "Blood glucose", "Log grid"], str(chips))
+    page.locator("#railChips .railchip", has_text="Upkeep").click(); page.wait_for_timeout(100)
     ok("A2: toggle removes the box", "hygiene" not in order(page))
-    page.locator("#railChips .railchip", has_text="Hygiene").click(); page.wait_for_timeout(100)
+    page.locator("#railChips .railchip", has_text="Upkeep").click(); page.wait_for_timeout(100)
     ok("A2: toggle restores the box", "hygiene" in order(page))
 
     # ---- A3: minimise greys the chip; reopening appends to the end ----
@@ -87,6 +100,9 @@ with sync_playwright() as pw:
     page.reload(wait_until="load"); page.wait_for_timeout(400)
     after_reload = page.evaluate("() => [...document.querySelectorAll('#dailyGrid > .card')].map(e => e.dataset.box)")
     ok("A4: order survives reload", before_reload == after_reload, f"{before_reload} vs {after_reload}")
+    ok("A4: but edit mode does not survive it",
+       page.locator("#editBtn").get_attribute("aria-pressed") == "false")
+    edit_on(page)
     hy = page.locator("#hygieneCard").bounding_box()
     ink = page.locator("#intakeCard").bounding_box()
     page.evaluate("(p) => document.getElementById('hygieneCard').dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, pointerType: 'touch', pointerId: 9, clientX: p.x, clientY: p.y }))",
@@ -106,6 +122,7 @@ with sync_playwright() as pw:
     ok("A4: Alt+Left moves a focused box", o2.index("glucose") == o.index("glucose") - 1, f"{o} -> {o2}")
 
     # ---- A5: closing every box leaves the report band, no crash, no artifact ----
+    edit_on(page)
     for bid in list(order(page)):
         page.locator(f"[data-box={bid}] .minb").click(); page.wait_for_timeout(40)
     ok("A5: all boxes closed", order(page) == [])
@@ -162,7 +179,7 @@ with sync_playwright() as pw:
     ok("A9: v19 blob opens clean", not real and not page_errors, "; ".join((real + page_errors)[:2]))
     page.evaluate("() => saveState()")
     s = st(page)
-    ok("A9: glucose backfilled at v20", s["__v"] == 20 and s["body"]["glucose"] == [])
+    ok("A9: glucose backfilled at v21", s["__v"] == 21 and s["body"]["glucose"] == [])
 
     # ---- A10: v20 forever-copy through self.html save keeps body.glucose ----
     page.fill("#bgVal", "133"); page.press("#bgVal", "Enter"); page.wait_for_timeout(150)

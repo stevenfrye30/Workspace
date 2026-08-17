@@ -18,12 +18,19 @@ silently repurposed — see [`SCHEMA.md`](./SCHEMA.md), the decoder ring for you
 | **`records.html`** | Everything you have ever entered, searchable in one place. |
 | **`self.html`** | The older seven-room version, on the same data. |
 
-**The dashboard** is a set of **boxes you arrange**. A rail under the header holds one chip
-per box — Food · Intake · Movement · Hygiene · How you are · Blood glucose · Log grid — in a
-fixed catalogue order: click a chip (or a box's `−`) to minimise it, click again to reopen
+**The dashboard** is a set of **boxes you arrange**, and since v21 a set of boxes you
+**define**. Everything that changes what the dashboard *is* now sits behind one switch:
+`✎ Edit` in the header. Press it and a rail appears holding one chip per box — Food ·
+Intake · Movement · Upkeep · How you are · Blood glucose · Log grid — in a fixed
+catalogue order: click a chip (or a box's `−`) to minimise it, click again to reopen
 (reopened boxes land at the end). Drag a box by its `⠿` to reorder — long-press on a phone,
 `Alt+←/→` on a focused header — and the arrangement is remembered per device
-(`mirror_layout_v1`, chrome not data: it never enters a backup or sync). The day you are
+(`mirror_layout_v1`, chrome not data: it never enters a backup or sync). Edit mode is also
+where you rename the Upkeep box, add a mark or a measurement to it, add a 1–5 scale of your
+own, and hide any control you never use — an Intake tab, a Log-grid tile, a scale. `Esc`
+leaves it, and it is deliberately **not** remembered: you edit on purpose and log by habit,
+so tomorrow's dashboard is the one you left. Nothing in edit mode deletes a record — the
+worst a `✕` does is retire a definition or take a control off this screen. The day you are
 logging for sits beside the title; below the boxes, a row of link pills, then the always-on
 report band: the **Tracker** — every entry of the day in the order you made it — the week in
 review, and **Connections**. Connections is the record talking back: differences in how you
@@ -33,31 +40,43 @@ never proof.
 
 **The instruments never change shape as you log** — values move, geometry does not. Nothing
 on a card grows or shifts a control because of something you recorded: entries land in the
-Tracker rather than in the card you typed into, and the one list that lives on a card face —
-the remembered moves on Movement — sits in a window of fixed height that scrolls inside
-itself, so the thing you are aiming at is always where it was. What else grows lives one
-layer in: the popovers, the Tracker, Records and the Overview. It is written down at the top
-of `index.html` as the invariant every card is audited against.
+Tracker rather than in the card you typed into, and every list that lives on a card face —
+Movement's remembered moves, Upkeep's tiles, the scales, the meal tiles, the medication list,
+the day's glucose readings — sits in a window of **fixed height that scrolls inside itself**,
+so the thing you are aiming at is always where it was. Being able to add to those lists does
+not weaken that rule; it is the reason the windows are hard-bounded, so the twentieth meal and
+the ninth tile cost the card nothing. What else grows lives one layer in: the popovers, the
+Tracker, Records and the Overview. It is written down at the top of `index.html` as the
+invariant every card is audited against, together with the one licensed exception noted
+there — **edit mode**, where cards may grow, because what appears is new furniture rather
+than data arriving.
 
-So each card is a set of controls with a door beside it. The food card has **Build** and
-**Meals** side by side, because making a meal and logging one are different jobs: Build is the
-recipe editor (search, per-ingredient `− n +`, or take today's eating wholesale), Meals is the
-saved list, where each row is a `− n +` and an `Add` — two helpings is one tap and lands as one
-Tracker line. **Movement** is two rows of four tiles — Walk · Run · Bike · Lift · Stretch ·
+So each card is a set of controls with a door beside it. On the **food** card your meals are
+the controls: each one is a tile you tap to log it, three rows deep and scrolling past that,
+because a button labelled "Meals" that opened a list of meals was a door standing in front of
+a door. **Build a meal** is still the recipe editor beside them (search, per-ingredient
+`− n +`, or take today's eating wholesale), and in edit mode a tap on a tile opens the
+builder instead of logging it. **Movement** is two rows of four tiles — Walk · Run · Bike · Lift · Stretch ·
 Other, plus the 📋 Workouts and ＋ Build doors — over a fill slot whose height never changes.
 Tap a category and log the session right on the card: chips *add* into a dashed running total
 (tap the readout to zero it), cardio takes time and miles, Lift keeps your moves as chips in a
 window that scrolls inside itself — tap one to pour reps into it — Stretch toggles areas,
 Other asks what it was and remembers the answer, and a dim `≈ kcal` line guesses the cost
 (MET-based, from the body weight set in **Data**) before one Enter writes the whole session as
-one entry, one Tracker line. **Hygiene** is one
-compact row — Shower and Haircut squares around a stacked Brush / Floss pair; Brush counts
-per press (twice a day is two Tracker lines), the others toggle, and tapping again takes a
-mark back. One tap logs a glass of water; sleep is two handles on a
-24-hour track, so you say when you went down and got up rather than doing the arithmetic;
-**Blood glucose** is one number and a Log button — mg/dL, the day's readings dotted by range
-in a fixed window — because a reading is all it should ask for. `Undo` in the header takes
-back the last thing you did, including a deletion.
+one entry, one Tracker line. **Upkeep** is the box you define: a grid of tiles for the things
+you keep track of doing. It ships with Brush, Shower, Floss and Haircut — Brush counts per
+press (twice a day is two Tracker lines), the marks toggle, and tapping again takes one back —
+and in edit mode you can rename the box, retire a tile, or add one of your own as a **mark**, a
+**count**, or a **measurement** that takes a number in the row permanently reserved beneath the
+tiles. **Intake** is seven tabs — water, coffee, other, **meds**, alcohol, nicotine, weed —
+where one tap logs; a medication's dose is typed once, and after that taking it is a single tap
+on its name, kept in its own store with its own weekly line, because a prescription is not a
+substance. **How you are** is five 1–5 scales you can add to and switch off. One tap logs a
+glass of water; sleep is two handles on a 24-hour track, so you say when you went down and got
+up rather than doing the arithmetic; **Blood glucose** is one number and a Log button — mg/dL,
+the day's readings dotted by range in a fixed window — because a reading is all it should ask
+for. (Switch the Glucose tile on in Upkeep and it writes that *same* record, not a second
+one.) `Undo` in the header takes back the last thing you did, including a deletion.
 
 Clicking the title opens the **Overview** — what the record adds up to: days kept, sleep
 average, this month's money, habits over the last seven days, the values you keep, and the last
@@ -181,7 +200,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v20**.
+**schema v21**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is

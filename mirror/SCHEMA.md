@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **16** (field `__v` in the data).
+Current schema version: **21** (field `__v` in the data).
 
 ---
 
@@ -281,10 +281,59 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   45 min") while the data stays a list of ordinary exercises. `minutes` on an item is an
   optional default carried into each replayed entry; an item without one replays with
   `minutes: null`, exactly as a single log with the box left blank would.
-- **checkins[]** *(v8)* — `{ id, date, energy: 1–5?, fatigue: 1–5?, soreness: 1–5?,
-  comfort: 1–5?, note, _src, _at }`. The subjective daily **Body** check-in — how the body
-  *feels* (energy, fatigue, soreness/pain, physical comfort), distinct from the measurable
-  Health logs. One record per local `date` (saving **upserts**).
+- **routine** *(v21)* — `{ name: string, items: [{ id, name, icon?, kind, unit?, store?,
+  gone?, _src, _at, _up }] }`. **The one card the user defines.** `name` is the box's
+  heading, default `"Upkeep"` (not "Hygiene": once the box can hold body weight and a
+  glucose reading, hygiene is the wrong word for it — and nobody ever *chose* "Hygiene", it
+  was hardcoded). This is **not** an array of records, so it is in neither merge table and
+  is handled as a special case: `items` merges by `id`, and `name` follows the config rule
+  (whichever tree was written last).
+  - `kind` — `mark` (done / not done), `count` (each press logs one), or `measure` (you
+    type a number). `mark` and `count` write a **field named `id`** on the day's
+    `hygiene[]` record; a `measure` is not a field at all but a row of its own.
+  - `store` — where a measurement writes, when it is not `measurements[]`. The seeded
+    Glucose item carries `store: "body.glucose"`, which makes the tile and the Blood
+    glucose card **two doors onto one record** rather than two piles of the same reading.
+  - `gone` — same flag, same reason, as `exerciseTypes[].gone`: retire, never delete. To a
+    merge, "I switched this off" and "I never had this" must not look the same.
+  - **Seeded with today's ids.** `brush` (count), `shower`, `floss`, `haircut` (marks), plus
+    `glucose` (measure, seeded `gone: true` so nobody's card changes on upgrade). Seeding
+    happens on the **dashboard only** — `self.html` deliberately does not seed, because two
+    seeders would race and any divergence between their lists becomes a duplicate tile.
+  - Renaming the box stamps its newest item, because `name` has no `_up` of its own and the
+    config rule reads "the most recent write anywhere in this tree".
+- **measurements[]** *(v21)* — `{ id, date, itemId, name, value, unit, at?, _src, _at, _up }`.
+  A number you typed for a routine item whose `kind` is `measure` and which has no `store`.
+  `name` and `unit` are **copied onto the row**, so a measurement stays readable after its
+  item is renamed or retired — the same reasoning as `food[].foodName`.
+- **medTypes[]** *(v21)* — `{ id, name, dose, gone?, _src, _at, _up }`. What you take:
+  name + dose, typed once. A definition store, like `medTypes`' cousins `exerciseTypes` and
+  `meals` — not an observation.
+- **meds[]** *(v21)* — `{ id, date, t, typeId, name, dose, _src, _at, _up }`. One row per
+  dose taken. `name` and `dose` ride the row for the same reason as above.
+  > **Medication is not a substance.** It shares the Intake card because "what went into me
+  > today" is one question, but it gets its own store, its own colour and its own weekly
+  > line. Anything that folded a prescription in beside alcohol and nicotine would be making
+  > a claim about the person taking it. Doses are **counted, never summed by mass**: two
+  > different pills added together in milligrams is a number that means nothing.
+- **scales[]** *(v21)* — `{ id, name, gone?, _src, _at, _up }`. Extra 1–5 scales on the
+  "How you are" card. A definition store; the ratings live in `checkins[].extra`. The five
+  built-ins are **not** here — they are schema fields, and switching one off is a display
+  choice that lives in `mirror_layout_v1`, not a retirement.
+- **checkins[]** *(v8; `extra` added v21)* — `{ id, date, energy: 1–5?, fatigue: 1–5?,
+  soreness: 1–5?, comfort: 1–5?, note, extra?, _src, _at }`. The subjective daily **Body**
+  check-in — how the body *feels* (energy, fatigue, soreness/pain, physical comfort),
+  distinct from the measurable Health logs. One record per local `date` (saving **upserts**).
+  - `extra` *(v21)* — `{ <scaleId>: 1–5 }`, the ratings for **user-defined scales** (see
+    `scales[]`). One object rather than one field per scale, so the record's shape stays
+    predictable whatever anyone names a scale. Only written when non-empty. The five
+    built-in scales are **not** in here and never will be — they keep their own fields
+    because Connections, This week and every export read those names (§4 rule 1).
+  > **The cost, stated plainly.** These records merge field by field, and `extra` is ONE
+  > field — so two devices rating two *different* custom scales on the same day keep only
+  > the newer object. Built-in scales are unaffected. This is the same trade the hygiene
+  > booleans made, one level deeper, and it is the price of not minting a schema field
+  > every time someone names a scale.
 - **customFoods[]** — `{ id, name, category, portions: [{ label, grams }], n: {...per 100 g} }`.
   Definitions you authored. Entered per *serving* and stored per 100 g, so they divide the
   same way library foods do.
@@ -297,10 +346,15 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   Logging a meal **n** times over multiplies each item's `grams` and `qty` by n and stamps
   the resulting entries with `mealLogId` / `mealName` / `mealQty` — so the Tracker can show
   one line while the data stays a list of ordinary foods that resolve their own nutrients.
-- **hygiene[]** *(v15; `brush` added v19)* — `{ id, date, brush?, brush_am?, brush_pm?,
-  floss?, shower?, haircut?, _src, _at, _up }`. One record per local `date` (marking
-  **upserts**). `floss` / `shower` / `haircut` are booleans with three states, and the
-  difference between them matters:
+- **hygiene[]** *(v15; `brush` added v19; user-defined from v21)* — `{ id, date, brush?,
+  brush_am?, brush_pm?, floss?, shower?, haircut?, <your marks…>, _src, _at, _up }`. One
+  record per local `date` (marking **upserts**). **Every field name here is a routine item's
+  `id`** (see `routine` below): from v21 the user decides which marks exist, and a mark's id
+  IS its field name in this record — which is exactly why v21 seeded the built-ins with the
+  ids this app had already been writing for six versions. No migration was needed or run.
+  A mark you add writes a new field; a mark you retire stops writing one and the days it
+  already marked keep reading. `floss` / `shower` / `haircut` are booleans with three
+  states, and the difference between them matters:
   **absent** = never touched; **`true`** = marked done; **`false`** = explicitly un-marked.
   Un-marking writes `false` rather than deleting the field **on purpose**: these records
   merge field by field (§ the by-date rule), and a missing field cannot beat another
@@ -646,6 +700,39 @@ means**. So:
   allowed different desks. Unknown ids in a stored order are dropped; catalogue ids
   missing from it are appended in catalogue order and default to open, so a future box
   appears rather than hides. Losing this key loses an arrangement, never a record.
+- **v21** → **The dashboard becomes the user's to define.** Four new stores, all additive:
+  `body.routine` *(an object: `{name, items}`)*, `body.measurements[]`, `body.medTypes[]` +
+  `body.meds[]`, and `body.scales[]`; plus one new OPTIONAL field, `checkins[].extra` (see
+  §3 for all of them). Nothing was reshaped and no record was rewritten — the migration is
+  five array/object defaults and a seed.
+  - **The seed is the whole trick.** `routine.items` ships with the ids this app had already
+    been writing since v15: `brush`, `shower`, `floss`, `haircut`. A mark's id IS its field
+    name in `hygiene[]`, so the four tiles simply *describe* marks that were already in every
+    record — the four-fixed-marks card became a user-defined one with **zero** data
+    migration. Had the seed invented new ids, every existing hygiene day would have gone
+    quiet. Glucose seeds as a fifth item with `gone: true`, so an upgrader's card is
+    unchanged until they ask for it.
+  - **Merge additions.** The three record stores and `scales[]` join `MERGE_BY_ID`.
+    `routine` joins neither table: `items` merges by id (a preference store, retirement
+    travelling as `gone: true`, nothing ever spliced out) while `name` follows the config
+    rule. `latestStamp` had to learn to walk `routine.items`, or a rename — which stamps the
+    newest item precisely to register that this tree was written — would be invisible to the
+    merge and silently revert.
+  - **Retire, never delete, in three new places**: a routine item, a medication, a custom
+    scale. Same flag and same reason as `exerciseTypes[].gone`.
+  - **Hiding is not data.** Switching off an Intake tab, a Log-grid tile or a *built-in*
+    scale is a display choice, so it lives in `mirror_layout_v1` beside the box order as
+    `hidden: { "tab:weed": true, "tile:logMoney": true, "scale:fatigue": true }` — outside
+    `state`, out of the forever-copy, out of sync. A built-in scale hides (its field is
+    schema; there is nothing to retire); a *custom* scale retires (it is a definition you
+    made). Water and the Tracker's tiles are deliberately not hideable: the app must always
+    have a tab to fall back to, and the fallback cannot itself be hideable.
+  - **Edit mode** (the `✎ Edit` toggle that reveals all of the above) is session state and
+    is stored **nowhere at all** — not in `state`, not in localStorage. It is the one
+    licensed exception to the front layer's geometry invariant, because what appears is new
+    furniture rather than data arriving.
+  - `self.html` surfaces none of this and only guarantees a save cannot drop it (the
+    weight_lb rule); `records.html` round-trips the blob whole and needs no change.
 
 ---
 
@@ -679,6 +766,16 @@ the measurement series:
   alcohol, nicotine and cannabis alongside sleep and mood, in one person, over years, is
   among the more genuinely scarce things this record could offer — and it anonymises to
   nothing but a kind and a number.
+  *(v21)* Add `body.measurements` (a number, a unit and a date — shareable) and
+  `body.routine.items` / `body.scales` (names you chose for things you track; drop the names
+  and the series is unchanged, the same footing as `exerciseTypes`).
+
+  > **`body.meds` and `body.medTypes` are the most sensitive rows in this file, and they are
+  > not on either list above by accident.** A medication name is not a measurement: it can
+  > identify a diagnosis, and a diagnosis is not yours to infer from a shared dataset. Treat
+  > the dose *series* as shareable only after the names are dropped — "3 doses on 2026-08-07"
+  > says something about adherence; "Metformin" says something about a person. The app itself
+  > shares nothing; this is a note for whoever ever decides to.
 
   > These are also the most sensitive rows in the file. Structural separability is what
   > makes them shareable *at all*; without the free text they are numbers, with it they are
