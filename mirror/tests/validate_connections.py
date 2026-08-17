@@ -97,10 +97,14 @@ with sync_playwright() as pw:
     # no protein data at all -> silent
     ok("no-data signal stays silent", "PROTEIN" not in body, body)
 
-    # hedging language on every association row
+    # v22: the hedge is the card's permanent subhead, said ONCE — never on rows
     n_assoc = page.locator("#connCells .c.good, #connCells .c.warn").count()
-    n_hedge = page.locator("#connCells .c", has_text="A gentle association, not proof.").count()
-    ok("every association hedges", n_assoc >= 2 and n_hedge == n_assoc, f"{n_assoc} vs {n_hedge}")
+    sub = page.locator("#drawerConn .connsub")
+    ok("the subhead hedges, once and always visible",
+       n_assoc >= 2 and sub.is_visible()
+       and "gentle associations, not proof" in sub.inner_text(), sub.inner_text())
+    n_row_hedge = page.locator("#connCells .c", has_text="gentle association").count()
+    ok("no row repeats the hedge", n_row_hedge == 0, str(n_row_hedge))
 
     # weekday card present (30 felt days -> at least 3 weekdays with 2+ days)
     ok("weekday card present", "WEEKDAY" in body)

@@ -5,7 +5,7 @@ future-you, or anyone you share the data with — read a record written years ag
 exactly what every field meant *at the time it was written*. A longitudinal record is only
 trustworthy if its meaning is fixed and documented. That's what this file guarantees.
 
-Current schema version: **21** (field `__v` in the data).
+Current schema version: **22** (field `__v` in the data).
 
 ---
 
@@ -320,6 +320,22 @@ evening entries rolling onto tomorrow). `id` is a unique string. Every record al
   "How you are" card. A definition store; the ratings live in `checkins[].extra`. The five
   built-ins are **not** here — they are schema fields, and switching one off is a display
   choice that lives in `mirror_layout_v1`, not a retirement.
+- **checkupTypes[]** *(v22)* — `{ id, name, months, gone?, _src, _at, _up }`. The register
+  of interval things — yearly things, not daily things: a checkup's name and how often it
+  is meant to happen, in months (6, 12, 24, …). A preference store, like `medTypes`: merge
+  by id, `gone` retires and never deletes. Ships with five built-ins (Physical yearly,
+  Dental cleaning 6 mo, Vision exam 2 yrs, Bloodwork yearly, Flu shot yearly), all with
+  **no completion at all** — statuses come from real use, never fabricated dates.
+- **checkups[]** *(v22)* — `{ id, typeId, name, at, _src, _at, _up }`. One row per time a
+  thing was done. `at` is local ISO with offset; a **backdated** completion gets the date
+  alone (the `t` honesty rule). `name` is denormalised onto each completion so a rename
+  doesn't rewrite history — the `food[].foodName` reasoning.
+  > **There is no `lastDone` field, on purpose.** "When was it last done" is DERIVED from
+  > the newest completion for that `typeId`, every time it is read. A cached date could
+  > drift from the records; a derived one cannot — which is also why deleting a completion
+  > from the Today box correctly moves the row's date back. Due-ness ("interval passed") is
+  > derived the same way and stored nowhere: no notifications, no badges, the row just
+  > changes.
 - **checkins[]** *(v8; `extra` added v21)* — `{ id, date, energy: 1–5?, fatigue: 1–5?,
   soreness: 1–5?, comfort: 1–5?, note, extra?, _src, _at }`. The subjective daily **Body**
   check-in — how the body *feels* (energy, fatigue, soreness/pain, physical comfort),
@@ -733,6 +749,31 @@ means**. So:
     furniture rather than data arriving.
   - `self.html` surfaces none of this and only guarantees a save cannot drop it (the
     weight_lb rule); `records.html` round-trips the blob whole and needs no change.
+- **v22** → **Checkups, honest titles, and a phone that feels right.** Two new stores, both
+  additive: `body.checkupTypes[]` and `body.checkups[]` (see §3). Nothing was reshaped; the
+  migration is two array defaults and a seed.
+  - **Both stores join `MERGE_BY_ID`** — which is what makes `latestStamp()` walk
+    `checkupTypes` for free, the lesson `routine.items` (an object, special-cased) taught
+    the hard way in v21. Types union by id with `gone` travelling as a retirement;
+    completions union by id with tombstoned deletion.
+  - **The box ships CLOSED for an upgrading profile** — the one deliberate exception to
+    v20's "missing catalogue ids append open" rule, because a new box appearing unasked
+    breaks the "nothing moves" promise. Implemented as a one-time flag written into
+    `mirror_layout_v1` at the upgrade moment (state `__v < 22` at boot), never by changing
+    the append-open rule itself: a fresh profile gets the box open, and once any boolean
+    for `checkups` exists in the layout this never writes again. Restores and sync pulls
+    do not trigger it — they happen to a profile already living with v22.
+  - **Renames are copy, never plumbing**: the Log grid box is titled "Also log" and the
+    Tracker box "Today", but `logGridCard`, `feed`, `feedDate` and every store keep their
+    names — §4 rule 1. The Tracker's date note now speaks only when the day is not today
+    ("Today · today" was the box stuttering).
+  - **First contact** (the one-line greeting for a profile with zero records ever) and its
+    dismissal live in `mirror_layout_v1` as `welcomed: true` — chrome, not data. The first
+    real record writes the same flag, so the line never returns, even if every record is
+    later deleted.
+  - `self.html` carries both stores unseeded (two seeders would race — the routine.items
+    rule) and guarantees a save cannot drop them; `records.html` round-trips the blob whole
+    and needs no change.
 
 ---
 
@@ -769,6 +810,11 @@ the measurement series:
   *(v21)* Add `body.measurements` (a number, a unit and a date — shareable) and
   `body.routine.items` / `body.scales` (names you chose for things you track; drop the names
   and the series is unchanged, the same footing as `exerciseTypes`).
+
+  *(v22)* `body.checkups` (a name you chose and a date) sits between the two lists:
+  "Physical, 2026-08-17" is an adherence series and anonymises well, but a checkup *name*
+  can hint at a concern the way a medication name names one — treat the names with the
+  same care as `medTypes` below before sharing anything.
 
   > **`body.meds` and `body.medTypes` are the most sensitive rows in this file, and they are
   > not on either list above by accident.** A medication name is not a measurement: it can

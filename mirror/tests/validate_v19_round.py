@@ -74,13 +74,13 @@ with sync_playwright() as pw:
     page.wait_for_timeout(400)
     ok("loads clean on a v18 blob", not page_errors, "; ".join(page_errors[:2]))
     page.evaluate("() => saveState()")
-    ok("v21 stamped", st(page)["__v"] == 21)
+    ok("v22 stamped", st(page)["__v"] == 22)
 
     # ---- box order (v20 superseded the assigned columns with a user-ordered
     # flow grid; the fresh-profile default is the catalogue order) ----
     boxes = page.evaluate("() => [...document.querySelectorAll('#dailyGrid > .card')].map(k => k.dataset.box)")
     ok("default box order is the catalogue order",
-       boxes == ["food", "intake", "movement", "hygiene", "pulse", "glucose", "loggrid"], str(boxes))
+       boxes == ["food", "intake", "movement", "hygiene", "pulse", "glucose", "checkups", "loggrid"], str(boxes))
 
     # ---- intake heights across every tab and sub-form step, themes x densities ----
     for theme in ("light", "dark"):
@@ -208,7 +208,7 @@ with sync_playwright() as pw:
     page2.evaluate("() => saveState()")
     page2.wait_for_timeout(150)
     after = json.loads(page2.evaluate("() => localStorage.getItem('mirror_v1')"))
-    ok("self.html loads clean at v21", not p2err and after.get("__v") == 21, "; ".join(p2err[:2]))
+    ok("self.html loads clean at v22", not p2err and after.get("__v") == 22, "; ".join(p2err[:2]))
     diffs = [k for k in before if k != "calendar"
              and json.dumps(before[k], sort_keys=True) != json.dumps(after.get(k), sort_keys=True)]
     ok("self.html round-trip zero-diff", not diffs, str(diffs))

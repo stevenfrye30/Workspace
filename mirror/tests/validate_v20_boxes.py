@@ -70,7 +70,7 @@ with sync_playwright() as pw:
     chips = page.evaluate("""() => [...document.querySelectorAll('#railChips .railchip')]
       .map(b => b.textContent.replace(b.querySelector('.ic').textContent, '').trim())""")
     ok("A2: seven chips, catalogue order",
-       chips == ["Food", "Intake", "Movement", "Upkeep", "How you are", "Blood glucose", "Log grid"], str(chips))
+       chips == ["Food", "Intake", "Movement", "Upkeep", "How you are", "Blood glucose", "Checkups", "Also log"], str(chips))
     page.locator("#railChips .railchip", has_text="Upkeep").click(); page.wait_for_timeout(100)
     ok("A2: toggle removes the box", "hygiene" not in order(page))
     page.locator("#railChips .railchip", has_text="Upkeep").click(); page.wait_for_timeout(100)
@@ -179,7 +179,7 @@ with sync_playwright() as pw:
     ok("A9: v19 blob opens clean", not real and not page_errors, "; ".join((real + page_errors)[:2]))
     page.evaluate("() => saveState()")
     s = st(page)
-    ok("A9: glucose backfilled at v21", s["__v"] == 21 and s["body"]["glucose"] == [])
+    ok("A9: glucose backfilled at v22", s["__v"] == 22 and s["body"]["glucose"] == [])
 
     # ---- A10: v20 forever-copy through self.html save keeps body.glucose ----
     page.fill("#bgVal", "133"); page.press("#bgVal", "Enter"); page.wait_for_timeout(150)

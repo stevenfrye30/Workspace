@@ -93,8 +93,9 @@ with sync_playwright() as pw:
     # A1 — the toggle: fifth tools button, between the theme moon and Data
     # ================================================================
     tools = page.evaluate("() => [...document.querySelectorAll('.top .tools > button')].map(b => b.id)")
+    # v22 added the phone-only ⋯ fold at the end; Edit's seat is unchanged.
     ok("A1: fifth tools button, between the moon and Data",
-       tools == ["undoBtn", "densityBtn", "themeBtn", "editBtn", "syncBtn", "dataBtn"], str(tools))
+       tools == ["undoBtn", "densityBtn", "themeBtn", "editBtn", "syncBtn", "dataBtn", "moreBtn"], str(tools))
     ok("A1: reads Edit and is not pressed",
        "Edit" in page.locator("#editBtn").inner_text()
        and page.locator("#editBtn").get_attribute("aria-pressed") == "false")
@@ -143,10 +144,12 @@ with sync_playwright() as pw:
     ok("A2: no corner ✕ anywhere", page.locator(".cornx").count() == 0)
     ok("A2: no explainer", not page.locator("#editNote").is_visible())
     edit_on(page)
+    # Grabs and minimise buttons inside a CLOSED box (checkups ships closed on
+    # an upgraded profile since v22) are rightly invisible with their card.
     ok("A2: editing brings all of them back",
        page.locator(".rail").is_visible()
-       and page.evaluate("() => [...document.querySelectorAll('.grab')].every(e => !!e.offsetParent)")
-       and page.evaluate("() => [...document.querySelectorAll('.minb')].every(e => !!e.offsetParent)")
+       and page.evaluate("() => [...document.querySelectorAll('.grab')].filter(e => !e.closest('[hidden]')).every(e => !!e.offsetParent)")
+       and page.evaluate("() => [...document.querySelectorAll('.minb')].filter(e => !e.closest('[hidden]')).every(e => !!e.offsetParent)")
        and page.locator(".cornx").count() > 0)
     edit_off(page)
 
@@ -208,13 +211,13 @@ with sync_playwright() as pw:
     edit_on(page)
     page.locator("#hygRows .addt").click(); page.wait_for_timeout(200)
     page.fill("#popRName", "Weight")
-    page.locator("#popRKind [data-rk=measure]").click(); page.wait_for_timeout(90)
+    page.locator("#popRKind [data-pv=measure]").click(); page.wait_for_timeout(90)
     ok("A4: the unit field belongs to measurements only",
        page.evaluate("() => getComputedStyle(document.getElementById('popRUnitWrap')).visibility") == "visible")
-    page.locator("#popRKind [data-rk=mark]").click(); page.wait_for_timeout(90)
+    page.locator("#popRKind [data-pv=mark]").click(); page.wait_for_timeout(90)
     ok("A4: and is hidden, not removed, for a mark — the pop keeps its height",
        page.evaluate("() => getComputedStyle(document.getElementById('popRUnitWrap')).visibility") == "hidden")
-    page.locator("#popRKind [data-rk=measure]").click(); page.wait_for_timeout(90)
+    page.locator("#popRKind [data-pv=measure]").click(); page.wait_for_timeout(90)
     page.fill("#popRUnit", "lb")
     page.click("#popOk"); page.wait_for_timeout(250)
     edit_off(page)
@@ -406,7 +409,8 @@ with sync_playwright() as pw:
        rows == ["Mood", "Energy", "Fatigue", "Soreness", "Comfort"], str(rows))
     hp = h(page, "pulseCard")
     edit_on(page)
-    page.fill("#scaleNew", "Focus"); page.keyboard.press("Enter"); page.wait_for_timeout(250)
+    page.click(".scaleadd"); page.wait_for_timeout(120)
+    page.fill("#popScaleName", "Focus"); page.keyboard.press("Enter"); page.wait_for_timeout(250)
     ok("A8: a custom scale is a definition record",
        [x["name"] for x in st(page)["body"]["scales"]] == ["Focus"],
        json.dumps(st(page)["body"]["scales"]))
@@ -440,7 +444,8 @@ with sync_playwright() as pw:
     ok("A8: a custom scale RETIRES (it is yours), and its ratings stay",
        st(page)["body"]["scales"][0].get("gone") is True
        and next(c for c in st(page)["body"]["checkins"] if c["date"] == TODAY)["extra"] == {"focus": 4})
-    page.fill("#scaleNew", "focus"); page.keyboard.press("Enter"); page.wait_for_timeout(250)
+    page.click(".scaleadd"); page.wait_for_timeout(120)
+    page.fill("#popScaleName", "focus"); page.keyboard.press("Enter"); page.wait_for_timeout(250)
     ok("A8: re-adding the same name revives it rather than duplicating",
        len(st(page)["body"]["scales"]) == 1 and not st(page)["body"]["scales"][0].get("gone"))
     edit_off(page)
@@ -488,7 +493,7 @@ with sync_playwright() as pw:
     # ================================================================
     page.evaluate("() => saveState()")
     s = st(page)
-    ok("A10: v21 stamped", s["__v"] == 21)
+    ok("A10: v22 stamped", s["__v"] == 22)
     for k in ("routine", "measurements", "medTypes", "meds", "scales"):
         ok(f"A10: body.{k} exists", k in s["body"])
     ok("A10: routine is {name, items}, not an array",
@@ -567,8 +572,8 @@ with sync_playwright() as pw:
     page2.goto(BASE + "self.html", wait_until="load")
     page2.wait_for_timeout(700)
     ok("A12: self.html loads clean at v21",
-       not p2err and page2.evaluate("() => SCHEMA_VERSION") == 21
-       and page2.evaluate("() => state.__v") == 21, "; ".join(p2err[:2]))
+       not p2err and page2.evaluate("() => SCHEMA_VERSION") == 22
+       and page2.evaluate("() => state.__v") == 22, "; ".join(p2err[:2]))
     page2.evaluate("() => saveState()")
     page2.wait_for_timeout(220)
     after = json.loads(page2.evaluate("() => localStorage.getItem('mirror_v1')"))

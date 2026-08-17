@@ -2077,7 +2077,7 @@ const BACKUP_KEY = 'mirror_backups';
 const LAST_EXPORT_KEY = 'mirror_last_export';
 const LAST_REPO_KEY = 'mirror_last_repo';     // when the durable forever-copy was last saved
 const CHANGES_KEY = 'mirror_changes_since_repo'; // edits since that copy — drives the "update your forever-copy" nudge
-const SCHEMA_VERSION = 21;
+const SCHEMA_VERSION = 22;
 const MAX_SNAPS = 12;
 const FOODS_URL = '../nutrilens/foods.json';
 
@@ -2098,6 +2098,7 @@ const RECORD_ARRAYS = [
   // v21. `routine` is an OBJECT ({name, items}), not an array, so it is not
   // listed here — the provenance stamper only ever walks arrays of records.
   ['body','measurements'], ['body','medTypes'], ['body','meds'], ['body','scales'],
+  ['body','checkupTypes'], ['body','checkups'],   // v22
 ];
 function nowISO(){ return new Date().toISOString(); }
 
@@ -2108,7 +2109,10 @@ const defaultState = () => ({
                 // v21 — the dashboard's routine box, measurements, meds and extra scales.
                 // Nothing here surfaces them; these exist so a save from this side
                 // cannot drop them (the weight_lb rule).
-                routine: { name: 'Upkeep', items: [] }, measurements: [], medTypes: [], meds: [], scales: [] },
+                routine: { name: 'Upkeep', items: [] }, measurements: [], medTypes: [], meds: [], scales: [],
+                // v22 — the dashboard's checkups. Same contract: carried, never
+                // surfaced, never droppable by a save from this side.
+                checkupTypes: [], checkups: [] },
   mind:     { books: [], ideas: [], questions: [], quotes: [] },
   money:    { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
   relationships: { people: [], followUps: [], giftIdeas: [], birthdays: [] },
@@ -2339,6 +2343,18 @@ function migrate(s) {
     if (!Array.isArray(s.body.meds)) s.body.meds = [];
     if (!Array.isArray(s.body.scales)) s.body.scales = [];
     v = 21;
+  }
+  /* v21 -> v22: checkups — body.checkupTypes[] (the register: name + interval
+     in months) and body.checkups[] (one row per completion; "last done" is
+     derived from the newest row, never cached). Nothing on this page surfaces
+     them; this app only guarantees a save cannot drop them (the weight_lb
+     rule). The five built-ins are NOT seeded here — the dashboard seeds them,
+     and two seeders would race (the routine.items rule, same reasoning). */
+  if (v < 22) {
+    s.body = s.body || {};
+    if (!Array.isArray(s.body.checkupTypes)) s.body.checkupTypes = [];
+    if (!Array.isArray(s.body.checkups)) s.body.checkups = [];
+    v = 22;
   }
   s.__v = SCHEMA_VERSION;
   return s;

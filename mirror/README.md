@@ -21,7 +21,7 @@ silently repurposed — see [`SCHEMA.md`](./SCHEMA.md), the decoder ring for you
 **The dashboard** is a set of **boxes you arrange**, and since v21 a set of boxes you
 **define**. Everything that changes what the dashboard *is* now sits behind one switch:
 `✎ Edit` in the header. Press it and a rail appears holding one chip per box — Food ·
-Intake · Movement · Upkeep · How you are · Blood glucose · Log grid — in a fixed
+Intake · Movement · Upkeep · How you are · Blood glucose · Checkups · Also log — in a fixed
 catalogue order: click a chip (or a box's `−`) to minimise it, click again to reopen
 (reopened boxes land at the end). Drag a box by its `⠿` to reorder — long-press on a phone,
 `Alt+←/→` on a focused header — and the arrangement is remembered per device
@@ -32,21 +32,26 @@ leaves it, and it is deliberately **not** remembered: you edit on purpose and lo
 so tomorrow's dashboard is the one you left. Nothing in edit mode deletes a record — the
 worst a `✕` does is retire a definition or take a control off this screen. The day you are
 logging for sits beside the title; below the boxes, a row of link pills, then the always-on
-report band: the **Tracker** — every entry of the day in the order you made it — the week in
-review, and **Connections**. Connections is the record talking back: differences in how you
-felt on days with and without sleep, movement, protein, alcohol, a habit kept — drawn from
-your last 90 days at read time, stored nowhere, and always worded as a gentle association,
-never proof.
+report band: **Today** (the tracker) — every entry of the day in the order you made it, titled
+for what it holds, and when you backdate, the date beside the title says which day it is
+holding — the week in review, and **Connections**. Connections is the record talking back:
+differences in how you felt on days with and without sleep, movement, protein, alcohol, a
+habit kept — drawn from your last 90 days at read time and stored nowhere. Its one-line
+subhead carries the hedge, once and always visible: patterns are gentle associations, never
+proof. Every box's header also carries its day in a small right-hand note — kcal on Food,
+sessions on Movement, marks on Upkeep, the latest reading on Blood glucose — a value that is
+simply empty until the day starts.
 
 **The instruments never change shape as you log** — values move, geometry does not. Nothing
-on a card grows or shifts a control because of something you recorded: entries land in the
-Tracker rather than in the card you typed into, and every list that lives on a card face —
+on a card grows or shifts a control because of something you recorded: entries land in Today
+rather than in the card you typed into, and every list that lives on a card face —
 Movement's remembered moves, Upkeep's tiles, the scales, the meal tiles, the medication list,
-the day's glucose readings — sits in a window of **fixed height that scrolls inside itself**,
+the day's glucose readings, the checkup rows — sit in windows of **fixed height that scroll
+inside themselves**,
 so the thing you are aiming at is always where it was. Being able to add to those lists does
 not weaken that rule; it is the reason the windows are hard-bounded, so the twentieth meal and
-the ninth tile cost the card nothing. What else grows lives one layer in: the popovers, the
-Tracker, Records and the Overview. It is written down at the top of `index.html` as the
+the ninth tile cost the card nothing. What else grows lives one layer in: the popovers,
+Today, Records and the Overview. It is written down at the top of `index.html` as the
 invariant every card is audited against, together with the one licensed exception noted
 there — **edit mode**, where cards may grow, because what appears is new furniture rather
 than data arriving.
@@ -63,9 +68,9 @@ Tap a category and log the session right on the card: chips *add* into a dashed 
 window that scrolls inside itself — tap one to pour reps into it — Stretch toggles areas,
 Other asks what it was and remembers the answer, and a dim `≈ kcal` line guesses the cost
 (MET-based, from the body weight set in **Data**) before one Enter writes the whole session as
-one entry, one Tracker line. **Upkeep** is the box you define: a grid of tiles for the things
+one entry, one line in Today. **Upkeep** is the box you define: a grid of tiles for the things
 you keep track of doing. It ships with Brush, Shower, Floss and Haircut — Brush counts per
-press (twice a day is two Tracker lines), the marks toggle, and tapping again takes one back —
+press (twice a day is two lines in Today), the marks toggle, and tapping again takes one back —
 and in edit mode you can rename the box, retire a tile, or add one of your own as a **mark**, a
 **count**, or a **measurement** that takes a number in the row permanently reserved beneath the
 tiles. **Intake** is seven tabs — water, coffee, other, **meds**, alcohol, nicotine, weed —
@@ -76,7 +81,24 @@ glass of water; sleep is two handles on a 24-hour track, so you say when you wen
 up rather than doing the arithmetic; **Blood glucose** is one number and a Log button — mg/dL,
 the day's readings dotted by range in a fixed window — because a reading is all it should ask
 for. (Switch the Glucose tile on in Upkeep and it writes that *same* record, not a second
-one.) `Undo` in the header takes back the last thing you did, including a deletion.
+one.) **Checkups** is the one box for yearly things rather than daily things: five rows to
+start — Physical, Dental cleaning, Vision exam, Bloodwork, Flu shot — each remembering when
+it was last done and quietly flagging when its interval has passed. No notifications, no red
+badges; the row just changes, to `due · 14 mo ago` in the warning colour or a plain
+`8 mo ago`. Tap a row and it is done today; tap again to take it back. "Last done" is
+derived from the completions themselves, so removing one from Today moves the date back on
+its own. In edit mode you add your own (**6 mo / 1 yr / 2 yrs**, then a name) or retire a
+row, which keeps every past completion. For a profile that predates it the box arrives
+**closed** — a new box appearing unasked would break the "nothing moves" promise — and one
+line in the Overview says `Checkups: N due` when anything is. `Undo` in the header takes
+back the last thing you did, including a deletion — and on a phone, where the header is
+folded, the same Undo rides every toast.
+
+On a phone the header tools fold to `✎ Edit` and `⋯` (undo, density, theme, sync and Data
+live in the pop it opens — the same buttons, moved, not copies), every field is 16px so iOS
+stops zooming into it, and tiles keep their full tap size even in dense mode. The first time
+Mirror opens with nothing in it at all, one dismissible line says the whole contract: tap
+anything below when you do it. It leaves on its own after the first record.
 
 Clicking the title opens the **Overview** — what the record adds up to: days kept, sleep
 average, this month's money, habits over the last seven days, the values you keep, and the last
@@ -200,7 +222,7 @@ they contain.
 
 `index.html` is one file — HTML, CSS and JS, no build step, no dependencies. So are
 `records.html` and `self.html`. All three share `localStorage` key `mirror_v1` at
-**schema v21**.
+**schema v22**.
 
 - [`SCHEMA.md`](./SCHEMA.md) — every store, the provenance fields (`_at`, `_up`, `_src`),
   tombstones, and the versioning contract. Read it before changing the data model; rule one is

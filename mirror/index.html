@@ -178,6 +178,29 @@
     cursor: pointer; line-height: 1;
   }
   .icon-btn:hover { color: var(--ink); border-color: var(--accent); }
+  /* The folded-tools door exists only on a phone. Display, not [hidden]:
+     the buttons it stands for are hidden the same way at the same width. */
+  #moreBtn { display: none; }
+  /* Each moved tool button sits in a labelled row inside the pop — the row is
+     furniture, the button is the original node with its handlers intact. */
+  .toolspop { display: flex; flex-direction: column; gap: 8px; margin-top: 4px; }
+  .toolspop .tprow {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    font-size: .82rem; color: var(--ink);
+  }
+  .toolspop .icon-btn { font-size: .85rem; padding: 9px 14px; min-width: 76px; text-align: center; }
+
+  /* First contact (v22): a line, not a card. */
+  .fcline {
+    display: flex; align-items: baseline; gap: 8px;
+    color: var(--dim); font-size: .8rem; margin: 0 0 12px; padding: 0 2px;
+  }
+  .fcline span { min-width: 0; }
+  .fcline button {
+    background: none; border: 0; color: var(--dim); font: inherit; font-size: .72rem;
+    cursor: pointer; padding: 2px 6px; flex: 0 0 auto;
+  }
+  .fcline button:hover { color: var(--ink); }
 
   /* The day pop's date input; the warning shows in the same pop, under it. */
   .pop input[type=date] {
@@ -348,6 +371,53 @@
     75% { transform: translateX(-2px); }
   }
 
+  /* ---------- checkups (v22) ----------
+     Interval rows in a HARD 170px window: five rows of 32px with 2px gaps is
+     168, the fifth gap makes 170, and the sixth row starts exactly at the cut
+     — whole rows at rest, never a slice. The row is the button (tap = done
+     today, tap again takes it back); its status is a VALUE in tabular figures
+     on a fixed row, never a new row. */
+  .ckslot {
+    height: 170px; overflow: hidden; overflow-y: auto;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .ckrow {
+    display: flex; align-items: center; gap: 7px; flex: 0 0 auto; height: 32px;
+    padding: 0 9px; border-radius: 8px; cursor: pointer;
+    border: 1px solid var(--line); background: var(--panel); color: var(--ink);
+    font: inherit; font-size: .78rem; text-align: left; width: 100%;
+    transition: background .12s, border-color .12s;
+  }
+  .ckrow:hover { border-color: var(--accent2); }
+  .ckrow:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
+  .ckrow .nm { font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ckrow .iv { color: var(--dim); font-size: .68rem; flex: 0 0 auto; }
+  .ckrow .st {
+    margin-left: auto; flex: 0 0 auto; font-size: .7rem; color: var(--dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .ckrow.due .st { color: var(--warn); }
+  /* Done today: tinted and bordered accent2, the row saying so quietly. */
+  .ckrow.done {
+    border-color: var(--accent2);
+    background: color-mix(in srgb, var(--accent2) 10%, var(--panel));
+  }
+  .ckrow.done .st { color: var(--accent2); }
+  .ckrow.retired { border-style: dashed; opacity: .45; }
+  .ckrow .rx {
+    flex: 0 0 auto; width: 18px; height: 18px; display: grid; place-items: center;
+    padding: 0; border-radius: 50%; border: 1px solid var(--dim);
+    background: var(--panel2); color: var(--ink); font-size: .6rem; line-height: 1;
+  }
+  .ckrow .rx:hover { color: var(--warn); border-color: var(--warn); }
+  .ckadd { border-style: dashed; color: var(--dim); justify-content: center; }
+  /* PERMANENTLY reserved one-liner under the slot — the normal-mode explainer
+     and the edit-mode one occupy the same line, so the card cannot notice. */
+  .ckfoot {
+    height: 1.25em; margin-top: 8px; font-size: .72rem; color: var(--dim);
+    overflow: hidden; white-space: nowrap; text-overflow: ellipsis;
+  }
+
   /* ---------- cards ---------- */
   .card {
     background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
@@ -413,14 +483,9 @@
   }
   .dotline .sx:hover { color: var(--warn); border-color: var(--warn); }
   .dotline .sx:focus-visible { outline: 2px solid var(--accent); outline-offset: -3px; }
-  .scaleadd { display: flex; gap: 6px; margin-bottom: 5px; }
-  .scaleadd input { flex: 1 1 auto; min-width: 0; font-size: .78rem; padding: 6px 8px; }
-  .scaleadd button {
-    flex: 0 0 auto; padding: 6px 11px; border-radius: 8px; cursor: pointer;
-    border: 1px dashed var(--line); background: var(--panel2); color: var(--dim);
-    font: inherit; font-size: .74rem;
-  }
-  .scaleadd button:hover { border-color: var(--accent); color: var(--accent); }
+  /* v22: the add is a dashed door opening the shared add pop — the same
+     grammar as the routine box, meds and checkups. */
+  .scaleadd { display: block; width: 100%; text-align: center; font-size: .74rem; margin-bottom: 5px; }
   /* Dense: five rows of 26 (22px dots + 4px). */
   body.dense .dotlines { height: 130px; }
   body.dense .dotlines .dots button { width: 22px; height: 22px; }
@@ -1038,6 +1103,8 @@
   .checkline { display: flex; align-items: center; gap: 7px; margin-top: 11px; font-size: .8rem; color: var(--dim); }
   .checkline input { width: auto; margin: 0; }
 
+  /* The Connections hedge — one line, always visible, said once. */
+  .connsub { font-size: .74rem; color: var(--dim); margin: -6px 0 10px; }
   .sum {
     margin-left: auto; text-transform: none; letter-spacing: 0; font-weight: 400;
     color: var(--dim); font-size: .74rem; text-align: right;
@@ -1152,10 +1219,69 @@
     opacity: 0; pointer-events: none; transition: opacity .18s, transform .18s;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  /* The toast's own Undo (v22): re-enables pointer events for itself only,
+     so the rest of the toast still lets taps fall through. */
+  .toast .tundo {
+    pointer-events: auto; margin-left: 10px; background: none; border: 0;
+    color: inherit; font: inherit; font-size: .8rem; font-weight: 600;
+    text-decoration: underline; cursor: pointer; padding: 0 2px;
+  }
 
   .foot { text-align: center; color: var(--dim); font-size: .72rem; padding: 18px 0 4px; }
   .foot a { color: var(--dim); }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  /* ---------- press states (v22) ----------
+     Every tile and chip acknowledges the finger: the existing hover tint plus
+     a small scale. Reduced motion drops the transform, keeps the tint. */
+  .chip:active, .excat:active, .logtile:active, .railchip:active,
+  .medrow:active, .ckrow:active, .quick button:active, .tabs button:active,
+  .icon-btn:active, .daychip:active {
+    transform: scale(.97);
+  }
+
+  /* ---------- phone (v22) ---------- */
+  @media (max-width: 520px) {
+    /* iOS zooms any focused field under 16px, so at phone widths every field
+       is 16px with padding trimmed to keep heights sane. !important because a
+       handful of fields carry their own smaller sizes (the day pop's date
+       field, the name fields) and the no-zoom rule must beat them all. */
+    input[type=text], input[type=number], input[type=password], input[type=date],
+    input[type=search], textarea, select {
+      font-size: 16px !important;
+      padding: 7px 10px;
+    }
+    /* Fold the tools: only ✎ Edit and ⋯ stay in the row. The child combinator
+       is the switch — moved into the pop the buttons stop matching this rule
+       and simply show, then match again when they move home. */
+    .top .tools > #undoBtn, .top .tools > #densityBtn, .top .tools > #themeBtn,
+    .top .tools > #syncBtn, .top .tools > #dataBtn { display: none; }
+    #moreBtn { display: inline-flex; }
+    /* Hit targets: dense mode is ignored for the thing under the finger —
+       it may still tighten gaps, never the target. Nothing tile-shaped under
+       44px on a phone. */
+    .excat, body.dense .excat { padding: 13px 2px; font-size: .72rem; }
+    .logtile, body.dense .logtile { min-height: 64px; padding: 12px 4px; }
+    .mealtile, body.dense .mealtile { height: 44px; }
+    /* Two whole rows of 44 + one gap — a whole number of rows, always. */
+    .mealtiles, body.dense .mealtiles { height: 93px; }
+    .chip { min-height: 44px; display: inline-flex; align-items: center; }
+    /* Except inside the 26px tag line, whose height is reserved geometry. */
+    .itag .chip { min-height: 0; }
+    .railchip { min-height: 44px; }
+    .tabs button, body.dense .tabs button { min-height: 44px; }
+    .quick, body.dense .quick { height: 46px; }
+    .quick button { min-height: 44px; }
+    .icon-btn { min-height: 44px; min-width: 44px; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+    .chip:active, .excat:active, .logtile:active, .railchip:active,
+    .medrow:active, .ckrow:active, .quick button:active, .tabs button:active,
+    .icon-btn:active, .daychip:active, .mealtile:active, .hyg button:active,
+    .exchip:active, .dots button:active {
+      transform: none;
+    }
+  }
 </style>
 </head>
 <body>
@@ -1181,6 +1307,10 @@
             title="Rearrange and choose what shows">✎<span class="lbl"> Edit</span></button>
     <button class="icon-btn" id="syncBtn" title="Sync is off">○</button>
     <button class="icon-btn" id="dataBtn" title="Forever-copy, restore, snapshots">Data</button>
+    <!-- Phone only (≤520px): the folded tools. The buttons above MOVE into
+         the pop it opens — same nodes, same ids, same handlers — and move
+         back when it closes. Nothing is rebuilt. -->
+    <button class="icon-btn" id="moreBtn" title="Undo, density, theme, sync, data">⋯</button>
   </span>
 </div>
 
@@ -1190,6 +1320,15 @@
   <button class="mini" id="nudgeLater" title="Hide until more changes pile up">Later</button>
 </div>
 <input type="file" id="restoreFile" accept="application/json,.json" style="display:none">
+
+<!-- First contact (v22): one dismissible line for a profile with zero records
+     ever. A line, not a card — no border, no icon, no animation. Dismissal is
+     device chrome (mirror_layout_v1), and the first real record dismisses it
+     forever on its own. -->
+<div class="fcline" id="firstContact" hidden>
+  <span>Tap anything below when you do it — that’s the whole app. Mistakes? Undo is one tap.</span>
+  <button type="button" id="fcDismiss" aria-label="Dismiss">✕</button>
+</div>
 
 <!-- Shown only while editing. One line, because the affordances it describes
      are visible at the same moment it is. -->
@@ -1219,7 +1358,7 @@
 <div class="daily" id="dailyGrid">
 
   <div class="card" id="foodCard">
-    <h2><span class="grab" aria-hidden="true">⠿</span>Food<button class="minb" type="button">−</button></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Food <span class="note" id="foodNote"></span><button class="minb" type="button">−</button></h2>
     <div class="macrobar" id="foodMacros"></div>
     <div class="searchwrap">
       <input type="text" id="foodSearch" placeholder="Search foods…" autocomplete="off">
@@ -1279,7 +1418,7 @@
        measurement is selected, because a row that appears on tap is exactly
        the geometry change THE INVARIANT forbids. -->
   <div class="card" id="hygieneCard">
-    <h2><span class="grab" aria-hidden="true">⠿</span><span id="routineName">Upkeep</span><button class="minb" type="button">−</button></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span><span id="routineName">Upkeep</span> <span class="note" id="hygNote"></span><button class="minb" type="button">−</button></h2>
     <div class="hyg" id="hygRows"></div>
     <div class="hygnum" id="hygNum"></div>
   </div>
@@ -1291,7 +1430,7 @@
        min-height, which drifts), so nothing that happens inside it can move
        the card face (THE INVARIANT, top of file). -->
   <div class="card narrow" id="movementCard">
-    <h2><span class="grab" aria-hidden="true">⠿</span>Movement<button class="minb" type="button">−</button></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Movement <span class="note" id="moveNote"></span><button class="minb" type="button">−</button></h2>
     <div class="excats" id="exCats">
       <button class="excat" type="button" data-excat="walk">🚶 Walk</button>
       <button class="excat" type="button" data-excat="run">🏃 Run</button>
@@ -1343,7 +1482,7 @@
        else, by request: no context tag, no insulin, no note — the Tracker
        already carries the time. -->
   <div class="card boxed" id="glucoseCard" style="--c: var(--glucose)">
-    <h2><span class="grab" aria-hidden="true">⠿</span>Blood glucose<button class="minb" type="button">−</button></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Blood glucose <span class="note" id="bgNote"></span><button class="minb" type="button">−</button></h2>
     <div class="bgrow">
       <input type="number" id="bgVal" min="20" max="600" step="1" inputmode="numeric"
              aria-label="Blood glucose in mg/dL">
@@ -1355,9 +1494,24 @@
     <div class="bgslot" id="bgList"></div>
   </div>
 
+  <!-- Checkups (v22) — the one grain the record lacked: yearly things, not
+       daily things. Each row remembers when it was last done and quietly
+       flags when its interval has passed. No notifications, no red badges;
+       the row just changes. "Last done" is DERIVED from the newest completion
+       in body.checkups[] — there is no cached date to drift, so deleting a
+       completion from Today correctly moves the date back. -->
+  <div class="card" id="checkupsCard">
+    <h2><span class="grab" aria-hidden="true">⠿</span>Checkups <span class="note" id="ckNote"></span><button class="minb" type="button">−</button></h2>
+    <!-- HARD 170px, overflow-y auto: five rows show, the sixth scrolls. -->
+    <div class="ckslot" id="ckRows"></div>
+    <!-- PERMANENTLY reserved one-liner: the card is the same height with the
+         explainer as with the edit-mode one. -->
+    <div class="ckfoot" id="ckFoot"></div>
+  </div>
+
   <!-- Six things you log, one tap each. Not four drawers you open first. -->
   <div class="card" id="logGridCard">
-    <h2><span class="grab" aria-hidden="true">⠿</span>Log grid<button class="minb" type="button">−</button></h2>
+    <h2><span class="grab" aria-hidden="true">⠿</span>Also log<button class="minb" type="button">−</button></h2>
     <div class="loggrid">
       <button class="logtile" id="logPerson" type="button"><span class="ic">🧑</span>Person</button>
       <button class="logtile" id="logBook"   type="button"><span class="ic">📕</span>Book</button>
@@ -1383,7 +1537,11 @@
      — by entry time, not clock time, so a backdated entry doesn't jump the
      queue. This is the only part of the page that grows. -->
 <div class="card">
-  <h2>Tracker <span class="note tiny" id="feedDate"></span></h2>
+  <!-- Titled for what it holds: the day itself. The date note beside it
+       already reads the backdated date when logging for another day, so the
+       title stays honest — "Today · Fri Aug 7" is the box saying THAT day.
+       The element ids (feed, feedDate) stay: ids are not copy. -->
+  <h2>Today <span class="note tiny" id="feedDate"></span></h2>
   <div class="feed" id="feed"></div>
 </div>
 
@@ -1402,6 +1560,9 @@
      self.html's Reflect engine, verbatim in its judgments. -->
 <div class="card" id="drawerConn">
   <h2>Connections <span class="sum" id="sumConn"></span></h2>
+  <!-- The hedge, said once and always visible — not repeated on every row,
+       not hidden in an empty state. -->
+  <div class="connsub">Patterns from your last 90 days — gentle associations, not proof.</div>
   <div class="conn" id="connCells"></div>
 </div>
 
@@ -1427,7 +1588,7 @@
    ============================================================= */
 
 const STORAGE_KEY = 'mirror_v1';
-const SCHEMA_VERSION = 21;
+const SCHEMA_VERSION = 22;
 
 /* ---------- helpers ---------- */
 const $ = (id) => document.getElementById(id);
@@ -1491,6 +1652,24 @@ const ROUTINE_SEED = [
     unit: 'mg/dL', store: 'body.glucose', gone: true },
 ];
 
+/* The checkup box's built-ins (v22): yearly things, not daily things. All
+   seeded with lastDone NOWHERE — there is no lastDone field at all. "When was
+   it last done" is DERIVED from the newest completion in body.checkups[], so
+   a deleted completion correctly moves the date back and nothing can drift.
+   Statuses come from real use, never fabricated dates. */
+const CHECKUP_SEED = [
+  { id: 'physical',  name: 'Physical',        months: 12 },
+  { id: 'dental',    name: 'Dental cleaning', months: 6 },
+  { id: 'vision',    name: 'Vision exam',     months: 24 },
+  { id: 'bloodwork', name: 'Bloodwork',       months: 12 },
+  { id: 'flu',       name: 'Flu shot',        months: 12 },
+];
+/* A seeded type is a record like any other, so it carries provenance from
+   birth (SCHEMA §2) — `_at` is the moment it entered THIS tree. Left
+   unstamped, self.html's stampNewRecords would rewrite the seeds on its next
+   save and a byte-identical round trip would be impossible. */
+const seedCheckup = (seed) => ({ ...seed, _src: 'manual', _at: nowISO(), _up: nowISO() });
+
 const defaultState = () => ({
   identity: { values: [], season: '', reflections: [], pulse: [], journal: [] },
   body: {
@@ -1523,6 +1702,12 @@ const defaultState = () => ({
     /* v21 — extra 1-5 scales on the "How you are" card. A definition store,
        like medTypes: the ratings themselves ride `extra` on the check-in. */
     scales: [],
+    /* v22 — interval items and their completions. `checkupTypes` is a
+       preference store (merge by id, `gone` retires); `checkups` is an
+       observation store, one row per time a thing was done. Copies of the
+       seed, not the seed objects — stamping must not write through. */
+    checkupTypes: CHECKUP_SEED.map(seedCheckup),
+    checkups: [],
   },
   mind: { books: [], ideas: [], questions: [], quotes: [] },
   money: { categories: [], expenses: [], income: [], subscriptions: [], netWorth: [], goals: [] },
@@ -1596,6 +1781,15 @@ function mergeLoaded(saved) {
   if (!Array.isArray(out.body.medTypes)) out.body.medTypes = [];
   if (!Array.isArray(out.body.meds)) out.body.meds = [];
   if (!Array.isArray(out.body.scales)) out.body.scales = [];
+  /* v21 -> v22: checkups. Purely additive. The five built-ins seed by id, so
+     a record that already carries one (retired or renamed) keeps its own. */
+  if (!Array.isArray(out.body.checkupTypes)) out.body.checkupTypes = [];
+  CHECKUP_SEED.forEach((seed) => {
+    if (!out.body.checkupTypes.some((t) => t && t.id === seed.id)) {
+      out.body.checkupTypes.push(seedCheckup(seed));
+    }
+  });
+  if (!Array.isArray(out.body.checkups)) out.body.checkups = [];
   // v18 -> v19: OPTIONAL fields only — `form` on alcohol/nicotine substances
   // (weed had it since v13), `oz` returning on alcohol deliberately, and a
   // `brush` counter on hygiene[] — so there is nothing to backfill.
@@ -1605,9 +1799,30 @@ function mergeLoaded(saved) {
   if (!Array.isArray(out._deleted)) out._deleted = [];
   return out;
 }
+/* The one deliberate exception to "missing catalogue ids append OPEN" (v20):
+   the Checkups box ships CLOSED for a profile that predates it, because a new
+   box appearing unasked breaks the "nothing moves" promise — while a fresh
+   profile gets it open like any other box. A one-time migration flag, written
+   at the upgrade moment only: the append-open rule itself is unchanged, and
+   once a boolean for `checkups` exists in the layout, this never writes again.
+   The literal key (not LAYOUT_KEY) because that const lives far below and is
+   still in its temporal dead zone when boot reaches this. */
+function closeCheckupsOnce() {
+  try {
+    const raw = JSON.parse(localStorage.getItem('mirror_layout_v1')) || {};
+    if (raw.open && typeof raw.open.checkups === 'boolean') return;   // a choice already exists
+    raw.open = raw.open || {};
+    raw.open.checkups = false;
+    localStorage.setItem('mirror_layout_v1', JSON.stringify(raw));
+  } catch { /* chrome, not data */ }
+}
+
 function loadState() {
   let saved = null;
   try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY)); } catch { /* corrupt */ }
+  // Upgrade moment only — not restores, not sync pulls: those happen to a
+  // profile already living with v22, whose box state is its own business.
+  if (saved && (Number(saved.__v) || 0) < 22) closeCheckupsOnce();
   return mergeLoaded(saved);
 }
 
@@ -1677,9 +1892,18 @@ let toastTimer = null;
 function toast(msg) {
   const el = $('toast');
   el.textContent = msg;
+  /* Undo rides the toast (v22): on a phone the header's Undo is folded away,
+     so the moment right after an act is where the button has to be. Wired to
+     the same doUndo as the header — one undo, two doors. */
+  if (undoStack.length) {
+    const u = document.createElement('button');
+    u.type = 'button'; u.className = 'tundo'; u.textContent = 'Undo';
+    u.onclick = doUndo;
+    el.appendChild(u);
+  }
   el.classList.add('show');
   clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => el.classList.remove('show'), 2200);
+  toastTimer = setTimeout(() => el.classList.remove('show'), undoStack.length ? 3200 : 2200);
 }
 
 /** Remove a record, leave a tombstone so a future sync can't resurrect it,
@@ -1889,18 +2113,13 @@ function renderPulse() {
   });
 
   if (editing) {
-    const wrap = document.createElement('div');
-    wrap.className = 'scaleadd';
-    const inp = document.createElement('input');
-    inp.type = 'text'; inp.id = 'scaleNew'; inp.placeholder = 'Another scale — e.g. Focus, Pain';
-    inp.setAttribute('aria-label', 'Name a new 1–5 scale');
-    const go = document.createElement('button');
-    go.type = 'button'; go.textContent = '＋ Add';
-    const take = () => addScale(inp.value.trim());
-    go.onclick = take;
-    inp.onkeydown = (e) => { if (e.key === 'Enter') { e.preventDefault(); take(); } };
-    wrap.appendChild(inp); wrap.appendChild(go);
-    box.appendChild(wrap);
+    /* The same add grammar as the routine box, meds and checkups (v22): a
+       dashed door on the card, the form itself in a pop. */
+    const add = document.createElement('button');
+    add.type = 'button'; add.className = 'chip ghost scaleadd';
+    add.textContent = '＋ Add a scale';
+    add.onclick = addScalePop;
+    box.appendChild(add);
 
     const note = document.createElement('div');
     note.className = 'hint';
@@ -1909,7 +2128,7 @@ function renderPulse() {
   }
 
   const c = card(day);
-  $('pulseSaved').textContent = c ? 'saved' : '';
+  $('pulseSaved').textContent = c ? 'saved ✓' : '';
 }
 
 /** A custom scale is yours, so its ✕ RETIRES it rather than hiding it: the
@@ -1930,8 +2149,23 @@ function retireScaleBtn(s) {
   return b;
 }
 
+function addScalePop() {
+  openPop('Add a scale',
+    '<div class="field"><input type="text" id="popScaleName" autocomplete="off" ' +
+      'placeholder="Focus · Pain · Stress"></div>' +
+    '<div class="field"><span class="hint">A 1–5 line of your own on this card, ' +
+      'rated the same way the built-ins are.</span></div>',
+    () => {
+      const name = $('popScaleName').value.trim();
+      if (!name) return false;
+      addScale(name);
+    },
+    null,
+    'Add');
+}
+
 function addScale(name) {
-  if (!name) { const i = $('scaleNew'); if (i) i.focus(); return; }
+  if (!name) return;
   // A retired scale with this name comes BACK rather than being duplicated.
   const back = (state.body.scales || []).find((s) =>
     s.gone && s.name.toLowerCase() === name.toLowerCase());
@@ -1954,8 +2188,6 @@ function addScale(name) {
     if (i >= 0) state.body.scales.splice(i, 1);
   });
   saveState(); renderPulse();
-  const inp = $('scaleNew');
-  if (inp) { inp.value = ''; inp.focus(); }
   toast(name + ' added');
 }
 function savePulse() {
@@ -2424,9 +2656,9 @@ function retireMed(m, gone) {
 function addMedType() {
   openPop('Add a medication',
     '<div class="field"><input type="text" id="popMedName" autocomplete="off" ' +
-      'placeholder="Name — e.g. Metformin"></div>' +
+      'placeholder="Metformin · Lisinopril · Vitamin D"></div>' +
     '<div class="field"><input type="text" id="popMedDose" autocomplete="off" ' +
-      'placeholder="Dose — e.g. 500 mg"></div>' +
+      'placeholder="Dose — 500 mg · 10 mg"></div>' +
     '<div class="field"><span class="hint">The dose is typed once. After this, ' +
       'one tap logs that you took it.</span></div>',
     () => {
@@ -2441,7 +2673,9 @@ function addMedType() {
       });
       saveState(); renderIntake();
       toast(name + ' added');
-    });
+    },
+    null,
+    'Add');
 }
 
 /* One tap logs. Undo is the safety net that makes committing immediately
@@ -2888,6 +3122,10 @@ function renderFoodTotals() {
   // Water reads against a target, and the macro bar is the only row on the
   // page with targets in it — so it belongs here, and only here.
   const water = onDay(state.body.water).reduce((n, r) => n + (Number(r.oz) || 0), 0);
+  /* The day total in the header, matching Intake's note: a value, empty at
+     zero — "0 kcal" would be the card scolding an unstarted day. */
+  const fn = $('foodNote');
+  if (fn) fn.textContent = kcal > 0 ? Math.round(kcal).toLocaleString() + ' kcal' : '';
   $('foodMacros').innerHTML =
     cell('Calories', kcal, t.kcal, unknown ? ' kcal · ' + unknown + ' unresolved' : ' kcal') +
     cell('Protein', protein, t.protein_g, ' g') +
@@ -3160,12 +3398,12 @@ function openCustomFood() {
     '<input type="text" id="cfName" placeholder="name — e.g. my protein shake">' +
     '<div class="rowlabel">One serving</div>' +
     '<div class="inline"><input type="text" id="cfLabel" placeholder="1 shake">' +
-    '<input type="number" id="cfGrams" min="1" step="1" placeholder="grams"></div>' +
+    '<input type="number" id="cfGrams" min="1" step="1" inputmode="decimal" placeholder="grams"></div>' +
     '<div class="rowlabel">Per serving</div>' +
-    '<div class="inline"><input type="number" id="cfKcal" min="0" step="1" placeholder="kcal">' +
-    '<input type="number" id="cfProtein" min="0" step="0.1" placeholder="protein g"></div>' +
-    '<div class="inline" style="margin-top:8px"><input type="number" id="cfCarbs" min="0" step="0.1" placeholder="carbs g">' +
-    '<input type="number" id="cfFat" min="0" step="0.1" placeholder="fat g"></div>',
+    '<div class="inline"><input type="number" id="cfKcal" min="0" step="1" inputmode="decimal" placeholder="kcal">' +
+    '<input type="number" id="cfProtein" min="0" step="0.1" inputmode="decimal" placeholder="protein g"></div>' +
+    '<div class="inline" style="margin-top:8px"><input type="number" id="cfCarbs" min="0" step="0.1" inputmode="decimal" placeholder="carbs g">' +
+    '<input type="number" id="cfFat" min="0" step="0.1" inputmode="decimal" placeholder="fat g"></div>',
     () => {
       const name = $('cfName').value.trim();
       const grams = parseFloat($('cfGrams').value);
@@ -3537,6 +3775,21 @@ function canEnter() {
 function renderMovement() {
   const wrap = $('exCats');
   if (!wrap) return;
+  /* The day's total in the header — sessions counted the way the Tracker
+     shows them (a workout is one session, not one row per exercise). */
+  const mn = $('moveNote');
+  if (mn) {
+    const dayEx = onDay(state.body.exercise);
+    const seen = new Set();
+    const sessions = dayEx.reduce((n, r) => {
+      if (!r.workoutLogId) return n + 1;
+      if (seen.has(r.workoutLogId)) return n;
+      seen.add(r.workoutLogId); return n + 1;
+    }, 0);
+    const mins = dayEx.reduce((n, r) => n + (Number(r.minutes) || 0), 0);
+    mn.textContent = sessions
+      ? plural(sessions, 'session') + (mins ? ' · ' + mins + ' min' : '') : '';
+  }
   wrap.querySelectorAll('[data-excat]').forEach((b) =>
     b.setAttribute('aria-pressed', String(b.dataset.excat === exCat)));
   const slot = $('exSlot');
@@ -3990,6 +4243,14 @@ function renderHygiene() {
   const title = $('routineName');
   if (title) title.textContent = routineName();
   const rec = hygieneOn(day) || {};
+  /* Marks done over visible mark items — measures are readings, not marks. */
+  const hn = $('hygNote');
+  if (hn) {
+    const marks = routineLive().filter((it) => it.kind !== 'measure');
+    const done = marks.filter((it) =>
+      it.kind === 'count' ? (Number(rec[it.id]) || 0) > 0 : rec[it.id] === true).length;
+    hn.textContent = done ? done + ' of ' + marks.length : '';
+  }
   box.innerHTML = '';
 
   // Retired items are only on the card in edit mode, where they are the way
@@ -4181,17 +4442,14 @@ const ROUTINE_KINDS = [
 
 function addRoutineItem() {
   let kind = 'mark';
-  const kindRow = ROUTINE_KINDS.map(([k, label, hint]) =>
-    '<button type="button" class="chip" data-rk="' + k + '" title="' + esc(hint) + '" ' +
-    'aria-pressed="' + (k === kind) + '">' + label + '</button>').join('');
   openPop('Add to ' + esc(routineName()),
+    pickerRowHTML('popRKind', ROUTINE_KINDS, kind) +
     '<div class="field"><input type="text" id="popRName" autocomplete="off" ' +
-      'placeholder="e.g. Stretch, Vitamins, Weight"></div>' +
-    '<div class="field inline" id="popRKind">' + kindRow + '</div>' +
+      'placeholder="Stretch · Vitamins · Weight"></div>' +
     '<div class="field"><input type="text" id="popRIcon" autocomplete="off" ' +
-      'placeholder="Icon, optional — e.g. 🧘"></div>' +
+      'placeholder="Icon, optional — 🧘"></div>' +
     '<div class="field" id="popRUnitWrap"><input type="text" id="popRUnit" autocomplete="off" ' +
-      'placeholder="Unit — lb, mg/dL"></div>' +
+      'placeholder="Unit — lb · mg/dL"></div>' +
     '<div class="field"><span class="hint" id="popRHint"></span></div>',
     () => {
       const name = $('popRName').value.trim();
@@ -4213,19 +4471,15 @@ function addRoutineItem() {
       toast(name + ' added to ' + routineName());
     },
     () => {
-      const row = $('popRKind');
       const paint = () => {
-        row.querySelectorAll('[data-rk]').forEach((o) =>
-          o.setAttribute('aria-pressed', String(o.dataset.rk === kind)));
         // Visibility, not display: the pop keeps its height when the kind changes.
         $('popRUnitWrap').style.visibility = (kind === 'measure' ? 'visible' : 'hidden');
         $('popRHint').textContent = (ROUTINE_KINDS.find(([k]) => k === kind) || [])[2] || '';
       };
-      row.querySelectorAll('[data-rk]').forEach((b) => {
-        b.onclick = () => { kind = b.dataset.rk; paint(); };
-      });
+      wirePickerRow('popRKind', (v) => { kind = v; paint(); });
       paint();
-    });
+    },
+    'Add');
 }
 
 /** Rename the box. Edit mode only; the heading is inert type otherwise. */
@@ -4336,6 +4590,9 @@ function renderGlucose() {
   if (!box) return;
   const rows = (state.body.glucose || []).filter((r) => bgDay(r) === day)
     .slice().sort((a, b) => String(b.at).localeCompare(String(a.at)));
+  // The latest reading in the header; empty when the day has none.
+  const gn = $('bgNote');
+  if (gn) gn.textContent = rows.length ? rows[0].mgdl + ' mg/dL' : '';
   box.innerHTML = '';
   if (!rows.length) {
     box.innerHTML = '<div class="bgempty">Nothing logged today.</div>';
@@ -4351,6 +4608,193 @@ function renderGlucose() {
 }
 
 /* =============================================================
+   CHECKUPS (v22) — yearly things, not daily things.
+
+   Two stores: `checkupTypes[]` is the register (name + interval in months,
+   set once, retired with `gone`), `checkups[]` is one row per time a thing
+   was done. "When was it last done" is DERIVED from the newest completion —
+   there is no cached lastDone to drift, which is why deleting a completion
+   from Today correctly moves the date back. No notifications, no red
+   badges: when an interval has passed, the row just changes.
+   ============================================================= */
+const ckTypes = () => state.body.checkupTypes || [];
+const ckLive = () => ckTypes().filter((t) => t && !t.gone);
+const ckDayOf = (r) => String(r.at || '').slice(0, 10);
+
+/** The newest completion date for a type — the derived "last done". */
+function ckLast(typeId) {
+  let best = '';
+  (state.body.checkups || []).forEach((r) => {
+    if (r && r.typeId === typeId) { const d = ckDayOf(r); if (d > best) best = d; }
+  });
+  return best;                                   // '' = never
+}
+/** The selected day's completion for a type, if any — keyed on `day` like
+ *  every other card, so a backdated tap lands on the day being logged. */
+function ckOnDay(typeId) {
+  const rows = (state.body.checkups || []).filter((r) => r && r.typeId === typeId && ckDayOf(r) === day);
+  return rows.length ? rows[rows.length - 1] : null;
+}
+const ckMonthsSince = (iso) => Math.floor(daysBetween(iso, todayStr()) / 30.44);
+/** How many are due right now: never done, or interval passed. Used by the
+ *  header note and the Overview line — never by a badge. */
+function ckDueCount() {
+  return ckLive().reduce((n, t) => {
+    const last = ckLast(t.id);
+    return n + ((!last || ckMonthsSince(last) >= (Number(t.months) || 12)) ? 1 : 0);
+  }, 0);
+}
+function ckIntervalLabel(months) {
+  const m = Number(months) || 12;
+  if (m === 12) return 'yearly';
+  if (m % 12 === 0) return 'every ' + (m / 12) + ' yrs';
+  return 'every ' + m + ' mo';
+}
+
+function renderCheckups() {
+  const box = $('ckRows');
+  if (!box) return;
+  box.innerHTML = '';
+
+  // Retired rows are only on the card in edit mode — the way back.
+  const list = ckTypes().filter((t) => t && (!t.gone || editing));
+  list.forEach((t) => {
+    const row = document.createElement('button');
+    row.type = 'button';
+    row.className = 'ckrow' + (t.gone ? ' retired' : '');
+    row.dataset.ckId = t.id;
+
+    const nm = document.createElement('span'); nm.className = 'nm'; nm.textContent = t.name;
+    const iv = document.createElement('span'); iv.className = 'iv'; iv.textContent = ckIntervalLabel(t.months);
+    const st = document.createElement('span'); st.className = 'st';
+    row.appendChild(nm); row.appendChild(iv); row.appendChild(st);
+
+    /* The status is derived fresh on every paint. Precedence: done on the
+       selected day beats everything (the row you just tapped says so), then
+       never/overdue in warn, then a quiet "N mo ago". */
+    const doneToday = !t.gone && ckOnDay(t.id);
+    const last = ckLast(t.id);
+    if (doneToday) {
+      row.classList.add('done');
+      st.textContent = 'done today';
+    } else if (!last) {
+      row.classList.add('due');
+      st.textContent = 'never · due';
+    } else {
+      const mo = ckMonthsSince(last);
+      const ago = mo < 1 ? '< 1 mo ago' : mo + ' mo ago';
+      if (mo >= (Number(t.months) || 12)) { row.classList.add('due'); st.textContent = 'due · ' + ago; }
+      else st.textContent = ago;
+    }
+    row.title = t.gone ? t.name + ' — retired'
+      : (doneToday ? t.name + ' — done; tap to take it back' : 'Mark ' + t.name + ' done today');
+    row.setAttribute('aria-label', t.name + ', ' + ckIntervalLabel(t.months) + ' — ' +
+      st.textContent + (t.gone ? ', retired' : ''));
+    row.setAttribute('aria-pressed', String(!!doneToday));
+    row.onclick = () => (t.gone ? retireCheckup(t, false) : toggleCheckup(t));
+
+    if (editing) {
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'rx'; x.textContent = t.gone ? '＋' : '✕';
+      x.title = (t.gone ? 'Put back ' : 'Retire ') + t.name;
+      x.setAttribute('aria-label', (t.gone ? 'Restore ' : 'Retire ') + t.name);
+      x.onclick = (e) => { e.stopPropagation(); retireCheckup(t, !t.gone); };
+      row.appendChild(x);
+    }
+    box.appendChild(row);
+  });
+
+  if (editing) {
+    const add = document.createElement('button');
+    add.type = 'button'; add.className = 'ckrow ckadd';
+    add.textContent = '＋ Add a checkup';
+    add.onclick = addCheckupType;
+    box.appendChild(add);
+  }
+
+  /* Header note: "2 due" in warn when anything is, else a quiet all-current.
+     Never a badge, never a count of zero. */
+  const note = $('ckNote');
+  if (note) {
+    const due = ckDueCount();
+    note.textContent = ckLive().length ? (due ? due + ' due' : 'all current') : '';
+    note.style.color = due ? 'var(--warn)' : '';
+  }
+  const foot = $('ckFoot');
+  if (foot) {
+    foot.textContent = editing
+      ? 'Retiring keeps every past completion in the Tracker.'
+      : 'Mirror remembers the dates — you just tap.';
+  }
+}
+
+/** Tap = done today; tap again takes it back — the same two acts, reversed,
+ *  and Undo covers both. One Tracker line per completion. */
+function toggleCheckup(t) {
+  const had = ckOnDay(t.id);
+  if (had) {
+    dropRecord(state.body.checkups, had.id, t.name);
+  } else {
+    const rec = stamp({
+      id: uid(), typeId: t.id, name: t.name,
+      // Local ISO with offset; a backdated completion gets the date alone —
+      // a clock time on a day you are remembering would be fiction (the t rule).
+      at: day === todayStr() ? localNowISO() : day,
+    });
+    appendRec(state.body.checkups, rec, t.name);
+  }
+  saveState(); renderCheckups(); renderFeed();
+  toast(had ? t.name + ' taken back' : t.name + ' ✓ — tap Undo to take it back');
+}
+
+function retireCheckup(t, gone) {
+  const was = !!t.gone;
+  if (was === gone) return;
+  t.gone = gone;
+  stamp(t);
+  pushUndo((gone ? 'retiring ' : 'restoring ') + t.name, () => { t.gone = was; stamp(t); });
+  saveState(); renderCheckups();
+  toast(t.name + (gone ? ' retired — every past completion is kept' : ' is back'));
+}
+
+const CK_INTERVALS = [[6, '6 mo'], [12, '1 yr'], [24, '2 yrs']];
+
+function addCheckupType() {
+  let months = 12;
+  openPop('Add a checkup',
+    pickerRowHTML('popCkIv', CK_INTERVALS.map(([v, l]) => [String(v), l]), String(months)) +
+    '<div class="field"><input type="text" id="popCkName" autocomplete="off" ' +
+      'placeholder="Hearing test · Skin check · A1c"></div>',
+    () => {
+      const name = $('popCkName').value.trim();
+      if (!name) return false;
+      // A retired checkup with this name comes BACK rather than duplicating.
+      const back = ckTypes().find((t) => t.gone && t.name.toLowerCase() === name.toLowerCase());
+      if (back) {
+        back.gone = false; back.months = months; stamp(back);
+        saveState(); renderCheckups();
+        toast(back.name + ' is back');
+        return;
+      }
+      let id = name.toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '') || 'checkup';
+      const taken = new Set(ckTypes().map((t) => t.id));
+      if (taken.has(id)) { let n = 2; while (taken.has(id + n)) n++; id += n; }
+      const t = stamp({ id, name, months });
+      state.body.checkupTypes.push(t);
+      /* An ADD may splice on undo: no history, no sync yet, a mistake a
+         second ago — the same licence the routine and scale adds use. */
+      pushUndo('adding ' + name, () => {
+        const i = state.body.checkupTypes.findIndex((x) => x.id === t.id);
+        if (i >= 0) state.body.checkupTypes.splice(i, 1);
+      });
+      saveState(); renderCheckups();
+      toast(name + ' added');
+    },
+    () => wirePickerRow('popCkIv', (v) => { months = Number(v); }),
+    'Add');
+}
+
+/* =============================================================
    THE TRACKER — every instrument empties into here.
 
    Ordered by _at (when you entered it), not by t (the time of day it is
@@ -4358,7 +4802,13 @@ function renderGlucose() {
    in" is the one that makes a running log make sense.
    ============================================================= */
 function renderFeed() {
-  $('feedDate').textContent = fmtDay(day);
+  /* Every log path ends here, which makes this the right moment for first
+     contact to notice its first record and stand down (v22). */
+  renderFirstContact();
+  /* The title already says "Today"; the note beside it speaks only when the
+     day is a different one — "Today · Fri Aug 7" is the box saying THAT day,
+     and "Today · today" would be the box stuttering. */
+  $('feedDate').textContent = day === todayStr() ? '' : fmtDay(day);
   const rows = [];
   /* Sort on _up, not _at. For a logged entry they're the same, but a habit
      record was created the day you defined the habit — ticking it today has
@@ -4435,6 +4885,15 @@ function renderFeed() {
     at: (r._up || r._at) || '', t: bgTime(r), ic: '🩸',
     tx: 'Blood glucose ' + r.mgdl + ' mg/dL',
     del: () => dropRecord(state.body.glucose, r.id, 'Blood glucose ' + r.mgdl + ' mg/dL'),
+  }));
+
+  /* Checkups key on their own `at`, like glucose. The ✕ removes the
+     completion — the same act as tapping the row again — and because "last
+     done" is derived, the row's date steps back on its own. */
+  (state.body.checkups || []).filter((r) => ckDayOf(r) === day).forEach((r) => rows.push({
+    at: (r._up || r._at) || '', t: bgTime(r), ic: '🩺',
+    tx: r.name + ' ✓',
+    del: () => dropRecord(state.body.checkups, r.id, r.name),
   }));
 
   /* The marks all hang off one record per day, so they share its `_up` and
@@ -4533,6 +4992,7 @@ function renderFeed() {
    ============================================================= */
 let popConfirm = null;
 function openPop(title, bodyHTML, onConfirm, afterRender, okLabel) {
+  restoreTools();                      // innerHTML below would destroy moved tool nodes
   const pop = $('pop');
   pop.innerHTML = '<h3>' + esc(title) + '</h3>' + bodyHTML +
     '<div class="actions">' +
@@ -4562,10 +5022,36 @@ function openPop(title, bodyHTML, onConfirm, afterRender, okLabel) {
   });
 }
 function closePop() {
+  restoreTools();
   $('pop').classList.remove('wide');
   $('pop').style.display = 'none';
   $('popBack').classList.remove('open');
   popConfirm = null;
+}
+
+/* ---- the add-form grammar (v22) ----
+   Four edit-mode add forms exist — routine item, medication, scale, checkup —
+   and they are deliberately structurally identical: picker row if any, then
+   the name input (autofocused by openPop, Enter adds), then Add. One picker
+   helper so a choice looks the same in all of them. */
+function pickerRowHTML(id, options, current) {
+  return '<div class="field inline pickrow" id="' + id + '">' +
+    options.map(([v, label, hint]) =>
+      '<button type="button" class="chip" data-pv="' + esc(v) + '"' +
+      (hint ? ' title="' + esc(hint) + '"' : '') +
+      ' aria-pressed="' + String(v === current) + '">' + esc(label) + '</button>').join('') +
+    '</div>';
+}
+function wirePickerRow(id, onPick) {
+  const row = $(id);
+  if (!row) return;
+  row.querySelectorAll('[data-pv]').forEach((b) => {
+    b.onclick = () => {
+      row.querySelectorAll('[data-pv]').forEach((o) =>
+        o.setAttribute('aria-pressed', String(o === b)));
+      onPick(b.dataset.pv);
+    };
+  });
 }
 
 /* =============================================================
@@ -4591,13 +5077,14 @@ function openForm(title, fields, values, onSave, okLabel) {
         '<select id="' + id + '_m"><option value="">month</option>' +
           MONTHS.map((m, i) => '<option value="' + (i + 1) + '">' + m + '</option>').join('') +
         '</select>' +
-        '<input type="number" id="' + id + '_d" placeholder="day" min="1" max="31">' +
-        '<input type="number" id="' + id + '_y" placeholder="year" min="1900" max="2100">' +
+        '<input type="number" id="' + id + '_d" placeholder="day" min="1" max="31" inputmode="numeric">' +
+        '<input type="number" id="' + id + '_y" placeholder="year" min="1900" max="2100" inputmode="numeric">' +
       '</div>';
     }
     if (f.type === 'textarea') return lab + '<textarea id="' + id + '" placeholder="' + esc(f.placeholder || '') + '"></textarea>';
     return lab + '<input type="' + (f.type || 'text') + '" id="' + id + '" placeholder="' +
-           esc(f.placeholder || '') + '"' + (f.step ? ' step="' + f.step + '"' : '') + '>';
+           esc(f.placeholder || '') + '"' + (f.step ? ' step="' + f.step + '"' : '') +
+           (f.type === 'number' ? ' inputmode="decimal"' : '') + '>';
   }).join('');
   openPop(title, html, () => {
     const out = {};
@@ -4979,7 +5466,7 @@ function renderConnections() {
     '<div class="c ' + (f.diff > 0 ? 'good' : 'warn') + '"><div class="k">' + esc(f.sig.key) + '</div>' +
     '<div class="v">' + f.hi.toFixed(1) + ' <span class="u">vs</span> ' + f.lo.toFixed(1) + '</div>' +
     '<div class="p">You felt <b>' + (f.diff > 0 ? 'better' : 'worse') + '</b> on ' + esc(f.sig.on) +
-    ' — ' + f.nOn + ' vs ' + f.nOff + ' days. A gentle association, not proof.</div></div>');
+    ' — ' + f.nOn + ' vs ' + f.nOff + ' days.</div></div>');
 
   // Best and lowest weekday, from the same outcome.
   const dow = [[], [], [], [], [], [], []];
@@ -5091,6 +5578,10 @@ const MD_FULL = [
     `- **${n.date}** — assets ${fmt$(n.assets)}, liabilities ${fmt$(n.liabilities)}`)],
   ['Movement types kept', () => (state.body.exerciseTypes || [])
     .filter((r) => r.fav).map((r) => `- ${r.name}`)],
+  ['Checkups kept', () => ckLive().map((t) => {
+    const last = ckLast(t.id);
+    return `- **${t.name}** — ${ckIntervalLabel(t.months)}${last ? `, last ${last}` : ', never yet'}`;
+  })],
   ['Workouts', () => (state.body.workouts || []).map((w) => {
     const min = workoutMin(w);
     return `- **${w.name}** — ${plural((w.items || []).length, 'exercise')}${min ? `, ${min} min` : ''}` +
@@ -5130,6 +5621,8 @@ const MD_SUMMARY = [
     `${r.date} — ${r.name}${r.dose ? ` ${r.dose}` : ''}${bgTime(r) ? ` at ${bgTime(r)}` : ''}`],
   ['Measurements', () => state.body.measurements, (r) =>
     `${r.date} — ${r.name} ${r.value}${r.unit ? ` ${r.unit}` : ''}`],
+  ['Checkups', () => state.body.checkups, (r) =>
+    `${ckDayOf(r)} — ${r.name}`],
   /* The routine box's own heading, because the user may have renamed it —
      a forever-copy that says "Hygiene" when the app says "Upkeep" reads like
      someone else's file. Marks are listed from routine.items rather than the
@@ -5336,7 +5829,7 @@ function openData() {
       wrow.innerHTML = '<span style="flex:1;min-width:0">Body weight' +
                        '<span class="hint">only feeds the ≈kcal estimate on Movement</span></span>';
       const wi = document.createElement('input');
-      wi.type = 'number'; wi.min = '50'; wi.max = '500'; wi.step = '1';
+      wi.type = 'number'; wi.min = '50'; wi.max = '500'; wi.step = '1'; wi.inputMode = 'decimal';
       wi.value = weightLb();
       wi.style.cssText = 'width:64px;padding:5px 7px;font-size:.8rem;text-align:center';
       wi.setAttribute('aria-label', 'Body weight in pounds');
@@ -5495,6 +5988,9 @@ const MERGE_BY_ID = [
   ['body', 'workouts'], ['body', 'glucose'],
   ['body', 'measurements'], ['body', 'medTypes'], ['body', 'meds'],   // v21
   ['body', 'scales'],                                                 // v21
+  /* v22. checkupTypes rides THIS table rather than a special case — which is
+     what makes latestStamp() walk it for free, the v21 routine.items lesson. */
+  ['body', 'checkupTypes'], ['body', 'checkups'],                     // v22
   ['mind', 'books'], ['mind', 'ideas'], ['mind', 'questions'], ['mind', 'quotes'],
   ['money', 'categories'], ['money', 'expenses'], ['money', 'income'], ['money', 'subscriptions'],
   ['money', 'netWorth'], ['money', 'goals'],
@@ -5967,7 +6463,9 @@ function openSyncSetup() {
 function renderAll() {
   loadPulse(); loadSleep();
   renderIntake(); renderFoodTotals(); renderMealTiles(); renderLogGrid();
-  renderMovement(); renderHygiene(); renderGlucose(); renderHabits(); renderSymptoms(); renderFeed();
+  renderMovement(); renderHygiene(); renderGlucose(); renderCheckups();
+  renderHabits(); renderSymptoms(); renderFeed();
+  renderFirstContact();
   renderDrawers();
 }
 
@@ -5991,7 +6489,13 @@ const BOXES = [
     label: () => routineName() },
   { id: 'pulse',    name: 'How you are',   icon: '◉',  el: 'pulseCard' },
   { id: 'glucose',  name: 'Blood glucose', icon: '🩸', el: 'glucoseCard' },
-  { id: 'loggrid',  name: 'Log grid',      icon: '＋', el: 'logGridCard' },
+  /* v22. Ships CLOSED for a profile that predates it — see closeCheckupsOnce,
+     the one deliberate exception to "missing catalogue ids append open". */
+  { id: 'checkups', name: 'Checkups',      icon: '🩺', el: 'checkupsCard' },
+  /* "Also log", because that is what it holds — the six things logged less
+     than daily. "Log grid" said how it was drawn, not what it was for. The
+     element id stays: renaming a store or an id would be repurposing. */
+  { id: 'loggrid',  name: 'Also log',      icon: '＋', el: 'logGridCard' },
 ];
 const LAYOUT_KEY = 'mirror_layout_v1';
 
@@ -6032,7 +6536,10 @@ function loadLayout() {
   });
   const hidden = {};
   HIDEABLE.forEach((k) => { if (raw && raw.hidden && raw.hidden[k] === true) hidden[k] = true; });
-  return { order, open, hidden };
+  /* v22: whether first contact has been dismissed — by hand or by the first
+     real record. Chrome, not data: a new device says hello once. */
+  const welcomed = !!(raw && raw.welcomed === true);
+  return { order, open, hidden, welcomed };
 }
 let layout = loadLayout();
 function saveLayout() {
@@ -6081,6 +6588,21 @@ function renderLogGrid() {
     if (editing) el.appendChild(hideCorner(key, name, 'cornx'));
   });
 }
+/* ---- first contact (v22) ---- */
+/* Shown only to a profile with zero records ever. One line, dismissed by its
+   ✕ or — forever — by the first real record; both write the same layout
+   flag, so deleting every record later does not bring it back. */
+function hasAnyRecord() {
+  if (ALL_STORES.some(([a, b]) => (pick(state, a, b) || []).length > 0)) return true;
+  return (state.habits.items || []).some((h) => (h.done || []).length > 0);
+}
+function renderFirstContact() {
+  const el = $('firstContact');
+  if (!el) return;
+  if (!layout.welcomed && hasAnyRecord()) { layout.welcomed = true; saveLayout(); }
+  el.hidden = !!layout.welcomed;
+}
+
 const boxMeta = (id) => BOXES.find((b) => b.id === id);
 const boxNode = (id) => { const m = boxMeta(id); return m ? $(m.el) : null; };
 
@@ -6282,6 +6804,7 @@ function setEditing(on) {
   b.title = editing ? 'Finish editing' : 'Rearrange and choose what shows';
   // Every surface that grows an affordance in edit mode redraws itself.
   renderHygiene(); renderIntake(); renderLogGrid(); renderPulse(); renderMealTiles();
+  renderCheckups();
 }
 $('editBtn').onclick = () => setEditing(!editing);
 /* Escape leaves edit mode — but only when it is not closing something else
@@ -6293,6 +6816,37 @@ document.addEventListener('keydown', (e) => {
 });
 /* The heading renames the box, and only while editing — otherwise it is type. */
 $('routineName').onclick = () => { if (editing) renameRoutine(); };
+
+/* ---- the folded tools (v22, ≤520px) ---- */
+/* The tool buttons MOVE into the pop and back — same nodes, same ids, same
+   handlers, nothing rebuilt. openPop and closePop both re-home them first,
+   because openPop repaints #pop with innerHTML and would otherwise destroy
+   a moved node outright. */
+const TOOL_ROWS = [['undoBtn', 'Undo'], ['densityBtn', 'Density'], ['themeBtn', 'Theme'],
+                   ['syncBtn', 'Sync'], ['dataBtn', 'Data']];
+function restoreTools() {
+  const tools = document.querySelector('.top .tools');
+  if (!tools) return;
+  if (TOOL_ROWS.every(([id]) => $(id) && $(id).parentElement === tools)) return;
+  ['undoBtn', 'densityBtn', 'themeBtn', 'editBtn', 'syncBtn', 'dataBtn', 'moreBtn']
+    .forEach((id) => { const b = $(id); if (b) tools.appendChild(b); });
+}
+function openToolsPop() {
+  openPop('Tools', '<div class="toolspop" id="toolsPop"></div>', null, () => {
+    const wrap = $('toolsPop');
+    TOOL_ROWS.forEach(([id, label]) => {
+      const row = document.createElement('div');
+      row.className = 'tprow';
+      const l = document.createElement('span'); l.textContent = label;
+      row.appendChild(l);
+      const b = $(id);
+      if (b) row.appendChild(b);           // MOVED, not rebuilt
+      wrap.appendChild(row);
+    });
+  });
+}
+$('moreBtn').onclick = openToolsPop;
+$('fcDismiss').onclick = () => { layout.welcomed = true; saveLayout(); renderFirstContact(); };
 
 $('dataBtn').onclick = openData;
 $('syncBtn').onclick = openSyncSetup;
@@ -6456,7 +7010,7 @@ $('logMoney').onclick = () => {
       '<button type="button" data-s="income">Income</button>' +
     '</div>' +
     '<div class="rowlabel">Amount</div>' +
-    '<input type="number" step="0.01" id="mAmt" placeholder="0.00">' +
+    '<input type="number" step="0.01" inputmode="decimal" id="mAmt" placeholder="0.00">' +
     '<div class="rowlabel" id="mPickLabel">Category</div>' +
     '<div class="pickrow" id="mPick"></div>' +
     '<input type="text" id="mOther" placeholder="name it" hidden>' +
@@ -6593,7 +7147,7 @@ $('logValues').onclick = () => {
    wearing a record's clothes. Keeping "Pickleball" at the top of a list is
    a preference; it is not a thing you did, and a day you did it on is not
    a day you kept the record. */
-const NOT_ENTRIES = new Set(['exerciseTypes']);
+const NOT_ENTRIES = new Set(['exerciseTypes', 'checkupTypes']);
 const ALL_STORES = [...MERGE_BY_ID, ...MERGE_BY_DATE].filter(([, b]) => !NOT_ENTRIES.has(b));
 
 /** One line for any record, whatever store it came out of. */
@@ -6645,6 +7199,7 @@ function daysKept() {
 
 $('overviewBtn').onclick = () => {
   const days = daysKept();
+  const ckDue = ckDueCount();
   const sorted = [...days].sort();
   const first = sorted[0];
   const mk = monthKey();
@@ -6697,7 +7252,7 @@ $('overviewBtn').onclick = () => {
     expenses: '💵', income: '💰', categories: '📊', subscriptions: '🔁',
     items: '📍', food: '🍽', water: '💧', drinks: '🥤', substances: '◍',
     sleep: '🌙', exercise: '🏃', symptoms: '⚕', meals: '🍱', customFoods: '🍳',
-    glucose: '🩸',
+    glucose: '🩸', checkups: '🩺',
   };
   const rows = recent.slice(0, 10).map(({ r, at, store }) =>
     '<div class="r"><span class="ic">' + (RECENT_IC[store] || '·') + '</span>' +
@@ -6712,7 +7267,12 @@ $('overviewBtn').onclick = () => {
       ovStat('This month out', spent ? fmt$(spent) : null) +
       ovStat('This month in', earned ? fmt$(earned) : null) +
       ovStat('Home', home ? home.name : null, homeSince) +
-    '</div></div>' +
+    '</div>' +
+    /* One line, only when N > 0 — Checkups is not weekly-shaped, so this is
+       its only report surface beyond its own card. */
+    (ckDue ? '<div class="ovline" style="margin-top:8px;font-size:.8rem;color:var(--warn)">Checkups: ' +
+             ckDue + ' due</div>' : '') +
+    '</div>' +
     '<div class="ov"><h4>Behavior &middot; last 7 days</h4>' +
       (habits ? '<div class="ovhab">' + habits + '</div>'
               : '<div class="empty">No habits yet.</div>') +
