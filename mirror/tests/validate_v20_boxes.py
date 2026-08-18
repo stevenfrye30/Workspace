@@ -46,11 +46,16 @@ with sync_playwright() as pw:
 
     # ---- A1: header — title + day chip; strip gone; pop backdates and warns ----
     ok("A1: date strip gone", page.locator(".datestrip").count() == 0)
-    ok("A1: Mirror + Today beside it",
-       "Mirror" in page.locator(".top .mid").inner_text() and page.locator("#dayBtn").inner_text() == "Today")
+    # v22.1: the chip says the real date when following today, not the word.
+    import re as _re
+    ok("A1: Mirror + the real date beside it",
+       "Mirror" in page.locator(".top .mid").inner_text()
+       and _re.fullmatch(r"[A-Z][a-z]{2}, [A-Z][a-z]{2} \d{1,2}", page.locator("#dayBtn").inner_text()) is not None,
+       page.locator("#dayBtn").inner_text())
     page.click("#dayBtn"); page.wait_for_timeout(150)
     page.click("#dYestRow"); page.wait_for_timeout(150)
-    ok("A1: pop backdates", page.locator("#dayBtn").inner_text() == "Yesterday")
+    ok("A1: pop backdates", page.locator("#dayBtn").inner_text().startswith("Yesterday · "),
+       page.locator("#dayBtn").inner_text())
     page.click("#dayBtn"); page.wait_for_timeout(150)
     warn = page.locator("#backdateWarn")
     ok("A1: pop still warns", not warn.is_hidden() and "Backdating" in warn.inner_text())

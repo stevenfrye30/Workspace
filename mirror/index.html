@@ -153,7 +153,7 @@
     background: none; border: 0; border-bottom: 1px dashed var(--dim);
     color: var(--dim); font: inherit; font-size: .78rem; line-height: 1.2;
     padding: 0 1px 1px; cursor: pointer; white-space: nowrap;
-    overflow: hidden; text-overflow: ellipsis; max-width: 9.5em;
+    overflow: hidden; text-overflow: ellipsis; max-width: 12em;
   }
   .daychip:hover { color: var(--accent); border-bottom-color: var(--accent); }
   .top .home {
@@ -239,9 +239,19 @@
      cannot both be true, so the columns went. align-items:start keeps a
      tall box from stretching its row; every fill slot inside a card still
      holds its HARD height, so the flow only ever reflows whole boxes. */
+  /* Masonry (v22.1): 8px auto-rows and a JS-computed row span per card, so
+     each column packs top-to-bottom instead of every row clearing its tallest
+     card. row-gap is 0 ON PURPOSE — the vertical gap lives inside each span
+     (packCard adds one gap to the height before dividing), because a real
+     row-gap would multiply into every 8px track and inflate the spans. The
+     design gap survives as column-gap, which is also where packCard reads it.
+     align-items: start is KEPT on purpose: it sizes each card to its content
+     even with a span applied, so offsetHeight measures content directly — no
+     span-off-then-measure dance, and no ResizeObserver feedback loop, because
+     writing a span never changes the card's own height. */
   .daily {
     display: grid; grid-template-columns: repeat(auto-fill, minmax(252px, 1fr));
-    gap: 12px; align-items: start;
+    column-gap: 12px; row-gap: 0; grid-auto-rows: 8px; align-items: start;
   }
   /* Closed boxes stay in the DOM (hidden), so :empty can never match —
      the all-closed state is named instead, and the grid's gap-sized ghost
@@ -249,7 +259,7 @@
   .daily.allclosed { display: none; }
   .daily > .card { margin-bottom: 0; min-width: 0; }
   .card[hidden] { display: none; }
-  body.dense .daily { gap: 10px; }
+  body.dense .daily { column-gap: 10px; }
   .card.dragging { opacity: .55; }
   .grab {
     cursor: grab; color: var(--dim); font-size: .82rem; line-height: 1;
@@ -1973,8 +1983,17 @@ let followingToday = true;
 let editing = false;
 
 function dayLabel(iso) {
-  if (iso === todayStr()) return 'Today';
-  if (iso === shiftDay(todayStr(), -1)) return 'Yesterday';
+  /* The chip says the date, not the word (v22.1): "Today" told you nothing
+     you didn't know, and the one thing worth glancing for — what date it is —
+     was the thing it withheld. fmtDay can't be reused for these two: it
+     answers 'today'/'yesterday' for exactly the days this label needs to
+     spell out. Any other day keeps fmtDay's backdated label unchanged. */
+  const md = (d) => d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+  if (iso === todayStr()) {
+    return new Date(iso + 'T00:00').toLocaleDateString(undefined,
+      { weekday: 'short', month: 'short', day: 'numeric' });
+  }
+  if (iso === shiftDay(todayStr(), -1)) return 'Yesterday · ' + md(new Date(iso + 'T00:00'));
   return fmtDay(iso);
 }
 function refreshDayWarn() {
@@ -4723,7 +4742,7 @@ function renderCheckups() {
   const foot = $('ckFoot');
   if (foot) {
     foot.textContent = editing
-      ? 'Retiring keeps every past completion in the Tracker.'
+      ? 'Retiring keeps every past completion in Today.'
       : 'Mirror remembers the dates — you just tap.';
   }
 }
@@ -6636,6 +6655,39 @@ function renderBoxes() {
   grid.classList.toggle('allclosed',
     !layout.order.some((id) => layout.open[id] && boxNode(id)));
   renderRail();
+  packAll();
+}
+
+/* ---- masonry packing (v22.1) ----
+   Every open card gets `grid-row-end: span N` over the grid's 8px auto-rows,
+   N = ceil((content height + gap) / 8) — the +gap is the vertical breathing
+   room, carried inside the span since row-gap is 0 (see the .daily CSS).
+   The invariant is what makes this stable: cards have hard internal heights,
+   so N only changes on real events — edit mode, open/close, density, a tab
+   swapping fixed-height slots — and the observer catches all of them. */
+const MASON_ROW = 8;
+function packCard(el) {
+  if (!el) return;
+  if (el.hidden) { if (el.style.gridRowEnd) el.style.gridRowEnd = ''; return; }
+  const grid = $('dailyGrid');
+  // The design gap rides column-gap (12 roomy / 10 dense) — read, not
+  // hard-coded, so a future gap change can't silently desync the spans.
+  const g = parseFloat(getComputedStyle(grid).columnGap) || 12;
+  // align-items: start keeps offsetHeight equal to CONTENT height even with a
+  // span applied (the card never stretches into its tracks), so this read is
+  // loop-free: writing the span below cannot change what was just measured.
+  const n = Math.max(1, Math.ceil((el.offsetHeight + g) / MASON_ROW));
+  const want = 'span ' + n;
+  if (el.style.gridRowEnd !== want) el.style.gridRowEnd = want;   // write only on change
+}
+function packAll() { BOXES.forEach((b) => packCard(boxNode(b.id))); }
+/* One observer for all boxes, created once at boot: a card that changes real
+   height (edit-mode furniture, the Meds tab's taller slot, a viewport reflow)
+   re-spans itself alone. */
+function watchBoxes() {
+  if (!('ResizeObserver' in window)) return;   // the event-driven packAll calls still cover everything
+  const ro = new ResizeObserver((entries) => entries.forEach((e) => packCard(e.target)));
+  BOXES.forEach((b) => { const el = boxNode(b.id); if (el) ro.observe(el); });
 }
 
 function toggleBox(id, open) {
@@ -6650,6 +6702,7 @@ function commitOrderFromDom() {
   layout.order = [...$('dailyGrid').children]
     .map((el) => el.dataset.box).filter(Boolean);
   saveLayout();
+  packAll();          // heights didn't change, but cheap and safe after a drop
 }
 
 /** Keyboard reorder: one VISIBLE slot left or right — hopping over closed
@@ -6763,6 +6816,7 @@ BOXES.forEach(wireBox);
 $('dailyGrid').addEventListener('dragover', (e) => { if (dragId) e.preventDefault(); });
 $('dailyGrid').addEventListener('drop', (e) => { if (dragId) e.preventDefault(); });
 renderBoxes();
+watchBoxes();
 
 /* ---- density: compact vs roomy, remembered per device ----
    A laptop wants three tight columns; a phone in one hand wants bigger
@@ -6771,6 +6825,7 @@ function applyDensity(dense) {
   document.body.classList.toggle('dense', dense);
   $('densityBtn').textContent = dense ? '▤' : '▣';
   $('densityBtn').title = dense ? 'Compact — switch to roomy' : 'Roomy — switch to compact';
+  packAll();          // both the gap and most card heights just changed
 }
 applyDensity(localStorage.getItem('mirror_density') !== 'roomy');   // compact by default
 $('densityBtn').onclick = () => {
@@ -6805,6 +6860,7 @@ function setEditing(on) {
   // Every surface that grows an affordance in edit mode redraws itself.
   renderHygiene(); renderIntake(); renderLogGrid(); renderPulse(); renderMealTiles();
   renderCheckups();
+  packAll();          // edit-mode furniture changes card heights — re-pack
 }
 $('editBtn').onclick = () => setEditing(!editing);
 /* Escape leaves edit mode — but only when it is not closing something else
