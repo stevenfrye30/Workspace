@@ -108,8 +108,9 @@
     .doorways.main .doorway-desc { font-size: 0.8rem; }
     .doorways.main .doorway-icon { width: 26px; height: 26px; }
     .doorways.main .doorway-kind { font-size: 0.72rem; }
-    /* Task 71 — one small row of three beneath the mains */
-    .doorways.small { grid-template-columns: repeat(3, 1fr); }
+    /* Task 71 — one small row beneath the mains (four since Milwaukee
+       surfaced, 2026-08-27) */
+    .doorways.small { grid-template-columns: repeat(4, 1fr); }
     .doorways.regular { border-top: none; border-bottom: none; }
     .doorways.regular .doorway { min-height: 5.2rem; }
     .doorways.regular .doorway-name { font-size: 1.12rem; }
@@ -538,8 +539,8 @@
 
       <!-- Task 52: the Milwaukee card RETIRED — its milwaukee/ target
            never existed in this tree (dead link on live, surveyed
-           2026-07-30); the Mirror doorway carries the project as an
-           in-progress placeholder until it surfaces. -->
+           2026-07-30). Surfaced 2026-08-27 as milwaukee.html: the
+           City card at the end of this row, after Games. -->
 
       <!-- Task 52: the Masri card moved onto the Mirror doorway
            (mirror/) — the personal wing. -->
@@ -575,6 +576,22 @@
           <span class="doorway-kind">Play</span>
           <span class="doorway-name">Games</span>
           <span class="doorway-desc">Emoji Games, Flags, and Cosmos — the play shelf.</span>
+        </a>
+      </div>
+
+      <!-- Milwaukee — the city map surfaced (2026-08-27): the standalone
+           milwaukee.html at the repo root -->
+      <div class="doorway" style="--w: var(--w-milwaukee);">
+        <a class="doorway-primary" href="milwaukee.html">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 21 C12 21 5.5 14.8 5.5 10 a6.5 6.5 0 0 1 13 0 C18.5 14.8 12 21 12 21z"/>
+              <circle cx="12" cy="10" r="2.4"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">City</span>
+          <span class="doorway-name">Milwaukee</span>
+          <span class="doorway-desc">Our places, job leads, and what's coming up — measured from home.</span>
         </a>
       </div>
     </nav>
