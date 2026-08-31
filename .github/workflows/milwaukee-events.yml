@@ -1,0 +1,38 @@
+name: Refresh Milwaukee events
+
+# Weekly refresh of the "On in Milwaukee" headlines baked into
+# milwaukee.html. The refresh tool rewrites the file only when the
+# headline list actually changed, so quiet weeks commit nothing.
+
+on:
+  schedule:
+    - cron: "17 11 * * 1" # Mondays 11:17 UTC — early morning in Milwaukee
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Scrape and inject headlines
+        run: python tools/milwaukee_events/refresh_map_events.py
+
+      - name: Commit only if the headlines changed
+        run: |
+          if git diff --quiet milwaukee.html; then
+            echo "No headline changes this week."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add milwaukee.html
+            git commit -m "Weekly Milwaukee events refresh"
+            git push
+          fi
