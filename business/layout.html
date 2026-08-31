@@ -3,16 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Business — Riverside Auto</title>
-  <!-- Thin wrapper: the app itself is riverside-workspace.html, a bundler
-       export (never text-edit; replace whole). The bundler rebuilds its
-       entire documentElement at unpack, so the Workspace back-pill must
-       live out here in a parent frame, not inside the bundle. -->
+  <title>Riverside Auto — Layout</title>
+  <!-- Thin wrapper: the app itself is riverside-layout.html, a bundler
+       export (never text-edit; replace whole). Same pattern as index.html. -->
   <style>
     html, body { margin: 0; padding: 0; height: 100%; overflow: hidden; background: #faf9f5; }
     .app-frame { position: fixed; inset: 0; width: 100%; height: 100%; border: 0; }
+    .ws-nav { position: fixed; top: 10px; left: 10px; z-index: 10000; display: flex; gap: 6px; }
     .ws-back {
-      position: fixed; top: 10px; left: 10px; z-index: 10000;
       font: 600 13px/1 Georgia, 'Times New Roman', serif;
       color: #2f4d3d; text-decoration: none;
       background: rgba(250, 249, 245, 0.92);
@@ -24,14 +22,14 @@
     .ws-back:hover { background: #2f4d3d; color: #faf9f5; }
   </style>
   <script>
-    // The app's internal links (e.g. "Layout map" -> layout.html) navigate
-    // the iframe; the target wrapper promotes itself to the top window so
-    // wrappers never nest.
     if (self !== top) top.location.replace(location.href);
   </script>
 </head>
 <body>
-  <iframe class="app-frame" src="riverside-workspace.html" title="Riverside Auto workspace"></iframe>
-  <a class="ws-back" href="../">&#8592; Workspace</a>
+  <iframe class="app-frame" src="riverside-layout.html" title="Riverside Auto shop layout"></iframe>
+  <nav class="ws-nav">
+    <a class="ws-back" href="./">&#8592; Riverside</a>
+    <a class="ws-back" href="../">Workspace</a>
+  </nav>
 </body>
 </html>
