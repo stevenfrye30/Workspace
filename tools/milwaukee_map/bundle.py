@@ -73,6 +73,29 @@ def write_inner(new_inner: str, path: Path = MAP_HTML) -> None:
         raise SystemExit("FAIL: round-trip mismatch — restore milwaukee.html from git")
 
 
+MANIFEST_OPEN = '<script type="__bundler/manifest">'
+
+
+def read_manifest(path: Path = MAP_HTML):
+    """(manifest dict, full html, json start, json end) for asset surgery."""
+    html = path.read_text(encoding="utf-8")
+    a = html.find(MANIFEST_OPEN)
+    if a == -1:
+        raise SystemExit("REFUSE: manifest block not found")
+    b = html.find("</script>", a)
+    i = a + len(MANIFEST_OPEN)
+    return json.loads(html[i:b]), html, i, b
+
+
+def write_manifest(manifest: dict, html: str, i: int, j: int, path: Path = MAP_HTML) -> None:
+    enc = json.dumps(manifest, separators=(",", ":"))
+    if "</script" in enc.lower():
+        raise SystemExit("REFUSE: manifest would terminate its script element")
+    path.write_text(html[:i] + "\n" + enc + "\n" + html[j:], encoding="utf-8", newline="\n")
+    if read_manifest(path)[0] != manifest:
+        raise SystemExit("FAIL: manifest round-trip mismatch — restore from git")
+
+
 def replace_marked_block(inner: str, begin: str, end: str, block: str) -> str:
     """Swap exactly one BEGIN…END region; refuse on zero or many."""
     pattern = re.compile(re.escape(begin) + r".*?" + re.escape(end), re.S)
