@@ -5,15 +5,16 @@ Action (.github/workflows/milwaukee-events.yml) and a human run the same
 code. The old projects/life/milwaukee/calendar/refresh_map_events.py is
 a forwarding stub.
 
-milwaukee.html is a bundler file: the app document is ONE JSON string in
-the <script type="__bundler/template"> block, carrying a generated block
+The bundle mechanics (template extraction, encoding, round-trip proof)
+live in tools/milwaukee_map/bundle.py — this tool only builds its
+generated block:
 
     // MKE_HEADLINES:BEGIN ... // MKE_HEADLINES:END
 
-This tool runs scrape.py (same folder; writes upcoming.json beside it,
+It runs scrape.py (same folder; writes upcoming.json beside it,
 gitignored), rebuilds the block, and rewrites the file ONLY when the
 headline list itself changed — the fetched-date line alone never forces
-a commit. Round-trip is verified before success is declared.
+a commit.
 
 Run:  python tools/milwaukee_events/refresh_map_events.py
       ... --skip-scrape   (inject from the existing upcoming.json)
@@ -28,8 +29,10 @@ from hashlib import md5
 from pathlib import Path
 
 HERE = Path(__file__).parent
+sys.path.insert(0, str(HERE.parent / "milwaukee_map"))
+import bundle  # noqa: E402
+
 UPCOMING = HERE / "upcoming.json"
-MAP_HTML = HERE.parents[1] / "milwaukee.html"
 BEGIN = "// MKE_HEADLINES:BEGIN"
 END = "// MKE_HEADLINES:END"
 N_ARTICLES = 8
@@ -50,24 +53,6 @@ def chip(iso: str | None) -> str:
     if not iso:
         return ""
     return datetime.fromisoformat(iso).astimezone(MKE_TZ).strftime("%b %d").replace(" 0", " ")
-
-
-def find_template(html: str) -> tuple[int, int]:
-    i = html.find('"<!DOCTYPE html>')
-    if i == -1:
-        raise SystemExit("REFUSE: bundler template string not found in milwaukee.html")
-    j = i + 1
-    esc = False
-    while j < len(html):
-        c = html[j]
-        if esc:
-            esc = False
-        elif c == "\\":
-            esc = True
-        elif c == '"':
-            break
-        j += 1
-    return i, j
 
 
 def build_rows(data: dict) -> str:
@@ -101,18 +86,12 @@ def main() -> int:
     data = json.loads(UPCOMING.read_text(encoding="utf-8"))
     rows = build_rows(data)
 
-    html = MAP_HTML.read_text(encoding="utf-8")
-    i, j = find_template(html)
-    inner = json.loads(html[i:j + 1])
-
-    pattern = re.compile(re.escape(BEGIN) + r".*?" + re.escape(END), re.S)
-    hits = pattern.findall(inner)
-    if len(hits) != 1:
-        raise SystemExit(f"REFUSE: expected exactly one marker block, found {len(hits)}")
+    inner = bundle.extract()
 
     # No-change detection: compare only the headline array — the fetched-date
     # line alone must never produce a weekly noise commit.
-    old_rows = re.search(r"const MKE_HEADLINES = \[.*?\];", hits[0], re.S)
+    current = re.search(re.escape(BEGIN) + r".*?" + re.escape(END), inner, re.S)
+    old_rows = current and re.search(r"const MKE_HEADLINES = \[.*?\];", current.group(0), re.S)
     if old_rows and old_rows.group(0) == rows:
         print("headlines unchanged — leaving milwaukee.html untouched")
         return 0
@@ -124,19 +103,9 @@ def main() -> int:
         f"{rows}\n"
         f"{END}"
     )
-    new_inner = pattern.sub(lambda _: block, inner)
-    enc = json.dumps(new_inner, ensure_ascii=False).replace("</", "<\\/")
-    if "</script" in enc.lower():
-        raise SystemExit("REFUSE: encoded template contains a script terminator")
-    MAP_HTML.write_text(html[:i] + enc + html[j + 1:], encoding="utf-8", newline="\n")
-
-    html2 = MAP_HTML.read_text(encoding="utf-8")
-    i2, j2 = find_template(html2)
-    back = json.loads(html2[i2:j2 + 1])
-    if back != new_inner:
-        raise SystemExit("FAIL: round-trip mismatch — restore milwaukee.html from git")
-    n = len(re.findall(r"\{ id: \"h-", back))
-    print(f"injected {n} headlines (fetched {data['generated_at'][:10]}) into {MAP_HTML.name}")
+    bundle.write_inner(bundle.replace_marked_block(inner, BEGIN, END, block))
+    n = len(re.findall(r"\{ id: \"h-", block))
+    print(f"injected {n} headlines (fetched {data['generated_at'][:10]}) into {bundle.MAP_HTML.name}")
     return 0
 
 
