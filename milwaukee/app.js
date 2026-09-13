@@ -100,15 +100,17 @@
     $('today').textContent = (() => { const d = new Date(); return `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; })();
     const get = (p) => fetch(p, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`${p}: ${r.status}`); return r.json(); });
     try {
-      const [orgs, sources, news, events, obs, places] = await Promise.all([
+      const [orgs, sources, news, events, obs, places, season] = await Promise.all([
         get('data/orgs.json'), get('data/sources.json').catch(() => ({ sources: [] })), get('data/news.json'), get('data/events.json'),
-        get('data/observances.json').catch(() => ({ observances: [] })), get('data/places.json').catch(() => null)]);
+        get('data/observances.json').catch(() => ({ observances: [] })), get('data/places.json').catch(() => null),
+        get('data/season.json').catch(() => ({ anchors: [] }))]);
       state.orgs = orgs.orgs || [];
       state.sources = sources.sources || [];
       state.news = news;
       state.events = events;
       state.observances = obs.observances || [];
       state.places = places;
+      state.season = season.anchors || [];
     } catch (e) {
       $('freshness').textContent = 'could not load the data files';
       $('optionsNote').textContent = location.protocol === 'file:'
@@ -480,6 +482,65 @@
     note.textContent = `${what} ${WINDOW_WORD[state.view.window]}` + (orgName ? ` from ${orgName}` : state.view.groups ? ' from the groups we follow' : ` · ${fromGroups} from the groups we follow`) + (errs.length ? ` · could not read: ${errs.join(', ')}` : '');
   }
 
+  // ---- the year's anchors: in season now, or starting within two months
+  function seasonWindows(a) {
+    // every window as [from, to] month-day pairs, including repeats ("04-15/04-30")
+    const wins = [[a.from, a.to]];
+    (a.repeats || []).forEach((r) => { const [f, t] = r.split('/'); wins.push([f, t]); });
+    return wins;
+  }
+  function mdKey(d) { return `${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+  function seasonStatus(a) {
+    // → { now: bool, startsIn: days until the next start (0 if in season), from, to } for the nearest window
+    const today = new Date(); today.setHours(12, 0, 0, 0);
+    const y = today.getFullYear();
+    const toDate = (md, year) => new Date(`${year}-${md}T12:00`);
+    let best = null;
+    seasonWindows(a).forEach(([from, to]) => {
+      const wraps = to < from;
+      for (const year of [y - 1, y, y + 1]) {
+        const start = toDate(from, year);
+        const end = toDate(to, wraps ? year + 1 : year);
+        if (today >= start && today <= end) { best = { now: true, startsIn: 0, start, end, from, to }; return; }
+        const days = Math.round((start - today) / 864e5);
+        if (days > 0 && (!best || (!best.now && days < best.startsIn))) best = { now: false, startsIn: days, start, end, from, to };
+      }
+    });
+    return best;
+  }
+  const spanLabel = (s) => (s.start.getTime() === s.end.getTime() ? monthDay(keyOf(s.start)) : `${monthDay(keyOf(s.start))} – ${monthDay(keyOf(s.end))}`);
+
+  function renderSeason(container) {
+    const v = state.view;
+    const anchors = (state.season || []).map((a) => ({ a, s: seasonStatus(a) })).filter((x) => x.s && (x.s.now || x.s.startsIn <= 60));
+    const shown = anchors.filter(({ a }) => (!v.reaches.size || v.reaches.has(a.reach)) && (!v.q || `${a.name} ${a.where} ${a.note}`.toLowerCase().includes(v.q)));
+    if (!shown.length) return;
+    shown.sort((x, y) => (y.s.now - x.s.now) || (x.s.now ? x.s.end - y.s.end : x.s.startsIn - y.s.startsIn));
+    const band = el('section', 'band season');
+    const h = el('h3', '', 'The season'); h.append(el('span', 'n', `${shown.filter((x) => x.s.now).length} on now, ${shown.filter((x) => !x.s.now).length} coming`));
+    band.append(h);
+    const ol = el('ol', 'event-list');
+    shown.forEach(({ a, s }) => {
+      const li = el('li', 'ev');
+      li.append(el('span', 't' + (s.now ? '' : ' soft'), s.now ? 'on now' : s.startsIn <= 14 ? `in ${s.startsIn} d` : monthDay(keyOf(s.start))));
+      const main = el('div', 'main');
+      const title = el('div', 'title');
+      if (a.url) title.append(link(a.name, a.url)); else title.textContent = a.name;
+      main.append(title);
+      const meta = el('div', 'meta');
+      meta.append(`${spanLabel(s)}${a.where ? ' · ' + a.where : ''}`);
+      if (a.kind) meta.append(el('span', 'tag kind', KIND_LABEL[a.kind] || a.kind));
+      if (a.reach) meta.append(el('span', 'tag reach reach-' + a.reach, REACH_LABEL[a.reach]));
+      main.append(meta);
+      if (a.note) main.append(el('p', 'note', a.note));
+      li.append(main);
+      li.append(starButton('season|' + a.id, state.placeStars, savePlaces));
+      ol.append(li);
+    });
+    band.append(ol);
+    container.append(band);
+  }
+
   // ---- Anytime: the standing places
   function wirePlaces() {
     if (!state.places) return;
@@ -554,8 +615,9 @@
     pool.forEach((p) => { if (p.reach && (!v.cats.size || v.cats.has(p.category)) && (!v.q || placeMatches(p, { ...v, reaches: new Set() }))) reachCount[p.reach] = (reachCount[p.reach] || 0) + 1; });
     ['walk', 'bus', 'car'].forEach((r) => rc.append(reachChip(r, reachCount[r], v.reaches.has(r), () => { if (v.reaches.has(r)) v.reaches.delete(r); else v.reaches.add(r); saveView(); renderPlaces(); })));
 
-    // groups: marked first, then each category in the directory's order
+    // groups: the season first, then marked, then each category in the directory's order
     const groups = $('placeGroups'); groups.textContent = '';
+    renderSeason(groups);
     const shown = pool.filter((p) => placeMatches(p, v));
     const marked = shown.filter((p) => state.placeStars.has(p.id) || p.fav);
     const addGroup = (label, rows, cls) => {

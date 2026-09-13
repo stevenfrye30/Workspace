@@ -126,8 +126,13 @@ section + section { margin-top: 1.6rem; }
 /* ---- options */
 .band { margin: 0 0 1.2rem; padding: 0.5rem 0.8rem 0.3rem; background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; }
 .band h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2); margin-bottom: 0.2rem; }
+.band h3 .n { margin-left: 0.6rem; font-weight: 400; color: var(--ink-3); text-transform: none; letter-spacing: 0; }
 .band.starred h3 { color: var(--star); }
 .band.running h3 { color: var(--accent); }
+.band.season h3 { color: var(--walk); }
+.band.season .ev .note { margin: 0.1rem 0 0; color: var(--ink-2); font-size: 0.84rem; font-style: italic; min-height: 0; }
+.band.season .ev .t { color: var(--walk); font-weight: 500; }
+.band.season .ev .t.soft { color: var(--ink-3); font-weight: 400; font-style: normal; }
 .day { margin: 0 0 1.1rem; }
 .day h3 {
   font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2);

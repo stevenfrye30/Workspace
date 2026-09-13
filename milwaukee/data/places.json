@@ -1,5 +1,5 @@
 {
- "_about": "Standing options — places that are there any day. Seeded from UWM's 'What's Around Campus' directory (Dean of Students, yearly PDF) by tools/milwaukee/import_whatsaround.py; distances are from campus, a ten-minute walk from home. HAND-EDITED after import: set fav, write a note, fix a reach, add places. The daily Action never writes this file. option=true marks the categories that are things to go and do; the rest is the practical directory.",
+ "_about": "Standing options — places that are there any day. Seeded from UWM's 'What's Around Campus' directory (Dean of Students, yearly PDF) by tools/milwaukee/import_whatsaround.py; distances are from campus, a ten-minute walk from home. HAND-EDITED after import: set fav, write a note, fix a reach, add places. The daily Action never writes this file. option=true marks the categories that are things to go and do; the rest is the practical directory. Places marked source:'notes' came from the archived places-to-try list (April 2026), with approximate distances.",
  "categories": [
   {
    "key": "town",
@@ -7,9 +7,39 @@
    "option": true
   },
   {
-   "key": "laundry",
-   "label": "Laundromats",
-   "option": false
+   "key": "outdoors",
+   "label": "Outdoors",
+   "option": true
+  },
+  {
+   "key": "coffee",
+   "label": "Coffee",
+   "option": true
+  },
+  {
+   "key": "food",
+   "label": "Restaurants",
+   "option": true
+  },
+  {
+   "key": "bars",
+   "label": "Bars & breweries",
+   "option": true
+  },
+  {
+   "key": "venues",
+   "label": "Theatres & venues",
+   "option": true
+  },
+  {
+   "key": "museums",
+   "label": "Museums",
+   "option": true
+  },
+  {
+   "key": "books",
+   "label": "Bookstores",
+   "option": true
   },
   {
    "key": "groceries",
@@ -17,9 +47,14 @@
    "option": true
   },
   {
-   "key": "books",
-   "label": "Bookstores",
+   "key": "daytrips",
+   "label": "Day trips",
    "option": true
+  },
+  {
+   "key": "laundry",
+   "label": "Laundromats",
+   "option": false
   },
   {
    "key": "health",
@@ -32,34 +67,9 @@
    "option": false
   },
   {
-   "key": "coffee",
-   "label": "Coffee",
-   "option": true
-  },
-  {
-   "key": "venues",
-   "label": "Theatres & venues",
-   "option": true
-  },
-  {
    "key": "salons",
    "label": "Barbers, salons & spas",
    "option": false
-  },
-  {
-   "key": "museums",
-   "label": "Museums",
-   "option": true
-  },
-  {
-   "key": "food",
-   "label": "Restaurants",
-   "option": true
-  },
-  {
-   "key": "bars",
-   "label": "Bars & breweries",
-   "option": true
   },
   {
    "key": "childcare",
@@ -317,6 +327,34 @@
    "note": ""
   },
   {
+   "id": "eagle-park-brewing",
+   "name": "Eagle Park Brewing",
+   "category": "bars",
+   "option": true,
+   "addr": "823 E Hamilton St",
+   "phone": "",
+   "site": "https://eagleparkbrewing.com",
+   "miles": 3.0,
+   "reach": "bus",
+   "fav": false,
+   "note": "Brewery and distillery, Lower East Side.",
+   "source": "notes"
+  },
+  {
+   "id": "enlightened-brewing-company",
+   "name": "Enlightened Brewing Company",
+   "category": "bars",
+   "option": true,
+   "addr": "2020 S Allis St",
+   "phone": "",
+   "site": "https://enlightenedbeer.com",
+   "miles": 6.5,
+   "reach": "car",
+   "fav": false,
+   "note": "Bay View, low-key taproom.",
+   "source": "notes"
+  },
+  {
    "id": "finks",
    "name": "Finks",
    "category": "bars",
@@ -354,6 +392,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "good-city-brewing",
+   "name": "Good City Brewing",
+   "category": "bars",
+   "option": true,
+   "addr": "333 W Juneau Ave (Deer District)",
+   "phone": "",
+   "site": "https://goodcitybrewing.com",
+   "miles": 3.8,
+   "reach": "bus",
+   "fav": false,
+   "note": "The Deer District taproom; the East Side one closed.",
+   "source": "notes"
   },
   {
    "id": "hi-hat-lounge-garage",
@@ -418,7 +470,7 @@
    "miles": 2.3,
    "reach": "bus",
    "fav": false,
-   "note": ""
+   "note": "Friday fish fry with a polka band; brewery tour any day."
   },
   {
    "id": "milwaukee-brat-house",
@@ -432,6 +484,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "milwaukee-brewing-company",
+   "name": "Milwaukee Brewing Company",
+   "category": "bars",
+   "option": true,
+   "addr": "1130 N 9th St",
+   "phone": "",
+   "site": "https://mkebrewing.com",
+   "miles": 3.9,
+   "reach": "bus",
+   "fav": false,
+   "note": "Taproom in the old Pabst complex.",
+   "source": "notes"
   },
   {
    "id": "mke-brewery-co",
@@ -458,6 +524,20 @@
    "reach": "bus",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "pabst-milwaukee-brewery-taproom",
+   "name": "Pabst Milwaukee Brewery & Taproom",
+   "category": "bars",
+   "option": true,
+   "addr": "1037 W Juneau Ave",
+   "phone": "",
+   "site": "https://pabstmke.com",
+   "miles": 3.9,
+   "reach": "bus",
+   "fav": false,
+   "note": "In the old church at the brewery complex.",
+   "source": "notes"
   },
   {
    "id": "paddy-s-pub",
@@ -525,6 +605,20 @@
    "note": ""
   },
   {
+   "id": "third-space-brewing",
+   "name": "Third Space Brewing",
+   "category": "bars",
+   "option": true,
+   "addr": "1505 W St Paul Ave",
+   "phone": "",
+   "site": "https://thirdspacebrewing.com",
+   "miles": 4.8,
+   "reach": "bus",
+   "fav": false,
+   "note": "Menomonee Valley taproom with a beer garden.",
+   "source": "notes"
+  },
+  {
    "id": "up-down-mke",
    "name": "Up-Down MKE",
    "category": "bars",
@@ -574,7 +668,7 @@
    "miles": 1.2,
    "reach": "walk",
    "fav": false,
-   "note": ""
+   "note": "In the old Good City East Side space."
   },
   {
    "id": "wolski-s-tavern",
@@ -1333,6 +1427,132 @@
    ]
   },
   {
+   "id": "cedarburg",
+   "name": "Cedarburg",
+   "category": "daytrips",
+   "option": true,
+   "addr": "20 miles north",
+   "phone": "",
+   "site": "https://cedarburg.org",
+   "miles": 20.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Mill town main street; Strawberry Festival in June, Wine & Harvest in September.",
+   "source": "notes"
+  },
+  {
+   "id": "chicago-by-amtrak-hiawatha",
+   "name": "Chicago by Amtrak Hiawatha",
+   "category": "daytrips",
+   "option": true,
+   "addr": "Milwaukee Intermodal Station, 433 W St Paul Ave",
+   "phone": "",
+   "site": "https://amtrak.com/hiawatha-train",
+   "miles": 4.0,
+   "reach": "bus",
+   "fav": false,
+   "note": "Ninety minutes to Union Station, seven trains a day; no car needed.",
+   "source": "notes"
+  },
+  {
+   "id": "door-county",
+   "name": "Door County",
+   "category": "daytrips",
+   "option": true,
+   "addr": "150 miles north",
+   "phone": "",
+   "site": "https://doorcounty.com",
+   "miles": 150.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Worth a weekend, not a day: fish boils, orchards, the peninsula's parks.",
+   "source": "notes"
+  },
+  {
+   "id": "holy-hill",
+   "name": "Holy Hill",
+   "category": "daytrips",
+   "option": true,
+   "addr": "1525 Carmel Rd, Hubertus",
+   "phone": "",
+   "site": "https://holyhill.com",
+   "miles": 30.0,
+   "reach": "car",
+   "fav": false,
+   "note": "The basilica on the hill; fall color in October.",
+   "source": "notes"
+  },
+  {
+   "id": "kenosha-racine",
+   "name": "Kenosha & Racine",
+   "category": "daytrips",
+   "option": true,
+   "addr": "30–40 miles south along the lake",
+   "phone": "",
+   "site": "https://visitkenosha.com",
+   "miles": 35.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Kenosha's lakefront museums and streetcar; Racine's Danish kringle.",
+   "source": "notes"
+  },
+  {
+   "id": "kettle-moraine-state-forest",
+   "name": "Kettle Moraine State Forest",
+   "category": "daytrips",
+   "option": true,
+   "addr": "Southern Unit, Eagle",
+   "phone": "",
+   "site": "https://dnr.wisconsin.gov/topic/parks/kms",
+   "miles": 45.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Glacial hills; the Ice Age Trail.",
+   "source": "notes"
+  },
+  {
+   "id": "lambeau-field",
+   "name": "Lambeau Field",
+   "category": "daytrips",
+   "option": true,
+   "addr": "1265 Lombardi Ave, Green Bay",
+   "phone": "",
+   "site": "https://packers.com/lambeau-field",
+   "miles": 115.0,
+   "reach": "car",
+   "fav": false,
+   "note": "A Packers game is a day trip; the stadium tour runs year-round.",
+   "source": "notes"
+  },
+  {
+   "id": "madison",
+   "name": "Madison",
+   "category": "daytrips",
+   "option": true,
+   "addr": "80 miles west on I-94",
+   "phone": "",
+   "site": "https://visitmadison.com",
+   "miles": 80.0,
+   "reach": "car",
+   "fav": false,
+   "note": "The Capitol, State Street, the Saturday farmers market on the square.",
+   "source": "notes"
+  },
+  {
+   "id": "port-washington-sheboygan",
+   "name": "Port Washington & Sheboygan",
+   "category": "daytrips",
+   "option": true,
+   "addr": "25–55 miles north along the lake",
+   "phone": "",
+   "site": "https://visitportwashington.com",
+   "miles": 40.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Harbor towns; fish fry on the water.",
+   "source": "notes"
+  },
+  {
    "id": "1700-pull-up",
    "name": "1700 Pull Up",
    "category": "food",
@@ -1411,6 +1631,20 @@
    "note": ""
   },
   {
+   "id": "ardent",
+   "name": "Ardent",
+   "category": "food",
+   "option": true,
+   "addr": "1751 N Farwell Ave",
+   "phone": "",
+   "site": "https://ardentmke.com",
+   "miles": 1.7,
+   "reach": "bus",
+   "fav": false,
+   "note": "Tasting menu; small, book ahead.",
+   "source": "notes"
+  },
+  {
    "id": "ashley-s-bar-b-que",
    "name": "Ashley’s Bar-B-Que",
    "category": "food",
@@ -1435,6 +1669,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "bacchus",
+   "name": "Bacchus",
+   "category": "food",
+   "option": true,
+   "addr": "925 E Wells St",
+   "phone": "",
+   "site": "https://bacchusmke.com",
+   "miles": 2.9,
+   "reach": "bus",
+   "fav": false,
+   "note": "Bartolotta's downtown fine-dining room.",
+   "source": "notes"
   },
   {
    "id": "beerline-cafe",
@@ -1974,6 +2222,20 @@
    "note": ""
   },
   {
+   "id": "five-o-clock-steakhouse",
+   "name": "Five O'Clock Steakhouse",
+   "category": "food",
+   "option": true,
+   "addr": "2416 W State St",
+   "phone": "",
+   "site": "https://fiveoclocksteakhouse.com",
+   "miles": 4.6,
+   "reach": "bus",
+   "fav": false,
+   "note": "Supper-club steakhouse, relish tray and all, since 1946.",
+   "source": "notes"
+  },
+  {
    "id": "fortune",
    "name": "Fortune",
    "category": "food",
@@ -2142,6 +2404,20 @@
    "note": ""
   },
   {
+   "id": "kegel-s-inn",
+   "name": "Kegel's Inn",
+   "category": "food",
+   "option": true,
+   "addr": "5901 W National Ave, West Allis",
+   "phone": "",
+   "site": "https://kegelsinn.com",
+   "miles": 9.0,
+   "reach": "car",
+   "fav": false,
+   "note": "The classic German fish fry, since 1924.",
+   "source": "notes"
+  },
+  {
    "id": "khan-aseya",
    "name": "Khan Aseya",
    "category": "food",
@@ -2168,6 +2444,20 @@
    "note": ""
   },
   {
+   "id": "kopp-s-frozen-custard",
+   "name": "Kopp's Frozen Custard",
+   "category": "food",
+   "option": true,
+   "addr": "5373 N Port Washington Rd, Glendale",
+   "phone": "",
+   "site": "https://kopps.com",
+   "miles": 3.6,
+   "reach": "bus",
+   "fav": false,
+   "note": "Flavor of the day; the Glendale stand is the near one.",
+   "source": "notes"
+  },
+  {
    "id": "koppa-s-fulbeli-deli-food",
    "name": "Koppa’s Fulbeli Deli",
    "category": "food",
@@ -2192,6 +2482,20 @@
    "reach": "bus",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "leon-s-frozen-custard",
+   "name": "Leon's Frozen Custard",
+   "category": "food",
+   "option": true,
+   "addr": "3131 S 27th St",
+   "phone": "",
+   "site": "https://leonsfrozencustard.us",
+   "miles": 8.5,
+   "reach": "car",
+   "fav": false,
+   "note": "Old-school drive-up on the South Side, since 1942.",
+   "source": "notes"
   },
   {
    "id": "little-caesars-pizza",
@@ -2246,6 +2550,20 @@
    "note": ""
   },
   {
+   "id": "mason-street-grill",
+   "name": "Mason Street Grill",
+   "category": "food",
+   "option": true,
+   "addr": "425 E Mason St",
+   "phone": "",
+   "site": "https://masonstreetgrill.com",
+   "miles": 3.2,
+   "reach": "bus",
+   "fav": false,
+   "note": "Downtown, in the Pfister; live jazz at the bar.",
+   "source": "notes"
+  },
+  {
    "id": "milwaukee-waterfront-deli",
    "name": "Milwaukee Waterfront Deli",
    "category": "food",
@@ -2257,6 +2575,20 @@
    "reach": "bus",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "miss-molly-s-cafe-pastry-shop",
+   "name": "Miss Molly's Cafe & Pastry Shop",
+   "category": "food",
+   "option": true,
+   "addr": "9201 W Center St, Wauwatosa",
+   "phone": "",
+   "site": "https://missmollyscafe.com",
+   "miles": 8.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Diner breakfast and pastry in Tosa.",
+   "source": "notes"
   },
   {
    "id": "mr-perkins-family-restaurant",
@@ -2543,6 +2875,20 @@
    "note": ""
   },
   {
+   "id": "sanford",
+   "name": "Sanford",
+   "category": "food",
+   "option": true,
+   "addr": "1547 N Jackson St",
+   "phone": "",
+   "site": "https://sanfordrestaurant.com",
+   "miles": 2.5,
+   "reach": "bus",
+   "fav": false,
+   "note": "The special-occasion room on the Lower East Side.",
+   "source": "notes"
+  },
+  {
    "id": "shahrazad-middle-eastern",
    "name": "Shahrazad Middle Eastern",
    "category": "food",
@@ -2593,6 +2939,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "solly-s-grille",
+   "name": "Solly's Grille",
+   "category": "food",
+   "option": true,
+   "addr": "4629 N Port Washington Rd, Glendale",
+   "phone": "",
+   "site": "https://sollysgrille.com",
+   "miles": 3.0,
+   "reach": "bus",
+   "fav": false,
+   "note": "The butter burger, at the counter.",
+   "source": "notes"
   },
   {
    "id": "sticky-rice",
@@ -2762,6 +3122,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "usinger-s-famous-sausage",
+   "name": "Usinger's Famous Sausage",
+   "category": "food",
+   "option": true,
+   "addr": "1030 N Old World 3rd St",
+   "phone": "",
+   "site": "https://usinger.com",
+   "miles": 3.7,
+   "reach": "bus",
+   "fav": false,
+   "note": "The sausage shop on Old World Third since 1880.",
+   "source": "notes"
   },
   {
    "id": "uwm-restaurant-operations",
@@ -3492,6 +3866,20 @@
    "note": ""
   },
   {
+   "id": "basilica-of-st-josaphat",
+   "name": "Basilica of St. Josaphat",
+   "category": "museums",
+   "option": true,
+   "addr": "2333 S 6th St",
+   "phone": "",
+   "site": "https://thebasilica.org",
+   "miles": 7.0,
+   "reach": "car",
+   "fav": false,
+   "note": "The South Side's dome; tours after Sunday Mass.",
+   "source": "notes"
+  },
+  {
    "id": "betty-brinn-children-s-museum",
    "name": "Betty Brinn Children’s Museum",
    "category": "museums",
@@ -3583,6 +3971,20 @@
    "note": ""
   },
   {
+   "id": "lynden-sculpture-garden",
+   "name": "Lynden Sculpture Garden",
+   "category": "museums",
+   "option": true,
+   "addr": "2145 W Brown Deer Rd",
+   "phone": "",
+   "site": "https://lyndensculpturegarden.org",
+   "miles": 8.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Forty acres of sculpture in River Hills.",
+   "source": "notes"
+  },
+  {
    "id": "milwaukee-art-museum",
    "name": "Milwaukee Art Museum",
    "category": "museums",
@@ -3609,6 +4011,20 @@
    "note": ""
   },
   {
+   "id": "mitchell-park-domes",
+   "name": "Mitchell Park Domes",
+   "category": "museums",
+   "option": true,
+   "addr": "524 S Layton Blvd",
+   "phone": "",
+   "site": "https://milwaukeedomes.org",
+   "miles": 6.5,
+   "reach": "car",
+   "fav": false,
+   "note": "Three glass domes; the winter farmers market.",
+   "source": "notes"
+  },
+  {
    "id": "north-point-lighthouse-friends-inc",
    "name": "North Point Lighthouse Friends, Inc",
    "category": "museums",
@@ -3620,6 +4036,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "pabst-mansion",
+   "name": "Pabst Mansion",
+   "category": "museums",
+   "option": true,
+   "addr": "2000 W Wisconsin Ave",
+   "phone": "",
+   "site": "https://pabstmansion.com",
+   "miles": 4.5,
+   "reach": "bus",
+   "fav": false,
+   "note": "The beer baron's house; Christmas tours in December.",
+   "source": "notes"
   },
   {
    "id": "uwm-emilie-h-mathis-gallery",
@@ -3646,6 +4076,118 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "boerner-botanical-gardens",
+   "name": "Boerner Botanical Gardens",
+   "category": "outdoors",
+   "option": true,
+   "addr": "9400 Boerner Dr, Hales Corners",
+   "phone": "",
+   "site": "https://county.milwaukee.gov/EN/Parks/Explore/Boerner-Botanical-Gardens",
+   "miles": 14.0,
+   "reach": "car",
+   "fav": false,
+   "note": "Whitnall Park; the rose garden in June.",
+   "source": "notes"
+  },
+  {
+   "id": "bradford-beach",
+   "name": "Bradford Beach",
+   "category": "outdoors",
+   "option": true,
+   "addr": "2400 N Lincoln Memorial Dr",
+   "phone": "",
+   "site": "https://county.milwaukee.gov/EN/Parks",
+   "miles": 1.5,
+   "reach": "walk",
+   "fav": false,
+   "note": "The city beach; tiki bars in summer.",
+   "source": "notes"
+  },
+  {
+   "id": "estabrook-park-beer-garden",
+   "name": "Estabrook Park Beer Garden",
+   "category": "outdoors",
+   "option": true,
+   "addr": "4600 Estabrook Pkwy, Shorewood",
+   "phone": "",
+   "site": "https://estabrookbeergarden.com",
+   "miles": 2.4,
+   "reach": "bus",
+   "fav": false,
+   "note": "Beer garden on the river, spring to fall; Oktoberfest.",
+   "source": "notes"
+  },
+  {
+   "id": "hank-aaron-state-trail",
+   "name": "Hank Aaron State Trail",
+   "category": "outdoors",
+   "option": true,
+   "addr": "Menomonee Valley, from the lakefront to the ballpark",
+   "phone": "",
+   "site": "https://hankaaronstatetrail.org",
+   "miles": 4.5,
+   "reach": "bus",
+   "fav": false,
+   "note": "Lakefront to American Family Field and on to the county line.",
+   "source": "notes"
+  },
+  {
+   "id": "kadish-park-reservoir-park",
+   "name": "Kadish Park & Reservoir Park",
+   "category": "outdoors",
+   "option": true,
+   "addr": "909 E North Ave",
+   "phone": "",
+   "site": "https://county.milwaukee.gov/EN/Parks",
+   "miles": 1.6,
+   "reach": "walk",
+   "fav": false,
+   "note": "The skyline view from the top of the reservoir hill.",
+   "source": "notes"
+  },
+  {
+   "id": "milwaukee-kayak-company",
+   "name": "Milwaukee Kayak Company",
+   "category": "outdoors",
+   "option": true,
+   "addr": "318 S Water St",
+   "phone": "",
+   "site": "https://milwaukeekayak.com",
+   "miles": 4.5,
+   "reach": "bus",
+   "fav": false,
+   "note": "Rent a kayak and paddle the river through downtown.",
+   "source": "notes"
+  },
+  {
+   "id": "oak-leaf-trail",
+   "name": "Oak Leaf Trail",
+   "category": "outdoors",
+   "option": true,
+   "addr": "through the East Side, Riverwest and along the lake",
+   "phone": "",
+   "site": "https://county.milwaukee.gov/EN/Parks/Explore/Trails/Oak-Leaf-Trail",
+   "miles": 0.5,
+   "reach": "walk",
+   "fav": false,
+   "note": "The county loop trail; the Beerline and lakefront stretches start near home.",
+   "source": "notes"
+  },
+  {
+   "id": "riverside-park",
+   "name": "Riverside Park",
+   "category": "outdoors",
+   "option": true,
+   "addr": "1500 E Park Pl",
+   "phone": "",
+   "site": "https://www.urbanecologycenter.org/branches/riverside-park",
+   "miles": 1.2,
+   "reach": "walk",
+   "fav": false,
+   "note": "The neighborhood's park, down to the river.",
+   "source": "notes"
   },
   {
    "id": "clark-graphics",
@@ -4481,6 +5023,20 @@
    "reach": "walk",
    "fav": false,
    "note": ""
+  },
+  {
+   "id": "uw-milwaukee-panther-arena",
+   "name": "UW–Milwaukee Panther Arena",
+   "category": "venues",
+   "option": true,
+   "addr": "400 W Kilbourn Ave",
+   "phone": "",
+   "site": "https://uwmilwaukeepantherarena.com",
+   "miles": 3.8,
+   "reach": "bus",
+   "fav": false,
+   "note": "Admirals hockey; the Panthers play here too.",
+   "source": "notes"
   },
   {
    "id": "vivarium",
