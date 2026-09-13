@@ -1,0 +1,48 @@
+name: Refresh the Milwaukee desk
+
+# Every morning: fetch Milwaukee headlines and the calendars of the
+# organizations in milwaukee/data/orgs.json, rewrite the two generated JSON
+# files, and commit them only if something changed. The builder refuses to
+# write an empty file over a full one, so a bad morning leaves yesterday's
+# data in place and fails this job visibly instead.
+
+on:
+  schedule:
+    - cron: "7 11 * * *" # 11:07 UTC — 6:07 am in Milwaukee during daylight time
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build news.json and events.json
+        id: build
+        continue-on-error: true
+        run: python tools/milwaukee/build.py
+
+      - name: Commit whatever changed
+        run: |
+          git add milwaukee/data/news.json milwaukee/data/events.json
+          if git diff --cached --quiet; then
+            echo "Nothing changed today."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Milwaukee desk: daily refresh"
+            git push
+          fi
+
+      - name: Surface a refused build
+        if: steps.build.outcome == 'failure'
+        run: |
+          echo "::error::build.py refused to write at least one file — see the build step's log"
+          exit 1

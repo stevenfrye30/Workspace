@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Milwaukee</title>
+<meta name="description" content="What's going on in Milwaukee this week: local headlines, the organizations we follow, and what they're putting on.">
+<link rel="stylesheet" href="../_shared/hub-nav.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌆</text></svg>">
+</head>
+<body>
+
+<nav class="ws-hub-nav" aria-label="Workspace navigation">
+<a class="ws-hub-home" href="../">← Hub</a>
+</nav>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <h1>Milwaukee</h1>
+    <p class="dateline"><span id="today"></span><span class="sep">·</span><span id="freshness">loading…</span></p>
+  </div>
+</header>
+
+<main class="desk">
+
+  <!-- Following: the organizations, as filter chips + a fold-out roster -->
+  <section class="following" aria-labelledby="following-h">
+    <div class="row-head">
+      <h2 id="following-h">Following</h2>
+      <button class="linkish" id="rosterToggle" aria-expanded="false">show the roster</button>
+    </div>
+    <div class="chips" id="orgChips" role="group" aria-label="Filter events by organization"></div>
+    <div class="roster" id="roster" hidden></div>
+  </section>
+
+  <div class="columns">
+
+    <!-- Coming up: merged events from every followed org -->
+    <section class="col events" aria-labelledby="events-h">
+      <div class="row-head">
+        <h2 id="events-h">Coming up</h2>
+        <div class="controls" role="group" aria-label="How far ahead">
+          <button class="seg" data-horizon="7">week</button>
+          <button class="seg" data-horizon="30">month</button>
+          <button class="seg" data-horizon="60">all</button>
+        </div>
+      </div>
+      <p class="note" id="eventsNote"></p>
+      <div id="starred" class="starred" hidden>
+        <h3>Marked</h3>
+        <ol class="event-list" id="starredList"></ol>
+      </div>
+      <div id="eventDays"></div>
+    </section>
+
+    <!-- Headlines: the local press -->
+    <section class="col news" aria-labelledby="news-h">
+      <div class="row-head">
+        <h2 id="news-h">Headlines</h2>
+        <label class="toggle"><input type="checkbox" id="eventsOnly"> happenings only</label>
+      </div>
+      <div class="chips chips-small" id="sourceChips" role="group" aria-label="Filter headlines by source"></div>
+      <p class="note" id="newsNote"></p>
+      <ol class="news-list" id="newsList"></ol>
+    </section>
+
+  </div>
+</main>
+
+<footer class="colophon">
+  <p>Headlines are the sources' own RSS feeds; events are read from each organization's public calendar by
+  <code>tools/milwaukee/build.py</code>, which a GitHub Action runs every morning. The organizations live in
+  <code>milwaukee/data/orgs.json</code>. Marks are kept in this browser only.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

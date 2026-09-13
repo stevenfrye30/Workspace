@@ -1,0 +1,64 @@
+{
+ "_about": "Option generators: citywide calendars, venues and teams whose listings feed the 'Coming up' list. Hand-edited. Unlike orgs.json these are not groups we follow — they are where the options come from. Same fields as an org entry; `kind` and `reach` are defaults applied when a listing gives no better clue. tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Probed 2026-09-13: Pabst Theater Group, Fiserv Forum, Summerfest, OnMilwaukee's and Milwaukee Record's listings, County Parks, and Visit Milwaukee are app-rendered or blocked to feed readers — link-only until that changes.",
+ "v": 1,
+ "sources": [
+  {
+   "id": "urban-milwaukee-calendar",
+   "name": "Urban Milwaukee calendar",
+   "what": "The broadest public calendar in town: venues, nonprofits and promoters post here directly.",
+   "site": "https://urbanmilwaukee.com/events/",
+   "feed": {"type": "tribe", "url": "https://urbanmilwaukee.com/wp-json/tribe/events/v1/events"}
+  },
+  {
+   "id": "marcus-center",
+   "name": "Marcus Performing Arts Center",
+   "what": "Touring Broadway, the Symphony's neighbor, Peck Pavilion outdoors in summer.",
+   "where": "929 N Water St",
+   "site": "https://www.marcuscenter.org/events/",
+   "feed": {"type": "tribe", "url": "https://www.marcuscenter.org/wp-json/tribe/events/v1/events"},
+   "kind": "theater",
+   "reach": "bus"
+  },
+  {
+   "id": "admirals",
+   "name": "Milwaukee Admirals",
+   "what": "AHL hockey at Panther Arena, October to April. Cheap seats, downtown.",
+   "where": "UW–Milwaukee Panther Arena, 400 W Kilbourn Ave",
+   "site": "https://www.milwaukeeadmirals.com/schedule",
+   "feed": {"type": "jsonld", "url": "https://www.milwaukeeadmirals.com/schedule", "home_only": true},
+   "kind": "sports",
+   "reach": "bus"
+  },
+  {
+   "id": "brewers",
+   "name": "Milwaukee Brewers",
+   "what": "Home games at American Family Field. Tailgating is the point.",
+   "where": "American Family Field",
+   "site": "https://www.mlb.com/brewers/schedule",
+   "feed": {"type": "mlb", "team_id": 158, "slug": "brewers"},
+   "kind": "sports",
+   "reach": "car"
+  },
+  {
+   "id": "eventbrite",
+   "name": "Eventbrite (Milwaukee)",
+   "what": "Everything self-listed: classes, pop-ups, fundraisers, the odd shuttle bus. Dates only, no hours.",
+   "site": "https://www.eventbrite.com/d/wi--milwaukee/events/",
+   "feed": {"type": "jsonld", "url": "https://www.eventbrite.com/d/wi--milwaukee/events/", "pages": ["https://www.eventbrite.com/d/wi--milwaukee/free--events--this-weekend/"], "exclude": "shuttle|bus to|parking|webinar|online|virtual"}
+  },
+  {
+   "id": "pabst-theater-group",
+   "name": "Pabst Theater Group",
+   "what": "The Pabst, the Riverside, Turner Hall Ballroom, the Back Room at Colectivo. Listings are app-rendered, so this opens their site.",
+   "site": "https://www.pabsttheatergroup.com/events",
+   "kind": "music",
+   "reach": "bus"
+  },
+  {
+   "id": "visit-milwaukee",
+   "name": "Visit Milwaukee events",
+   "what": "The tourism bureau's calendar. Their API needs a token their site loads separately, so this opens their page.",
+   "site": "https://www.visitmilwaukee.org/events/"
+  }
+ ]
+}

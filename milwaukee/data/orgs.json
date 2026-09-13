@@ -1,0 +1,155 @@
+{
+ "_about": "The organizations we follow. Hand-edited — this is the one file you touch for groups. Each entry: id (stable slug), name, what (why we care, one line), where (address or neighborhood), site, calendar (their own events page), feed (optional: how the build tool reads their calendar — type tribe|ics|jsonld|boswell|rss; leave it out for link-only orgs), kind (default kind for their events when a listing gives no better clue: music theater comedy film art talks books markets outdoors food sports family community), reach (walk|bus|car from home, used the same way), tags. tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Started 2026-09-13 from the old community/events notes — prune and add freely.",
+ "v": 1,
+ "orgs": [
+  {
+   "id": "uwm-philosophy",
+   "name": "UWM Philosophy",
+   "what": "Her department. Colloquia and talks, most in Curtin Hall.",
+   "where": "Curtin Hall, 3243 N Downer Ave",
+   "site": "https://uwm.edu/philosophy/",
+   "calendar": "https://uwm.edu/philosophy/events/",
+   "feed": {"type": "tribe", "url": "https://uwm.edu/philosophy/wp-json/tribe/events/v1/events"},
+   "kind": "talks",
+   "reach": "walk",
+   "tags": ["campus", "talks"]
+  },
+  {
+   "id": "uwm",
+   "name": "UW–Milwaukee",
+   "what": "The campus-wide calendar: lectures, Peck School concerts and plays, Panthers games.",
+   "where": "2200 E Kenwood Blvd",
+   "site": "https://uwm.edu/",
+   "calendar": "https://uwm.edu/events/",
+   "reach": "walk",
+   "tags": ["campus"]
+  },
+  {
+   "id": "boswell",
+   "name": "Boswell Book Company",
+   "what": "The East Side bookstore, a walk down Downer. Author events most nights; some move to the Riverside or the Oriental.",
+   "where": "2559 N Downer Ave",
+   "site": "https://boswellbooks.com/",
+   "calendar": "https://boswellbooks.com/upcoming-events",
+   "feed": {"type": "boswell", "url": "https://boswellbooks.com/upcoming-events"},
+   "kind": "books",
+   "reach": "walk",
+   "tags": ["books", "neighborhood"]
+  },
+  {
+   "id": "urban-ecology-center",
+   "name": "Urban Ecology Center",
+   "what": "Riverside Park branch is the neighborhood's back yard, at the river end of Park Place. Outings, volunteer days, gear lending. Their calendar is app-rendered, so it opens on their site.",
+   "where": "1500 E Park Pl (Riverside Park)",
+   "site": "https://www.urbanecologycenter.org/",
+   "calendar": "https://www.urbanecologycenter.org/calendar",
+   "kind": "outdoors",
+   "reach": "walk",
+   "tags": ["nature", "neighborhood"]
+  },
+  {
+   "id": "mpl",
+   "name": "Milwaukee Public Library",
+   "what": "East Branch on Cramer is the local one; Central downtown is the grand one. Events run through their Communico calendar.",
+   "where": "2320 N Cramer St (East Branch)",
+   "site": "https://www.mpl.org/",
+   "calendar": "https://mpl.libnet.info/events",
+   "kind": "books",
+   "reach": "walk",
+   "tags": ["books", "civic"]
+  },
+  {
+   "id": "milwaukee-film",
+   "name": "Milwaukee Film",
+   "what": "Runs the Oriental on Farwell: the festival, repertory nights, year-round programming. Feed carries their announcements; showtimes are on the theatre page.",
+   "where": "Oriental Theatre, 2230 N Farwell Ave",
+   "site": "https://mkefilm.org/",
+   "calendar": "https://mkefilm.org/historic-theaters/orientaltheatre/",
+   "feed": {"type": "rss", "url": "https://mkefilm.org/feed/"},
+   "kind": "film",
+   "reach": "walk",
+   "tags": ["film", "neighborhood"]
+  },
+  {
+   "id": "mam",
+   "name": "Milwaukee Art Museum",
+   "what": "The Calatrava on the lake. Drop-in tours, talks, story time, MAM After Dark.",
+   "where": "700 N Art Museum Dr",
+   "site": "https://mam.org/",
+   "calendar": "https://mam.org/events/",
+   "feed": {"type": "tribe", "url": "https://mam.org/events/wp-json/tribe/events/v1/events"},
+   "kind": "art",
+   "reach": "bus",
+   "tags": ["art"]
+  },
+  {
+   "id": "woodland-pattern",
+   "name": "Woodland Pattern Book Center",
+   "what": "Riverwest poetry and small-press center: readings, workshops, a reading group.",
+   "where": "720 E Locust St",
+   "site": "https://woodlandpattern.org/",
+   "calendar": "https://woodlandpattern.org/events",
+   "feed": {"type": "jsonld", "url": "https://woodlandpattern.org/events"},
+   "kind": "books",
+   "reach": "walk",
+   "tags": ["books"]
+  },
+  {
+   "id": "turners",
+   "name": "Milwaukee Turners",
+   "what": "The 1853 gymnastics-and-democracy society at Turner Hall: climbing gym, public forums, the restaurant's fish fry. Their public Google calendar is only the citywide fitness-class schedule, so events open on their site.",
+   "where": "Turner Hall, 1034 N Vel R. Phillips Ave",
+   "site": "https://www.milwaukeeturners.org/",
+   "calendar": "https://www.milwaukeeturners.org/events/",
+   "kind": "community",
+   "reach": "bus",
+   "tags": ["civic"]
+  },
+  {
+   "id": "domes",
+   "name": "Mitchell Park Domes",
+   "what": "Three glass domes on the near South Side: shows, plant sales, the winter farmers market.",
+   "where": "524 S Layton Blvd",
+   "site": "https://milwaukeedomes.org/",
+   "calendar": "https://milwaukeedomes.org/events/",
+   "feed": {"type": "tribe", "url": "https://milwaukeedomes.org/wp-json/tribe/events/v1/events"},
+   "kind": "outdoors",
+   "reach": "car",
+   "tags": ["nature"]
+  },
+  {
+   "id": "historic-milwaukee",
+   "name": "Historic Milwaukee, Inc.",
+   "what": "Walking tours all year and Doors Open Milwaukee in late September. Tours book through FareHarbor, so their page is the calendar.",
+   "where": "235 E Michigan St",
+   "site": "https://historicmilwaukee.org/",
+   "calendar": "https://historicmilwaukee.org/events/",
+   "kind": "talks",
+   "reach": "bus",
+   "tags": ["history"]
+  },
+  {
+   "id": "makerspace",
+   "name": "Milwaukee Makerspace",
+   "what": "Member workshop in Bay View with public open nights. Feed carries their posts.",
+   "where": "2555 S Lenox St",
+   "site": "https://milwaukeemakerspace.org/",
+   "calendar": "https://milwaukeemakerspace.org/events/",
+   "feed": {"type": "rss", "url": "https://milwaukeemakerspace.org/feed/"},
+   "kind": "community",
+   "reach": "bus",
+   "tags": ["making"]
+  },
+  {
+   "id": "radio-milwaukee",
+   "name": "Radio Milwaukee 88Nine",
+   "what": "The music station in Walker's Point: live sessions, a community calendar, the Fall Ball.",
+   "where": "220 E Pittsburgh Ave",
+   "site": "https://radiomilwaukee.org/",
+   "calendar": "https://radiomilwaukee.org/community-calendar/",
+   "kind": "music",
+   "reach": "bus",
+   "tags": ["music"]
+  }
+ ]
+}

@@ -1,0 +1,175 @@
+/* Milwaukee desk — a reading page, not an app. System fonts, two columns,
+   light/dark from the OS. Nothing here depends on JS except the lists. */
+
+:root {
+  --bg: #f7f5f0;
+  --panel: #ffffff;
+  --ink: #1d1c1a;
+  --ink-2: #55524c;
+  --ink-3: #8a867e;
+  --rule: #e3dfd6;
+  --accent: #6b3f28;        /* the hub's Milwaukee brown */
+  --accent-ink: #ffffff;
+  --chip: #eeeae2;
+  --chip-on: #6b3f28;
+  --star: #c8871a;
+  --warn-bg: #fff4df;
+  --warn-ink: #7a4b00;
+  --err-ink: #a23b2a;
+  --link: #2f5f8f;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #16161a;
+    --panel: #1f1f24;
+    --ink: #ebe8e2;
+    --ink-2: #b9b5ad;
+    --ink-3: #7e7a72;
+    --rule: #2f2f36;
+    --accent: #c9906f;
+    --accent-ink: #1a120d;
+    --chip: #2a2a31;
+    --chip-on: #c9906f;
+    --star: #e0a63a;
+    --warn-bg: #3a2c12;
+    --warn-ink: #f0c98a;
+    --err-ink: #ef8a78;
+    --link: #8fb6e0;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+}
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+h1, h2, h3 { font-weight: 600; letter-spacing: -0.01em; margin: 0; }
+code { font: 0.9em ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+button { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+
+/* ---- masthead */
+.masthead { border-bottom: 1px solid var(--rule); background: var(--panel); }
+.masthead-inner { max-width: 1180px; margin: 0 auto; padding: 3.2rem 1.25rem 1rem; }
+.masthead h1 { font-size: 2rem; }
+.dateline { margin: 0.15rem 0 0; color: var(--ink-2); font-size: 0.95rem; }
+.dateline .sep { margin: 0 0.5rem; color: var(--ink-3); }
+.dateline .stale { color: var(--warn-ink); background: var(--warn-bg); padding: 0.05rem 0.45rem; border-radius: 4px; }
+
+/* ---- layout */
+.desk { max-width: 1180px; margin: 0 auto; padding: 1.25rem; }
+.columns { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 2rem; align-items: start; }
+@media (max-width: 860px) { .columns { grid-template-columns: minmax(0, 1fr); } }
+.col { min-width: 0; }
+.row-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin: 0 0 0.5rem; }
+.row-head h2 { font-size: 1.15rem; }
+.note { margin: 0 0 0.6rem; color: var(--ink-3); font-size: 0.85rem; min-height: 1em; }
+.note.err { color: var(--err-ink); }
+
+/* ---- chips (org filters, source filters) */
+.chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.25rem 0 0.75rem; }
+.chip {
+  border: 1px solid transparent; background: var(--chip); color: var(--ink);
+  border-radius: 999px; padding: 0.28rem 0.7rem; font-size: 0.86rem; line-height: 1.2;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem;
+}
+.chip .n { color: var(--ink-3); font-size: 0.78em; }
+.chip.on { background: var(--chip-on); color: var(--accent-ink); }
+.chip.on .n { color: inherit; opacity: 0.8; }
+.chip.dim { opacity: 0.55; }
+.chips-small .chip { padding: 0.18rem 0.55rem; font-size: 0.8rem; }
+
+/* ---- following roster */
+.following { margin-bottom: 1.5rem; }
+.linkish { background: none; border: 0; padding: 0; color: var(--link); cursor: pointer; font-size: 0.86rem; }
+.linkish:hover { text-decoration: underline; }
+.roster { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 0.75rem; margin-top: 0.5rem; }
+.org {
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; padding: 0.8rem 0.95rem;
+}
+.org h3 { font-size: 1rem; }
+.org .what { margin: 0.2rem 0 0.35rem; color: var(--ink-2); font-size: 0.9rem; }
+.org .where { margin: 0; color: var(--ink-3); font-size: 0.82rem; }
+.org .status { margin: 0.45rem 0 0; font-size: 0.8rem; color: var(--ink-3); }
+.org .status.err { color: var(--err-ink); }
+.org .links { margin: 0.45rem 0 0; font-size: 0.85rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
+.org .posts { margin: 0.5rem 0 0; padding: 0; list-style: none; font-size: 0.85rem; }
+.org .posts li { margin: 0.15rem 0; }
+.org .posts .d { color: var(--ink-3); margin-right: 0.4rem; font-variant-numeric: tabular-nums; }
+
+/* ---- events */
+.controls { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.seg { background: var(--panel); border: 0; padding: 0.22rem 0.7rem; cursor: pointer; font-size: 0.85rem; color: var(--ink-2); }
+.seg + .seg { border-left: 1px solid var(--rule); }
+.seg.on { background: var(--accent); color: var(--accent-ink); }
+.day { margin: 0 0 1.1rem; }
+.day h3 {
+  font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2);
+  padding: 0.3rem 0; border-bottom: 1px solid var(--rule); margin-bottom: 0.3rem;
+}
+.day h3 .rel { color: var(--accent); margin-right: 0.5rem; }
+.event-list { list-style: none; margin: 0; padding: 0; }
+.ev {
+  display: grid; grid-template-columns: 4.6rem minmax(0, 1fr) auto; gap: 0.6rem; align-items: baseline;
+  padding: 0.42rem 0; border-bottom: 1px dotted var(--rule);
+}
+.ev:last-child { border-bottom: 0; }
+.ev .t { color: var(--ink-2); font-size: 0.85rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.ev .t.soft { color: var(--ink-3); font-style: italic; }
+.ev .main { min-width: 0; }
+.ev .title { font-weight: 500; }
+.ev .title a { color: inherit; }
+.ev .meta { color: var(--ink-3); font-size: 0.82rem; margin-top: 0.05rem; }
+.ev .meta .org-tag { color: var(--accent); font-weight: 500; }
+.ev .meta .tag { margin-left: 0.4rem; border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.3rem; font-size: 0.75rem; }
+.ev .meta .src-tag { color: var(--ink-2); font-weight: 400; }
+.ev .meta .tag.kind { border-color: transparent; background: var(--chip); }
+.ev .meta .tag.reach-walk { color: #2e7d4f; border-color: #2e7d4f66; }
+.ev .meta .tag.reach-bus { color: #2f5f8f; border-color: #2f5f8f66; }
+.ev .meta .tag.reach-car { color: var(--ink-3); }
+.ev .meta .tag.free { color: var(--star); border-color: var(--star); }
+.ev .meta .also { color: var(--ink-3); font-style: italic; }
+.ev .sum { color: var(--ink-2); font-size: 0.85rem; margin-top: 0.15rem; }
+.star {
+  background: none; border: 0; cursor: pointer; color: var(--ink-3); font-size: 1.05rem; line-height: 1;
+  padding: 0.15rem 0.3rem; border-radius: 4px;
+}
+.star:hover { color: var(--star); }
+.star.on { color: var(--star); }
+.starred { margin: 0 0 1.2rem; padding: 0.5rem 0.8rem 0.3rem; background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; }
+.starred h3 { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--star); margin-bottom: 0.2rem; }
+.ev.past .title { color: var(--ink-3); text-decoration: line-through; }
+.empty { color: var(--ink-3); font-size: 0.9rem; padding: 0.6rem 0; }
+
+/* ---- news */
+.toggle { font-size: 0.85rem; color: var(--ink-2); display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+.news-list { list-style: none; margin: 0; padding: 0; }
+.news-list li { padding: 0.5rem 0; border-bottom: 1px dotted var(--rule); }
+.news-list li:last-child { border-bottom: 0; }
+.news-list .k { font-size: 0.78rem; color: var(--ink-3); text-transform: uppercase; letter-spacing: 0.04em; }
+.news-list .k .src { color: var(--accent); }
+.news-list .k .ev-flag { margin-left: 0.4rem; color: var(--ink-3); text-transform: none; letter-spacing: 0; }
+.news-list .h { margin: 0.05rem 0 0; font-weight: 500; }
+.news-list .h a { color: inherit; }
+.news-list .s { margin: 0.1rem 0 0; color: var(--ink-2); font-size: 0.86rem; }
+.news-list .more { text-align: center; padding: 0.6rem 0 0; }
+
+/* ---- colophon */
+.colophon { max-width: 1180px; margin: 1.5rem auto 2.5rem; padding: 0 1.25rem; color: var(--ink-3); font-size: 0.8rem; border-top: 1px solid var(--rule); }
+.colophon p { margin: 0.8rem 0 0; }
+
+@media (max-width: 480px) {
+  .masthead-inner { padding-top: 2.9rem; }
+  .ev { grid-template-columns: 3.9rem minmax(0, 1fr) auto; gap: 0.45rem; }
+}
+@media print {
+  .controls, .star, .toggle, #rosterToggle, .chips { display: none !important; }
+  .columns { grid-template-columns: 1fr; }
+  body { background: #fff; color: #000; }
+}
