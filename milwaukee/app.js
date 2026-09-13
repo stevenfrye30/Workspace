@@ -101,7 +101,7 @@
   const orgById = (id) => state.orgs.find((o) => o.id === id);
   const sourceById = (id) => state.sources.find((s) => s.id === id);
   const listerOf = (e) => (e.via === 'source' ? sourceById(e.src) : orgById(e.org)) || { name: e.org || e.src || '?' };
-  const REACH_LABEL = { walk: 'walk', bus: 'bus', car: 'car' };
+  const REACH_LABEL = { walk: 'walk', bus: 'bus', car: 'car', online: 'online' };
   const orgStatus = (id) => (state.events.orgs || {})[id] || { status: 'link' };
   const upcomingCount = (id) => state.events.events.filter((e) => e.org === id && e.start.slice(0, 10) >= todayKey()).length;
 
@@ -185,6 +185,7 @@
     const o = listerOf(e);
     meta.append(el('span', 'org-tag' + (e.via === 'source' ? ' src-tag' : ''), o.name));
     if (opts && opts.withDay) meta.append(` · ${dayLabel(e.start.slice(0, 10))}`);
+    if (e.run_through && e.run_through !== e.start.slice(0, 10)) meta.append(` · runs through ${dayLabel(e.run_through)}`);
     // the venue is worth a word only when it is not simply the lister itself
     const sameAsOrg = e.where && (e.where.toLowerCase() === o.name.toLowerCase() || (o.where || '').toLowerCase().startsWith(e.where.toLowerCase()));
     if (e.where && !sameAsOrg) meta.append(` · ${e.where}`);

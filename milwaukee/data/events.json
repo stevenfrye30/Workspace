@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-13T16:47:23+00:00",
+ "generated_at": "2026-09-13T17:29:47+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
@@ -75,8 +75,8 @@
   },
   "eventbrite": {
    "status": "ok",
-   "count": 62,
-   "raw": 69
+   "count": 63,
+   "raw": 70
   },
   "pabst-theater-group": {
    "status": "link"
@@ -149,6 +149,24 @@
    "addr": "5343 W Hampton Ave",
    "zip": "53209",
    "summary": "",
+   "tags": [],
+   "time_unknown": true,
+   "free": null,
+   "kind": "community",
+   "reach": "car",
+   "via": "source",
+   "src": "eventbrite"
+  },
+  {
+   "title": "Weekend Tours of Volo Bog",
+   "start": "2026-09-13",
+   "end": "2026-09-13",
+   "all_day": true,
+   "url": "https://www.eventbrite.com/e/weekend-tours-of-volo-bog-tickets-1998490879017",
+   "where": "Volo Bog State Natural Area",
+   "addr": "28478 West Brandenburg Road",
+   "zip": "60041",
+   "summary": "Join us year-round for guided tours of the boardwalk. These tours are lead by naturalists who understand the unique ecosystem of Volo Bog!",
    "tags": [],
    "time_unknown": true,
    "free": null,
@@ -278,7 +296,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "food",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -332,7 +350,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "sports",
+   "kind": "music",
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
@@ -386,7 +404,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "markets",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -422,26 +440,8 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "sports",
+   "kind": "food",
    "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Advanced Sports Studies Book Club",
-   "start": "2026-09-13",
-   "end": "2026-09-13",
-   "all_day": true,
-   "url": "https://www.eventbrite.com/e/advanced-sports-studies-book-club-tickets-1998400516741",
-   "where": "Thirst Books",
-   "addr": "5209 West North Avenue",
-   "zip": "53208",
-   "summary": "A sports romance book club where every sport is in season.",
-   "tags": [],
-   "time_unknown": true,
-   "free": null,
-   "kind": "books",
-   "reach": "car",
    "via": "source",
    "src": "eventbrite"
   },
@@ -534,7 +534,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -570,7 +570,7 @@
    "tags": [
     "Fundraiser"
    ],
-   "kind": "community",
+   "kind": "markets",
    "reach": "car",
    "free": false,
    "via": "source",
@@ -627,7 +627,7 @@
    "zip": "53204",
    "summary": "Red Days, a gripping new drama by Rachel Bublitz, finds us in a future where the environmental crisis has taken a critical turn and the air is red from more than just wildfires.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -646,7 +646,7 @@
    "tags": [
     "26-27 Build Your Own Series"
    ],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": null,
    "via": "source",
@@ -822,7 +822,7 @@
     "Food & Drink",
     "History"
    ],
-   "kind": "talks",
+   "kind": "food",
    "reach": "bus",
    "free": true,
    "via": "source",
@@ -839,7 +839,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -856,7 +856,7 @@
    "zip": "53204",
    "summary": "Red Days, a gripping new drama by Rachel Bublitz, finds us in a future where the environmental crisis has taken a critical turn and the air is red from more than just wildfires.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -932,7 +932,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "talks",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -1042,7 +1042,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1059,7 +1059,7 @@
    "zip": "53204",
    "summary": "Red Days, a gripping new drama by Rachel Bublitz, finds us in a future where the environmental crisis has taken a critical turn and the air is red from more than just wildfires.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1097,7 +1097,7 @@
     "Community Event",
     "Culture Collective"
    ],
-   "kind": "community",
+   "kind": "talks",
    "reach": "bus",
    "free": null,
    "via": "source",
@@ -1152,7 +1152,7 @@
    "tags": [
     "Fundraiser"
    ],
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1171,7 +1171,7 @@
    "tags": [
     "Business"
    ],
-   "kind": "community",
+   "kind": "music",
    "reach": "car",
    "free": true,
    "via": "source",
@@ -1207,7 +1207,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1224,7 +1224,7 @@
    "zip": "53204",
    "summary": "Red Days, a gripping new drama by Rachel Bublitz, finds us in a future where the environmental crisis has taken a critical turn and the air is red from more than just wildfires.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1260,7 +1260,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "music",
+   "kind": "talks",
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
@@ -1292,6 +1292,24 @@
    "where": "Grace Coffee Co.",
    "addr": "102 North Water Street",
    "zip": "53202",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
+   "free": null,
+   "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "eventbrite"
+  },
+  {
+   "title": "WELCOME TO THE JUNGLE",
+   "start": "2026-09-19",
+   "end": "2026-09-20",
+   "all_day": true,
+   "url": "https://www.eventbrite.com/e/welcome-to-the-jungle-tickets-1999077148565",
+   "where": "1218 W North Ave",
+   "addr": "1218 West North Avenue",
+   "zip": "53205",
    "summary": "",
    "tags": [],
    "time_unknown": true,
@@ -1375,7 +1393,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -1394,9 +1412,9 @@
     "Free for Members",
     "Free with Admission"
    ],
-   "kind": "talks",
+   "kind": "family",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -1416,7 +1434,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -1431,7 +1449,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1454,7 +1472,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": null,
+   "free": false,
    "via": "org",
    "org": "mam"
   },
@@ -1508,7 +1526,7 @@
    "zip": "53204",
    "summary": "Red Days, a gripping new drama by Rachel Bublitz, finds us in a future where the environmental crisis has taken a critical turn and the air is red from more than just wildfires.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1544,7 +1562,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -1585,7 +1603,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -1620,7 +1638,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1657,7 +1675,7 @@
    "zip": "53203",
    "summary": "Live in concert.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -1694,7 +1712,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "food",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -1730,8 +1748,8 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "talks",
-   "reach": "bus",
+   "kind": "food",
+   "reach": "car",
    "via": "source",
    "src": "eventbrite"
   },
@@ -1739,7 +1757,7 @@
    "title": "Mamma Mia!",
    "start": "2026-09-22",
    "end": "2026-09-27",
-   "all_day": true,
+   "all_day": false,
    "url": "https://www.marcuscenter.org/event/mamma-mia-2/",
    "where": "Uihlein Hall",
    "addr": "929 N Water St",
@@ -1749,6 +1767,8 @@
     "26-27 Broadway Series",
     "Broadway Bites"
    ],
+   "time_unknown": true,
+   "run_through": "2026-09-27",
    "kind": "theater",
    "reach": "bus",
    "free": null,
@@ -1805,7 +1825,7 @@
    ],
    "time_unknown": true,
    "free": false,
-   "kind": "theater",
+   "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
@@ -1823,7 +1843,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "music",
+   "kind": "talks",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -1841,7 +1861,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "food",
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
@@ -1878,7 +1898,7 @@
    "time_unknown": true,
    "free": null,
    "kind": "books",
-   "reach": "walk",
+   "reach": "online",
    "via": "org",
    "org": "woodland-pattern"
   },
@@ -1919,12 +1939,30 @@
    ],
    "kind": "family",
    "reach": "bus",
-   "free": null,
+   "free": false,
    "via": "org",
-   "org": "mam",
-   "also": [
-    "mam"
-   ]
+   "org": "mam"
+  },
+  {
+   "title": "Babbling Babes X MAM",
+   "start": "2026-09-23T12:00",
+   "end": "2026-09-23T13:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/babbling-babes-x-mam/2026-09-23/2/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Spend a cozy day together at the Museum with Babbling Babes.",
+   "tags": [
+    "In-Person",
+    "Payment Required",
+    "Youth + Family"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": false,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "Trayf",
@@ -1937,14 +1975,11 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "President’s Circle Preview Celebration: “The Shakers: A World in the Making”",
@@ -1961,7 +1996,7 @@
     "Baker/Rowland Galleries",
     "For Members"
    ],
-   "kind": "community",
+   "kind": "art",
    "reach": "bus",
    "free": null,
    "via": "org",
@@ -1987,6 +2022,23 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "Trayf",
+   "start": "2026-09-23T19:30",
+   "end": "2026-09-23T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/trayf-7/",
+   "where": "Next Act Theatre",
+   "addr": "255 S Water St,",
+   "zip": "53204",
+   "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Big Shrimp with Modern Joey",
    "start": "2026-09-24",
    "end": "2026-09-24",
@@ -1999,7 +2051,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -2037,7 +2089,7 @@
     "Baker/Rowland Galleries",
     "For Members"
    ],
-   "kind": "community",
+   "kind": "art",
    "reach": "bus",
    "free": null,
    "via": "org",
@@ -2112,7 +2164,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -2131,7 +2183,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "music",
+   "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
@@ -2189,7 +2241,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam",
    "also": [
@@ -2208,7 +2260,7 @@
    "summary": "An evening celebrating local art, music, and small business.",
    "tags": [],
    "kind": "art",
-   "reach": null,
+   "reach": "bus",
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -2244,47 +2296,11 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "View from the Rockwell Clock Tower - Sat @ 12:15 pm",
-   "start": "2026-09-26",
-   "end": "2026-09-26",
-   "all_day": true,
-   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-1215-pm-tickets-1997859102356",
-   "where": "Rockwell Automation",
-   "addr": "1201 South 2nd Street",
-   "zip": "53204",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
-   "tags": [],
-   "time_unknown": true,
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Tabal Chocolate - Sat @ 10 am",
-   "start": "2026-09-26",
-   "end": "2026-09-26",
-   "all_day": true,
-   "url": "https://www.eventbrite.com/e/tabal-chocolate-sat-10-am-tickets-1994854432307",
-   "where": "7515 Harwood Ave",
-   "addr": "7515 Harwood Avenue",
-   "zip": "53213",
-   "summary": "",
-   "tags": [],
-   "time_unknown": true,
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Find Your Voice. Own Your Story. Through Literacy.",
@@ -2305,20 +2321,40 @@
    "src": "eventbrite"
   },
   {
-   "title": "Jones Island Water Reclamation Plant Visit - Sat @ 8:30 am",
-   "start": "2026-09-26",
+   "title": "Jones Island Water Reclamation Plant Visit",
+   "start": "2026-09-26T08:30",
    "end": "2026-09-26",
-   "all_day": true,
+   "all_day": false,
    "url": "https://www.eventbrite.com/e/jones-island-water-reclamation-plant-visit-sat-830-am-tickets-1997879411100",
    "where": "Jones Island Water Reclamation Facility",
    "addr": "700 East Jones Street",
    "zip": "53207",
    "summary": "",
-   "tags": [],
-   "time_unknown": true,
+   "tags": [
+    "Doors Open"
+   ],
    "free": null,
-   "kind": "outdoors",
+   "kind": "talks",
    "reach": "bus",
+   "via": "source",
+   "src": "eventbrite"
+  },
+  {
+   "title": "Tabal Chocolate",
+   "start": "2026-09-26T10:00",
+   "end": "2026-09-26",
+   "all_day": false,
+   "url": "https://www.eventbrite.com/e/tabal-chocolate-sat-10-am-tickets-1994854432307",
+   "where": "7515 Harwood Ave",
+   "addr": "7515 Harwood Avenue",
+   "zip": "53213",
+   "summary": "",
+   "tags": [
+    "Doors Open"
+   ],
+   "free": null,
+   "kind": "talks",
+   "reach": "car",
    "via": "source",
    "src": "eventbrite"
   },
@@ -2337,7 +2373,7 @@
     "For Members",
     "In-Person"
    ],
-   "kind": "art",
+   "kind": "talks",
    "reach": "bus",
    "free": null,
    "via": "org",
@@ -2381,11 +2417,30 @@
     "Free for Members",
     "Free with Admission"
    ],
-   "kind": "talks",
+   "kind": "family",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
+  },
+  {
+   "title": "View from the Rockwell Clock Tower",
+   "start": "2026-09-26T12:15",
+   "end": "2026-09-26",
+   "all_day": false,
+   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-1215-pm-tickets-1997859102356",
+   "where": "Rockwell Automation",
+   "addr": "1201 South 2nd Street",
+   "zip": "53204",
+   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
+   "tags": [
+    "Doors Open"
+   ],
+   "free": null,
+   "kind": "talks",
+   "reach": "bus",
+   "via": "source",
+   "src": "eventbrite"
   },
   {
    "title": "The Comings and Goings of Days",
@@ -2398,7 +2453,7 @@
    "zip": "53233",
    "summary": "The Comings and Goings of Days is a deeply personal multimedia performance by Catey Ott Thompson that chronicles her year-long recovery from a devastating knee injury.",
    "tags": [],
-   "kind": "community",
+   "kind": "art",
    "reach": "bus",
    "free": true,
    "via": "source",
@@ -2415,7 +2470,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -2471,7 +2526,7 @@
    "zip": "53172",
    "summary": "512: The Selena Experience brings the legendary spirit of Selena Quintanilla to life for fans of all generations.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "car",
    "free": null,
    "via": "source",
@@ -2526,7 +2581,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "outdoors",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -2546,7 +2601,7 @@
     "For Members",
     "In-Person"
    ],
-   "kind": "art",
+   "kind": "talks",
    "reach": "bus",
    "free": null,
    "via": "org",
@@ -2569,7 +2624,7 @@
     "Environment"
    ],
    "kind": "outdoors",
-   "reach": null,
+   "reach": "bus",
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -2605,7 +2660,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -2737,7 +2792,7 @@
    ],
    "time_unknown": true,
    "free": false,
-   "kind": "talks",
+   "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
@@ -2755,7 +2810,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "talks",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -2791,7 +2846,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -2852,7 +2907,7 @@
    ],
    "kind": "talks",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam",
    "also": [
@@ -2874,7 +2929,7 @@
     "In-Person",
     "Off-Campus Event"
    ],
-   "kind": "art",
+   "kind": "food",
    "reach": "bus",
    "free": null,
    "via": "org",
@@ -2908,7 +2963,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -2968,7 +3023,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -2983,7 +3038,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -3017,7 +3072,7 @@
    "zip": "53203",
    "summary": "Live in concert.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -3053,7 +3108,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "music",
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
@@ -3092,9 +3147,9 @@
     "Free for Members",
     "Free with Admission"
    ],
-   "kind": "talks",
+   "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -3115,10 +3170,7 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Lost Arts Festival",
@@ -3131,7 +3183,26 @@
    "zip": "53202",
    "summary": "The event will celebrate the activities and ways of work captured in the paintings and bronzes in the museum’s permanent collection.",
    "tags": [],
-   "kind": "community",
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-03T13:00",
+   "end": "2026-10-03T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-2/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
    "reach": "bus",
    "free": null,
    "via": "source",
@@ -3153,7 +3224,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -3168,7 +3239,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -3222,7 +3293,7 @@
    "zip": "53132",
    "summary": "With its unforgettable score, big heart, and timeless optimism, Annie is one of the most beloved musicals of all time.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "car",
    "free": false,
    "via": "source",
@@ -3241,7 +3312,7 @@
    "tags": [
     "Outside Presenter"
    ],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": null,
    "via": "source",
@@ -3319,10 +3390,26 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-04T13:00",
+   "end": "2026-10-04T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-4/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Drop-In Tours: Built to Inspire: Architecture and Collection Highlights",
@@ -3355,7 +3442,7 @@
    "zip": "53204",
    "summary": "This road-trip bromance is a funny and heartwarming ode to the turbulence of youth, the universal suspicion that we don’t quite fit in and the faith and friends that see us through.",
    "tags": [],
-   "kind": "family",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -3372,7 +3459,7 @@
    "zip": "53132",
    "summary": "With its unforgettable score, big heart, and timeless optimism, Annie is one of the most beloved musicals of all time.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "car",
    "free": false,
    "via": "source",
@@ -3410,7 +3497,7 @@
    "tags": [
     "26-27 Build Your Own Series"
    ],
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "free": null,
    "via": "source",
@@ -3540,7 +3627,7 @@
    "time_unknown": true,
    "free": null,
    "kind": "books",
-   "reach": "walk",
+   "reach": "online",
    "via": "org",
    "org": "woodland-pattern"
   },
@@ -3576,7 +3663,7 @@
    "summary": "Brennen Steines constructs abstract topographies that embody the alchemical nature of painting’s materiality.",
    "tags": [],
    "kind": "talks",
-   "reach": null,
+   "reach": "online",
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -3609,7 +3696,7 @@
    "zip": "53202",
    "summary": "Live in concert",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -3707,7 +3794,7 @@
     "In-Person",
     "Pay-What-You-Wish Admission"
    ],
-   "kind": "markets",
+   "kind": "art",
    "reach": "bus",
    "free": true,
    "via": "org",
@@ -3817,7 +3904,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "talks",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -3850,7 +3937,7 @@
    "zip": "53132",
    "summary": "With its unforgettable score, big heart, and timeless optimism, Annie is one of the most beloved musicals of all time.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "car",
    "free": false,
    "via": "source",
@@ -3960,7 +4047,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "outdoors",
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
@@ -3980,9 +4067,9 @@
     "Payment Required",
     "Social Gatherings"
    ],
-   "kind": "talks",
+   "kind": "community",
    "reach": "bus",
-   "free": null,
+   "free": false,
    "via": "org",
    "org": "mam"
   },
@@ -4000,7 +4087,7 @@
     "Fundraiser",
     "Pets"
    ],
-   "kind": "community",
+   "kind": "markets",
    "reach": "car",
    "free": true,
    "via": "source",
@@ -4023,10 +4110,26 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-10T13:00",
+   "end": "2026-10-10T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-6/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Drop-In Tours: Exploring Spain’s Artistic Legacy During Hispanic Heritage Month",
@@ -4044,7 +4147,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -4063,10 +4166,7 @@
    "reach": "car",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Annie",
@@ -4079,14 +4179,30 @@
    "zip": "53132",
    "summary": "With its unforgettable score, big heart, and timeless optimism, Annie is one of the most beloved musicals of all time.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "car",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-10T15:30",
+   "end": "2026-10-10T15:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-7/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Company",
@@ -4163,6 +4279,23 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "Annie",
+   "start": "2026-10-10T19:00",
+   "end": "2026-10-10T19:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/annie-10/",
+   "where": "Saber Center for the Performing Arts",
+   "addr": "8222 S. 51st St.",
+   "zip": "53132",
+   "summary": "With its unforgettable score, big heart, and timeless optimism, Annie is one of the most beloved musicals of all time.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Jim Brickman",
    "start": "2026-10-10T19:30",
    "end": "2026-10-10T19:30",
@@ -4173,11 +4306,28 @@
    "zip": "53202",
    "summary": "Jim Brickman dazzles audiences with his live concert experience “Piano Sensation! & A Little Bit of Christmas.” This spectacular performance blends Brickman’s signature piano mastery with…",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": null,
    "via": "source",
    "src": "marcus-center"
+  },
+  {
+   "title": "The Addams Family Musical",
+   "start": "2026-10-10T19:30",
+   "end": "2026-10-10T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/the-addams-family-musical-4/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "A new musical comedy that embraces the wackiness in every family.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "5 Lesbians Eating a Quiche",
@@ -4232,9 +4382,9 @@
     "Free with Admission",
     "In-Person"
    ],
-   "kind": "family",
+   "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -4255,10 +4405,26 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-11T13:00",
+   "end": "2026-10-11T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-9/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Drop-In Tours: Built to Inspire: Architecture and Collection Highlights",
@@ -4325,7 +4491,7 @@
    "zip": "53132",
    "summary": "With its unforgettable score, big heart, and timeless optimism, Annie is one of the most beloved musicals of all time.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "car",
    "free": false,
    "via": "source",
@@ -4433,7 +4599,7 @@
    "zip": "53202",
    "summary": "Live in concert.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -4461,13 +4627,15 @@
    "title": "Jazz at Lincoln Center Orchestra with Wynton Marsalis",
    "start": "2026-10-14",
    "end": "2026-10-15",
-   "all_day": true,
+   "all_day": false,
    "url": "https://www.marcuscenter.org/event/wynton-marsalis/",
    "where": "Wilson Theater at Vogel Hall",
    "addr": "121 E State St",
    "zip": "53202",
    "summary": "With its swinging rhythms and soulful melodies, the Jazz at Lincoln Center Orchestra, led by artistic director and nine-time Grammy Award® winner Wynton Marsalis, brings jazz from the heart of New…",
    "tags": [],
+   "time_unknown": true,
+   "run_through": "2026-10-15",
    "kind": "music",
    "reach": "bus",
    "free": null,
@@ -4508,7 +4676,7 @@
     "Environment"
    ],
    "kind": "outdoors",
-   "reach": null,
+   "reach": "online",
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -4524,7 +4692,7 @@
    "zip": "53203",
    "summary": "Celebrate young musicians together at WPR’s Classical Music Day in Milwaukee.",
    "tags": [],
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "free": true,
    "via": "source",
@@ -4560,7 +4728,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "music",
+   "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
@@ -4601,9 +4769,9 @@
     "Free for Members",
     "In-Person"
    ],
-   "kind": "talks",
+   "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -4624,7 +4792,7 @@
    ],
    "kind": "talks",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam",
    "also": [
@@ -4710,13 +4878,15 @@
    "title": "Florentine Opera: La Traviata",
    "start": "2026-10-16",
    "end": "2026-10-18",
-   "all_day": true,
+   "all_day": false,
    "url": "https://www.marcuscenter.org/event/florentine-opera-la-traviata/",
    "where": "Uihlein Hall",
    "addr": "929 N Water St",
    "zip": "53202",
    "summary": "She lives fast, loves freely, and throws a better party than anyone in Paris. But beneath the champagne and charm, Violetta knows her days in the spotlight won’t last forever. When she dares to trade…",
    "tags": [],
+   "time_unknown": true,
+   "run_through": "2026-10-18",
    "kind": "theater",
    "reach": "bus",
    "free": null,
@@ -4738,9 +4908,9 @@
     "Drop-In Tours",
     "Free for Members"
    ],
-   "kind": "family",
+   "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam",
    "also": [
@@ -4853,10 +5023,7 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Drop-In Tours: October’s Shadows: Art, Mystery, and Remembrance",
@@ -4874,7 +5041,7 @@
    ],
    "kind": "art",
    "reach": "bus",
-   "free": true,
+   "free": null,
    "via": "org",
    "org": "mam"
   },
@@ -4893,10 +5060,26 @@
    "reach": "car",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-17T15:30",
+   "end": "2026-10-17T15:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-11/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Milwaukee Admirals vs Colorado Eagles",
@@ -4936,6 +5119,23 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "The Addams Family Musical",
+   "start": "2026-10-17T19:30",
+   "end": "2026-10-17T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/the-addams-family-musical-10/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "A new musical comedy that embraces the wackiness in every family.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "5 Lesbians Eating a Quiche",
    "start": "2026-10-17T20:00",
    "end": "2026-10-17T20:00",
@@ -4967,7 +5167,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "music",
    "reach": "walk",
    "via": "source",
    "src": "eventbrite"
@@ -4989,10 +5189,26 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-18T13:00",
+   "end": "2026-10-18T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-13/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Drop-In Tours: Built to Inspire: Architecture and Collection Highlights",
@@ -5025,7 +5241,7 @@
    "zip": "53172",
    "summary": "Get ready to have your socks knocked off and your heart racing with The Barricade Boys! Direct from London, they’re taking the world by storm and will have you tapping your feet, belting out your…",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "car",
    "free": null,
    "via": "source",
@@ -5059,7 +5275,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5115,7 +5331,7 @@
    "zip": "53202",
    "summary": "Live in concert.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5202,7 +5418,7 @@
    "title": "Jersey Boys",
    "start": "2026-10-20",
    "end": "2026-10-25",
-   "all_day": true,
+   "all_day": false,
    "url": "https://www.marcuscenter.org/event/jersey-boys/",
    "where": "Uihlein Hall",
    "addr": "929 N Water St",
@@ -5211,6 +5427,8 @@
    "tags": [
     "26-27 Broadway Series"
    ],
+   "time_unknown": true,
+   "run_through": "2026-10-25",
    "kind": "theater",
    "reach": "bus",
    "free": null,
@@ -5286,7 +5504,7 @@
    "summary": "Mikey Yates; drawings and paintings have been exhibited in shows in New York, Los Angeles, Marfa, Boston, Sydney, London, Marrakech, Hong Kong, and Seoul.",
    "tags": [],
    "kind": "talks",
-   "reach": null,
+   "reach": "online",
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -5302,7 +5520,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5354,7 +5572,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5427,7 +5645,7 @@
    "tags": [],
    "time_unknown": true,
    "free": false,
-   "kind": "talks",
+   "kind": "food",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite",
@@ -5482,7 +5700,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5541,10 +5759,26 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-10-24T13:00",
+   "end": "2026-10-24T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-15/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "BuckFest featuring Big Buck World Championship XIX",
@@ -5580,10 +5814,7 @@
    "reach": "car",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Great White Throne",
@@ -5596,7 +5827,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5615,6 +5846,23 @@
    "tags": [],
    "kind": "music",
    "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "The Addams Family Musical",
+   "start": "2026-10-24T19:30",
+   "end": "2026-10-24T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/the-addams-family-musical-16/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "A new musical comedy that embraces the wackiness in every family.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -5668,7 +5916,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5702,7 +5950,7 @@
    "zip": "53203",
    "summary": "Live in concert.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5721,7 +5969,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "books",
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
@@ -5775,7 +6023,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "talks",
+   "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
@@ -5846,14 +6094,11 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Milwaukee Admirals vs Manitoba Moose",
@@ -5890,6 +6135,23 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "Great White Throne",
+   "start": "2026-10-28T19:30",
+   "end": "2026-10-28T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/great-white-throne-8/",
+   "where": "Next Act Theatre",
+   "addr": "255 S Water St,",
+   "zip": "53204",
+   "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Blue October",
    "start": "2026-10-28T20:00",
    "end": "2026-10-28T22:00",
@@ -5900,7 +6162,7 @@
    "zip": "53202",
    "summary": "Live in concert.",
    "tags": [],
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5969,7 +6231,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -5988,7 +6250,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "via": "source",
    "src": "eventbrite"
@@ -6076,7 +6338,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -6095,7 +6357,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "community",
+   "kind": "music",
    "reach": "walk",
    "via": "source",
    "src": "eventbrite"
@@ -6147,7 +6409,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -6187,10 +6449,26 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Go Dog Go! / Ve Perro ¡Ve!",
+   "start": "2026-11-01T13:00",
+   "end": "2026-11-01T13:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/go-dog-go-ve-perro-ve-19/",
+   "where": "Milwaukee Youth Arts Center",
+   "addr": "325 W. Walnut St.",
+   "zip": "53212",
+   "summary": "Go Dog Go! comes to life on stage in a fast, funny, bilingual musical romp full of roller-skating, bicycle-riding, and car-driving dogs.",
+   "tags": [
+    "Kids"
+   ],
+   "kind": "family",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Les Misérables",
@@ -6207,10 +6485,7 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Great White Throne",
@@ -6223,9 +6498,26 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Les Misérables",
+   "start": "2026-11-01T19:30",
+   "end": "2026-11-01T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/les-miserables-6/",
+   "where": "Marcus Performing Arts Center, Uihlein Hall",
+   "addr": "929 N. Water St.",
+   "zip": "53202",
+   "summary": "Cameron Mackintosh’s acclaimed production of Alain Boublil and Claude-Michel Schönberg’s Tony Award-winning musical phenomenon, Les Misérables.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": null,
    "via": "source",
    "src": "urban-milwaukee-calendar"
   },
@@ -6244,10 +6536,24 @@
    "reach": "bus",
    "free": null,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Les Misérables",
+   "start": "2026-11-02T18:30",
+   "end": "2026-11-02T18:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/les-miserables-8/",
+   "where": "Marcus Performing Arts Center, Uihlein Hall",
+   "addr": "929 N. Water St.",
+   "zip": "53202",
+   "summary": "Cameron Mackintosh’s acclaimed production of Alain Boublil and Claude-Michel Schönberg’s Tony Award-winning musical phenomenon, Les Misérables.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Wacky First Wednesdays",
@@ -6280,14 +6586,28 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Great White Throne",
+   "start": "2026-11-04T19:30",
+   "end": "2026-11-04T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/great-white-throne-14/",
+   "where": "Next Act Theatre",
+   "addr": "255 S Water St,",
+   "zip": "53204",
+   "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Cynthia M Ellwood and Sharon M Chubbuck, coauthors of Beautiful Struggle, in conversation with Derrick 'Baba' Rogers",
@@ -6302,7 +6622,7 @@
    "tags": [],
    "time_unknown": true,
    "free": null,
-   "kind": "talks",
+   "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
@@ -6358,7 +6678,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -6375,7 +6695,7 @@
    "zip": "53172",
    "summary": "A 50th Anniversary Celebration of the classic Stevie Wonder album & More!",
    "tags": [],
-   "kind": "community",
+   "kind": "music",
    "reach": "car",
    "free": null,
    "via": "source",
@@ -6403,7 +6723,7 @@
    "title": "Mirror Mirror",
    "start": "2026-11-06",
    "end": "2026-11-08",
-   "all_day": true,
+   "all_day": false,
    "url": "https://www.marcuscenter.org/event/mirror-mirror/",
    "where": "Uihlein Hall",
    "addr": "929 N Water St",
@@ -6412,6 +6732,8 @@
    "tags": [
     "Milwaukee Ballet"
    ],
+   "time_unknown": true,
+   "run_through": "2026-11-08",
    "kind": "theater",
    "reach": "bus",
    "free": null,
@@ -6463,7 +6785,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -6501,7 +6823,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -6540,7 +6862,7 @@
    "tags": [
     "Outside Presenter"
    ],
-   "kind": "theater",
+   "kind": "music",
    "reach": "bus",
    "free": null,
    "via": "source",
@@ -6577,7 +6899,7 @@
    "zip": "53204",
    "summary": "A darkly comic examination of power and inheritance, following a pastor’s wife as she collides with the limits, expectations, and hypocrisies of public ministry.",
    "tags": [],
-   "kind": "community",
+   "kind": "theater",
    "reach": "bus",
    "free": false,
    "via": "source",
@@ -6740,26 +7062,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 41,
-   "theater": 33,
+   "music": 39,
+   "theater": 93,
    "comedy": 23,
    "film": 0,
-   "art": 30,
+   "art": 36,
    "talks": 28,
-   "books": 34,
-   "markets": 2,
-   "outdoors": 13,
-   "food": 14,
-   "sports": 13,
-   "family": 41,
-   "community": 83
+   "books": 40,
+   "markets": 4,
+   "outdoors": 14,
+   "food": 23,
+   "sports": 11,
+   "family": 36,
+   "community": 28
   },
   "reach": {
-   "walk": 53,
-   "bus": 209,
-   "car": 83,
-   "unknown": 10
+   "walk": 51,
+   "bus": 226,
+   "car": 88,
+   "unknown": 5
   },
-  "free": 44
+  "free": 27
  }
 }

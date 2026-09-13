@@ -27,6 +27,7 @@
    "site": "https://www.milwaukeeadmirals.com/schedule",
    "feed": {"type": "jsonld", "url": "https://www.milwaukeeadmirals.com/schedule", "home_only": true},
    "kind": "sports",
+   "kind_strict": true,
    "reach": "bus"
   },
   {
@@ -37,6 +38,7 @@
    "site": "https://www.mlb.com/brewers/schedule",
    "feed": {"type": "mlb", "team_id": 158, "slug": "brewers"},
    "kind": "sports",
+   "kind_strict": true,
    "reach": "car"
   },
   {

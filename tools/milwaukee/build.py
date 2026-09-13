@@ -297,12 +297,14 @@ def adapter_tribe(feed: dict, today: date, horizon: date) -> list[dict]:
             cats = [clean(c.get("name")) for c in (e.get("categories") or []) if isinstance(c, dict)]
             cats = [c for c in cats if not re.fullmatch(r"(featured( events?)?|general|events?|uncategorized|arts?\s*(&|and)\s*entertainment|entertainment)", c, re.I)]
             all_day = bool(e.get("all_day"))
+            multi_day = all_day and end[:10] > start[:10]
             out.append(_blank(
                 clean(e.get("title")),
                 start[:10] if all_day else start,
                 end=end[:10] if all_day else end,
-                all_day=all_day,
-                time_unknown=(not all_day and start.endswith("T00:00")),
+                all_day=all_day and not multi_day,
+                time_unknown=multi_day or (not all_day and start.endswith("T00:00")),
+                run_through=end[:10] if multi_day else "",
                 url=e.get("url") or "",
                 where=clean(venue.get("venue") or ""),
                 addr=clean(venue.get("address") or ""),
@@ -616,61 +618,81 @@ ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld
 # ----------------------------------------------------------------- normalization
 KINDS = ["music", "theater", "comedy", "film", "art", "talks", "books", "markets", "outdoors", "food", "sports", "family", "community"]
 
-# a listing's own category names → kind (checked first)
+# A listing's own category → kind, but only for categories that clearly mean
+# one thing. Anything else ("Education", "Fundraiser", "Bradley Family
+# Galleries", "Arts & Entertainment") is ignored and the title decides.
 CATEGORY_KIND = [
-    (r"comedy|improv|stand[- ]?up", "comedy"),
-    (r"film|cinema|movie|screening", "film"),
-    (r"theat|musical|opera|ballet|dance", "theater"),
-    (r"music|concert|band|jazz|orchestra|choir", "music"),
-    (r"book|author|poet|literar|reading group|readshop", "books"),
-    (r"lecture|talk|panel|class|workshop|history|colloquium|seminar|education", "talks"),
-    (r"market|bazaar|fair\b|craft", "markets"),
-    (r"environment|nature|outdoor|garden|hik|bike|birding|park", "outdoors"),
-    (r"food|drink|brew|dinner|tasting|wine|beer|fish fry", "food"),
-    (r"sport|game|athletic|run\b|race", "sports"),
-    (r"kid|family|story ?time|children|teen|youth", "family"),
-    (r"art\b|arts\b|gallery|exhibit|studio|tour", "art"),
-    (r"fundrais|volunteer|community|civic|health|business|pets|meeting|forum", "community"),
+    (r"^(comedy|improv|stand[- ]?up( comedy)?)$", "comedy"),
+    (r"^(films?|cinema|movies?|screenings?|film series)$", "film"),
+    (r"^(theat(er|re)|plays?|musicals?|opera|ballet|dance|broadway( series)?|\d\d-\d\d broadway series|milwaukee ballet|florentine opera)$", "theater"),
+    (r"^(music|concerts?|live music|jazz|classical|symphony)$", "music"),
+    (r"^(books?|author events?|readings?|poetry|literary|reading group|readshop)$", "books"),
+    (r"^(lectures?|talks?|artist talks?|panels?|history|colloquium|seminars?|doors open|tours?)$", "talks"),
+    (r"^(markets?|farmers'? markets?|bazaar|craft fair|makers market)$", "markets"),
+    (r"^(environment|nature|outdoors?|gardening|hiking|biking|birding)$", "outdoors"),
+    (r"^(food( (&|and) drink)?|drink|dining|beer|wine|tastings?)$", "food"),
+    (r"^(sports?|athletics|games?)$", "sports"),
+    (r"^(kids|family|families|family programs?|youth( \+ family)?|children|teens?|story ?time)$", "family"),
+    (r"^(art|arts|gallery|exhibits?|exhibitions?|art studio|drop-in tours?|visual arts?)$", "art"),
 ]
-# title words → kind (checked second; order matters — the specific before the broad)
+# Title words → kind, in order: the unmistakable before the ambiguous. "tour"
+# is deliberately NOT a music word (walking tours, Doors Open tours).
 TITLE_KIND = [
+    (r"\b(author|coauthors?|book club|book launch|book release|poetry|poet|novel|zine|reading group|in conversation with)\b", "books"),
     (r"\b(comedy|comedian|improv|stand[- ]?up|open mic comedy)\b", "comedy"),
     (r"\b(film|screening|cinema|movie|documentary|shorts)\b", "film"),
-    (r"\b(theatre|theater|musical|opera|ballet|dance company|a play\b|the play\b)\b", "theater"),
-    (r"\b(concert|live music|symphony|orchestra|quartet|band|jazz|blues|choir|recital|dj\b|hip[- ]hop|punk|metal|album release|tour\b|acoustic|singer|songwriter|rock\b|folk\b|soul\b|funk|reggae|bluegrass|live at)\b", "music"),
+    (r"\b(theatre|theater|musical|opera|ballet|dance company|dance fest|a play\b|the play\b|broadway)\b", "theater"),
+    (r"\b(concert|music|symphony|orchestra|quartet|septet|band|jazz|blues|choir|recital|dj\b|hip[- ]hop|punk|metal|album release|acoustic|singer|songwriter|rock\b|folk\b|soul\b|funk|reggae|bluegrass|live at|tribute|songbook|songs?\b|r&b)\b", "music"),
     (r"\b(paint|pottery|ceramic|craft night|drawing|sketch|watercolor|sip (and|&) paint|printmaking|collage)\b", "art"),
-    (r"\b(author|book club|book launch|poetry|poet|reading|novel|zine|storytime with)\b", "books"),
-    (r"\b(lecture|talk|panel|colloquium|discussion|symposium|conversation|forum|seminar|class\b|workshop|how to|101)\b", "talks"),
-    (r"\b(market|farmers|bazaar|craft fair|makers|vintage|swap|flea)\b", "markets"),
-    (r"\b(hike|walk\b|bike|ride\b|paddle|kayak|birding|garden|nature|trail|cleanup|5k|10k|run club|prairie|orchid|plant)\b", "outdoors"),
-    (r"\b(fish fry|beer|brew|tasting|dinner|brunch|food|wine|cocktail|taste of|pop-?up|supper|cook)\b", "food"),
+    (r"\b(walking tour|history tour|tour of|guided tour|doors open)\b", "talks"),
+    (r"\b(market|farmers|bazaar|craft fair|craft show|crafts? sale|arts (&|and) crafts|vendor|makers|vintage|swap|flea|expo|card show)\b", "markets"),
+    (r"\b(fish fry|beer|brew|tasting|dinner|brunch|lunch|food|wine|cocktail|taste of|pop-?up|supper|cook|bread|baking|bake|chef|pizza|taco|barbecue|bbq|chocolate)\b", "food"),
+    (r"\b(yoga|pilates|fitness|meditation|sound bath|wellness|zumba|tai chi)\b", "community"),
+    (r"\b(lecture|talk|panel|colloquium|discussion|symposium|conversation|forum|seminar|class\b|workshop|how to|101|summit|conference)\b", "talks"),
+    (r"\b(hike|walk\b|bike|ride\b|paddle|kayak|birding|garden|nature|trail|cleanup|5k|10k|run club|prairie|orchid|plant sale|plant swap|harbor fest)\b", "outdoors"),
     (r"\b(vs\.?|versus|game|match|tournament|race|marathon|athletics|hockey|basketball|baseball|soccer|football)\b", "sports"),
     (r"\b(kids|family|story ?time|children|teen|youth|toddler)\b", "family"),
-    (r"\b(gallery|exhibit|exhibition|sculpture|painting|art\b|artist|drop-in art|tours?:)\b", "art"),
-    (r"\b(fundraiser|gala|volunteer|meeting|town hall|rally|drive\b|open house|celebration|festival|fest\b|parade)\b", "community"),
+    (r"\b(gallery|exhibit|exhibition|sculpture|painting|arts?\b|artists?|drop-in art|slow art)\b", "art"),
 ]
+# The kind a venue implies when the title says nothing ("Trayf", "Red Days").
+VENUE_KIND = [
+    (r"next act|pink'?s accessible theat|saber center|performing arts center|bombshell studio|milwaukee rep\b|skylight|broadway theatre center|stackner|quadracci|uihlein hall|vogel hall|todd wehr theat|youth arts center|theatre building|theater house|studio theatre|theatre$|theater$", "theater"),
+    (r"pabst theater|riverside theater|turner hall ballroom|landmark credit union live|miller high life theat|the rave|eagles ballroom|cactus club|shank hall|cooperage|jackalope|bar centro|art bar|da bar|bradley symphony|x-ray arcade|linneman|back room|vivarium|summerfest|maier festival|fiserv forum|music hall|lounj|zelazo", "music"),
+    (r"laughing tap|comedy caf|improv", "comedy"),
+    (r"art museum|haggerty|grohmann|lynden|villa terrace|gallery|sculpture garden", "art"),
+    (r"oriental theatre|avalon|times cinema|downer theatre", "film"),
+    (r"library|historical society|museum", "talks"),
+    (r"brewery|brewing|taproom|distill|winery|cidery|restaurant|kitchen|beer garden|caf[eé]|coffee", "food"),
+    (r"zoo|domes|park\b|nature center|ecology center|trail", "outdoors"),
+]
+COMMUNITY_TITLE = re.compile(r"\b(fundraiser|gala|volunteer|meeting|town hall|rally|drive\b|open house|celebration|festival|fest\b|parade|speed dating|trivia|bingo|karaoke)\b", re.I)
 
 
-GENERIC_CATEGORY = re.compile(r"^(arts?\s*(&|and)\s*entertainment|entertainment|things to do|special events?|other|misc\w*)$", re.I)
-
-
-def guess_kind(e: dict, default: str | None) -> str:
-    # a catch-all category says nothing — let the title decide instead
-    text_tags = " ".join(t for t in (e.get("tags") or []) if not GENERIC_CATEGORY.match(t))
-    for rx, k in CATEGORY_KIND:
-        if text_tags and re.search(rx, text_tags, re.I):
-            return k
+def guess_kind(e: dict, reg: dict) -> str:
+    default = reg.get("kind")
+    if default in KINDS and reg.get("kind_strict"):
+        return default  # everything Boswell lists is a book event, whatever the title says
+    for tag in (e.get("tags") or []):
+        for rx, k in CATEGORY_KIND:
+            if re.fullmatch(rx, tag.strip(), re.I):
+                return k
     t = e.get("title") or ""
     for rx, k in TITLE_KIND:
         if re.search(rx, t, re.I):
             return k
-    # a bare name ("Bilmuri", "Trayf", "Red Days") says nothing — try the blurb
+    where = e.get("where") or ""
+    for rx, k in VENUE_KIND:
+        if where and re.search(rx, where, re.I):
+            return k
+    # a bare name says nothing and the venue is unknown — try the blurb
     s = e.get("summary") or ""
     if s:
         for rx, k in TITLE_KIND:
             if re.search(rx, s, re.I):
                 return k
-    return default if default in KINDS else "community"
+    if default in KINDS:
+        return default
+    return "community"
 
 
 # Reach from home (Cambridge Woods, Upper East Side): she does not drive.
@@ -686,7 +708,7 @@ WALK_VENUES = re.compile(
     r"east library|hubbard park|kilbourn reservoir|bradford beach|north point (lighthouse|water tower))\b", re.I)
 BUS_VENUES = re.compile(
     r"\b(fiserv|panther arena|marcus|pabst|riverside theater|turner hall|milwaukee art museum|calatrava|"
-    r"public market|third ward|walker'?s point|bay view|downtown|east town|cathedral square|pere marquette|"
+    r"milwaukee public market|third ward|walker'?s point|bay view|downtown|east town|cathedral square|pere marquette|"
     r"lakefront brewery|discovery world|milwaukee public museum|central library|marquette|deer district|"
     r"harley|milwaukee rep|skylight|broadway theatre|cactus club|anodyne|historic mitchell|"
     r"schlitz park|brewery district|best place|no studios|milwaukee theatre|miller high life theatre|uihlein|"
@@ -697,6 +719,14 @@ def guess_reach(e: dict, default: str | None) -> str | None:
     blob = " ".join(x for x in (e.get("where"), e.get("addr")) if x)
     z = e.get("zip") or ""
     city = (e.get("city") or "").lower()
+    if re.search(r"\b(virtual|online|zoom|webinar|livestream)\b", blob + " " + (e.get("title") or ""), re.I):
+        return "online"
+    if not blob:  # no venue given — a neighborhood in the title is the next best clue
+        t = e.get("title") or ""
+        if re.search(r"\b(east side|riverwest|downer|brady|cambridge woods|murray hill|uwm)\b", t, re.I):
+            return "walk"
+        if re.search(r"\b(bay view|third ward|downtown|walker'?s point|east town|harbor|deer district|bronzeville|brewery district)\b", t, re.I):
+            return "bus"
     # named downtown venues first: "UW–Milwaukee Panther Arena" is a bus ride, not campus
     if BUS_VENUES.search(blob):
         return "bus"
@@ -710,7 +740,7 @@ def guess_reach(e: dict, default: str | None) -> str | None:
         return "bus"
     if z or (city and city != "milwaukee") or re.search(r"\b(wauwatosa|tosa|west allis|brookfield|waukesha|oak creek|glendale|shorewood|whitefish bay|greenfield|franklin|cudahy|racine|kenosha|madison|chicago)\b", blob, re.I):
         return "car"
-    if default in ("walk", "bus", "car"):
+    if default in ("walk", "bus", "car", "online"):
         return default
     return None
 
@@ -723,16 +753,28 @@ def guess_free(e: dict):
         if re.search(r"\bfree\b", c, re.I) or re.fullmatch(r"\$?\s*0(\.00)?", c):
             return True
         return False
-    tags = " ".join(e.get("tags") or [])
-    if re.search(r"\bfree\b", tags + " " + (e.get("title") or ""), re.I):
+    tags = [t.lower() for t in (e.get("tags") or [])]
+    if any(re.fullmatch(r"free( event| admission| entry)?|pay[- ]what[- ]you[- ]wish( admission)?|no cover", t) for t in tags):
         return True
-    if re.search(r"\bticketed\b", tags, re.I):
+    if re.search(r"\bfree\b", e.get("title") or "", re.I) and not re.search(r"free (for|with) (members|admission)", e.get("title") or "", re.I):
+        return True
+    if any(re.search(r"ticketed|payment required|tickets? required", t) for t in tags):
         return False
-    return None
+    return None  # "Free for Members" / "Free with Admission" say nothing about us
 
 
 def normalize(e: dict, reg: dict, via: str) -> dict:
-    e["kind"] = guess_kind(e, reg.get("kind"))
+    # Historic Milwaukee runs Doors Open registrations through Eventbrite as
+    # "<site> - Sat @ 8:30 am": the hour lives in the title. Lift it out.
+    m = re.search(r"\s+-\s+(sat|sun)\w*\s+@\s+(\d{1,2})(?::(\d{2}))?\s*(am|pm)\s*$", e.get("title") or "", re.I)
+    if m and reg["id"] == "eventbrite":
+        h = int(m.group(2)) % 12 + (12 if m.group(4).lower() == "pm" else 0)
+        e["start"] = e["start"][:10] + "T%02d:%s" % (h, m.group(3) or "00")
+        e["all_day"] = False
+        e["time_unknown"] = False
+        e["title"] = e["title"][:m.start()].strip()
+        e["tags"] = ["Doors Open"] + list(e.get("tags") or [])
+    e["kind"] = guess_kind(e, reg)
     e["reach"] = guess_reach(e, reg.get("reach"))
     e["free"] = guess_free(e)
     e["via"] = via
@@ -741,6 +783,8 @@ def normalize(e: dict, reg: dict, via: str) -> dict:
         e.pop(k, None)
     if not e.get("time_unknown"):
         e.pop("time_unknown", None)
+    if not e.get("run_through"):
+        e.pop("run_through", None)
     return e
 
 
@@ -821,9 +865,10 @@ def build_events() -> dict | None:
     merged, by_key = [], {}
     for e in sorted(events, key=lambda e: (0 if e["via"] == "org" else 1, e["start"])):
         k = dedupe_key(e)
-        if k in by_key:
+        mine = e.get("org") or e.get("src")
+        if k in by_key and (by_key[k].get("org") or by_key[k].get("src")) != mine:
             keeper = by_key[k]
-            other = e.get("org") or e.get("src")
+            other = mine
             keeper.setdefault("also", [])
             if other not in keeper["also"]:
                 keeper["also"].append(other)
@@ -832,7 +877,7 @@ def build_events() -> dict | None:
             if not keeper.get("reach") and e.get("reach"):
                 keeper["reach"] = e["reach"]
             continue
-        by_key[k] = e
+        by_key.setdefault(k, e)
         merged.append(e)
     dropped = len(events) - len(merged)
     merged.sort(key=lambda e: (e["start"], e.get("org") or e.get("src") or ""))
