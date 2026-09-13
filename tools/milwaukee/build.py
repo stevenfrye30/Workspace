@@ -204,20 +204,35 @@ def parse_feed(xml_text: str) -> list[dict]:
 
 
 # ----------------------------------------------------------------- headlines
+# TMJ4's feed mixes national wire stories in; keep only what names the state.
+WISCONSIN = re.compile(
+    r"\b(wisconsin|milwaukee|waukesha|racine|kenosha|madison|green bay|ozaukee|washington county|"
+    r"wauwatosa|tosa|west allis|brookfield|oak creek|glendale|shorewood|whitefish bay|cudahy|greenfield|"
+    r"franklin|mequon|germantown|menomonee falls|packers|bucks|brewers|admirals|marquette|uwm|mcw|"
+    r"we energies|mps\b|mmsd|fiserv|summerfest|state fair|lake michigan|badgers|\bwi\b|southeast(ern)? wisconsin)\b",
+    re.I,
+)
 NEWS_SOURCES = [
-    # (name, feed url, homepage, kind)  kind: news | roundup | state
-    ("Urban Milwaukee", "https://urbanmilwaukee.com/feed/", "https://urbanmilwaukee.com/", "news"),
-    ("Milwaukee NNS", "https://milwaukeenns.org/feed/", "https://milwaukeenns.org/", "news"),
-    ("Milwaukee Record", "https://milwaukeerecord.com/feed/", "https://milwaukeerecord.com/", "news"),
-    ("OnMilwaukee", "https://onmilwaukee.com/rss", "https://onmilwaukee.com/", "news"),
-    ("TMJ4", "https://www.tmj4.com/news.rss", "https://www.tmj4.com/", "news"),
-    ("Milwaukee Magazine", "https://www.milwaukeemag.com/feed/", "https://www.milwaukeemag.com/", "news"),
-    ("Milwaukee Independent", "https://www.milwaukeeindependent.com/feed/", "https://www.milwaukeeindependent.com/", "news"),
-    ("BizTimes", "https://biztimes.com/feed/", "https://biztimes.com/", "news"),
-    ("Shepherd Express", "https://shepherdexpress.com/upcoming-events/index.rss", "https://shepherdexpress.com/", "roundup"),
-    ("Wisconsin Examiner", "https://wisconsinexaminer.com/feed/", "https://wisconsinexaminer.com/", "state"),
-    ("Wisconsin Watch", "https://wisconsinwatch.org/feed/", "https://wisconsinwatch.org/", "state"),
+    # (name, feed url, homepage, kind, keep-only regex or None)  kind: news | roundup | state
+    ("Urban Milwaukee", "https://urbanmilwaukee.com/feed/", "https://urbanmilwaukee.com/", "news", None),
+    ("Milwaukee NNS", "https://milwaukeenns.org/feed/", "https://milwaukeenns.org/", "news", None),
+    ("Milwaukee Record", "https://milwaukeerecord.com/feed/", "https://milwaukeerecord.com/", "news", None),
+    ("OnMilwaukee", "https://onmilwaukee.com/rss", "https://onmilwaukee.com/", "news", None),
+    ("TMJ4", "https://www.tmj4.com/news.rss", "https://www.tmj4.com/", "news", WISCONSIN),
+    ("Milwaukee Magazine", "https://www.milwaukeemag.com/feed/", "https://www.milwaukeemag.com/", "news", None),
+    ("Milwaukee Independent", "https://www.milwaukeeindependent.com/feed/", "https://www.milwaukeeindependent.com/", "news", None),
+    ("BizTimes", "https://biztimes.com/feed/", "https://biztimes.com/", "news", None),
+    ("Shepherd Express", "https://shepherdexpress.com/upcoming-events/index.rss", "https://shepherdexpress.com/", "roundup", None),
+    ("Wisconsin Examiner", "https://wisconsinexaminer.com/feed/", "https://wisconsinexaminer.com/", "state", None),
+    ("Wisconsin Watch", "https://wisconsinwatch.org/feed/", "https://wisconsinwatch.org/", "state", None),
 ]
+
+# Human-curated lists of things to do — the week's best options, by people
+LIST_HINTS = re.compile(
+    r"\b(things to do|things to know and do|this weekend|weekend guide|guide to|ways to|best (of|places|bars|restaurants|things)|"
+    r"where to|what to do|this month in|concerts coming|brew city buzz|to-do list|roundup|what's happening|happening this)\b|"
+    r"^\d+ (things|ways|places|events|festivals|concerts|shows|spots|reasons|free)\b", re.I)
+LIST_SKIP = re.compile(r"\b(weather|forecast|quiz|recap of|week's greatest hits)\b", re.I)
 
 EVENT_HINTS = re.compile(
     r"\b(festival|fest\b|parade|concert|opens|kicks? off|returns?|tonight|this weekend|weekend|"
@@ -231,7 +246,7 @@ EVENT_HINTS = re.compile(
 def build_news() -> dict | None:
     since = datetime.now(timezone.utc) - timedelta(days=NEWS_DAYS)
     items, sources, seen_urls = [], [], set()
-    for name, url, home, kind in NEWS_SOURCES:
+    for name, url, home, kind, keep_only in NEWS_SOURCES:
         try:
             got = parse_feed(fetch(url, "application/rss+xml, application/atom+xml, application/xml, text/xml, */*"))
         except (OSError, ET.ParseError, ValueError) as e:
@@ -247,6 +262,8 @@ def build_news() -> dict | None:
             seen_urls.add(it["link"])
             if it["published"] and it["published"] < since:
                 continue
+            if keep_only and not keep_only.search(it["title"] + " " + it["summary"]):
+                continue  # a national story on a local station's feed
             items.append({
                 "source": name,
                 "kind": kind,
@@ -255,6 +272,7 @@ def build_news() -> dict | None:
                 "summary": it["summary"],
                 "published": it["published"].isoformat() if it["published"] else None,
                 "event": bool(EVENT_HINTS.search(it["title"] + " " + it["summary"])) or kind == "roundup",
+                "list": kind == "roundup" or (bool(LIST_HINTS.search(it["title"])) and not LIST_SKIP.search(it["title"])),
             })
             kept += 1
             if kept >= NEWS_PER_SOURCE:

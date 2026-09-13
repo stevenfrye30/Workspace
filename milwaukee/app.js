@@ -1,14 +1,19 @@
-/* Milwaukee desk — reads data/*.json and lays it out. No framework, no
-   innerHTML from data (everything is built with createElement/textContent).
-   Personal state (marks, the horizon, the "happenings only" toggle) lives in
-   this browser's localStorage only. */
+/* Milwaukee desk — "what could we go do?" Reads data/*.json and lays it
+   out around one question: when. No framework; nothing from the data is
+   ever put through innerHTML. Personal state (marks, filters) lives in this
+   browser's localStorage only. */
 (function () {
   'use strict';
 
   const STARS_KEY = 'mke-desk-stars-v1';
-  const VIEW_KEY = 'mke-desk-view-v1';
+  const VIEW_KEY = 'mke-desk-view-v2';
   const STALE_DAYS = 3;          // freshness warning threshold
-  const NEWS_PAGE = 40;          // headlines shown before "show more"
+  const NEWS_PAGE = 20;          // headlines shown before "show more"
+  const RUN_MIN_DAYS = 3;        // a series on this many days is a "run", not a one-off
+  const KINDS = ['music', 'theater', 'comedy', 'film', 'art', 'talks', 'books', 'markets', 'outdoors', 'food', 'sports', 'family', 'community'];
+  const KIND_LABEL = { music: 'music', theater: 'theater', comedy: 'comedy', film: 'film', art: 'art', talks: 'talks & tours', books: 'books', markets: 'markets', outdoors: 'outdoors', food: 'food & drink', sports: 'sports', family: 'family', community: 'community' };
+  const REACHES = ['walk', 'bus', 'car', 'online'];
+  const REACH_LABEL = { walk: 'walk', bus: 'bus', car: 'car', online: 'online' };
 
   const $ = (id) => document.getElementById(id);
   const el = (tag, cls, text) => {
@@ -17,6 +22,7 @@
     if (text != null) n.textContent = text;
     return n;
   };
+  const link = (text, href) => { const a = el('a', '', text); a.href = href; a.target = '_blank'; a.rel = 'noopener'; return a; };
 
   // ---- storage (may be unavailable: private windows, blocked site data)
   const store = {
@@ -24,24 +30,34 @@
     set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* fine */ } },
   };
 
+  const saved = store.get(VIEW_KEY, {});
   const state = {
     orgs: [], sources: [], news: null, events: null,
     stars: new Set(store.get(STARS_KEY, [])),
-    view: Object.assign({ horizon: 30, source: null, eventsOnly: false, org: null, newsShown: NEWS_PAGE }, store.get(VIEW_KEY, {})),
+    view: {
+      window: 'week',                       // today | weekend | week | month — asked fresh each visit
+      kinds: new Set(saved.kinds || []),    // empty = every kind
+      reaches: new Set(saved.reaches || []),
+      free: !!saved.free,
+      groups: !!saved.groups,               // only the groups we follow
+      org: null, source: null, newsShown: NEWS_PAGE,
+    },
   };
-  state.view.newsShown = NEWS_PAGE;
-  const saveView = () => store.set(VIEW_KEY, { horizon: state.view.horizon, eventsOnly: state.view.eventsOnly });
+  const saveView = () => store.set(VIEW_KEY, { kinds: [...state.view.kinds], reaches: [...state.view.reaches], free: state.view.free, groups: state.view.groups });
 
   // ---- dates (event times are Milwaukee wall-clock strings: "2026-09-28T17:00" or "2026-09-28")
   const pad = (n) => String(n).padStart(2, '0');
-  const todayKey = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
-  const addDays = (key, n) => { const d = new Date(key + 'T12:00'); d.setDate(d.getDate() + n); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; };
+  const keyOf = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+  const todayKey = () => keyOf(new Date());
+  const addDays = (key, n) => { const d = new Date(key + 'T12:00'); d.setDate(d.getDate() + n); return keyOf(d); };
   const DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dayLabel = (key) => { const d = new Date(key + 'T12:00'); return `${DOW[d.getDay()]} ${MON[d.getMonth()]} ${d.getDate()}`; };
+  const dayShort = (key) => DOW[new Date(key + 'T12:00').getDay()];
+  const monthDay = (key) => { const d = new Date(key + 'T12:00'); return `${MON[d.getMonth()]} ${d.getDate()}`; };
   const relLabel = (key) => {
     const t = todayKey();
-    if (key === t) return 'Today';
+    if (key === t) return new Date().getHours() >= 15 ? 'Tonight' : 'Today';
     if (key === addDays(t, 1)) return 'Tomorrow';
     return '';
   };
@@ -51,12 +67,24 @@
     const ap = h >= 12 ? 'pm' : 'am'; h = h % 12 || 12;
     return m === '00' ? `${h} ${ap}` : `${h}:${m} ${ap}`;
   };
-  const shortDate = (isoUtc) => {
-    if (!isoUtc) return '';
-    const d = new Date(isoUtc);
-    return isNaN(d) ? '' : `${MON[d.getMonth()]} ${d.getDate()}`;
-  };
+  const shortDate = (isoUtc) => { if (!isoUtc) return ''; const d = new Date(isoUtc); return isNaN(d) ? '' : `${MON[d.getMonth()]} ${d.getDate()}`; };
   const ageDays = (isoUtc) => isoUtc ? (Date.now() - new Date(isoUtc).getTime()) / 864e5 : Infinity;
+
+  // The four windows, as [first day, last day]
+  function windowRange(w) {
+    const t = todayKey();
+    if (w === 'today') return [t, t];
+    if (w === 'weekend') {
+      const dow = new Date(t + 'T12:00').getDay();
+      if (dow === 0) return [t, t];                 // Sunday: what's left of it
+      if (dow === 6) return [t, addDays(t, 1)];     // Saturday: today + Sunday
+      const fri = addDays(t, (5 - dow + 7) % 7);
+      return [fri, addDays(fri, 2)];
+    }
+    if (w === 'week') return [t, addDays(t, 6)];
+    return [t, addDays(t, 29)];
+  }
+  const WINDOW_WORD = { today: 'today', weekend: 'this weekend', week: 'this week', month: 'in the next 30 days' };
 
   // ---- loading
   async function load() {
@@ -70,16 +98,19 @@
       state.events = events;
     } catch (e) {
       $('freshness').textContent = 'could not load the data files';
-      $('eventsNote').textContent = location.protocol === 'file:'
+      $('optionsNote').textContent = location.protocol === 'file:'
         ? 'This page reads data/*.json with fetch(), which browsers block on file:// — open it through a web server (python -m http.server).'
         : `Failed to load: ${e.message}`;
-      $('eventsNote').classList.add('err');
+      $('optionsNote').classList.add('err');
       return;
     }
+    prepareEvents();
     renderFreshness();
+    renderWindows();
     renderOrgChips();
     renderRoster();
-    renderEvents();
+    renderLists();
+    renderOptions();
     renderSourceChips();
     renderNews();
   }
@@ -87,8 +118,7 @@
   // ---- masthead freshness
   function renderFreshness() {
     const f = $('freshness'); f.textContent = '';
-    const parts = [['headlines', state.news.generated_at], ['events', state.events.generated_at]];
-    parts.forEach(([what, at], i) => {
+    [['headlines', state.news.generated_at], ['events', state.events.generated_at]].forEach(([what, at], i) => {
       if (i) f.append(' · ');
       const age = ageDays(at);
       const span = el('span', age > STALE_DAYS ? 'stale' : '', `${what} updated ${shortDate(at) || 'never'}`);
@@ -97,34 +127,122 @@
     });
   }
 
-  // ---- following
+  // ---- who listed it
   const orgById = (id) => state.orgs.find((o) => o.id === id);
   const sourceById = (id) => state.sources.find((s) => s.id === id);
   const listerOf = (e) => (e.via === 'source' ? sourceById(e.src) : orgById(e.org)) || { name: e.org || e.src || '?' };
-  const REACH_LABEL = { walk: 'walk', bus: 'bus', car: 'car', online: 'online' };
+  const listerId = (e) => e.org || e.src || '';
   const orgStatus = (id) => (state.events.orgs || {})[id] || { status: 'link' };
-  const upcomingCount = (id) => state.events.events.filter((e) => e.org === id && e.start.slice(0, 10) >= todayKey()).length;
+
+  // ---- series: the same thing on several days is a run, shown once with its dates
+  const norm = (t) => (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  function prepareEvents() {
+    const all = state.events.events || [];
+    const bySeries = new Map();
+    all.forEach((e) => {
+      e.series = `${listerId(e)}|${norm(e.title)}`;
+      if (!bySeries.has(e.series)) bySeries.set(e.series, new Set());
+      bySeries.get(e.series).add(e.start.slice(0, 10));
+    });
+    all.forEach((e) => { e.runDays = bySeries.get(e.series).size; });
+    state.seriesDays = bySeries;
+  }
+  const isRun = (e) => e.runDays >= RUN_MIN_DAYS;
+  const evKey = (e) => `${listerId(e)}|${e.start}|${e.title}`;
+  const runKey = (e) => `series|${e.series}`;
+
+  // ---- filters
+  function passesFilters(e, ignore) {
+    const v = state.view;
+    if (v.org && e.org !== v.org) return false;
+    if (v.groups && e.via === 'source') return false;
+    if (ignore !== 'kinds' && v.kinds.size && !v.kinds.has(e.kind)) return false;
+    if (ignore !== 'reaches' && v.reaches.size && !v.reaches.has(e.reach)) return false;
+    if (ignore !== 'free' && v.free && e.free !== true) return false;
+    return true;
+  }
+  function inWindow(e, range, cutoffMs) {
+    const day = e.start.slice(0, 10);
+    if (day < range[0] || day > range[1]) return false;
+    if (cutoffMs && day === todayKey() && !e.all_day && !e.time_unknown && e.start.length >= 16) {
+      const t = new Date(e.start).getTime();
+      if (!isNaN(t) && t < cutoffMs) return false;  // already started more than an hour ago
+    }
+    return true;
+  }
+
+  // ---- the question bar
+  function renderWindows() {
+    document.querySelectorAll('.win').forEach((b) => {
+      b.classList.toggle('on', b.dataset.window === state.view.window);
+      b.setAttribute('aria-selected', String(b.dataset.window === state.view.window));
+      if (b.dataset.window === 'today') b.textContent = new Date().getHours() >= 15 ? 'Tonight' : 'Today';
+      b.onclick = () => { state.view.window = b.dataset.window; renderWindows(); renderOptions(); };
+    });
+  }
+
+  function renderFilterChips(candidates) {
+    const v = state.view;
+    // kinds, with counts for this window (other filters applied)
+    const kc = $('kindChips'); kc.textContent = '';
+    const kindCount = {}; KINDS.forEach((k) => { kindCount[k] = 0; });
+    candidates.forEach((e) => { if (passesFilters(e, 'kinds')) kindCount[e.kind] = (kindCount[e.kind] || 0) + 1; });
+    const any = el('button', 'chip' + (v.kinds.size ? '' : ' on'), 'anything'); any.type = 'button';
+    any.onclick = () => { v.kinds.clear(); saveView(); renderOptions(); };
+    kc.append(any);
+    KINDS.forEach((k) => {
+      const b = el('button', 'chip' + (v.kinds.has(k) ? ' on' : '') + (kindCount[k] ? '' : ' dim')); b.type = 'button';
+      b.append(el('span', '', KIND_LABEL[k])); b.append(el('span', 'n', String(kindCount[k])));
+      b.setAttribute('aria-pressed', String(v.kinds.has(k)));
+      b.onclick = () => { if (v.kinds.has(k)) v.kinds.delete(k); else v.kinds.add(k); saveView(); renderOptions(); };
+      kc.append(b);
+    });
+    // reach + free + groups
+    const rc = $('reachChips'); rc.textContent = '';
+    const reachCount = {};
+    candidates.forEach((e) => { if (passesFilters(e, 'reaches') && e.reach) reachCount[e.reach] = (reachCount[e.reach] || 0) + 1; });
+    REACHES.forEach((r) => {
+      const b = el('button', `chip reach-${r}` + (v.reaches.has(r) ? ' on' : '') + (reachCount[r] ? '' : ' dim')); b.type = 'button';
+      b.append(el('span', '', REACH_LABEL[r])); b.append(el('span', 'n', String(reachCount[r] || 0)));
+      b.title = { walk: 'From home on foot', bus: 'A bus ride: downtown, Third Ward, Walker\'s Point, Bay View', car: 'Needs the car', online: 'From the couch' }[r];
+      b.setAttribute('aria-pressed', String(v.reaches.has(r)));
+      b.onclick = () => { if (v.reaches.has(r)) v.reaches.delete(r); else v.reaches.add(r); saveView(); renderOptions(); };
+      rc.append(b);
+    });
+    const freeN = candidates.filter((e) => passesFilters(e, 'free') && e.free === true).length;
+    const fb = el('button', 'chip free-chip sep-left' + (v.free ? ' on' : '') + (freeN ? '' : ' dim')); fb.type = 'button';
+    fb.append(el('span', '', 'free')); fb.append(el('span', 'n', String(freeN)));
+    fb.setAttribute('aria-pressed', String(v.free));
+    fb.onclick = () => { v.free = !v.free; saveView(); renderOptions(); };
+    rc.append(fb);
+    const gb = el('button', 'chip' + (v.groups ? ' on' : '')); gb.type = 'button';
+    gb.textContent = 'groups we follow';
+    gb.title = 'Only what the groups we follow are putting on';
+    gb.setAttribute('aria-pressed', String(v.groups));
+    gb.onclick = () => { v.groups = !v.groups; if (!v.groups) v.org = null; saveView(); renderOrgChips(); renderOptions(); };
+    rc.append(gb);
+  }
+
+  // ---- following
+  const upcomingCount = (id) => (state.events.events || []).filter((e) => e.org === id && e.start.slice(0, 10) >= todayKey()).length;
 
   function renderOrgChips() {
     const wrap = $('orgChips'); wrap.textContent = '';
-    const all = el('button', 'chip' + (state.view.org ? '' : ' on'), 'everyone');
-    all.type = 'button';
-    all.addEventListener('click', () => { state.view.org = null; renderOrgChips(); renderEvents(); });
-    wrap.append(all);
     state.orgs.forEach((o) => {
       const st = orgStatus(o.id);
-      const n = st.status === 'ok' && 'count' in st ? upcomingCount(o.id) : null;
-      const b = el('button', 'chip' + (state.view.org === o.id ? ' on' : '') + (n === 0 || st.status === 'link' ? ' dim' : ''));
-      b.type = 'button';
+      const feeds = st.status === 'ok' && 'count' in st;
+      const n = feeds ? upcomingCount(o.id) : null;
+      const b = el('button', 'chip' + (state.view.org === o.id ? ' on' : '') + (n === 0 || !feeds ? ' dim' : '')); b.type = 'button';
       b.append(el('span', '', o.name));
       if (n != null) b.append(el('span', 'n', String(n)));
       else if (st.status === 'error') b.append(el('span', 'n', '!'));
-      b.title = st.status === 'link' ? 'No machine-readable calendar — opens on their site' : st.status === 'error' ? 'Their calendar could not be read on the last refresh' : `${n} upcoming`;
-      b.addEventListener('click', () => {
-        if (st.status === 'link' || (st.status === 'ok' && !('count' in st))) { window.open(o.calendar || o.site, '_blank', 'noopener'); return; }
+      b.title = !feeds ? 'No machine-readable calendar — opens on their site' : st.status === 'error' ? 'Their calendar could not be read on the last refresh' : `${n} upcoming`;
+      b.onclick = () => {
+        if (!feeds) { window.open(o.calendar || o.site, '_blank', 'noopener'); return; }
         state.view.org = state.view.org === o.id ? null : o.id;
-        renderOrgChips(); renderEvents();
-      });
+        renderOrgChips(); renderOptions();
+        if (state.view.org) $('windows').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      };
       wrap.append(b);
     });
   }
@@ -145,96 +263,154 @@
       else line = 'Calendar on their site';
       card.append(el('p', cls, line));
       const links = el('p', 'links');
-      if (o.site) { const a = el('a', '', 'site'); a.href = o.site; a.target = '_blank'; a.rel = 'noopener'; links.append(a); }
-      if (o.calendar && o.calendar !== o.site) { const a = el('a', '', 'calendar'); a.href = o.calendar; a.target = '_blank'; a.rel = 'noopener'; links.append(a); }
+      if (o.site) links.append(link('site', o.site));
+      if (o.calendar && o.calendar !== o.site) links.append(link('calendar', o.calendar));
       card.append(links);
       const mine = posts.filter((p) => p.org === o.id);
       if (mine.length) {
         const ul = el('ul', 'posts');
-        mine.forEach((p) => {
-          const li = el('li');
-          li.append(el('span', 'd', shortDate(p.published)));
-          const a = el('a', '', p.title); a.href = p.url; a.target = '_blank'; a.rel = 'noopener';
-          li.append(a); ul.append(li);
-        });
+        mine.forEach((p) => { const li = el('li'); li.append(el('span', 'd', shortDate(p.published))); li.append(link(p.title, p.url)); ul.append(li); });
         card.append(ul);
       }
       r.append(card);
     });
     const t = $('rosterToggle');
-    t.addEventListener('click', () => {
+    t.onclick = () => {
       const open = r.hidden; r.hidden = !open;
       t.setAttribute('aria-expanded', String(open));
       t.textContent = open ? 'hide the roster' : 'show the roster';
+    };
+  }
+
+  // ---- this week's lists (human-curated)
+  function renderLists() {
+    const items = (state.news.items || []).filter((i) => i.list).slice(0, 6);
+    const wrap = $('listsStrip'); const ul = $('listsUl'); ul.textContent = '';
+    wrap.hidden = items.length === 0;
+    items.forEach((i) => {
+      const li = el('li');
+      li.append(el('span', 'src', `${i.source} · ${shortDate(i.published)}`));
+      li.append(link(i.title, i.url));
+      ul.append(li);
     });
   }
 
-  // ---- events
-  const evKey = (e) => `${e.org}|${e.start}|${e.title}`;
+  // ---- one row
+  function metaLine(e, o, opts) {
+    const meta = el('div', 'meta');
+    meta.append(el('span', 'org-tag' + (e.via === 'source' ? ' src-tag' : ''), o.name));
+    if (opts && opts.withDay) meta.append(` · ${dayLabel(e.start.slice(0, 10))}`);
+    const sameAsOrg = e.where && (e.where.toLowerCase() === o.name.toLowerCase() || (o.where || '').toLowerCase().startsWith(e.where.toLowerCase()));
+    if (e.where && !sameAsOrg) meta.append(` · ${e.where}`);
+    if (e.kind) meta.append(el('span', 'tag kind', KIND_LABEL[e.kind] || e.kind));
+    if (e.reach) meta.append(el('span', 'tag reach reach-' + e.reach, REACH_LABEL[e.reach]));
+    if (e.free === true) meta.append(el('span', 'tag free', 'free'));
+    (e.tags || []).slice(0, 3).forEach((tg) => meta.append(el('span', 'tag', tg)));
+    if (e.also && e.also.length) meta.append(el('span', 'also', ` also on ${e.also.map((id) => (orgById(id) || sourceById(id) || { name: id }).name).join(', ')}`));
+    return meta;
+  }
+
+  function starButton(key) {
+    const on = state.stars.has(key);
+    const b = el('button', 'star' + (on ? ' on' : ''), on ? '★' : '☆'); b.type = 'button';
+    b.title = on ? 'Unmark' : 'Mark this one';
+    b.setAttribute('aria-pressed', String(on));
+    b.onclick = () => { if (state.stars.has(key)) state.stars.delete(key); else state.stars.add(key); store.set(STARS_KEY, [...state.stars]); renderOptions(); };
+    return b;
+  }
 
   function eventRow(e, opts) {
     const li = el('li', 'ev' + (e.start.slice(0, 10) < todayKey() ? ' past' : ''));
-    const t = el('span', 't' + (e.all_day ? ' soft' : ''), e.time_unknown ? 'see listing' : e.all_day ? 'all day' : timeLabel(e.start));
-    li.append(t);
+    li.append(el('span', 't' + (e.all_day || e.time_unknown ? ' soft' : ''), e.time_unknown ? 'see listing' : e.all_day ? 'all day' : timeLabel(e.start)));
     const main = el('div', 'main');
     const title = el('div', 'title');
-    if (e.url) { const a = el('a', '', e.title); a.href = e.url; a.target = '_blank'; a.rel = 'noopener'; title.append(a); }
-    else title.textContent = e.title;
+    if (e.url) title.append(link(e.title, e.url)); else title.textContent = e.title;
     main.append(title);
-    const meta = el('div', 'meta');
     const o = listerOf(e);
-    meta.append(el('span', 'org-tag' + (e.via === 'source' ? ' src-tag' : ''), o.name));
-    if (opts && opts.withDay) meta.append(` · ${dayLabel(e.start.slice(0, 10))}`);
-    if (e.run_through && e.run_through !== e.start.slice(0, 10)) meta.append(` · runs through ${dayLabel(e.run_through)}`);
-    // the venue is worth a word only when it is not simply the lister itself
-    const sameAsOrg = e.where && (e.where.toLowerCase() === o.name.toLowerCase() || (o.where || '').toLowerCase().startsWith(e.where.toLowerCase()));
-    if (e.where && !sameAsOrg) meta.append(` · ${e.where}`);
-    if (e.kind) meta.append(el('span', 'tag kind', e.kind));
-    if (e.reach) meta.append(el('span', 'tag reach reach-' + e.reach, REACH_LABEL[e.reach]));
-    if (e.free === true) meta.append(el('span', 'tag free', 'free'));
-    (e.tags || []).forEach((tg) => meta.append(el('span', 'tag', tg)));
-    if (e.also && e.also.length) meta.append(el('span', 'also', ` also on ${e.also.map((id) => (orgById(id) || sourceById(id) || { name: id }).name).join(', ')}`));
-    main.append(meta);
+    main.append(metaLine(e, o, opts));
+    if (e.run_through && e.run_through !== e.start.slice(0, 10)) main.append(el('div', 'perfs', `Runs through ${dayLabel(e.run_through)}`));
     if (e.summary && state.view.org === e.org) main.append(el('div', 'sum', e.summary));
     li.append(main);
-    const k = evKey(e);
-    const star = el('button', 'star' + (state.stars.has(k) ? ' on' : ''), state.stars.has(k) ? '★' : '☆');
-    star.type = 'button';
-    star.title = state.stars.has(k) ? 'Unmark' : 'Mark this one';
-    star.setAttribute('aria-pressed', String(state.stars.has(k)));
-    star.addEventListener('click', () => {
-      if (state.stars.has(k)) state.stars.delete(k); else state.stars.add(k);
-      store.set(STARS_KEY, [...state.stars]);
-      renderEvents();
-    });
-    li.append(star);
+    li.append(starButton(evKey(e)));
     return li;
   }
 
-  function renderEvents() {
-    const t0 = todayKey();
-    const until = addDays(t0, state.view.horizon);
+  // A run: one row for the series, listing its dates inside the window
+  function runRow(perfs, range) {
+    const first = perfs[0];
+    const li = el('li', 'ev');
+    const days = state.seriesDays.get(first.series);
+    const allDays = [...days].sort();
+    li.append(el('span', 't soft', `${allDays.length} dates`));
+    const main = el('div', 'main');
+    const title = el('div', 'title');
+    if (first.url) title.append(link(first.title, first.url)); else title.textContent = first.title;
+    main.append(title);
+    main.append(metaLine(first, listerOf(first)));
+    // the performances inside the window, grouped by day
+    const byDay = new Map();
+    perfs.forEach((p) => { const k = p.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(p); });
+    const dayKeys = [...byDay.keys()].sort();
+    const parts = dayKeys.slice(0, 8).map((k) => {
+      const times = byDay.get(k).map((p) => p.time_unknown ? 'see listing' : p.all_day ? 'all day' : timeLabel(p.start));
+      const uniq = [...new Set(times)];
+      return `${dayShort(k)} ${monthDay(k)} ${uniq.join(' & ')}`;
+    });
+    const perfsEl = el('div', 'perfs');
+    const lead = el('b', '', range[0] === range[1] ? '' : `${WINDOW_WORD[state.view.window]}: `);
+    if (lead.textContent) perfsEl.append(lead);
+    perfsEl.append(parts.join(' · ') + (dayKeys.length > 8 ? ` · +${dayKeys.length - 8} more days` : ''));
+    const last = allDays[allDays.length - 1];
+    if (last > range[1]) perfsEl.append(` · through ${monthDay(last)}`);
+    main.append(perfsEl);
+    li.append(main);
+    li.append(starButton(runKey(first)));
+    return li;
+  }
+
+  // ---- the options for the chosen window
+  function renderOptions() {
     const all = state.events.events || [];
-    const inWindow = all.filter((e) => e.start.slice(0, 10) >= t0 && e.start.slice(0, 10) <= until && (!state.view.org || e.org === state.view.org));
+    const range = windowRange(state.view.window);
+    const cutoff = state.view.window === 'today' ? Date.now() - 60 * 60 * 1000 : 0;
+    const candidates = all.filter((e) => inWindow(e, range, cutoff));
+    renderFilterChips(candidates);
+    const shown = candidates.filter((e) => passesFilters(e));
 
-    document.querySelectorAll('.seg').forEach((b) => b.classList.toggle('on', +b.dataset.horizon === state.view.horizon));
-
-    // marked events float above the days (past marks stay, struck through, until unmarked)
-    const starred = all.filter((e) => state.stars.has(evKey(e)));
+    // marked things float above everything (past marks stay, struck through, until unmarked)
     const sw = $('starred'); const sl = $('starredList'); sl.textContent = '';
-    sw.hidden = starred.length === 0;
-    starred.sort((a, b) => a.start.localeCompare(b.start)).forEach((e) => sl.append(eventRow(e, { withDay: true })));
+    const seenSeries = new Set();
+    const starredRows = [];
+    all.slice().sort((a, b) => a.start.localeCompare(b.start)).forEach((e) => {
+      if (state.stars.has(evKey(e))) starredRows.push(eventRow(e, { withDay: true }));
+      else if (state.stars.has(runKey(e)) && !seenSeries.has(e.series)) {
+        seenSeries.add(e.series);
+        const perfs = all.filter((x) => x.series === e.series && x.start.slice(0, 10) >= todayKey()).sort((a, b) => a.start.localeCompare(b.start));
+        if (perfs.length) starredRows.push(runRow(perfs, [todayKey(), addDays(todayKey(), 60)]));
+      }
+    });
+    sw.hidden = starredRows.length === 0;
+    starredRows.forEach((r) => sl.append(r));
 
+    // runs vs one-offs
+    const runs = new Map(); const singles = [];
+    shown.forEach((e) => {
+      if (isRun(e)) { if (!runs.has(e.series)) runs.set(e.series, []); runs.get(e.series).push(e); }
+      else singles.push(e);
+    });
+    const rw = $('running'); const rl = $('runningList'); rl.textContent = '';
+    rw.hidden = runs.size === 0;
+    $('runningH').textContent = `On stage, on view, or repeating ${WINDOW_WORD[state.view.window]}`;
+    [...runs.values()].sort((a, b) => a[0].start.localeCompare(b[0].start) || a[0].title.localeCompare(b[0].title)).forEach((perfs) => {
+      perfs.sort((a, b) => a.start.localeCompare(b.start));
+      rl.append(runRow(perfs, range));
+    });
+
+    // the day lists
     const days = $('eventDays'); days.textContent = '';
     const byDay = new Map();
-    inWindow.forEach((e) => { const k = e.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(e); });
-    const errs = Object.entries(state.events.orgs || {}).filter(([, s]) => s.status === 'error').map(([id]) => (orgById(id) || { name: id }).name);
-    const note = $('eventsNote');
-    note.classList.toggle('err', errs.length > 0);
-    const orgName = state.view.org ? (orgById(state.view.org) || {}).name : null;
-    const fromOrgs = inWindow.filter((e) => e.via !== 'source').length;
-    note.textContent = `${inWindow.length} in the next ${state.view.horizon} days${orgName ? ` from ${orgName}` : ` · ${fromOrgs} from the groups we follow, the rest citywide`}` + (errs.length ? ` · could not read: ${errs.join(', ')}` : '');
-    if (!byDay.size) { days.append(el('p', 'empty', 'Nothing on the calendars in this window.')); return; }
+    singles.forEach((e) => { const k = e.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(e); });
+    const rank = (e) => (e.time_unknown ? 2 : e.all_day ? 1 : 0);
     [...byDay.keys()].sort().forEach((k) => {
       const sec = el('section', 'day');
       const h = el('h3');
@@ -243,45 +419,41 @@
       h.append(dayLabel(k));
       sec.append(h);
       const ol = el('ol', 'event-list');
-      // timed things first in the order they happen; day-only listings ("see listing") close the day
-      const rank = (e) => (e.time_unknown ? 2 : e.all_day ? 1 : 0);
       byDay.get(k).sort((a, b) => rank(a) - rank(b) || a.start.localeCompare(b.start) || a.title.localeCompare(b.title)).forEach((e) => ol.append(eventRow(e)));
       sec.append(ol);
       days.append(sec);
     });
-  }
+    if (!byDay.size && !runs.size) days.append(el('p', 'empty', 'Nothing on the calendars for that. Widen the window or drop a filter.'));
 
-  document.querySelectorAll('.seg').forEach((b) => b.addEventListener('click', () => {
-    state.view.horizon = +b.dataset.horizon; saveView(); renderEvents();
-  }));
+    // the count line
+    const errs = Object.entries(state.events.orgs || {}).filter(([, s]) => s.status === 'error').map(([id]) => (orgById(id) || sourceById(id) || { name: id }).name);
+    const note = $('optionsNote');
+    note.classList.toggle('err', errs.length > 0);
+    const fromGroups = shown.filter((e) => e.via !== 'source').length;
+    const orgName = state.view.org ? (orgById(state.view.org) || {}).name : null;
+    const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+    const what = runs.size ? `${plural(singles.length, 'thing')} and ${plural(runs.size, 'run')}` : plural(singles.length, 'thing');
+    note.textContent = `${what} ${WINDOW_WORD[state.view.window]}` + (orgName ? ` from ${orgName}` : state.view.groups ? ' from the groups we follow' : ` · ${fromGroups} from the groups we follow`) + (errs.length ? ` · could not read: ${errs.join(', ')}` : '');
+  }
 
   // ---- news
   function renderSourceChips() {
     const wrap = $('sourceChips'); wrap.textContent = '';
-    const all = el('button', 'chip' + (state.view.source ? '' : ' on'), 'all sources');
-    all.type = 'button';
-    all.addEventListener('click', () => { state.view.source = null; state.view.newsShown = NEWS_PAGE; renderSourceChips(); renderNews(); });
+    const all = el('button', 'chip' + (state.view.source ? '' : ' on'), 'all sources'); all.type = 'button';
+    all.onclick = () => { state.view.source = null; state.view.newsShown = NEWS_PAGE; renderSourceChips(); renderNews(); };
     wrap.append(all);
     (state.news.sources || []).forEach((s) => {
-      const b = el('button', 'chip' + (state.view.source === s.name ? ' on' : '') + (s.ok ? '' : ' dim'), s.name);
-      b.type = 'button';
+      const b = el('button', 'chip' + (state.view.source === s.name ? ' on' : '') + (s.ok ? '' : ' dim'), s.name); b.type = 'button';
       b.title = s.ok ? `${s.count} in the last ${state.news.window_days} days` : `Could not be reached: ${s.error || ''}`;
-      b.addEventListener('click', () => {
-        state.view.source = state.view.source === s.name ? null : s.name; state.view.newsShown = NEWS_PAGE;
-        renderSourceChips(); renderNews();
-      });
+      b.onclick = () => { state.view.source = state.view.source === s.name ? null : s.name; state.view.newsShown = NEWS_PAGE; renderSourceChips(); renderNews(); };
       wrap.append(b);
     });
-    const cb = $('eventsOnly');
-    cb.checked = !!state.view.eventsOnly;
-    cb.addEventListener('change', () => { state.view.eventsOnly = cb.checked; state.view.newsShown = NEWS_PAGE; saveView(); renderNews(); });
   }
 
   function renderNews() {
     const list = $('newsList'); list.textContent = '';
     let items = state.news.items || [];
     if (state.view.source) items = items.filter((i) => i.source === state.view.source);
-    if (state.view.eventsOnly) items = items.filter((i) => i.event);
     const down = (state.news.sources || []).filter((s) => !s.ok).map((s) => s.name);
     const note = $('newsNote');
     note.classList.toggle('err', down.length > 0);
@@ -292,20 +464,15 @@
       const k = el('div', 'k');
       k.append(el('span', 'src', i.source));
       k.append(` · ${shortDate(i.published)}`);
-      if (i.kind === 'roundup') k.append(el('span', 'ev-flag', 'weekly roundup'));
-      else if (i.event) k.append(el('span', 'ev-flag', 'happening'));
       li.append(k);
-      const h = el('p', 'h');
-      const a = el('a', '', i.title); a.href = i.url; a.target = '_blank'; a.rel = 'noopener';
-      h.append(a); li.append(h);
+      const h = el('p', 'h'); h.append(link(i.title, i.url)); li.append(h);
       if (i.summary) li.append(el('p', 's', i.summary));
       list.append(li);
     });
     if (items.length > state.view.newsShown) {
       const li = el('li', 'more');
-      const b = el('button', 'linkish', `show ${Math.min(NEWS_PAGE, items.length - state.view.newsShown)} more`);
-      b.type = 'button';
-      b.addEventListener('click', () => { state.view.newsShown += NEWS_PAGE; renderNews(); });
+      const b = el('button', 'linkish', `show ${Math.min(NEWS_PAGE, items.length - state.view.newsShown)} more`); b.type = 'button';
+      b.onclick = () => { state.view.newsShown += NEWS_PAGE; renderNews(); };
       li.append(b); list.append(li);
     }
   }

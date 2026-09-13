@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Milwaukee</title>
-<meta name="description" content="What's going on in Milwaukee this week: local headlines, the organizations we follow, and what they're putting on.">
+<meta name="description" content="What could we go do in Milwaukee? Tonight, this weekend, this week — from the groups we follow and the whole city's calendars.">
 <link rel="stylesheet" href="../_shared/hub-nav.css">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌆</text></svg>">
@@ -24,54 +24,66 @@
 
 <main class="desk">
 
-  <!-- Following: the organizations, as filter chips + a fold-out roster -->
+  <!-- The question: what could we go do… -->
+  <section class="ask" aria-label="When">
+    <div class="windows" role="tablist" id="windows">
+      <button class="win" role="tab" data-window="today">Today</button>
+      <button class="win" role="tab" data-window="weekend">This weekend</button>
+      <button class="win" role="tab" data-window="week">This week</button>
+      <button class="win" role="tab" data-window="month">Next 30 days</button>
+    </div>
+    <div class="filters">
+      <div class="chips" id="kindChips" role="group" aria-label="What kind"></div>
+      <div class="chips chips-small" id="reachChips" role="group" aria-label="How far, and other filters"></div>
+    </div>
+    <p class="note" id="optionsNote"></p>
+  </section>
+
+  <!-- The groups we follow: chips filter the list; the roster explains them -->
   <section class="following" aria-labelledby="following-h">
     <div class="row-head">
       <h2 id="following-h">Following</h2>
       <button class="linkish" id="rosterToggle" aria-expanded="false">show the roster</button>
     </div>
-    <div class="chips" id="orgChips" role="group" aria-label="Filter events by organization"></div>
+    <div class="chips chips-small scrollrow" id="orgChips" role="group" aria-label="Filter to one group"></div>
     <div class="roster" id="roster" hidden></div>
   </section>
 
-  <div class="columns">
+  <!-- Human-made lists of things to do this week -->
+  <section class="lists" id="listsStrip" hidden aria-labelledby="lists-h">
+    <h2 id="lists-h">This week's lists</h2>
+    <ul id="listsUl"></ul>
+  </section>
 
-    <!-- Coming up: merged events from every followed org -->
-    <section class="col events" aria-labelledby="events-h">
-      <div class="row-head">
-        <h2 id="events-h">Coming up</h2>
-        <div class="controls" role="group" aria-label="How far ahead">
-          <button class="seg" data-horizon="7">week</button>
-          <button class="seg" data-horizon="30">month</button>
-          <button class="seg" data-horizon="60">all</button>
-        </div>
-      </div>
-      <p class="note" id="eventsNote"></p>
-      <div id="starred" class="starred" hidden>
-        <h3>Marked</h3>
-        <ol class="event-list" id="starredList"></ol>
-      </div>
-      <div id="eventDays"></div>
-    </section>
+  <!-- The options themselves -->
+  <section class="options" aria-label="Options">
+    <div id="starred" class="band starred" hidden>
+      <h3>Marked</h3>
+      <ol class="event-list" id="starredList"></ol>
+    </div>
+    <div id="running" class="band running" hidden>
+      <h3 id="runningH">Running</h3>
+      <ol class="event-list" id="runningList"></ol>
+    </div>
+    <div id="eventDays"></div>
+  </section>
 
-    <!-- Headlines: the local press -->
-    <section class="col news" aria-labelledby="news-h">
-      <div class="row-head">
-        <h2 id="news-h">Headlines</h2>
-        <label class="toggle"><input type="checkbox" id="eventsOnly"> happenings only</label>
-      </div>
-      <div class="chips chips-small" id="sourceChips" role="group" aria-label="Filter headlines by source"></div>
-      <p class="note" id="newsNote"></p>
-      <ol class="news-list" id="newsList"></ol>
-    </section>
+  <!-- Headlines, last -->
+  <section class="news" aria-labelledby="news-h">
+    <div class="row-head">
+      <h2 id="news-h">Headlines</h2>
+    </div>
+    <div class="chips chips-small scrollrow" id="sourceChips" role="group" aria-label="Filter headlines by source"></div>
+    <p class="note" id="newsNote"></p>
+    <ol class="news-list" id="newsList"></ol>
+  </section>
 
-  </div>
 </main>
 
 <footer class="colophon">
-  <p>Headlines are the sources' own RSS feeds; events are read from each organization's public calendar by
-  <code>tools/milwaukee/build.py</code>, which a GitHub Action runs every morning. The organizations live in
-  <code>milwaukee/data/orgs.json</code>. Marks are kept in this browser only.</p>
+  <p>Events are read from the calendars of the groups we follow (<code>milwaukee/data/orgs.json</code>) and the city's option
+  generators (<code>sources.json</code>); headlines are the outlets' own feeds. <code>tools/milwaukee/build.py</code> does the
+  reading and a GitHub Action runs it every morning. Marks and filters are kept in this browser only.</p>
 </footer>
 
 <script src="app.js"></script>
