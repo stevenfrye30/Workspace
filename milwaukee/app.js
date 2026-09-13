@@ -91,11 +91,12 @@
     $('today').textContent = (() => { const d = new Date(); return `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; })();
     const get = (p) => fetch(p, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`${p}: ${r.status}`); return r.json(); });
     try {
-      const [orgs, sources, news, events] = await Promise.all([get('data/orgs.json'), get('data/sources.json').catch(() => ({ sources: [] })), get('data/news.json'), get('data/events.json')]);
+      const [orgs, sources, news, events, obs] = await Promise.all([get('data/orgs.json'), get('data/sources.json').catch(() => ({ sources: [] })), get('data/news.json'), get('data/events.json'), get('data/observances.json').catch(() => ({ observances: [] }))]);
       state.orgs = orgs.orgs || [];
       state.sources = sources.sources || [];
       state.news = news;
       state.events = events;
+      state.observances = obs.observances || [];
     } catch (e) {
       $('freshness').textContent = 'could not load the data files';
       $('optionsNote').textContent = location.protocol === 'file:'
@@ -148,6 +149,8 @@
     state.seriesDays = bySeries;
   }
   const isRun = (e) => e.runDays >= RUN_MIN_DAYS;
+  // religious and cultural observances (UWM's multifaith calendar) touching a day
+  const obsFor = (day) => (state.observances || []).filter((o) => o.start <= day && day <= o.end);
   const evKey = (e) => `${listerId(e)}|${e.start}|${e.title}`;
   const runKey = (e) => `series|${e.series}`;
 
@@ -411,19 +414,40 @@
     const byDay = new Map();
     singles.forEach((e) => { const k = e.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(e); });
     const rank = (e) => (e.time_unknown ? 2 : e.all_day ? 1 : 0);
-    [...byDay.keys()].sort().forEach((k) => {
+    // days with observances but nothing listed still get a header, so the observance shows
+    const dayKeys = new Set(byDay.keys());
+    for (let k = range[0]; k <= range[1]; k = addDays(k, 1)) if (obsFor(k).length) dayKeys.add(k);
+    [...dayKeys].sort().forEach((k) => {
       const sec = el('section', 'day');
       const h = el('h3');
       const rel = relLabel(k);
       if (rel) h.append(el('span', 'rel', rel));
       h.append(dayLabel(k));
       sec.append(h);
+      const obs = obsFor(k);
+      if (obs.length) {
+        const p = el('p', 'obs');
+        p.append('Observed: ');
+        obs.forEach((o, i) => {
+          if (i) p.append(' · ');
+          const s = el('span', '', o.name);
+          s.title = o.note || '';
+          p.append(s);
+          const extra = [];
+          if (o.tradition) extra.push(o.tradition);
+          if (o.start === k && o.sundown) extra.push('begins at sundown');
+          else if (o.start !== k) extra.push(`through ${monthDay(o.end)}`);
+          if (extra.length) p.append(el('span', 'obs-x', ` (${extra.join(', ')})`));
+        });
+        sec.append(p);
+      }
+      if (!byDay.has(k)) { days.append(sec); return; }
       const ol = el('ol', 'event-list');
       byDay.get(k).sort((a, b) => rank(a) - rank(b) || a.start.localeCompare(b.start) || a.title.localeCompare(b.title)).forEach((e) => ol.append(eventRow(e)));
       sec.append(ol);
       days.append(sec);
     });
-    if (!byDay.size && !runs.size) days.append(el('p', 'empty', 'Nothing on the calendars for that. Widen the window or drop a filter.'));
+    if (!dayKeys.size && !runs.size) days.append(el('p', 'empty', 'Nothing on the calendars for that. Widen the window or drop a filter.'));
 
     // the count line
     const errs = Object.entries(state.events.orgs || {}).filter(([, s]) => s.status === 'error').map(([id]) => (orgById(id) || sourceById(id) || { name: id }).name);

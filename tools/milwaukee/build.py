@@ -75,7 +75,7 @@ CTX = ssl.create_default_context()
 NEWS_DAYS = 14          # headline window
 NEWS_PER_SOURCE = 12
 HORIZON_DAYS = 60       # how far ahead events.json looks
-EVENTS_PER_ORG = 40
+EVENTS_PER_ORG = 80      # a registry entry may set its own "cap"
 EVENTS_PER_SOURCE = 500
 TRIBE_MAX_PAGES = 10
 POSTS_DAYS = 45
@@ -630,7 +630,41 @@ def adapter_rss_posts(feed: dict) -> list[dict]:
     return out
 
 
-ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld, "boswell": adapter_boswell, "mlb": adapter_mlb}
+UWM_DEPT_LABEL = {
+    "arts": "Peck School of the Arts", "planetarium": "Manfred Olson Planetarium", "libraries": "UWM Libraries",
+    "studentaffairs": "Student Affairs & the Union", "freshwater": "School of Freshwater Sciences",
+    "letters-science": "Letters & Science", "c21": "Center for 21st Century Studies", "sarup": "Architecture & Urban Planning",
+    "history": "History", "english": "English", "graduateschool": "Graduate School", "philosophy": "Philosophy",
+    "welcome": "Campus welcome events", "event-submission": "Campus", "publichealth": "Zilber School of Public Health",
+    "set": "Student Experience & Talent", "hr": "Human Resources", "cetl": "Teaching & Learning", "nursing": "Nursing",
+}
+
+
+def adapter_uwm(feed: dict, today: date, horizon: date) -> list[dict]:
+    """uwm.edu/events/ is an aggregate of department sub-sites, each a Tribe
+    calendar at uwm.edu/<dept>/wp-json/tribe/events/v1/events — and the
+    aggregate page shows only ten items per view, so read the departments
+    directly. `depts` lists the sub-site slugs; each fails soft."""
+    out, failed = [], []
+    for slug in feed.get("depts") or []:
+        try:
+            got = adapter_tribe({"url": f"https://uwm.edu/{slug}/wp-json/tribe/events/v1/events"}, today, horizon)
+        except (OSError, ValueError, KeyError, TypeError) as ex:
+            failed.append(f"{slug}: {type(ex).__name__}")
+            continue
+        label = UWM_DEPT_LABEL.get(slug, slug)
+        for e in got:
+            e["tags"] = [label] + [t for t in e.get("tags") or [] if t != label][:2]
+            e["dept"] = slug
+        out.extend(got)
+    if failed and not out:
+        raise OSError("every department failed: " + ", ".join(failed))
+    if failed:
+        print(f"         uwm: {len(failed)} department(s) failed — {', '.join(failed)}", file=sys.stderr)
+    return out
+
+
+ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld, "boswell": adapter_boswell, "mlb": adapter_mlb, "uwm": adapter_uwm}
 
 
 # ----------------------------------------------------------------- normalization
@@ -668,6 +702,7 @@ TITLE_KIND = [
     (r"\b(yoga|pilates|fitness|meditation|sound bath|wellness|zumba|tai chi)\b", "community"),
     (r"\b(lecture|talk|panel|colloquium|discussion|symposium|conversation|forum|seminar|class\b|workshop|how to|101|summit|conference)\b", "talks"),
     (r"\b(hike|walk\b|bike|ride\b|paddle|kayak|birding|garden|nature|trail|cleanup|5k|10k|run club|prairie|orchid|plant sale|plant swap|harbor fest)\b", "outdoors"),
+    (r"\b(board games?|game night|games night|trivia|bingo|karaoke|open mic)\b", "community"),
     (r"\b(vs\.?|versus|game|match|tournament|race|marathon|athletics|hockey|basketball|baseball|soccer|football)\b", "sports"),
     (r"\b(kids|family|story ?time|children|teen|youth|toddler)\b", "family"),
     (r"\b(gallery|exhibit|exhibition|sculpture|painting|arts?\b|artists?|drop-in art|slow art)\b", "art"),
@@ -733,10 +768,20 @@ BUS_VENUES = re.compile(
     r"vogel|peck pavilion|summerfest|maier festival|the rave|eagles)\b", re.I)
 
 
-def guess_reach(e: dict, default: str | None) -> str | None:
+def guess_reach(e: dict, default: str | None, strict: bool = False) -> str | None:
     blob = " ".join(x for x in (e.get("where"), e.get("addr")) if x)
     z = e.get("zip") or ""
     city = (e.get("city") or "").lower()
+    if strict and default:  # a campus calendar: on campus unless the venue is out of town
+        if re.search(r"\b(virtual|online|zoom|webinar|livestream)\b", blob + " " + (e.get("title") or ""), re.I):
+            return "online"
+        if city and city not in ("milwaukee", "") and city != "milwaukee, wi":
+            return "car"
+        t = e.get("title") or ""
+        if re.search(r"\b(porcupine|door county|kettle moraine|devil'?s lake|wausau|madison|chicago|green bay|sheboygan|kohler|racine|kenosha)\b", t, re.I) \
+                and re.search(r"\b(trip|camping|backpacking|weekend|hike|hiking|ride|tour|paddle|climb)\b", t, re.I):
+            return "car"  # a trip out of town, not a talk about one
+        return default
     if re.search(r"\b(virtual|online|zoom|webinar|livestream)\b", blob + " " + (e.get("title") or ""), re.I):
         return "online"
     if not blob:  # no venue given — a neighborhood in the title is the next best clue
@@ -793,11 +838,11 @@ def normalize(e: dict, reg: dict, via: str) -> dict:
         e["title"] = e["title"][:m.start()].strip()
         e["tags"] = ["Doors Open"] + list(e.get("tags") or [])
     e["kind"] = guess_kind(e, reg)
-    e["reach"] = guess_reach(e, reg.get("reach"))
+    e["reach"] = guess_reach(e, reg.get("reach"), bool(reg.get("reach_strict")))
     e["free"] = guess_free(e)
     e["via"] = via
     e["org" if via == "org" else "src"] = reg["id"]
-    for k in ("cost", "city"):
+    for k in ("cost", "city", "dept"):
         e.pop(k, None)
     if not e.get("time_unknown"):
         e.pop("time_unknown", None)
@@ -839,6 +884,9 @@ def _run_registry(entries: list[dict], via: str, today: date, horizon: date, eve
             if feed.get("exclude"):  # optional title regex for noisy calendars
                 rx = re.compile(feed["exclude"], re.I)
                 got = [e for e in got if not rx.search(e["title"])]
+            if feed.get("exclude_categories"):  # optional: drop whole listing categories
+                rx = re.compile(feed["exclude_categories"], re.I)
+                got = [e for e in got if not any(rx.search(t) for t in (e.get("tags") or []))]
             kept, seen = [], set()
             for e in sorted(got, key=lambda e: e["start"]):
                 day = e["start"][:10]
@@ -849,7 +897,7 @@ def _run_registry(entries: list[dict], via: str, today: date, horizon: date, eve
                     continue
                 seen.add(key)
                 kept.append(normalize(e, reg, via))
-                if len(kept) >= cap:
+                if len(kept) >= int(reg.get("cap") or cap):
                     break
             events.extend(kept)
             ok += 1
@@ -908,6 +956,59 @@ def build_events() -> dict | None:
             "counts": {"kinds": kinds, "reach": reach, "free": sum(1 for e in merged if e["free"] is True)}}
 
 
+# ----------------------------------------------------------------- observances
+OBS_JSON = DATA / "observances.json"
+MULTIFAITH_URL = "https://uwm.edu/community-empowerment-institutional-inclusivity/campus-culture/multifaith-calendar/"
+MONTHS = {m: i for i, m in enumerate(["january", "february", "march", "april", "may", "june", "july", "august",
+                                        "september", "october", "november", "december"], 1)}
+
+
+def _obs_date(month_name: str, day: str, year: int):
+    return date(year, MONTHS[month_name.lower()], int(day))
+
+
+def build_observances() -> dict | None:
+    """UWM's multifaith calendar (July–June, one accordion panel per month;
+    each item '<strong>Month D[-D | -Month D]: Name[—Begins at Sundown] (Tradition).</strong> note')
+    → dated observances the page shows under its day headers."""
+    html = fetch(MULTIFAITH_URL, "text/html")
+    panels = re.findall(r'accordion--header">\s*([A-Z][a-z]+)\s+(\d{4})\s*</div>\s*<div class="uwm-p-accordion--panel">(.*?)</div>\s*</div>', html, re.S)
+    items = []
+    for month, year, body in panels:
+        year = int(year)
+        for strong, note in re.findall(r"<strong>(.*?)</strong>(.*?)(?=<strong>|</li>|</p>|$)", body, re.S):
+            head = clean(strong)
+            m = re.match(r"([A-Z][a-z]+)\s+(\d{1,2})(?:\s*[-–—]\s*(?:([A-Z][a-z]+)\s+)?(\d{1,2}))?\s*:\s*(.+)$", head)
+            if not m:
+                continue
+            m1, d1, m2, d2, rest = m.groups()
+            try:
+                start = _obs_date(m1, d1, year)
+                if d2:
+                    em = m2 or m1
+                    ey = year + (1 if MONTHS[em.lower()] < MONTHS[m1.lower()] else 0)
+                    end = _obs_date(em, d2, ey)
+                else:
+                    end = start
+            except (KeyError, ValueError):
+                continue
+            sundown = bool(re.search(r"begins at sundown", rest, re.I))
+            rest = re.sub(r"\s*[-–—]?\s*begins at sundown\s*", " ", rest, flags=re.I)
+            tm = re.search(r"\(([^)]+)\)\s*\.?\s*$", rest)
+            tradition = clean(tm.group(1)) if tm else ""
+            name = clean(rest[:tm.start()] if tm else rest).rstrip(".").strip(" .—–-")
+            if not name:
+                continue
+            items.append({"name": name, "tradition": tradition, "start": start.isoformat(), "end": end.isoformat(),
+                          "sundown": sundown, "note": clean(note, 220)})
+    if len(items) < 10:
+        print(f"REFUSE: multifaith page parsed to only {len(items)} observances — not writing observances.json", file=sys.stderr)
+        return None
+    items.sort(key=lambda o: o["start"])
+    print(f"  {len(items)} observances from {len(panels)} months")
+    return {"generated_at": None, "source": MULTIFAITH_URL, "observances": items}
+
+
 # ----------------------------------------------------------------- writing
 def write_if_changed(path: Path, payload: dict) -> bool:
     """Compare everything but generated_at; leave the file alone when equal."""
@@ -949,6 +1050,16 @@ def main() -> int:
         else:
             print(f"  {len(ev['events'])} events, {len(ev['posts'])} posts")
             write_if_changed(EVENTS_JSON, ev)
+        print("observances: UWM multifaith calendar")
+        try:
+            obs = build_observances()
+        except (OSError, ValueError) as ex:
+            print(f"  ERROR {type(ex).__name__}: {str(ex)[:80]} — keeping the existing file", file=sys.stderr)
+            obs = None
+        if obs is not None:
+            write_if_changed(OBS_JSON, obs)
+        elif not OBS_JSON.exists():
+            rc = 1
     return rc
 
 

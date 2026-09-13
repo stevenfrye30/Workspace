@@ -31,7 +31,7 @@ jobs:
 
       - name: Commit whatever changed
         run: |
-          git add milwaukee/data/news.json milwaukee/data/events.json
+          git add milwaukee/data/news.json milwaukee/data/events.json milwaukee/data/observances.json
           if git diff --cached --quiet; then
             echo "Nothing changed today."
           else

@@ -18,11 +18,16 @@
   {
    "id": "uwm",
    "name": "UW–Milwaukee",
-   "what": "The campus-wide calendar: lectures, Peck School concerts and plays, Panthers games.",
+   "what": "The campus calendar, read department by department: Peck School concerts, plays and galleries, the Planetarium, the Libraries, the Union, the Graduate School, the colloquium series. Student-services noise is filtered out.",
    "where": "2200 E Kenwood Blvd",
    "site": "https://uwm.edu/",
    "calendar": "https://uwm.edu/events/",
+   "feed": {"type": "uwm", "depts": ["arts", "planetarium", "libraries", "studentaffairs", "graduateschool", "freshwater", "letters-science", "c21", "sarup", "history", "english", "welcome", "event-submission"],
+            "exclude": "orientation|enrollment|resume|application workshop|advising|drop-in hours|registration|deadline|office hours|training|tutoring|info session|information session|virtual|zoom|online|webinar|employee|staff |hiring|career fair|study abroad fair|financial aid|intramural|club (soccer|rugby|volleyball|basketball|hockey|baseball|softball|ultimate) home|prevent suicide|welcome back|help desk",
+            "exclude_categories": "academic dates|deadlines|prospective students|faculty and staff"},
+   "cap": 250,
    "reach": "walk",
+   "reach_strict": true,
    "tags": ["campus"]
   },
   {
