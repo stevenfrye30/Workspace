@@ -166,6 +166,40 @@ section + section { margin-top: 1.6rem; }
 .ev.past .title { color: var(--ink-3); text-decoration: line-through; }
 .empty { color: var(--ink-3); font-size: 0.9rem; padding: 0.6rem 0; }
 
+/* ---- places (Anytime) */
+#placeSearch {
+  flex: 1 1 220px; max-width: 360px; font: inherit; color: var(--ink); background: var(--panel);
+  border: 1px solid var(--rule); border-radius: 6px; padding: 0.4rem 0.7rem;
+}
+#placeSearch:focus { outline: 2px solid var(--link); outline-offset: 1px; }
+.pgroup { margin: 0 0 1.2rem; }
+.pgroup h3 {
+  font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-2);
+  padding: 0.3rem 0; border-bottom: 1px solid var(--rule); margin-bottom: 0.3rem;
+}
+.pgroup h3 .n { color: var(--ink-3); font-weight: 400; margin-left: 0.4rem; }
+.pgroup.marked h3 { color: var(--star); }
+.pl {
+  display: grid; grid-template-columns: 3.4rem minmax(0, 1fr) auto; gap: 0.6rem; align-items: baseline;
+  padding: 0.38rem 0; border-bottom: 1px dotted var(--rule);
+}
+.pl:last-child { border-bottom: 0; }
+.pl .mi { color: var(--ink-3); font-size: 0.82rem; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.pl .main { min-width: 0; }
+.pl .title { font-weight: 500; }
+.pl .title a { color: inherit; }
+.pl .meta { color: var(--ink-3); font-size: 0.82rem; margin-top: 0.05rem; }
+.pl .meta .tag { margin-left: 0.4rem; border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.3rem; font-size: 0.75rem; white-space: nowrap; }
+.pl .meta .tag.reach-walk { color: var(--walk); border-color: color-mix(in srgb, var(--walk) 40%, transparent); }
+.pl .meta .tag.reach-bus { color: var(--bus); border-color: color-mix(in srgb, var(--bus) 40%, transparent); }
+.pl .meta .tag.reach-car { color: var(--ink-3); }
+.pl .meta .tag.been { color: var(--walk); border-color: var(--walk); }
+.pl .note { margin: 0.1rem 0 0; color: var(--ink-2); font-size: 0.84rem; font-style: italic; min-height: 0; }
+.pl .acts { display: inline-flex; gap: 0.1rem; }
+.check { background: none; border: 0; cursor: pointer; color: var(--ink-3); font-size: 1rem; line-height: 1; padding: 0.15rem 0.3rem; border-radius: 4px; }
+.check:hover, .check.on { color: var(--walk); }
+.pl.been .title { color: var(--ink-2); }
+
 /* ---- news */
 .news-list { list-style: none; margin: 0; padding: 0; }
 .news-list li { padding: 0.5rem 0; border-bottom: 1px dotted var(--rule); }

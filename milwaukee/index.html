@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Milwaukee</title>
-<meta name="description" content="What could we go do in Milwaukee? Tonight, this weekend, this week — from the groups we follow and the whole city's calendars.">
+<meta name="description" content="What could we go do in Milwaukee? Tonight, this weekend, this week, or any time — from the groups we follow and the whole city's calendars.">
 <link rel="stylesheet" href="../_shared/hub-nav.css">
 <link rel="stylesheet" href="styles.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌆</text></svg>">
@@ -31,6 +31,7 @@
       <button class="win" role="tab" data-window="weekend">This weekend</button>
       <button class="win" role="tab" data-window="week">This week</button>
       <button class="win" role="tab" data-window="month">Next 30 days</button>
+      <button class="win" role="tab" data-window="anytime">Anytime</button>
     </div>
     <div class="filters">
       <div class="chips" id="kindChips" role="group" aria-label="What kind"></div>
@@ -40,7 +41,7 @@
   </section>
 
   <!-- The groups we follow: chips filter the list; the roster explains them -->
-  <section class="following" aria-labelledby="following-h">
+  <section class="following" id="followingSection" aria-labelledby="following-h">
     <div class="row-head">
       <h2 id="following-h">Following</h2>
       <button class="linkish" id="rosterToggle" aria-expanded="false">show the roster</button>
@@ -55,8 +56,8 @@
     <ul id="listsUl"></ul>
   </section>
 
-  <!-- The options themselves -->
-  <section class="options" aria-label="Options">
+  <!-- The dated options -->
+  <section class="options" id="optionsSection" aria-label="Options">
     <div id="starred" class="band starred" hidden>
       <h3>Marked</h3>
       <ol class="event-list" id="starredList"></ol>
@@ -66,6 +67,16 @@
       <ol class="event-list" id="runningList"></ol>
     </div>
     <div id="eventDays"></div>
+  </section>
+
+  <!-- The standing options: places that are there any day -->
+  <section class="places" id="placesSection" hidden aria-label="Places">
+    <div class="row-head">
+      <input type="search" id="placeSearch" placeholder="Search places…" aria-label="Search places" autocomplete="off">
+      <button class="linkish" id="practicalToggle" aria-expanded="false">show the practical directory</button>
+    </div>
+    <div id="placeGroups"></div>
+    <p class="note" id="placesSource"></p>
   </section>
 
   <!-- Headlines, last -->
@@ -82,8 +93,10 @@
 
 <footer class="colophon">
   <p>Events are read from the calendars of the groups we follow (<code>milwaukee/data/orgs.json</code>) and the city's option
-  generators (<code>sources.json</code>); headlines are the outlets' own feeds. <code>tools/milwaukee/build.py</code> does the
-  reading and a GitHub Action runs it every morning. Marks and filters are kept in this browser only.</p>
+  generators (<code>sources.json</code>); headlines are the outlets' own feeds; observances come from UWM's multifaith calendar;
+  the standing places began as UWM's "What's Around Campus" directory (<code>places.json</code>, hand-edited since).
+  <code>tools/milwaukee/build.py</code> does the reading and a GitHub Action runs it every morning. Marks, checks and filters are
+  kept in this browser only.</p>
 </footer>
 
 <script src="app.js"></script>

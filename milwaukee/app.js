@@ -1,11 +1,13 @@
 /* Milwaukee desk — "what could we go do?" Reads data/*.json and lays it
-   out around one question: when. No framework; nothing from the data is
-   ever put through innerHTML. Personal state (marks, filters) lives in this
-   browser's localStorage only. */
+   out around one question: when. Today, this weekend, this week, the next
+   30 days — or any time, which is the standing places. No framework;
+   nothing from the data is ever put through innerHTML. Personal state
+   (marks, checks, filters) lives in this browser's localStorage only. */
 (function () {
   'use strict';
 
   const STARS_KEY = 'mke-desk-stars-v1';
+  const PLACES_KEY = 'mke-desk-places-v1';
   const VIEW_KEY = 'mke-desk-view-v2';
   const STALE_DAYS = 3;          // freshness warning threshold
   const NEWS_PAGE = 20;          // headlines shown before "show more"
@@ -14,6 +16,7 @@
   const KIND_LABEL = { music: 'music', theater: 'theater', comedy: 'comedy', film: 'film', art: 'art', talks: 'talks & tours', books: 'books', markets: 'markets', outdoors: 'outdoors', food: 'food & drink', sports: 'sports', family: 'family', community: 'community' };
   const REACHES = ['walk', 'bus', 'car', 'online'];
   const REACH_LABEL = { walk: 'walk', bus: 'bus', car: 'car', online: 'online' };
+  const REACH_TITLE = { walk: 'From home on foot', bus: 'A bus ride: downtown, Third Ward, Walker\'s Point, Bay View', car: 'Needs the car', online: 'From the couch' };
 
   const $ = (id) => document.getElementById(id);
   const el = (tag, cls, text) => {
@@ -31,19 +34,25 @@
   };
 
   const saved = store.get(VIEW_KEY, {});
+  const savedPlaces = store.get(PLACES_KEY, {});
   const state = {
-    orgs: [], sources: [], news: null, events: null,
+    orgs: [], sources: [], news: null, events: null, observances: [], places: null,
     stars: new Set(store.get(STARS_KEY, [])),
+    placeStars: new Set(savedPlaces.stars || []),
+    been: savedPlaces.been || {},               // place id → date
     view: {
-      window: 'week',                       // today | weekend | week | month — asked fresh each visit
-      kinds: new Set(saved.kinds || []),    // empty = every kind
+      window: 'week',                           // today | weekend | week | month | anytime — asked fresh each visit
+      kinds: new Set(saved.kinds || []),        // empty = every kind
       reaches: new Set(saved.reaches || []),
       free: !!saved.free,
-      groups: !!saved.groups,               // only the groups we follow
+      groups: !!saved.groups,                   // only the groups we follow
+      cats: new Set(saved.cats || []),          // place categories; empty = every option category
+      practical: false, q: '',
       org: null, source: null, newsShown: NEWS_PAGE,
     },
   };
-  const saveView = () => store.set(VIEW_KEY, { kinds: [...state.view.kinds], reaches: [...state.view.reaches], free: state.view.free, groups: state.view.groups });
+  const saveView = () => store.set(VIEW_KEY, { kinds: [...state.view.kinds], reaches: [...state.view.reaches], free: state.view.free, groups: state.view.groups, cats: [...state.view.cats] });
+  const savePlaces = () => store.set(PLACES_KEY, { stars: [...state.placeStars], been: state.been });
 
   // ---- dates (event times are Milwaukee wall-clock strings: "2026-09-28T17:00" or "2026-09-28")
   const pad = (n) => String(n).padStart(2, '0');
@@ -70,7 +79,7 @@
   const shortDate = (isoUtc) => { if (!isoUtc) return ''; const d = new Date(isoUtc); return isNaN(d) ? '' : `${MON[d.getMonth()]} ${d.getDate()}`; };
   const ageDays = (isoUtc) => isoUtc ? (Date.now() - new Date(isoUtc).getTime()) / 864e5 : Infinity;
 
-  // The four windows, as [first day, last day]
+  // The dated windows, as [first day, last day]
   function windowRange(w) {
     const t = todayKey();
     if (w === 'today') return [t, t];
@@ -91,12 +100,15 @@
     $('today').textContent = (() => { const d = new Date(); return `${DOW[d.getDay()]}, ${MON[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`; })();
     const get = (p) => fetch(p, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`${p}: ${r.status}`); return r.json(); });
     try {
-      const [orgs, sources, news, events, obs] = await Promise.all([get('data/orgs.json'), get('data/sources.json').catch(() => ({ sources: [] })), get('data/news.json'), get('data/events.json'), get('data/observances.json').catch(() => ({ observances: [] }))]);
+      const [orgs, sources, news, events, obs, places] = await Promise.all([
+        get('data/orgs.json'), get('data/sources.json').catch(() => ({ sources: [] })), get('data/news.json'), get('data/events.json'),
+        get('data/observances.json').catch(() => ({ observances: [] })), get('data/places.json').catch(() => null)]);
       state.orgs = orgs.orgs || [];
       state.sources = sources.sources || [];
       state.news = news;
       state.events = events;
       state.observances = obs.observances || [];
+      state.places = places;
     } catch (e) {
       $('freshness').textContent = 'could not load the data files';
       $('optionsNote').textContent = location.protocol === 'file:'
@@ -111,6 +123,7 @@
     renderOrgChips();
     renderRoster();
     renderLists();
+    wirePlaces();
     renderOptions();
     renderSourceChips();
     renderNews();
@@ -180,8 +193,18 @@
       b.classList.toggle('on', b.dataset.window === state.view.window);
       b.setAttribute('aria-selected', String(b.dataset.window === state.view.window));
       if (b.dataset.window === 'today') b.textContent = new Date().getHours() >= 15 ? 'Tonight' : 'Today';
+      if (b.dataset.window === 'anytime') b.hidden = !state.places;
       b.onclick = () => { state.view.window = b.dataset.window; renderWindows(); renderOptions(); };
     });
+  }
+
+  function reachChip(r, count, on, onClick) {
+    const b = el('button', `chip reach-${r}` + (on ? ' on' : '') + (count ? '' : ' dim')); b.type = 'button';
+    b.append(el('span', '', REACH_LABEL[r])); b.append(el('span', 'n', String(count || 0)));
+    b.title = REACH_TITLE[r];
+    b.setAttribute('aria-pressed', String(on));
+    b.onclick = onClick;
+    return b;
   }
 
   function renderFilterChips(candidates) {
@@ -204,14 +227,7 @@
     const rc = $('reachChips'); rc.textContent = '';
     const reachCount = {};
     candidates.forEach((e) => { if (passesFilters(e, 'reaches') && e.reach) reachCount[e.reach] = (reachCount[e.reach] || 0) + 1; });
-    REACHES.forEach((r) => {
-      const b = el('button', `chip reach-${r}` + (v.reaches.has(r) ? ' on' : '') + (reachCount[r] ? '' : ' dim')); b.type = 'button';
-      b.append(el('span', '', REACH_LABEL[r])); b.append(el('span', 'n', String(reachCount[r] || 0)));
-      b.title = { walk: 'From home on foot', bus: 'A bus ride: downtown, Third Ward, Walker\'s Point, Bay View', car: 'Needs the car', online: 'From the couch' }[r];
-      b.setAttribute('aria-pressed', String(v.reaches.has(r)));
-      b.onclick = () => { if (v.reaches.has(r)) v.reaches.delete(r); else v.reaches.add(r); saveView(); renderOptions(); };
-      rc.append(b);
-    });
+    REACHES.forEach((r) => rc.append(reachChip(r, reachCount[r], v.reaches.has(r), () => { if (v.reaches.has(r)) v.reaches.delete(r); else v.reaches.add(r); saveView(); renderOptions(); })));
     const freeN = candidates.filter((e) => passesFilters(e, 'free') && e.free === true).length;
     const fb = el('button', 'chip free-chip sep-left' + (v.free ? ' on' : '') + (freeN ? '' : ' dim')); fb.type = 'button';
     fb.append(el('span', '', 'free')); fb.append(el('span', 'n', String(freeN)));
@@ -243,7 +259,8 @@
       b.onclick = () => {
         if (!feeds) { window.open(o.calendar || o.site, '_blank', 'noopener'); return; }
         state.view.org = state.view.org === o.id ? null : o.id;
-        renderOrgChips(); renderOptions();
+        if (state.view.org && state.view.window === 'anytime') state.view.window = 'month';
+        renderWindows(); renderOrgChips(); renderOptions();
         if (state.view.org) $('windows').scrollIntoView({ behavior: 'smooth', block: 'start' });
       };
       wrap.append(b);
@@ -298,7 +315,7 @@
     });
   }
 
-  // ---- one row
+  // ---- one event row
   function metaLine(e, o, opts) {
     const meta = el('div', 'meta');
     meta.append(el('span', 'org-tag' + (e.via === 'source' ? ' src-tag' : ''), o.name));
@@ -313,14 +330,15 @@
     return meta;
   }
 
-  function starButton(key) {
-    const on = state.stars.has(key);
+  function starButton(key, set, save) {
+    const on = set.has(key);
     const b = el('button', 'star' + (on ? ' on' : ''), on ? '★' : '☆'); b.type = 'button';
     b.title = on ? 'Unmark' : 'Mark this one';
     b.setAttribute('aria-pressed', String(on));
-    b.onclick = () => { if (state.stars.has(key)) state.stars.delete(key); else state.stars.add(key); store.set(STARS_KEY, [...state.stars]); renderOptions(); };
+    b.onclick = () => { if (set.has(key)) set.delete(key); else set.add(key); save(); renderOptions(); };
     return b;
   }
+  const eventStar = (key) => starButton(key, state.stars, () => store.set(STARS_KEY, [...state.stars]));
 
   function eventRow(e, opts) {
     const li = el('li', 'ev' + (e.start.slice(0, 10) < todayKey() ? ' past' : ''));
@@ -334,7 +352,7 @@
     if (e.run_through && e.run_through !== e.start.slice(0, 10)) main.append(el('div', 'perfs', `Runs through ${dayLabel(e.run_through)}`));
     if (e.summary && state.view.org === e.org) main.append(el('div', 'sum', e.summary));
     li.append(main);
-    li.append(starButton(evKey(e)));
+    li.append(eventStar(evKey(e)));
     return li;
   }
 
@@ -342,37 +360,40 @@
   function runRow(perfs, range) {
     const first = perfs[0];
     const li = el('li', 'ev');
-    const days = state.seriesDays.get(first.series);
-    const allDays = [...days].sort();
+    const allDays = [...state.seriesDays.get(first.series)].sort();
     li.append(el('span', 't soft', `${allDays.length} dates`));
     const main = el('div', 'main');
     const title = el('div', 'title');
     if (first.url) title.append(link(first.title, first.url)); else title.textContent = first.title;
     main.append(title);
     main.append(metaLine(first, listerOf(first)));
-    // the performances inside the window, grouped by day
     const byDay = new Map();
     perfs.forEach((p) => { const k = p.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(p); });
     const dayKeys = [...byDay.keys()].sort();
     const parts = dayKeys.slice(0, 8).map((k) => {
       const times = byDay.get(k).map((p) => p.time_unknown ? 'see listing' : p.all_day ? 'all day' : timeLabel(p.start));
-      const uniq = [...new Set(times)];
-      return `${dayShort(k)} ${monthDay(k)} ${uniq.join(' & ')}`;
+      return `${dayShort(k)} ${monthDay(k)} ${[...new Set(times)].join(' & ')}`;
     });
     const perfsEl = el('div', 'perfs');
-    const lead = el('b', '', range[0] === range[1] ? '' : `${WINDOW_WORD[state.view.window]}: `);
-    if (lead.textContent) perfsEl.append(lead);
+    if (range[0] !== range[1] && WINDOW_WORD[state.view.window]) perfsEl.append(el('b', '', `${WINDOW_WORD[state.view.window]}: `));
     perfsEl.append(parts.join(' · ') + (dayKeys.length > 8 ? ` · +${dayKeys.length - 8} more days` : ''));
     const last = allDays[allDays.length - 1];
     if (last > range[1]) perfsEl.append(` · through ${monthDay(last)}`);
     main.append(perfsEl);
     li.append(main);
-    li.append(starButton(runKey(first)));
+    li.append(eventStar(runKey(first)));
     return li;
   }
 
   // ---- the options for the chosen window
   function renderOptions() {
+    const anytime = state.view.window === 'anytime' && !!state.places;
+    $('optionsSection').hidden = anytime;
+    $('listsStrip').hidden = anytime || !$('listsUl').children.length;
+    $('followingSection').hidden = anytime;
+    $('placesSection').hidden = !anytime;
+    if (anytime) { renderPlaces(); return; }
+
     const all = state.events.events || [];
     const range = windowRange(state.view.window);
     const cutoff = state.view.window === 'today' ? Date.now() - 60 * 60 * 1000 : 0;
@@ -409,12 +430,11 @@
       rl.append(runRow(perfs, range));
     });
 
-    // the day lists
+    // the day lists (days with an observance but nothing listed still get a header)
     const days = $('eventDays'); days.textContent = '';
     const byDay = new Map();
     singles.forEach((e) => { const k = e.start.slice(0, 10); if (!byDay.has(k)) byDay.set(k, []); byDay.get(k).push(e); });
     const rank = (e) => (e.time_unknown ? 2 : e.all_day ? 1 : 0);
-    // days with observances but nothing listed still get a header, so the observance shows
     const dayKeys = new Set(byDay.keys());
     for (let k = range[0]; k <= range[1]; k = addDays(k, 1)) if (obsFor(k).length) dayKeys.add(k);
     [...dayKeys].sort().forEach((k) => {
@@ -430,8 +450,7 @@
         p.append('Observed: ');
         obs.forEach((o, i) => {
           if (i) p.append(' · ');
-          const s = el('span', '', o.name);
-          s.title = o.note || '';
+          const s = el('span', '', o.name); s.title = o.note || '';
           p.append(s);
           const extra = [];
           if (o.tradition) extra.push(o.tradition);
@@ -441,10 +460,11 @@
         });
         sec.append(p);
       }
-      if (!byDay.has(k)) { days.append(sec); return; }
-      const ol = el('ol', 'event-list');
-      byDay.get(k).sort((a, b) => rank(a) - rank(b) || a.start.localeCompare(b.start) || a.title.localeCompare(b.title)).forEach((e) => ol.append(eventRow(e)));
-      sec.append(ol);
+      if (byDay.has(k)) {
+        const ol = el('ol', 'event-list');
+        byDay.get(k).sort((a, b) => rank(a) - rank(b) || a.start.localeCompare(b.start) || a.title.localeCompare(b.title)).forEach((e) => ol.append(eventRow(e)));
+        sec.append(ol);
+      }
       days.append(sec);
     });
     if (!dayKeys.size && !runs.size) days.append(el('p', 'empty', 'Nothing on the calendars for that. Widen the window or drop a filter.'));
@@ -458,6 +478,104 @@
     const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
     const what = runs.size ? `${plural(singles.length, 'thing')} and ${plural(runs.size, 'run')}` : plural(singles.length, 'thing');
     note.textContent = `${what} ${WINDOW_WORD[state.view.window]}` + (orgName ? ` from ${orgName}` : state.view.groups ? ' from the groups we follow' : ` · ${fromGroups} from the groups we follow`) + (errs.length ? ` · could not read: ${errs.join(', ')}` : '');
+  }
+
+  // ---- Anytime: the standing places
+  function wirePlaces() {
+    if (!state.places) return;
+    const s = $('placeSearch');
+    s.oninput = () => { state.view.q = s.value.trim().toLowerCase(); renderPlaces(); };
+    const t = $('practicalToggle');
+    t.onclick = () => { state.view.practical = !state.view.practical; t.setAttribute('aria-expanded', String(state.view.practical)); t.textContent = state.view.practical ? 'hide the practical directory' : 'show the practical directory'; renderPlaces(); };
+    $('placesSource').textContent = `Seeded from UWM's "What's Around Campus" directory (${state.places.source || 'yearly PDF'}); distances are from campus, a ten-minute walk from home. Mark a place with ★, check it off when you've been.`;
+  }
+
+  const placeCats = () => (state.places.categories || []);
+  const placeMatches = (p, v, ignoreCat) => {
+    if (v.q && !(`${p.name} ${p.addr} ${p.note || ''} ${p.category}`.toLowerCase().includes(v.q))) return false;
+    if (!ignoreCat && v.cats.size && !v.cats.has(p.category)) return false;
+    if (v.reaches.size && !(p.reach && v.reaches.has(p.reach))) return false;
+    return true;
+  };
+
+  function placeRow(p) {
+    const been = state.been[p.id];
+    const li = el('li', 'pl' + (been ? ' been' : ''));
+    li.append(el('span', 'mi', p.miles != null ? `${p.miles} mi` : ''));
+    const main = el('div', 'main');
+    const title = el('div', 'title');
+    if (p.site) title.append(link(p.name, p.site)); else title.textContent = p.name;
+    main.append(title);
+    const meta = el('div', 'meta');
+    const bits = [];
+    if (p.addr) bits.push(p.addr);
+    if (p.locations && p.locations.length > 1) bits.push(`${p.locations.length} locations`);
+    if (p.phone) bits.push(p.phone);
+    meta.append(bits.join(' · '));
+    if (p.reach) meta.append(el('span', 'tag reach reach-' + p.reach, REACH_LABEL[p.reach]));
+    if (been) meta.append(el('span', 'tag been', `been · ${monthDay(been)}`));
+    main.append(meta);
+    if (p.note) main.append(el('p', 'note', p.note));
+    li.append(main);
+    const acts = el('span', 'acts');
+    acts.append(starButton(p.id, state.placeStars, savePlaces));
+    const c = el('button', 'check' + (been ? ' on' : ''), been ? '✓' : '○'); c.type = 'button';
+    c.title = been ? 'Uncheck' : 'We went';
+    c.onclick = () => { if (state.been[p.id]) delete state.been[p.id]; else state.been[p.id] = todayKey(); savePlaces(); renderPlaces(); };
+    acts.append(c);
+    li.append(acts);
+    return li;
+  }
+
+  function renderPlaces() {
+    const v = state.view;
+    const all = state.places.places || [];
+    const cats = placeCats();
+    const optionCats = cats.filter((c) => c.option);
+    const practicalCats = cats.filter((c) => !c.option);
+    const pool = all.filter((p) => p.option || v.practical);
+
+    // category chips (in place of kinds) and reach chips (no free / groups here)
+    const kc = $('kindChips'); kc.textContent = '';
+    const count = {};
+    pool.forEach((p) => { if (placeMatches(p, v, true)) count[p.category] = (count[p.category] || 0) + 1; });
+    const any = el('button', 'chip' + (v.cats.size ? '' : ' on'), 'anywhere'); any.type = 'button';
+    any.onclick = () => { v.cats.clear(); saveView(); renderPlaces(); };
+    kc.append(any);
+    (v.practical ? cats : optionCats).forEach((c) => {
+      const b = el('button', 'chip' + (v.cats.has(c.key) ? ' on' : '') + (count[c.key] ? '' : ' dim')); b.type = 'button';
+      b.append(el('span', '', c.label.toLowerCase())); b.append(el('span', 'n', String(count[c.key] || 0)));
+      b.setAttribute('aria-pressed', String(v.cats.has(c.key)));
+      b.onclick = () => { if (v.cats.has(c.key)) v.cats.delete(c.key); else v.cats.add(c.key); saveView(); renderPlaces(); };
+      kc.append(b);
+    });
+    const rc = $('reachChips'); rc.textContent = '';
+    const reachCount = {};
+    pool.forEach((p) => { if (p.reach && (!v.cats.size || v.cats.has(p.category)) && (!v.q || placeMatches(p, { ...v, reaches: new Set() }))) reachCount[p.reach] = (reachCount[p.reach] || 0) + 1; });
+    ['walk', 'bus', 'car'].forEach((r) => rc.append(reachChip(r, reachCount[r], v.reaches.has(r), () => { if (v.reaches.has(r)) v.reaches.delete(r); else v.reaches.add(r); saveView(); renderPlaces(); })));
+
+    // groups: marked first, then each category in the directory's order
+    const groups = $('placeGroups'); groups.textContent = '';
+    const shown = pool.filter((p) => placeMatches(p, v));
+    const marked = shown.filter((p) => state.placeStars.has(p.id) || p.fav);
+    const addGroup = (label, rows, cls) => {
+      if (!rows.length) return;
+      const sec = el('section', 'pgroup' + (cls ? ' ' + cls : ''));
+      const h = el('h3', '', label); h.append(el('span', 'n', String(rows.length)));
+      sec.append(h);
+      const ol = el('ol', 'event-list');
+      rows.slice().sort((a, b) => (a.miles == null) - (b.miles == null) || (a.miles || 0) - (b.miles || 0) || a.name.localeCompare(b.name)).forEach((p) => ol.append(placeRow(p)));
+      sec.append(ol);
+      groups.append(sec);
+    };
+    addGroup('Marked', marked, 'marked');
+    (v.practical ? cats : optionCats).forEach((c) => addGroup(c.label, shown.filter((p) => p.category === c.key && !(state.placeStars.has(p.id) || p.fav))));
+    if (!shown.length) groups.append(el('p', 'empty', 'No place matches. Clear the search or a filter.'));
+
+    const walk = shown.filter((p) => p.reach === 'walk').length;
+    const beenN = shown.filter((p) => state.been[p.id]).length;
+    $('optionsNote').classList.remove('err');
+    $('optionsNote').textContent = `${shown.length} places` + (v.practical ? ' including the practical directory' : '') + ` · ${walk} on foot` + (beenN ? ` · ${beenN} been to` : '') + ` · ${practicalCats.length} practical categories ${v.practical ? 'shown' : 'folded away'}`;
   }
 
   // ---- news
