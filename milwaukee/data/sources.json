@@ -58,15 +58,33 @@
   {
    "id": "eventbrite",
    "name": "Eventbrite (Milwaukee)",
-   "what": "Everything self-listed: classes, pop-ups, fundraisers, the odd shuttle bus. Dates only, no hours.",
+   "what": "Everything self-listed: shows, classes, pop-ups, fundraisers, trivia nights. Read from the listing pages' embedded data, so times, venues and categories come through.",
    "site": "https://www.eventbrite.com/d/wi--milwaukee/events/",
    "feed": {
-    "type": "jsonld",
+    "type": "eventbrite",
     "url": "https://www.eventbrite.com/d/wi--milwaukee/events/",
     "pages": [
-     "https://www.eventbrite.com/d/wi--milwaukee/free--events--this-weekend/"
+     "https://www.eventbrite.com/d/wi--milwaukee/events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/events--this-week/",
+     "https://www.eventbrite.com/d/wi--milwaukee/events--this-weekend/",
+     "https://www.eventbrite.com/d/wi--milwaukee/events--next-week/",
+     "https://www.eventbrite.com/d/wi--milwaukee/free--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/music--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/comedy--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/performing-and-visual-arts--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/arts--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/food-and-drink--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/film-and-media--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/community--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/travel-and-outdoor--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/hobbies--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/science-and-tech--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/family-and-education--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/holiday--events/",
+     "https://www.eventbrite.com/d/wi--milwaukee/sports-and-fitness--events/"
     ],
-    "exclude": "shuttle|bus to|parking|webinar|online|virtual|boat (sale|show)|pre-owned|dealership|vehicle sale|liquidation"
+    "exclude": "shuttle|bus to|parking|webinar|boat (sale|show)|pre-owned|dealership|vehicle sale|liquidation|job fair|career fair|certification|cpr class|notary|troubleshooting|install|hvac|beers with peers|networking|mixer|open enrollment|info session|realtor|licensing|continuing education",
+    "exclude_categories": "business & professional|school activities|auto, boat & air"
    }
   },
   {

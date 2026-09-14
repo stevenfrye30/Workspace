@@ -656,7 +656,74 @@ def adapter_uwm(feed: dict, today: date, horizon: date) -> list[dict]:
     return out
 
 
-ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld, "boswell": adapter_boswell, "mlb": adapter_mlb, "uwm": adapter_uwm}
+def adapter_eventbrite(feed: dict, today: date, horizon: date) -> list[dict]:
+    """Eventbrite's listing pages embed window.__SERVER_DATA__ with full
+    'destination_event' objects — start and end times, venue with zip, the
+    category and subcategory, cancellation — far better than the page's
+    JSON-LD, which carries dates only. `pages` lists the listing URLs to
+    read (the main page plus category and this-week pages; each shows at
+    most 20–60); events are deduped by id across them."""
+    out, seen, failed = [], set(), []
+    for page in feed.get("pages") or [feed["url"]]:
+        try:
+            html = fetch(page, "text/html")
+            i = html.find("window.__SERVER_DATA__")
+            if i < 0:
+                failed.append(f"{page}: no data block")
+                continue
+            data, _ = json.JSONDecoder().raw_decode(html[html.find("{", i):])
+        except (OSError, ValueError) as ex:
+            failed.append(f"{page}: {type(ex).__name__}")
+            continue
+        stack = [data]
+        while stack:
+            x = stack.pop()
+            if isinstance(x, dict):
+                if x.get("_type") == "destination_event":
+                    eid = x.get("id") or x.get("url")
+                    if eid in seen or x.get("is_cancelled") or x.get("is_online_event"):
+                        continue
+                    seen.add(eid)
+                    sd, st = x.get("start_date") or "", x.get("start_time") or ""
+                    if not sd:
+                        continue
+                    ed, et = x.get("end_date") or "", x.get("end_time") or ""
+                    venue = x.get("primary_venue") or {}
+                    addr = venue.get("address") or {}
+                    tags = []
+                    for t in x.get("tags") or []:
+                        if t.get("prefix") in ("EventbriteSubCategory", "EventbriteCategory"):
+                            tags.append(clean(t.get("display_name") or ""))
+                        elif t.get("prefix") == "EventbriteFormat" and (t.get("display_name") or "").startswith("Tour"):
+                            tags.append("Tour")
+                    ta = x.get("ticket_availability") or {}
+                    free = True if (x.get("is_free") is True or ta.get("is_free") is True) else None
+                    out.append(_blank(
+                        clean(x.get("name")),
+                        f"{sd}T{st[:5]}" if st else sd,
+                        end=(f"{ed}T{et[:5]}" if ed and et else ed),
+                        all_day=not st, time_unknown=not st,
+                        url=x.get("url") or "",
+                        where=clean(venue.get("name") or "", 120),
+                        addr=clean(addr.get("address_1") or "", 120),
+                        zip=str(addr.get("postal_code") or "")[:5],
+                        city=clean(addr.get("city") or ""),
+                        summary=clean(x.get("summary"), 200),
+                        tags=[t for t in tags if t][:3],
+                        free=free,
+                    ))
+                    continue
+                stack.extend(v for v in x.values() if isinstance(v, (dict, list)))
+            elif isinstance(x, list):
+                stack.extend(x)
+    if failed and not out:
+        raise OSError("every Eventbrite page failed: " + ", ".join(failed))
+    if failed:
+        print(f"         eventbrite: {len(failed)} page(s) failed — {', '.join(failed)}", file=sys.stderr)
+    return out
+
+
+ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld, "boswell": adapter_boswell, "mlb": adapter_mlb, "uwm": adapter_uwm, "eventbrite": adapter_eventbrite}
 
 
 # ----------------------------------------------------------------- normalization
@@ -678,6 +745,18 @@ CATEGORY_KIND = [
     (r"^(sports?|athletics|games?)$", "sports"),
     (r"^(kids|family|families|family programs?|youth( \+ family)?|children|teens?|story ?time)$", "family"),
     (r"^(art|arts|gallery|exhibits?|exhibitions?|art studio|drop-in tours?|visual arts?)$", "art"),
+    # Eventbrite's own category and subcategory names (subcategory is listed first, so it wins)
+    (r"^(rock|pop|jazz|hip hop ?/ ?rap|country|electronic|folk|blues|classical|top 40|alternative|metal|indie|r&b|latin|reggae|edm ?/ ?electronic|singer ?/ ?songwriter|world|acoustic|americana|bluegrass|punk ?/ ?hardcore|psychedelic|dj ?/ ?dance|other music|experimental)$", "music"),
+    (r"^(theatre|theater|musical|opera|ballet|dance|circus|orchestra|choir|performing & visual arts)$", "theater"),
+    (r"^(fine art|painting|drawing & painting|craft|crafts|design|sculpture|photography|literary arts|jewelry|knitting|drawing)$", "art"),
+    (r"^(film|tv|anime|film, media & entertainment)$", "film"),
+    (r"^(beer|wine|spirits|food|drink|food & drink|cocktails?)$", "food"),
+    (r"^(sports & fitness|running|cycling|fitness|walking|obstacles|golf|basketball|baseball|hockey|soccer|football|tennis|swimming & water sports|weightlifting|kickball|softball|volleyball|wrestling|lacrosse|rugby|exercise)$", "sports"),
+    (r"^(travel & outdoor|hiking|climbing|kayaking|canoeing|rafting|camping|hunting|fishing)$", "outdoors"),
+    (r"^(family & education|parenting|baby|kids|children|education|alumni|reunion)$", "family"),
+    (r"^(science & technology|science|technology|high tech|biotech|robotics|medicine|social media|mobile)$", "talks"),
+    (r"^(books|literary arts|poetry|writing)$", "books"),
+    (r"^(comedy|stand[- ]?up)$", "comedy"),
 ]
 # Title words → kind, in order: the unmistakable before the ambiguous. "tour"
 # is deliberately NOT a music word (walking tours, Doors Open tours).
@@ -919,24 +998,54 @@ def build_events() -> dict | None:
         print("REFUSE: every followed-org feed failed — not writing events.json", file=sys.stderr)
         return None
 
-    # cross-registry dedupe: an org's own listing beats a citywide copy of it
-    merged, by_key = [], {}
+    # cross-registry dedupe: an org's own listing beats a citywide copy of it.
+    # Two keys: the exact one (normalized title + day), and a looser one for
+    # the same day at a followed org's own venue with the same opening words
+    # — Eventbrite retitles Boswell's nights ("… - a Boswell Book Company event").
+    org_names = {o["id"]: o["name"].lower() for o in orgs}
+    merged, by_key, by_loose = [], {}, {}
+
+    def loose_key(e):
+        words = dedupe_key(e)[0].split()
+        return (e["start"][:10], " ".join(words[:3])) if len(words) >= 3 else None
+
+    def venue_org(e):
+        where = (e.get("where") or "").lower()
+        return next((oid for oid, nm in org_names.items() if nm and nm in where), None)
+
+    def fold(keeper, e):
+        other = e.get("org") or e.get("src")
+        keeper.setdefault("also", [])
+        if other not in keeper["also"]:
+            keeper["also"].append(other)
+        if keeper.get("free") is None and e.get("free") is not None:
+            keeper["free"] = e["free"]
+        if not keeper.get("reach") and e.get("reach"):
+            keeper["reach"] = e["reach"]
+        if keeper.get("time_unknown") and not e.get("time_unknown") and e["start"][:10] == keeper["start"][:10]:
+            keeper["start"], keeper["all_day"], keeper["time_unknown"] = e["start"], False, False  # the copy knew the hour
+            if e.get("end"):
+                keeper["end"] = e["end"]
+
     for e in sorted(events, key=lambda e: (0 if e["via"] == "org" else 1, e["start"])):
         k = dedupe_key(e)
         mine = e.get("org") or e.get("src")
         if k in by_key and (by_key[k].get("org") or by_key[k].get("src")) != mine:
-            keeper = by_key[k]
-            other = mine
-            keeper.setdefault("also", [])
-            if other not in keeper["also"]:
-                keeper["also"].append(other)
-            if not keeper.get("free") and e.get("free") is not None and keeper.get("free") is None:
-                keeper["free"] = e["free"]
-            if not keeper.get("reach") and e.get("reach"):
-                keeper["reach"] = e["reach"]
+            fold(by_key[k], e)
             continue
+        lk = loose_key(e)
+        if e["via"] == "source" and lk and lk in by_loose:
+            keeper = by_loose[lk]
+            if keeper.get("org") and venue_org(e) == keeper["org"]:
+                fold(keeper, e)
+                continue
         by_key.setdefault(k, e)
+        if lk and e["via"] == "org":
+            by_loose.setdefault(lk, e)
         merged.append(e)
+    for e in merged:  # time_unknown was popped in normalize(); a fold may have re-added it as False
+        if e.get("time_unknown") is False:
+            e.pop("time_unknown", None)
     dropped = len(events) - len(merged)
     merged.sort(key=lambda e: (e["start"], e.get("org") or e.get("src") or ""))
     posts.sort(key=lambda p: p["published"] or "", reverse=True)
