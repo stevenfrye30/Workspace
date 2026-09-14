@@ -145,10 +145,16 @@ section + section { margin-top: 1.6rem; }
 .ev .main { min-width: 0; }
 .ev .title { font-weight: 500; }
 .ev .title a { color: inherit; }
-.ev .meta { color: var(--ink-3); font-size: 0.82rem; margin-top: 0.05rem; }
+/* 2026-09-14 — the meta line is a wrapping row: the script appends its
+ * tags with no space between them, so as inline no-wrap spans they formed
+ * one unbreakable run that pushed phones sideways. The gap replaces the
+ * tags' left margin. Same for the places list below. */
+.ev .meta { color: var(--ink-3); font-size: 0.82rem; margin-top: 0.05rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.4rem; }
 .ev .meta .org-tag { color: var(--accent); font-weight: 500; }
 .ev .meta .src-tag { color: var(--ink-2); font-weight: 400; }
-.ev .meta .tag { margin-left: 0.4rem; border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.3rem; font-size: 0.75rem; white-space: nowrap; }
+.ev .meta .tag { border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.3rem; font-size: 0.75rem; white-space: nowrap; }
+/* A tag longer than the column (320px phones) truncates instead of spilling. */
+.ev .meta .tag, .pl .meta .tag { min-width: 0; max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .ev .meta .tag.kind { border-color: transparent; background: var(--chip); }
 .ev .meta .tag.reach-walk { color: var(--walk); border-color: color-mix(in srgb, var(--walk) 40%, transparent); }
 .ev .meta .tag.reach-bus { color: var(--bus); border-color: color-mix(in srgb, var(--bus) 40%, transparent); }
@@ -186,8 +192,8 @@ section + section { margin-top: 1.6rem; }
 .pl .main { min-width: 0; }
 .pl .title { font-weight: 500; }
 .pl .title a { color: inherit; }
-.pl .meta { color: var(--ink-3); font-size: 0.82rem; margin-top: 0.05rem; }
-.pl .meta .tag { margin-left: 0.4rem; border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.3rem; font-size: 0.75rem; white-space: nowrap; }
+.pl .meta { color: var(--ink-3); font-size: 0.82rem; margin-top: 0.05rem; display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.15rem 0.4rem; }
+.pl .meta .tag { border: 1px solid var(--rule); border-radius: 3px; padding: 0 0.3rem; font-size: 0.75rem; white-space: nowrap; }
 .pl .meta .tag.reach-walk { color: var(--walk); border-color: color-mix(in srgb, var(--walk) 40%, transparent); }
 .pl .meta .tag.reach-bus { color: var(--bus); border-color: color-mix(in srgb, var(--bus) 40%, transparent); }
 .pl .meta .tag.reach-car { color: var(--ink-3); }

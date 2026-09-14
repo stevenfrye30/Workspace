@@ -56,7 +56,13 @@
 
     /* Let the main area grow and vertically center its content so the
        grid sits balanced on the page, with the footer pinned at bottom. */
+    /* 2026-09-14 — phones scroll one way only. The root clips sideways
+       overflow (a net under the grid fix in the media queries below,
+       not a substitute for it), and the main column takes the shell's
+       width instead of growing to fit its widest child. */
+    html { overflow-x: hidden; }
     .atlas-main {
+      width: 100%;
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
@@ -402,11 +408,15 @@
       /* Stacked layouts top-align and scroll naturally instead of
          vertically centering (avoids clipping when taller than viewport). */
       .atlas-main { justify-content: flex-start; padding-top: 0.9rem; }
-      .doorways {
-        grid-template-columns: repeat(2, 1fr);
-        column-gap: 1rem;
-        row-gap: 1rem;
-      }
+      /* 2026-09-14 — the tablet/phone column counts are written with
+         two classes so they outrank the desktop .doorways.main /
+         .doorways.small rules (which otherwise won the cascade and held
+         five columns on a phone: the sideways scroll). minmax(0, 1fr)
+         lets a card shrink below its longest word instead of forcing
+         the grid wide. */
+      .doorways { column-gap: 1rem; row-gap: 1rem; }
+      .doorways.main  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .doorways.small { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .doorway-name { font-size: 1.4rem; }
       .doorway-icon-wrap { width: 32px; height: 32px; }
       .doorway-icon { width: 20px; height: 20px; }
@@ -414,8 +424,9 @@
 
     @media (max-width: 600px) {
       .atlas-main { padding-top: 1rem; }
-      .doorways {
-        grid-template-columns: 1fr;
+      .doorways.main,
+      .doorways.small {
+        grid-template-columns: minmax(0, 1fr);
         row-gap: 0.85rem;
       }
       .doorway { min-height: 0; padding: 0.7rem 0.95rem 0.75rem 0.95rem; }
