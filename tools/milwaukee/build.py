@@ -227,13 +227,6 @@ NEWS_SOURCES = [
     ("Wisconsin Watch", "https://wisconsinwatch.org/feed/", "https://wisconsinwatch.org/", "state", None),
 ]
 
-# Human-curated lists of things to do — the week's best options, by people
-LIST_HINTS = re.compile(
-    r"\b(things to do|things to know and do|this weekend|weekend guide|guide to|ways to|best (of|places|bars|restaurants|things)|"
-    r"where to|what to do|this month in|concerts coming|brew city buzz|to-do list|roundup|what's happening|happening this)\b|"
-    r"^\d+ (things|ways|places|events|festivals|concerts|shows|spots|reasons|free)\b", re.I)
-LIST_SKIP = re.compile(r"\b(weather|forecast|quiz|recap of|week's greatest hits)\b", re.I)
-
 EVENT_HINTS = re.compile(
     r"\b(festival|fest\b|parade|concert|opens|kicks? off|returns?|tonight|this weekend|weekend|"
     r"marathon|race|opening day|ribbon[- ]cutting|celebration|exhibit|premiere|block party|"
@@ -272,7 +265,6 @@ def build_news() -> dict | None:
                 "summary": it["summary"],
                 "published": it["published"].isoformat() if it["published"] else None,
                 "event": bool(EVENT_HINTS.search(it["title"] + " " + it["summary"])) or kind == "roundup",
-                "list": kind == "roundup" or (bool(LIST_HINTS.search(it["title"])) and not LIST_SKIP.search(it["title"])),
             })
             kept += 1
             if kept >= NEWS_PER_SOURCE:

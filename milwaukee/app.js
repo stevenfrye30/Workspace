@@ -124,7 +124,6 @@
     renderWindows();
     renderOrgChips();
     renderRoster();
-    renderLists();
     wirePlaces();
     renderOptions();
     renderSourceChips();
@@ -304,19 +303,6 @@
     };
   }
 
-  // ---- this week's lists (human-curated)
-  function renderLists() {
-    const items = (state.news.items || []).filter((i) => i.list).slice(0, 6);
-    const wrap = $('listsStrip'); const ul = $('listsUl'); ul.textContent = '';
-    wrap.hidden = items.length === 0;
-    items.forEach((i) => {
-      const li = el('li');
-      li.append(el('span', 'src', `${i.source} · ${shortDate(i.published)}`));
-      li.append(link(i.title, i.url));
-      ul.append(li);
-    });
-  }
-
   // ---- one event row
   function metaLine(e, o, opts) {
     const meta = el('div', 'meta');
@@ -391,7 +377,6 @@
   function renderOptions() {
     const anytime = state.view.window === 'anytime' && !!state.places;
     $('optionsSection').hidden = anytime;
-    $('listsStrip').hidden = anytime || !$('listsUl').children.length;
     $('followingSection').hidden = anytime;
     $('placesSection').hidden = !anytime;
     if (anytime) { renderPlaces(); return; }
