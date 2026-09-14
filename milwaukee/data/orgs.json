@@ -1,5 +1,5 @@
 {
- "_about": "The organizations we follow. Hand-edited — this is the one file you touch for groups. Each entry: id (stable slug), name, what (why we care, one line), where (address or neighborhood), site, calendar (their own events page), feed (optional: how the build tool reads their calendar — type tribe|ics|jsonld|boswell|rss; leave it out for link-only orgs), kind (default kind for their events when a listing gives no better clue: music theater comedy film art talks books markets outdoors food sports family community), reach (walk|bus|car from home, used the same way), tags. tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Started 2026-09-13 from the old community/events notes — prune and add freely.",
+ "_about": "The organizations we follow. Hand-edited — this is the one file you touch for groups. Each entry: id (stable slug), name, what (why we care, one line), where (address or neighborhood), site, calendar (their own events page), feed (optional: how the build tool reads their calendar — type tribe|ics|jsonld|boswell|rss; leave it out for link-only orgs), kind (default kind for their events when a listing gives no better clue: music theater comedy film art talks books markets outdoors food sports family community), reach (walk|bus|car from home, used the same way), tags. Optional knobs: kind_strict (always use the default kind, e.g. a bookstore), reach_strict (a campus: on campus unless the title is a trip out of town), cap (max events kept, default 80), and on the feed: exclude (title regex) and exclude_categories (listing-category regex), depts (uwm: the sub-site slugs). tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Started 2026-09-13 from the old community/events notes — prune and add freely.",
  "v": 1,
  "orgs": [
   {
@@ -9,11 +9,17 @@
    "where": "Curtin Hall, 3243 N Downer Ave",
    "site": "https://uwm.edu/philosophy/",
    "calendar": "https://uwm.edu/philosophy/events/",
-   "feed": {"type": "tribe", "url": "https://uwm.edu/philosophy/wp-json/tribe/events/v1/events"},
+   "feed": {
+    "type": "tribe",
+    "url": "https://uwm.edu/philosophy/wp-json/tribe/events/v1/events"
+   },
    "kind": "talks",
    "kind_strict": true,
    "reach": "walk",
-   "tags": ["campus", "talks"]
+   "tags": [
+    "campus",
+    "talks"
+   ]
   },
   {
    "id": "uwm",
@@ -22,13 +28,32 @@
    "where": "2200 E Kenwood Blvd",
    "site": "https://uwm.edu/",
    "calendar": "https://uwm.edu/events/",
-   "feed": {"type": "uwm", "depts": ["arts", "planetarium", "libraries", "studentaffairs", "graduateschool", "freshwater", "letters-science", "c21", "sarup", "history", "english", "welcome", "event-submission"],
-            "exclude": "orientation|enrollment|resume|application workshop|advising|drop-in hours|registration|deadline|office hours|training|tutoring|info session|information session|virtual|zoom|online|webinar|employee|staff |hiring|career fair|study abroad fair|financial aid|intramural|club (soccer|rugby|volleyball|basketball|hockey|baseball|softball|ultimate) home|prevent suicide|welcome back|help desk",
-            "exclude_categories": "academic dates|deadlines|prospective students|faculty and staff"},
+   "feed": {
+    "type": "uwm",
+    "depts": [
+     "arts",
+     "planetarium",
+     "libraries",
+     "studentaffairs",
+     "graduateschool",
+     "freshwater",
+     "letters-science",
+     "c21",
+     "sarup",
+     "history",
+     "english",
+     "welcome",
+     "event-submission"
+    ],
+    "exclude": "orientation|enrollment|resume|application workshop|advising|drop-in hours|registration|deadline|office hours|training|tutoring|info session|information session|virtual|zoom|online|webinar|employee|staff |hiring|career fair|study abroad fair|financial aid|intramural|club (soccer|rugby|volleyball|basketball|hockey|baseball|softball|ultimate) home|prevent suicide|welcome back|help desk",
+    "exclude_categories": "academic dates|deadlines|prospective students|faculty and staff"
+   },
    "cap": 250,
    "reach": "walk",
    "reach_strict": true,
-   "tags": ["campus"]
+   "tags": [
+    "campus"
+   ]
   },
   {
    "id": "boswell",
@@ -37,11 +62,17 @@
    "where": "2559 N Downer Ave",
    "site": "https://boswellbooks.com/",
    "calendar": "https://boswellbooks.com/upcoming-events",
-   "feed": {"type": "boswell", "url": "https://boswellbooks.com/upcoming-events"},
+   "feed": {
+    "type": "boswell",
+    "url": "https://boswellbooks.com/upcoming-events"
+   },
    "kind": "books",
    "kind_strict": true,
    "reach": "walk",
-   "tags": ["books", "neighborhood"]
+   "tags": [
+    "books",
+    "neighborhood"
+   ]
   },
   {
    "id": "urban-ecology-center",
@@ -52,7 +83,10 @@
    "calendar": "https://www.urbanecologycenter.org/calendar",
    "kind": "outdoors",
    "reach": "walk",
-   "tags": ["nature", "neighborhood"]
+   "tags": [
+    "nature",
+    "neighborhood"
+   ]
   },
   {
    "id": "mpl",
@@ -63,7 +97,10 @@
    "calendar": "https://mpl.libnet.info/events",
    "kind": "books",
    "reach": "walk",
-   "tags": ["books", "civic"]
+   "tags": [
+    "books",
+    "civic"
+   ]
   },
   {
    "id": "milwaukee-film",
@@ -72,10 +109,16 @@
    "where": "Oriental Theatre, 2230 N Farwell Ave",
    "site": "https://mkefilm.org/",
    "calendar": "https://mkefilm.org/historic-theaters/orientaltheatre/",
-   "feed": {"type": "rss", "url": "https://mkefilm.org/feed/"},
+   "feed": {
+    "type": "rss",
+    "url": "https://mkefilm.org/feed/"
+   },
    "kind": "film",
    "reach": "walk",
-   "tags": ["film", "neighborhood"]
+   "tags": [
+    "film",
+    "neighborhood"
+   ]
   },
   {
    "id": "mam",
@@ -84,10 +127,16 @@
    "where": "700 N Art Museum Dr",
    "site": "https://mam.org/",
    "calendar": "https://mam.org/events/",
-   "feed": {"type": "tribe", "url": "https://mam.org/events/wp-json/tribe/events/v1/events"},
+   "feed": {
+    "type": "tribe",
+    "url": "https://mam.org/events/wp-json/tribe/events/v1/events",
+    "exclude_categories": "^(for members|members only|member event)$|society|circle|print forum|alliance|council"
+   },
    "kind": "art",
    "reach": "bus",
-   "tags": ["art"]
+   "tags": [
+    "art"
+   ]
   },
   {
    "id": "woodland-pattern",
@@ -96,10 +145,15 @@
    "where": "720 E Locust St",
    "site": "https://woodlandpattern.org/",
    "calendar": "https://woodlandpattern.org/events",
-   "feed": {"type": "jsonld", "url": "https://woodlandpattern.org/events"},
+   "feed": {
+    "type": "jsonld",
+    "url": "https://woodlandpattern.org/events"
+   },
    "kind": "books",
    "reach": "walk",
-   "tags": ["books"]
+   "tags": [
+    "books"
+   ]
   },
   {
    "id": "turners",
@@ -110,7 +164,9 @@
    "calendar": "https://www.milwaukeeturners.org/events/",
    "kind": "community",
    "reach": "bus",
-   "tags": ["civic"]
+   "tags": [
+    "civic"
+   ]
   },
   {
    "id": "domes",
@@ -119,10 +175,16 @@
    "where": "524 S Layton Blvd",
    "site": "https://milwaukeedomes.org/",
    "calendar": "https://milwaukeedomes.org/events/",
-   "feed": {"type": "tribe", "url": "https://milwaukeedomes.org/wp-json/tribe/events/v1/events"},
+   "feed": {
+    "type": "tribe",
+    "url": "https://milwaukeedomes.org/wp-json/tribe/events/v1/events",
+    "exclude_categories": "older adult|spark"
+   },
    "kind": "outdoors",
    "reach": "car",
-   "tags": ["nature"]
+   "tags": [
+    "nature"
+   ]
   },
   {
    "id": "historic-milwaukee",
@@ -133,7 +195,9 @@
    "calendar": "https://historicmilwaukee.org/events/",
    "kind": "talks",
    "reach": "bus",
-   "tags": ["history"]
+   "tags": [
+    "history"
+   ]
   },
   {
    "id": "makerspace",
@@ -142,10 +206,15 @@
    "where": "2555 S Lenox St",
    "site": "https://milwaukeemakerspace.org/",
    "calendar": "https://milwaukeemakerspace.org/events/",
-   "feed": {"type": "rss", "url": "https://milwaukeemakerspace.org/feed/"},
+   "feed": {
+    "type": "rss",
+    "url": "https://milwaukeemakerspace.org/feed/"
+   },
    "kind": "community",
    "reach": "bus",
-   "tags": ["making"]
+   "tags": [
+    "making"
+   ]
   },
   {
    "id": "radio-milwaukee",
@@ -156,7 +225,9 @@
    "calendar": "https://radiomilwaukee.org/community-calendar/",
    "kind": "music",
    "reach": "bus",
-   "tags": ["music"]
+   "tags": [
+    "music"
+   ]
   }
  ]
 }

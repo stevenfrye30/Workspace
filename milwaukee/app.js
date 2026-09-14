@@ -513,7 +513,18 @@
       if (a.url) title.append(link(a.name, a.url)); else title.textContent = a.name;
       main.append(title);
       const meta = el('div', 'meta');
-      meta.append(`${spanLabel(s)}${a.where ? ' · ' + a.where : ''}`);
+      let when = spanLabel(s);
+      if (a.weekday && a.weekday.length) {
+        const names = { Mon: 'Mondays', Tue: 'Tuesdays', Wed: 'Wednesdays', Thu: 'Thursdays', Fri: 'Fridays', Sat: 'Saturdays', Sun: 'Sundays' };
+        when = a.weekday.map((w) => names[w] || w).join(' & ') + ', ' + when;
+        if (s.now) {  // the next date of a weekly series
+          const idx = a.weekday.map((w) => DOW.indexOf(w)).filter((i) => i >= 0);
+          for (let k = todayKey(); k <= keyOf(s.end); k = addDays(k, 1)) {
+            if (idx.includes(new Date(k + 'T12:00').getDay())) { when += ` · next ${k === todayKey() ? 'today' : dayLabel(k)}`; break; }
+          }
+        }
+      }
+      meta.append(`${when}${a.where ? ' · ' + a.where : ''}`);
       if (a.kind) meta.append(el('span', 'tag kind', KIND_LABEL[a.kind] || a.kind));
       if (a.reach) meta.append(el('span', 'tag reach reach-' + a.reach, REACH_LABEL[a.reach]));
       main.append(meta);
