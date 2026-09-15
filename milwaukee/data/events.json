@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-09-14T21:47:50+00:00",
+ "generated_at": "2026-09-15T15:32:29+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
@@ -10,11 +10,11 @@
   "uwm": {
    "status": "ok",
    "count": 250,
-   "raw": 281
+   "raw": 288
   },
   "boswell": {
    "status": "ok",
-   "count": 37,
+   "count": 36,
    "raw": 42
   },
   "urban-ecology-center": {
@@ -29,8 +29,8 @@
   },
   "mam": {
    "status": "ok",
-   "count": 49,
-   "raw": 49
+   "count": 51,
+   "raw": 51
   },
   "woodland-pattern": {
    "status": "ok",
@@ -57,8 +57,8 @@
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 202,
-   "raw": 202
+   "count": 203,
+   "raw": 203
   },
   "marcus-center": {
    "status": "ok",
@@ -76,9 +76,8 @@
    "raw": 3
   },
   "eventbrite": {
-   "status": "ok",
-   "count": 152,
-   "raw": 164
+   "status": "error",
+   "error": "OSError: every Eventbrite page failed: https://www.eventbrite.com/d/wi--milwaukee/events/: HTTPError, https://www.eventbrite.com/"
   },
   "pabst-theater-group": {
    "status": "link"
@@ -89,84 +88,22 @@
  },
  "events": [
   {
-   "title": "Ariel Lawhon, author of The Pirate Queen, in conversation with Paula McLain",
-   "start": "2026-09-14",
+   "title": "Martin Sorge, author of Great Bakes, in conversation with Kevin J Miyazaki",
+   "start": "2026-09-15",
    "end": "",
    "all_day": true,
-   "url": "https://boswellbooks.com/event/2026-09-14/lawhon-pirate-queen",
+   "url": "https://boswellbooks.com/event/2026-09-15/sorge-great-bakes",
    "where": "",
    "addr": "",
    "zip": "",
    "summary": "",
-   "tags": [
-    "Offsite",
-    "Ticketed"
-   ],
+   "tags": [],
    "time_unknown": true,
-   "free": false,
+   "free": null,
    "kind": "books",
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "Rogers Golf Outing",
-   "start": "2026-09-14T09:15",
-   "end": "2026-09-14T18:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/rogers-golf-outing/",
-   "where": "Ironwood Golf Course",
-   "addr": "W270N6166 Moraine Dr.",
-   "zip": "53089",
-   "summary": "Enjoy a day on the course with Rogers Behavioral Health Foundation while helping ensure more individuals and families can access life-changing mental health care.",
-   "tags": [
-    "Fundraiser"
-   ],
-   "kind": "community",
-   "reach": "car",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Graduate Student – Paddle the Milwaukee River",
-   "start": "2026-09-14T13:00",
-   "end": "2026-09-14T16:00",
-   "all_day": false,
-   "url": "https://uwm.edu/graduateschool/event/graduate-student-paddle-the-milwaukee-river/",
-   "where": "Outdoor Pursuits",
-   "addr": "in the Klotsche Center",
-   "zip": "",
-   "summary": "Monday, September 14 from 1-4 p.m., Meet at Outdoor Pursuits Presented as a part of the Graduate Student Wellness Series in conjunction with the UWM Outdoor Pursuits New event this year! Join us…",
-   "tags": [
-    "Graduate School"
-   ],
-   "kind": "outdoors",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Classics Open House",
-   "start": "2026-09-14T15:30",
-   "end": "2026-09-14T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/welcome/event/classics-open-house/",
-   "where": "Holton Hall – Room 180",
-   "addr": "2442 E Hartford Ave",
-   "zip": "53201",
-   "summary": "Majors, minors, current and prospective students are invited – everyone is welcome! Pizza and refreshments will be served! For more information, or to request accommodations, please email…",
-   "tags": [
-    "Campus welcome events",
-    "Student Life",
-    "Students"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Coffee with a Cop",
@@ -355,66 +292,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Snoopy Halloween Paint & Sip at Faklandia Brewpub",
-   "start": "2026-09-15T18:00",
-   "end": "2026-09-15T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/snoopy-halloween-paint-sip-at-faklandia-brewpub-tickets-2000085198670",
-   "where": "Faklandia Brewpub",
-   "addr": "3807 South Packard Avenue",
-   "zip": "53235",
-   "summary": "Join us for this Pop-up Paint & Sip at Faklandia Brewpub!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Creative Art Sessions w/ Brad Anthony Bernard at BCOTA",
-   "start": "2026-09-15T18:00",
-   "end": "2026-09-15T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/creative-art-sessions-w-brad-anthony-bernard-at-bcota-tickets-1991444767909",
-   "where": "2810 W Highland Blvd",
-   "addr": "2810 West Highland Boulevard",
-   "zip": "53208",
-   "summary": "Have you been looking for a space to create, & connect with others? Join us for weekly art sessions with Milwaukee artist, Brad A. Bernard!",
-   "tags": [
-    "Craft",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Martin Sorge, author of Great Bakes, in conversation with Kevin J Miyazaki",
-   "start": "2026-09-15T18:30",
-   "end": "2026-09-15T19:30",
-   "all_day": false,
-   "url": "https://boswellbooks.com/event/2026-09-15/sorge-great-bakes",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell",
-   "also": [
-    "eventbrite"
-   ]
   },
   {
    "title": "Bilmuri",
@@ -706,23 +583,6 @@
    "org": "uwm"
   },
   {
-   "title": "Rev-Up MKE",
-   "start": "2026-09-16T17:00",
-   "end": "2026-09-16T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/rev-up-mke-tickets-1994576141933",
-   "where": "The Rave / Eagles Club",
-   "addr": "2401 West Wisconsin Avenue",
-   "zip": "53233",
-   "summary": "Join us for Rev-Up MKE Expo Night! Vote for your favorite business, mingle w/finalists & enjoy bites from local restaurants!",
-   "tags": [],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Milwaukee Night Market",
    "start": "2026-09-16T17:00",
    "end": "2026-09-16T21:00",
@@ -805,26 +665,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Swing Jazz Wednesdays: Anthony Deutsch Trio",
-   "start": "2026-09-16T19:00",
-   "end": "2026-09-16T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/swing-jazz-wednesdays-anthony-deutsch-trio-tickets-1997063598984",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Swing Jazz Wednesday at The Argo — Anthony Deutsch Trio brings vintage heat to the North Shore's newest live music space.",
-   "tags": [
-    "Blues & Jazz",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "MKE History Trivia",
@@ -923,24 +763,22 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "The Side Effects of U : An Exhibition",
-   "start": "2026-09-17T11:00",
-   "end": "2026-09-17T11:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-side-effects-of-u-an-exhibition-tickets-1998136528144",
-   "where": "Third Space Collective MKE",
-   "addr": "500 North 29th Street",
-   "zip": "53208",
-   "summary": "THE SIDE EFFECTS OF U: AN EXHIBITION The story continues beyond the screen. Following the world premiere of The Side Effects of U at the M",
-   "tags": [
-    "Film",
-    "Film, Media & Entertainment"
-   ],
+   "title": "Liam Callanan, author of Stone Age Astronaut",
+   "start": "2026-09-17",
+   "end": "",
+   "all_day": true,
+   "url": "https://boswellbooks.com/event/2026-09-17/liam-callanan-author-stone-age-astronaut",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
    "free": null,
-   "kind": "film",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
+   "kind": "books",
+   "reach": "walk",
+   "via": "org",
+   "org": "boswell"
   },
   {
    "title": "Constitution Day Scavenger Hunt",
@@ -983,26 +821,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Constitution Day: State Constitutions and the Future of American Democracy",
-   "start": "2026-09-17T12:00",
-   "end": "2026-09-17T13:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/constitution-day-state-constitutions-and-the-future-of-american-democracy-tickets-1996103165301",
-   "where": "Raynor Library",
-   "addr": "1355 West Wisconsin Avenue",
-   "zip": "53233",
-   "summary": "The MU Political Science Department will host the 2026 Constitution Day Lecture by Prof. Miriam Seifter (UW Madison).",
-   "tags": [
-    "State Government",
-    "Government & Politics"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Thursday Nights at MAM",
@@ -1100,10 +918,7 @@
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "eventbrite"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Bad Bunny Yoga",
@@ -1187,46 +1002,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Liam Callanan, author of Stone Age Astronaut",
-   "start": "2026-09-17T18:30",
-   "end": "2026-09-17T19:30",
-   "all_day": false,
-   "url": "https://boswellbooks.com/event/2026-09-17/liam-callanan-author-stone-age-astronaut",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell",
-   "also": [
-    "eventbrite"
-   ]
-  },
-  {
-   "title": "Sun, Moon and Stars Milwaukee Rooftop Wine and Cheese Pairing",
-   "start": "2026-09-17T18:30",
-   "end": "2026-09-17T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/sun-moon-and-stars-milwaukee-rooftop-wine-and-cheese-pairing-tickets-1999742498645",
-   "where": "Milwaukee Cheese Bar by Hill Valley Dairy",
-   "addr": "138 West Bruce Street",
-   "zip": "53204",
-   "summary": "Sip awesome wines and nibble tasty cheeses under the Milwaukee stars on this chill rooftop night!",
-   "tags": [
-    "Wine",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "StorySlam: Coming of Age",
@@ -1325,26 +1100,6 @@
    "org": "uwm"
   },
   {
-   "title": "Back to School Comedy Night!",
-   "start": "2026-09-17T19:30",
-   "end": "2026-09-17T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/back-to-school-comedy-night-tickets-1997639442347",
-   "where": "Buddy's Sports Grill @ Mulligan's Mini Golf",
-   "addr": "6633 Douglas Avenue",
-   "zip": "53402",
-   "summary": "We're back and at it for another amazing season of comedy at Buddy's, and we want YOU there to kick it off!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Trayf",
    "start": "2026-09-17T19:30",
    "end": "2026-09-17T19:30",
@@ -1441,27 +1196,6 @@
    "org": "uwm"
   },
   {
-   "title": "4th Annual Golf Outing to Benefit the Star Legacy Foundation",
-   "start": "2026-09-18T09:30",
-   "end": "2026-09-18T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/4th-annual-golf-outing-to-benefit-the-star-legacy-foundation-tickets-1988430668657",
-   "where": "Brown Deer Park Golf Course",
-   "addr": "7625 North Range Line Road",
-   "zip": "53209",
-   "summary": "Come out and join us for a day of golf and fun as honor Jack and all the babies taken too soon",
-   "tags": [
-    "Healthcare",
-    "Charity & Causes",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Wild Knowing: The Role of the Arts in Ecological Culture",
    "start": "2026-09-18T15:00",
    "end": "2026-09-18T17:00",
@@ -1481,26 +1215,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "OKTBERFEST Table Reservation (Friday 9/18)",
-   "start": "2026-09-18T16:00",
-   "end": "2026-09-18T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/oktberfest-table-reservation-friday-918-tickets-1991492314121",
-   "where": "Heidelberg Park at Bavarian Bierhaus",
-   "addr": "700 W Lexington Blvd",
-   "zip": "53217",
-   "summary": "Get Ready For Oktoberfest 2026! Every Weekend in September & the first Weekend of October!",
-   "tags": [
-    "Beer",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "St. Bernadette Parish Fish Fry",
@@ -1599,26 +1313,6 @@
    "org": "uwm"
   },
   {
-   "title": "Davidson Park Movie Night Series: Space Jam!",
-   "start": "2026-09-18T18:00",
-   "end": "2026-09-18T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/davidson-park-movie-night-series-space-jam-tickets-1990121422748",
-   "where": "Davidson Park",
-   "addr": "3725 West Juneau Avenue",
-   "zip": "53208",
-   "summary": "Presented by the Harley-Davidson Foundation, this free, family-friendly movie night features a film chosen by the public!",
-   "tags": [
-    "Film",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "film",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "88Nine Fall Ball",
    "start": "2026-09-18T18:00",
    "end": "2026-09-18T22:30",
@@ -1674,86 +1368,6 @@
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Beyond the Blues 2026",
-   "start": "2026-09-18T18:30",
-   "end": "2026-09-18T22:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/beyond-the-blues-2026-tickets-1996119265457",
-   "where": "Discovery World",
-   "addr": "500 North Harbor Drive",
-   "zip": "53202",
-   "summary": "A fun night on Milwaukee's lakefront in support of The Charles E. Kubly Foundation & mental health initiatives in SE Wisconsin and beyond.",
-   "tags": [
-    "Mental health",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Illusions The Drag Queen Show Milwaukee - Drag Queen Dinner Show - Milwauke",
-   "start": "2026-09-18T19:00",
-   "end": "2026-09-18T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/illusions-the-drag-queen-show-milwaukee-drag-queen-dinner-show-milwauke-tickets-1252253717579",
-   "where": "Illusions The Drag Queen Show Milwaukee",
-   "addr": "898 E Wells St",
-   "zip": "53201",
-   "summary": "Illusions the Drag Queen Show Milwaukee is the perfect combination of spectacular burlesque style and comedy performances by the industry’s best celebrity impersonators and the funniest Milwaukee…",
-   "tags": [
-    "Dance",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Dinner with New Friends: Milwaukee | Single Parents Edition",
-   "start": "2026-09-18T19:00",
-   "end": "2026-09-18T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/dinner-with-new-friends-milwaukee-single-parents-edition-tickets-1964396534916",
-   "where": "Restaurant of the Week",
-   "addr": "South 1st Street",
-   "zip": "53207",
-   "summary": "New to town and looking for new connections? Connect with others in the city over fun food. Single parents edition.",
-   "tags": [
-    "Parenting",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Milwaukee Premiere of Skweezy Jibbs Makes a Movie w/ Skweezy Live!",
-   "start": "2026-09-18T19:15",
-   "end": "2026-09-18T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-premiere-of-skweezy-jibbs-makes-a-movie-w-skweezy-live-tickets-1987794964248",
-   "where": "AMC Mayfair Mall 18",
-   "addr": "2500 North Mayfair Road",
-   "zip": "53226",
-   "summary": "See Skweezy AND his movie!",
-   "tags": [
-    "Film",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "film",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Trayf",
@@ -1828,26 +1442,6 @@
    "org": "uwm"
   },
   {
-   "title": "Pat McCurdy",
-   "start": "2026-09-18T20:00",
-   "end": "2026-09-18T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/pat-mccurdy-tickets-1994257294251",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Milwaukee favorite Pat McCurdy brings his solo show—songs, audience interaction, and high-energy wit—to The Argo.",
-   "tags": [
-    "Top 40",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Workshop Series: Over the Prairie//Under the Prairie with Lily Lalios *IN PERSON*",
    "start": "2026-09-19",
    "end": "2026-09-19",
@@ -1864,26 +1458,6 @@
    "reach": "walk",
    "via": "org",
    "org": "woodland-pattern"
-  },
-  {
-   "title": "Midwest Pediatric Anesthesiology Fellow Boot Camp 2026",
-   "start": "2026-09-19T07:30",
-   "end": "2026-09-19T16:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/midwest-pediatric-anesthesiology-fellow-boot-camp-2026-tickets-1984911110564",
-   "where": "Children's Wisconsin Clinics Building",
-   "addr": "8920 West Connell Court",
-   "zip": "53226",
-   "summary": "An intensive one-day training event for Pediatric Anesthesiology fellows throughout the Midwest region!",
-   "tags": [
-    "Medical",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Fall Show Dome Theme: TBA",
@@ -1905,26 +1479,6 @@
    "org": "domes"
   },
   {
-   "title": "2026 Public Workshop-Chinese Elms",
-   "start": "2026-09-19T09:00",
-   "end": "2026-09-19T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/2026-public-workshop-chinese-elms-tickets-1978784729393",
-   "where": "Boerner Botanical Gardens",
-   "addr": "9400 Boerner Drive",
-   "zip": "53130",
-   "summary": "Get your feet wet (and hands dirty) by attending our Next Public Workshop.",
-   "tags": [
-    "DIY",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "2nd Annual Rally Round for Children’s Wisconsin",
    "start": "2026-09-19T09:00",
    "end": "2026-09-19T14:00",
@@ -1943,47 +1497,6 @@
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Walking tour: Resilience: A History of Chinese Milwaukee",
-   "start": "2026-09-19T10:00",
-   "end": "2026-09-19T11:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/walking-tour-resilience-a-history-of-chinese-milwaukee-tickets-1992657097018",
-   "where": "Forest Home Cemetery",
-   "addr": "2405 West Forest Home Avenue",
-   "zip": "53215",
-   "summary": "Meet Chinese immigrants and Chinese-American Milwaukeeans whose traditions, activism and entrepreneurism forever shaped our city and state.",
-   "tags": [
-    "Historic",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Creative Juices Flow",
-   "start": "2026-09-19T10:00",
-   "end": "2026-09-19T13:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/creative-juices-flow-registration-1986282145366",
-   "where": "Kuumba Juice & Coffee",
-   "addr": "274 East Keefe Avenue",
-   "zip": "53212",
-   "summary": "Come flow with us through movement and poetry!",
-   "tags": [
-    "Personal health",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Drop-In Art Making: Art Studio",
@@ -2028,46 +1541,6 @@
    "org": "mam"
   },
   {
-   "title": "DRAG BINGO BRUNCH!",
-   "start": "2026-09-19T11:00",
-   "end": "2026-09-19T14:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/drag-bingo-brunch-tickets-1996467368643",
-   "where": "Classic Lanes Greenfield",
-   "addr": "5404 West Layton Avenue",
-   "zip": "53220",
-   "summary": "Drag Bingo Brunch with Mercedes Benzova & Loretta Love Lee!!! Classic Lanes Greenfield will provide the brunch plus Drink specials!!!",
-   "tags": [
-    "Dance",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "3rd Caturdays at RRCFM",
-   "start": "2026-09-19T11:00",
-   "end": "2026-09-19T13:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/3rd-caturdays-at-rrcfm-tickets-1993893199233",
-   "where": "Redner's Rescued Cat Figurine Mewseum",
-   "addr": "N88W15114 Cleveland Avenue",
-   "zip": "53051",
-   "summary": "Paint-in at Redner's Rescued Cat Figurine Mewseum (RRCFM)! Monthly gathering of painters in the backyard Catio!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Hobbit Con: Renaissance Faire",
    "start": "2026-09-19T11:00",
    "end": "2026-09-19T22:00",
@@ -2087,46 +1560,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Natureandvibess: Girls Outside Series Veteran’s Park",
-   "start": "2026-09-19T13:00",
-   "end": "2026-09-19T14:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/natureandvibess-girls-outside-series-veterans-park-tickets-1999296327134",
-   "where": "Gift of Wings Kite Store",
-   "addr": "1300 North Lincoln Memorial Drive",
-   "zip": "53202",
-   "summary": "Come vibe with us on Girls Outside Series at Veteran’s Park on Sept 19th @ 1PM. This is a ladies only walk!",
-   "tags": [
-    "Hiking",
-    "Travel & Outdoor"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Speed Dating Milwaukee Singles 24-39",
-   "start": "2026-09-19T14:00",
-   "end": "2026-09-19T16:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/speed-dating-milwaukee-singles-24-39-tickets-1600128871529",
-   "where": "Grace Coffee Co.",
-   "addr": "102 North Water Street",
-   "zip": "53202",
-   "summary": "Get ready to join a fun and interactive speed dating experience in Milwaukee! We want you to find your match!",
-   "tags": [
-    "Beer",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Drop-In Tours: Exploring Spain’s Artistic Legacy During Hispanic Heritage Month",
@@ -2227,26 +1660,6 @@
    "org": "uwm"
   },
   {
-   "title": "2026 Red Dress Mental Health Gala",
-   "start": "2026-09-19T18:00",
-   "end": "2026-09-19T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/2026-red-dress-mental-health-gala-tickets-1992064097340",
-   "where": "Grace Center",
-   "addr": "250 East Juneau Avenue",
-   "zip": "53202",
-   "summary": "Join us in 2026 for the Red Dress Mental Health Gala, a night of fun, support, and raising awareness!",
-   "tags": [
-    "Healthcare",
-    "Charity & Causes"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Art:Forward Gala",
    "start": "2026-09-19T18:00",
    "end": "2026-09-20T00:00",
@@ -2328,26 +1741,6 @@
    "org": "uwm"
   },
   {
-   "title": "Rotating Tap Comedy @ Indeed Brewing",
-   "start": "2026-09-19T19:30",
-   "end": "2026-09-19T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/rotating-tap-comedy-indeed-brewing-tickets-1992726017160",
-   "where": "Indeed Brewing Company | Pilot Brewery & Taproom of Walker’s Point, Milwaukee",
-   "addr": "530 South 2nd Street",
-   "zip": "53204",
-   "summary": "Rotating Tap is the country's best brewery touring stand-up comedy show featuring comedians seen on Netflix, HBO, Comedy Central and more!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Rotating Tap Comedy",
    "start": "2026-09-19T19:30",
    "end": "2026-09-19T21:30",
@@ -2384,65 +1777,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Comedy Night! Rami Abushhab: Best Kept Secret",
-   "start": "2026-09-19T20:00",
-   "end": "2026-09-19T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/comedy-night-rami-abushhab-best-kept-secret-tickets-1993488123641",
-   "where": "The Interchange Theater Co-Operative",
-   "addr": "628 North 10th Street",
-   "zip": "53233",
-   "summary": "Comedian Rami Abushhab makes his Milwaukee debut as he uses his storytelling to direct the state of the world today.",
-   "tags": [
-    "Comedy",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Driveways w/ Rematch",
-   "start": "2026-09-19T20:00",
-   "end": "2026-09-19T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/driveways-w-rematch-tickets-1996257434725",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Ready for a dose of 2000s pop-punk nostalgia? Driveways deliver big riffs, huge hooks, and a show you won’t want to miss.",
-   "tags": [
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Comedy Night @ Zocalo",
-   "start": "2026-09-19T20:00",
-   "end": "2026-09-19T22:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/comedy-night-zocalo-tickets-1999220335842",
-   "where": "Zócalo Food Park, South 6th Street, Milwaukee, WI, USA",
-   "addr": "636 South 6th Street",
-   "zip": "53204",
-   "summary": "ADL Entertainment presents Comedy Night @ Zócalo! Live laughs, great vibes & Midwest comedy. Sept. 19—doors 8PM, show 8:45PM!",
-   "tags": [
-    "Comedy",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "MJI Presents: Roberto Antunez Quartet",
    "start": "2026-09-19T20:30",
    "end": "2026-09-19T22:00",
@@ -2458,26 +1792,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "WELCOME TO THE JUNGLE",
-   "start": "2026-09-19T22:00",
-   "end": "2026-09-20T01:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/welcome-to-the-jungle-tickets-1999077148565",
-   "where": "1218 W North Ave",
-   "addr": "1218 West North Avenue",
-   "zip": "53205",
-   "summary": "ET's official welcome back to school party to wrap our Alpha Welcome Week Events. THEME IS PREPPY SCHOOL GIRL/BOY",
-   "tags": [
-    "Hip Hop / Rap",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Ride on the Wild Side Bike Ride",
@@ -2557,26 +1871,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Booked with Love Paint & Sip",
-   "start": "2026-09-20T15:00",
-   "end": "2026-09-20T17:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/booked-with-love-paint-sip-tickets-2000078729320",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Fondy Farm Feast",
    "start": "2026-09-20T15:00",
    "end": "2026-09-20T19:30",
@@ -2597,64 +1891,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "R&B LIVE MKE - 17 Year Anniversary Show!",
-   "start": "2026-09-20T18:00",
-   "end": "2026-09-20T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/rb-live-mke-17-year-anniversary-show-tickets-1998658989841",
-   "where": "The Cooperage MKE | Premier Riverside Music Hall, Event Space & Wedding Venue",
-   "addr": "822 South Water Street",
-   "zip": "53204",
-   "summary": "R&B LIVE MKE is celebrating 17 years of providing a platform for the city's most talented musicians and vocalists.",
-   "tags": [
-    "R&B",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "THE BOUNCING SOULS - 'Born To Be Tour' w/ The Suicide Machines",
-   "start": "2026-09-20T19:00",
-   "end": "2026-09-20T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-bouncing-souls-born-to-be-tour-w-the-suicide-machines-tickets-1987151586889",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "The Bouncing Souls play Born to Be and celebrate their classic albums, with The Suicide Machines performing Destruction by Definition.",
-   "tags": [
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "THE BLACK QUEEN: Fever Daydream 10th Anniversary w/ clubdrugs & HOLY WATER",
-   "start": "2026-09-20T19:30",
-   "end": "2026-09-20T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-black-queen-fever-daydream-10th-anniversary-w-clubdrugs-holy-water-tickets-1992231319506",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "The Black Queen blends dark electronic soundscapes, haunting melodies, and atmospheric grooves into a captivating live experience.",
-   "tags": [
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Tom Jones: Come Gather Round Tour",
    "start": "2026-09-20T19:30",
    "end": "2026-09-20T21:30",
@@ -2670,46 +1906,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Milwaukee Speed Dating for Singles Age 40s/50s ♥ Milwaukee Wisconsin",
-   "start": "2026-09-21T18:15",
-   "end": "2026-09-21T20:15",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-speed-dating-for-singles-age-40s50s-milwaukee-wisconsin-tickets-1994250191005",
-   "where": "Milwaukee Brewing & Distilling Company",
-   "addr": "2335 S Kinnickinnic Ave",
-   "zip": "53207",
-   "summary": "Meet up to 12 potential matches. Join the thousands of people that have found LOVE at our events. Will you be our next success story?",
-   "tags": [
-    "Dating",
-    "Home & Lifestyle"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Milwaukee Speed Dating for Singles Age 30s/40s ♥ Milwaukee Wisconsin",
-   "start": "2026-09-21T20:00",
-   "end": "2026-09-21T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-speed-dating-for-singles-age-30s40s-milwaukee-wisconsin-tickets-1994250635334",
-   "where": "Milwaukee Brewing & Distilling Company",
-   "addr": "2335 S Kinnickinnic Ave",
-   "zip": "53207",
-   "summary": "Meet up to 12 potential matches. Join the thousands of people that have found LOVE at our events. Will you be our next success story?",
-   "tags": [
-    "Dating",
-    "Home & Lifestyle"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Mamma Mia!",
@@ -2748,10 +1944,7 @@
    "reach": "bus",
    "free": true,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "eventbrite"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Pages with Purpose",
@@ -2897,105 +2090,6 @@
    "org": "uwm"
   },
   {
-   "title": "Sourdough Bread Class",
-   "start": "2026-09-22T18:00",
-   "end": "2026-09-22T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/sourdough-bread-class-tickets-1991996340678",
-   "where": "Mequon Public Market",
-   "addr": "6300 West Mequon Road",
-   "zip": "53092",
-   "summary": "Take & bake your sourdough!",
-   "tags": [
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Pressed Floral Resin Jewelry Tray Workshop",
-   "start": "2026-09-22T18:00",
-   "end": "2026-09-22T19:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/pressed-floral-resin-jewelry-tray-workshop-tickets-1993619557764",
-   "where": "Bank of Flowers",
-   "addr": "N88W16723 Appleton Avenue",
-   "zip": "53051",
-   "summary": "Get crafty in person making cool uv resin jewelry trays with real pressed flowers—fun and fresh DIY vibes!",
-   "tags": [
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Drink N Draw MKE | Pastel Workshop : Autumn Colors",
-   "start": "2026-09-22T18:00",
-   "end": "2026-09-22T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/drink-n-draw-mke-pastel-workshop-autumn-colors-tickets-1994253312341",
-   "where": "Vennture Brew Co - Brookfield",
-   "addr": "2970 North Brookfield Road",
-   "zip": "53045",
-   "summary": "Join us for a chill night of sipping and sketching autumn vibes with pastels!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Jasmine Mas \"The Emperor's Enemy\" Authorless Release Party",
-   "start": "2026-09-22T18:30",
-   "end": "2026-09-22T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/jasmine-mas-the-emperors-enemy-authorless-release-party-tickets-1994623968985",
-   "where": "The Well Red Damsel: A Romance Bookstore",
-   "addr": "6429 West North Avenue",
-   "zip": "53213",
-   "summary": "Join us for a night of fun to celebrate the release of Jasmine Mas ' \"The Emperor's Enemy\" with The Well Red Damsel!",
-   "tags": [
-    "Literary Arts",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Davidson Park Candlelight Yoga",
-   "start": "2026-09-22T19:00",
-   "end": "2026-09-22T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/davidson-park-candlelight-yoga-tickets-1998512256959",
-   "where": "Davidson Park",
-   "addr": "3725 West Juneau Avenue",
-   "zip": "53208",
-   "summary": "Whether you're new to yoga or experienced, enjoy a serene setting with local instructors while strengthening body and mind.",
-   "tags": [
-    "Yoga",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Experimental Tuesdays: An Evening with Dick Blau",
    "start": "2026-09-22T19:00",
    "end": "2026-09-22T21:30",
@@ -3116,26 +2210,6 @@
    "free": null,
    "via": "org",
    "org": "domes"
-  },
-  {
-   "title": "Paper Tots",
-   "start": "2026-09-23T10:00",
-   "end": "2026-09-23T11:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/paper-tots-tickets-1994387592978",
-   "where": "6801 N Green Bay Ave",
-   "addr": "6801 North Green Bay Avenue",
-   "zip": "53209",
-   "summary": "Toddlers and their adult will have the opportunity to get their hands wet while learning the process of making recycled paper.",
-   "tags": [
-    "Children & Youth",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Babbling Babes X MAM",
@@ -3380,26 +2454,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Terracon Milwaukee Field Day 2026",
-   "start": "2026-09-24T08:30",
-   "end": "2026-09-24T14:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/terracon-milwaukee-field-day-2026-tickets-1990982316705",
-   "where": "Terracon Consultants, Inc.",
-   "addr": "4900 South Pennsylvania Avenue",
-   "zip": "53110",
-   "summary": "Real equipment. Real tests. See the engineering behind the reports — live demos, lunch & 2 PDH credits. Free to attend.",
-   "tags": [
-    "Other",
-    "Sports & Fitness"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Breakfast to Grab: A Graduate Student Breakfast-to-Go",
    "start": "2026-09-24T09:00",
    "end": "2026-09-24T10:30",
@@ -3504,26 +2558,6 @@
    "org": "uwm"
   },
   {
-   "title": "Loud Silence",
-   "start": "2026-09-24T18:00",
-   "end": "2026-09-24T19:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/loud-silence-tickets-1999727700383",
-   "where": "3200 W Hampton Ave",
-   "addr": "3200 West Hampton Avenue",
-   "zip": "53209",
-   "summary": "Join us for a screening of Loud Silence, followed by a panel discussion and community conversation focused on awareness, healing and action.",
-   "tags": [
-    "Dance",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Fibers Made Easy: Granny Squares Session 1",
    "start": "2026-09-24T18:00",
    "end": "2026-09-24T20:30",
@@ -3606,26 +2640,6 @@
    "org": "uwm"
   },
   {
-   "title": "Big Shrimp with Modern Joey",
-   "start": "2026-09-24T19:00",
-   "end": "2026-09-24T23:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/big-shrimp-with-modern-joey-tickets-1995024699581",
-   "where": "The Cooperage",
-   "addr": "822 South Water Street",
-   "zip": "53204",
-   "summary": "Big Shrimp is coming all the way from Bridgeport, CT to make their Harborfront debut at The Cooperage!",
-   "tags": [
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Lounj Acts: Joshua Being",
    "start": "2026-09-24T19:00",
    "end": "2026-09-24T21:00",
@@ -3681,64 +2695,22 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Hotties Only Standup Comedy: AJ Grill at The Sugar Maple",
-   "start": "2026-09-24T20:00",
-   "end": "2026-09-24T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/hotties-only-standup-comedy-aj-grill-at-the-sugar-maple-tickets-2000529356157",
-   "where": "441 E Lincoln Ave",
-   "addr": "441 East Lincoln Avenue",
-   "zip": "53207",
-   "summary": "Hotties Only is a long-running standup comedy showcase featuring only the hottest comics from all over the Midwest!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
+   "title": "Chuck Klosterman, author of Rock*: A Mainstream Alternative History of Alternative Mainstream Music",
+   "start": "2026-09-25",
+   "end": "",
+   "all_day": true,
+   "url": "https://boswellbooks.com/event/2026-09-25/chuck-klosterman-rock",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
    "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Hydro Flo – NTI Boilers & Water Quality Training",
-   "start": "2026-09-25T08:30",
-   "end": "2026-09-25T11:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/hydro-flo-nti-boilers-water-quality-training-tickets-1998488130797",
-   "where": "Johnstone Supply",
-   "addr": "N59W13730 Manhardt Drive",
-   "zip": "53051",
-   "summary": "Protect boilers! Master NTI system tips & water quality best practices with Howie Heier at Johnstone Supply’s Hydro Flo training",
-   "tags": [
-    "High Tech",
-    "Science & Technology"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "AI Quarterly: AI in Public and Private Sectors",
-   "start": "2026-09-25T09:00",
-   "end": "2026-09-25T11:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/ai-quarterly-ai-in-public-and-private-sectors-tickets-1998812695579",
-   "where": "Brooksource - Milwaukee",
-   "addr": "640 North Vel R. Phillips Avenue",
-   "zip": "53203",
-   "summary": "Dive into how AI is shaking up both government and business worlds with real talk and fresh ideas.",
-   "tags": [
-    "High Tech",
-    "Science & Technology"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
+   "kind": "books",
+   "reach": "walk",
+   "via": "org",
+   "org": "boswell"
   },
   {
    "title": "Neighborhood Cleanup",
@@ -3786,26 +2758,6 @@
    ]
   },
   {
-   "title": "OKTBERFEST Table Reservation (Friday 9/25)",
-   "start": "2026-09-25T16:00",
-   "end": "2026-09-25T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/oktberfest-table-reservation-friday-925-tickets-1991492384331",
-   "where": "Heidelberg Park at Bavarian Bierhaus",
-   "addr": "700 W Lexington Blvd",
-   "zip": "53217",
-   "summary": "Get Ready For Oktoberfest 2026! Every Weekend in September & the first Weekend of October!",
-   "tags": [
-    "Beer",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Bay View Gallery Night",
    "start": "2026-09-25T17:00",
    "end": "2026-09-25T22:00",
@@ -3842,86 +2794,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Season 2 Premiere! Tales of Dread and Darkness: Exposing the ADPA",
-   "start": "2026-09-25T18:00",
-   "end": "2026-09-25T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/season-2-premiere-tales-of-dread-and-darkness-exposing-the-adpa-tickets-1998791355751",
-   "where": "NŌ STUDIOS",
-   "addr": "1037 West McKinley Avenue",
-   "zip": "53205",
-   "summary": "Your ticket includes: 1. Snacks 2. Season Premiere 3. A concert 4. An art exhibition. Not bad, huh?",
-   "tags": [
-    "TV",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "film",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "The Invite",
-   "start": "2026-09-25T18:00",
-   "end": "2026-09-25T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-invite-tickets-1993762337823",
-   "where": "Pearl & Cade | Historic Third Ward",
-   "addr": "219 North Milwaukee Street",
-   "zip": "53202",
-   "summary": "Step into the intersection of exclusivity and inclusion at \"The Invite - A High Fashion Showcase\" on September 25, 2026.",
-   "tags": [
-    "Fashion",
-    "Fashion & Beauty"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Chuck Klosterman, author of Rock*: A Mainstream Alternative History of Alternative Mainstream Music",
-   "start": "2026-09-25T18:30",
-   "end": "2026-09-25T19:30",
-   "all_day": false,
-   "url": "https://boswellbooks.com/event/2026-09-25/chuck-klosterman-rock",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell",
-   "also": [
-    "eventbrite"
-   ]
-  },
-  {
-   "title": "Hello, Autumn Paint & Sip",
-   "start": "2026-09-25T18:30",
-   "end": "2026-09-25T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/hello-autumn-paint-sip-tickets-2000079764416",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Brewers vs St. Louis Cardinals",
@@ -3980,216 +2852,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Russian Circles w/ Pelican",
-   "start": "2026-09-25T20:00",
-   "end": "2026-09-25T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/russian-circles-w-pelican-tickets-1992173433367",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Join Russian Circles for an immersive night of heavy, cinematic instrumental music and powerful live energy you won’t want to miss.",
-   "tags": [
-    "Rock",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Jones Island Water Reclamation Plant Visit",
-   "start": "2026-09-26T08:30",
-   "end": "2026-09-26T10:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/jones-island-water-reclamation-plant-visit-sat-830-am-tickets-1997879411100",
-   "where": "Jones Island Water Reclamation Facility",
-   "addr": "700 East Jones Street",
-   "zip": "53207",
-   "summary": "Visit and tour this 1925 facility, designated a National Historic Civil Engineering Landmark in 1974.",
-   "tags": [
-    "Doors Open",
-    "Other",
-    "Science & Technology",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Pilates & Plump",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/pilates-plump-tickets-1998137236262",
-   "where": "Luna Med Spa",
-   "addr": "19005 West Capitol Drive",
-   "zip": "53045",
-   "summary": "An outdoor Pilates experience bringing together beauty, wellness, shopping, bites, sips & more. Saturday, September 26 at Luna Med Spa.",
-   "tags": [
-    "Other",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Rooftop Workout with Empower Yoga",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T10:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.ca/e/rooftop-workout-with-empower-yoga-tickets-1999180770501",
-   "where": "220 E Buffalo St",
-   "addr": "220 East Buffalo Street",
-   "zip": "53202",
-   "summary": "Join us for rooftop workout with Empower Yoga—sweat, stretch, and enjoy the view.",
-   "tags": [
-    "Personal health",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Crossing the River: Milwaukee's Bridges, Gears, and Grudges",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T10:15",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/crossing-the-river-milwaukees-bridges-gears-and-grudges-tickets-1998386233018",
-   "where": "900 N Plankinton Ave",
-   "addr": "900 North Plankinton Avenue",
-   "zip": "53203",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Other",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Jones Island Water Reclamation Plant Visit",
-   "start": "2026-09-26T09:30",
-   "end": "2026-09-26T11:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/jones-island-water-reclamation-plant-visit-sat-930-am-tickets-1997879575592",
-   "where": "Jones Island Water Reclamation Facility",
-   "addr": "700 East Jones Street",
-   "zip": "53207",
-   "summary": "Visit and tour this 1925 facility, designated a National Historic Civil Engineering Landmark in 1974.",
-   "tags": [
-    "Doors Open",
-    "Other",
-    "Science & Technology",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "View from the Rockwell Clock Tower",
-   "start": "2026-09-26T09:45",
-   "end": "2026-09-26T10:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-945-am-tickets-1997853003113",
-   "where": "Rockwell Automation",
-   "addr": "1201 South 2nd Street",
-   "zip": "53204",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
-   "tags": [
-    "Doors Open",
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Find Your Voice. Own Your Story. Through Literacy.",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T14:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/find-your-voice-own-your-story-through-literacy-tickets-1996825870933",
-   "where": "North Division High School",
-   "addr": "1011 West Center Street",
-   "zip": "53206",
-   "summary": "Join us in Milwaukee for a FREE family event featuring 400 laptops, free books, STEM, workshops, community resources, and more!",
-   "tags": [
-    "Education",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Forest Home Cemetery Bike Tour",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T11:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/forest-home-cemetery-bike-tour-tickets-1999039204072",
-   "where": "Forest Home Cemetery & Arboretum",
-   "addr": "2405 West Forest Home Avenue",
-   "zip": "53215",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Other",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Riverworks Beerline Trail Walking Tour",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T11:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/riverworks-beerline-trail-walking-tour-sat-10-am-tickets-1997912702676",
-   "where": "3350 N Holton St",
-   "addr": "3350 North Holton Street",
-   "zip": "53212",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Hiking",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Petfest Pop-Up at Foxtown Station",
@@ -4275,92 +2937,6 @@
    "org": "mam"
   },
   {
-   "title": "View from the Rockwell Clock Tower",
-   "start": "2026-09-26T12:15",
-   "end": "2026-09-26T13:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-1215-pm-tickets-1997859102356",
-   "where": "Rockwell Automation",
-   "addr": "1201 South 2nd Street",
-   "zip": "53204",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
-   "tags": [
-    "Doors Open",
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "View from the Rockwell Clock Tower",
-   "start": "2026-09-26T12:45",
-   "end": "2026-09-26T13:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-1245-pm-tickets-1997859557718",
-   "where": "Rockwell Automation",
-   "addr": "1201 South 2nd Street",
-   "zip": "53204",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
-   "tags": [
-    "Doors Open",
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Milwaukee Yacht Club",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T13:45",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-yacht-club-sat-1-pm-tickets-1995022493984",
-   "where": "1700 N Lincoln Memorial Dr",
-   "addr": "1700 North Lincoln Memorial Drive",
-   "zip": "53202",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Gayborhoods that are Gone - Saturday",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T14:45",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/gayborhoods-that-are-gone-saturday-tickets-1997913522127",
-   "where": "401 N Plankinton Ave",
-   "addr": "401 North Plankinton Avenue",
-   "zip": "53203",
-   "summary": "This is a Doors Open Milwaukee 2026 tour.",
-   "tags": [
-    "LGBT",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Doors Open",
    "start": "2026-09-26T13:00",
    "end": "2026-09-26T17:00",
@@ -4404,50 +2980,6 @@
    "org": "uwm"
   },
   {
-   "title": "Riverworks Beerline Trail Walking Tour",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/riverworks-beerline-trail-walking-tour-sat-2-pm-tickets-1997913112903",
-   "where": "3350 N Holton St",
-   "addr": "3350 North Holton Street",
-   "zip": "53212",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Hiking",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "View from the Rockwell Clock Tower",
-   "start": "2026-09-26T14:15",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-215-pm-tickets-1997875507424",
-   "where": "Rockwell Automation",
-   "addr": "1201 South 2nd Street",
-   "zip": "53204",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
-   "tags": [
-    "Doors Open",
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "The Comings and Goings of Days",
    "start": "2026-09-26T14:30",
    "end": "2026-09-26T15:30",
@@ -4463,68 +2995,6 @@
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "View from the Rockwell Clock Tower",
-   "start": "2026-09-26T14:45",
-   "end": "2026-09-26T15:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/view-from-the-rockwell-clock-tower-sat-245-pm-tickets-1997877072104",
-   "where": "Rockwell Automation",
-   "addr": "1201 South 2nd Street",
-   "zip": "53204",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Rockwell Automation.",
-   "tags": [
-    "Doors Open",
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Wizarding Paint & Sip",
-   "start": "2026-09-26T16:00",
-   "end": "2026-09-26T18:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/wizarding-paint-sip-tickets-2000081109439",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Milwaukee Oktoberfest 2026",
-   "start": "2026-09-26T16:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-oktoberfest-2026-tickets-1756256232669",
-   "where": "Duke's on Water",
-   "addr": "158 East Juneau Avenue",
-   "zip": "53202",
-   "summary": "Get ready to celebrate Oktoberfest in Milwaukee in 2026!",
-   "tags": [
-    "Other",
-    "Seasonal & Holiday"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Trayf",
@@ -4565,26 +3035,6 @@
    "org": "uwm"
   },
   {
-   "title": "The Code",
-   "start": "2026-09-26T18:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-code-tickets-1993983296717",
-   "where": "Pearl & Cade | Historic Third Ward",
-   "addr": "219 North Milwaukee Street",
-   "zip": "53202",
-   "summary": "Join is for an experience that explores why understanding the culture is just as important as wearing the clothes.",
-   "tags": [
-    "Fashion",
-    "Fashion & Beauty"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Brewers vs St. Louis Cardinals",
    "start": "2026-09-26T18:10",
    "end": "",
@@ -4603,86 +3053,6 @@
    "reach": "car",
    "via": "source",
    "src": "brewers"
-  },
-  {
-   "title": "Getting to Whole: The Official Book Launch Experience",
-   "start": "2026-09-26T18:30",
-   "end": "2026-09-26T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/getting-to-whole-the-official-book-launch-experience-tickets-1998677878337",
-   "where": "River Club of Mequon",
-   "addr": "12400 North Ville Du Parc Drive",
-   "zip": "53092",
-   "summary": "Join Vanaya Grice for an evening of joy, connection, reflection, and celebration at the launch of Getting to Whole.",
-   "tags": [
-    "Other",
-    "Community & Culture"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Disco Icon Art Night!",
-   "start": "2026-09-26T18:30",
-   "end": "2026-09-26T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/disco-icon-art-night-tickets-1998166033395",
-   "where": "2243 N 60th St",
-   "addr": "2243 North 60th Street",
-   "zip": "53208",
-   "summary": "Groove to disco hits while you create an iconic self portrait collage at Disco Icon Art Night!",
-   "tags": [
-    "Craft",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Autumn Stroll Paint & Sip",
-   "start": "2026-09-26T19:00",
-   "end": "2026-09-26T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/autumn-stroll-paint-sip-tickets-2000081159589",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "SPEAK PRESENTS SHOWCASE ON STAGE",
-   "start": "2026-09-26T19:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/speak-presents-showcase-on-stage-tickets-1994412142406",
-   "where": "401 N 35th St",
-   "addr": "401 North 35th Street",
-   "zip": "53208",
-   "summary": "Get ready to catch some fresh voices and cool vibes live on stage at the SPEAK PRESENTS SHOWCASE!",
-   "tags": [
-    "Theatre",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Matt McCusker: The Healing Frequency Tour",
@@ -4760,27 +3130,6 @@
    "org": "boswell"
   },
   {
-   "title": "The Natural History of Washington Park",
-   "start": "2026-09-27T09:00",
-   "end": "2026-09-27T10:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-natural-history-of-washington-park-tickets-1997851294001",
-   "where": "West Vliet Street",
-   "addr": "West Vliet Street",
-   "zip": "",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Other",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": null,
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Harbor Fest 2026",
    "start": "2026-09-27T11:00",
    "end": "2026-09-27T15:00",
@@ -4820,26 +3169,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Southside Dining Week Preview presented by Mastercard®",
-   "start": "2026-09-27T12:00",
-   "end": "2026-09-27T16:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/southside-dining-week-preview-presented-by-mastercard-tickets-1996656629728",
-   "where": "Zócalo Food Park",
-   "addr": "636 South 6th Street",
-   "zip": "53204",
-   "summary": "Discover the flavors, traditions and people that make Milwaukee’s Southside one of the city’s most unique and vibrant communities.",
-   "tags": [
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Pawtoberfest",
    "start": "2026-09-27T12:00",
    "end": "2026-09-27T16:00",
@@ -4858,26 +3187,6 @@
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Tea & Blooms Paint & Sip",
-   "start": "2026-09-27T12:30",
-   "end": "2026-09-27T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/tea-blooms-paint-sip-tickets-2000081724278",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Doors Open",
@@ -4942,28 +3251,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Riverworks Beerline Trail Walking Tour",
-   "start": "2026-09-27T14:00",
-   "end": "2026-09-27T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/riverworks-beerline-trail-walking-tour-sun-2-pm-tickets-1997913181107",
-   "where": "3350 N Holton St",
-   "addr": "3350 North Holton Street",
-   "zip": "53212",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Hiking",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Trayf",
@@ -5062,6 +3349,27 @@
    "org": "boswell"
   },
   {
+   "title": "Our Stories: Honoring Latine Veterans",
+   "start": "2026-09-28T08:00",
+   "end": "2026-09-28T17:00",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/our-stories-honoring-latine-veterans/2026-09-28/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Stop by the display in the Student Union hallway East to honor the service and sacrifice of many U.S. Veterans during Hispanic Heritage Month.",
+   "tags": [
+    "Student Affairs & the Union",
+    "Public",
+    "Students"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Library Tour for Grad Students",
    "start": "2026-09-28T11:30",
    "end": "2026-09-28T12:30",
@@ -5121,26 +3429,6 @@
    "org": "uwm"
   },
   {
-   "title": "Soul of a Nation: An American Portrait",
-   "start": "2026-09-28T19:00",
-   "end": "2026-09-28T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/soul-of-a-nation-an-american-portrait-tickets-1998648555632",
-   "where": "St. Paul's Episcopal Church",
-   "addr": "914 East Knapp Street",
-   "zip": "53202",
-   "summary": "A Milwaukee premiere performance featuring musicians of the Milwaukee Symphony Orchestra.",
-   "tags": [
-    "Fine Art",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Matthew J Prigge, author of Dog's Day: The True Story of a Bank Robbery, Gay Liberation, and Toxic Love That Inspired a Hollywood Classic",
    "start": "2026-09-29",
    "end": "",
@@ -5159,24 +3447,25 @@
    "org": "boswell"
   },
   {
-   "title": "Hydronics Intro – Foundations of Hydronic Heating",
+   "title": "Our Stories: Honoring Latine Veterans",
    "start": "2026-09-29T08:00",
-   "end": "2026-09-29T12:00",
+   "end": "2026-09-29T17:00",
    "all_day": false,
-   "url": "https://www.eventbrite.com/e/hydronics-intro-foundations-of-hydronic-heating-tickets-1997506872828",
-   "where": "Johnstone Supply",
-   "addr": "N59W13730 Manhardt Drive",
-   "zip": "53051",
-   "summary": "Build a strong hydronics foundation. Learn system types, piping, sizing, components, and installation best practices from industry experts.",
+   "url": "https://uwm.edu/studentaffairs/event/our-stories-honoring-latine-veterans/2026-09-29/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Stop by the display in the Student Union hallway East to honor the service and sacrifice of many U.S. Veterans during Hispanic Heritage Month.",
    "tags": [
-    "Science",
-    "Science & Technology"
+    "Student Affairs & the Union",
+    "Public",
+    "Students"
    ],
+   "kind": "community",
+   "reach": "walk",
    "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Coffee with the Dean of the Graduate School, Dr. Bryan Porter – TOPIC: “Academic Integrity and Artificial Intelligence (AI)”",
@@ -5198,25 +3487,6 @@
    "org": "uwm"
   },
   {
-   "title": "Hunger: Food Deserts, Struggling Farms & What To Do",
-   "start": "2026-09-29T17:00",
-   "end": "2026-09-29T19:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/hunger-food-deserts-struggling-farms-what-to-do-tickets-1999397515792",
-   "where": "ThriveOn King",
-   "addr": "2153 North Doctor Martin Luther King Junior Drive",
-   "zip": "53212",
-   "summary": "Join us for a workshop to learn about food deserts, what’s being done to address the problem and share your ideas for long-term solutions.",
-   "tags": [
-    "Other"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Intro to Wheel Throwing Session 1",
    "start": "2026-09-29T17:59",
    "end": "2026-09-29T20:00",
@@ -5236,26 +3506,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Predator Paint & Sip at Faklandia Brewpub",
-   "start": "2026-09-29T18:00",
-   "end": "2026-09-29T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/predator-paint-sip-at-faklandia-brewpub-tickets-2000085238790",
-   "where": "Faklandia Brewpub",
-   "addr": "3807 South Packard Avenue",
-   "zip": "53235",
-   "summary": "Join us for this Pop-up Paint & Sip at Faklandia Brewpub!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Cyanotype",
@@ -5359,24 +3609,25 @@
    "org": "boswell"
   },
   {
-   "title": "Hydronics Intermediate – System Design & Combustion Performance",
+   "title": "Our Stories: Honoring Latine Veterans",
    "start": "2026-09-30T08:00",
-   "end": "2026-09-30T12:00",
+   "end": "2026-09-30T17:00",
    "all_day": false,
-   "url": "https://www.eventbrite.com/e/hydronics-intermediate-system-design-combustion-performance-tickets-1997506907933",
-   "where": "Johnstone Supply",
-   "addr": "N59W13730 Manhardt Drive",
-   "zip": "53051",
-   "summary": "Master combustion analysis, boiler tuning, efficiency optimization, and safe operation to improve hydronic system performance.",
+   "url": "https://uwm.edu/studentaffairs/event/our-stories-honoring-latine-veterans/2026-09-30/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Stop by the display in the Student Union hallway East to honor the service and sacrifice of many U.S. Veterans during Hispanic Heritage Month.",
    "tags": [
-    "Science",
-    "Science & Technology"
+    "Student Affairs & the Union",
+    "Public",
+    "Students"
    ],
+   "kind": "community",
+   "reach": "walk",
    "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Bilingual Storytime at the Domes",
@@ -5500,26 +3751,6 @@
    "org": "uwm"
   },
   {
-   "title": "Free Speaker Event: Raising Independent Kids with Lenore Skenazy",
-   "start": "2026-09-30T18:30",
-   "end": "2026-09-30T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/free-speaker-event-raising-independent-kids-with-lenore-skenazy-tickets-1996056052385",
-   "where": "University School of Milwaukee",
-   "addr": "2100 West Fairy Chasm Road",
-   "zip": "53217",
-   "summary": "Discover how age-appropriate independence helps children build resilience, confidence, and lifelong skills.",
-   "tags": [
-    "Parenting",
-    "Family & Education"
-   ],
-   "free": true,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "River of Grass",
    "start": "2026-09-30T19:00",
    "end": "2026-09-30T21:00",
@@ -5556,6 +3787,27 @@
    "free": null,
    "via": "source",
    "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Our Stories: Honoring Latine Veterans",
+   "start": "2026-10-01T08:00",
+   "end": "2026-10-01T17:00",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/our-stories-honoring-latine-veterans/2026-10-01/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Stop by the display in the Student Union hallway East to honor the service and sacrifice of many U.S. Veterans during Hispanic Heritage Month.",
+   "tags": [
+    "Student Affairs & the Union",
+    "Public",
+    "Students"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Thursday Nights at MAM",
@@ -5778,24 +4030,25 @@
    "org": "uwm"
   },
   {
-   "title": "Maximizing Anterior Esthetics with IPS e.max CAD",
-   "start": "2026-10-02T09:00",
-   "end": "2026-10-02T12:00",
+   "title": "Our Stories: Honoring Latine Veterans",
+   "start": "2026-10-02T08:00",
+   "end": "2026-10-02T17:00",
    "all_day": false,
-   "url": "https://www.eventbrite.com/e/maximizing-anterior-esthetics-with-ips-emax-cad-tickets-1996757970842",
-   "where": "Expansive Wauwatosa",
-   "addr": "11220 West Burleigh Street",
-   "zip": "53222",
-   "summary": "Join us to master IPS e.max® CAD shaping, contouring, stain and glaze techniques for beautiful, predictable restorations.",
+   "url": "https://uwm.edu/studentaffairs/event/our-stories-honoring-latine-veterans/2026-10-02/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Stop by the display in the Student Union hallway East to honor the service and sacrifice of many U.S. Veterans during Hispanic Heritage Month.",
    "tags": [
-    "Other",
-    "Science & Technology"
+    "Student Affairs & the Union",
+    "Public",
+    "Students"
    ],
+   "kind": "community",
+   "reach": "walk",
    "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Fibers Made Easy: Granny Squares Session 2",
@@ -5838,46 +4091,6 @@
    "free": null,
    "via": "org",
    "org": "mam"
-  },
-  {
-   "title": "OKTBERFEST Table Reservation (Friday 9/25)",
-   "start": "2026-10-02T16:00",
-   "end": "2026-10-02T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/oktberfest-table-reservation-friday-925-tickets-1991492575904",
-   "where": "Heidelberg Park at Bavarian Bierhaus",
-   "addr": "700 W Lexington Blvd",
-   "zip": "53217",
-   "summary": "Get Ready For Oktoberfest 2026! Every Weekend in September & the first Weekend of October!",
-   "tags": [
-    "Beer",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Q+A and Signing with Author Rebecca Jenshak",
-   "start": "2026-10-02T18:30",
-   "end": "2026-10-02T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/qa-and-signing-with-author-rebecca-jenshak-tickets-1993956409296",
-   "where": "The Well Red Damsel: A Romance Bookstore",
-   "addr": "6429 West North Avenue",
-   "zip": "53213",
-   "summary": "Join us for a sit down Q+A with author, Rebecca Jenshak, at the Well Red Damsel!",
-   "tags": [
-    "Books",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Trayf",
@@ -5948,25 +4161,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "2026 Badger State Championship",
-   "start": "2026-10-03T09:00",
-   "end": "2026-10-03T17:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/2026-badger-state-championship-tickets-1989262805601",
-   "where": "New Berlin Activity and Recreation Center (ARC)",
-   "addr": "15321 West National Avenue",
-   "zip": "53151",
-   "summary": "The 2026 Badger State Championship will be held on Saturday, October 3rd at the New Berlin ARC in New Berlin, WI!",
-   "tags": [
-    "Sports & Fitness"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Museums on Us Sponsored by Bank of America",
    "start": "2026-10-03T10:00",
    "end": "2026-10-03T17:00",
@@ -6025,26 +4219,6 @@
    "free": null,
    "via": "org",
    "org": "mam"
-  },
-  {
-   "title": "OKTOBERFEST Table Reservation (Saturday 10/3)",
-   "start": "2026-10-03T11:00",
-   "end": "2026-10-03T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/oktoberfest-table-reservation-saturday-103-tickets-1991495362238",
-   "where": "Heidelberg Park at Bavarian Bierhaus",
-   "addr": "700 W Lexington Blvd",
-   "zip": "53217",
-   "summary": "Get Ready For Oktoberfest 2026! Every Weekend in September & the first Weekend of October!",
-   "tags": [
-    "Beer",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
@@ -6143,26 +4317,6 @@
    "org": "mam"
   },
   {
-   "title": "Twilight Bat Paint & Sip",
-   "start": "2026-10-03T16:00",
-   "end": "2026-10-03T18:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/twilight-bat-paint-sip-tickets-2000081958980",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Trayf",
    "start": "2026-10-03T16:00",
    "end": "2026-10-03T16:00",
@@ -6195,26 +4349,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Mixology Masterclass",
-   "start": "2026-10-03T17:30",
-   "end": "2026-10-03T19:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/mixology-masterclass-tickets-2000644329044",
-   "where": "Dream Lounge Social",
-   "addr": "1806 North Doctor Martin Luther King Junior Drive",
-   "zip": "53212",
-   "summary": "Wouldn’t you like to become your own bartender for the night? Creating two cocktails and also creating their own charcuterie board.",
-   "tags": [
-    "Spirits",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Dinner Detective Milwaukee",
@@ -6294,26 +4428,6 @@
    "org": "uwm"
   },
   {
-   "title": "Mamma Mania: The American ABBA Tribute (Seated)",
-   "start": "2026-10-03T20:00",
-   "end": "2026-10-03T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/mamma-mania-the-american-abba-tribute-seated-tickets-1983485853582",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Mamma Mania, America's premier ABBA tribute, delivers dazzling costumes, flawless harmonies & all the hits—dance, sing, celebrate!",
-   "tags": [
-    "Pop",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Jim Henson’s Labyrinth In Concert 40th Anniversary",
    "start": "2026-10-03T20:00",
    "end": "2026-10-03T22:00",
@@ -6350,26 +4464,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Billy Milano presents: 40 Years of S.O.D. !",
-   "start": "2026-10-03T21:30",
-   "end": "2026-10-03T23:59",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/billy-milano-presents-40-years-of-sod-tickets-1994628260822",
-   "where": "Da Bar Music Hall",
-   "addr": "1902 South 60th Street",
-   "zip": "53219",
-   "summary": "The iconic frontman of M.O.D. and S.O.D. brings United Forces his celebration of S.O.D. doing all of the classic S.O.D. material.",
-   "tags": [
-    "Metal",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Museums on Us Sponsored by Bank of America",
    "start": "2026-10-04T10:00",
    "end": "2026-10-04T17:00",
@@ -6389,26 +4483,6 @@
    "org": "mam"
   },
   {
-   "title": "Gwenyn Hill Farm Fall Festival Celebrating 10 years!",
-   "start": "2026-10-04T11:00",
-   "end": "2026-10-04T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/gwenyn-hill-farm-fall-festival-celebrating-10-years-tickets-1999052793719",
-   "where": "Gwenyn Hill Farm",
-   "addr": "N130W294 Bryn Dr",
-   "zip": "53188",
-   "summary": "Join us for our annual Fall Festival. Come and explore the farm and celebrate 10 years with us!",
-   "tags": [
-    "Education",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
    "start": "2026-10-04T11:00",
    "end": "2026-10-04T11:00",
@@ -6426,26 +4500,6 @@
    "free": null,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Cradle & Care's Newborn Education Class",
-   "start": "2026-10-04T13:00",
-   "end": "2026-10-04T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/cradle-cares-newborn-education-class-tickets-1999493325361",
-   "where": "Authentic Birth Center",
-   "addr": "530 North 108th Place",
-   "zip": "53226",
-   "summary": "Interactive newborn education class covering sleep, feeding, safe sleep, soothing, and newborn care for expecting families and support peopl",
-   "tags": [
-    "Baby",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
@@ -7357,26 +5411,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Bourbon & Bees Dinner | October 8",
-   "start": "2026-10-08T18:00",
-   "end": "2026-10-08T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/bourbon-bees-dinner-october-8-tickets-1992653779094",
-   "where": "Milwaukee ChopHouse",
-   "addr": "633 North 5th Street",
-   "zip": "53203",
-   "summary": "Indulge in a curated evening at Milwaukee ChopHouse, with rooftop bees and an unforgettable dining experience.",
-   "tags": [
-    "Spirits",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Raise a Glass! An Evening with Saz’s & Eagle Park Brewing",
    "start": "2026-10-08T18:00",
    "end": "2026-10-08T20:30",
@@ -7556,26 +5590,6 @@
    "org": "uwm"
   },
   {
-   "title": "Spooky Movie Night Paint & Sip",
-   "start": "2026-10-09T18:30",
-   "end": "2026-10-09T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/spooky-movie-night-paint-sip-tickets-2000082573819",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Beats and Baile: A Salsa Social",
    "start": "2026-10-09T19:00",
    "end": "2026-10-09T21:30",
@@ -7664,26 +5678,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Next Stop Comedy at North Pillar Brewing Company! - Waukesha, WI",
-   "start": "2026-10-09T20:00",
-   "end": "2026-10-09T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/next-stop-comedy-at-north-pillar-brewing-company-waukesha-wi-tickets-1988622194516",
-   "where": "North Pillar Brewing Co.",
-   "addr": "212 East North Street",
-   "zip": "53188",
-   "summary": "Next Stop! - A Comedy Show Near You! Join us at North Pillar Brewing Co. for a brand new line-up of comedians every time!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "5 Lesbians Eating a Quiche",
    "start": "2026-10-09T20:00",
    "end": "2026-10-09T20:00",
@@ -7724,46 +5718,6 @@
    "org": "mam"
   },
   {
-   "title": "Davidson Park Pumpkin Party",
-   "start": "2026-10-10T09:00",
-   "end": "2026-10-10T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/davidson-park-pumpkin-party-tickets-1996996580530",
-   "where": "Davidson Park",
-   "addr": "3725 West Juneau Avenue",
-   "zip": "53208",
-   "summary": "Celebrate the season with a family-friendly fall fest full of hands-on activities, food, games, trick-or-treating, and more!",
-   "tags": [
-    "Fall events",
-    "Seasonal & Holiday"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Milwaukee Comic Con 2026 Fall Show",
-   "start": "2026-10-10T10:00",
-   "end": "2026-10-10T16:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-comic-con-2026-fall-show-tickets-1985873589364",
-   "where": "Wisconsin State Fair Park",
-   "addr": "640 South 84th Street",
-   "zip": "53214",
-   "summary": "This Oct. 10th, 2026 We return to the products pavilion (WI Building) at the WI state fair park! Comics, Toys, Art, Cosplay, & Guests!",
-   "tags": [
-    "Anime/Comics",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Fall Vendor/Craft Fair & Bake Sale",
    "start": "2026-10-10T10:00",
    "end": "2026-10-10T15:00",
@@ -7801,26 +5755,6 @@
    "free": null,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "MEET AND GREET BOOK SIGNING WITH AUTHOR DR. CLARISSA LAWRENCE",
-   "start": "2026-10-10T12:00",
-   "end": "2026-10-10T16:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/meet-and-greet-book-signing-with-author-dr-clarissa-lawrence-tickets-1998618233939",
-   "where": "Gathering At The Gage",
-   "addr": "1135 South 70th Street",
-   "zip": "53214",
-   "summary": "Join us for an inspiring afternoon with Author Dr. Clarissa Lawrence to celebrate the debut of her new book \"Before I Forget.\"",
-   "tags": [
-    "Other",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
@@ -7896,26 +5830,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "THE LAKE COUNTY R-N-B RODEO \"FOOD FESTIVAL OF VIBES\"",
-   "start": "2026-10-10T15:00",
-   "end": "2026-10-10T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-lake-county-r-n-b-rodeo-food-festival-of-vibes-tickets-1997693014583",
-   "where": "The BBQ RANCH",
-   "addr": "727 mill rd",
-   "zip": "60099",
-   "summary": "Get ready to chow down and groove at the ultimate R-N-B rodeo food fest where vibes and flavors collide!",
-   "tags": [
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
    "start": "2026-10-10T15:30",
    "end": "2026-10-10T15:30",
@@ -7950,26 +5864,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "The Comedy Tour of Denise Hopkins",
-   "start": "2026-10-10T17:30",
-   "end": "2026-10-10T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-comedy-tour-of-denise-hopkins-tickets-1999718906079",
-   "where": "Washington Park Senior Center",
-   "addr": "4420 West Vliet Street",
-   "zip": "53208",
-   "summary": "Catch Denise Hopkins live for the first time in history. One night full of laughs and good vibes on The Comedy Tour!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Milwaukee Admirals vs Grand Rapids Griffins",
@@ -8246,47 +6140,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Witch's Night Out Paint & Sip",
-   "start": "2026-10-11T16:00",
-   "end": "2026-10-11T18:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/witchs-night-out-paint-sip-tickets-2000083450441",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Michael Jr.'s Funny How Marriage Works Tour @ Milwaukee, WI - 4PM Show",
-   "start": "2026-10-11T16:00",
-   "end": "2026-10-11T18:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/michael-jrs-funny-how-marriage-works-tour-milwaukee-wi-4pm-show-tickets-1996888015810",
-   "where": "Discover Church",
-   "addr": "7311 South 13th Street",
-   "zip": "53154",
-   "summary": "Michael Jr. is hitting the road with his Funny How Marriage Works Comedy Date-Night Experience. Marriage, dating and more like never before.",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "5 Lesbians Eating a Quiche",
@@ -8728,6 +6581,27 @@
    "org": "uwm"
   },
   {
+   "title": "The Wayward Line: Crisis and Laughter from the Gothic to the Graphic Novel with Cordula Grewe",
+   "start": "2026-10-14T17:30",
+   "end": "2026-10-14T18:30",
+   "all_day": false,
+   "url": "https://uwm.edu/letters-science/event/the-wayward-line-crisis-and-laughter-from-the-gothic-to-the-graphic-novel-with-cordula-grewe/",
+   "where": "Mitchell Hall 195",
+   "addr": "",
+   "zip": "",
+   "summary": "Friends of Art History Guest Lecture The Wayward Line: Crisis and Laughter from the Gothic to the Graphic Novel Cordula Grewe, Professor of Art History, Indiana University Dr. Cordula Grewe is an art…",
+   "tags": [
+    "Letters & Science",
+    "Arts and Culture",
+    "Humanities"
+   ],
+   "kind": "books",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Lyrical Sanctuary feat. Alyssia Dominguez",
    "start": "2026-10-14T18:00",
    "end": "2026-10-14T21:00",
@@ -8850,26 +6724,6 @@
    "org": "uwm"
   },
   {
-   "title": "Dyke Country: An Evening of Stand-Up Comedy",
-   "start": "2026-10-14T19:30",
-   "end": "2026-10-14T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/dyke-country-an-evening-of-stand-up-comedy-tickets-2000484077728",
-   "where": "Sugar Maple",
-   "addr": "441 East Lincoln Avenue",
-   "zip": "53207",
-   "summary": "One night only, Milwaukee! Unhinged queer comedy from Brooklyn comics.",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "The Addams Family Musical",
    "start": "2026-10-14T19:30",
    "end": "2026-10-14T19:30",
@@ -8885,6 +6739,24 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Steven Hyden, author of Is This It: The Never-Ending Rise and Fall of the Strokes (And Rock 'N' Roll), in conversation with Matt Wild",
+   "start": "2026-10-15",
+   "end": "",
+   "all_day": true,
+   "url": "https://boswellbooks.com/event/2026-10-15/hyden-this-it",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
+   "free": null,
+   "kind": "books",
+   "reach": "walk",
+   "via": "org",
+   "org": "boswell"
   },
   {
    "title": "Latine Diversity Festival",
@@ -8969,26 +6841,6 @@
    "org": "uwm"
   },
   {
-   "title": "Artful Sips: A Portrait in Petals (21+)",
-   "start": "2026-10-15T18:00",
-   "end": "2026-10-15T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/artful-sips-a-portrait-in-petals-21-tickets-1998933492887",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Join us for Artful Sips, a guided creative workshop featuring Lupo Designs!",
-   "tags": [
-    "Design",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Collagraph Printmaking",
    "start": "2026-10-15T18:00",
    "end": "2026-10-15T20:00",
@@ -9053,62 +6905,6 @@
    "also": [
     "urban-milwaukee-calendar"
    ]
-  },
-  {
-   "title": "Steven Hyden, author of Is This It: The Never-Ending Rise and Fall of the Strokes (And Rock 'N' Roll), in conversation with Matt Wild",
-   "start": "2026-10-15T18:30",
-   "end": "2026-10-15T19:30",
-   "all_day": false,
-   "url": "https://boswellbooks.com/event/2026-10-15/hyden-this-it",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell",
-   "also": [
-    "eventbrite"
-   ]
-  },
-  {
-   "title": "Hiss Golden Messenger: I'm People Tour w/ Sam Amidon",
-   "start": "2026-10-15T19:00",
-   "end": "2026-10-15T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/hiss-golden-messenger-im-people-tour-w-sam-amidon-tickets-1994986264621",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Hiss Golden Messenger comes to the Argo with a soulful blend of Americana, folk, country, and poetic lyricism.",
-   "tags": [
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Thursday Night Live: Comedy Edition",
-   "start": "2026-10-15T19:00",
-   "end": "2026-10-15T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/thursday-night-live-comedy-edition-tickets-2000270911141",
-   "where": "Story Hill FireHouse",
-   "addr": "407 North Hawley Road",
-   "zip": "53213",
-   "summary": "GET READY TO LAUGH, MILWAUKEE!",
-   "tags": [],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Film 16mm Student Showcase",
@@ -9212,26 +7008,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "RobbieTheFire Comedy show +FBI Comedy Conspiracy Presentation (Milwaukee)",
-   "start": "2026-10-15T19:30",
-   "end": "2026-10-15T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/robbiethefire-comedy-show-fbi-comedy-conspiracy-presentation-milwaukee-tickets-1999623886874",
-   "where": "Flappers | A Fun Kinda Joint",
-   "addr": "7527 West Becher Street",
-   "zip": "53219",
-   "summary": "Stand up Comedy and FBI Comedy Conspiracy Presentation from Robbie The Fire Bernstein at The Laugh Lounge",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "The Addams Family Musical",
@@ -9352,6 +7128,27 @@
    ]
   },
   {
+   "title": "Landscapes of Extraction: Mining and Empire in Romantic Britain with Stephanie O’Rourke",
+   "start": "2026-10-16T16:00",
+   "end": "2026-10-16T17:30",
+   "all_day": false,
+   "url": "https://uwm.edu/letters-science/event/landscapes-of-extraction-mining-and-empire-in-romantic-britain-with-stephanie-orourke/",
+   "where": "Mitchell Hall 195",
+   "addr": "",
+   "zip": "",
+   "summary": "Friends of Art History Guest Lecture Landscapes of Extraction: Mining and Empire in Romantic Britain Stephanie O’Rourke, Professor of Art History, University of St. Andrews Dr. Stephanie O’Rourke is…",
+   "tags": [
+    "Letters & Science",
+    "Arts and Culture",
+    "Humanities"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "St. Bernadette Parish Fish Fry",
    "start": "2026-10-16T16:30",
    "end": "2026-10-16T19:00",
@@ -9388,26 +7185,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Simply Meant to Be Paint & Sip",
-   "start": "2026-10-16T18:30",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/simply-meant-to-be-paint-sip-tickets-2000083628975",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Milwaukee Admirals vs Colorado Eagles",
    "start": "2026-10-16T19:00",
    "end": "",
@@ -9423,26 +7200,6 @@
    "reach": "bus",
    "via": "source",
    "src": "admirals"
-  },
-  {
-   "title": "Jazz and Jokes",
-   "start": "2026-10-16T19:30",
-   "end": "2026-10-16T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/jazz-and-jokes-tickets-1998257634376",
-   "where": "Jazz Gallery Center for the Arts",
-   "addr": "926 East Center Street",
-   "zip": "53212",
-   "summary": "Come to the Jazz Gallery located in Riverwest for a comedy show with live muisc BEFORE and DURING the show!",
-   "tags": [
-    "Blues & Jazz",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "The Addams Family Musical",
@@ -9621,26 +7378,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Wauk-Tober 2026: Downtown Waukesha Beer & Wine Walk",
-   "start": "2026-10-17T15:30",
-   "end": "2026-10-17T19:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/wauk-tober-2026-downtown-waukesha-beer-wine-walk-tickets-1998374076658",
-   "where": "Downtown Waukesha",
-   "addr": "264 W. Main Street",
-   "zip": "53186",
-   "summary": "Wauk-Tober Beer & Wine Walk | Downtown Waukesha - Experience one of Downtown Waukesha's most popular fall events!",
-   "tags": [
-    "Wine",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
    "start": "2026-10-17T15:30",
    "end": "2026-10-17T15:30",
@@ -9695,47 +7432,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Pub and Grub Comedy Tour",
-   "start": "2026-10-17T18:30",
-   "end": "2026-10-17T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/pub-and-grub-comedy-tour-tickets-1996529933777",
-   "where": "Buckets Pub 2nd Round, Lathrop Avenue, Racine, WI, USA",
-   "addr": "2031 Lathrop Avenue",
-   "zip": "53405",
-   "summary": "️ Dinner & Comedy, Pub and Grub Comedy Tour. A Full Night Out! Starring Mike Marvell",
-   "tags": [
-    "Food",
-    "Food & Drink",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "New Wave Fest 2026",
-   "start": "2026-10-17T19:00",
-   "end": "2026-10-17T23:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/new-wave-fest-2026-tickets-1981389712969",
-   "where": "The Cooperage",
-   "addr": "822 South Water Street",
-   "zip": "53204",
-   "summary": "New Wave Fest is back on the Harborfront in 2026 baby!",
-   "tags": [
-    "Alternative",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "The Addams Family Musical",
@@ -9964,46 +7660,6 @@
    "org": "boswell"
   },
   {
-   "title": "2026 Gas Forecasters Forum",
-   "start": "2026-10-19T08:00",
-   "end": "2026-10-21T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/2026-gas-forecasters-forum-tickets-1990445418829",
-   "where": "The Westin Milwaukee",
-   "addr": "550 North Van Buren Street",
-   "zip": "53202",
-   "summary": "PowerGEM's Gas Forecasters Forum returns to Milwaukee in October 2026! Join your natural gas utility peers for discussion and insights.",
-   "tags": [
-    "High Tech",
-    "Science & Technology"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Baking with Honeypie Bakeshop | Chocolate \"French Silk\" Pies",
-   "start": "2026-10-19T18:00",
-   "end": "2026-10-19T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/baking-with-honeypie-bakeshop-chocolate-french-silk-pies-tickets-1999790015770",
-   "where": "Palomino Bar",
-   "addr": "2491 South Superior Street",
-   "zip": "53207",
-   "summary": "Learn the tricks to making delicious chocolate French Silk pies with Valeri Lucks, co-founder and Chief Executive Pie Officer of Honeypie",
-   "tags": [
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Beginner Screen Printing",
    "start": "2026-10-19T18:00",
    "end": "2026-10-19T20:00",
@@ -10023,46 +7679,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Q+A and Signing with Author Gretchen Powell Fox",
-   "start": "2026-10-19T18:30",
-   "end": "2026-10-19T20:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/qa-and-signing-with-author-gretchen-powell-fox-tickets-1991957097300",
-   "where": "Urban Ecology Center - Washington Park",
-   "addr": "1859 North 40th Street",
-   "zip": "53208",
-   "summary": "Join us for a sit down Q+A with author, Gretchen Powell Fox, at the Well Red Damsel!",
-   "tags": [
-    "Books",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "10/19 - Brookfield, WI - Dinner After Dark",
-   "start": "2026-10-19T19:00",
-   "end": "2026-10-19T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/1019-brookfield-wi-dinner-after-dark-tickets-1997443168286",
-   "where": "Cooper's Hawk Winery & Restaurant",
-   "addr": "15 South Moorland Road",
-   "zip": "53005",
-   "summary": "Dinner After Dark- Wine Club Pairing Dinner ($79 per person)",
-   "tags": [
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Indigo Girls",
@@ -10124,6 +7740,24 @@
    "org": "boswell"
   },
   {
+   "title": "Jennifer A Jordan, author of Beer Ghosts: In Search of Lost Hops and the Women Who Grew Them",
+   "start": "2026-10-20",
+   "end": "",
+   "all_day": true,
+   "url": "https://boswellbooks.com/event/2026-10-20/jordan-beer-ghosts",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
+   "free": null,
+   "kind": "books",
+   "reach": "walk",
+   "via": "org",
+   "org": "boswell"
+  },
+  {
    "title": "Craig Fehrman, author of This Vast Enterprise: A New History of Lewis & Clark",
    "start": "2026-10-20",
    "end": "",
@@ -10136,24 +7770,6 @@
    "tags": [
     "Offsite"
    ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell"
-  },
-  {
-   "title": "Jennifer A Jordan, author of Beer Ghosts: In Search of Lost Hops and the Women Who Grew Them",
-   "start": "2026-10-20",
-   "end": "",
-   "all_day": true,
-   "url": "https://boswellbooks.com/event/2026-10-20/jordan-beer-ghosts",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
    "time_unknown": true,
    "free": null,
    "kind": "books",
@@ -10181,26 +7797,6 @@
    "free": null,
    "via": "source",
    "src": "marcus-center"
-  },
-  {
-   "title": "Friends of Weyenberg Library Present: A Lunch with Author Elizabeth Berg",
-   "start": "2026-10-20T11:00",
-   "end": "2026-10-20T14:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/friends-of-weyenberg-library-present-a-lunch-with-author-elizabeth-berg-tickets-1982453768588",
-   "where": "Shully's Cuisine and Events",
-   "addr": "146 Green Bay Road",
-   "zip": "53092",
-   "summary": "Join us for lunch and a chat with author Elizabeth Berg at Weyenberg Library!",
-   "tags": [
-    "Other",
-    "Community & Culture"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Día de Los Muertos Ofrenditas Workshops",
@@ -10261,26 +7857,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Mexican Slum Rats",
-   "start": "2026-10-20T20:00",
-   "end": "2026-10-20T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/mexican-slum-rats-tickets-1998387125688",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "California’s Mexican Slum Rats bring their emo-fusion sound and high-octane energy to The Argo for a night you won't want to miss!",
-   "tags": [
-    "Film",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "film",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Rooftop Stargazing",
@@ -10790,26 +8366,6 @@
    "org": "uwm"
   },
   {
-   "title": "Mobilize the Poets Presents: AFTER THE WAR: 1919",
-   "start": "2026-10-22T19:00",
-   "end": "2026-10-22T23:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/mobilize-the-poets-presents-after-the-war-1919-tickets-1997642323966",
-   "where": "The Cooperage",
-   "addr": "822 South Water Street",
-   "zip": "53204",
-   "summary": "Packed with rollicking incisive poetic songs, stunning visuals, and authentic voices conjuring 1919...",
-   "tags": [
-    "Literary Arts",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Sapphic Sadie Hawkins",
    "start": "2026-10-22T19:00",
    "end": "2026-10-22T21:00",
@@ -11045,26 +8601,6 @@
    "org": "uwm"
   },
   {
-   "title": "BuckFest 2026 feat. Big Buck World Championship XIX",
-   "start": "2026-10-23T15:00",
-   "end": "2026-10-24T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/buckfest-2026-feat-big-buck-world-championship-xix-tickets-1419494007789",
-   "where": "Turner Hall Ballroom",
-   "addr": "1040 North Vel R. Phillips Avenue",
-   "zip": "53203",
-   "summary": "General Admission is FREE for All Ages! Go VIP for the ultimate BuckFest experience on Oct. 23–24 in Milwaukee!",
-   "tags": [
-    "Gaming",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "film",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "BuckFest",
    "start": "2026-10-23T15:00",
    "end": "2026-10-23T22:00",
@@ -11120,26 +8656,6 @@
    "reach": "bus",
    "via": "source",
    "src": "admirals"
-  },
-  {
-   "title": "Next Stop Comedy at Lion's Tail Brewing Co.! - Wauwatosa, WI",
-   "start": "2026-10-23T19:00",
-   "end": "2026-10-23T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/next-stop-comedy-at-lions-tail-brewing-co-wauwatosa-wi-tickets-1983963541359",
-   "where": "Lion's Tail Brewing Co.",
-   "addr": "8520 West North Avenue",
-   "zip": "53226",
-   "summary": "Next Stop! - A Comedy Show Near You! Join us at Lion's Tail Brewing Co. for a brand new line-up of comedians every time!",
-   "tags": [
-    "Comedy",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "MAM After Dark: Halloween Bash",
@@ -11365,46 +8881,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "LORD, Who Took the Building Fund? (stage play)",
-   "start": "2026-10-24T18:00",
-   "end": "2026-10-24T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/lord-who-took-the-building-fund-stage-play-tickets-1999622342254",
-   "where": "Destiny Plaza",
-   "addr": "7210 N. 76th",
-   "zip": "53223",
-   "summary": "A hilarious live play where nobody can figure out who swiped the building fund—chaos and laughs guaranteed!",
-   "tags": [
-    "Theatre",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Next Stop Comedy at B-Lazy Bar & Grill! - Wind Lake, WI",
-   "start": "2026-10-24T19:00",
-   "end": "2026-10-24T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/next-stop-comedy-at-b-lazy-bar-grill-wind-lake-wi-tickets-1996007890331",
-   "where": "B-Lazy Bar & Grill",
-   "addr": "7922 South Loomis Road",
-   "zip": "53185",
-   "summary": "Next Stop! - A Comedy Show Near You! Join us at B-Lazy Bar & Grill for a brand new line-up of comedians each month!",
-   "tags": [
-    "Comedy",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "The Addams Family Musical",
    "start": "2026-10-24T19:30",
    "end": "2026-10-24T19:30",
@@ -11420,26 +8896,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "The Longest Johns w/ Sean Dagher",
-   "start": "2026-10-24T20:00",
-   "end": "2026-10-24T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-longest-johns-w-sean-dagher-tickets-1990993982598",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Sea shanty folk group The Longest Johns bring soaring harmonies and modern energy to traditional maritime songs on tour.",
-   "tags": [
-    "Folk",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "5 Lesbians Eating a Quiche",
@@ -11574,23 +9030,6 @@
    "org": "uwm"
   },
   {
-   "title": "The Blonde Code: Creating Viral Blondes",
-   "start": "2026-10-26T09:00",
-   "end": "2026-10-26T16:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-blonde-code-creating-viral-blondes-registration-1990154816630",
-   "where": "227 N Main St",
-   "addr": "227 North Main Street",
-   "zip": "53092",
-   "summary": "Master modern blonding, strategic formulations & social media techniques to create high-impact, viral worthy blonde results.",
-   "tags": [],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Pumpkin Perfect: A Graduate Student Craft Night",
    "start": "2026-10-26T16:00",
    "end": "2026-10-26T18:00",
@@ -11652,46 +9091,6 @@
    "org": "uwm"
   },
   {
-   "title": "ACOTAR 6 Midnight Release Ball",
-   "start": "2026-10-26T20:00",
-   "end": "2026-10-27T00:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/acotar-6-midnight-release-ball-tickets-1988721283895",
-   "where": "Prairie Springs on Park",
-   "addr": "1420 East Park Place",
-   "zip": "53211",
-   "summary": "Join us for a fantasy inspired ball to celebrate the release of ACOTAR 6 with The Well Red Damsel and MKE Books & Beers!",
-   "tags": [
-    "Books",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "ACOTAR 6 Midnight Book Release",
-   "start": "2026-10-26T21:30",
-   "end": "2026-10-26T23:59",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/acotar-6-midnight-book-release-tickets-1985345427618",
-   "where": "Thirst Books",
-   "addr": "5209 West North Avenue",
-   "zip": "53208",
-   "summary": "Thirst opens at 9:30pm, Monday October 26, 2026 for the midnight release of ACOTAR 6 by Sarah J. Maas",
-   "tags": [
-    "Books",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Wendy Wimmer, author of The Doomscroller's Companion, in conversation with Christina Clancy",
    "start": "2026-10-27",
    "end": "",
@@ -11708,26 +9107,6 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "Theotokos Lecture and Dialogue",
-   "start": "2026-10-27T17:00",
-   "end": "2026-10-27T19:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/theotokos-lecture-and-dialogue-registration-1994885146173",
-   "where": "Sensenbrenner Hall 3rd Floor - Eisenberg Hall (Rm 304)",
-   "addr": "1103 West Wisconsin Avenue",
-   "zip": "53233",
-   "summary": "The Virgin Mary as a Shared Figure? A Christian-Muslim Dialogue",
-   "tags": [
-    "Fine Art",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Intro to Photography: Capturing on Black and White Film",
@@ -11848,27 +9227,6 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "Café Con Arte: Day of the Dead Ofrendas",
-   "start": "2026-10-28T08:30",
-   "end": "2026-10-28T09:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/cafe-con-arte-day-of-the-dead-ofrendas-tickets-1991396563729",
-   "where": "Latino Arts, Inc.",
-   "addr": "1028 South 9th Street",
-   "zip": "53204",
-   "summary": "As the weather shifts, warm up with hot coffee and fresh churros while exploring our 2026 Día de los Muertos exhibits.",
-   "tags": [
-    "Fine Art",
-    "Performing & Visual Arts",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Bilingual Storytime at the Domes",
@@ -12005,26 +9363,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Resilient Relationships",
-   "start": "2026-10-28T18:00",
-   "end": "2026-10-28T19:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/resilient-relationships-tickets-2000486847011",
-   "where": "300 Cottonwood Ave suite 12",
-   "addr": "300 Cottonwood Avenue",
-   "zip": "53029",
-   "summary": "Learn, laugh, and reconnect! Join us for a relaxed, interactive evening designed to help you build a stronger relationship.",
-   "tags": [
-    "Other",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Sewing Machine Basics: Patchwork",
@@ -12231,10 +9569,7 @@
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "eventbrite"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Fibers Made Easy: Knitted Scarves",
@@ -12351,26 +9686,6 @@
    "org": "uwm-philosophy"
   },
   {
-   "title": "Milwaukee Halloween Bar Crawl (Fri & Sat) 2026",
-   "start": "2026-10-30T16:00",
-   "end": "2026-10-31T23:59",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-halloween-bar-crawl-fri-sat-2026-tickets-1611363725279",
-   "where": "Brothers Bar & Grill",
-   "addr": "1213 North Water Street",
-   "zip": "53202",
-   "summary": "Haunt the bars in Milwaukee with us at our 2 DAY Halloween Bar Crawl on Oct. 30th & Oct. 31st - don’t ghost us!",
-   "tags": [
-    "Halloween/Haunt",
-    "Seasonal & Holiday"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Día de los Muertos (Day of the Dead)",
    "start": "2026-10-30T18:00",
    "end": "2026-10-30T21:00",
@@ -12428,26 +9743,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "The Fright Crawl | Milwaukee Halloween Bar Crawl 2026 | Fri, Oct 30",
-   "start": "2026-10-30T19:30",
-   "end": "2026-10-31T02:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.ca/e/the-fright-crawl-milwaukee-halloween-bar-crawl-2026-fri-oct-30-tickets-1998619014273",
-   "where": "TBA",
-   "addr": "TBA",
-   "zip": "TBA",
-   "summary": "Milwaukee's Friday Halloween takeover. One wristband, 4+ bars, no cover, a host and a live crawl map. Fri, Oct 30. 21+",
-   "tags": [
-    "Halloween/Haunt",
-    "Seasonal & Holiday"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Les Misérables",
@@ -12541,26 +9836,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Meet Me In Milwaukee 2026",
-   "start": "2026-10-31T09:00",
-   "end": "2026-10-31T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/meet-me-in-milwaukee-2026-tickets-1274794487629",
-   "where": "Sheraton Milwaukee Brookfield Hotel",
-   "addr": "375 South Moorland Road",
-   "zip": "53005",
-   "summary": "A small, intimate romance book signing event in Milwaukee, WI",
-   "tags": [
-    "Books",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
    "start": "2026-10-31T11:00",
    "end": "2026-10-31T11:00",
@@ -12578,26 +9853,6 @@
    "free": null,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Wauwatosa Harvest Fest 2026",
-   "start": "2026-10-31T12:00",
-   "end": "2026-10-31T17:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/wauwatosa-harvest-fest-2026-tickets-1997295436416",
-   "where": "Hart Park",
-   "addr": "7300 West Chestnut Street",
-   "zip": "53213",
-   "summary": "Get ready to celebrate the season with good vibes, tasty treats, and fun times at Wauwatosa Harvest Fest 2026!",
-   "tags": [
-    "City/Town",
-    "Community & Culture"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Drop-In Tours: October’s Shadows: Art, Mystery, and Remembrance",
@@ -12637,26 +9892,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "WITCHES' BALL The Celtic Costume Ball Samhain 2026",
-   "start": "2026-10-31T17:00",
-   "end": "2026-10-31T23:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/witches-ball-the-celtic-costume-ball-samhain-2026-tickets-1984650620431",
-   "where": "The Moose - Milwaukee Lodge 49",
-   "addr": "5476 South 13th Street",
-   "zip": "53221",
-   "summary": "Get your Celtic gear & join us for a splendid Samhain eve with dancing (to both Celtic & the latest music) and magic at FAB's WITCHES' BALL!",
-   "tags": [
-    "Halloween/Haunt",
-    "Seasonal & Holiday"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Les Misérables",
    "start": "2026-10-31T19:30",
    "end": "2026-10-31T19:30",
@@ -12672,26 +9907,6 @@
    "free": null,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "EMOWEEN MILWAUKEE 2026",
-   "start": "2026-10-31T20:00",
-   "end": "2026-11-01T01:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/emoween-milwaukee-2026-tickets-1990792800858",
-   "where": "Shank Hall",
-   "addr": "1434 North Farwell Avenue",
-   "zip": "53202",
-   "summary": "Baby, you're a haunted house The biggest night of the year is back!",
-   "tags": [
-    "Alternative",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "Go Dog Go! / Ve Perro ¡Ve!",
@@ -13498,47 +10713,6 @@
    "org": "uwm"
   },
   {
-   "title": "12th Annual Military and Veterans Ball",
-   "start": "2026-11-06T18:00",
-   "end": "2026-11-06T23:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/12th-annual-military-and-veterans-ball/",
-   "where": "Hilton Milwaukee",
-   "addr": "509 W. Wisconsin Avenue",
-   "zip": "53203",
-   "summary": "The Military and Veterans Resource Center (MAVRC) at UW-Milwaukee presents a night of dinner, dancing, and camaraderie to all military-related students, alumni, and supporters. Register individually…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Students"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Milwaukee Comedy Club, Round Third w/ The Clarks!",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-comedy-club-round-third-w-the-clarks-tickets-1999120303643",
-   "where": "6317 W Bluemound Rd",
-   "addr": "6317 West Bluemound Road",
-   "zip": "53213",
-   "summary": "Hey Milwaukee! Steph and Tom Clark will be headlining in Milwaukee at Round Third! One night only. Grab your presale tickets today!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "El Santo Golpe",
    "start": "2026-11-06T19:00",
    "end": "2026-11-06T21:30",
@@ -13571,47 +10745,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "La Perla",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/la-perla/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "UW-Milwaukee alumni, stone sculptor/painter SHADDSTONE©️ collaborates with alumni master percussionist Martin Shadd and friends, to present an experience of abstract/impressionism as music. The…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Brother Ali: Midwest Trek '26 w/ DJ Abilities",
-   "start": "2026-11-06T20:00",
-   "end": "2026-11-06T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/brother-ali-midwest-trek-26-w-dj-abilities-tickets-1993353774800",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Brother Ali delivers powerful hip hop, sharp lyricism, and uplifting messages that have inspired audiences worldwide.",
-   "tags": [
-    "Hip Hop / Rap",
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
   },
   {
    "title": "A Ticketed Event with Emily St John Mandel, author of Exit Party, in conversation with Jason Gobble",
@@ -13656,26 +10789,6 @@
    "org": "mam"
   },
   {
-   "title": "Milwaukee Anime-Fest",
-   "start": "2026-11-07T10:00",
-   "end": "2026-11-07T17:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-anime-fest-tickets-1981382086157",
-   "where": "Royle Hotel Milwaukee Airport",
-   "addr": "5311 South Howell Avenue",
-   "zip": "53207",
-   "summary": "Get ready for a weekend full of anime goodness at Milwaukee Anime-Fest - the ultimate celebration for all anime fans in the area!",
-   "tags": [
-    "Anime/Comics",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
    "title": "Museums on Us Sponsored by Bank of America",
    "start": "2026-11-07T10:00",
    "end": "2026-11-07T17:00",
@@ -13712,27 +10825,6 @@
    "free": null,
    "via": "org",
    "org": "mam"
-  },
-  {
-   "title": "UWM Percussion Ensemble",
-   "start": "2026-11-07T15:00",
-   "end": "2026-11-07T16:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/uwm-percussion-ensemble/",
-   "where": "Zelazo Center for the Performing Arts, Room 250",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The UWM Percussion Ensemble presents its annual Spring concert, featuring a wide variety of instruments, sounds, and compositions from different periods.",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Great White Throne",
@@ -13865,67 +10957,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Bill Callahan",
-   "start": "2026-11-08T20:00",
-   "end": "2026-11-08T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/bill-callahan-tickets-1997613696340",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Join the legendary frontman of Smog, Bill Callahan, at The Argo for a must see solo performance.",
-   "tags": [
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Intro to Wheel Throwing Session 2",
-   "start": "2026-11-09T18:00",
-   "end": "2026-11-09T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-09/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you curious to try out the pottery whe e l ? Joi n us for five weeks to familiarize yourself with the fundamentals of whe e l throwing and clay! Betwee n classes, participants will have access to…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Intro to Stained Glass Session 3",
-   "start": "2026-11-09T18:00",
-   "end": "2026-11-09T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-stained-glass-session-3-3/2026-11-09/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this workshop, you will learn how to score, cut, foil, solder, and assemble your own sta in e d – gla ss motif. Class participants will choose their own colors for a sunrise pattern which they…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "BJ Hollars, author of Becoming Bobby Kennedy: The Transformative Life of an American Icon",
@@ -14114,6 +11145,86 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Slow Art Saturday: “The Shakers”",
+   "start": "2026-11-14T10:30",
+   "end": "2026-11-14T11:30",
+   "all_day": false,
+   "url": "https://mam.org/events/event/slow-art-saturday-the-shakers/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Join Amy Kirschke for a one-hour experience focused on a single work of art.",
+   "tags": [
+    "Baker/Rowland Galleries",
+    "Drop-In Tours",
+    "Free for Members"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Living Archives: An African Community Day",
+   "start": "2026-11-14T12:00",
+   "end": "2026-11-14T16:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/living-archives-an-african-community-day/",
+   "where": "Haggerty Museum of Art",
+   "addr": "1234 W. Tory Hill",
+   "zip": "53233",
+   "summary": "Living Archives invites visitors to experience the living traditions of the African diaspora through food, storytelling, dance, conversation, and art.",
+   "tags": [
+    "Food & Drink",
+    "History"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Drop-In Tours: Honoring Native Voices in Art: Homelands: Mnë’nának, Māēnāēwah, Tešišik",
+   "start": "2026-11-14T14:00",
+   "end": "2026-11-14T15:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-tours-honoring-native-voices/2026-11-14/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "In this docent-led tour, explore artworks by contemporary artists representing many tribal affiliations, who are reshaping the narratives about American land and identity.",
+   "tags": [
+    "Drop-In Tours"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Dinner Detective Milwaukee",
+   "start": "2026-11-14T18:00",
+   "end": "2026-11-14T21:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/dinner-detective-milwaukee-47/",
+   "where": "Sheraton Milwaukee Brookfield Hotel",
+   "addr": "375 S. Moorland Rd.",
+   "zip": "53005",
+   "summary": "Solve a hilarious mystery while you feast on a fantastic dinner.",
+   "tags": [
+    "Comedy",
+    "Food & Drink"
+   ],
+   "kind": "comedy",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   }
  ],
  "posts": [
@@ -14156,25 +11267,25 @@
  ],
  "counts": {
   "kinds": {
-   "music": 77,
-   "theater": 100,
-   "comedy": 39,
-   "film": 28,
-   "art": 99,
-   "talks": 98,
-   "books": 50,
+   "music": 55,
+   "theater": 95,
+   "comedy": 26,
+   "film": 22,
+   "art": 79,
+   "talks": 75,
+   "books": 43,
    "markets": 5,
-   "outdoors": 25,
-   "food": 44,
-   "sports": 20,
-   "family": 44,
-   "community": 82
+   "outdoors": 17,
+   "food": 23,
+   "sports": 18,
+   "family": 36,
+   "community": 74
   },
   "reach": {
-   "walk": 299,
-   "bus": 260,
-   "car": 148,
-   "unknown": 1
+   "walk": 295,
+   "bus": 209,
+   "car": 61,
+   "unknown": 0
   },
   "free": 36
  }
