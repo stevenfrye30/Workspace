@@ -1,5 +1,5 @@
 {
- "_about": "Option generators: citywide calendars, venues and teams whose listings feed the 'Coming up' list. Hand-edited. Unlike orgs.json these are not groups we follow — they are where the options come from. Same fields and knobs as an org entry (kind_strict, cap, feed.exclude); `kind` and `reach` are defaults applied when a listing gives no better clue. tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Probed 2026-09-13: Pabst Theater Group, Fiserv Forum, Summerfest, OnMilwaukee's and Milwaukee Record's listings, County Parks, and Visit Milwaukee are app-rendered or blocked to feed readers — link-only until that changes.",
+ "_about": "Option generators: citywide calendars, venues and teams whose listings feed the 'Coming up' list. Hand-edited. Unlike orgs.json these are not groups we follow — they are where the options come from. Same fields and knobs as an org entry (kind_strict, cap, feed.exclude); `kind` and `reach` are defaults applied when a listing gives no better clue. tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Read by their own calendar feeds as of 2026-09-20: Urban Milwaukee, Marcus Center, Admirals, Brewers, Eventbrite, Pabst Theater Group, Fiserv Forum, Visit Milwaukee. Probed 2026-09-13 and not re-probed: Summerfest, OnMilwaukee's and Milwaukee Record's listings, County Parks are app-rendered or blocked to feed readers — link-only until that changes.",
  "v": 1,
  "sources": [
   {
@@ -90,16 +90,46 @@
   {
    "id": "pabst-theater-group",
    "name": "Pabst Theater Group",
-   "what": "The Pabst, the Riverside, Turner Hall Ballroom, the Back Room at Colectivo. Listings are app-rendered, so this opens their site.",
+   "what": "The Pabst, the Riverside, Turner Hall Ballroom, Miller High Life Theatre, the Vivarium, the Fitzgerald. Read from their month view, so shows are listed months ahead with start times.",
    "site": "https://www.pabsttheatergroup.com/events",
    "kind": "music",
-   "reach": "bus"
+   "reach": "bus",
+   "feed": {
+    "type": "rhp",
+    "url": "https://www.pabsttheatergroup.com",
+    "where": "Pabst Theater Group"
+   },
+   "cap": 300
   },
   {
    "id": "visit-milwaukee",
    "name": "Visit Milwaukee events",
-   "what": "The tourism bureau's calendar. Their API needs a token their site loads separately, so this opens their page.",
-   "site": "https://www.visitmilwaukee.org/events/"
+   "what": "The tourism bureau's calendar of everything from concerts and plays to festivals and one-off classes. The full listing is mostly standing attractions, daily tours and weekly happy hours, so the feed keeps single-day listings, short runs, and recurring ones only in performance/festival/market/sports categories.",
+   "site": "https://www.visitmilwaukee.org/events/",
+   "feed": {
+    "type": "simpleview",
+    "url": "https://www.visitmilwaukee.org",
+    "skip_categories": "^(tours|museums & attractions|brew city trail)$",
+    "recurring_keep": "^(live music|comedy & improv|performing arts & theater|festival|fairs & markets|film & literature|spectator sports)$",
+    "max_span_days": 14,
+    "cities": "^(milwaukee|wauwatosa|west allis|shorewood|whitefish bay|glendale|brookfield|cudahy|st\\.? francis|south milwaukee|greendale|greenfield|oak creek|franklin|fox point|river hills|brown deer|bayside|menomonee falls|hales corners|elm grove|waukesha|mequon|cedarburg)$"
+   },
+   "cap": 1200
+  },
+  {
+   "id": "fiserv-forum",
+   "name": "Fiserv Forum",
+   "what": "Bucks home games, arena concerts and Marquette basketball in the Deer District. Read from their month view.",
+   "where": "Fiserv Forum, 1111 Vel R. Phillips Ave",
+   "site": "https://www.fiservforum.com/events",
+   "feed": {
+    "type": "rhp",
+    "url": "https://www.fiservforum.com",
+    "where": "Fiserv Forum"
+   },
+   "kind": "music",
+   "reach": "bus",
+   "cap": 150
   }
  ]
 }

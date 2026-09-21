@@ -1,5 +1,5 @@
 {
- "_about": "The organizations we follow. Hand-edited — this is the one file you touch for groups. Each entry: id (stable slug), name, what (why we care, one line), where (address or neighborhood), site, calendar (their own events page), feed (optional: how the build tool reads their calendar — type tribe|ics|jsonld|boswell|rss; leave it out for link-only orgs), kind (default kind for their events when a listing gives no better clue: music theater comedy film art talks books markets outdoors food sports family community), reach (walk|bus|car from home, used the same way), tags. Optional knobs: kind_strict (always use the default kind, e.g. a bookstore), reach_strict (a campus: on campus unless the title is a trip out of town), cap (max events kept, default 80), and on the feed: exclude (title regex) and exclude_categories (listing-category regex), depts (uwm: the sub-site slugs). tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Started 2026-09-13 from the old community/events notes — prune and add freely.",
+ "_about": "The organizations we follow. Hand-edited — this is the one file you touch for groups. Each entry: id (stable slug), name, what (why we care, one line), where (address or neighborhood), site, calendar (their own events page), feed (optional: how the build tool reads their calendar — type tribe|ics|jsonld|boswell|rss|uwm|uec|communico|brightspot (see tools/milwaukee/build.py for the rest); leave it out for link-only orgs), kind (default kind for their events when a listing gives no better clue: music theater comedy film art talks books markets outdoors food sports family community), reach (walk|bus|car from home, used the same way), tags. Optional knobs: kind_strict (always use the default kind, e.g. a bookstore), reach_strict (a campus: on campus unless the title is a trip out of town), cap (max events kept, default 80), and on the feed: exclude (title regex) and exclude_categories (listing-category regex), depts (uwm: the sub-site slugs). tools/milwaukee/build.py reads this and writes events.json; it never writes this file. Started 2026-09-13 from the old community/events notes — prune and add freely.",
  "v": 1,
  "orgs": [
   {
@@ -77,7 +77,7 @@
   {
    "id": "urban-ecology-center",
    "name": "Urban Ecology Center",
-   "what": "Riverside Park branch is the neighborhood's back yard, at the river end of Park Place. Outings, volunteer days, gear lending. Their calendar is app-rendered, so it opens on their site.",
+   "what": "Riverside Park branch is the neighborhood's back yard, at the river end of Park Place. Volunteer days, birding, classes, family programs and outings at all three branches (Riverside Park, Washington Park, Menomonee Valley). Read from the public feed behind their calendar page.",
    "where": "1500 E Park Pl (Riverside Park)",
    "site": "https://www.urbanecologycenter.org/",
    "calendar": "https://www.urbanecologycenter.org/calendar",
@@ -86,12 +86,34 @@
    "tags": [
     "nature",
     "neighborhood"
-   ]
+   ],
+   "feed": {
+    "type": "uec",
+    "url": "https://xrtu-94hm-wjoi.n7c.xano.io/api:CiVk5Y-3/event",
+    "branches": {
+     "Riverside Park": {
+      "where": "Urban Ecology Center, Riverside Park",
+      "addr": "1500 E Park Pl",
+      "zip": "53211"
+     },
+     "Washington Park": {
+      "where": "UEC Washington Park",
+      "addr": "1859 N 40th St",
+      "zip": "53208"
+     },
+     "Menomonee Valley": {
+      "where": "UEC Menomonee Valley",
+      "addr": "3700 W Pierce St",
+      "zip": "53215"
+     }
+    }
+   },
+   "cap": 200
   },
   {
    "id": "mpl",
    "name": "Milwaukee Public Library",
-   "what": "East Branch on Cramer is the local one; Central downtown is the grand one. Events run through their Communico calendar.",
+   "what": "East Branch on Cramer is the local one; Central downtown is the grand one. Adult and all-ages programs at those two branches, read from their Communico calendar. Other branches and the kids' and teens' programs are left out: widen `locations` or `ages` on the feed to bring them in.",
    "where": "2320 N Cramer St (East Branch)",
    "site": "https://www.mpl.org/",
    "calendar": "https://mpl.libnet.info/events",
@@ -100,7 +122,26 @@
    "tags": [
     "books",
     "civic"
-   ]
+   ],
+   "feed": {
+    "type": "communico",
+    "url": "https://mpl.libnet.info",
+    "locations": "^(East Branch|Central Library)$",
+    "ages": "adult|older adult|all ages",
+    "branches": {
+     "East Branch": {
+      "where": "Milwaukee Public Library East Branch",
+      "addr": "2320 N Cramer St",
+      "zip": "53211"
+     },
+     "Central Library": {
+      "where": "Milwaukee Public Library Central Library",
+      "addr": "814 W Wisconsin Ave",
+      "zip": "53233"
+     }
+    }
+   },
+   "cap": 150
   },
   {
    "id": "milwaukee-film",
@@ -158,7 +199,7 @@
   {
    "id": "turners",
    "name": "Milwaukee Turners",
-   "what": "The 1853 gymnastics-and-democracy society at Turner Hall: climbing gym, public forums, the restaurant's fish fry. Their public Google calendar is only the citywide fitness-class schedule, so events open on their site.",
+   "what": "The 1853 gymnastics-and-democracy society at Turner Hall: climbing gym, public forums, the restaurant's fish fry. Nothing to read: their /events page is empty and their public Google calendar is only the citywide fitness-class schedule. Turner Hall Ballroom concerts arrive through Pabst Theater Group instead.",
    "where": "Turner Hall, 1034 N Vel R. Phillips Ave",
    "site": "https://www.milwaukeeturners.org/",
    "calendar": "https://www.milwaukeeturners.org/events/",
@@ -189,7 +230,7 @@
   {
    "id": "historic-milwaukee",
    "name": "Historic Milwaukee, Inc.",
-   "what": "Walking tours all year and Doors Open Milwaukee in late September. Tours book through FareHarbor, so their page is the calendar.",
+   "what": "Walking tours all year and Doors Open Milwaukee in late September (Sept 26 and 27, 2026). Tours book through FareHarbor, which only serves times to its own widget, so their page is the calendar. Doors Open tour slots still arrive through Eventbrite and UWM, and the yearly anchor is in season.json.",
    "where": "235 E Michigan St",
    "site": "https://historicmilwaukee.org/",
    "calendar": "https://historicmilwaukee.org/events/",
@@ -219,7 +260,7 @@
   {
    "id": "radio-milwaukee",
    "name": "Radio Milwaukee 88Nine",
-   "what": "The music station in Walker's Point: live sessions, a community calendar, the Fall Ball.",
+   "what": "The music station in Walker's Point: live sessions, a community calendar, the Fall Ball. Read from their community calendar's concert, festival, food and sports categories; the exhibits and classes that repeat daily are left out.",
    "where": "220 E Pittsburgh Ave",
    "site": "https://radiomilwaukee.org/",
    "calendar": "https://radiomilwaukee.org/community-calendar/",
@@ -227,7 +268,18 @@
    "reach": "bus",
    "tags": [
     "music"
-   ]
+   ],
+   "feed": {
+    "type": "brightspot",
+    "url": "https://radiomilwaukee.org/community-calendar/",
+    "categories": [
+     "Milwaukee Concerts",
+     "Milwaukee Festivals",
+     "Food/Drink",
+     "Sports"
+    ]
+   },
+   "cap": 120
   }
  ]
 }

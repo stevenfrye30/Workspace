@@ -43,6 +43,11 @@ Feed adapters (the `feed.type` field in either registry):
   boswell  boswellbooks.com/upcoming-events — dates live in the link paths
   mlb      MLB's public schedule API (`team_id`); home games only
   rss      a blog/news feed → "posts" on the roster card, not events
+  simpleview  Simpleview CMS tourism calendar (Visit Milwaukee): token + REST, filtered for standing attractions
+  communico   Communico library calendar (Milwaukee Public Library): /eeventcaldata, branches + age filters
+  rhp      Rockhouse venue sites (Pabst Theater Group, Fiserv Forum): the month-view JSON, one request per month
+  brightspot  Radio Milwaukee's community calendar: category-filtered PromoEvent cards
+  uec      Urban Ecology Center: the public Xano endpoint behind their Webflow calendar
 Any feed may carry `exclude`: a title regex that drops noisy entries.
 """
 from __future__ import annotations
@@ -51,6 +56,7 @@ import json
 import re
 import ssl
 import sys
+import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -71,6 +77,11 @@ EVENTS_JSON = DATA / "events.json"
 USER_AGENT = "Mozilla/5.0 (compatible; milwaukee-desk/1.0; +https://github.com/stevenfrye30/workspace-hub)"
 TIMEOUT = 20
 CTX = ssl.create_default_context()
+# Python's own default HTTPS context announces ALPN "http/1.1"; a hand-made one
+# does not, and Pabst's CDN answers 406 to any client that leaves it out
+# (found 2026-09-20 with cache-busted requests: same headers, same URL, only
+# the missing ALPN differed). Keep this line.
+CTX.set_alpn_protocols(["http/1.1"])
 
 NEWS_DAYS = 14          # headline window
 NEWS_PER_SOURCE = 12
@@ -78,6 +89,9 @@ HORIZON_DAYS = 60       # how far ahead events.json looks
 EVENTS_PER_ORG = 80      # a registry entry may set its own "cap"
 EVENTS_PER_SOURCE = 500
 TRIBE_MAX_PAGES = 10
+SIMPLEVIEW_PAGE = 100     # the CDN refuses responses over ~250 KB
+SIMPLEVIEW_MAX_PAGES = 40
+BRIGHTSPOT_MAX_PAGES = 25
 POSTS_DAYS = 45
 POSTS_PER_ORG = 5
 MIN_NEWS_SOURCES = 3    # fewer than this succeeding → refuse to write news.json
@@ -129,14 +143,30 @@ def local_iso(dt: datetime) -> str:
 
 
 # ----------------------------------------------------------------- fetching
-def fetch(url: str, accept: str = "*/*") -> str:
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": accept})
+def fetch(url: str, accept: str = "*/*", headers: dict | None = None) -> str:
+    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT, "Accept": accept, **(headers or {})})
     with urllib.request.urlopen(req, timeout=TIMEOUT, context=CTX) as r:
         return r.read().decode("utf-8", "ignore")
 
 
 def fetch_json(url: str):
     return json.loads(fetch(url, "application/json"))
+
+
+def fetch_patient(url: str, accept: str = "*/*", headers: dict | None = None, pauses: tuple = (75, 150)) -> str:
+    """fetch() for hosts whose CDN answers 406/429/503 with an empty body
+    instead of data. Pabst's does when three different pages are asked for
+    within a few seconds, and then refuses everything for two or three
+    minutes — so callers space their requests, and this waits out a block
+    (75 s, then 150 s) before giving up."""
+    for n in range(len(pauses) + 1):
+        try:
+            return fetch(url, accept, headers)
+        except urllib.error.HTTPError as ex:
+            if ex.code not in (406, 429, 503) or n == len(pauses):
+                raise
+            time.sleep(pauses[n])
+    raise OSError("unreachable")
 
 
 # ----------------------------------------------------------------- text
@@ -723,7 +753,337 @@ def adapter_eventbrite(feed: dict, today: date, horizon: date) -> list[dict]:
     return out
 
 
-ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld, "boswell": adapter_boswell, "mlb": adapter_mlb, "uwm": adapter_uwm, "eventbrite": adapter_eventbrite}
+# ----------------------------------------------------------------- platform adapters
+# Calendars that are not Tribe/ICS/JSON-LD but still hand over their events
+# without a login — found 2026-09-20 by reading what each site's own page
+# script calls. Each fails soft like every other adapter (the registry runner
+# records the error), and none writes anything but the normalized rows.
+
+_TIME_RX = re.compile(r"(\d{1,2}):(\d{2})\s*([AaPp])\.?[Mm]")
+
+
+def _hhmm(s: str | None) -> str:
+    """'7:30 PM' / '07:30 PM' → '19:30'; anything else → ''."""
+    m = _TIME_RX.search(s or "")
+    if not m:
+        return ""
+    h = int(m.group(1)) % 12 + (12 if m.group(3).lower() == "p" else 0)
+    return "%02d:%s" % (h, m.group(2))
+
+
+def adapter_simpleview(feed: dict, today: date, horizon: date) -> list[dict]:
+    """Simpleview CMS tourism calendars (Visit Milwaukee). The site's own
+    events page asks /plugins/core/get_simple_token/ for a token and then reads
+    /includes/rest_v2/plugins_events_events_by_date/find/. Two things the CDN
+    in front of it enforces: no `$date` range operator in the query (so the
+    rows are read in date order from today and the window is cut here), and no
+    response over ~150 KB (so a narrow field list, no teaser text, 100 rows a page).
+
+    A row is one listing at its NEXT occurrence, not one row per date, and the
+    listing is huge and mostly standing attractions: daily tours, exhibitions,
+    weekly happy hours. So: a single-day listing is always kept; a multi-day
+    one is kept when it is at most `max_span_days` long and not in
+    `skip_categories`; a recurring one only when a category matches
+    `recurring_keep`. `cities` (regex) drops far-flung towns."""
+    site = feed["url"].rstrip("/")
+    token = fetch(site + "/plugins/core/get_simple_token/", "text/plain").strip()
+    skip_rx = re.compile(feed["skip_categories"], re.I) if feed.get("skip_categories") else None
+    keep_rx = re.compile(feed["recurring_keep"], re.I) if feed.get("recurring_keep") else None
+    city_rx = re.compile(feed["cities"], re.I) if feed.get("cities") else None
+    max_span = int(feed.get("max_span_days", 14))
+    generic = re.compile(r"^(family friendly|community|free|arts & culture|tours|museums & attractions|"
+                         r"milwaukee theater district|brew city trail|lgbtq\+|holiday|breweries)$", re.I)
+    fields = {k: 1 for k in ("title", "date", "startTime", "endTime", "location", "address1", "city", "zip",
+                             "categories", "absoluteUrl", "admission", "recurrence", "endDate")}
+    out, skip = [], 0
+    for _ in range(SIMPLEVIEW_MAX_PAGES):
+        q = {"filter": {"active": True},
+             "options": {"limit": SIMPLEVIEW_PAGE, "skip": skip, "count": True, "fields": fields,
+                         "sort": {"date": 1, "rank": 1, "title_sort": 1}}}
+        url = (f"{site}/includes/rest_v2/plugins_events_events_by_date/find/?"
+               + urllib.parse.urlencode({"json": json.dumps(q, separators=(",", ":")), "token": token}))
+        docs = ((fetch_json(url).get("docs") or {}).get("docs")) or []
+        if not docs:
+            break
+        last = None
+        for d in docs:
+            dt = parse_date_any(d.get("date"))
+            if not dt or not d.get("title"):
+                continue
+            day = dt.astimezone(MKE).date()   # 'date' is end-of-local-day in UTC
+            last = day
+            if day < today or day > horizon:
+                continue
+            en = parse_date_any(d.get("endDate"))
+            end_day = en.astimezone(MKE).date() if en else day
+            span = max((end_day - day).days, 0)
+            rec = clean(d.get("recurrence") or "")
+            cats = [clean(c.get("catName")) for c in (d.get("categories") or []) if isinstance(c, dict)]
+            if city_rx and d.get("city") and not city_rx.search(d["city"]):
+                continue
+            if rec or span > 0:
+                if skip_rx and any(skip_rx.search(c) for c in cats):
+                    continue
+                if rec and not (keep_rx and any(keep_rx.search(c) for c in cats)):
+                    continue
+                if not rec and span > max_span:
+                    continue
+            st = (d.get("startTime") or "")[:5]
+            et = (d.get("endTime") or "")[:5]
+            adm = clean(d.get("admission") or "")
+            free = True if (re.match(r"free\b", adm, re.I) or "Free" in cats) else None
+            tags = ([c for c in cats if not generic.match(c)] + [c for c in cats if generic.match(c)])[:3]
+            out.append(_blank(
+                clean(d["title"]),
+                f"{day.isoformat()}T{st}" if st else day.isoformat(),
+                end=f"{day.isoformat()}T{et}" if (st and et and et > st and not rec and span == 0) else "",
+                all_day=not st, time_unknown=not st,
+                run_through=end_day.isoformat() if (span > 0 and not rec) else "",
+                url=d.get("absoluteUrl") or (site + (d.get("url") or "")),
+                where=clean(d.get("location") or "", 120).rstrip("* ").strip(),
+                addr=clean(d.get("address1") or "", 120),
+                zip=str(d.get("zip") or "")[:5],
+                city=clean(d.get("city") or ""),
+                summary=rec,
+                tags=tags,
+                cost=adm if re.search(r"\$\s*\d", adm) else None,
+                free=free,
+            ))
+        skip += len(docs)
+        if last and last > horizon:
+            break
+        time.sleep(0.3)
+    return out
+
+
+def adapter_communico(feed: dict, today: date, horizon: date) -> list[dict]:
+    """Communico library calendars (Milwaukee Public Library). The calendar
+    page reads /eeventcaldata?req={date, days, ...} — up to 31 days per call,
+    one JSON row per occurrence. `locations` (regex on the branch name) picks
+    branches; `branches` maps a branch to its street address so the walk /
+    bus / car guess has something to go on; `ages` (regex) keeps programs for
+    any matching age group (programs with no age group are kept). An all-day
+    row that repeats daily is an exhibit: it is folded into one row that runs
+    through its last day."""
+    base = feed["url"].rstrip("/")
+    loc_rx = re.compile(feed["locations"], re.I) if feed.get("locations") else None
+    age_rx = re.compile(feed["ages"], re.I) if feed.get("ages") else None
+    branches = feed.get("branches") or {}
+    rows, start = [], today
+    while start <= horizon:
+        days = min(31, (horizon - start).days + 1)
+        req = {"private": False, "date": start.isoformat(), "days": days, "locations": [], "ages": [], "types": []}
+        url = f"{base}/eeventcaldata?" + urllib.parse.urlencode({"event_type": 0, "req": json.dumps(req, separators=(",", ":"))})
+        got = json.loads(fetch(url, "application/json", {"Referer": base + "/events", "X-Requested-With": "XMLHttpRequest"}))
+        if not isinstance(got, list):
+            raise ValueError("communico: unexpected response")
+        rows.extend(got)
+        start += timedelta(days=days)
+    out, ranges = [], {}
+    for r in rows:
+        title = clean(r.get("title"))
+        loc = clean(r.get("location") or r.get("library") or "")
+        if not title or str(r.get("private_event")) == "1" or str(r.get("event_type") or "").upper() == "VIRTUAL":
+            continue
+        if loc_rx and not loc_rx.search(loc):
+            continue
+        ages = [a.strip() for a in re.findall(r"'([^']+)'", str(r.get("agesArray") or ""))] or \
+               [a.strip() for a in str(r.get("ages") or "").split(",") if a.strip()]
+        if age_rx and ages and not any(age_rx.search(a) for a in ages):
+            continue
+        sd = (r.get("event_start") or "")[:10]
+        if not sd:
+            continue
+        all_day = "all day" in str(r.get("time_string") or "").lower()
+        st, et = (r.get("event_start") or "")[11:16], (r.get("event_end") or "")[11:16]
+        b = branches.get(loc) or {}
+        sub = clean(r.get("sub_title") or "")
+        e = _blank(
+            title, sd if all_day else f"{sd}T{st}",
+            end="" if all_day else (f"{sd}T{et}" if et > st else ""),
+            all_day=all_day, time_unknown=all_day,
+            url=r.get("url") or "",
+            where=b.get("where") or (loc if "library" in loc.lower() else f"{loc} Library"),
+            addr=b.get("addr", ""), zip=b.get("zip", ""),
+            summary=clean(r.get("description"), 200),
+            tags=[clean(t) for t in str(r.get("tags") or "").split(",") if clean(t)][:3] + ([sub] if sub and len(sub) < 40 else []),
+            free=True if str(r.get("registration_cost") or "0") in ("0", "0.00") else None,
+        )
+        if all_day:  # fold a daily exhibit into one row that runs through its last day
+            key = (r.get("recurring_id") or title, loc, title)
+            if key in ranges:
+                ranges[key]["run_through"] = sd
+                continue
+            ranges[key] = e
+        out.append(e)
+    return out
+
+
+def adapter_rhp(feed: dict, today: date, horizon: date) -> list[dict]:
+    """Rockhouse-platform venue sites — Pabst Theater Group and Fiserv Forum
+    run the same software. Its month view reads /events/calendar/<year>/<month>
+    and gets back {"MM-DD-YYYY": "<html of that day's events>"}: title, opener
+    line, ticket link and start time for every show, months ahead (the plain
+    /events list stops after ~48 shows and answers 406 past its end, and the
+    site answers 406 to a burst of different pages and then to everything for
+    a few minutes — so one request per month, ten seconds apart).
+    The month view names no room; `where` in the feed is used for every row."""
+    base = feed["url"].rstrip("/")
+    out, seen = [], set()
+    y, m = today.year, today.month
+    while (y, m) <= (horizon.year, horizon.month):
+        raw = fetch_patient(f"{base}/events/calendar/{y}/{m}?v=2&detail_partial=events/partials/calendar_detail",
+                            "application/json, text/javascript, */*; q=0.01", {"X-Requested-With": "XMLHttpRequest"})
+        days = json.loads(raw)
+        if not isinstance(days, dict):
+            raise ValueError("rhp: unexpected calendar response")
+        for key, html in days.items():
+            try:
+                day = datetime.strptime(key, "%m-%d-%Y").date()
+            except ValueError:
+                continue
+            if not (today <= day <= horizon):
+                continue
+            for blk in re.split(r'(?=<div class="clearfix event_item_wrapper">)', html or "")[1:]:
+                tm = re.search(r'<h3><a href="([^"]+)"[^>]*>(.*?)</a></h3>', blk, re.S)
+                if not tm:
+                    continue
+                title = clean(tm.group(2))
+                t = _hhmm((re.search(r'<span class="time">\s*([^<]*)', blk) or [None, ""])[1])
+                if (tm.group(1), day, t) in seen or not title:
+                    continue
+                seen.add((tm.group(1), day, t))
+                sub = re.search(r"<h4>(.*?)</h4>", blk, re.S)
+                out.append(_blank(
+                    title, f"{day.isoformat()}T{t}" if t else day.isoformat(),
+                    all_day=not t, time_unknown=not t,
+                    url=tm.group(1), where=feed.get("where", ""),
+                    summary=clean(sub.group(1), 200) if sub else "",
+                ))
+        m += 1
+        if m > 12:
+            y, m = y + 1, 1
+        time.sleep(10.0)   # three different months inside a few seconds gets the client blocked for minutes
+    return out
+
+
+def adapter_brightspot(feed: dict, today: date, horizon: date) -> list[dict]:
+    """Radio Milwaukee's community calendar (Brightspot CMS): server-rendered
+    <ps-promo class="PromoEvent"> cards, ten a page at ?p=N, filterable by the
+    category boxes in the sidebar (?f0=<id>). The unfiltered calendar repeats
+    every exhibit and class on every day it runs, so `categories` names the
+    ones worth reading (ids are looked up by label at run time), and only
+    cards with one concrete date ("7:30 PM on Fri, 2 Oct 2026") are kept."""
+    base = feed["url"].rstrip("/") + "/"
+    home = fetch(base, "text/html")
+    ids = {}
+    for v, rest in re.findall(r'<input[^>]*name="f0"[^>]*value="([^"]+)"[^>]*>(.{0,400})', home, re.S):
+        m = re.search(r">\s*([A-Za-z][^<]{2,40}?)\s*<", rest)
+        if m:
+            ids[m.group(1).strip().lower()] = v
+    wanted = [c.lower() for c in (feed.get("categories") or list(ids))]
+    picked = [(c, ids[c]) for c in wanted if c in ids]
+    if not picked:
+        raise ValueError("radio calendar: none of the category filters were found")
+    out, seen = [], set()
+    for label, fid in picked:
+        for p in range(1, BRIGHTSPOT_MAX_PAGES + 1):
+            html = fetch(f"{base}?f0={fid}&p={p}", "text/html")
+            cards = re.split(r'(?=<ps-promo class="PromoEvent")', html)[1:]
+            new = 0
+            for c in cards:
+                um = re.search(r'PromoEvent-title">\s*<a[^>]*href="([^"]+)"[^>]*>(.*?)</a>', c, re.S)
+                if not um or um.group(1) in seen:
+                    continue
+                seen.add(um.group(1))
+                new += 1
+                tm = re.search(r'PromoEvent-time[^>]*>(.*?)</div>', c, re.S)
+                text = clean(tm.group(1)) if tm else ""
+                dm = re.search(r"\bon \w{3}, (\d{1,2}) (\w{3}) (\d{4})", text)
+                if not dm:
+                    continue  # a class or exhibit that runs on many days
+                try:
+                    day = datetime.strptime(f"{dm.group(1)} {dm.group(2)} {dm.group(3)}", "%d %b %Y").date()
+                except ValueError:
+                    continue
+                if not (today <= day <= horizon):
+                    continue
+                st = _hhmm(text)
+                et = _hhmm(text[text.find("-"):]) if " - " in text else ""
+                if et == "23:59":
+                    et = ""  # their placeholder for "until late"
+                vm = re.search(r'PromoEvent-venue[^>]*>(.*?)</div>', c, re.S)
+                pm = re.search(r'PromoEvent-price[^>]*>(.*?)</div>', c, re.S)
+                dsc = re.search(r'PromoEvent-description"[^>]*>(.*?)</div>', c, re.S)
+                title = clean(um.group(2))
+                presents = bool(re.match(r"\s*88\s*nine presents:?", title, re.I))
+                title = re.sub(r"^\s*88\s*nine presents:?\s*", "", title, flags=re.I) or title
+                out.append(_blank(
+                    title, f"{day.isoformat()}T{st}" if st else day.isoformat(),
+                    end=f"{day.isoformat()}T{et}" if (st and et and et > st) else "",
+                    all_day=not st, time_unknown=not st,
+                    url=um.group(1), where=clean(vm.group(1), 120) if vm else "",
+                    summary=clean(("Presented by 88Nine. " if presents else "") + (dsc.group(1) if dsc else ""), 200),
+                    tags=[label.title()],
+                    cost=clean(pm.group(1)) if pm else None,
+                ))
+            if not cards or not new:
+                break
+            time.sleep(0.2)
+    return out
+
+
+def adapter_uec(feed: dict, today: date, horizon: date) -> list[dict]:
+    """Urban Ecology Center. Their Webflow calendar page is an empty template;
+    its script fills it from a public Xano endpoint, one row per session
+    (dates M/D/YYYY, times '10:00 AM'). Like the page, this skips rows whose
+    URL override is a quoted string and repeats of the same session id; it
+    also drops cancelled sessions. `branches` maps 'Riverside Park' etc. to a
+    venue name and address."""
+    rows = fetch_json(feed["url"])
+    if not isinstance(rows, list):
+        raise ValueError("uec: unexpected response")
+    branches = feed.get("branches") or {}
+    out, seen = [], set()
+    for r in rows:
+        name = clean(r.get("Event_Packages_Program_Events_Name") or r.get("Name"))
+        rid = r.get("Event_Packages_Program_Events_System_record_ID") or r.get("id")
+        ov = (r.get("URL_Override") or "").strip()
+        if not name or rid in seen or re.match(r"(?i)\s*cancel", name) or re.match(r"(?i)\s*cancel", r.get("Event_Packages_Name") or "") or re.fullmatch(r'".*"', ov):
+            continue
+        try:
+            day = datetime.strptime(r.get("Event_Packages_Program_Events_Start_date") or "", "%m/%d/%Y").date()
+        except ValueError:
+            continue
+        if not (today <= day <= horizon):
+            continue
+        seen.add(rid)
+        st = _hhmm(r.get("Event_Packages_Program_Events_Start_time"))
+        et = _hhmm(r.get("Event_Packages_Program_Events_End_time"))
+        loc = r.get("Event_Packages_Program_Events_Locations_Location_Name") or ""
+        bm = re.match(r"\[([^\]]+)\]", loc)
+        branch = (bm.group(1) if bm else "").strip()
+        b = branches.get(branch) or {}
+        lo, hi = (r.get("MIN_Prices_Price") or "").strip(), (r.get("MAX_Prices_Price") or "").strip()
+        zero = re.compile(r"\$?\s*0(\.00)?$")
+        out.append(_blank(
+            name, f"{day.isoformat()}T{st}" if st else day.isoformat(),
+            end=f"{day.isoformat()}T{et}" if (st and et and et > st) else "",
+            all_day=not st, time_unknown=not st,
+            url=ov if ov.startswith("http") else f"https://www.urbanecologycenter.org/calendar/event?id={r.get('id')}",
+            where=b.get("where") or ("Off-site, see listing" if "off-site" in loc.lower() else (f"Urban Ecology Center, {branch}" if branch else "")),
+            addr=b.get("addr", ""), zip=b.get("zip", ""),
+            summary=clean(r.get("Event_Packages_Program_Events_Description"), 200),
+            tags=[t for t in [clean(r.get("Category"))] + [clean(x) for x in (r.get("Additional_categories") or [])] if t][:3],
+            cost=hi if hi and not zero.match(hi) else None,
+            free=True if (zero.match(lo) and (not hi or zero.match(hi))) else None,
+        ))
+    return out
+
+
+ADAPTERS = {"tribe": adapter_tribe, "ics": adapter_ics, "jsonld": adapter_jsonld, "boswell": adapter_boswell, "mlb": adapter_mlb, "uwm": adapter_uwm, "eventbrite": adapter_eventbrite,
+            "simpleview": adapter_simpleview, "communico": adapter_communico, "rhp": adapter_rhp,
+            "brightspot": adapter_brightspot, "uec": adapter_uec}
 
 
 # ----------------------------------------------------------------- normalization
@@ -757,6 +1117,15 @@ CATEGORY_KIND = [
     (r"^(science & technology|science|technology|high tech|biotech|robotics|medicine|social media|mobile)$", "talks"),
     (r"^(books|literary arts|poetry|writing)$", "books"),
     (r"^(comedy|stand[- ]?up)$", "comedy"),
+    # Visit Milwaukee's, Radio Milwaukee's and the library's own labels
+    (r"^(comedy (&|and) improv)$", "comedy"),
+    (r"^(performing arts (&|and) theat(er|re))$", "theater"),
+    (r"^(fairs (&|and) markets)$", "markets"),
+    (r"^(spectator sports)$", "sports"),
+    (r"^(galleries (&|and) exhibitions|exhibits?/displays?)$", "art"),
+    (r"^(outdoor (&|and) recreation)$", "outdoors"),
+    (r"^(milwaukee concerts)$", "music"),
+    (r"^(food ?/ ?drink)$", "food"),
 ]
 # Title words → kind, in order: the unmistakable before the ambiguous. "tour"
 # is deliberately NOT a music word (walking tours, Doors Open tours).
@@ -774,7 +1143,7 @@ TITLE_KIND = [
     (r"\b(lecture|talk|panel|colloquium|discussion|symposium|conversation|forum|seminar|class\b|workshop|how to|101|summit|conference)\b", "talks"),
     (r"\b(hike|walk\b|bike|ride\b|paddle|kayak|birding|garden|nature|trail|cleanup|5k|10k|run club|prairie|orchid|plant sale|plant swap|harbor fest)\b", "outdoors"),
     (r"\b(board games?|game night|games night|trivia|bingo|karaoke|open mic)\b", "community"),
-    (r"\b(vs\.?|versus|game|match|tournament|race|marathon|athletics|hockey|basketball|baseball|soccer|football)\b", "sports"),
+    (r"\b(vs\.?|versus|game|match|tournament|race|marathon|athletics|hockey|basketball|baseball|soccer|football|bucks|admirals)\b", "sports"),
     (r"\b(kids|family|story ?time|children|teen|youth|toddler)\b", "family"),
     (r"\b(gallery|exhibit|exhibition|sculpture|painting|arts?\b|artists?|drop-in art|slow art)\b", "art"),
 ]
