@@ -250,13 +250,16 @@
     const wrap = $('orgChips'); wrap.textContent = '';
     state.orgs.forEach((o) => {
       const st = orgStatus(o.id);
-      const feeds = st.status === 'ok' && 'count' in st;
+      const feeds = (st.status === 'ok' || st.status === 'stale') && 'count' in st;
       const n = feeds ? upcomingCount(o.id) : null;
       const b = el('button', 'chip' + (state.view.org === o.id ? ' on' : '') + (n === 0 || !feeds ? ' dim' : '')); b.type = 'button';
       b.append(el('span', '', o.name));
-      if (n != null) b.append(el('span', 'n', String(n)));
+      if (n != null) b.append(el('span', 'n' + (st.status === 'stale' ? ' stale' : ''), String(n)));
       else if (st.status === 'error') b.append(el('span', 'n', '!'));
-      b.title = !feeds ? 'No machine-readable calendar — opens on their site' : st.status === 'error' ? 'Their calendar could not be read on the last refresh' : `${n} upcoming`;
+      b.title = !feeds ? 'No machine-readable calendar — opens on their site'
+        : st.status === 'stale' ? `${n} upcoming — as of ${shortDate(st.as_of)}; today's refresh could not read them`
+        : st.status === 'error' ? 'Their calendar could not be read on the last refresh'
+        : `${n} upcoming`;
       b.onclick = () => {
         if (!feeds) { window.open(o.calendar || o.site, '_blank', 'noopener'); return; }
         state.view.org = state.view.org === o.id ? null : o.id;
@@ -279,6 +282,7 @@
       const st = orgStatus(o.id);
       let line, cls = 'status';
       if (st.status === 'error') { line = `Calendar unreadable on the last refresh (${st.error || 'error'})`; cls += ' err'; }
+      else if (st.status === 'stale') { line = `${upcomingCount(o.id)} upcoming, as of ${shortDate(st.as_of)} — today's refresh could not read them (${st.error || 'error'})`; cls += ' stale'; }
       else if (st.status === 'ok' && 'count' in st) line = `${upcomingCount(o.id)} upcoming from their calendar`;
       else if (st.status === 'ok' && 'posts' in st) line = 'Follows their news feed; the calendar is on their site';
       else line = 'Calendar on their site';
@@ -457,14 +461,17 @@
     if (!dayKeys.size && !runs.size) days.append(el('p', 'empty', 'Nothing on the calendars for that. Widen the window or drop a filter.'));
 
     // the count line
-    const errs = Object.entries(state.events.orgs || {}).filter(([, s]) => s.status === 'error').map(([id]) => (orgById(id) || sourceById(id) || { name: id }).name);
+    const byId = (id) => (orgById(id) || sourceById(id) || { name: id }).name;
+    const errs = Object.entries(state.events.orgs || {}).filter(([, s]) => s.status === 'error').map(([id]) => byId(id));
+    const stale = Object.entries(state.events.orgs || {}).filter(([, s]) => s.status === 'stale').map(([id, s]) => `${byId(id)} (as of ${shortDate(s.as_of)})`);
     const note = $('optionsNote');
     note.classList.toggle('err', errs.length > 0);
+    note.classList.toggle('stale', errs.length === 0 && stale.length > 0);
     const fromGroups = shown.filter((e) => e.via !== 'source').length;
     const orgName = state.view.org ? (orgById(state.view.org) || {}).name : null;
     const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
     const what = runs.size ? `${plural(singles.length, 'thing')} and ${plural(runs.size, 'run')}` : plural(singles.length, 'thing');
-    note.textContent = `${what} ${WINDOW_WORD[state.view.window]}` + (orgName ? ` from ${orgName}` : state.view.groups ? ' from the groups we follow' : ` · ${fromGroups} from the groups we follow`) + (errs.length ? ` · could not read: ${errs.join(', ')}` : '');
+    note.textContent = `${what} ${WINDOW_WORD[state.view.window]}` + (orgName ? ` from ${orgName}` : state.view.groups ? ' from the groups we follow' : ` · ${fromGroups} from the groups we follow`) + (errs.length ? ` · could not read: ${errs.join(', ')}` : '') + (stale.length ? ` · older listings for: ${stale.join(', ')}` : '');
   }
 
   // ---- the year's anchors: in season now, or starting within two months

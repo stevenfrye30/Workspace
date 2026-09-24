@@ -73,6 +73,7 @@ button { font: inherit; color: inherit; }
 .row-head h2, section > h2 { font-size: 1.15rem; }
 .note { margin: 0.35rem 0 0.6rem; color: var(--ink-3); font-size: 0.85rem; min-height: 1em; }
 .note.err { color: var(--err-ink); }
+.note.stale { color: var(--warn-ink); }
 section + section { margin-top: 1.6rem; }
 
 /* ---- the question bar */
@@ -90,6 +91,7 @@ section + section { margin-top: 1.6rem; }
   cursor: pointer; display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;
 }
 .chip .n { color: var(--ink-3); font-size: 0.78em; }
+.chip .n.stale { color: var(--warn-ink); }
 .chip.on { background: var(--chip-on); color: var(--accent-ink); }
 .chip.on .n { color: inherit; opacity: 0.8; }
 .chip.dim { opacity: 0.5; }
@@ -111,6 +113,7 @@ section + section { margin-top: 1.6rem; }
 .org .where { margin: 0; color: var(--ink-3); font-size: 0.82rem; }
 .org .status { margin: 0.45rem 0 0; font-size: 0.8rem; color: var(--ink-3); }
 .org .status.err { color: var(--err-ink); }
+.org .status.stale { color: var(--warn-ink); }
 .org .links { margin: 0.45rem 0 0; font-size: 0.85rem; display: flex; gap: 0.8rem; flex-wrap: wrap; }
 .org .posts { margin: 0.5rem 0 0; padding: 0; list-style: none; font-size: 0.85rem; }
 .org .posts li { margin: 0.15rem 0; }

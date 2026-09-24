@@ -22,6 +22,11 @@ Rules it keeps:
   * every feed fails soft (recorded in the file, shown on the page), but the
     run fails CLOSED when too little came back — an empty file is never
     written over a full one (doctrine: a check must prove it looked);
+  * a single feed that errors keeps yesterday's rows for up to
+    STALE_SOURCE_MAX_DAYS rather than silently dropping to zero — a host that
+    blocks GitHub's runners specifically (Pabst, Fiserv Forum) fails the same
+    way every single run, not once in a while, so a same-run retry never
+    helps and the page would otherwise just lose that source for good;
   * a file is rewritten only when its content changed, so quiet days commit
     nothing (`generated_at` is the time of the last change, not the last run).
 
@@ -52,6 +57,7 @@ Any feed may carry `exclude`: a title regex that drops noisy entries.
 """
 from __future__ import annotations
 
+import collections
 import json
 import re
 import ssl
@@ -1352,6 +1358,60 @@ def _run_registry(entries: list[dict], via: str, today: date, horizon: date, eve
     return feed_backed, ok
 
 
+STALE_SOURCE_MAX_DAYS = 10   # a feed down longer than this reverts to plain 'error' (0 events) — old
+                              # listings are more likely wrong than useful past that point
+
+
+def _carry_forward_errors(status: dict, events: list, today: date, horizon: date) -> None:
+    """A feed that errors today contributes zero fresh rows — which, run after
+    run, quietly erases a source for as long as its host blocks us (Pabst and
+    Fiserv Forum's CDN refuses every request from GitHub's own runners, though
+    the identical request works from a laptop; this has been silent and
+    permanent so far, not a transient blip). Reuse that source's last known-
+    good rows instead, filtered back down to the still-upcoming ones, and
+    mark the source 'stale' rather than 'error' so the page can say when the
+    data is actually from. Every 'ok' source gets today's date recorded as
+    `as_of`, read back the next time this runs. Bootstraps once from a prior
+    file that predates this field by falling back to its `generated_at` day."""
+    if not EVENTS_JSON.exists():
+        return
+    try:
+        prev = json.loads(EVENTS_JSON.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return
+    prev_status = prev.get("orgs") or {}
+    prev_by_id = collections.defaultdict(list)
+    for e in prev.get("events") or []:
+        rid = e.get("org") or e.get("src")
+        if rid:
+            prev_by_id[rid].append(e)
+    prev_generated_day = (prev.get("generated_at") or "")[:10] or None
+
+    for rid, st in status.items():
+        if st.get("status") == "ok":
+            st["as_of"] = today.isoformat()
+            continue
+        if st.get("status") != "error":
+            continue
+        prev_st = prev_status.get(rid) or {}
+        as_of = prev_st.get("as_of") or (prev_generated_day if prev_st.get("status") in ("ok", "stale") else None)
+        if not as_of:
+            continue
+        try:
+            days_stale = (today - date.fromisoformat(as_of)).days
+        except ValueError:
+            continue
+        if days_stale > STALE_SOURCE_MAX_DAYS:
+            continue
+        kept = [e for e in prev_by_id.get(rid, [])
+                if today.isoformat() <= e["start"][:10] <= horizon.isoformat()
+                or (e.get("run_through") and e["run_through"] >= today.isoformat())]
+        if not kept:
+            continue
+        events.extend(kept)
+        st["status"], st["count"], st["as_of"] = "stale", len(kept), as_of
+
+
 def build_events() -> dict | None:
     orgs = json.loads(ORGS_JSON.read_text(encoding="utf-8"))["orgs"]
     sources = json.loads(SOURCES_JSON.read_text(encoding="utf-8"))["sources"] if SOURCES_JSON.exists() else []
@@ -1366,21 +1426,48 @@ def build_events() -> dict | None:
     if fb1 and ok1 == 0:
         print("REFUSE: every followed-org feed failed — not writing events.json", file=sys.stderr)
         return None
+    _carry_forward_errors(status, events, today, horizon)
+    stale = {k: v for k, v in status.items() if v.get("status") == "stale"}
+    if stale:
+        print(f"  carried forward {sum(v['count'] for v in stale.values())} events from "
+              f"{len(stale)} source(s) that errored today: {', '.join(stale)}")
 
-    # cross-registry dedupe: an org's own listing beats a citywide copy of it.
-    # Two keys: the exact one (normalized title + day), and a looser one for
-    # the same day at a followed org's own venue with the same opening words
-    # — Eventbrite retitles Boswell's nights ("… - a Boswell Book Company event").
-    org_names = {o["id"]: o["name"].lower() for o in orgs}
+    # cross-registry dedupe: an earlier-claimed listing beats a later copy of
+    # it. Two keys: the exact one (normalized title + day), which catches
+    # same-title duplicates regardless of via (this already folded most of
+    # what Pabst/Fiserv Forum and a citywide source both list, since a venue
+    # rarely retitles a show); and a looser one (same day + first 4 opening
+    # words + an overlapping venue) for near-identical titles a citywide copy
+    # picks up on its own — a trailing "(Seated)"/"(21+)", a misspelled guest
+    # name. Since 2026-09-24 the loose path also fires between two citywide
+    # sources, not just a followed org's own venue (Visit Milwaukee + Urban
+    # Milwaukee + Radio Milwaukee all cross-list the same shows). The venue
+    # check guards against two unrelated same-day events that happen to open
+    # with the same 4 words ("Fall Garden Volunteer Day at <park A|B>"); it
+    # passes trivially when either side's venue is blank, which is why Radio
+    # Milwaukee (a promoter, not a venue — never appears in a `where` field)
+    # can still loose-fold. The Pabst/Fiserv Forum adapters report only their
+    # umbrella name as `where` (their feed carries no per-show room), so a
+    # near-miss title there won't pass the venue check either — in practice
+    # this hasn't mattered, because their shows keep the same title as
+    # whatever a citywide source uses and already fold on the exact key.
+    # Only a citywide ("source") row is ever folded away; an org's own row
+    # always stays, so
+    # it keeps first claim on a loose key.
     merged, by_key, by_loose = [], {}, {}
 
     def loose_key(e):
         words = dedupe_key(e)[0].split()
-        return (e["start"][:10], " ".join(words[:3])) if len(words) >= 3 else None
+        return (e["start"][:10], " ".join(words[:4])) if len(words) >= 4 else None
 
-    def venue_org(e):
-        where = (e.get("where") or "").lower()
-        return next((oid for oid, nm in org_names.items() if nm and nm in where), None)
+    def norm_venue(s):
+        s = re.sub(r"[^a-z0-9]+", " ", (s or "").lower())
+        s = re.sub(r"\b(the|a|an|at|in|of|and|with|milwaukee)\b", "", s)
+        return re.sub(r"\s+", " ", s).strip()
+
+    def venues_overlap(a, b):
+        a, b = norm_venue(a), norm_venue(b)
+        return not a or not b or a in b or b in a
 
     def fold(keeper, e):
         other = e.get("org") or e.get("src")
@@ -1405,11 +1492,11 @@ def build_events() -> dict | None:
         lk = loose_key(e)
         if e["via"] == "source" and lk and lk in by_loose:
             keeper = by_loose[lk]
-            if keeper.get("org") and venue_org(e) == keeper["org"]:
+            if (keeper.get("org") or keeper.get("src")) != mine and venues_overlap(keeper.get("where"), e.get("where")):
                 fold(keeper, e)
                 continue
         by_key.setdefault(k, e)
-        if lk and e["via"] == "org":
+        if lk:
             by_loose.setdefault(lk, e)
         merged.append(e)
     for e in merged:  # time_unknown was popped in normalize(); a fold may have re-added it as False
