@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-09-26T15:05:31+00:00",
+ "generated_at": "2026-09-27T15:45:21+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
    "status": "ok",
    "count": 3,
    "raw": 3,
-   "as_of": "2026-09-26"
+   "as_of": "2026-09-27"
   },
   "uwm": {
    "status": "ok",
-   "count": 250,
-   "raw": 258,
-   "as_of": "2026-09-26"
+   "count": 249,
+   "raw": 253,
+   "as_of": "2026-09-27"
   },
   "boswell": {
    "status": "stale",
@@ -22,32 +22,32 @@
   },
   "urban-ecology-center": {
    "status": "ok",
-   "count": 128,
-   "raw": 128,
-   "as_of": "2026-09-26"
+   "count": 125,
+   "raw": 125,
+   "as_of": "2026-09-27"
   },
   "mpl": {
    "status": "ok",
-   "count": 113,
-   "raw": 113,
-   "as_of": "2026-09-26"
+   "count": 109,
+   "raw": 109,
+   "as_of": "2026-09-27"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 5,
-   "as_of": "2026-09-26"
+   "as_of": "2026-09-27"
   },
   "mam": {
    "status": "ok",
-   "count": 62,
-   "raw": 62,
-   "as_of": "2026-09-26"
+   "count": 61,
+   "raw": 61,
+   "as_of": "2026-09-27"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 5,
    "raw": 8,
-   "as_of": "2026-09-26"
+   "as_of": "2026-09-27"
   },
   "turners": {
    "status": "link"
@@ -56,7 +56,7 @@
    "status": "ok",
    "count": 11,
    "raw": 11,
-   "as_of": "2026-09-26"
+   "as_of": "2026-09-27"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -64,42 +64,42 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-09-26"
+   "as_of": "2026-09-27"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 84,
-   "raw": 86,
-   "as_of": "2026-09-26"
+   "count": 83,
+   "raw": 84,
+   "as_of": "2026-09-27"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 207,
-   "raw": 207,
-   "as_of": "2026-09-26"
+   "count": 199,
+   "raw": 199,
+   "as_of": "2026-09-27"
   },
   "marcus-center": {
    "status": "ok",
    "count": 12,
    "raw": 12,
-   "as_of": "2026-09-26"
+   "as_of": "2026-09-27"
   },
   "admirals": {
-   "status": "ok",
+   "status": "stale",
+   "error": "HTTPError: HTTP Error 403: Forbidden",
    "count": 5,
-   "raw": 10,
    "as_of": "2026-09-26"
   },
   "brewers": {
    "status": "ok",
-   "count": 5,
-   "raw": 5,
-   "as_of": "2026-09-26"
+   "count": 4,
+   "raw": 4,
+   "as_of": "2026-09-27"
   },
   "eventbrite": {
    "status": "stale",
    "error": "OSError: every Eventbrite page failed: https://www.eventbrite.com/d/wi--milwaukee/events/: HTTPError, https://www.eventbrite.com/",
-   "count": 134,
+   "count": 106,
    "as_of": "2026-09-24"
   },
   "pabst-theater-group": {
@@ -110,9 +110,9 @@
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 717,
-   "raw": 724,
-   "as_of": "2026-09-26"
+   "count": 682,
+   "raw": 689,
+   "as_of": "2026-09-27"
   },
   "fiserv-forum": {
    "status": "stale",
@@ -122,1738 +122,6 @@
   }
  },
  "events": [
-  {
-   "title": "Patches of Peace: A Community Quilt of Love, Memory and Hope",
-   "start": "2026-09-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://mpl.libnet.info/event/17399483",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Car Crash Tragedies is a community art project and memorial to loved ones lost to traffic violence in our community and bring healing to survivors, while inspiring everyone to act for safer streets.",
-   "tags": [
-    "Exhibits/Displays",
-    "Traveling Exhibit"
-   ],
-   "time_unknown": true,
-   "free": true,
-   "run_through": "2026-10-11",
-   "kind": "art",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Doors Open Mural Fest",
-   "start": "2026-09-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/doors-open-mural-fest/21533/",
-   "where": "East Side Business Improvement District #20",
-   "addr": "2160 N. Farwell Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-09-27",
-   "free": true,
-   "kind": "talks",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Kings of Soul",
-   "start": "2026-09-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/kings-of-soul/20680/",
-   "where": "Milwaukee Symphony Orchestra",
-   "addr": "Bradley Symphony Center",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-09-27",
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Paul Cebar",
-   "start": "2026-09-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/paul-cebar/19516/",
-   "where": "Vivarium",
-   "addr": "1818 N. Farwell Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MAMMA MIA!",
-   "start": "2026-09-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/mamma-mia!/21550/",
-   "where": "Uihlein Hall",
-   "addr": "929 N Water St",
-   "zip": "53208",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-09-27",
-   "free": null,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Get Your Rear In Gear 5k Run/Walk To Increase Colorectal Cancer Screening Awareness And Education",
-   "start": "2026-09-26T07:30",
-   "end": "2026-09-26T11:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/get-your-rear-in-gear-5k-run-walk-to-increase-colorectal-cancer-screening-awareness-and-education/21569/",
-   "where": "Hart Park",
-   "addr": "1190 N 70th St",
-   "zip": "53213",
-   "summary": "",
-   "tags": [
-    "Fundraisers"
-   ],
-   "free": null,
-   "kind": "film",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "RIT with Live Fire Conditions-Tosa",
-   "start": "2026-09-26T08:00",
-   "end": "2026-09-27T16:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/rit-with-live-fire-conditions-tosa-registration-1999188103434",
-   "where": "11100 W Walnut Rd",
-   "addr": "11100 West Walnut Road",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Other",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Tosa Farmers Market",
-   "start": "2026-09-26T08:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/tosa-farmers-market/16894/",
-   "where": "Tosa Farmers Market",
-   "addr": "7720 Harwood Ave",
-   "zip": "53151",
-   "summary": "Recurring weekly on Saturday",
-   "tags": [
-    "Fairs & Markets",
-    "Free"
-   ],
-   "free": true,
-   "kind": "markets",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Sole to Soul 5K Walk/Run",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/sole-to-soul-5k-walkrun-tickets-1998119742939",
-   "where": "2820 W Stark St",
-   "addr": "2820 West Stark Street",
-   "zip": "53209",
-   "summary": "Get ready to hit the pavement and feel the vibes at the Sole to Soul 5K Walk/Run!",
-   "tags": [
-    "Running",
-    "Sports & Fitness"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Park Rangers at Riverside Park",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4309",
-   "where": "Urban Ecology Center, Riverside Park",
-   "addr": "1500 E Park Pl",
-   "zip": "53211",
-   "summary": "This drop in opportunity is only available when our centers are open to the public: 12-6pm Tues-Thurs, 12-5pm Fri, and 9am-3pm Sat. Please sign up only within this timeframe, or you will be notified…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "walk",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Park Rangers at Menomonee Valley",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4218",
-   "where": "UEC Menomonee Valley",
-   "addr": "3700 W Pierce St",
-   "zip": "53215",
-   "summary": "This drop in opportunity is only available when our centers are open to the public: 12-6pm Tues-Thurs, 12-5pm Fri, and 9am-3pm Sat. Please sign up only within this timeframe, or you will be notified…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Park Rangers at Washington Park",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4331",
-   "where": "UEC Washington Park",
-   "addr": "1859 N 40th St",
-   "zip": "53208",
-   "summary": "This drop in opportunity is only available when our centers are open to the public: 12-6pm Tues-Thurs, 12-5pm Fri, and 9am-3pm Sat. Please sign up only within this timeframe, or you will be notified…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Pilates & Plump",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T12:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/pilates-plump/",
-   "where": "Luna Med Spa",
-   "addr": "19005 W. Capitol Dr., #130",
-   "zip": "53045",
-   "summary": "Start with a class for 150 in the lot, then shop 32 local vendors including permanent jewelry, live embroidery, tiny tattoos, bakers, juice, matcha and more.",
-   "tags": [
-    "Active",
-    "Health"
-   ],
-   "kind": "community",
-   "reach": "car",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "One Wild Life Breakthrough Accelerator",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/one-wild-life-breakthrough-accelerator/21616/",
-   "where": "Summit Place",
-   "addr": "6737 W Washington Street",
-   "zip": "53220",
-   "summary": "",
-   "tags": [
-    "Social Impact & Nonprofit"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Piala's 16th Annual Fall Festival",
-   "start": "2026-09-26T09:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/pialas-16th-annual-fall-festival/20278/",
-   "where": "Piala's Nursery & Garden Shop, Inc.",
-   "addr": "S39W27833 Genesee Rd",
-   "zip": "53189",
-   "summary": "Recurring daily",
-   "tags": [
-    "Fairs & Markets",
-    "Festival",
-    "Food & Drink"
-   ],
-   "free": true,
-   "kind": "markets",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Valley Wellness Series: Gentle Vinyasa Yoga",
-   "start": "2026-09-26T09:00",
-   "end": "2026-09-26T10:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/valley-wellness-series%3a-gentle-vinyasa-yoga/21412/",
-   "where": "Three Bridges Park (Valley Passage Bridge)",
-   "addr": "3711 W Canal St",
-   "zip": "53208",
-   "summary": "",
-   "tags": [
-    "Health & Wellness",
-    "Outdoor & Recreation",
-    "Community"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Forest Home Cemetery Bike Tour",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T11:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/forest-home-cemetery-bike-tour-tickets-1999039204072",
-   "where": "Forest Home Cemetery & Arboretum",
-   "addr": "2405 West Forest Home Avenue",
-   "zip": "53215",
-   "summary": "",
-   "tags": [
-    "Other",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Six Points",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T11:45",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/six-points-tickets-1997852035218",
-   "where": "Parking Lot, former Beans & Barley",
-   "addr": "1901 E. North Ave",
-   "zip": "53202",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "walk",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Doors Open at Forest Home Cemetery & Arboretum",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/doors-open-at-forest-home-cemetery-arboretum-tickets-1987245486746",
-   "where": "Forest Home Cemetery",
-   "addr": "2405 West Forest Home Avenue",
-   "zip": "53215",
-   "summary": "Exclusive access to our 1890s chapel and crematory - open to the public each year only for Doors Open Milwaukee!",
-   "tags": [
-    "Historic",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Riverworks Beerline Trail Walking Tour",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T11:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/riverworks-beerline-trail-walking-tour-sat-10-am-tickets-1997912702676",
-   "where": "3350 N Holton St",
-   "addr": "3350 North Holton Street",
-   "zip": "53212",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Hiking",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Doors Open - Central Library",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T16:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17306478",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Annual Doors Open event - behind the scenes tours",
-   "tags": [
-    "Tours",
-    "Arts, Music, & Culture",
-    "Multiple tours at Central Library"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Petfest Pop-Up at Foxtown Station",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/petfest-pop-up-at-foxtown-station/",
-   "where": "Foxtown Station",
-   "addr": "6209 W. Mequon Rd.",
-   "zip": "53092",
-   "summary": "A tail-wagging day of fun featuring Pier Pups Dock Diving, live music, local vendors, pet-friendly activities, and more",
-   "tags": [
-    "Food & Drink",
-    "Pets"
-   ],
-   "kind": "food",
-   "reach": "car",
-   "free": true,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Find Your Voice. Own Your Story. Through Literacy.",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T14:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/find-your-voice-own-your-story-through-literacy/",
-   "where": "North Division High School",
-   "addr": "1011 W. Center St.",
-   "zip": "53206",
-   "summary": "This is more than a book event. It’s a day dedicated to inspiring youth, empowering families, and strengthening our community through literacy, resources, and opportunity.",
-   "tags": [
-    "Kids"
-   ],
-   "kind": "family",
-   "reach": "car",
-   "free": true,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Doors Open Milwaukee: American Geographical Society Library",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/libraries/event/doors-open-milwaukee-agsl/",
-   "where": "American Geographical Society Library, Golda Meir Library",
-   "addr": "2311 E. Hartford Ave.",
-   "zip": "",
-   "summary": "Stop by the American Geographical Society Library on Saturday, Sept. 26, for Doors Open Milwaukee . Home to one of the largest map collections in the United States, the American Geographical Society…",
-   "tags": [
-    "UWM Libraries",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Doors Open Bike Ride",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T13:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/doors-open-bike-ride/",
-   "where": "Klotsche Center (KC)",
-   "addr": "3409 North Downer Ave.",
-   "zip": "53211",
-   "summary": "Doors Open Milwaukee is an annual celebration of Milwaukee’s architecture, history and neighborhoods. The event opens 160+ locations throughout the metro area to tour for free. Outdoor Pursuits and…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Exercise and Fitness"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Hello Summer Sidewalk Sale!",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/hello-summer-sidewalk-sale!/18930/",
-   "where": "Ruckus & Glee",
-   "addr": "805 N. 68th Street",
-   "zip": "53213",
-   "summary": "",
-   "tags": [
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Intentional Dads Showing Up Walk",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T14:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/intentional-dads-showing-up-walk/20457/",
-   "where": "Milwaukee County Zoo",
-   "addr": "10001 W. Bluemound Road",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Civic Engagement & Advocacy"
-   ],
-   "free": false,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "UWM Makers Market",
-   "start": "2026-09-26T10:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/uwm-makers-market/20902/",
-   "where": "",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Fairs & Markets",
-    "Arts & Culture",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "markets",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Whitefish Bay Farmers Market",
-   "start": "2026-09-26T10:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/whitefish-bay-farmers-market/19617/",
-   "where": "",
-   "addr": "325 E. Silver Spring Dr.",
-   "zip": "",
-   "summary": "Recurring weekly on Saturday",
-   "tags": [
-    "Fairs & Markets",
-    "Free Summer Music Series",
-    "Family Friendly"
-   ],
-   "free": null,
-   "kind": "markets",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Shake & Shape: 50 Shades of Blue – Milwaukee",
-   "start": "2026-09-26T10:30",
-   "end": "2026-09-26T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/shake-shape-50-shades-of-blue-milwaukee-tickets-1999054399522",
-   "where": "4301 N 44th St",
-   "addr": "4301 North 44th Street",
-   "zip": "53216",
-   "summary": "",
-   "tags": [
-    "Personal health",
-    "Health & Wellness"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Silver City, Interrupted",
-   "start": "2026-09-26T10:30",
-   "end": "2026-09-26T12:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/silver-city-interrupted-tickets-1997852574832",
-   "where": "3524 W National Ave",
-   "addr": "3524 West National Avenue",
-   "zip": "53215",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour with Adam Carr.",
-   "tags": [
-    "City/Town",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Story Time in the Galleries",
-   "start": "2026-09-26T10:30",
-   "end": "2026-09-26T11:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/story-time/2026-09-26/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "Every Saturday morning, join us in the galleries to hear a story and make art together.",
-   "tags": [
-    "Education",
-    "Free for Members",
-    "Free with Admission"
-   ],
-   "kind": "family",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Saturday Morning Volunteer Orientation",
-   "start": "2026-09-26T10:30",
-   "end": "2026-09-26T11:30",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/16587111",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Orientation for approved volunteers only. Apply to be a volunteer on our website today!",
-   "tags": [
-    "Government & Civic Literacy",
-    "Community Event/Info Booth"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Junk Journaling",
-   "start": "2026-09-26T11:00",
-   "end": "2026-09-26T12:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/junk-journaling-tickets-1998400885845",
-   "where": "Thirst Books",
-   "addr": "5209 West North Avenue",
-   "zip": "53208",
-   "summary": "",
-   "tags": [
-    "DIY",
-    "Hobbies & Special Interest"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "We Love Outpost Owner & Customer Appreciation Day",
-   "start": "2026-09-26T11:00",
-   "end": "2026-09-26T14:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/we-love-outpost-owner-amp-customer-appreciation-day-08-09-2026-16-00-55",
-   "where": "Outpost Co-op Grocery Store - All Locations",
-   "addr": "",
-   "zip": "",
-   "summary": "Win a prize when you Spin-The-Wheel. Outpost co-op owners receive a free gift. Fun for the whole family!",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee"
-  },
-  {
-   "title": "Fall Fling Clothing Swap",
-   "start": "2026-09-26T11:00",
-   "end": "2026-09-26T13:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/fall-fling-clothing-swap/21127/",
-   "where": "414loral",
-   "addr": "1739 N. Dr. Martin Luther King Jr. Drive",
-   "zip": "53212",
-   "summary": "",
-   "tags": [
-    "Fairs & Markets",
-    "Community"
-   ],
-   "free": false,
-   "kind": "markets",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MILK Fest 2026",
-   "start": "2026-09-26T11:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/milk-fest-2026/21555/",
-   "where": "3rd Street Market Hall",
-   "addr": "275 W. Wisconsin Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Festival",
-    "Arts & Culture",
-    "Community"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Monster Truck Throwdown",
-   "start": "2026-09-26T11:00",
-   "end": "2026-09-26T16:15",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/monster-truck-throwdown/21170/",
-   "where": "280 Cedar Creek Road, Slinger, WI 53086",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "Festival",
-    "Outdoor & Recreation",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Salsa Bachata Kizomba",
-   "start": "2026-09-26T12:00",
-   "end": "2026-09-26T14:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/salsa-bachata-kizomba-tickets-1989108310502",
-   "where": "East Bank Athletic & Social",
-   "addr": "731 North Water Street",
-   "zip": "53202",
-   "summary": "1- $30 2-Class - $40 $120 /Mo. Send Payment Venmo @Tiffany-Fua. Add name / class type on payment note must be done prior to class",
-   "tags": [
-    "Dance",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Johnson Controls Corporate Headquarters Building Tour",
-   "start": "2026-09-26T12:00",
-   "end": "2026-09-26T12:50",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/johnson-controls-corporate-headquarters-building-tour-sat-12-pm-tickets-1997985074141",
-   "where": "Johnson Controls Corporate Headquarters",
-   "addr": "5757 North Green Bay Avenue",
-   "zip": "53209",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "State",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Riverworks Beerline Trail Walking Tour",
-   "start": "2026-09-26T12:00",
-   "end": "2026-09-26T13:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/riverworks-beerline-trail-walking-tour-sat-12-pm-tickets-1997912953426",
-   "where": "3350 N Holton St",
-   "addr": "3350 North Holton Street",
-   "zip": "53212",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Hiking",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Third Space Brewing 10TH ANNIVERSARY PARTY",
-   "start": "2026-09-26T12:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/third-space-brewing-10th-anniversary-party-08-09-2026-17-48-43",
-   "where": "Third Space Brewing",
-   "addr": "",
-   "zip": "",
-   "summary": "Third Space Brewing is turning 10! We're celebrating 10 Happy Years with a full day at the brewery honoring a decade in craft beer. The day is packed! We’ve got live music from four different acts…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Volunteer Orientation",
-   "start": "2026-09-26T12:30",
-   "end": "2026-09-26T13:30",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/16587117",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Orientation for approved volunteers only. Apply to be a volunteer on our website today!",
-   "tags": [
-    "Government & Civic Literacy",
-    "Community Event/Info Booth"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Milwaukee Yacht Club",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T13:45",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/milwaukee-yacht-club-sat-1-pm-tickets-1995022493984",
-   "where": "1700 N Lincoln Memorial Dr",
-   "addr": "1700 North Lincoln Memorial Drive",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Doors Open",
-    "Food",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Rewritten Conversations Milwaukee: For Women Over 40 to Reflect & Reconnect",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/rewritten-conversations-milwaukee-for-women-over-40-to-reflect-reconnect-tickets-2000734062439",
-   "where": "Cinnabar Nutrition at Sherman Phoenix Marketplace",
-   "addr": "3536 West Fond du Lac Avenue",
-   "zip": "53216",
-   "summary": "",
-   "tags": [
-    "Other",
-    "Community & Culture"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Johnson Controls Corporate Headquarters Building Tour",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T13:50",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/johnson-controls-corporate-headquarters-building-tour-sat-1-pm-tickets-1997985314861",
-   "where": "Johnson Controls Corporate Headquarters",
-   "addr": "5757 North Green Bay Avenue",
-   "zip": "53209",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "State",
-    "Community & Culture",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Doors Open",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/planetarium/event/doors-open-3/2026-09-26/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E Kenwood Blvd #139",
-   "zip": "53211",
-   "summary": "@ Join us for Doors Open Milwaukee! Find out why the UWM Planetarium is Milwaukee’s hidden gem. Enjoy a free, 20-minute indoor stargazing show featuring a tour of the night sky and the…",
-   "tags": [
-    "Manfred Olson Planetarium",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Milwaukee Panthers Men’s Soccer vs. Cleveland State",
-   "start": "2026-09-26T13:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://uwm.edu/welcome/event/milwaukee-panthers-mens-soccer-vs-cleveland-state/",
-   "where": "Engelmann Stadium",
-   "addr": "2033 E Hartford Ave",
-   "zip": "53211",
-   "summary": "The Milwaukee Panthers Men’s Soccer team battles Cleveland State in an exciting Horizon League Matchup during Family Weekend at UWM! For more information, or to request accommodations, please email…",
-   "tags": [
-    "Campus welcome events"
-   ],
-   "kind": "sports",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Jones Island Water Reclamation Plant Visit",
-   "start": "2026-09-26T13:30",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/jones-island-water-reclamation-plant-visit-sat-130-pm-tickets-1997912303482",
-   "where": "Jones Island Water Reclamation Facility",
-   "addr": "700 East Jones Street",
-   "zip": "53207",
-   "summary": "",
-   "tags": [
-    "Doors Open",
-    "Other",
-    "Science & Technology",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Green Roof Tour",
-   "start": "2026-09-26T13:30",
-   "end": "2026-09-26T14:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/15995290",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Enjoy a tour of the library's Green Roof!",
-   "tags": [
-    "Tours",
-    "Sustainability, Green, & Environmental"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Riverworks Beerline Trail Walking Tour",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T15:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/riverworks-beerline-trail-walking-tour-sat-2-pm-tickets-1997913112903",
-   "where": "3350 N Holton St",
-   "addr": "3350 North Holton Street",
-   "zip": "53212",
-   "summary": "This is a Doors Open Milwaukee 2026 ticketed tour.",
-   "tags": [
-    "Doors Open",
-    "Hiking",
-    "Travel & Outdoor",
-    "Tour"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "POPESFEST",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/popesfest/20505/",
-   "where": "Pius XI Catholic High School",
-   "addr": "135 N. 76th Street",
-   "zip": "53213",
-   "summary": "",
-   "tags": [
-    "Festival",
-    "Community",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Comings and Goings of Days multimedia performance",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T15:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-comings-and-goings-of-days-multimedia-performance/20774/",
-   "where": "Haggerty Museum of Art",
-   "addr": "1234 W. Tory Hill Street",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Galleries & Exhibitions",
-    "Arts & Culture",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "ChemLight 2026",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T19:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/chemlight-2026/21008/",
-   "where": "University of Wisconsin-Milwaukee Peck School of the Arts",
-   "addr": "2400 E. Kenwood Boulevard",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Free"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Intro to Leatherworking: Craft Your Own Leather Goods",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T17:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/intro-to-leatherworking%3a-craft-your-own-leather-goods/19410/",
-   "where": "The Local Makery",
-   "addr": "2289 Ludington Ave",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Arts & Culture",
-    "Family Friendly"
-   ],
-   "free": false,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Printers Sin Fronteras",
-   "start": "2026-09-26T14:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/printers-sin-fronteras/21009/",
-   "where": "University of Wisconsin-Milwaukee Peck School of the Arts",
-   "addr": "2400 E. Kenwood Boulevard",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Free"
-   ],
-   "run_through": "2026-10-02",
-   "free": true,
-   "kind": "community",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Woven Images",
-   "start": "2026-09-26T14:00",
-   "end": "2026-09-26T19:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/woven-images/21010/",
-   "where": "University of Wisconsin-Milwaukee Peck School of the Arts",
-   "addr": "2400 E. Kenwood Boulevard",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Free"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Comings and Goings of Days",
-   "start": "2026-09-26T14:30",
-   "end": "2026-09-26T15:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/the-comings-and-goings-of-days/",
-   "where": "Haggerty Museum of Art",
-   "addr": "1234 W. Tory Hill",
-   "zip": "53233",
-   "summary": "The Comings and Goings of Days is a deeply personal multimedia performance by Catey Ott Thompson that chronicles her year-long recovery from a devastating knee injury.",
-   "tags": [],
-   "kind": "art",
-   "reach": "bus",
-   "free": true,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Wizarding Paint & Sip",
-   "start": "2026-09-26T16:00",
-   "end": "2026-09-26T18:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/wizarding-paint-sip-tickets-2000081109439",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Trayf",
-   "start": "2026-09-26T16:00",
-   "end": "2026-09-26T16:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/trayf/19631/",
-   "where": "Next Act Theatre",
-   "addr": "255 S. Water Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "run_through": "2026-10-04",
-   "free": false,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
-  },
-  {
-   "title": "Celebrate Campari x Imbibe Negroni Week at Il Cervo",
-   "start": "2026-09-26T16:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/celebrate-campari-x-imbibe-negroni-week-at-il-cervo/21610/",
-   "where": "Il Cervo",
-   "addr": "420 W. Juneau Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "run_through": "2026-09-27",
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Under the Harvest Moon",
-   "start": "2026-09-26T17:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/under-the-harvest-moon-registration-1998456871299",
-   "where": "13220 N Windsor Ct",
-   "addr": "13220 North Windsor Court",
-   "zip": "53097",
-   "summary": "Join us for our inaugural fundraiser. An evening of food, community & giving.",
-   "tags": [
-    "Other",
-    "Charity & Causes"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Captain Blood | Pirates vs. Pilots at The Union Cinema",
-   "start": "2026-09-26T17:00",
-   "end": "2026-09-26T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/captain-blood-pirates-vs-pilots-at-the-union-cinema/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Choose your crew! This film is part of our Pirates vs. Pilots weekend at the Union Cinema. Celebrate legendary adventures on the sea and in the sky! 35mm print! In this spectacular romantic…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Explorium Third Ward's 6th Anniversary Party",
-   "start": "2026-09-26T17:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/explorium-third-wards-6th-anniversary-party/21575/",
-   "where": "The Explorium Brewpub Third Ward",
-   "addr": "143 W St Paul Ave",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Breweries",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Live Music at The Landing, Sponsored by New Belgium Brewing",
-   "start": "2026-09-26T17:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/live-music-at-the-landing-sponsored-by-new-belgium-brewing/20095/",
-   "where": "The Landing at Hoyt Park Beer Garden",
-   "addr": "1800 N. Swan Boulevard",
-   "zip": "53226",
-   "summary": "Recurring weekly on Saturday",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Outdoor & Recreation"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Parents Night Out",
-   "start": "2026-09-26T17:30",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/parents-night-out-tickets-2002106791308",
-   "where": "Diamondz N Divaz Dance Factory",
-   "addr": "6043 n teutonia ave",
-   "zip": "53209",
-   "summary": "Parents Night Out",
-   "tags": [
-    "Parents Association",
-    "Family & Education"
-   ],
-   "free": null,
-   "kind": "family",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "The Code",
-   "start": "2026-09-26T18:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/the-code-tickets-1993983296717",
-   "where": "Pearl & Cade | Historic Third Ward",
-   "addr": "219 North Milwaukee Street",
-   "zip": "53202",
-   "summary": "Join is for an experience that explores why understanding the culture is just as important as wearing the clothes.",
-   "tags": [
-    "Fashion",
-    "Fashion & Beauty"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Marquette Men's Soccer vs. Creighton",
-   "start": "2026-09-26T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/marquette-mens-soccer-vs-creighton/20220/",
-   "where": "Valley Fields",
-   "addr": "1818 W. Canal St.",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": true,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Murder at the Mansion: A Prohibition-Era Radio Mystery",
-   "start": "2026-09-26T18:00",
-   "end": "2026-09-26T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/murder-at-the-mansion%3a-a-prohibition-era-radio-mystery/20772/",
-   "where": "Pabst Mansion",
-   "addr": "2000 W. Wisconsin Avenue",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Arts & Culture",
-    "Museums & Attractions"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Brewers vs St. Louis Cardinals",
-   "start": "2026-09-26T18:10",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.mlb.com/brewers/schedule/2026-09",
-   "where": "American Family Field",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "regular season",
-    "night"
-   ],
-   "free": false,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "brewers",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Getting to Whole: The Official Book Launch Experience",
-   "start": "2026-09-26T18:30",
-   "end": "2026-09-26T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/getting-to-whole-the-official-book-launch-experience-tickets-1998677878337",
-   "where": "River Club of Mequon",
-   "addr": "12400 North Ville Du Parc Drive",
-   "zip": "53092",
-   "summary": "Join Vanaya Grice for an evening of joy, connection, reflection, and celebration at the launch of Getting to Whole.",
-   "tags": [
-    "Other",
-    "Community & Culture"
-   ],
-   "free": null,
-   "kind": "books",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Disco Icon Art Night!",
-   "start": "2026-09-26T18:30",
-   "end": "2026-09-26T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/disco-icon-art-night-tickets-1998166033395",
-   "where": "2243 N 60th St",
-   "addr": "2243 North 60th Street",
-   "zip": "53208",
-   "summary": "Groove to disco hits while you create an iconic self portrait collage at Disco Icon Art Night!",
-   "tags": [
-    "Craft",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "The Kirtan Experience",
-   "start": "2026-09-26T18:30",
-   "end": "2026-09-26T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-kirtan-experience/21526/",
-   "where": "Milwaukee Marriott Downtown",
-   "addr": "625 N Milwaukee Street, Milwaukee, WI 53202",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Free"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "CHRIS TRANI in WISCONSIN!",
-   "start": "2026-09-26T19:00",
-   "end": "2026-09-26T20:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/chris-trani-in-wisconsin-tickets-1998602715523",
-   "where": "Boxed and Burlap Downtown",
-   "addr": "230 East Walworth Avenue",
-   "zip": "53115",
-   "summary": "The Laughing Academy brings world-class laughs to Lake Geneva! Catch headliner CHRIS TRANI Saturday September 26th at Boxed & Burlap!",
-   "tags": [
-    "Comedy",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Autumn Stroll Paint & Sip",
-   "start": "2026-09-26T19:00",
-   "end": "2026-09-26T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/autumn-stroll-paint-sip-tickets-2000081159589",
-   "where": "A Stroke of Genius, Paint Wine Studio",
-   "addr": "250 West Broadway",
-   "zip": "53186",
-   "summary": "Come paint with us at A Stroke of Genius!",
-   "tags": [
-    "Painting",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "SPEAK PRESENTS SHOWCASE ON STAGE",
-   "start": "2026-09-26T19:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/speak-presents-showcase-on-stage-tickets-1994412142406",
-   "where": "401 N 35th St",
-   "addr": "401 North 35th Street",
-   "zip": "53208",
-   "summary": "Get ready to catch some fresh voices and cool vibes live on stage at the SPEAK PRESENTS SHOWCASE!",
-   "tags": [
-    "Theatre",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Matt McCusker: The Healing Frequency Tour",
-   "start": "2026-09-26T19:00",
-   "end": "2026-09-26T21:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/matt-mccusker-the-healing-frequency-tour-10-08-2026-11-55-00",
-   "where": "The Riverside Theater",
-   "addr": "",
-   "zip": "",
-   "summary": "Matt McCusker is a comedian, novelist, and actor from Philadelphia, Pennsylvania. Affectionately known as “The Shaman,” Matt is the co-host of the industry-changing cult comedy show Matt and Shane's…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "512: The Selena Experience “Still Dreaming of You Tour”",
-   "start": "2026-09-26T19:30",
-   "end": "2026-09-26T19:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/512-the-selena-experience-still-dreaming-of-you-tour/",
-   "where": "South Milwaukee Performing Arts Center",
-   "addr": "901 5th Ave.",
-   "zip": "53172",
-   "summary": "512: The Selena Experience brings the legendary spirit of Selena Quintanilla to life for fans of all generations.",
-   "tags": [],
-   "kind": "theater",
-   "reach": "car",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Porco Rosso | Pirates vs. Pilots at The Union Cinema",
-   "start": "2026-09-26T19:30",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/porco-rosso-pirates-vs-pilots-at-the-union-cinema/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "35mm Print! Choose your crew! This film is part of our Pirates vs. Pilots weekend at the Union Cinema. Celebrate legendary adventures on the sea and in the sky! From the legendary Studio Ghibli comes…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Campeonas",
-   "start": "2026-09-26T19:30",
-   "end": "2026-09-26T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/campeonas/21618/",
-   "where": "Interchange Theater",
-   "addr": "628 N. 10th St",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "West Coast Swing Lesson & Dance",
-   "start": "2026-09-26T19:30",
-   "end": "2026-09-26T23:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/west-coast-swing-lesson-%26-dance/20210/",
-   "where": "Delaware House",
-   "addr": "2499 S Delaware Avenue",
-   "zip": "53207",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops"
-   ],
-   "free": false,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Big Richard",
-   "start": "2026-09-26T20:00",
-   "end": "2026-09-26T23:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/big-richard-tickets-1990612374197",
-   "where": "The Argo",
-   "addr": "334 East Silver Spring Drive",
-   "zip": "53217",
-   "summary": "Big Richard brings their high-energy bluegrass sound to the stage, performing songs from Pet, a powerful album recorded live to tape.",
-   "tags": [
-    "Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Next Stop Comedy at Oscar's Wine Bar! - Hartford, WI",
-   "start": "2026-09-26T20:00",
-   "end": "2026-09-26T21:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/next-stop-comedy-at-oscars-wine-bar-hartford-wi-tickets-1994957208714",
-   "where": "Oscar's Wine Bar",
-   "addr": "100 North Main Street",
-   "zip": "53027",
-   "summary": "Next Stop! - A Comedy Show Near You! Join us at Oscar's Wine Bar for a brand new line-up of comedians each month!",
-   "tags": [
-    "Comedy",
-    "Film, Media & Entertainment"
-   ],
-   "free": null,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Supertramp Tribute",
-   "start": "2026-09-26T20:00",
-   "end": "2026-09-26T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/supertramp-tribute/20563/",
-   "where": "The Pabst Theater",
-   "addr": "144 E Wells St",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Performing Arts & Theater"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
   {
    "title": "Laura Kostelnik Biskupic and Katherine Biskupic, coauthors of Lambeau Ladies: The Boundary-Breaking Women Behind Lombardi's Packers",
    "start": "2026-09-27",
@@ -1871,6 +139,28 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
+  },
+  {
+   "title": "Patches of Peace: A Community Quilt of Love, Memory and Hope",
+   "start": "2026-09-27",
+   "end": "",
+   "all_day": true,
+   "url": "https://mpl.libnet.info/event/17399484",
+   "where": "Milwaukee Public Library Central Library",
+   "addr": "814 W Wisconsin Ave",
+   "zip": "53233",
+   "summary": "Car Crash Tragedies is a community art project and memorial to loved ones lost to traffic violence in our community and bring healing to survivors, while inspiring everyone to act for safer streets.",
+   "tags": [
+    "Exhibits/Displays",
+    "Traveling Exhibit"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "run_through": "2026-10-11",
+   "kind": "art",
+   "reach": "bus",
+   "via": "org",
+   "org": "mpl"
   },
   {
    "title": "Bahamas: Industrial Sport & Sound Tour",
@@ -2614,15 +904,15 @@
    "start": "2026-09-27T18:00",
    "end": "",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/2000s-trivia-by-americas-pub-quiz/21581/",
-   "where": "",
-   "addr": "11200 West Burleigh Street",
-   "zip": "53222",
+   "url": "https://www.visitmilwaukee.org/event/2000s-trivia-by-americas-pub-quiz/21579/",
+   "where": "The Explorium Brewpub Southridge",
+   "addr": "5300 S. 76th Street",
+   "zip": "53129",
    "summary": "",
    "tags": [
     "Food & Drink",
     "Breweries",
-    "Family Friendly"
+    "Free"
    ],
    "free": true,
    "kind": "food",
@@ -9959,20 +8249,20 @@
    "start": "2026-10-09",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20190/",
+   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20153/",
    "where": "Grey House Studio",
    "addr": "6228 W. State Street",
    "zip": "53213",
    "summary": "",
    "tags": [
-    "Comedy & Improv",
+    "Food & Drink",
     "Performing Arts & Theater",
-    "Arts & Culture"
+    "Holiday"
    ],
    "time_unknown": true,
    "run_through": "2026-10-16",
    "free": false,
-   "kind": "comedy",
+   "kind": "food",
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
@@ -11116,17 +9406,17 @@
   {
    "title": "Bronzeville Farmers Market",
    "start": "2026-10-10T10:00",
-   "end": "",
+   "end": "2026-10-10T13:00",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bronzeville-farmers-market/18498/",
-   "where": "Historic King Drive Business Improvement District",
-   "addr": "1726 N. Dr. Martin Luther King Jr. Drive",
+   "url": "https://www.visitmilwaukee.org/event/bronzeville-farmers-market/18873/",
+   "where": "414loral",
+   "addr": "1739 N. Dr. Martin Luther King Jr. Drive",
    "zip": "53212",
-   "summary": "Recurring monthly on the 2nd Saturday",
+   "summary": "",
    "tags": [
     "Fairs & Markets",
-    "Food & Drink",
-    "Outdoor & Recreation"
+    "Outdoor & Recreation",
+    "Community"
    ],
    "free": true,
    "kind": "markets",
@@ -14123,20 +12413,20 @@
    "start": "2026-10-15",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20190/",
+   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20153/",
    "where": "Grey House Studio",
    "addr": "6228 W. State Street",
    "zip": "53213",
    "summary": "",
    "tags": [
-    "Comedy & Improv",
+    "Food & Drink",
     "Performing Arts & Theater",
-    "Arts & Culture"
+    "Holiday"
    ],
    "time_unknown": true,
    "run_through": "2026-10-16",
    "free": false,
-   "kind": "comedy",
+   "kind": "food",
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
@@ -32556,6 +30846,27 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Honors String Orchestra & UWM Symphony Orchestra and High School Honors Band performance",
+   "start": "2026-11-21T19:30",
+   "end": "2026-11-21T21:30",
+   "all_day": false,
+   "url": "https://uwm.edu/arts/event/uwm-wind-ensemble-2/",
+   "where": "Zelazo Center for the Performing Arts, Bader Hall",
+   "addr": "2419 E. Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "This performance begins with a unique collaboration between the high school students selected for the 2026 UWM Honors String Orchestra and the UWM Symphony Orchestra, conducted by Prof. Jun Kim. The…",
+   "tags": [
+    "Peck School of the Arts",
+    "Arts and Culture",
+    "Music"
+   ],
+   "kind": "music",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "West Coast Swing Lesson & Dance",
    "start": "2026-11-21T19:30",
    "end": "2026-11-21T23:30",
@@ -32868,6 +31179,27 @@
    "org": "mpl"
   },
   {
+   "title": "Intro to Wheel Throwing Session 2",
+   "start": "2026-11-23T18:00",
+   "end": "2026-11-23T20:00",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-23/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Are you curious to try out the pottery whe e l ? Joi n us for five weeks to familiarize yourself with the fundamentals of whe e l throwing and clay! Betwee n classes, participants will have access to…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Arts and Culture",
+    "Public"
+   ],
+   "kind": "art",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Sips & Stems Holiday Flower Arranging with Belle Fiori",
    "start": "2026-11-23T18:00",
    "end": "2026-11-23T19:30",
@@ -32946,6 +31278,27 @@
    "org": "mpl"
   },
   {
+   "title": "Tuesday Tea",
+   "start": "2026-11-24T16:00",
+   "end": "2026-11-24T17:00",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/tuesday-tea-3/2026-11-24/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Ever wished for a space on campus to spill the tea or discuss important topics with supportive peers? Come join us for ” The Tuesday Tea,” a casual drop-in series where we dive into spicy…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Career and Leadership Development",
+    "Student Life"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Hand Knit Chunky Blankets",
    "start": "2026-11-24T18:00",
    "end": "2026-11-24T21:00",
@@ -33004,6 +31357,27 @@
    "free": null,
    "via": "org",
    "org": "domes"
+  },
+  {
+   "title": "Club Soda",
+   "start": "2026-11-25T13:30",
+   "end": "2026-11-25T14:30",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-11-25/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Connect",
+    "Health and Well-being"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Upper Bar Friendsgiving Party",
@@ -33103,6 +31477,108 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Thanksgiving Bountiful Brunch 2026",
+   "start": "2026-11-26T11:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/thanksgiving-bountiful-brunch-2026-14-09-2026-13-10-48",
+   "where": "The Pfister Hotel",
+   "addr": "",
+   "zip": "",
+   "summary": "Immerse yourself in the breathtaking atmosphere of the Grand Ballroom, the perfect destination for your family’s cherished Thanksgiving. At our Thanksgiving Brunch, there is much to be thankful for:…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": false,
+   "via": "org",
+   "org": "radio-milwaukee",
+   "also": [
+    "visit-milwaukee"
+   ]
+  },
+  {
+   "title": "Thanksgiving Tea at The Pfister",
+   "start": "2026-11-26T11:00",
+   "end": "2026-11-26T14:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/thanksgiving-tea-at-the-pfister/18524/",
+   "where": "The Pfister Hotel",
+   "addr": "424 E. Wisconsin Avenue",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Food & Drink"
+   ],
+   "free": false,
+   "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Thanksgiving Day Dinner",
+   "start": "2026-11-26T15:00",
+   "end": "2026-11-26T21:00",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/thanksgiving-day-dinner-14-09-2026-16-01-37",
+   "where": "Milwaukee ChopHouse",
+   "addr": "",
+   "zip": "",
+   "summary": "Gather around the table and let Milwaukee ChopHouse handle the Thanksgiving feast. Join us for a special three-course prix fixe menu featuring seasonal favorites, from comforting fall starters and…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "radio-milwaukee",
+   "also": [
+    "visit-milwaukee"
+   ]
+  },
+  {
+   "title": "Latin Table: Spring Semester",
+   "start": "2026-11-26T16:00",
+   "end": "2026-11-26T17:00",
+   "all_day": false,
+   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-11-26/",
+   "where": "Curtin Hall 866",
+   "addr": "",
+   "zip": "",
+   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
+   "tags": [
+    "History",
+    "Classics"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2026-11-26T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -33139,26 +31615,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 298,
-   "theater": 146,
-   "comedy": 69,
-   "film": 27,
-   "art": 137,
-   "talks": 248,
-   "books": 58,
-   "markets": 40,
-   "outdoors": 158,
-   "food": 174,
-   "sports": 57,
-   "family": 51,
-   "community": 168
+   "music": 295,
+   "theater": 141,
+   "comedy": 64,
+   "film": 24,
+   "art": 133,
+   "talks": 231,
+   "books": 57,
+   "markets": 35,
+   "outdoors": 151,
+   "food": 171,
+   "sports": 53,
+   "family": 48,
+   "community": 154
   },
   "reach": {
-   "walk": 450,
-   "bus": 746,
-   "car": 393,
-   "unknown": 32
+   "walk": 441,
+   "bus": 718,
+   "car": 357,
+   "unknown": 31
   },
-  "free": 464
+  "free": 437
  }
 }
