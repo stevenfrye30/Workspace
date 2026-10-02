@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-10-01T17:29:28+00:00",
+ "generated_at": "2026-10-02T16:44:29+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
    "status": "ok",
    "count": 2,
    "raw": 2,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "uwm": {
    "status": "ok",
    "count": 250,
-   "raw": 273,
-   "as_of": "2026-10-01"
+   "raw": 272,
+   "as_of": "2026-10-02"
   },
   "boswell": {
    "status": "stale",
@@ -24,30 +24,30 @@
    "status": "ok",
    "count": 119,
    "raw": 119,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "mpl": {
    "status": "ok",
-   "count": 107,
-   "raw": 107,
-   "as_of": "2026-10-01"
+   "count": 110,
+   "raw": 110,
+   "as_of": "2026-10-02"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 5,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "mam": {
    "status": "ok",
-   "count": 63,
-   "raw": 63,
-   "as_of": "2026-10-01"
+   "count": 79,
+   "raw": 79,
+   "as_of": "2026-10-02"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 5,
    "raw": 8,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "turners": {
    "status": "link"
@@ -56,7 +56,7 @@
    "status": "ok",
    "count": 11,
    "raw": 11,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -64,25 +64,25 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 92,
-   "raw": 94,
-   "as_of": "2026-10-01"
+   "count": 91,
+   "raw": 93,
+   "as_of": "2026-10-02"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 208,
-   "raw": 208,
-   "as_of": "2026-10-01"
+   "count": 211,
+   "raw": 211,
+   "as_of": "2026-10-02"
   },
   "marcus-center": {
    "status": "ok",
-   "count": 13,
-   "raw": 13,
-   "as_of": "2026-10-01"
+   "count": 12,
+   "raw": 12,
+   "as_of": "2026-10-02"
   },
   "admirals": {
    "status": "stale",
@@ -94,12 +94,12 @@
    "status": "ok",
    "count": 3,
    "raw": 3,
-   "as_of": "2026-10-01"
+   "as_of": "2026-10-02"
   },
   "eventbrite": {
    "status": "stale",
    "error": "OSError: every Eventbrite page failed: https://www.eventbrite.com/d/wi--milwaukee/events/: HTTPError, https://www.eventbrite.com/",
-   "count": 88,
+   "count": 85,
    "as_of": "2026-09-24"
   },
   "pabst-theater-group": {
@@ -110,9 +110,9 @@
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 729,
-   "raw": 735,
-   "as_of": "2026-10-01"
+   "count": 713,
+   "raw": 719,
+   "as_of": "2026-10-02"
   },
   "fiserv-forum": {
    "status": "stale",
@@ -122,688 +122,6 @@
   }
  },
  "events": [
-  {
-   "title": "Patches of Peace: A Community Quilt of Love, Memory and Hope",
-   "start": "2026-10-01",
-   "end": "",
-   "all_day": true,
-   "url": "https://mpl.libnet.info/event/17399488",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Car Crash Tragedies is a community art project and memorial to loved ones lost to traffic violence in our community and bring healing to survivors, while inspiring everyone to act for safer streets.",
-   "tags": [
-    "Exhibits/Displays",
-    "Traveling Exhibit"
-   ],
-   "time_unknown": true,
-   "free": true,
-   "run_through": "2026-10-11",
-   "kind": "art",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Legend Zeppelin",
-   "start": "2026-10-01",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/legend-zeppelin/20616/",
-   "where": "Vivarium",
-   "addr": "1818 N. Farwell Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MAYBE WE'LL FLY",
-   "start": "2026-10-01",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/maybe-well-fly/21304/",
-   "where": "Milwaukee Chamber Theatre",
-   "addr": "Broadway Theatre Center",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-10-11",
-   "free": false,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "11th Annual Milwaukee Muslim Film Festival",
-   "start": "2026-10-01",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/11th-annual-milwaukee-muslim-film-festival/20803/",
-   "where": "Oriental Theatre",
-   "addr": "Oriental Theatre",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Festival",
-    "Film & Literature",
-    "Arts & Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-10-04",
-   "free": null,
-   "kind": "film",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Our Stories: Honoring Latine Veterans",
-   "start": "2026-10-01T08:00",
-   "end": "2026-10-01T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/our-stories-honoring-latine-veterans/2026-10-01/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Stop by the display in the Student Union hallway East to honor the service and sacrifice of many U.S. Veterans during Hispanic Heritage Month.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Public",
-    "Students"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "WI Tech Month Kick-Off",
-   "start": "2026-10-01T09:00",
-   "end": "2026-10-01T10:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/wi-tech-month-kick-off-tickets-2000157697516",
-   "where": "Milwaukee Public Market",
-   "addr": "400 North Water Street",
-   "zip": "53202",
-   "summary": "Kick off Wisconsin Tech Month with a morning of community, connection, and inspiration at the Milwaukee Public Market!",
-   "tags": [
-    "High Tech",
-    "Science & Technology"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Community Ofrenda",
-   "start": "2026-10-01T10:00",
-   "end": "2026-10-01T20:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/community-ofrenda/2026-10-01/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "The ofrenda invites you to learn about its elements and honor loved ones.",
-   "tags": [
-    "Free for Members",
-    "Free with Admission",
-    "In-Person"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Chair Yoga",
-   "start": "2026-10-01T10:30",
-   "end": "2026-10-01T11:30",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17102418",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Join us at the beautiful Central Library for yoga and fellowship. Registration is encouraged. Walk-ins welcome.",
-   "tags": [
-    "Health & Wellness"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Job Search and Resume Assistance",
-   "start": "2026-10-01T13:00",
-   "end": "2026-10-01T16:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/16871581",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "A Goodwill Consultant will be available to provide job search assistance, resume-building help, and interview preparation.",
-   "tags": [
-    "Jobs & Careers"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Printers Sin Fronteras",
-   "start": "2026-10-01T14:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/printers-sin-fronteras/21009/",
-   "where": "University of Wisconsin-Milwaukee Peck School of the Arts",
-   "addr": "2400 E. Kenwood Boulevard",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Free"
-   ],
-   "run_through": "2026-10-02",
-   "free": true,
-   "kind": "community",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Thursday Nights at MAM",
-   "start": "2026-10-01T16:00",
-   "end": "2026-10-01T20:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/thursday-nights-at-mam/2026-10-01/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "Every Thursday night, meet up with friends for an artful evening together!",
-   "tags": [
-    "Free for Members",
-    "In-Person",
-    "Pay-What-You-Wish Admission"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Greendale Lions Club Family Oktoberfest",
-   "start": "2026-10-01T16:00",
-   "end": "2026-10-01T21:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/greendale-lions-club-family-oktoberfest-03-09-2026-10-51-29",
-   "where": "Greendale Gazebo Park",
-   "addr": "",
-   "zip": "",
-   "summary": "Kick off an amazing weekend at the Greendale Lions Club Family Oktoberfest! Thursday night is all about gathering with friends, family, and neighbors for a fun-filled evening of great drinks, good…",
-   "tags": [
-    "Milwaukee Festivals"
-   ],
-   "kind": "family",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee"
-  },
-  {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-10-01T16:00",
-   "end": "2026-10-01T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-10-01/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Mindfulness and Meditation (Led by Tom Garcia, LPC)",
-   "start": "2026-10-01T17:00",
-   "end": "2026-10-01T18:00",
-   "all_day": false,
-   "url": "https://uwm.edu/graduateschool/event/mindfulness-and-meditation-led-by-tom-garcia-lpc/",
-   "where": "Lubar Entrepreneurship Center, Room 107",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursday, October 1, 2026 from 5-6 p.m. in the Lubar Entrepreneurial Center (LEC), room #107 Presented as a part of the Graduate Student Wellness Series by UWM’s Graduate School and the Student…",
-   "tags": [
-    "Graduate School"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Leff's 32nd Anniversary Party",
-   "start": "2026-10-01T17:00",
-   "end": "2026-10-01T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/leffs-32nd-anniversary-party/21743/",
-   "where": "Leff's Lucky Town",
-   "addr": "7208 W. State Street",
-   "zip": "53213",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Where Hope Blooms A Charity Banquet for the Inner Beauty Center, Milwaukee",
-   "start": "2026-10-01T17:30",
-   "end": "2026-10-01T21:00",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/where-hope-blooms-a-charity-banquet-for-the-inner-beauty-center-milwaukee-tickets-1991951104375",
-   "where": "Mitchell Park Domes Horticulture Conservatory",
-   "addr": "524 South Layton Boulevard",
-   "zip": "53215",
-   "summary": "Join us in person for an unforgettable evening celebrating hope, healing, and renewed purpose while supporting women in our community.",
-   "tags": [
-    "Human Rights",
-    "Charity & Causes"
-   ],
-   "free": null,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Glazing Techniques Session 1",
-   "start": "2026-10-01T18:00",
-   "end": "2026-10-01T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/glazing-techniques-session-1/2026-10-01/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Learn basic techniques of surface decoration on ceramic forms! This course will cover underglaze techniques such as stenciling, shaving cream swirl, and Mishima inlay, as well as overglazing…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Inside JLA: A JLA Team Panel Conversation",
-   "start": "2026-10-01T18:00",
-   "end": "2026-10-01T19:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/inside-jla%3a-a-jla-team-panel-conversation/21649/",
-   "where": "Janus Liberal Arts High School",
-   "addr": "161 W. Wisconsin Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Networking",
-    "Social Impact & Nonprofit",
-    "Speaker Series"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Artist Talk + Performance: “Reggie Wilson/Fist & Heel Performance Group: POWER”",
-   "start": "2026-10-01T18:15",
-   "end": "2026-10-01T19:15",
-   "all_day": false,
-   "url": "https://mam.org/events/event/artist-talk-performance-reggie-wilson/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "Join us for the explosive debut of POWER.",
-   "tags": [
-    "Artist Talks",
-    "Baker/Rowland Galleries",
-    "Free with Admission"
-   ],
-   "kind": "talks",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Salsa Bachata Kizomba",
-   "start": "2026-10-01T18:30",
-   "end": "2026-10-01T19:30",
-   "all_day": false,
-   "url": "https://www.eventbrite.com/e/salsa-bachata-kizomba-tickets-1991636179426",
-   "where": "East Bank Athletic & Social",
-   "addr": "731 North Water Street",
-   "zip": "53202",
-   "summary": "1- $30 2-Class - $40 $120 /Mo. Send Payment Venmo @Tiffany-Fua. Add name / class type on payment note must be done prior to class",
-   "tags": [
-    "Dance",
-    "Performing & Visual Arts"
-   ],
-   "free": null,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "eventbrite"
-  },
-  {
-   "title": "Spelling Bee Showdown",
-   "start": "2026-10-01T18:30",
-   "end": "2026-10-01T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/spelling-bee-showdown/19064/",
-   "where": "Lakefront Brewery, Inc.",
-   "addr": "1872 N. Commerce Street",
-   "zip": "53212",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Nightlife",
-    "Film & Literature"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Zeni Wine Dinner",
-   "start": "2026-10-01T18:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/zeni-wine-dinner/21425/",
-   "where": "Lupi & Iris",
-   "addr": "777 N. Van Buren Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Special Features: Real People, Real Performances: Directing Non-Actors",
-   "start": "2026-10-01T19:00",
-   "end": "2026-10-01T20:45",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/special-features-real-people-real-performances-directing-non-actors/",
-   "where": "Virtual or Hybrid",
-   "addr": "",
-   "zip": "",
-   "summary": "What happens when your actors have little or no acting experience? This workshop explores techniques for directing non-actors and first-time performers, building trust, communicating effectively, and…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Film & Animation"
-   ],
-   "kind": "talks",
-   "reach": "online",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "EMO NIGHT with Midnight Anthem",
-   "start": "2026-10-01T19:00",
-   "end": "2026-10-01T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/emo-night-with-midnight-anthem/21483/",
-   "where": "Nashville North",
-   "addr": "1216 E. Brady Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Film Faculty & Staff Screenings",
-   "start": "2026-10-01T19:00",
-   "end": "2026-10-01T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/film-faculty-%26-staff-screenings/21134/",
-   "where": "University of Wisconsin-Milwaukee Peck School of the Arts",
-   "addr": "2400 E. Kenwood Boulevard",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Free"
-   ],
-   "free": true,
-   "kind": "film",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "LOUNJ ACTS",
-   "start": "2026-10-01T19:00",
-   "end": "2026-10-01T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/lounj-acts/21651/",
-   "where": "The Wicked Hop and Jackalope Lounj",
-   "addr": "345 N. Broadway",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Churchill Starring David Payne",
-   "start": "2026-10-01T19:30",
-   "end": "2026-10-01T19:30",
-   "all_day": false,
-   "url": "https://www.marcuscenter.org/event/churchill-starring-david-payne/",
-   "where": "Wilson Theater at Vogel Hall",
-   "addr": "121 E State St",
-   "zip": "53202",
-   "summary": "Winston Churchill, has just been awarded honorary US citizenship by President John F. Kennedy. In recognition of this unprecedented occasion, The American-Oxford Society has asked the former Prime…",
-   "tags": [],
-   "kind": "theater",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "marcus-center",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Trayf",
-   "start": "2026-10-01T19:30",
-   "end": "2026-10-01T19:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/trayf/19631/",
-   "where": "Next Act Theatre",
-   "addr": "255 S. Water Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "run_through": "2026-10-04",
-   "free": false,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
-  },
-  {
-   "title": "5 Lesbians Eating a Quiche",
-   "start": "2026-10-01T19:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/5-lesbians-eating-a-quiche/20991/",
-   "where": "Pink's Accessible Theater House (PATH)",
-   "addr": "1104 W. Historic Mitchell St.",
-   "zip": "53204",
-   "summary": "Recurring weekly on Sunday, Thursday, Friday, Saturday",
-   "tags": [
-    "Comedy & Improv",
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Highground",
-   "start": "2026-10-01T19:30",
-   "end": "2026-10-01T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-highground/21725/",
-   "where": "Interchange Theatre",
-   "addr": "628 N. 10th Street",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Trayf - ASL Interpreted Performance",
-   "start": "2026-10-01T19:30",
-   "end": "2026-10-01T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/trayf-asl-interpreted-performance/19637/",
-   "where": "Next Act Theatre",
-   "addr": "255 S. Water Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "free": false,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Preview: 5 Lesbians Eating a Quiche",
-   "start": "2026-10-01T20:00",
-   "end": "2026-10-01T21:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/preview-5-lesbians-eating-a-quiche/",
-   "where": "Pink’s Accessible Theater House",
-   "addr": "1104 W. Historic Mitchell St.",
-   "zip": "53204",
-   "summary": "The laugh-out-loud cult hit that stormed Chicago and off-Broadway – is now detonating in Milwaukee.",
-   "tags": [
-    "Comedy"
-   ],
-   "kind": "comedy",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Lauren Alaina: The Stages Tour",
-   "start": "2026-10-01T20:00",
-   "end": "2026-10-01T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/lauren-alaina%3a-the-stages-tour/20628/",
-   "where": "The Pabst Theater",
-   "addr": "144 E Wells St",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Performing Arts & Theater"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
   {
    "title": "luna rey hall, author of The Bizarre Disappearance of Bella Riley, in conversation with Mary Thorson",
    "start": "2026-10-02",
@@ -821,6 +139,50 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
+  },
+  {
+   "title": "Patches of Peace: A Community Quilt of Love, Memory and Hope",
+   "start": "2026-10-02",
+   "end": "",
+   "all_day": true,
+   "url": "https://mpl.libnet.info/event/17399489",
+   "where": "Milwaukee Public Library Central Library",
+   "addr": "814 W Wisconsin Ave",
+   "zip": "53233",
+   "summary": "Car Crash Tragedies is a community art project and memorial to loved ones lost to traffic violence in our community and bring healing to survivors, while inspiring everyone to act for safer streets.",
+   "tags": [
+    "Exhibits/Displays",
+    "Traveling Exhibit"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "run_through": "2026-10-11",
+   "kind": "art",
+   "reach": "bus",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "Do Androids Dream of Electric Cats",
+   "start": "2026-10-02",
+   "end": "",
+   "all_day": true,
+   "url": "https://mpl.libnet.info/event/17520981",
+   "where": "Milwaukee Public Library Central Library",
+   "addr": "814 W Wisconsin Ave",
+   "zip": "53233",
+   "summary": "Do Androids Dream of Electric Cats is an interactive sculpture by the Steel Tigerlillies, a Milwaukee-based metal arts collective.",
+   "tags": [
+    "Exhibits/Displays",
+    "Sculpture Exhibit"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "run_through": "2026-10-31",
+   "kind": "art",
+   "reach": "bus",
+   "via": "org",
+   "org": "mpl"
   },
   {
    "title": "Door County Camping Weekend",
@@ -1083,6 +445,27 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Guest Gallery Talk: “The Shakers”",
+   "start": "2026-10-02T12:00",
+   "end": "2026-10-02T13:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/guest-gallery-talk-the-shakers-oct/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Join us for a one-hour gallery talk exploring the Shaker values of equality, community, and labor through the Black Shaker experience.",
+   "tags": [
+    "Drop-In Tours",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Chinese Language Table",
    "start": "2026-10-02T12:00",
    "end": "2026-10-02T13:30",
@@ -1123,25 +506,24 @@
    "org": "uwm"
   },
   {
-   "title": "Guest Gallery Talk: “The Shakers”",
-   "start": "2026-10-02T13:00",
-   "end": "2026-10-02T14:00",
+   "title": "Lunch and Learn: Milwaukee’s LGBTQIA+ History",
+   "start": "2026-10-02T12:30",
+   "end": "2026-10-02T13:30",
    "all_day": false,
-   "url": "https://mam.org/events/event/guest-gallery-talk-the-shakers-oct/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "Join us for a one-hour gallery talk exploring the Shaker values of equality, community, and labor through the Black Shaker experience.",
+   "url": "https://urbanmilwaukee.com/event/lunch-and-learn-milwaukees-lgbtqia-history/",
+   "where": "Virtual",
+   "addr": "",
+   "zip": "",
+   "summary": "Join public historian, from Expanding Horizons LGBT, LLC, and advocate Vince Tripi for a look at Milwaukee’s LGBTQIA+ history.",
    "tags": [
-    "Drop-In Tours",
-    "Free for Members",
-    "Free with Admission"
+    "History",
+    "Virtual"
    ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
+   "kind": "talks",
+   "reach": "online",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Acorn Collecting Workshop at the Forest Exploration Center",
@@ -1779,26 +1161,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Brewers vs. TBD",
-   "start": "2026-10-03",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-brewers-vs-tbd/21810/",
-   "where": "American Family Field",
-   "addr": "1 Brewers Way",
-   "zip": "53214",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
    "title": "11th Annual Milwaukee Muslim Film Festival",
    "start": "2026-10-03",
    "end": "",
@@ -2091,6 +1453,27 @@
     "Free for Members",
     "Free with Admission",
     "In-Person"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-03T10:00",
+   "end": "2026-10-03T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-03/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
    ],
    "kind": "art",
    "reach": "bus",
@@ -2877,7 +2260,10 @@
    "kind": "sports",
    "reach": "car",
    "via": "source",
-   "src": "brewers"
+   "src": "brewers",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "Nō Studios DanceFest 2026",
@@ -3419,6 +2805,27 @@
    "org": "mam"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-04T10:00",
+   "end": "2026-10-04T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-04/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Fall at The Fairgrounds 2026 by re:Craft & Relic",
    "start": "2026-10-04T10:00",
    "end": "2026-10-04T16:00",
@@ -3786,26 +3193,10 @@
    "kind": "sports",
    "reach": "car",
    "via": "source",
-   "src": "brewers"
-  },
-  {
-   "title": "Milwaukee Brewers vs. TBD",
-   "start": "2026-10-04T15:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-brewers-vs-tbd/21813/",
-   "where": "American Family Field",
-   "addr": "1 Brewers Way",
-   "zip": "53214",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
+   "src": "brewers",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "Preview: 5 Lesbians Eating a Quiche",
@@ -6562,26 +5953,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Brewers vs. TBD",
-   "start": "2026-10-09",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-brewers-vs-tbd/21814/",
-   "where": "American Family Field",
-   "addr": "1 Brewers Way",
-   "zip": "53214",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
    "title": "Waylon Wyatt - Dustpiles World Tour",
    "start": "2026-10-09",
    "end": "",
@@ -6630,42 +6001,23 @@
    "start": "2026-10-09",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20190/",
+   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20153/",
    "where": "Grey House Studio",
    "addr": "6228 W. State Street",
    "zip": "53213",
    "summary": "",
    "tags": [
-    "Comedy & Improv",
+    "Food & Drink",
     "Performing Arts & Theater",
-    "Arts & Culture"
+    "Holiday"
    ],
    "time_unknown": true,
    "run_through": "2026-10-16",
    "free": false,
-   "kind": "comedy",
+   "kind": "food",
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Brewers vs San Diego Padres",
-   "start": "2026-10-09T03:33",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.mlb.com/brewers/schedule/2026-10",
-   "where": "American Family Field",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "day"
-   ],
-   "free": false,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "brewers"
   },
   {
    "title": "Washington Park ROOT (Restoring Our Outdoors Together)",
@@ -6808,6 +6160,28 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
+  },
+  {
+   "title": "Milwaukee Brewers vs. San Diego Padres (If Necessary)",
+   "start": "2026-10-09T15:30",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/milwaukee-brewers-vs-san-diego-padres-(if-necessary)/21814/",
+   "where": "American Family Field",
+   "addr": "1 Brewers Way",
+   "zip": "53214",
+   "summary": "",
+   "tags": [
+    "Spectator Sports"
+   ],
+   "free": false,
+   "kind": "sports",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee",
+   "also": [
+    "brewers"
+   ]
   },
   {
    "title": "Korea Day Celebration & Symphony Orchestra Concert",
@@ -7638,20 +7012,20 @@
    "start": "2026-10-10",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20153/",
+   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20190/",
    "where": "Grey House Studio",
    "addr": "6228 W. State Street",
    "zip": "53213",
    "summary": "",
    "tags": [
-    "Food & Drink",
+    "Comedy & Improv",
     "Performing Arts & Theater",
-    "Holiday"
+    "Arts & Culture"
    ],
    "time_unknown": true,
    "run_through": "2026-10-16",
    "free": false,
-   "kind": "food",
+   "kind": "comedy",
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
@@ -7932,6 +7306,27 @@
    "org": "mam"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-10T10:00",
+   "end": "2026-10-10T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-10/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Menomonee Valley ROOT (Restoring Our Outdoors Together)",
    "start": "2026-10-10T10:00",
    "end": "2026-10-10T12:00",
@@ -8033,17 +7428,17 @@
   {
    "title": "Bronzeville Farmers Market",
    "start": "2026-10-10T10:00",
-   "end": "",
+   "end": "2026-10-10T13:00",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bronzeville-farmers-market/18498/",
-   "where": "Historic King Drive Business Improvement District",
-   "addr": "1726 N. Dr. Martin Luther King Jr. Drive",
+   "url": "https://www.visitmilwaukee.org/event/bronzeville-farmers-market/18873/",
+   "where": "414loral",
+   "addr": "1739 N. Dr. Martin Luther King Jr. Drive",
    "zip": "53212",
-   "summary": "Recurring monthly on the 2nd Saturday",
+   "summary": "",
    "tags": [
     "Fairs & Markets",
-    "Food & Drink",
-    "Outdoor & Recreation"
+    "Outdoor & Recreation",
+    "Community"
    ],
    "free": true,
    "kind": "markets",
@@ -9229,6 +8624,27 @@
    "org": "mam"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-11T10:00",
+   "end": "2026-10-11T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-11/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "The Art of Birding with Chuck Stebelton",
    "start": "2026-10-11T10:00",
    "end": "2026-10-11T11:30",
@@ -9938,6 +9354,25 @@
    "free": true,
    "kind": "talks",
    "reach": "walk",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "Market Ready: Holiday Sales Strategies for Makers",
+   "start": "2026-10-12T17:00",
+   "end": "2026-10-12T19:00",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/17564496",
+   "where": "Milwaukee Public Library Central Library",
+   "addr": "814 W Wisconsin Ave",
+   "zip": "53233",
+   "summary": "The holiday season is when makers can have their biggest months of the year! This workshop is designed for artisans, makers, and small business owners who want to make the most of it.",
+   "tags": [
+    "Business/Entrepreneurship"
+   ],
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
    "via": "org",
    "org": "mpl"
   },
@@ -12429,19 +11864,19 @@
    "start": "2026-10-16",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20190/",
+   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20153/",
    "where": "Grey House Studio",
    "addr": "6228 W. State Street",
    "zip": "53213",
    "summary": "",
    "tags": [
-    "Comedy & Improv",
+    "Food & Drink",
     "Performing Arts & Theater",
-    "Arts & Culture"
+    "Holiday"
    ],
    "time_unknown": true,
    "free": false,
-   "kind": "comedy",
+   "kind": "food",
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
@@ -12921,10 +12356,11 @@
    ],
    "kind": "music",
    "reach": "walk",
-   "free": true,
+   "free": false,
    "via": "org",
    "org": "uwm",
    "also": [
+    "urban-milwaukee-calendar",
     "visit-milwaukee"
    ]
   },
@@ -13287,6 +12723,27 @@
     "Free for Members",
     "Free with Admission",
     "In-Person"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-17T10:00",
+   "end": "2026-10-17T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-17/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
    ],
    "kind": "art",
    "reach": "bus",
@@ -13805,25 +13262,24 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Josh Johnson's Comedy Band Camp",
+   "title": "Josh Johnson’s Comedy Band Camp",
    "start": "2026-10-17T17:00",
-   "end": "2026-10-17T21:30",
+   "end": "2026-10-17T17:00",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/josh-johnsons-comedy-band-camp/21062/",
-   "where": "The Riverside Theater",
-   "addr": "116 W. Wisconsin Avenue",
+   "url": "https://urbanmilwaukee.com/event/josh-johnsons-comedy-band-camp/",
+   "where": "Riverside Theater",
+   "addr": "116 W. Wisconsin Ave.",
    "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv",
-    "Food & Drink",
-    "Milwaukee Theater District"
-   ],
-   "free": false,
+   "summary": "A stand up and live music experience that brings together all the community of being in one big band and all the nostalgia of summer camp.",
+   "tags": [],
    "kind": "comedy",
    "reach": "bus",
+   "free": false,
    "via": "source",
-   "src": "visit-milwaukee"
+   "src": "urban-milwaukee-calendar",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "SOC Legacy Awards Retro Ball/Baile Retro de los Premios de Legado deSOC",
@@ -14247,6 +13703,27 @@
     "Free for Members",
     "Free with Admission",
     "In-Person"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-18T10:00",
+   "end": "2026-10-18T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-18/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
    ],
    "kind": "art",
    "reach": "bus",
@@ -17707,6 +17184,25 @@
    ]
   },
   {
+   "title": "Quest And?! featuring The Daily Harold",
+   "start": "2026-10-23T19:30",
+   "end": "2026-10-23T21:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/quest-and%3f!-featuring-the-daily-harold/21817/",
+   "where": "Interchange Theater",
+   "addr": "628 N. 10th Street",
+   "zip": "53233",
+   "summary": "",
+   "tags": [
+    "Comedy & Improv"
+   ],
+   "free": false,
+   "kind": "comedy",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Widespread Panic",
    "start": "2026-10-23T20:00",
    "end": "",
@@ -17968,6 +17464,27 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-24T10:00",
+   "end": "2026-10-24T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-24/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "Play Date: Social: Seven Bridges Trail Hunt",
@@ -18734,6 +18251,27 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-25T10:00",
+   "end": "2026-10-25T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-25/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "GO DOG GO! / VE PERRO ¡VE!",
@@ -21287,9 +20825,12 @@
    ],
    "kind": "music",
    "reach": "walk",
-   "free": null,
+   "free": true,
    "via": "org",
-   "org": "uwm"
+   "org": "uwm",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Great White Throne",
@@ -21473,6 +21014,27 @@
    "reach": "car",
    "via": "source",
    "src": "eventbrite"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-10-31T10:00",
+   "end": "2026-10-31T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-10-31/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "German Heritage Walking Tour",
@@ -22204,6 +21766,27 @@
    "reach": "walk",
    "via": "org",
    "org": "woodland-pattern"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-01T10:00",
+   "end": "2026-11-01T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-01/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "Empty Bowls Soup and Ceramics Fest 2026",
@@ -24144,9 +23727,12 @@
    ],
    "kind": "music",
    "reach": "walk",
-   "free": null,
+   "free": true,
    "via": "org",
-   "org": "uwm"
+   "org": "uwm",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Great White Throne",
@@ -24567,6 +24153,27 @@
    "summary": "Thanks to Museums on Us, Bank of America cardholders receive free admission on the first full weekend of the month.",
    "tags": [
     "In-Person"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-07T10:00",
+   "end": "2026-11-07T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-07/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
    ],
    "kind": "art",
    "reach": "bus",
@@ -25049,6 +24656,27 @@
    "summary": "Thanks to Museums on Us, Bank of America cardholders receive free admission on the first full weekend of the month.",
    "tags": [
     "In-Person"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-08T10:00",
+   "end": "2026-11-08T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-08/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
    ],
    "kind": "art",
    "reach": "bus",
@@ -27587,6 +27215,27 @@
    "org": "urban-ecology-center"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-14T10:00",
+   "end": "2026-11-14T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-14/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Slow Art Saturday: “The Shakers”",
    "start": "2026-11-14T10:30",
    "end": "2026-11-14T11:30",
@@ -27948,6 +27597,26 @@
    "src": "pabst-theater-group"
   },
   {
+   "title": "Laughing Liberally Milwaukee’s 10 Year Anniversary Extravaganza",
+   "start": "2026-11-14T20:00",
+   "end": "2026-11-14T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/laughing-liberally-milwaukees-10-year-anniversary-extravaganza/",
+   "where": "Comedy Sportz",
+   "addr": "420 S. 1st St.",
+   "zip": "53202",
+   "summary": "Comedians on the November 14th bill include Ton Johnson, Chloe Mikala, Alecia Altstaetter, Breanne Wilhite and sketch comedy troupe The Accountants Of Homeland Security.",
+   "tags": [
+    "Comedy",
+    "Politics"
+   ],
+   "kind": "comedy",
+   "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Theme Queens Drag Show",
    "start": "2026-11-14T22:00",
    "end": "",
@@ -28050,6 +27719,27 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-15T10:00",
+   "end": "2026-11-15T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-15/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "WARREN KING: HOMECOMING",
@@ -29410,6 +29100,48 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Intro to Weaving",
+   "start": "2026-11-18T18:30",
+   "end": "2026-11-18T20:30",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/intro-to-weaving/2026-11-18/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "In this class, participants will discover basic frame tapestry-weaving techniques and develop their knowledge and vocabulary in fiber arts! Strategies developed throughout the course will enable…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Arts and Culture",
+    "Public"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
+   "title": "Artists Now! Guest Lecture Series: Rachel David",
+   "start": "2026-11-18T19:00",
+   "end": "2026-11-18T20:50",
+   "all_day": false,
+   "url": "https://uwm.edu/arts/event/artists-now-guest-lecture-series-rachel-david/",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "Rachel David is a North Carolina-based blacksmith, sculptor, designer, and maker. Her metalwork practice is holistic; encompassing art, furniture, architectural elements, activism, collaborations,…",
+   "tags": [
+    "Peck School of the Arts",
+    "Art & Design",
+    "Artists Now!"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "MKE Unplugged",
    "start": "2026-11-18T19:00",
    "end": "",
@@ -29444,6 +29176,27 @@
    "free": null,
    "via": "source",
    "src": "pabst-theater-group"
+  },
+  {
+   "title": "Rooftop Stargazing",
+   "start": "2026-11-18T20:00",
+   "end": "2026-11-18T21:00",
+   "all_day": false,
+   "url": "https://uwm.edu/planetarium/event/rooftop-stargazing/2026-11-18/",
+   "where": "UWM Manfred Olson Planetarium",
+   "addr": "1900 E Kenwood Blvd #139",
+   "zip": "53211",
+   "summary": "@ Gaze at the night sky through our telescopes! Weather permitting, view the Moon, planets, star clusters, and other astronomical objects. Telescope sessions are free and open to the public.…",
+   "tags": [
+    "Manfred Olson Planetarium",
+    "Alumni & Community",
+    "Arts and Culture"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Ty Landers, author of Baby Queen",
@@ -29584,6 +29337,27 @@
    "org": "mpl"
   },
   {
+   "title": "Pudgie Pie Cooking",
+   "start": "2026-11-19T15:00",
+   "end": "2026-11-19T16:30",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/pudgie-pie-cooking/",
+   "where": "Klotsche Center (KC)",
+   "addr": "3409 North Downer Ave.",
+   "zip": "53211",
+   "summary": "What are pudgie pies?! To make a pudgie pie, you use a cast iron pie press with two pieces of bread and any filling you’d like and cook it over an open fire! Savory – make a pepperoni pizza pudgie…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Connect",
+    "Exercise and Fitness"
+   ],
+   "kind": "food",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Thursday Nights at MAM",
    "start": "2026-11-19T16:00",
    "end": "2026-11-19T20:00",
@@ -29643,6 +29417,26 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
+  },
+  {
+   "title": "Latin Table: Spring Semester",
+   "start": "2026-11-19T16:00",
+   "end": "2026-11-19T17:00",
+   "all_day": false,
+   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-11-19/",
+   "where": "Curtin Hall 866",
+   "addr": "",
+   "zip": "",
+   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
+   "tags": [
+    "History",
+    "Classics"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Game Night/Noche de Juegos",
@@ -30342,6 +30136,27 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-21T10:00",
+   "end": "2026-11-21T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-21/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Start Right, Finish Bright",
    "start": "2026-11-21T10:00",
    "end": "2026-11-21T13:00",
@@ -30780,6 +30595,27 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-22T10:00",
+   "end": "2026-11-22T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-22/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "Holiday Folk Fair International",
@@ -31525,6 +31361,27 @@
    "org": "domes"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-27T11:00",
+   "end": "2026-11-27T15:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas-holidays/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Dr. Seuss’s How the Grinch Stole Christmas!",
    "start": "2026-11-27T13:00",
    "end": "2026-11-27T13:00",
@@ -31788,6 +31645,46 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Landlord Training Program",
+   "start": "2026-11-28T09:15",
+   "end": "2026-11-28T15:15",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/17570321",
+   "where": "Milwaukee Public Library East Branch",
+   "addr": "2320 N Cramer St",
+   "zip": "53211",
+   "summary": "Learn HUD, State and Milwaukee requirements for operating rental property.",
+   "tags": [
+    "Community Event/Info Booth"
+   ],
+   "free": true,
+   "kind": "talks",
+   "reach": "walk",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-28T10:00",
+   "end": "2026-11-28T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-28/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Central Library Architectural Tour",
    "start": "2026-11-28T11:00",
    "end": "2026-11-28T12:00",
@@ -32008,6 +31905,27 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Drop-in Art Making: Mariposas",
+   "start": "2026-11-29T10:00",
+   "end": "2026-11-29T16:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas/2026-11-29/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Dr. Seuss’s How the Grinch Stole Christmas!",
    "start": "2026-11-29T13:00",
    "end": "2026-11-29T13:00",
@@ -32204,6 +32122,85 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Milwaukee Holiday Lights Festival",
+   "start": "2026-12-01",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival/21795/",
+   "where": "Downtown Milwaukee",
+   "addr": "301 W. Wisconsin Avenue",
+   "zip": "53202",
+   "summary": "Recurring daily",
+   "tags": [
+    "Festival",
+    "Family Friendly",
+    "Free"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Death Café at the East Branch Library",
+   "start": "2026-12-01T13:00",
+   "end": "2026-12-01T15:00",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/17168705",
+   "where": "Milwaukee Public Library East Branch",
+   "addr": "2320 N Cramer St",
+   "zip": "53211",
+   "summary": "A Death Café is a place for people of all ages to discuss issues related to death and dying, while sharing a warm drink and a sweet snack.",
+   "tags": [
+    "Health & Wellness"
+   ],
+   "free": true,
+   "kind": "talks",
+   "reach": "walk",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "Romance Readers Book Club",
+   "start": "2026-12-01T18:00",
+   "end": "2026-12-01T19:00",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/15207754",
+   "where": "Milwaukee Public Library East Branch",
+   "addr": "2320 N Cramer St",
+   "zip": "53211",
+   "summary": "Romance readers seasoned and new to the genre are invited to join the Romance Readers Book Club. We'll explore different subgenres and diverse voices, meeting every other month.",
+   "tags": [
+    "Book Club/Discussion"
+   ],
+   "free": true,
+   "kind": "books",
+   "reach": "walk",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2026-12-01T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -32240,26 +32237,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 296,
-   "theater": 137,
-   "comedy": 94,
-   "film": 26,
-   "art": 128,
+   "music": 294,
+   "theater": 132,
+   "comedy": 92,
+   "film": 24,
+   "art": 145,
    "talks": 225,
-   "books": 54,
-   "markets": 34,
-   "outdoors": 152,
-   "food": 162,
-   "sports": 55,
-   "family": 53,
-   "community": 173
+   "books": 55,
+   "markets": 35,
+   "outdoors": 151,
+   "food": 160,
+   "sports": 52,
+   "family": 52,
+   "community": 171
   },
   "reach": {
-   "walk": 439,
-   "bus": 746,
-   "car": 361,
-   "unknown": 33
+   "walk": 438,
+   "bus": 750,
+   "car": 356,
+   "unknown": 34
   },
-  "free": 468
+  "free": 466
  }
 }
