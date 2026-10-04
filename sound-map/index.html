@@ -240,6 +240,10 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-script:hover{background:rgba(var(--pc-tint-rgb,232,200,64),.10)}
 .pc-col-script.copied{background:var(--green);color:#111}
 .pc-col-script.empty{color:#3a4256;font-size:14px;font-style:italic;cursor:default}
+/* Letter-name column: only shown when a single language is on the chart. */
+.pc-col-name, .pc-table thead th.pc-col-name{width:124px;text-align:left}
+.pc-col-name{font-size:12.5px;color:var(--text);font-style:italic;padding:5px 10px;border-left:1px solid rgba(60,70,90,.55);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pc-col-name.empty{color:#3a4256;font-style:normal}
 /* Inter-column rules. .pc-col-script-h is the thead variant; the
    tbody td uses .pc-col-script. Both pick up the same separators. */
 .pc-table thead th.pc-col-script-h+.pc-col-script-h,
@@ -8507,6 +8511,52 @@ const PC_ALPHA_NAMES = {
   arabic: "Arabic alphabet (ء → ي)",
   telugu: "Telugu aksharamala"
 };
+// Letter names for the Name column (shown when one language is on the chart).
+// Arabic and Telugu use the letter's own name; Latin letters are spelled out
+// (a → ay, th → tee-aitch). Diacritics distinguish look-alike names: ḥa vs ha,
+// ṭa vs ta.
+const PC_LETTER_NAMES = {
+  arabic: {
+    "ء": "hamza", "ا": "alef", "ب": "ba", "ت": "ta", "ث": "tha", "ج": "jim",
+    "ح": "ḥa", "خ": "kha", "د": "dal", "ذ": "dhal", "ر": "ra", "ز": "zay",
+    "س": "seen", "ش": "sheen", "ص": "ṣad", "ض": "ḍad", "ط": "ṭa", "ظ": "ẓa",
+    "ع": "ayn", "غ": "ghayn", "ف": "fa", "ق": "qaf", "ك": "kaf", "ل": "lam",
+    "م": "meem", "ن": "noon", "ه": "ha", "و": "waw", "ي": "ya"
+  },
+  telugu: {
+    "అ": "a", "ఆ": "ā", "ఇ": "i", "ఈ": "ī", "ఉ": "u", "ఊ": "ū", "ఎ": "e", "ఏ": "ē", "ఒ": "o", "ఓ": "ō",
+    "క": "ka", "ఖ": "kha", "గ": "ga", "ఘ": "gha", "ఙ": "ṅa",
+    "చ": "cha", "ఛ": "chha", "జ": "ja", "ఝ": "jha", "ఞ": "ña",
+    "ట": "ṭa", "ఠ": "ṭha", "డ": "ḍa", "ఢ": "ḍha", "ణ": "ṇa",
+    "త": "ta", "థ": "tha", "ద": "da", "ధ": "dha", "న": "na",
+    "ప": "pa", "ఫ": "pha", "బ": "ba", "భ": "bha", "మ": "ma",
+    "య": "ya", "ర": "ra", "ల": "la", "వ": "va", "శ": "śa", "ష": "ṣa", "స": "sa", "హ": "ha", "ళ": "ḷa"
+  }
+};
+const PC_LATIN_LETTER_NAMES = {
+  a: "ay", b: "bee", c: "see", d: "dee", e: "ee", f: "ef", g: "jee", h: "aitch",
+  i: "eye", j: "jay", k: "kay", l: "el", m: "em", n: "en", o: "oh", p: "pee",
+  q: "cue", r: "ar", s: "es", t: "tee", u: "you", v: "vee", w: "double-you",
+  x: "ex", y: "why", z: "zee"
+};
+function pcNameColumnOn() {
+  return pcSelectedLangCols.size === 1;
+}
+function pcLetterName(p, lang) {
+  const g = pcGetGrapheme(p, lang);
+  if (g === "—") return "—";
+  if (lang.script === "latin") {
+    const s = g.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const parts = [...s].map(c => PC_LATIN_LETTER_NAMES[c]).filter(Boolean);
+    return parts.length ? parts.join("-") : "—";
+  }
+  const names = PC_LETTER_NAMES[lang.script];
+  return (names && names[g]) || "—";
+}
+function pcNameCellHtml(p, lang) {
+  const name = pcLetterName(p, lang);
+  return `<td class="pc-col-name${name === "—" ? " empty" : ""}">${name}</td>`;
+}
 let pcOrderMode = "chart";
 try {
   const storedOrder = localStorage.getItem("pc-order");
@@ -8664,6 +8714,7 @@ function pcUpdateAtmosphere() {
 function pcBuildHeaders() {
   const headHtml =
     '<th class="pc-col-desc">Sound</th><th class="pc-col-ipa">IPA</th>' +
+    (pcNameColumnOn() ? '<th class="pc-col-name">Name</th>' : "") +
     PC_LANGUAGES
       .filter(l => pcSelectedLangCols.has(l.key))
       .map(l => `<th class="pc-col-script-h" data-script="${l.script}" data-lang="${l.key}">${l.label}</th>`)
@@ -8746,7 +8797,8 @@ function pcRender() {
   // .pc-show-all-details mode. Row set is filtered by the active
   // focus language — see pcGetVisibleRows.
   const rows = pcGetVisibleRows();
-  const colspan = 2 + activeLangs.length;
+  const showName = pcNameColumnOn();
+  const colspan = 2 + activeLangs.length + (showName ? 1 : 0);
   // Search hits auto-open the detail layer so the matched note /
   // description text isn't hidden behind a click. Clearing the
   // search returns the table to single-expansion mode.
@@ -8796,6 +8848,7 @@ function pcRender() {
       `<td class="pc-col-desc">${mannerTagHtml}${exampleHtml}` +
         `<span class="pc-desc-mark" aria-hidden="true">⁝</span></td>` +
       `<td class="pc-col-ipa"><span>${p.ipa}</span></td>` +
+      (showName ? pcNameCellHtml(p, activeLangs[0]) : "") +
       cells;
     // Detail row — articulation desc, then optional scholarly note.
     // Both render as marginal annotation blocks; future per-row data
