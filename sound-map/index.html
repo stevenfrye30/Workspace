@@ -109,6 +109,8 @@ body { background: var(--bg); color: var(--text); font-family: Georgia, serif; l
 .pc-col-toggle.scaffold{border-style:dashed;font-style:italic;opacity:.55;cursor:not-allowed}
 .pc-col-toggle.scaffold:hover{opacity:.78;border-color:rgba(var(--pc-tint-rgb,232,200,64),.30);background:var(--surf)}
 .pc-cols-sublabel{font-family:ui-monospace,"SF Mono","Cascadia Mono","Consolas",monospace;font-size:8.5px;color:var(--muted);letter-spacing:.18em;text-transform:uppercase;font-weight:700;margin-left:6px;padding-left:8px;border-left:1px solid var(--bdr);align-self:center}
+.pc-order{display:inline-flex;align-items:center;gap:4px;flex-wrap:wrap}
+.pc-order[hidden]{display:none}
 /* Chapter header — pc-h2 reads as a codex chapter title. Per-chapter
    ornaments below distinguish the three phonological sections; sticky
    so the chapter label persists while you scroll the rows beneath it.
@@ -2729,13 +2731,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
     <header class="comp-hero">
       <div class="comp-hero-eyebrow">Sound Lab · Reference</div>
       <h2 class="comp-hero-title">Phoneme · Language Comparison</h2>
-      <p class="comp-hero-sub">A comparative reference for how each language writes the phonemes in its inventory. Pick a focus language to filter the row set; toggle additional languages to add comparison columns; click any cell to copy its grapheme.</p>
     </header>
-    <div class="pc-intro">
-      Rows are a <strong>curated set of IPA phonemes</strong> — the consonants and vowels active in the languages currently in this codex; the inventory grows in stages, not all at once.
-      Columns are <strong>languages</strong>; each cell shows how that language writes the row's phoneme.
-      An em-dash (—) means the language doesn't have that phoneme — or its orthography hasn't been mapped in this codex yet.
-    </div>
     <div class="pc-toolbar">
       <div class="pc-lang" aria-label="Language context">
         <span class="pc-lang-label">Language</span>
@@ -2743,6 +2739,7 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
       </div>
       <input class="pc-search" id="pc-search" placeholder="Search by sound, description (e.g. nasal, fricative)…" />
       <label class="pc-toggle" title="Open every row's reference layer"><input type="checkbox" id="pc-expand-all" /> Expand all</label>
+      <div class="pc-order" id="pc-order" aria-label="Row order" hidden></div>
       <div class="pc-cols" id="pc-cols" aria-label="Comparison languages"></div>
     </div>
     <div class="pc-h2 pc-h2-cons">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
@@ -8496,6 +8493,91 @@ function pcBuildLangColumnSelector() {
   }
 }
 
+// Row order. "Chart" is the curated manner/place sequence with manner
+// tags; "Alphabetical" sorts each section by the one selected language's
+// own writing system. The toggle only exists when exactly one comparison
+// column is active — with several columns there is no single alphabet to
+// sort by, so the chart order is used.
+const PC_ALPHA_ORDERS = {
+  arabic: "ءابتثجحخدذرزسشصضطظعغفقكلمنهوي",
+  telugu: "అఆఇఈఉఊఋఎఏఐఒఓఔకఖగఘఙచఛజఝఞటఠడఢణతథదధనపఫబభమయరలవశషసహళఱ"
+};
+const PC_ALPHA_NAMES = {
+  latin: "A–Z alphabet",
+  arabic: "Arabic alphabet (ء → ي)",
+  telugu: "Telugu aksharamala"
+};
+let pcOrderMode = "chart";
+try {
+  const storedOrder = localStorage.getItem("pc-order");
+  if (storedOrder === "alpha" || storedOrder === "chart") pcOrderMode = storedOrder;
+} catch(_) {}
+function pcActiveAlphaLang() {
+  return PC_LANGUAGES.find(l => pcSelectedLangCols.has(l.key)) || null;
+}
+function pcIsAlphaActive() {
+  return pcOrderMode === "alpha" && pcSelectedLangCols.size === 1;
+}
+// Sort key for a row in the alphabetical view: [position in the script's
+// alphabet, tiebreak string]. Latin compares the first base letter with
+// diacritics stripped (ñ sorts with n). Rows the script doesn't write
+// (em-dash, diacritic-only Arabic vowels) get Infinity and keep chart order.
+function pcAlphaRank(p, lang) {
+  const g = pcGetGrapheme(p, lang);
+  if (g === "—") return [Infinity, ""];
+  if (lang.script === "latin") {
+    const s = g.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+    const i = "abcdefghijklmnopqrstuvwxyz".indexOf(s[0]);
+    return i < 0 ? [Infinity, ""] : [i, s];
+  }
+  const order = PC_ALPHA_ORDERS[lang.script];
+  const i = order ? order.indexOf(g[0]) : -1;
+  return i < 0 ? [Infinity, ""] : [i, g];
+}
+function pcBuildOrderToggle() {
+  const wrap = document.getElementById("pc-order");
+  if (!wrap) return;
+  const lang = pcActiveAlphaLang();
+  wrap.hidden = !(pcSelectedLangCols.size === 1 && lang);
+  if (wrap.hidden) return;
+  wrap.innerHTML = "";
+  const label = document.createElement("span");
+  label.className = "pc-cols-label";
+  label.textContent = "Order";
+  wrap.appendChild(label);
+  [["chart", "Chart"], ["alpha", "Alphabetical"]].forEach(([mode, text]) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    const on = (mode === "alpha") === pcIsAlphaActive();
+    btn.className = "pc-col-toggle" + (on ? " active" : "");
+    btn.textContent = text;
+    btn.dataset.order = mode;
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    if (mode === "alpha") btn.title = `Sort each section by the ${PC_ALPHA_NAMES[lang.script] || "alphabet"}`;
+    btn.addEventListener("click", () => pcSetOrder(mode));
+    wrap.appendChild(btn);
+  });
+}
+function pcSetOrder(mode) {
+  pcOrderMode = mode;
+  try { localStorage.setItem("pc-order", mode); } catch(_) {}
+  pcBuildOrderToggle();
+  pcUpdateOrderSubtitles();
+  pcRender();
+}
+// Chapter subtitles describe the chart's manner sequence, which the
+// alphabetical view drops — swap in a line describing the active sort.
+function pcUpdateOrderSubtitles() {
+  const alpha = pcIsAlphaActive();
+  const lang = pcActiveAlphaLang();
+  document.querySelectorAll(".pc-chapter-subtitle").forEach(el => {
+    if (!el.dataset.chartText) el.dataset.chartText = el.textContent;
+    el.textContent = alpha && lang
+      ? `Sorted by the ${PC_ALPHA_NAMES[lang.script] || "alphabet"}; sounds the script doesn't write sit at the end of each section, in chart order.`
+      : el.dataset.chartText;
+  });
+}
+
 function pcToggleLangCol(key) {
   // Hard gate on scaffolded keys: prevents accidental promotion via
   // a stale stored selection or any future code path. Live keys go
@@ -8512,6 +8594,8 @@ function pcToggleLangCol(key) {
   pcBuildHeaders();
   pcUpdateCaption();
   pcUpdateAtmosphere();
+  pcBuildOrderToggle();
+  pcUpdateOrderSubtitles();
   pcRender();
 }
 
@@ -8658,7 +8742,19 @@ function pcRender() {
   const autoOpenAll = !!q;
   let prevConsManner = null;
   let stripeIdx = 0;
-  rows.filter(match).forEach(p => {
+  const alpha = pcIsAlphaActive();
+  const alphaLang = alpha ? pcActiveAlphaLang() : null;
+  const visibleRows = rows.filter(match);
+  if (alpha) {
+    const rank = new Map(visibleRows.map(p => [p, pcAlphaRank(p, alphaLang)]));
+    visibleRows.sort((a, b) => {
+      const ra = rank.get(a), rb = rank.get(b);
+      if (ra[0] !== rb[0]) return ra[0] < rb[0] ? -1 : 1;
+      if (ra[1] !== rb[1]) return ra[1] < rb[1] ? -1 : 1;
+      return 0;
+    });
+  }
+  visibleRows.forEach(p => {
     const tr = document.createElement("tr");
     tr.classList.add("pc-data-row");
     if (stripeIdx++ % 2 === 1) tr.classList.add("pc-row-stripe");
@@ -8675,8 +8771,9 @@ function pcRender() {
       // First consonant row gets a tag (chapter mark for the first
       // manner group); subsequent boundary rows also get one PLUS the
       // .manner-shift separator border above. Same-manner consecutive
-      // rows get neither — keeps the rhythm calm.
-      if (prevConsManner === null || m !== prevConsManner) {
+      // rows get neither — keeps the rhythm calm. The alphabetical view
+      // has no manner groups, so it gets neither.
+      if (!alpha && (prevConsManner === null || m !== prevConsManner)) {
         if (prevConsManner !== null) tr.classList.add("manner-shift");
         mannerTagHtml = `<div class="pc-manner-tag">${m}</div>`;
       }
@@ -8776,6 +8873,8 @@ pcBuildLangColumnSelector();
 pcBuildHeaders();
 pcUpdateCaption();
 pcUpdateAtmosphere();
+pcBuildOrderToggle();
+pcUpdateOrderSubtitles();
 pcRender();
 
 // Hover dispatchers — one per panel that contains phoneme-bearing
