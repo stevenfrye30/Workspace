@@ -2742,15 +2742,15 @@ body.sm-mode-compact #sm-header h1 { font-size: 13px; }
       <div class="pc-order" id="pc-order" aria-label="Row order" hidden></div>
       <div class="pc-cols" id="pc-cols" aria-label="Comparison languages"></div>
     </div>
-    <div class="pc-h2 pc-h2-cons">Consonants <span class="pc-h2-caption" id="pc-cap-c"></span></div>
-    <div class="pc-chapter-subtitle">Stops, nasals, fricatives, and continuants — ordered roughly by place of articulation within each manner.</div>
-    <table class="pc-table"><thead><tr id="pc-consonants-head"></tr></thead><tbody id="pc-consonants-body"></tbody></table>
-    <div class="pc-h2 pc-h2-vowels">Vowels <span class="pc-h2-caption" id="pc-cap-v"></span></div>
-    <div class="pc-chapter-subtitle">Monophthongs — vowel qualities by height, backness, and rounding.</div>
-    <table class="pc-table"><thead><tr id="pc-vowels-head"></tr></thead><tbody id="pc-vowels-body"></tbody></table>
-    <div class="pc-h2 pc-h2-diphs">Diphthongs <span class="pc-h2-caption" id="pc-cap-d"></span></div>
-    <div class="pc-chapter-subtitle">Gliding vowels — two vowel qualities pronounced as a single phoneme.</div>
-    <table class="pc-table"><thead><tr id="pc-diphthongs-head"></tr></thead><tbody id="pc-diphthongs-body"></tbody></table>
+    <div class="pc-h2 pc-h2-cons" id="pc-h2-cons"><span id="pc-h2-cons-label">Consonants</span> <span class="pc-h2-caption" id="pc-cap-c"></span></div>
+    <div class="pc-chapter-subtitle" id="pc-sub-cons">Stops, nasals, fricatives, and continuants — ordered roughly by place of articulation within each manner.</div>
+    <table class="pc-table" id="pc-table-cons"><thead><tr id="pc-consonants-head"></tr></thead><tbody id="pc-consonants-body"></tbody></table>
+    <div class="pc-h2 pc-h2-vowels" id="pc-h2-vowels">Vowels <span class="pc-h2-caption" id="pc-cap-v"></span></div>
+    <div class="pc-chapter-subtitle" id="pc-sub-vowels">Monophthongs — vowel qualities by height, backness, and rounding.</div>
+    <table class="pc-table" id="pc-table-vowels"><thead><tr id="pc-vowels-head"></tr></thead><tbody id="pc-vowels-body"></tbody></table>
+    <div class="pc-h2 pc-h2-diphs" id="pc-h2-diphs">Diphthongs <span class="pc-h2-caption" id="pc-cap-d"></span></div>
+    <div class="pc-chapter-subtitle" id="pc-sub-diphs">Gliding vowels — two vowel qualities pronounced as a single phoneme.</div>
+    <table class="pc-table" id="pc-table-diphs"><thead><tr id="pc-diphthongs-head"></tr></thead><tbody id="pc-diphthongs-body"></tbody></table>
     <div class="pc-legend">
       <strong>How to read this chart.</strong>
       A cell shows the column-language's typical grapheme for the row's phoneme; an em-dash (—) means the language doesn't have that phoneme in its inventory.
@@ -8562,20 +8562,31 @@ function pcSetOrder(mode) {
   pcOrderMode = mode;
   try { localStorage.setItem("pc-order", mode); } catch(_) {}
   pcBuildOrderToggle();
-  pcUpdateOrderSubtitles();
+  pcApplyOrderLayout();
   pcRender();
 }
-// Chapter subtitles describe the chart's manner sequence, which the
-// alphabetical view drops — swap in a line describing the active sort.
-function pcUpdateOrderSubtitles() {
+// The alphabetical view is one flat list: every sound, consonant or vowel,
+// sorted together, so the Vowels and Diphthongs blocks are hidden and the
+// Consonants block becomes "All sounds". Chapter subtitles describe the
+// chart's manner sequence, which this view drops, so they are swapped for a
+// line describing the active sort.
+const PC_SPLIT_SECTIONS = ["pc-h2-vowels", "pc-sub-vowels", "pc-table-vowels", "pc-h2-diphs", "pc-sub-diphs", "pc-table-diphs"];
+function pcApplyOrderLayout() {
   const alpha = pcIsAlphaActive();
   const lang = pcActiveAlphaLang();
-  document.querySelectorAll(".pc-chapter-subtitle").forEach(el => {
-    if (!el.dataset.chartText) el.dataset.chartText = el.textContent;
-    el.textContent = alpha && lang
-      ? `Sorted by the ${PC_ALPHA_NAMES[lang.script] || "alphabet"}; sounds the script doesn't write sit at the end of each section, in chart order.`
-      : el.dataset.chartText;
+  PC_SPLIT_SECTIONS.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = alpha ? "none" : "";
   });
+  const consLabel = document.getElementById("pc-h2-cons-label");
+  if (consLabel) consLabel.textContent = alpha ? "All sounds" : "Consonants";
+  const consSub = document.getElementById("pc-sub-cons");
+  if (consSub) {
+    if (!consSub.dataset.chartText) consSub.dataset.chartText = consSub.textContent;
+    consSub.textContent = alpha && lang
+      ? `Sorted by the ${PC_ALPHA_NAMES[lang.script] || "alphabet"}; sounds the script doesn't write sit at the end, in chart order.`
+      : consSub.dataset.chartText;
+  }
 }
 
 function pcToggleLangCol(key) {
@@ -8595,7 +8606,7 @@ function pcToggleLangCol(key) {
   pcUpdateCaption();
   pcUpdateAtmosphere();
   pcBuildOrderToggle();
-  pcUpdateOrderSubtitles();
+  pcApplyOrderLayout();
   pcRender();
 }
 
@@ -8802,7 +8813,8 @@ function pcRender() {
       tr.classList.add("pc-expanded");
       detail.classList.add("pc-detail-open");
     }
-    const targetBody = p.g === "c" ? cBody : (p.g === "d" ? dBody : vBody);
+    // Alphabetical view is one flat list, so every row lands in the first table.
+    const targetBody = alpha || p.g === "c" ? cBody : (p.g === "d" ? dBody : vBody);
     if (targetBody) { targetBody.appendChild(tr); targetBody.appendChild(detail); }
   });
   // Re-apply any single-row expansion that survived this render
@@ -8874,7 +8886,7 @@ pcBuildHeaders();
 pcUpdateCaption();
 pcUpdateAtmosphere();
 pcBuildOrderToggle();
-pcUpdateOrderSubtitles();
+pcApplyOrderLayout();
 pcRender();
 
 // Hover dispatchers — one per panel that contains phoneme-bearing
