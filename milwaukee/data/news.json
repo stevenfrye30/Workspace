@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-10-07T17:45:48+00:00",
+ "generated_at": "2026-10-08T17:50:11+00:00",
  "window_days": 14,
  "sources": [
   {
@@ -35,7 +35,7 @@
    "home": "https://www.tmj4.com/",
    "kind": "news",
    "ok": true,
-   "count": 10
+   "count": 6
   },
   {
    "name": "Milwaukee Magazine",
@@ -62,8 +62,8 @@
    "name": "Shepherd Express",
    "home": "https://shepherdexpress.com/",
    "kind": "roundup",
-   "ok": true,
-   "count": 2
+   "ok": false,
+   "error": "URLError: <urlopen error _ssl.c:993: The handshake operation timed out>"
   },
   {
    "name": "Wisconsin Examiner",
@@ -84,10 +84,523 @@
   {
    "source": "Milwaukee Magazine",
    "kind": "news",
+   "title": "This Unique Outdoor Design Service Uses Pumpkins as Paint",
+   "url": "https://www.milwaukeemag.com/this-unique-outdoor-design-service-uses-pumpkins-as-paint/?utm_source=rss&utm_medium=rss&utm_campaign=this-unique-outdoor-design-service-uses-pumpkins-as-paint",
+   "summary": "Pumpkin specialist Patricia Granger, uses the plant to brighten up people's front porches each fall. Source",
+   "published": "2026-10-08T17:31:24+00:00",
+   "event": false
+  },
+  {
+   "source": "TMJ4",
+   "kind": "news",
+   "title": "Former President Barack Obama endorses David Crowley in Wisconsin governor's race",
+   "url": "https://www.tmj4.com/america-votes/former-president-barack-obama-endorses-david-crowley-in-wisconsin-governors-race",
+   "summary": "Former President Barack Obama announced his endorsement of Milwaukee County Executive David Crowley for governor of Wisconsin on Thursday.",
+   "published": "2026-10-08T17:21:32+00:00",
+   "event": true
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "Today is your last day to visit Brady Street's Underground Tavern",
+   "url": "https://onmilwaukee.com/articles/underground-tavern-closing",
+   "summary": "A few days ago Underground Tavern, 1239 E. Brady St., announced that it would be closing after five years of business in the space that previously housed the WurstBar.",
+   "published": "2026-10-08T16:32:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Record",
+   "kind": "news",
+   "title": "Wisconsin: We have nothing to gain by preparing to lose",
+   "url": "https://milwaukeerecord.com/sports/wisconsin-we-have-nothing-to-gain-by-preparing-to-lose/",
+   "summary": "y previous job was as a bartender at a family-friendly brewery here in Milwaukee. Ahead of a Dodgers series, I was having some fun with a fan who was in town for the game. After serving him his beer and telling him I’d give him the L.A.…",
+   "published": "2026-10-08T16:27:36+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "ProHealth Care adds urgent care in two Waukesha County communities",
+   "url": "https://biztimes.com/prohealth-care-adds-urgent-care-in-two-waukesha-county-communities/",
+   "summary": "ProHealth Care has expanded its urgent care operations with new services in Hartland and Sussex, bringing its total number of urgent care locations in the area to 11. The Waukesha-based health system recently opened urgent care services at…",
+   "published": "2026-10-08T16:25:09+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Murphy’s Law: Tiffany Pushes Tax Break That Mostly Helps Wealthy",
+   "url": "https://urbanmilwaukee.com/2026/10/08/murphys-law-tiffany-pushes-tax-break-that-mostly-helps-wealthy/",
+   "summary": "The truth about the Manufacturing and Agriculture Tax Credit.",
+   "published": "2026-10-08T16:18:54+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Watch",
+   "kind": "state",
+   "title": "Trump announces nearly $18M in disaster relief for tornado, storm damage in Wisconsin",
+   "url": "https://wisconsinwatch.org/2026/10/wisconsin-trump-disaster-relief-tornado-storm-damage-evers-tiffany-menasha-fox-valley/",
+   "summary": "Gov. Tony Evers' office says it has received no information beyond the content of the president's social media post. Trump announces nearly $18M in disaster relief for tornado, storm damage in Wisconsin is a post from Wisconsin Watch , a…",
+   "published": "2026-10-08T16:18:37+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "MKE County: New Trail Opens in Kohl Park",
+   "url": "https://urbanmilwaukee.com/2026/10/08/mke-county-new-trail-opens-in-kohl-park/",
+   "summary": "More than two miles for bikers and pedestrians added to northern Milwaukee County.",
+   "published": "2026-10-08T16:10:12+00:00",
+   "event": true
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "Must Try Milwaukee: Thai and Lao fare",
+   "url": "https://onmilwaukee.com/articles/must-try-milwaukee-thai-and-lao",
+   "summary": "If you always order pad thai or volcano chicken, consider this an invitation to branch out and try something new.",
+   "published": "2026-10-08T16:02:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Joy Engine Offering $50,000 in Grants for Public Art Projects",
+   "url": "https://urbanmilwaukee.com/2026/10/08/joy-engine-offering-50000-in-grants-for-public-art-projects/",
+   "summary": "Nonprofit seeks surprising, ambitious public projects.",
+   "published": "2026-10-08T15:53:44+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Clark, Alfonso Clash Over MAGA Agenda In 7th District Debate",
+   "url": "https://urbanmilwaukee.com/2026/10/08/clark-alfonso-clash-over-maga-agenda-in-7th-district-debate/",
+   "summary": "Northwoods candidates spar on Trump tariffs, schools, Line 5 and Middle East wars in Duluth forum.",
+   "published": "2026-10-08T15:38:11+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Magazine",
+   "kind": "news",
+   "title": "The Data Center Debate: What Makes It So Volatile",
+   "url": "https://www.milwaukeemag.com/the-data-center-debate-what-makes-it-so-volatile/?utm_source=rss&utm_medium=rss&utm_campaign=the-data-center-debate-what-makes-it-so-volatile",
+   "summary": "The controversy over a proposal in Midtown suggests even the smallest such facilities are nonstarters. Source",
+   "published": "2026-10-08T15:33:41+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Mitchell Building Conversion May Not Be All Apartments After All",
+   "url": "https://urbanmilwaukee.com/2026/10/08/mitchell-building-conversion-may-not-be-all-apartments-after-all/",
+   "summary": "Developer says possible change could make ‘already good project better.’",
+   "published": "2026-10-08T15:20:53+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "After 37 years, Marquette engineering dean to retire in 2027",
+   "url": "https://biztimes.com/after-37-years-marquette-engineering-dean-to-retire-in-2027/",
+   "summary": "Dr. Kristina Ropella, dean of Marquette University’s Opus College of Engineering, plans to retire at the end of summer 2027 after 37 years at the university, Marquette President Kimo Ah Yun announced Monday. Ropella has served as dean…",
+   "published": "2026-10-08T15:20:47+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "Have You Seen Mortgage Rates?",
+   "url": "https://biztimes.com/have-you-seen-mortgage-rates-annexwealth/",
+   "summary": "Annex Wealth Management SWOT podcast for Monday, October 6, with chief economic strategist Brian Jacobson on fourth-quarter strengths, weaknesses, opportunities, and threats.",
+   "published": "2026-10-08T15:14:23+00:00",
+   "event": false
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "Vegan Restaurant Week returns with crab Rangoon pizza, French dips & more",
+   "url": "https://onmilwaukee.com/articles/vegan-restaurant-week-2026",
+   "summary": "The Nov. 2-8 event features 35 restaurants, pop-ups, specials and more.",
+   "published": "2026-10-08T15:01:00+00:00",
+   "event": true
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "Packers Preview: the Bears come to Lambeau for a tough rivalry game",
+   "url": "https://onmilwaukee.com/articles/packers-preview-week-5-2026-bears",
+   "summary": "After holding off the Tampa Bay Buccaneers, the Packers will renew their rivalry with the Chicago Bears this Sunday in Green Bay.",
+   "published": "2026-10-08T14:01:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Record",
+   "kind": "news",
+   "title": "My favorite park bench in Milwaukee County",
+   "url": "https://milwaukeerecord.com/city-life/my-favorite-park-bench-in-milwaukee-county/",
+   "summary": "A version of this article originally appeared on our Patreon. Want to support Milwaukee Record and get exclusive articles and podcasts? Click HERE. Thanks! ne of the best things about Milwaukee County is its staggering number of parks.…",
+   "published": "2026-10-08T14:00:42+00:00",
+   "event": false
+  },
+  {
+   "source": "TMJ4",
+   "kind": "news",
+   "title": "Halloween budgets are tight. How to save money with local shops",
+   "url": "https://www.tmj4.com/news/local-news/halloween-budgets-are-tight-how-to-save-money-with-local-shops",
+   "summary": "With Halloween spending averaging $54 per person on decorations, small businesses in Menomonee Falls and Greenfield offer ways to celebrate without breaking the bank.",
+   "published": "2026-10-08T13:34:50+00:00",
+   "event": false
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "New vinyl: The Beatles' \"Rubber Soul\" box set and more",
+   "url": "https://onmilwaukee.com/articles/beatles-rubber-soul-vinyl",
+   "summary": "The long-awaited deep dive box set look at the Fab Four's 1965 classic, \"Rubber Soul,\" is finally here. We take a look at that, plus a bunch of other great new vinyl reissues, including gems from Bob Marley & the Wailers, John Coltrane,…",
+   "published": "2026-10-08T13:01:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Record",
+   "kind": "news",
+   "title": "Milwaukee Comedy Festival",
+   "url": "https://mkecomedyfest.com/tickets/#new_tab",
+   "summary": "",
+   "published": "2026-10-08T11:00:53+00:00",
+   "event": true
+  },
+  {
+   "source": "TMJ4",
+   "kind": "news",
+   "title": "Southeastern Wisconsin weather: 80s by the weekend?",
+   "url": "https://www.tmj4.com/weather/forecast/todays-forecast/southeastern-wisconsin-weather-80s-by-the-weekend",
+   "summary": "Today and tomorrow will be slightly cooler, but still pleasant with highs in the 60s. Then a big warm-up Saturday where highs could reach the 80s! There will be a slight chance of PM showers Friday.",
+   "published": "2026-10-08T10:50:19+00:00",
+   "event": true
+  },
+  {
+   "source": "Milwaukee Independent",
+   "kind": "news",
+   "title": "Why Trump takes credit for the success of others and refuses responsibility when his policies fail",
+   "url": "https://www.milwaukeeindependent.com/newswire/trump-takes-credit-success-others-refuses-responsibility-policies-fail/",
+   "summary": "The post Why Trump takes credit for the success of others and refuses responsibility when his policies fail appeared first on Milwaukee Independent .",
+   "published": "2026-10-08T10:00:39+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "7th CD candidates Republican Michael Alfonso and Democrat Fred Clark debate",
+   "url": "https://wisconsinexaminer.com/2026/10/08/7th-cd-candidates-republican-michael-alfonso-and-democrat-fred-clark-debate/",
+   "summary": "Republican Michael Alfonso, the son-in-law of U.S. Transportation Secretary Sean Duffy, and Democrat Fred Clark, a conservationist and former state lawmaker, faced off Wednesday night in the only scheduled debate in the race for…",
+   "published": "2026-10-08T08:30:21+00:00",
+   "event": true
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "Can Tom Tiffany survive ties to toxic Donald Trump?",
+   "url": "https://wisconsinexaminer.com/2026/10/08/can-tom-tiffany-survive-ties-to-toxic-donald-trump/",
+   "summary": "It is still weeks until the Nov. 3 midterm, but the early returns are in for Donald Trump, who wants voters to pretend he is on the ballot. Trump is at his lowest point ever in Wisconsin, with 60% of registered voters disapproving of him,…",
+   "published": "2026-10-08T08:00:33+00:00",
+   "event": true
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "Milwaukee PD renews Flock contract as former detective appears in court for misuse",
+   "url": "https://wisconsinexaminer.com/2026/10/08/milwaukee-pd-renews-flock-contract-as-former-detective-appears-in-court-for-misuse/",
+   "summary": "The Milwaukee Police Department intends to renew its contract with Flock Safety, the multi-billion dollar producer of controversial AI-powered license plate reader cameras. In a statement, an MPD spokesperson said that the contract will be…",
+   "published": "2026-10-08T07:23:41+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "Trump auto-enrolls 10s of millions in child investment accounts",
+   "url": "https://wisconsinexaminer.com/2026/10/08/repub/trump-auto-enrolls-10s-of-millions-in-child-investment-accounts/",
+   "summary": "WASHINGTON — Every child in the United States with a valid Social Security number is now enrolled in a tax-advantaged investment account, titled a “Trump Account,” President Donald Trump announced Wednesday. Parents must claim the accounts…",
+   "published": "2026-10-08T07:00:52+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "Brewers defeat Padres in NLDS, advance to face Dodgers in NLCS",
+   "url": "https://biztimes.com/brewers-defeat-padres-in-nlds-advance-to-face-dodgers-in-nlcs/",
+   "summary": "The Milwaukee Brewers will once again face the Los Angeles Dodgers in the National League Champion Series, in a rematch of the Dodgers sweep of the Brewers in last year’s NLCS. The Brewers earned that opportunity with a 3-1 victory…",
+   "published": "2026-10-08T06:03:49+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Record",
+   "kind": "news",
+   "title": "I dropped by ‘What’s Brewing Wisconsin’ to talk about our upcoming Weird Al Week",
+   "url": "https://milwaukeerecord.com/music/i-dropped-by-whats-brewing-wisconsin-to-talk-about-our-upcoming-weird-al-week/",
+   "summary": "n case you missed it, next week is Weird Al Week! Buckle up! To celebrate the October 17 “Weird Al” Yankovic show at Fiserv Forum, your friendly Al fans at Milwaukee Record are pulling out all the stops. From Monday October 12 through…",
+   "published": "2026-10-08T05:55:47+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Second Annual Milwaukee Vegan Restaurant Week Expands To 35 Businesses",
+   "url": "https://urbanmilwaukee.com/2026/10/08/second-annual-milwaukee-vegan-restaurant-week-expands-to-35-businesses/",
+   "summary": "Grassroots vegan restaurant coalition grows with official tourism sponsor.",
+   "published": "2026-10-08T05:30:31+00:00",
+   "event": false
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "The Milwaukee Brewers are moving on to the NLCS!",
+   "url": "https://onmilwaukee.com/articles/brewers-clinch-nlcs-2026-dodgers",
+   "summary": "Milwaukee will face a familiar postseason foe in the Los Angeles Dodgers when the NLCS begins on Sunday.",
+   "published": "2026-10-08T05:09:00+00:00",
+   "event": false
+  },
+  {
+   "source": "TMJ4",
+   "kind": "news",
+   "title": "‘Creepy and horrifying’: Waukesha residents startled after masked person spends hour inside apartment building",
+   "url": "https://www.tmj4.com/news/local-news/in-your-community/waukesha-county/creepy-and-horrifying-waukesha-residents-startled-after-masked-person-spends-hour-inside-apartment-building",
+   "summary": "Waukesha residents startled after masked person spends an hour inside apartment building. Police say the woman was homeless and entered the building while looking for a warm place to stay.",
+   "published": "2026-10-08T03:20:54+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "Zaffiro’s Pizza plans to open restaurant within Mo’s Irish Pub in Wauwatosa",
+   "url": "https://biztimes.com/zaffiros-pizza-plans-to-open-restaurant-within-mos-irish-pub-in-wauwatosa/",
+   "summary": "Zaffiro’s Pizza plans to open a new restaurant within Mo’s Irish Pub at 10842 W. Blue Mound Road in Wauwatosa, according to filings with the city’s Plan Commission. Milwaukee-based Zaffiro’s, known for thin-crust pizza and Italian dishes,…",
+   "published": "2026-10-08T01:31:42+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "Around Town: Wisconsin Athletic Hall of Fame Podcast",
+   "url": "https://biztimes.com/around-town-wisconsin-athletic-hall-of-fame-podcast/",
+   "summary": "Green Bay Packers legend Mason Crosby was the guest on the latest Wisconsin Athletic Hall of Fame Podcast. The podcast was held on Sept. 29 at Central Standard Crafthouse & Kitchen. Crosby, who is the Packers all-time leading scorer, was…",
+   "published": "2026-10-08T01:15:49+00:00",
+   "event": false
+  },
+  {
+   "source": "TMJ4",
+   "kind": "news",
+   "title": "‘Completely unacceptable’: Couple calls for answers after waiting 4 hours for 911 response downtown",
+   "url": "https://www.tmj4.com/about-us/lighthouse/completely-unacceptable-couple-calls-for-answers-after-waiting-4-hours-for-911-response-in-downtown-milwaukee",
+   "summary": "A Waukesha County couple is calling for accountability after Milwaukee police took more than four hours to respond to their 911 calls following an SUV break-in and gun theft near Fiserv Forum.",
+   "published": "2026-10-08T00:05:25+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "Advocates blast Trump campaign against in-state tuition for immigrants",
+   "url": "https://wisconsinexaminer.com/2026/10/07/repub/advocates-blast-trump-campaign-against-in-state-tuition-for-immigrants/",
+   "summary": "WASHINGTON — Leading immigration advocates and experts sounded the alarm Wednesday on the Trump administration’s sweeping efforts to undo state laws allowing some immigrants to pay in-state college tuition in the states where they reside.…",
+   "published": "2026-10-07T23:24:49+00:00",
+   "event": false
+  },
+  {
+   "source": "TMJ4",
+   "kind": "news",
+   "title": "A Sheboygan chiropractor pleads not guilty for taking sexual photos of minors at his home",
+   "url": "https://www.tmj4.com/news/local-news/in-your-community/sheboygan-county/a-sheboygan-chiropractor-pleads-not-guilty-for-taking-sexual-photos-of-minors-at-his-home",
+   "summary": "Casimer Kobylinski, who's already facing 12 child pornography charges, pleaded not guilty for taking sexual photos of minors Wednesday at Milwaukee County Court.",
+   "published": "2026-10-07T23:18:43+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee NNS",
+   "kind": "news",
+   "title": "‘When you take a step, we take a step’: Milwaukee woman uses own experiences to help struggling youth",
+   "url": "https://milwaukeenns.org/2026/10/07/when-you-take-a-step-we-take-a-step-milwaukee-woman-uses-own-experiences-to-help-struggling-youth/",
+   "summary": "Shontaine Walker opened Walking in by Faith Inc. to support young people going through hard times like she did. The post ‘When you take a step, we take a step’: Milwaukee woman uses own experiences to help struggling youth appeared first…",
+   "published": "2026-10-07T21:45:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee NNS",
+   "kind": "news",
+   "title": "Here’s what you need to know to vote in the November general election in Milwaukee",
+   "url": "https://milwaukeenns.org/2026/10/07/heres-what-you-need-to-know-to-vote-in-the-november-general-election-in-milwaukee/",
+   "summary": "The last day to register to vote online or by mail is Wednesday, Oct. 14. Early voting starts Tuesday, Oct. 20 and the election is Nov. 3. The post Here’s what you need to know to vote in the November general election in Milwaukee appeared…",
+   "published": "2026-10-07T21:30:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Wisconsin’s Controversial Anti-Union Law Faces a Reckoning",
+   "url": "https://urbanmilwaukee.com/2026/10/07/wisconsins-controversial-anti-union-law-faces-a-reckoning/",
+   "summary": "WI Supreme Court set to review it. If Democrats take over legislature they could overturn it.",
+   "published": "2026-10-07T21:23:56+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee NNS",
+   "kind": "news",
+   "title": "Opinion: Investing in the people who help build our neighborhoods",
+   "url": "https://milwaukeenns.org/2026/10/07/opinion-investing-in-the-people-who-help-build-our-neighborhoods/",
+   "summary": "Drea Rodriguez discusses the importance of supporting community organizers, who help engage residents across the city. The post Opinion: Investing in the people who help build our neighborhoods appeared first on Milwaukee Neighborhood News…",
+   "published": "2026-10-07T21:15:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "President Donald Trump says he’s providing disaster aid to Wisconsin after speaking with Tom Tiffany",
+   "url": "https://wisconsinexaminer.com/2026/10/07/president-donald-trump-says-hes-providing-disaster-aid-to-wisconsin-after-speaking-with-tom-tiffany/",
+   "summary": "President Donald Trump said that he would be providing nearly $18 million in relief to Wisconsin to help with damage from July tornadoes in the Fox Valley after speaking to Republican U.S. Rep. Tom Tiffany, who is running for governor. In…",
+   "published": "2026-10-07T21:07:23+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Trump Awards $17.9 Million Relief for Wisconsin’s Tornado, Storm Damage",
+   "url": "https://urbanmilwaukee.com/2026/10/07/trump-awards-17-9-million-relief-for-wisconsins-tornado-storm-damage/",
+   "summary": "President doesn't mention Gov. Evers request but praises Tom Tiffany.",
+   "published": "2026-10-07T21:04:50+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee NNS",
+   "kind": "news",
+   "title": "Rep. Tiffany tried to overturn the 2020 presidential election. What could a Gov. Tiffany do in 2028?",
+   "url": "https://milwaukeenns.org/2026/10/07/rep-tiffany-tried-to-overturn-the-2020-presidential-election-what-could-a-gov-tiffany-do-in-2028/",
+   "summary": "Tom Tiffany supported Donald Trump’s attempt to overturn the 2020 election. As governor, he would play a key part in the state’s 2028 election. “I’ll certify whoever wins the most votes in Wisconsin,” he said. The post Rep. Tiffany tried…",
+   "published": "2026-10-07T21:00:00+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Costs of 2022 Truck Crash Continuing To Mount For Milwaukee",
+   "url": "https://urbanmilwaukee.com/2026/10/07/costs-of-2022-truck-crash-continuing-to-mount-for-milwaukee/",
+   "summary": "Legal settlements paid by city are already well over $1 million.",
+   "published": "2026-10-07T20:50:15+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "Documents show DHS probed nonprofits, obtained millions of records in hunt for noncitizen voters",
+   "url": "https://wisconsinexaminer.com/2026/10/07/repub/documents-show-dhs-probed-nonprofits-obtained-millions-of-records-in-hunt-for-noncitizen-voters/",
+   "summary": "The Department of Homeland Security obtained tens of millions of unspecified records as part of a sweeping nationwide effort to find voter fraud, according to internal DHS reports, and weighed using undercover agents to investigate voter…",
+   "published": "2026-10-07T20:44:37+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "MMSD Denies Unfair Contracting Practices",
+   "url": "https://urbanmilwaukee.com/2026/10/07/mmsd-denies-unfair-contracting-practices/",
+   "summary": "Veolia suit attacks sewerage district and Common Ground after losing bid to run system.",
+   "published": "2026-10-07T20:41:58+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "US Senate candidates in 9 key races quiet about Social Security benefits cliff",
+   "url": "https://wisconsinexaminer.com/2026/10/07/repub/us-senate-candidates-in-9-key-races-quiet-about-social-security-benefits-cliff/",
+   "summary": "WASHINGTON — Nearly all of the U.S. senators elected this year will be in office when Congress debates how to restructure Social Security to prevent an automatic drop-off in retirement benefits in 2032. Very few candidates in competitive…",
+   "published": "2026-10-07T20:36:21+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Final Approach Lands a New Owner",
+   "url": "https://urbanmilwaukee.com/2026/10/07/final-approach-lands-a-new-owner/",
+   "summary": "Aviation-themed restaurant is purchased by a longtime industry veteran.",
+   "published": "2026-10-07T20:23:35+00:00",
+   "event": false
+  },
+  {
+   "source": "Urban Milwaukee",
+   "kind": "news",
+   "title": "Judge Dismisses Lawsuit Against Tosa Cops for 2022 Shooting",
+   "url": "https://urbanmilwaukee.com/2026/10/07/judge-dismisses-lawsuit-against-tosa-cops-for-2022-shooting-2/",
+   "summary": "Damiso Lee had handgun, judge notes. But was he running away from officers?",
+   "published": "2026-10-07T19:46:30+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Magazine",
+   "kind": "news",
+   "title": "14 Beer Events Brewing in Milwaukee This Week: Oct. 6-11",
+   "url": "https://www.milwaukeemag.com/14-beer-events-brewing-in-milwaukee-this-week-oct-6-11/?utm_source=rss&utm_medium=rss&utm_campaign=14-beer-events-brewing-in-milwaukee-this-week-oct-6-11",
+   "summary": "Oktoberfest season is winding down, but there are still plenty of events to keep beer drinkers busy, including a limb-shaking annual release at Gathering Place. Source",
+   "published": "2026-10-07T19:13:22+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "Fusion, quantum and diagnostics industry leaders see opportunity in Wisconsin",
+   "url": "https://biztimes.com/fusion-quantum-and-diagnostics-industry-leaders-see-opportunity-in-wisconsin/",
+   "summary": "The Wisconsin Technology Council hosted its annual symposium, now called Launch Wisconsin, on Tuesday on the Marquette University campus kicking off the event with a panel that explored new industries forming in Wisconsin and their future…",
+   "published": "2026-10-07T19:00:33+00:00",
+   "event": true
+  },
+  {
+   "source": "Milwaukee Magazine",
+   "kind": "news",
+   "title": "Here’s When to Expect Milwaukee Fall in Full Force",
+   "url": "https://www.milwaukeemag.com/heres-when-to-expect-milwaukee-fall-in-full-force/?utm_source=rss&utm_medium=rss&utm_campaign=heres-when-to-expect-milwaukee-fall-in-full-force",
+   "summary": "The changing of the seasons brings vibrant hues to Milwaukee; check out our guide on when the colors will be the brightest in the 414. Source",
+   "published": "2026-10-07T18:37:56+00:00",
+   "event": false
+  },
+  {
+   "source": "BizTimes",
+   "kind": "news",
+   "title": "Menomonee Falls Plan Commission rejects proposal for unnamed restaurant",
+   "url": "https://biztimes.com/menomonee-falls-plan-commission-rejects-proposal-for-unnamed-restaurant/",
+   "summary": "The Menomonee Falls Plan Commission denied a rezoning request from a Michigan-based developer that wants to build a drive-thru restaurant at the site of a former Pizza Hut in the village, following a tense conversation over the potential…",
+   "published": "2026-10-07T18:30:18+00:00",
+   "event": false
+  },
+  {
+   "source": "Milwaukee Record",
+   "kind": "news",
+   "title": "Von Trier uncovers hidden mural above front door",
+   "url": "https://milwaukeerecord.com/food-drink/von-trier-uncovers-hidden-mural-above-front-door/",
+   "summary": "t seems like Von Trier, 2235 N. Farwell Ave., uncovers an old-school mural every decade or so, doesn’t it? Back in 2017, when the beloved East Side German tavern was owned by John Sidoff, it uncovered a mid-century mural above the bar that…",
+   "published": "2026-10-07T18:22:36+00:00",
+   "event": false
+  },
+  {
+   "source": "OnMilwaukee",
+   "kind": "news",
+   "title": "Psst ... there's a Sake Speakeasy at Lombardi Food & Wine",
+   "url": "https://onmilwaukee.com/articles/sake-speakeasy-lombardi-food-and-wine-26",
+   "summary": "A tucked-away tasting experience is among the new additions to the Nov. 6 fundraiser at The Pfister Hotel.",
+   "published": "2026-10-07T18:01:00+00:00",
+   "event": true
+  },
+  {
+   "source": "Milwaukee Magazine",
+   "kind": "news",
    "title": "What’s New With the Charles Allis and Villa Terrace Museums?",
    "url": "https://www.milwaukeemag.com/whats-new-with-the-charles-allis-and-villa-terrace-museums/?utm_source=rss&utm_medium=rss&utm_campaign=whats-new-with-the-charles-allis-and-villa-terrace-museums",
    "summary": "Nearly two years after their split from Milwaukee County, where do the two museums stand? Source",
    "published": "2026-10-07T17:40:43+00:00",
+   "event": false
+  },
+  {
+   "source": "Wisconsin Examiner",
+   "kind": "state",
+   "title": "Abortion foes plan to push pill restrictions in the states",
+   "url": "https://wisconsinexaminer.com/2026/10/07/repub/abortion-foes-plan-to-push-pill-restrictions-in-the-states/",
+   "summary": "As they await a federal decision on a potential nationwide ban on telehealth abortions, anti-abortion activists plan to push more states to require women to visit a doctor’s office, get an ultrasound or wait before they can get abortion…",
+   "published": "2026-10-07T17:23:25+00:00",
    "event": false
   },
   {
@@ -107,24 +620,6 @@
    "summary": "This weekend is full of big festivals from a city wide comedy fest, to a pet fest and more. Source",
    "published": "2026-10-07T16:36:26+00:00",
    "event": true
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Former Racine deputy pleads not guilty, waives hearing in shooting case",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/racine-county/former-racine-deputy-pleads-not-guilty-waives-hearing-in-shooting-case",
-   "summary": "Former Racine County deputy James Lehman spent less than five minutes in court Wednesday before waiving his preliminary hearing and pleading not guilty in a case tied to an April turkey hunt shooting.",
-   "published": "2026-10-07T16:30:33+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Milwaukee Bucks announce theme nights, giveaways, crossover games for 2026-27 season",
-   "url": "https://www.tmj4.com/sports/basketball/milwaukee-bucks/milwaukee-bucks-announce-theme-nights-giveaways-crossover-games-for-2026-27-season",
-   "summary": "The Milwaukee Bucks on Wednesday announced the schedule for their theme nights, crossover games and planned giveaways for the 2026-27 season.",
-   "published": "2026-10-07T16:23:52+00:00",
-   "event": false
   },
   {
    "source": "BizTimes",
@@ -163,33 +658,6 @@
    "event": false
   },
   {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Camino Delays Move Over National Avenue Construction",
-   "url": "https://urbanmilwaukee.com/2026/10/07/camino-delays-move-over-national-avenue-construction/",
-   "summary": "Popular Walker's Point restaurant and bar will stay put, at least for now.",
-   "published": "2026-10-07T15:29:44+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Crowley Proposes State Constitutional Amendment to Protect Abortion",
-   "url": "https://urbanmilwaukee.com/2026/10/07/crowley-proposes-state-constitutional-amendment-protecting-abortion/",
-   "summary": "Democrat also slams Tiffany over billionaire funding, links issue to reproductive rights.",
-   "published": "2026-10-07T14:41:56+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Stone Creek’s Downtown Cafe to Reopen",
-   "url": "https://urbanmilwaukee.com/2026/10/07/stone-creeks-downtown-cafe-to-reopen/",
-   "summary": "After a remodeling the headquarters cafe and roasting facility in 1889 building returning.",
-   "published": "2026-10-07T14:20:20+00:00",
-   "event": false
-  },
-  {
    "source": "OnMilwaukee",
    "kind": "news",
    "title": "Tours show how Milwaukee Pretzel Co. makes millions of pretzels a year",
@@ -205,15 +673,6 @@
    "url": "https://wisconsinwatch.org/2026/10/wisconsin-should-tax-data-centers-to-fund-child-care-opinion/",
    "summary": "Connie Acuahuitl argues Wisconsin should tap its growing data center industry to create a permanent child care fund that would lower costs for families and stabilize providers. Guest opinion: Wisconsin should tax data centers to fund child…",
    "published": "2026-10-07T14:00:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Two Wisconsin Sheriff Races Raise Issue of ICE Arrests",
-   "url": "https://urbanmilwaukee.com/2026/10/07/two-wisconsin-sheriff-races-raise-issue-of-ice-arrests/",
-   "summary": "Democratic candidates want less cooperation with ICE than Republicans.",
-   "published": "2026-10-07T13:58:56+00:00",
    "event": false
   },
   {
@@ -244,33 +703,6 @@
    "event": true
   },
   {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Milwaukee's Poppy Bakery is ringing in fall with handcrafted pastries",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/milwaukee-county/milwaukees-poppy-bakery-is-ringing-in-fall-with-handcrafted-pastries",
-   "summary": "🍂 Fall has arrived at Poppy Bakery on Milwaukee's East Side! Apple croissants, eclairs, and more — have you visited yet?",
-   "published": "2026-10-07T11:49:15+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Fire Prevention Week: What you need to know about lithium-ion battery safety and your home fire plan",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/milwaukee-county/fire-prevention-week-what-you-need-to-know-about-lithium-ion-battery-safety-and-your-home-fire-plan",
-   "summary": "A South Milwaukee fire lieutenant shares Fire Prevention Week home safety tips, plus lithium-ion battery dangers and proper disposal guidance.",
-   "published": "2026-10-07T11:06:50+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Racine resident concerned about city tree removal timeline following branch breaking, falling on vehicle",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/racine-county/racine-resident-concerned-about-city-tree-removal-timeline-following-branch-breaking-falling-on-vehicle",
-   "summary": "A Racine resident is expressing concerns about city response time after a tree on city property suffered a broken branch, which fell onto Rapids Drive and hit a vehicle.",
-   "published": "2026-10-07T11:00:00+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee Magazine",
    "kind": "news",
    "title": "Check Out The New Window Washing Tech: Drones",
@@ -286,24 +718,6 @@
    "url": "https://wisconsinwatch.org/2026/10/wisconsin-tom-tiffany-tried-to-overturn-2020-election-now-vows-to-certify-2028-results/",
    "summary": "Tom Tiffany supported Donald Trump’s attempt to overturn the 2020 election. As governor, he would play a key part in the state’s 2028 election. “I’ll certify whoever wins the most votes in Wisconsin,” he said. Tom Tiffany tried to overturn…",
    "published": "2026-10-07T11:00:00+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Southeastern Wisconsin weather: Staying mostly dry; milder by weekend",
-   "url": "https://www.tmj4.com/weather/forecast/todays-forecast/southeastern-wisconsin-weather-staying-mostly-dry-milder-by-weekend",
-   "summary": "The next several days will continue to be mostly dry other than a very small chance of an isolated shower Friday. Temperatures will fluctuate a little bit, with milder conditions for the weekend.",
-   "published": "2026-10-07T10:45:49+00:00",
-   "event": true
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "A new park and 28 homes: Kenosha neighbors get first look at plans for former school site",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/kenosha-county/a-new-park-and-28-homes-kenosha-neighbors-get-first-look-at-plans-for-former-school-site",
-   "summary": "The City of Kenosha presented an updated look at its plans for the former McKinley Elementary and KTEC West properties during a public meeting Tuesday. The meeting gave neighbors a closer look at what could now replace the former schools.",
-   "published": "2026-10-07T10:40:15+00:00",
    "event": false
   },
   {
@@ -343,24 +757,6 @@
    "event": false
   },
   {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "Democrats more trusted on healthcare costs, survey shows",
-   "url": "https://wisconsinexaminer.com/2026/10/07/repub/democrats-more-trusted-on-healthcare-costs-survey-shows/",
-   "summary": "WASHINGTON — Democrats are more motivated to vote in November’s midterm elections than Republicans, potentially giving the party an advantage to flip at least one chamber of Congress, according to a poll released Tuesday by the nonpartisan…",
-   "published": "2026-10-07T07:39:38+00:00",
-   "event": false
-  },
-  {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "No major gains projected for count of women in Congress after midterms",
-   "url": "https://wisconsinexaminer.com/2026/10/07/repub/no-major-gains-projected-for-count-of-women-in-congress-after-midterms/",
-   "summary": "WASHINGTON — The number of women in the U.S. Senate is unlikely to increase and may decline following the November midterm elections, though there are still opportunities for candidates to make history in the upper chamber. Kelly Dittmar,…",
-   "published": "2026-10-07T06:35:27+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee Record",
    "kind": "news",
    "title": "Feast your eyes on the Taste Of Stallis participants and specials",
@@ -379,66 +775,12 @@
    "event": false
   },
   {
-   "source": "Milwaukee Record",
-   "kind": "news",
-   "title": "Milwaukee Comedy Festival",
-   "url": "https://mkecomedyfest.com/tickets/#new_tab",
-   "summary": "",
-   "published": "2026-10-07T05:35:53+00:00",
-   "event": true
-  },
-  {
    "source": "BizTimes",
    "kind": "news",
    "title": "New redevelopment project planned for downtown Milwaukee masonic center",
    "url": "https://biztimes.com/new-redevelopment-project-planned-for-downtown-milwaukee-masonic-center/",
    "summary": "Milwaukee-based F Street plans to redevelop the historic Humphrey Scottish Rite Masonic Center at 790 N. Van Buren St. in downtown Milwaukee into luxury housing, according to a company announcement Tuesday. Plans call for 22 luxury…",
    "published": "2026-10-07T05:27:13+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Venezuelan Brewers players inspire community during postseason run",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/milwaukee-county/venezuelan-brewers-players-inspire-community-during-postseason-run",
-   "summary": "As Brewers fans gathered to watch Game 3 of the National League Division Series on Tuesday, support for the home team extended beyond Milwaukee and deep into the Venezuelan community",
-   "published": "2026-10-07T05:07:38+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Milwaukee woman charged with felonies after impersonating a substitute teacher at Rufus King",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/milwaukee-county/milwaukee-woman-charged-with-felonies-after-impersonating-a-substitute-teacher-at-rufus-king",
-   "summary": "Amy Jones faces 6 felony charges for impersonating a sub at Rufus King and using racial slurs against students.",
-   "published": "2026-10-07T03:55:02+00:00",
-   "event": false
-  },
-  {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "Crowley calls for constitutional amendment on abortion rights",
-   "url": "https://wisconsinexaminer.com/2026/10/06/crowley-calls-for-constitutional-amendment-on-abortion-rights/",
-   "summary": "Democratic candidate David Crowley committed to advocate for a constitutional amendment that would allow voters to decide whether access to abortion and reproductive healthcare is a right protected by the state constitution. At an event in…",
-   "published": "2026-10-07T02:11:00+00:00",
-   "event": false
-  },
-  {
-   "source": "TMJ4",
-   "kind": "news",
-   "title": "Washington County man who lost 200 pounds is challenging himself every day with '100 Days of Change'",
-   "url": "https://www.tmj4.com/news/local-news/in-your-community/washington-county/washington-county-man-who-lost-200-pounds-is-challenging-himself-every-day-with-100-days-of-change",
-   "summary": "A Washington County man who lost 200 pounds is challenging himself to try something new every day for 100 days.",
-   "published": "2026-10-07T00:03:41+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "The Transformation of Cass Street Playground",
-   "url": "https://urbanmilwaukee.com/2026/10/06/the-transformation-of-cass-street-playfield/",
-   "summary": "The first improvements came in 1998. New city plan is even more ambitious.",
-   "published": "2026-10-06T22:33:21+00:00",
    "event": false
   },
   {
@@ -451,57 +793,12 @@
    "event": false
   },
   {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "With election pressure mounting, states move to suspend fuel taxes",
-   "url": "https://wisconsinexaminer.com/2026/10/06/repub/with-election-pressure-mounting-states-move-to-suspend-fuel-taxes/",
-   "summary": "With Election Day less than a month away, lawmakers in several states are suspending gas taxes or rolling back regulations on diesel fuel as voters grow increasingly frustrated with rising fuel costs amid President Donald Trump’s war with…",
-   "published": "2026-10-06T21:53:13+00:00",
-   "event": false
-  },
-  {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "New York governor declares measles emergency",
-   "url": "https://wisconsinexaminer.com/2026/10/06/repub/new-york-governor-declares-measles-emergency/",
-   "summary": "NEW YORK — Facing a surge of measles cases in New York state’s rural counties, Democratic Gov. Kathy Hochul issued an executive order on Monday allowing paramedics, pharmacists, midwives and other non-physicians to administer vaccines.…",
-   "published": "2026-10-06T21:45:24+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee NNS",
    "kind": "news",
    "title": "4 takeaways from the public hearing on the proposed city budget",
    "url": "https://milwaukeenns.org/2026/10/06/4-takeaways-from-the-public-hearing-on-the-proposed-city-budget/",
    "summary": "The Joint Public Hearing at City Hall included nearly four hours of comments on topics such as Flock cameras, food access, city worker pay and election commission funding. The post 4 takeaways from the public hearing on the proposed city…",
    "published": "2026-10-06T21:45:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "After Baithak Of Punjab Steps Out, A New Halal Spot Plans to Step In",
-   "url": "https://urbanmilwaukee.com/2026/10/06/after-baithak-of-punjab-steps-out-a-new-halal-spot-plans-to-step-in/",
-   "summary": "Occupancy application shows new restaurant plans to open at same location.",
-   "published": "2026-10-06T21:35:52+00:00",
-   "event": false
-  },
-  {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "Top Democratic US Senate PAC commits to 9 states, eyes more Republican targets",
-   "url": "https://wisconsinexaminer.com/2026/10/06/repub/top-democratic-us-senate-pac-commits-to-9-states-eyes-more-republican-targets/",
-   "summary": "A leading Democratic campaign committee is projecting confidence in U.S. Senate toss-up races four weeks before Election Day, though it has yet to commit resources to the reddest states that have recently entered the Senate map. Senate…",
-   "published": "2026-10-06T21:33:37+00:00",
-   "event": false
-  },
-  {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "Voting rights advocates organize volunteers to track potential intimidation at the polls",
-   "url": "https://wisconsinexaminer.com/2026/10/06/repub/voting-rights-advocates-organize-volunteers-to-track-potential-intimidation-at-the-polls/",
-   "summary": "As President Donald Trump refuses to rule out taking extreme action in the midterm elections, voting rights advocates and civil rights leaders are bolstering their voter protection efforts in anticipation of possible federal interference.…",
-   "published": "2026-10-06T21:24:42+00:00",
    "event": false
   },
   {
@@ -523,111 +820,12 @@
    "event": false
   },
   {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "5 Minutes With: Derse CEO Brett Haney",
-   "url": "https://biztimes.com/5-minutes-with-derses-brett-haney/",
-   "summary": "Brett Haney is thinking big about Derse’s future. The Milwaukee-based trade show and events company that Haney has led since 2019, founded in 1948, is building a new 300,000-square-foot headquarters in Oak Creek, a $48 million project that…",
-   "published": "2026-10-06T21:00:42+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee NNS",
    "kind": "news",
    "title": "Wisconsin’s controversial anti-union law faces a reckoning this fall. Here’s what that could mean.",
    "url": "https://milwaukeenns.org/2026/10/06/wisconsin-act-10-union-law-reckoning-public-employee-collective-bargaining-supreme-court-election/",
    "summary": "Control of state government and a lawsuit heading to the Wisconsin Supreme Court could shape the future of Act 10. The post Wisconsin’s controversial anti-union law faces a reckoning this fall. Here’s what that could mean. appeared first…",
    "published": "2026-10-06T21:00:00+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "Halloween costume contests in Milwaukee",
-   "url": "https://onmilwaukee.com/articles/halloween-costume-contests",
-   "summary": "Got a good costume? Consider a Halloween costume contest. Here's a list.",
-   "published": "2026-10-06T20:31:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Globally-Inspired Halal Restaurant Quietly Closed",
-   "url": "https://urbanmilwaukee.com/2026/10/06/globally-inspired-halal-restaurant-quietly-closed/",
-   "summary": "Punjabi restaurant north of the airport is dark, locked and no longer taking orders.",
-   "published": "2026-10-06T20:10:39+00:00",
-   "event": false
-  },
-  {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "Milwaukee County judge approves Southridge Mall sale",
-   "url": "https://biztimes.com/milwaukee-county-judge-approves-southridge-mall-sale/",
-   "summary": "Milwaukee County Circuit Court Judge William S. Pocan Jr. approved a motion Tuesday to enter an order approving the sale of Southridge Mall in Greendale, clearing the way for the property to change hands after years of foreclosure…",
-   "published": "2026-10-06T19:23:48+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "New Developer Will Salvage Long-Delayed Masonic Center Project",
-   "url": "https://urbanmilwaukee.com/2026/10/06/new-developer-will-salvage-long-delayed-masonic-center-redevelopment/",
-   "summary": "It's been vacant for nine years. 'This building has sat unfinished long enough.'",
-   "published": "2026-10-06T19:21:08+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Future Of 119-Year-Old Maynard Steel Hangs On Last-Minute Rescue Bid",
-   "url": "https://urbanmilwaukee.com/2026/10/06/future-of-119-year-old-maynard-steel-hangs-on-last-minute-rescue-bid/",
-   "summary": "Receiver files layoff notice but says talks continue with buyers who could retain most workers.",
-   "published": "2026-10-06T19:08:32+00:00",
-   "event": false
-  },
-  {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "Wick Buildings and Summit Contracting Announce Partnership",
-   "url": "https://biztimes.com/wick-buildings-and-summit-contracting-announce-partnership/",
-   "summary": "MAZOMANIE, WI — Wick Buildings, Inc., headquartered in Mazomanie, Wisconsin, has announced a partnership with Summit Contracting of Platte, South Dakota. Summit will use Wick to manufacture its post-frame building packages, pairing…",
-   "published": "2026-10-06T19:04:50+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "Village Christmas Market brings European-style cheer to the Tosa",
-   "url": "https://onmilwaukee.com/articles/wauwatosa-village-christmas-market",
-   "summary": "The Village Christmas Market returns this December to give a European flavor to Wauwatosa Village.",
-   "published": "2026-10-06T19:01:00+00:00",
-   "event": true
-  },
-  {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "See which companies made the Deloitte Wisconsin 75 list of the state’s largest private companies",
-   "url": "https://biztimes.com/see-which-companies-made-the-deloitte-wisconsin-75-list-of-the-states-largest-private-companies-2/",
-   "summary": "Deloitte recently recognized the companies on its annual Deloitte Wisconsin 75 list of the largest private companies in the state. The companies are ranked by annual revenue. Here’s the list, in order, of the companies that made the 2025…",
-   "published": "2026-10-06T18:55:53+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Bar Exam: The Vig Is a Really Big Show",
-   "url": "https://urbanmilwaukee.com/2026/10/06/bar-exam-the-vig-is-a-really-big-show/",
-   "summary": "A restaurant and bar 'with a soul.' And very nice happy hour prices.",
-   "published": "2026-10-06T18:23:50+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "The Food Chronicles: In the kitchen with Kevin Sloan",
-   "url": "https://onmilwaukee.com/articles/the-food-chronicles-with-kevin-sloan",
-   "summary": "Drawing on more than 30 years of culinary experience, Chef Kevin Sloan shares the recipes, memories and stories that have shaped his life.",
-   "published": "2026-10-06T18:01:00+00:00",
    "event": false
   },
   {
@@ -649,42 +847,6 @@
    "event": false
   },
   {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Fake Car Dealership Scams Rising in Wisconsin",
-   "url": "https://urbanmilwaukee.com/2026/10/06/fake-car-dealership-scams-rising-in-wisconsin-2/",
-   "summary": "Scammers lure luxury and sports car enthusiasts to cloned car dealership websites.",
-   "published": "2026-10-06T17:23:56+00:00",
-   "event": false
-  },
-  {
-   "source": "Urban Milwaukee",
-   "kind": "news",
-   "title": "Milwaukee’s Data Center Moratorium Takes Key Step Forward",
-   "url": "https://urbanmilwaukee.com/2026/10/06/milwaukees-data-center-moratorium-takes-key-step-forward/",
-   "summary": "But will a hyperscaler ever seek to build in Milwaukee?",
-   "published": "2026-10-06T17:03:26+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "The one thing you're doing wrong when you order pizza",
-   "url": "https://onmilwaukee.com/articles/one-thing-you-are-doing-wrong-pizza",
-   "summary": "During National Pizza Month, there's at least one thing you can do to make your transported pie more delicious.",
-   "published": "2026-10-06T17:01:00+00:00",
-   "event": false
-  },
-  {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "Viewpoints: Freight rail industry still a valuable part of Wisconsin’s economy",
-   "url": "https://biztimes.com/viewpoints-freight-rail-industry-still-a-valuable-part-of-wisconsins-economy/",
-   "summary": "Freight railroad profits serving Milwaukee and Wisconsin going forward, are they on track? Absolutely, freight rail delivery service here, has net profit margins greater than most industrial businesses. Why? Let’s break it down to view…",
-   "published": "2026-10-06T17:00:03+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee Record",
    "kind": "news",
    "title": "Step ‘Inside A Dream’ with the music of David Lynch, October 17 at The Argo",
@@ -703,24 +865,6 @@
    "event": false
   },
   {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "BizTimes editor talks on Channel 12 about our exclusive interview with Generac CEO about its $8 billion deal with Amazon",
-   "url": "https://biztimes.com/biztimes-editor-talks-on-channel-12-about-our-exclusive-interview-with-generac-ceo-about-its-8-billion-deal-with-amazon/",
-   "summary": "BizTimes editor Andrew Weiland joins the 4 p.m. newscast on WISN-TV Channel 12 each week to discuss the latest business headlines in southeastern Wisconsin. He made an appearance on Friday to talk about BizTimes Milwaukee’s exclusive…",
-   "published": "2026-10-06T16:33:20+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "Must Try Milwaukee: Pizza",
-   "url": "https://onmilwaukee.com/articles/must-try-milwaukee-pizza-2026",
-   "summary": "Snag yourself a slice from one of these must-try spots.",
-   "published": "2026-10-06T16:02:00+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee Magazine",
    "kind": "news",
    "title": "Check Out These 8 Family Friendly Events This Month",
@@ -728,33 +872,6 @@
    "summary": "Check out our fall family guide to find some fun this season, from apple picking to a harvest festival. Source",
    "published": "2026-10-06T15:59:55+00:00",
    "event": true
-  },
-  {
-   "source": "Milwaukee Record",
-   "kind": "news",
-   "title": "We need area businesses to be part of our Casserole Call benefit",
-   "url": "https://milwaukeerecord.com/food-drink/we-need-area-businesses-to-be-part-of-our-casserole-call-benefit/",
-   "summary": "oday in exciting fall event announcements: Your friends here at Milwaukee Record are planning to bring our annual “Casserole Call” back to beautiful Falcon Hall in Riverwest on Sunday, November 22 from 12-3 p.m. If you haven’t attended any…",
-   "published": "2026-10-06T15:17:05+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "Buttah and Biscuit is making the leap from farmers market to storefront",
-   "url": "https://onmilwaukee.com/articles/buttah-and-biscuit-opening-walkers-point",
-   "summary": "Owner Kathryn Jackson plans a year-round shop filled with biscuits fresh from the oven.",
-   "published": "2026-10-06T15:01:00+00:00",
-   "event": true
-  },
-  {
-   "source": "Milwaukee Record",
-   "kind": "news",
-   "title": "The Catered Quiz: J.D. Kendall answers questions about Hammer horror films and ‘The X-Files’",
-   "url": "https://milwaukeerecord.com/podcast/the-catered-quiz-j-d-kendall-answers-questions-about-hammer-horror-films-and-the-x-files/",
-   "summary": "n this week’s episode of The Catered Quiz, author J.D. Kendall joins the show to talk about his debut horror novel, A Shadow So Big, and to answer questions about Hammer horror films and The X-Files. We also talk about video stores,…",
-   "published": "2026-10-06T13:48:57+00:00",
-   "event": false
   },
   {
    "source": "Milwaukee NNS",
@@ -802,138 +919,12 @@
    "event": false
   },
   {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "Madison officials say city is ready to manage clerk’s maternity leave during election",
-   "url": "https://wisconsinexaminer.com/2026/10/06/madison-officials-say-city-is-ready-to-manage-clerks-maternity-leave-during-election/",
-   "summary": "Madison City Clerk Lydia McComas took over her job in September 2025 with the city under heavy scrutiny from state election officials after nearly 200 absentee ballots were lost during the 2024 election. During the April 2026 state Supreme…",
-   "published": "2026-10-06T08:45:45+00:00",
-   "event": false
-  },
-  {
-   "source": "Wisconsin Examiner",
-   "kind": "state",
-   "title": "Tom Tiffany’s dam lies",
-   "url": "https://wisconsinexaminer.com/2026/10/06/tom-tiffanys-dam-lies/",
-   "summary": "The flyers that arrived in mailboxes in Oneida County, Wisconsin, just days before the April 1, 2014, county board elections, were nothing if not alarming. “Some County Supervisors have a Dam Plan which is much more than Water Over the…",
-   "published": "2026-10-06T08:30:50+00:00",
-   "event": false
-  },
-  {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "Journey21 expands Oconomowoc housing plans for adults with disabilities",
-   "url": "https://biztimes.com/journey21-expands-oconomowoc-housing-plans-for-adults-with-disabilities/",
-   "summary": "Seeing a “tremendous” need for housing for adults with intellectual and developmental disabilities, a Waukesha nonprofit has expanded its plans for a residential community in Oconomowoc — nearly five years after the project was first…",
-   "published": "2026-10-06T04:16:51+00:00",
-   "event": false
-  },
-  {
-   "source": "BizTimes",
-   "kind": "news",
-   "title": "Milwaukee Art Museum gala raises $1.3 million",
-   "url": "https://biztimes.com/milwaukee-art-museum-gala-raises-1-3-million/",
-   "summary": "The Milwaukee Art Museum raised $1.3 million at its annual Art:Forward Gala, with proceeds supporting the museum’s exhibitions, educational programs and community initiatives. More than 400 guests attended the Sept. 19 event, which also…",
-   "published": "2026-10-06T04:12:42+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee NNS",
    "kind": "news",
    "title": "A quarter century of creativity: Arts @ Large celebrates its impact",
    "url": "https://milwaukeenns.org/2026/10/05/a-quarter-century-of-creativity-arts-large-celebrates-its-impact/",
    "summary": "Residents gathered Saturday, Oct. 3 at Arts @ Large, 1100 S. 5th St., to celebrate the nonprofit’s 25th anniversary. The post A quarter century of creativity: Arts @ Large celebrates its impact appeared first on Milwaukee Neighborhood News…",
    "published": "2026-10-05T21:30:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee NNS",
-   "kind": "news",
-   "title": "Program at Boys & Girls Club’s Ready Center helps Milwaukee student move closer toward his dream of being a pilot",
-   "url": "https://milwaukeenns.org/2026/10/05/program-at-boys-girls-clubs-ready-center-helps-milwaukee-student-move-closer-toward-his-dream-of-being-a-pilot/",
-   "summary": "Aaron Calvert could name planes by their engines before he ever sat in one. A $25,000 Panda Cares Scholarship that was made available through his participation at a local Boys & Girls Club is putting him in the cockpit. The post Program at…",
-   "published": "2026-10-05T21:15:00+00:00",
-   "event": false
-  },
-  {
-   "source": "OnMilwaukee",
-   "kind": "news",
-   "title": "8 reasons you should have celebrated \"Coloring Book\" with Chance The Rapper",
-   "url": "https://onmilwaukee.com/articles/chance-the-rapper-landmark-live-2026",
-   "summary": "Celebrating a decade of \"Coloring Book\", the Chicago rapper delivered a set that reached back to \"Acid Rap,\" made room for newer music and ended with \"Same Drugs\" beneath a shower of confetti.",
-   "published": "2026-10-05T21:01:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee NNS",
-   "kind": "news",
-   "title": "We Energies strikes deal to power Oracle data center with nuclear energy",
-   "url": "https://milwaukeenns.org/2026/10/05/wisconsin-we-energies-deal-oracle-data-center-nuclear-energy-power-point-beach-plant/",
-   "summary": "The utility says the proposal to allow Oracle to tap electricity from the Point Beach nuclear plant could save other customers millions in fuel costs. The post We Energies strikes deal to power Oracle data center with nuclear energy…",
-   "published": "2026-10-05T21:00:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee Magazine",
-   "kind": "news",
-   "title": "October Gardening: How to Get Ahead of Winter",
-   "url": "https://www.milwaukeemag.com/october-gardening-how-to-get-ahead-of-winter/?utm_source=rss&utm_medium=rss&utm_campaign=october-gardening-how-to-get-ahead-of-winter",
-   "summary": "Our resident garden columnist speaks on preparing her garden for the upcoming frost and the sacrifices required for responsible gardening. Source",
-   "published": "2026-10-05T17:19:27+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee Record",
-   "kind": "news",
-   "title": "Oak Leaf Trail speed limit proposal put on hold",
-   "url": "https://milwaukeerecord.com/city-life/oak-leaf-trail-speed-limit-proposal-put-on-hold/",
-   "summary": "proposed 15-mph speed limit on portions of the Oak Leaf Trail and other Milwaukee County trails has come to a sudden halt. In an email newsletter last Friday, Milwaukee County Supervisor Sheldon Wasserman said he had “decided to put a…",
-   "published": "2026-10-05T16:21:34+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee Magazine",
-   "kind": "news",
-   "title": "12 Local Spots to Get Your Boba Tea Fix",
-   "url": "https://www.milwaukeemag.com/12-boba-tea-guide-spots/?utm_source=rss&utm_medium=rss&utm_campaign=12-boba-tea-guide-spots",
-   "summary": "Craving boba? Or maybe want to try it for the first time? Here are a few local spots to find it. Source",
-   "published": "2026-10-05T15:54:47+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee Magazine",
-   "kind": "news",
-   "title": "Here Are Some New Ways Dentistry Has Changed",
-   "url": "https://www.milwaukeemag.com/here-are-some-new-ways-dentistry-has-changed/?utm_source=rss&utm_medium=rss&utm_campaign=here-are-some-new-ways-dentistry-has-changed",
-   "summary": "Dentistry continues to evolve, with new technology, smarter treatments and a growing focus on making patients comfortable. Source",
-   "published": "2026-10-05T15:36:22+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee Record",
-   "kind": "news",
-   "title": "Talking new Milwaukee music with WUWM’s Lake Effect (September 2026)",
-   "url": "https://milwaukeerecord.com/music/talking-new-milwaukee-music-with-wuwms-lake-effect-september-2026/",
-   "summary": "nce a month, I (Matt) sit down with Joy Powers of WUWM’s Lake Effect to discuss some of my favorite new Milwaukee records and songs. Listen to the latest installment HERE. This month, I break the news on a new track from Wave Chapelle,…",
-   "published": "2026-10-05T15:11:14+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee Magazine",
-   "kind": "news",
-   "title": "These Are the Top Dentists in the Milwaukee Area 2026",
-   "url": "https://www.milwaukeemag.com/these-are-the-top-dentists-in-the-milwaukee-area-2026/?utm_source=rss&utm_medium=rss&utm_campaign=these-are-the-top-dentists-in-the-milwaukee-area-2026",
-   "summary": "Good dentistry goes well beyond a great smile. These are the region's top dental professionals, who can help you look, feel and stay healthy. Source",
-   "published": "2026-10-05T14:47:41+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee NNS",
-   "kind": "news",
-   "title": "Post From Community: How to request counseling in English or Spanish in Milwaukee / Cómo solicitar terapia en inglés o español en Milwaukee",
-   "url": "https://milwaukeenns.org/2026/10/05/post-from-community-how-to-request-counseling-in-english-or-spanish-in-milwaukee-como-solicitar-terapia-en-ingles-o-espanol-en-milwaukee/",
-   "summary": "Milwaukee residents looking for outpatient mental health or substance use support can contact Solace Grove Behavioral Health to discuss care in English or Spanish. The post Post From Community: How to request counseling in English or…",
-   "published": "2026-10-05T12:34:09+00:00",
    "event": false
   },
   {
@@ -961,15 +952,6 @@
    "url": "https://wisconsinwatch.org/2026/10/wisconsin-tom-tiffany-defunding-police-support-vote-law-enforcement-crowley-election/",
    "summary": "No. He has voted against bills that provided new funding to police, but hasn't voted to shift police funding to other programs. Has Tom Tiffany supported defunding the police? is a post from Wisconsin Watch , a non-profit investigative…",
    "published": "2026-10-05T10:00:00+00:00",
-   "event": false
-  },
-  {
-   "source": "Milwaukee NNS",
-   "kind": "news",
-   "title": "National push to expand discrimination protections for people with records could come to Milwaukee",
-   "url": "https://milwaukeenns.org/2026/10/04/national-push-to-expand-discrimination-protections-for-people-with-records-could-come-to-milwaukee/",
-   "summary": "Milwaukeeans with criminal records already have some protections against job discrimination. A national movement is pushing cities to go further by expanding safeguards to other areas of life. The post National push to expand…",
-   "published": "2026-10-04T20:30:00+00:00",
    "event": false
   },
   {
@@ -1018,15 +1000,6 @@
    "event": false
   },
   {
-   "source": "Wisconsin Watch",
-   "kind": "state",
-   "title": "Two Wisconsin sheriff races test the future of local ICE cooperation",
-   "url": "https://wisconsinwatch.org/2026/10/wisconsin-sheriff-election-races-future-of-local-ice-cooperation-immigration-law-enforcement/",
-   "summary": "Voters in Sauk and Winnebago counties will choose between sheriff candidates with competing visions for local law enforcement’s relationship with ICE. Two Wisconsin sheriff races test the future of local ICE cooperation is a post from…",
-   "published": "2026-10-02T11:00:00+00:00",
-   "event": false
-  },
-  {
    "source": "Milwaukee Independent",
    "kind": "news",
    "title": "David Crowley’s 2027 budget preserves vital services as Milwaukee County faces deeper funding questions",
@@ -1045,39 +1018,12 @@
    "event": false
   },
   {
-   "source": "Shepherd Express",
-   "kind": "roundup",
-   "title": "Brew City Buzz, Events Happening Oct. 1-7, 2026",
-   "url": "https://shepherdexpress.com/upcoming-events/brew-city-buzz/brew-city-buzz-events-happening-oct-1-7-2026/",
-   "summary": "Pierogi Night, a classic car show, Milwaukee Comedy Fest and Korea Day—this week in Milwaukee.",
-   "published": "2026-10-01T02:47:24+00:00",
-   "event": true
-  },
-  {
    "source": "Milwaukee Independent",
    "kind": "news",
    "title": "Racine Art Museum’s “Accidentally Wes Anderson” exhibit asks visitors to find Wisconsin’s cinematic beauty",
    "url": "https://www.milwaukeeindependent.com/featured/racine-art-museums-accidentally-wes-anderson-exhibit-asks-visitors-find-wisconsins-cinematic-beauty/",
    "summary": "The post Racine Art Museum’s “Accidentally Wes Anderson” exhibit asks visitors to find Wisconsin’s cinematic beauty appeared first on Milwaukee Independent .",
    "published": "2026-09-30T10:00:28+00:00",
-   "event": true
-  },
-  {
-   "source": "Milwaukee Independent",
-   "kind": "news",
-   "title": "Milwaukee honors Gary P. Grunau with new RiverWalk plaza built around access and local connections",
-   "url": "https://www.milwaukeeindependent.com/photos/milwaukee-honors-gary-p-grunau-new-riverwalk-plaza-built-around-access-local-connections/",
-   "summary": "The post Milwaukee honors Gary P. Grunau with new RiverWalk plaza built around access and local connections appeared first on Milwaukee Independent .",
-   "published": "2026-09-29T10:00:53+00:00",
-   "event": false
-  },
-  {
-   "source": "Shepherd Express",
-   "kind": "roundup",
-   "title": "Brew City Buzz, Events Happening Sept. 24-30, 2026",
-   "url": "https://shepherdexpress.com/upcoming-events/brew-city-buzz/brew-city-buzz-events-happening-sept-24-30-2026/",
-   "summary": "Oktoberfest, author visits, music trivia and more, this week in Milwaukee.",
-   "published": "2026-09-24T18:23:36+00:00",
    "event": true
   }
  ]
