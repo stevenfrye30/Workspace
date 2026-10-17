@@ -1,18 +1,18 @@
 {
- "generated_at": "2026-10-16T15:29:06+00:00",
+ "generated_at": "2026-10-17T14:17:28+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
    "status": "ok",
    "count": 3,
    "raw": 3,
-   "as_of": "2026-10-16"
+   "as_of": "2026-10-17"
   },
   "uwm": {
    "status": "ok",
    "count": 250,
-   "raw": 296,
-   "as_of": "2026-10-16"
+   "raw": 293,
+   "as_of": "2026-10-17"
   },
   "boswell": {
    "status": "error",
@@ -20,41 +20,41 @@
   },
   "urban-ecology-center": {
    "status": "ok",
-   "count": 86,
-   "raw": 86,
-   "as_of": "2026-10-16"
+   "count": 85,
+   "raw": 85,
+   "as_of": "2026-10-17"
   },
   "mpl": {
    "status": "ok",
-   "count": 96,
-   "raw": 96,
-   "as_of": "2026-10-16"
+   "count": 97,
+   "raw": 97,
+   "as_of": "2026-10-17"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 5,
-   "as_of": "2026-10-16"
+   "as_of": "2026-10-17"
   },
   "mam": {
    "status": "ok",
-   "count": 68,
-   "raw": 68,
-   "as_of": "2026-10-16"
+   "count": 67,
+   "raw": 67,
+   "as_of": "2026-10-17"
   },
   "woodland-pattern": {
    "status": "ok",
-   "count": 5,
+   "count": 6,
    "raw": 7,
-   "as_of": "2026-10-16"
+   "as_of": "2026-10-17"
   },
   "turners": {
    "status": "link"
   },
   "domes": {
-   "status": "stale",
-   "error": "HTTPError: HTTP Error 403: Forbidden",
-   "count": 12,
-   "as_of": "2026-10-15"
+   "status": "ok",
+   "count": 13,
+   "raw": 13,
+   "as_of": "2026-10-17"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -62,25 +62,25 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-10-16"
+   "as_of": "2026-10-17"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 63,
-   "raw": 66,
-   "as_of": "2026-10-16"
+   "count": 61,
+   "raw": 64,
+   "as_of": "2026-10-17"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 205,
-   "raw": 205,
-   "as_of": "2026-10-16"
+   "count": 201,
+   "raw": 201,
+   "as_of": "2026-10-17"
   },
   "marcus-center": {
    "status": "ok",
-   "count": 10,
-   "raw": 10,
-   "as_of": "2026-10-16"
+   "count": 9,
+   "raw": 9,
+   "as_of": "2026-10-17"
   },
   "admirals": {
    "status": "error",
@@ -90,7 +90,7 @@
    "status": "ok",
    "count": 4,
    "raw": 4,
-   "as_of": "2026-10-16"
+   "as_of": "2026-10-17"
   },
   "eventbrite": {
    "status": "error",
@@ -102,9 +102,9 @@
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 814,
-   "raw": 818,
-   "as_of": "2026-10-16"
+   "count": 790,
+   "raw": 794,
+   "as_of": "2026-10-17"
   },
   "fiserv-forum": {
    "status": "error",
@@ -113,30 +113,11 @@
  },
  "events": [
   {
-   "title": "Florentine Opera: La Traviata",
-   "start": "2026-10-16",
-   "end": "2026-10-18",
-   "all_day": false,
-   "url": "https://www.marcuscenter.org/event/florentine-opera-la-traviata/",
-   "where": "Uihlein Hall",
-   "addr": "929 N Water St",
-   "zip": "53202",
-   "summary": "She lives fast, loves freely, and throws a better party than anyone in Paris. But beneath the champagne and charm, Violetta knows her days in the spotlight won’t last forever. When she dares to trade…",
-   "tags": [],
-   "time_unknown": true,
-   "run_through": "2026-10-18",
-   "kind": "theater",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "marcus-center"
-  },
-  {
    "title": "Do Androids Dream of Electric Cats",
-   "start": "2026-10-16",
+   "start": "2026-10-17",
    "end": "",
    "all_day": true,
-   "url": "https://mpl.libnet.info/event/17520995",
+   "url": "https://mpl.libnet.info/event/17520996",
    "where": "Milwaukee Public Library Central Library",
    "addr": "814 W Wisconsin Ave",
    "zip": "53233",
@@ -152,847 +133,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Fall Colors & Salmon Run Kayaking",
-   "start": "2026-10-16",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/fall-colors-%26-salmon-run-kayaking/21494/",
-   "where": "Forward Outdoor",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "Health & Wellness",
-    "Outdoor & Recreation",
-    "Family Friendly"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-10-18",
-   "free": false,
-   "kind": "outdoors",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Gypsy",
-   "start": "2026-10-16",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/gypsy/20161/",
-   "where": "Skylight Music Theatre",
-   "addr": "158 N. Broadway",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-10-18",
-   "free": false,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Spirits & Spirits: A Spooky and Comedic Cocktail Experience",
-   "start": "2026-10-16",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/spirits-%26-spirits%3a-a-spooky-and-comedic-cocktail-experience/20190/",
-   "where": "Grey House Studio",
-   "addr": "6228 W. State Street",
-   "zip": "53213",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv",
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "time_unknown": true,
-   "free": false,
-   "kind": "comedy",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Washington Park ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-10-16T09:00",
-   "end": "2026-10-16T11:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4304",
-   "where": "UEC Washington Park",
-   "addr": "1859 N 40th St",
-   "zip": "53208",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Community Ofrenda",
-   "start": "2026-10-16T10:00",
-   "end": "2026-10-16T17:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/community-ofrenda/2026-10-16/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "The ofrenda invites you to learn about its elements and honor loved ones.",
-   "tags": [
-    "Free for Members",
-    "Free with Admission",
-    "In-Person"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Special Edition Slow Art: “Seeking Revelation”",
-   "start": "2026-10-16T10:30",
-   "end": "2026-10-16T11:30",
-   "all_day": false,
-   "url": "https://mam.org/events/event/special-edition-slow-art-seeking-revelation/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "This intimate gallery experience invites participants to slow down, reflect, and engage with the German Romantics’ enduring search for meaning.",
-   "tags": [
-    "Bradley Family Galleries",
-    "Drop-In Tours",
-    "Free for Members"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "mam",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Yankee Hill Tour",
-   "start": "2026-10-16T11:00",
-   "end": "2026-10-16T13:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/yankee-hill-tour/18948/",
-   "where": "\"Leif the Explorer\" Statue located within Juneau Park",
-   "addr": "900 North Prospect Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Museums & Attractions",
-    "Tours"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Chinese Language Table",
-   "start": "2026-10-16T12:00",
-   "end": "2026-10-16T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/chinese-language-table/2026-10-16/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Explore Chinese culture and language with other students and speakers of Mandarin. All levels welcome! Fridays, 12:00-1:30pm CRT 187 (Language Oasis)",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "BCSM Durga Puja 2026",
-   "start": "2026-10-16T15:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bcsm-durga-puja-2026/21532/",
-   "where": "Marcus Performing Arts Center",
-   "addr": "929 N. Water Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Festival",
-    "LIVE Music",
-    "Performing Arts & Theater"
-   ],
-   "run_through": "2026-10-18",
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Landscapes of Extraction: Mining and Empire in Romantic Britain with Stephanie O’Rourke",
-   "start": "2026-10-16T16:00",
-   "end": "2026-10-16T17:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/landscapes-of-extraction-mining-and-empire-in-romantic-britain-with-stephanie-orourke/",
-   "where": "Mitchell Hall 195",
-   "addr": "",
-   "zip": "",
-   "summary": "Friends of Art History Guest Lecture Landscapes of Extraction: Mining and Empire in Romantic Britain Stephanie O’Rourke, Professor of Art History, University of St. Andrews Dr. Stephanie O’Rourke is…",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Curator & Select Artist Talk",
-   "start": "2026-10-16T16:00",
-   "end": "2026-10-16T17:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/curator-%26-select-artist-talk/21776/",
-   "where": "Milwaukee Institute of Art & Design",
-   "addr": "273 E. Erie Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Galleries & Exhibitions",
-    "Arts & Culture",
-    "Community"
-   ],
-   "free": true,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "St. Bernadette Parish Fish Fry",
-   "start": "2026-10-16T16:30",
-   "end": "2026-10-16T19:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/st-bernadette-parish-fish-fry-13/",
-   "where": "St. Bernadette Catholic Parish",
-   "addr": "8200 W. Denver Ave.",
-   "zip": "53223",
-   "summary": "St. Bernadette Parish invites you to enjoy their fabulous fish fry.",
-   "tags": [
-    "Food & Drink"
-   ],
-   "kind": "food",
-   "reach": "car",
-   "free": null,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Boo at the Zoo",
-   "start": "2026-10-16T16:30",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/boo-at-the-zoo/21231/",
-   "where": "Milwaukee County Zoo",
-   "addr": "10001 W Bluemound Road",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Family Friendly"
-   ],
-   "run_through": "2026-10-24",
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
-  },
-  {
-   "title": "Gallery Night Reception at the Grohmann Museum",
-   "start": "2026-10-16T17:00",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/gallery-night-reception-at-the-grohmann-museum/",
-   "where": "Grohmann Museum",
-   "addr": "1000 N. Broadway",
-   "zip": "53202",
-   "summary": "Gallery Night Event featuring a Gallery Talk with Lina Bertucci and Cindy Angelos: The first women to work in the Milwaukee Road yards.",
-   "tags": [],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Artists Reception: Out There",
-   "start": "2026-10-16T17:00",
-   "end": "2026-10-16T20:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/artists-reception-out-there/",
-   "where": "Kim Storage Gallery",
-   "addr": "207 E. Buffalo St., Suite 404",
-   "zip": "53202",
-   "summary": "Kim Storage Gallery is pleased to present Out There, a two-person exhibition of new work by Hector Acuna and Andy Paczos.",
-   "tags": [],
-   "kind": "art",
-   "reach": "bus",
-   "free": true,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Actual Fractals: Book Talk with Pao Houa Her",
-   "start": "2026-10-16T17:00",
-   "end": "2026-10-16T19:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/actual-fractals%3a-book-talk-with-pao-houa-her/21955/",
-   "where": "Sculpture Milwaukee",
-   "addr": "3030 W Highland Blvd, Milwaukee, WI 53208",
-   "zip": "53208",
-   "summary": "",
-   "tags": [
-    "Social Impact & Nonprofit"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Embody Democracy | Niki Johnson | Opening Celebration",
-   "start": "2026-10-16T17:00",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/embody-democracy-%7c-niki-johnson-%7c-opening-celebration/22035/",
-   "where": "Arts @ Large, Inc.",
-   "addr": "1100 S. 5th Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Social Impact & Nonprofit"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Out There Artist's Reception | Kim Storage Gallery",
-   "start": "2026-10-16T17:00",
-   "end": "2026-10-16T20:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/out-there-artists-reception-%7c-kim-storage-gallery/21606/",
-   "where": "Kim Storage Gallery",
-   "addr": "207 E Buffalo St",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture"
-   ],
-   "free": null,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Treasured Postcards Workshop by John Michael Kohler Art Center",
-   "start": "2026-10-16T17:00",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/treasured-postcards-workshop-by-john-michael-kohler-art-center/22019/",
-   "where": "JK Art House",
-   "addr": "191 N Broadway",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Athena on My Mind: Closing Reception",
-   "start": "2026-10-16T17:30",
-   "end": "2026-10-16T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/athena-on-my-mind%3a-closing-reception/21897/",
-   "where": "",
-   "addr": "710 W Historic Mitchell St",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Galleries & Exhibitions",
-    "Arts & Culture",
-    "Free"
-   ],
-   "free": true,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Narrative | Milwaukee premiere!",
-   "start": "2026-10-16T18:00",
-   "end": "2026-10-16T19:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/narrative-milwaukee-premiere/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Anocha Suwichakornpong’s latest shape-shifting excavation of Thai history examines the still-palpable events of the military crackdown that left ninety dead and thousands injured during Bangkok’s…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Hand Knit Chunky Blankets",
-   "start": "2026-10-16T18:00",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/hand-knit-chunky-blankets/20871/",
-   "where": "Grey House Creative Market",
-   "addr": "6228 W. State Street",
-   "zip": "53213",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Arts & Culture",
-    "Family Friendly"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Live Music Series Every Friday!",
-   "start": "2026-10-16T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/live-music-series-every-friday!/14538/",
-   "where": "Station 1846",
-   "addr": "215 W. Bruce Street",
-   "zip": "53204",
-   "summary": "Recurring weekly on Friday",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Nightlife"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Marquette Men's Soccer vs. UConn",
-   "start": "2026-10-16T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/marquette-mens-soccer-vs-uconn/20223/",
-   "where": "Valley Fields",
-   "addr": "1818 W. Canal St.",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": true,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Fall Pinecone Gnome Workshop",
-   "start": "2026-10-16T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/fall-pinecone-gnome-workshop/21226/",
-   "where": "The Local Makery",
-   "addr": "2289 Ludington Ave",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Arts & Culture",
-    "Family Friendly"
-   ],
-   "run_through": "2026-10-23",
-   "free": false,
-   "kind": "talks",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Tunes on The Terrace!",
-   "start": "2026-10-16T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/tunes-on-the-terrace!/18972/",
-   "where": "Raised Grain Brewing Co.",
-   "addr": "1725 Dolphin Drive",
-   "zip": "53186",
-   "summary": "Recurring weekly on Friday",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Free Summer Music Series"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "A Harvest Tasting",
-   "start": "2026-10-16T19:00",
-   "end": "2026-10-16T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/a-harvest-tasting-21-09-2026-17-24-53",
-   "where": "Cudahy Family Library",
-   "addr": "",
-   "zip": "",
-   "summary": "Join us for our annual wine tasting fundraiser! Guests will enjoy quality wines, craft beers, and bountiful food throughout the evening as well as music, a silent auction, and a 50/50 raffle in this…",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "car",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee"
-  },
-  {
-   "title": "Creepy Cosmos",
-   "start": "2026-10-16T19:00",
-   "end": "2026-10-16T20:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/creepy-cosmos-12/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E .Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Embark on a spooktacular adventure through the creepiest parts of space with haunting cosmic visions and chilling stargazing tales.",
-   "tags": [],
-   "kind": "community",
-   "reach": "walk",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "90s + 2k Night: The Brianna Rae Band LIVE",
-   "start": "2026-10-16T19:00",
-   "end": "2026-10-16T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/90s-%2b-2k-night%3a-the-brianna-rae-band-live/21563/",
-   "where": "Nashville North",
-   "addr": "1216 E. Brady Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Addams Family Musical",
-   "start": "2026-10-16T19:30",
-   "end": "2026-10-16T19:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/the-addams-family-musical-8/",
-   "where": "Bombshell Studio Theatre",
-   "addr": "19700 W. Bluemound Rd.",
-   "zip": "53045",
-   "summary": "A new musical comedy that embraces the wackiness in every family.",
-   "tags": [],
-   "kind": "theater",
-   "reach": "car",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Wind Ensemble & Symphony Band Concert",
-   "start": "2026-10-16T19:30",
-   "end": "2026-10-16T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/uwm-wind-ensemble/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join the Department of Bands in the first concert of the new academic year.",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "The Holy Mountain | 35mm print!",
-   "start": "2026-10-16T19:30",
-   "end": "2026-10-16T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/the-holy-mountain-35mm-print/2026-10-16/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Scandal of Cannes 1973, Alejandro Jodorowsky’s flood of sacrilegious imagery and existential symbolism is a spiritual quest for enlightenment pitting illusion against truth. The Alchemist…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "5 Lesbians Eating a Quiche",
-   "start": "2026-10-16T19:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/5-lesbians-eating-a-quiche/20991/",
-   "where": "Pink's Accessible Theater House (PATH)",
-   "addr": "1104 W. Historic Mitchell St.",
-   "zip": "53204",
-   "summary": "Recurring weekly on Sunday, Thursday, Friday, Saturday",
-   "tags": [
-    "Comedy & Improv",
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
-  },
-  {
-   "title": "Friko",
-   "start": "2026-10-16T20:00",
-   "end": "2026-10-16T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/88nine-presents-friko-02-06-2026-12-38-36",
-   "where": "Vivarium",
-   "addr": "",
-   "zip": "",
-   "summary": "Presented by 88Nine. When Friko delivered their debut album Where we’ve been, Where we go from here , the Chicago-based band introduced a galvanizing new voice into the indie-rock canon. Both…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "W.A.S.P.",
-   "start": "2026-10-16T20:00",
-   "end": "2026-10-16T22:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/w-a-s-p/",
-   "where": "The Pabst Theater",
-   "addr": "144 E. Wells St.",
-   "zip": "53202",
-   "summary": "Live in concert.",
-   "tags": [],
-   "kind": "theater",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Ben Schwartz & Friends",
-   "start": "2026-10-16T20:00",
-   "end": "2026-10-16T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/ben-schwartz-%26-friends/21024/",
-   "where": "The Riverside Theater",
-   "addr": "116 W. Wisconsin Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv",
-    "Food & Drink",
-    "Milwaukee Theater District"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Latin Night at Amped",
-   "start": "2026-10-16T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/latin-night-at-amped/22027/",
-   "where": "Amped",
-   "addr": "910 W. Juneau Avenue",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Nightlife"
-   ],
-   "free": false,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Live Music",
-   "start": "2026-10-16T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/live-music/19614/",
-   "where": "Vendetta Coffee Bar - Walker's Point",
-   "addr": "524 S. 2nd Street",
-   "zip": "53204",
-   "summary": "Recurring weekly on Friday",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Community"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Constructivists Present: 5 Lesbians Eating a Quiche",
-   "start": "2026-10-16T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-constructivists-present%3a-5-lesbians-eating-a-quiche/21896/",
-   "where": "Pink Umbrella's Accessible Theater House",
-   "addr": "1104 West Historic Mitchell Street",
-   "zip": "53204",
-   "summary": "Recurring weekly on Thursday, Friday, Saturday",
-   "tags": [
-    "Comedy & Improv",
-    "Performing Arts & Theater"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "W.A.S.P. -1984 TO HEADLESS",
-   "start": "2026-10-16T20:00",
-   "end": "2026-10-16T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/w-a-s-p-1984-to-headless/21023/",
-   "where": "The Pabst Theater",
-   "addr": "144 E Wells St",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Milwaukee Theater District"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Zach Top: Cold Beer & Country Music Fall Tour 2026",
-   "start": "2026-10-16T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/zach-top%3a-cold-beer-%26-country-music-fall-tour-2026/20590/",
-   "where": "Fiserv Forum",
-   "addr": "1111 Vel R. Phillips Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
   },
   {
    "title": "Intro to Backpacking: Point Beach State Forest",
@@ -2763,25 +1903,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Brewers vs. Los Angeles Dodgers (If Necessary)",
-   "start": "2026-10-18T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-brewers-vs-los-angeles-dodgers-(if-necessary)/22100/",
-   "where": "American Family Field",
-   "addr": "1 Brewers Way",
-   "zip": "53214",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
    "title": "Big Head Todd and the Monsters",
    "start": "2026-10-18T19:30",
    "end": "2026-10-18T21:30",
@@ -3068,25 +2189,6 @@
    "also": [
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "Milwaukee Brewers vs. Los Angeles Dodgers (If Necessary)",
-   "start": "2026-10-19T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-brewers-vs-los-angeles-dodgers-(if-necessary)/22101/",
-   "where": "American Family Field",
-   "addr": "1 Brewers Way",
-   "zip": "53214",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
   },
   {
    "title": "UWM Pop Ensemble",
@@ -3504,14 +2606,13 @@
    "start": "2026-10-20T18:00",
    "end": "2026-10-20T19:00",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/true-crime%3a-milwaukee-edition/21985/",
-   "where": "Villa Arco",
-   "addr": "804 W Greenfield Ave",
-   "zip": "53204",
+   "url": "https://www.visitmilwaukee.org/event/true-crime%3a-milwaukee-edition/21946/",
+   "where": "804 West Greenfield Avenue Milwaukee, WI US 53204",
+   "addr": "235 E Michigan St",
+   "zip": "53202",
    "summary": "",
    "tags": [
-    "Arts & Culture",
-    "Museums & Attractions"
+    "Arts & Culture"
    ],
    "free": false,
    "kind": "community",
@@ -5029,9 +4130,9 @@
   {
    "title": "J.A.M. (Join the Art Making)",
    "start": "2026-10-22T18:00",
-   "end": "2026-10-22T21:00",
+   "end": "2026-10-22T20:00",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/j-a-m-(join-the-art-making)/22036/",
+   "url": "https://www.visitmilwaukee.org/event/j-a-m-(join-the-art-making)/20947/",
    "where": "Arts @ Large, Inc.",
    "addr": "1100 S. 5th Street",
    "zip": "53204",
@@ -5518,25 +4619,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Brewers vs TB/CLE",
-   "start": "2026-10-23T03:33",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.mlb.com/brewers/schedule/2026-10",
-   "where": "American Family Field",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "day"
-   ],
-   "free": false,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "brewers"
   },
   {
    "title": "Prelude: Day in the Life of a Music Major",
@@ -6079,6 +5161,25 @@
    ]
   },
   {
+   "title": "Brewers vs TB/CLE",
+   "start": "2026-10-23T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.mlb.com/brewers/schedule/2026-10",
+   "where": "American Family Field",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [
+    "night"
+   ],
+   "free": false,
+   "kind": "sports",
+   "reach": "car",
+   "via": "source",
+   "src": "brewers"
+  },
+  {
    "title": "MAM After Dark: Halloween Bash",
    "start": "2026-10-23T19:00",
    "end": "2026-10-23T23:00",
@@ -6488,25 +5589,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Brewers vs TB/CLE",
-   "start": "2026-10-24T03:33",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.mlb.com/brewers/schedule/2026-10",
-   "where": "American Family Field",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "day"
-   ],
-   "free": false,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "brewers"
-  },
-  {
    "title": "Tosa Farmers Market",
    "start": "2026-10-24T08:00",
    "end": "",
@@ -6753,6 +5835,27 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
+  },
+  {
+   "title": "Foxtown Fall Family Fun Day",
+   "start": "2026-10-24T11:00",
+   "end": "2026-10-24T16:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/foxtown-fall-family-fun-day/",
+   "where": "Foxtown Station",
+   "addr": "6209 W. Mequon Rd.",
+   "zip": "53092",
+   "summary": "Whether you’re looking for family-friendly activities, fall flavors, local shopping, or simply a fun way to spend a crisp autumn day, Foxtown Fall Family Fun Day has something for everyone",
+   "tags": [
+    "Food & Drink",
+    "Kids",
+    "Pets"
+   ],
+   "kind": "food",
+   "reach": "car",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Día de los Muertos Festival at Forest Home Cemetery and Arboretum",
@@ -7256,6 +6359,25 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Brewers vs TB/CLE",
+   "start": "2026-10-24T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.mlb.com/brewers/schedule/2026-10",
+   "where": "American Family Field",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [
+    "night"
+   ],
+   "free": false,
+   "kind": "sports",
+   "reach": "car",
+   "via": "source",
+   "src": "brewers"
   },
   {
    "title": "In a Lonely Place | 35mm print!",
@@ -7820,6 +6942,27 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Data Center Detectives: The Hunt For Mr. V",
+   "start": "2026-10-25T14:30",
+   "end": "2026-10-25T18:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/data-center-detectives-the-hunt-for-mr-v/",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "Join the Working Majority, local community groups, and hundreds of Wisconsinites for a wild data-center themed scavenger hunt.",
+   "tags": [
+    "Business",
+    "Environment",
+    "Food & Drink"
+   ],
+   "kind": "outdoors",
+   "reach": null,
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Marquette University Women's Volleyball vs. Xavier",
@@ -10347,25 +9490,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Brewers vs TB/CLE",
-   "start": "2026-10-30T03:33",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.mlb.com/brewers/schedule/2026-10",
-   "where": "American Family Field",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "day"
-   ],
-   "free": false,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "brewers"
-  },
-  {
    "title": "Washington Park ROOT (Restoring Our Outdoors Together)",
    "start": "2026-10-30T09:00",
    "end": "2026-10-30T11:00",
@@ -10645,6 +9769,25 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Brewers vs TB/CLE",
+   "start": "2026-10-30T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.mlb.com/brewers/schedule/2026-10",
+   "where": "American Family Field",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [
+    "night"
+   ],
+   "free": false,
+   "kind": "sports",
+   "reach": "car",
+   "via": "source",
+   "src": "brewers"
   },
   {
    "title": "Sugar Skull",
@@ -11107,25 +10250,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Brewers vs TB/CLE",
-   "start": "2026-10-31T03:33",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.mlb.com/brewers/schedule/2026-10",
-   "where": "American Family Field",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "day"
-   ],
-   "free": false,
-   "kind": "sports",
-   "reach": "car",
-   "via": "source",
-   "src": "brewers"
   },
   {
    "title": "Drop-in Art Making: Mariposas",
@@ -11794,6 +10918,25 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Brewers vs TB/CLE",
+   "start": "2026-10-31T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.mlb.com/brewers/schedule/2026-10",
+   "where": "American Family Field",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [
+    "night"
+   ],
+   "free": false,
+   "kind": "sports",
+   "reach": "car",
+   "via": "source",
+   "src": "brewers"
   },
   {
    "title": "Adult Halloween Comedy, Magic & Burlesque Show",
@@ -14743,6 +13886,27 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
+  },
+  {
+   "title": "Dia de los Muertos Tianguis & Altar Competition",
+   "start": "2026-11-07T10:00",
+   "end": "2026-11-07T15:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/dia-de-los-muertos-tianguis-%26-altar-competition/22147/",
+   "where": "Parking Lot Across Rivera's Western Wear",
+   "addr": "1002 S César E. Chávez Dr",
+   "zip": "53210",
+   "summary": "",
+   "tags": [
+    "Holiday Markets",
+    "Community",
+    "Family Friendly"
+   ],
+   "free": true,
+   "kind": "community",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "St. Camillus Annual Holiday Art & Craft Fair",
@@ -20623,6 +19787,25 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "StoryStarter: For the Culture Workshop",
+   "start": "2026-11-19T17:45",
+   "end": "2026-11-19T18:45",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/storystarter-for-the-culture-workshop/",
+   "where": "Radio Milwaukee",
+   "addr": "220 E. Pittsburgh Ave",
+   "zip": "53204",
+   "summary": "New to storytelling? Or in need of a refresh on the basics? Want to practice a story to tell at our StorySlam? This interactive workshop is for you!",
+   "tags": [
+    "Class"
+   ],
+   "kind": "talks",
+   "reach": "bus",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Fibers Made Easy: Crochet Hats",
    "start": "2026-11-19T18:00",
    "end": "2026-11-19T20:30",
@@ -20769,6 +19952,23 @@
    "also": [
     "visit-milwaukee"
    ]
+  },
+  {
+   "title": "AfterDark: For the Culture – A Night Celebrating Black and Brown Voices",
+   "start": "2026-11-19T19:00",
+   "end": "2026-11-19T21:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/afterdark-for-the-culture-a-night-celebrating-black-and-brown-voices/",
+   "where": "Radio Milwaukee",
+   "addr": "220 E. Pittsburgh Ave",
+   "zip": "53204",
+   "summary": "A non-competitive evening of live spoken word, poetry, and storytelling celebrates Black and Brown voices and brings together a blend of curated speakers with storytellers drawn from the audience.",
+   "tags": [],
+   "kind": "books",
+   "reach": "bus",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "MKE Unplugged",
@@ -21356,6 +20556,23 @@
    "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Gimme Gimme Disco",
+   "start": "2026-11-20T20:00",
+   "end": "2026-11-20T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/gimme-gimme-disco-2/",
+   "where": "The Rave",
+   "addr": "2401 W. Wisconsin Ave.",
+   "zip": "53233",
+   "summary": "Grab tickets, put on your best disco attire, bring your friends, and have the best night of your life.",
+   "tags": [],
+   "kind": "music",
+   "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Live Music",
@@ -23902,7 +23119,7 @@
    ],
    "time_unknown": true,
    "free": true,
-   "run_through": "2026-12-15",
+   "run_through": "2026-12-16",
    "kind": "art",
    "reach": "bus",
    "via": "org",
@@ -24507,6 +23724,29 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Drawing for Print & Lithography Exhibition",
+   "start": "2026-12-02",
+   "end": "2026-12-16",
+   "all_day": false,
+   "url": "https://uwm.edu/arts/event/drawing-for-print-lithography-exhibition/",
+   "where": "Kenilworth Square East, 5th Floor Gallery",
+   "addr": "2155 N. Prospect Ave.",
+   "zip": "53202",
+   "summary": "Presenting a selection of lithographic prints demonstrating each artist’s unique interpretation of their experiences and interests. Students produce diverse responses to themes such as Micro/Macro,…",
+   "tags": [
+    "Peck School of the Arts",
+    "Art & Design",
+    "Arts and Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-16",
+   "kind": "art",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
    "start": "2026-12-02",
    "end": "",
@@ -24631,6 +23871,27 @@
    "org": "uwm"
   },
   {
+   "title": "Wag More Wednesday",
+   "start": "2026-12-02T11:00",
+   "end": "2026-12-02T17:00",
+   "all_day": false,
+   "url": "https://uwm.edu/libraries/event/wag-more-dec2/",
+   "where": "Daniel M. Soref Learning Commons, Golda Meir Library",
+   "addr": "",
+   "zip": "",
+   "summary": "College can be stressful, so take a moment to relax by petting a therapy dog! Volunteers from the Alliance of Therapy Dogs and Pet Partners will be bringing furry friends to the Daniel M. Soref…",
+   "tags": [
+    "UWM Libraries",
+    "Front Page Event",
+    "Health and Well-being"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Crosswords, Coloring, and Community",
    "start": "2026-12-02T11:30",
    "end": "2026-12-02T12:30",
@@ -24692,6 +23953,27 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Club Soda",
+   "start": "2026-12-02T13:30",
+   "end": "2026-12-02T14:30",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-12-02/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Connect",
+    "Health and Well-being"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
    "title": "Village Tree Lighting",
    "start": "2026-12-02T17:00",
    "end": "",
@@ -24711,6 +23993,48 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Lyrical Sanctuary feat. Mad Static",
+   "start": "2026-12-02T18:00",
+   "end": "2026-12-02T21:00",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/lyrical-sanctuary-feat-mad-static/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Lyrical Sanctuary Featuring Mad Static",
+   "tags": [
+    "Student Affairs & the Union",
+    "Arts and Culture",
+    "Public"
+   ],
+   "kind": "community",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
+  },
+  {
+   "title": "Intro to Stained Glass Session 4",
+   "start": "2026-12-02T18:00",
+   "end": "2026-12-02T20:30",
+   "all_day": false,
+   "url": "https://uwm.edu/studentaffairs/event/intro-to-stained-glass-session-4-3/2026-12-02/",
+   "where": "UWM Student Union (UN)",
+   "addr": "2200 East Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "In this workshop, you will learn how to score, cut, foil, solder, and assemble your own stained-glass motif. Class participants will choose their own colors for a sunrise pattern which they will be…",
+   "tags": [
+    "Student Affairs & the Union",
+    "Arts and Culture",
+    "Public"
+   ],
+   "kind": "talks",
+   "reach": "walk",
+   "free": null,
+   "via": "org",
+   "org": "uwm"
   },
   {
    "title": "Glasses of Amber & Gold: The Magic of Aged Fortified Wine",
@@ -29365,7 +28689,7 @@
    "where": "Milwaukee Public Library Central Library",
    "addr": "814 W Wisconsin Ave",
    "zip": "53233",
-   "summary": "The Hidden Chapter Book Club gathers monthly to read, sip, and discover. We'll discuss The Man Who Loved Books too much and explore materials from Central Library?s secure underground Storage Tiers.",
+   "summary": "The Hidden Chapter Book Club gathers monthly to read, sip, and discover. We'll discuss The Man Who Loved Books Too Much and explore materials from Central Library's secure underground Storage Tiers.",
    "tags": [
     "Special Collections & Rare Books",
     "Book Club/Discussion"
@@ -29392,6 +28716,215 @@
    "free": false,
    "kind": "music",
    "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
+   "start": "2026-12-16",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival-presented-by-johnson-financial-group/21953/",
+   "where": "",
+   "addr": "",
+   "zip": "53202",
+   "summary": "Recurring daily",
+   "tags": [
+    "Festival",
+    "Community",
+    "Family Friendly"
+   ],
+   "time_unknown": true,
+   "free": null,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Milwaukee Holiday Lights Festival",
+   "start": "2026-12-16",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival/21795/",
+   "where": "Downtown Milwaukee",
+   "addr": "301 W. Wisconsin Avenue",
+   "zip": "53202",
+   "summary": "Recurring daily",
+   "tags": [
+    "Festival",
+    "Family Friendly",
+    "Free"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Reading Group: Readshop *ONLINE on Zoom*",
+   "start": "2026-12-16",
+   "end": "2026-12-16",
+   "all_day": true,
+   "url": "https://woodlandpattern.org/events/community-group-readshop-fall-winter-2026",
+   "where": "Online",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
+   "free": null,
+   "kind": "books",
+   "reach": "online",
+   "via": "org",
+   "org": "woodland-pattern"
+  },
+  {
+   "title": "Storytime at the Domes",
+   "start": "2026-12-16T10:00",
+   "end": "2026-12-16T10:30",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/storytime-at-the-domes-2-2-2/2026-12-16/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Milwaukee Domes Alliance hosts storytime every Wednesday. Join us for bilingual (Spanish/English) storytime the last Wednesday of the month! No pre-registration required. Cost: Included with…",
+   "tags": [
+    "Ongoing Programs",
+    "Storytime"
+   ],
+   "kind": "family",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
+   "title": "Help for Homeless Veterans",
+   "start": "2026-12-16T10:00",
+   "end": "2026-12-16T12:00",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/16243185",
+   "where": "Milwaukee Public Library Central Library",
+   "addr": "814 W Wisconsin Ave",
+   "zip": "53233",
+   "summary": "A coordinator from the U.S. Department of Veterans Affairs Health Care for Homeless Veterans (HCHV) Program will provide Veterans with information on resources and programs.",
+   "tags": [
+    "Health & Wellness",
+    "with the VA HCHV Outreach Program"
+   ],
+   "free": true,
+   "kind": "talks",
+   "reach": "bus",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "The Boys from Baraboo",
+   "start": "2026-12-16T13:30",
+   "end": "2026-12-16T13:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/the-boys-from-baraboo/20007/",
+   "where": "Next Act Theatre",
+   "addr": "255 S. Water Street",
+   "zip": "53204",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater",
+    "Arts & Culture",
+    "Milwaukee Theater District"
+   ],
+   "run_through": "2026-12-20",
+   "free": false,
+   "kind": "theater",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
+  },
+  {
+   "title": "Curator Tour and Reception",
+   "start": "2026-12-16T17:30",
+   "end": "2026-12-16T19:30",
+   "all_day": false,
+   "url": "https://mam.org/events/event/curator-tour-reception/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Join us for an after-hours cocktail reception in Windhover Hall, followed by an exclusive curator-led tour of one of the Museum’s featured exhibitions.",
+   "tags": [
+    "American",
+    "Baker/Rowland Galleries",
+    "Beneath the Surface"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Leather Coaster & Tooling Workshop",
+   "start": "2026-12-16T18:00",
+   "end": "2026-12-16T20:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/leather-coaster-%26-tooling-workshop/21271/",
+   "where": "The Local Makery",
+   "addr": "2289 Ludington Ave",
+   "zip": "53226",
+   "summary": "",
+   "tags": [
+    "Classes & Workshops",
+    "Arts & Culture",
+    "Family Friendly"
+   ],
+   "free": false,
+   "kind": "talks",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2026-12-16T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Big: The Musical",
+   "start": "2026-12-16T19:30",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/big%3a-the-musical/20480/",
+   "where": "Skylight Music Theatre",
+   "addr": "158 N. Broadway",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater",
+    "Milwaukee Theater District"
+   ],
+   "run_through": "2026-12-27",
+   "free": false,
+   "kind": "theater",
+   "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
   }
@@ -29430,26 +28963,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 278,
-   "theater": 131,
-   "comedy": 72,
+   "music": 275,
+   "theater": 129,
+   "comedy": 68,
    "film": 16,
-   "art": 122,
+   "art": 117,
    "talks": 227,
-   "books": 14,
+   "books": 16,
    "markets": 21,
-   "outdoors": 103,
-   "food": 141,
-   "sports": 42,
-   "family": 43,
-   "community": 223
+   "outdoors": 101,
+   "food": 136,
+   "sports": 39,
+   "family": 44,
+   "community": 221
   },
   "reach": {
-   "walk": 401,
-   "bus": 694,
-   "car": 287,
-   "unknown": 42
+   "walk": 398,
+   "bus": 680,
+   "car": 279,
+   "unknown": 43
   },
-  "free": 420
+  "free": 413
  }
 }
