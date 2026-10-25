@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Earth</title>
+<meta name="description" content="A whole-Earth map: pan and zoom to any country, with data overlays — lat/long grid now, elevation, ocean depth, currents, wind, and pressure to follow.">
+<link rel="stylesheet" href="../_shared/hub-nav.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@5.23.0/dist/maplibre-gl.css">
+<link rel="stylesheet" href="styles.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌍</text></svg>">
+</head>
+<body>
+
+<nav class="ws-hub-nav" aria-label="Workspace navigation">
+<a class="ws-hub-home" href="../">← Hub</a>
+</nav>
+
+<div id="map"></div>
+
+<aside class="panel" id="panel">
+  <div class="panel-head">
+    <h1>Earth</h1>
+    <button class="panel-collapse" id="panelCollapse" aria-expanded="true" aria-controls="panelBody">—</button>
+  </div>
+  <div class="panel-body" id="panelBody">
+    <p class="sub">Pan, zoom, spin. Click the map to read a coordinate. Layers build up over time.</p>
+
+    <div class="block">
+      <div class="row-head"><h2>View</h2></div>
+      <div class="seg" id="projectionToggle" role="group" aria-label="Projection">
+        <button class="seg-btn is-active" type="button" data-proj="mercator">Flat</button>
+        <button class="seg-btn" type="button" data-proj="globe">Globe</button>
+      </div>
+    </div>
+
+    <div class="block">
+      <div class="row-head"><h2>Layers</h2></div>
+      <ul class="layers" id="layerList"></ul>
+    </div>
+
+    <div class="block coord" id="coordBlock" hidden>
+      <div class="row-head"><h2>Cursor</h2></div>
+      <p class="mono" id="coordOut">—</p>
+    </div>
+
+    <p class="credit">Basemap &amp; boundaries: <a href="https://openfreemap.org/" target="_blank" rel="noopener">OpenFreeMap</a>
+    (© OpenStreetMap contributors), rendered with <a href="https://maplibre.org/" target="_blank" rel="noopener">MapLibre GL JS</a>.
+    No bundler — plain HTML/CSS/JS, same as the rest of the hub.</p>
+  </div>
+</aside>
+
+<script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.23.0/dist/maplibre-gl.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
