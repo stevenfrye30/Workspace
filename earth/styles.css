@@ -175,6 +175,107 @@ html, body {
 }
 .credit a { color: inherit; }
 
+.layer-table-btn {
+  align-self: flex-start;
+  margin-top: 0.35rem;
+  font-size: 0.72rem;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--panel-fg);
+  border-radius: 6px;
+  padding: 0.15rem 0.55rem;
+  cursor: pointer;
+}
+.layer-table-btn:hover { background: var(--track); }
+
+.table-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+}
+.table-overlay[hidden] { display: none; }
+.table-card {
+  background: var(--panel-bg);
+  color: var(--panel-fg);
+  border: 1px solid var(--panel-border);
+  border-radius: 12px;
+  box-shadow: var(--panel-shadow);
+  backdrop-filter: saturate(1.3) blur(10px);
+  -webkit-backdrop-filter: saturate(1.3) blur(10px);
+  width: min(880px, 100%);
+  max-height: min(78vh, 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.table-card-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--panel-border);
+  flex: none;
+}
+.table-card-head h2 { font-size: 1rem; margin: 0; font-weight: 600; flex: none; }
+.table-filter {
+  flex: 1;
+  min-width: 0;
+  background: var(--track);
+  border: 1px solid var(--panel-border);
+  border-radius: 6px;
+  color: var(--panel-fg);
+  padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+}
+.table-close {
+  border: none;
+  background: transparent;
+  color: var(--panel-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  width: 1.8rem;
+  height: 1.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  flex: none;
+}
+.table-close:hover { background: var(--track); color: var(--panel-fg); }
+
+.table-scroll { overflow: auto; }
+#dataTable { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+#dataTable th, #dataTable td { padding: 0.4rem 0.7rem; text-align: left; white-space: nowrap; }
+#dataTable th {
+  position: sticky;
+  top: 0;
+  background: var(--panel-bg);
+  cursor: pointer;
+  user-select: none;
+  border-bottom: 1px solid var(--panel-border);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--panel-muted);
+}
+#dataTable th:hover { color: var(--panel-fg); }
+#dataTable th.is-sorted { color: var(--accent); }
+#dataTable td.num, #dataTable th.num { text-align: right; font-variant-numeric: tabular-nums; }
+#dataTable tbody tr:hover { background: var(--track); cursor: pointer; }
+#dataTable tbody tr:nth-child(even) { background: rgba(127, 127, 127, 0.06); }
+
+.table-foot {
+  font-size: 0.72rem;
+  color: var(--panel-muted);
+  padding: 0.5rem 1rem;
+  margin: 0;
+  border-top: 1px solid var(--panel-border);
+  flex: none;
+}
+
 @media (max-width: 600px) {
   .panel {
     top: auto;
@@ -186,4 +287,8 @@ html, body {
     max-height: 48vh;
     border-radius: 12px 12px 0 0;
   }
+
+  .table-overlay { padding: 0; }
+  .table-card { width: 100%; max-height: 100%; height: 100%; border-radius: 0; }
+  .table-card-head { padding-top: 2.6rem; flex-wrap: wrap; }
 }

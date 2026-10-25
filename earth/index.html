@@ -85,6 +85,23 @@
   </div>
 </aside>
 
+<div class="table-overlay" id="tableOverlay" hidden>
+  <div class="table-card">
+    <div class="table-card-head">
+      <h2 id="tableTitle">Countries</h2>
+      <input type="search" id="tableFilter" class="table-filter" placeholder="Filter by name…">
+      <button class="table-close" id="tableClose" aria-label="Close table" type="button">×</button>
+    </div>
+    <div class="table-scroll">
+      <table id="dataTable">
+        <thead id="tableHead"></thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+    <p class="table-foot" id="tableFoot"></p>
+  </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.23.0/dist/maplibre-gl.js"></script>
 <script src="app.js"></script>
 </body>

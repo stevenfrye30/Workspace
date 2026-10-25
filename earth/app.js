@@ -72,6 +72,7 @@ const COUNTRIES_DATA_URL = 'data/countries.geojson';
 
 const STATUS_COLORS = { member: '#2f6fdb', observer: '#caa23c', other: '#8a8a8a' };
 const STATUS_LABELS = { member: 'UN member state', observer: 'UN permanent observer', other: 'Other territory — not a UN member' };
+const STATUS_SHORT = { member: 'Member', observer: 'Observer', other: 'Other' };
 const STATUS_COLOR_EXPR = [
   'match', ['get', 'un_status'],
   'member', STATUS_COLORS.member,
@@ -223,6 +224,122 @@ function showAreaDetail(props) {
   document.getElementById('areaDetail').hidden = false;
 }
 
+// --- Data table overlay (shared by any layer with a `table` config) -------
+// Built from the same cached fetch as the map layers — opening the table
+// never requires the layer itself to be toggled on first.
+
+let tableState = null;
+
+function openTable(layer) {
+  loadCountriesData().then((data) => {
+    tableState = {
+      layerId: layer.id,
+      columns: layer.table.columns,
+      features: data.features,
+      sortKey: layer.table.defaultSort || layer.table.columns[0].key,
+      sortDir: layer.table.defaultDir || 'asc',
+      filter: '',
+    };
+    document.getElementById('tableTitle').textContent = layer.table.title;
+    document.getElementById('tableFilter').value = '';
+    renderTable();
+    document.getElementById('tableOverlay').hidden = false;
+  });
+}
+
+function closeTable() {
+  document.getElementById('tableOverlay').hidden = true;
+}
+
+function renderTable() {
+  const { columns, features, sortKey, sortDir, filter } = tableState;
+  const sortCol = columns.find((c) => c.key === sortKey);
+  const rows = features.filter((f) => !filter || f.properties.name.toLowerCase().includes(filter));
+  rows.sort((a, b) => {
+    const av = sortCol.sort(a.properties);
+    const bv = sortCol.sort(b.properties);
+    const cmp = av < bv ? -1 : av > bv ? 1 : 0;
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  const thead = document.getElementById('tableHead');
+  thead.innerHTML = '';
+  const headRow = document.createElement('tr');
+  columns.forEach((c) => {
+    const th = document.createElement('th');
+    const isSorted = c.key === sortKey;
+    th.textContent = c.label + (isSorted ? (sortDir === 'asc' ? ' ▲' : ' ▼') : '');
+    if (c.align === 'right') th.classList.add('num');
+    if (isSorted) th.classList.add('is-sorted');
+    th.addEventListener('click', () => {
+      if (tableState.sortKey === c.key) tableState.sortDir = tableState.sortDir === 'asc' ? 'desc' : 'asc';
+      else { tableState.sortKey = c.key; tableState.sortDir = 'asc'; }
+      renderTable();
+    });
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  rows.forEach((f) => {
+    const tr = document.createElement('tr');
+    columns.forEach((c) => {
+      const td = document.createElement('td');
+      td.textContent = c.value ? c.value(f.properties) : f.properties[c.key];
+      if (c.align === 'right') td.classList.add('num');
+      tr.appendChild(td);
+    });
+    tr.addEventListener('click', () => selectTableRow(f));
+    tbody.appendChild(tr);
+  });
+
+  document.getElementById('tableFoot').textContent =
+    `${rows.length.toLocaleString()} of ${features.length.toLocaleString()} shown — click a row to locate it on the map.`;
+}
+
+function featureBBox(geometry) {
+  let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  const scan = (coords) => {
+    if (typeof coords[0] === 'number') {
+      const [x, y] = coords;
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    } else {
+      coords.forEach(scan);
+    }
+  };
+  scan(geometry.coordinates);
+  return [[minX, minY], [maxX, maxY]];
+}
+
+function selectTableRow(feature) {
+  closeTable();
+  const layer = LAYERS.find((l) => l.id === tableState.layerId);
+  const checkbox = document.getElementById(`layer-${layer.id}`);
+  if (!checkbox.checked) {
+    checkbox.checked = true;
+    layer.add(map);
+  }
+  map.fitBounds(featureBBox(feature.geometry), { padding: 60, maxZoom: 5, duration: 600 });
+  if (layer.id === 'countries') showCountryDetail(feature.properties);
+  if (layer.id === 'country-area') showAreaDetail(feature.properties);
+}
+
+document.getElementById('tableClose').addEventListener('click', closeTable);
+document.getElementById('tableOverlay').addEventListener('click', (e) => {
+  if (e.target.id === 'tableOverlay') closeTable();
+});
+document.getElementById('tableFilter').addEventListener('input', (e) => {
+  tableState.filter = e.target.value.trim().toLowerCase();
+  renderTable();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && !document.getElementById('tableOverlay').hidden) closeTable();
+});
+
 const LAYERS = [
   {
     id: 'graticule',
@@ -241,6 +358,18 @@ const LAYERS = [
     note: 'All ~242 Natural Earth shapes, colored by UN status.',
     add: addCountries,
     remove: removeCountries,
+    table: {
+      title: 'Countries (UN view)',
+      defaultSort: 'name',
+      columns: [
+        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
+        { key: 'status', label: 'UN status', value: (p) => STATUS_SHORT[p.un_status], sort: (p) => STATUS_SHORT[p.un_status] },
+        { key: 'type', label: 'Type', value: (p) => p.type || '—', sort: (p) => p.type || '' },
+        { key: 'iso', label: 'ISO', value: (p) => `${p.iso_a2 || '—'} / ${p.iso_a3 || '—'}`, sort: (p) => p.iso_a3 || '' },
+        { key: 'pop', label: 'Population', align: 'right', value: (p) => (p.pop_est > 0 ? Math.round(p.pop_est).toLocaleString() : '—'), sort: (p) => p.pop_est || 0 },
+        { key: 'region', label: 'Region', value: (p) => [p.continent, p.subregion].filter(Boolean).join(' · ') || '—', sort: (p) => p.continent || '' },
+      ],
+    },
   },
   {
     id: 'country-area',
@@ -250,6 +379,16 @@ const LAYERS = [
     note: 'Shaded by land area — darker green is larger. Click for exact km² / mi².',
     add: addArea,
     remove: removeArea,
+    table: {
+      title: 'Country areas',
+      defaultSort: 'km2',
+      defaultDir: 'desc',
+      columns: [
+        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
+        { key: 'km2', label: 'Area (km²)', align: 'right', value: (p) => fmtArea(p.area_km2).km2, sort: (p) => p.area_km2 },
+        { key: 'mi2', label: 'Area (mi²)', align: 'right', value: (p) => fmtArea(p.area_km2).mi2, sort: (p) => p.area_km2 },
+      ],
+    },
   },
   { id: 'elevation', label: 'Elevation / topography', status: 'planned', note: 'Land relief — GEBCO / ETOPO.' },
   { id: 'bathymetry', label: 'Ocean depth', status: 'planned', note: 'Seafloor bathymetry — GEBCO.' },
@@ -321,6 +460,15 @@ LAYERS.forEach((layer) => {
     note.className = 'layer-note';
     note.textContent = layer.note;
     main.appendChild(note);
+  }
+
+  if (layer.table) {
+    const tableBtn = document.createElement('button');
+    tableBtn.type = 'button';
+    tableBtn.className = 'layer-table-btn';
+    tableBtn.textContent = 'View as table';
+    tableBtn.addEventListener('click', () => openTable(layer));
+    main.appendChild(tableBtn);
   }
 
   li.appendChild(checkbox);
