@@ -141,6 +141,9 @@ function showCountryDetail(props) {
     props.pop_est && props.pop_est > 0 ? Math.round(props.pop_est).toLocaleString() : '—';
   document.getElementById('cdRegion').textContent =
     [props.continent, props.subregion].filter(Boolean).join(' · ') || '—';
+  const a = fmtArea(props.area_km2);
+  document.getElementById('cdKm2').textContent = a.km2;
+  document.getElementById('cdMi2').textContent = a.mi2;
   document.getElementById('countryDetail').hidden = false;
 }
 
