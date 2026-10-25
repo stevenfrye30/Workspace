@@ -39,6 +39,25 @@
       <ul class="layers" id="layerList"></ul>
     </div>
 
+    <div class="block countries" id="countriesBlock" hidden>
+      <div class="row-head"><h2>Countries</h2></div>
+      <ul class="legend-list">
+        <li><span class="swatch swatch-member"></span>UN member <span class="legend-count" id="countMember">—</span></li>
+        <li><span class="swatch swatch-observer"></span>UN observer <span class="legend-count" id="countObserver">—</span></li>
+        <li><span class="swatch swatch-other"></span>Other territory <span class="legend-count" id="countOther">—</span></li>
+      </ul>
+      <p class="layer-note">Click a shape for details. Boundaries: Natural Earth (public domain).</p>
+      <div class="country-detail" id="countryDetail" hidden>
+        <p class="country-name" id="cdName">—</p>
+        <p class="country-sub" id="cdFormal"></p>
+        <p class="country-row"><span class="swatch" id="cdStatusDot"></span><span id="cdStatus"></span></p>
+        <p class="country-row"><span class="k">Type</span><span id="cdType"></span></p>
+        <p class="country-row"><span class="k">ISO</span><span id="cdCodes"></span></p>
+        <p class="country-row"><span class="k">Population (est.)</span><span id="cdPop"></span></p>
+        <p class="country-row"><span class="k">Region</span><span id="cdRegion"></span></p>
+      </div>
+    </div>
+
     <div class="block coord" id="coordBlock" hidden>
       <div class="row-head"><h2>Cursor</h2></div>
       <p class="mono" id="coordOut">—</p>

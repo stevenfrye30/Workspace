@@ -60,6 +60,90 @@ function removeGraticule(map) {
   if (map.getSource(GRATICULE_SOURCE)) map.removeSource(GRATICULE_SOURCE);
 }
 
+// --- Countries (UN view) --------------------------------------------------
+// Every country/territory Natural Earth draws (~242 shapes), classified by
+// UN status. See data/build_countries.py for how the classification is
+// derived and why it isn't a straight ISO-code lookup.
+
+const COUNTRIES_SOURCE = 'countries';
+const COUNTRIES_FILL_LAYER = 'countries-fill';
+const COUNTRIES_LINE_LAYER = 'countries-line';
+const COUNTRIES_DATA_URL = 'data/countries.geojson';
+
+const STATUS_COLORS = { member: '#2f6fdb', observer: '#caa23c', other: '#8a8a8a' };
+const STATUS_LABELS = { member: 'UN member state', observer: 'UN permanent observer', other: 'Other territory — not a UN member' };
+const STATUS_COLOR_EXPR = [
+  'match', ['get', 'un_status'],
+  'member', STATUS_COLORS.member,
+  'observer', STATUS_COLORS.observer,
+  STATUS_COLORS.other,
+];
+
+let countriesDataPromise = null;
+function loadCountriesData() {
+  if (!countriesDataPromise) countriesDataPromise = fetch(COUNTRIES_DATA_URL).then((r) => r.json());
+  return countriesDataPromise;
+}
+
+// Keep fills under the basemap's place labels so names stay legible.
+function firstSymbolLayerId(map) {
+  const layer = map.getStyle().layers.find((l) => l.type === 'symbol');
+  return layer && layer.id;
+}
+
+function addCountries(map) {
+  loadCountriesData().then((data) => {
+    if (map.getSource(COUNTRIES_SOURCE)) return;
+    map.addSource(COUNTRIES_SOURCE, { type: 'geojson', data });
+    const beforeId = firstSymbolLayerId(map);
+    map.addLayer({
+      id: COUNTRIES_FILL_LAYER,
+      type: 'fill',
+      source: COUNTRIES_SOURCE,
+      paint: { 'fill-color': STATUS_COLOR_EXPR, 'fill-opacity': 0.42 },
+    }, beforeId);
+    map.addLayer({
+      id: COUNTRIES_LINE_LAYER,
+      type: 'line',
+      source: COUNTRIES_SOURCE,
+      paint: { 'line-color': STATUS_COLOR_EXPR, 'line-width': 1, 'line-opacity': 0.9 },
+    }, beforeId);
+    showCountryStats(data);
+  });
+}
+
+function removeCountries(map) {
+  if (map.getLayer(COUNTRIES_FILL_LAYER)) map.removeLayer(COUNTRIES_FILL_LAYER);
+  if (map.getLayer(COUNTRIES_LINE_LAYER)) map.removeLayer(COUNTRIES_LINE_LAYER);
+  if (map.getSource(COUNTRIES_SOURCE)) map.removeSource(COUNTRIES_SOURCE);
+  document.getElementById('countriesBlock').hidden = true;
+  document.getElementById('countryDetail').hidden = true;
+}
+
+function showCountryStats(data) {
+  const counts = { member: 0, observer: 0, other: 0 };
+  data.features.forEach((f) => { counts[f.properties.un_status]++; });
+  document.getElementById('countMember').textContent = counts.member;
+  document.getElementById('countObserver').textContent = counts.observer;
+  document.getElementById('countOther').textContent = counts.other;
+  document.getElementById('countriesBlock').hidden = false;
+}
+
+function showCountryDetail(props) {
+  document.getElementById('cdName').textContent = props.name;
+  document.getElementById('cdFormal').textContent =
+    props.formal_name && props.formal_name !== props.name ? props.formal_name : '';
+  document.getElementById('cdStatusDot').style.background = STATUS_COLORS[props.un_status];
+  document.getElementById('cdStatus').textContent = STATUS_LABELS[props.un_status];
+  document.getElementById('cdType').textContent = props.type || '—';
+  document.getElementById('cdCodes').textContent = `${props.iso_a2 || '—'} / ${props.iso_a3 || '—'}`;
+  document.getElementById('cdPop').textContent =
+    props.pop_est && props.pop_est > 0 ? Math.round(props.pop_est).toLocaleString() : '—';
+  document.getElementById('cdRegion').textContent =
+    [props.continent, props.subregion].filter(Boolean).join(' · ') || '—';
+  document.getElementById('countryDetail').hidden = false;
+}
+
 const LAYERS = [
   {
     id: 'graticule',
@@ -69,6 +153,15 @@ const LAYERS = [
     note: '10° lines; equator & prime meridian in bold.',
     add: addGraticule,
     remove: removeGraticule,
+  },
+  {
+    id: 'countries',
+    label: 'Countries (UN view)',
+    status: 'ready',
+    defaultOn: false,
+    note: 'All ~242 Natural Earth shapes, colored by UN status.',
+    add: addCountries,
+    remove: removeCountries,
   },
   { id: 'elevation', label: 'Elevation / topography', status: 'planned', note: 'Land relief — GEBCO / ETOPO.' },
   { id: 'bathymetry', label: 'Ocean depth', status: 'planned', note: 'Seafloor bathymetry — GEBCO.' },
@@ -171,7 +264,12 @@ function showCoord(lngLat) {
   coordOut.textContent = `${lngLat.lat.toFixed(3)}°, ${lngLat.lng.toFixed(3)}°`;
 }
 
-map.on('click', (e) => showCoord(e.lngLat));
+map.on('click', (e) => {
+  showCoord(e.lngLat);
+  if (!map.getLayer(COUNTRIES_FILL_LAYER)) return;
+  const hit = map.queryRenderedFeatures(e.point, { layers: [COUNTRIES_FILL_LAYER] });
+  if (hit.length) showCountryDetail(hit[0].properties);
+});
 map.on('mousemove', (e) => showCoord(e.lngLat));
 
 // --- Panel collapse (handy on small screens) ------------------------------

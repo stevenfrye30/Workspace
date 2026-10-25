@@ -130,6 +130,26 @@ html, body {
 
 .coord .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 0.86rem; margin: 0; }
 
+.legend-list { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.82rem; }
+.legend-list li { display: flex; align-items: center; }
+.legend-count { margin-left: auto; color: var(--panel-muted); font-variant-numeric: tabular-nums; }
+
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 0.5rem; flex: none; }
+.swatch-member { background: #2f6fdb; }
+.swatch-observer { background: #caa23c; }
+.swatch-other { background: #8a8a8a; }
+
+.country-detail {
+  margin-top: 0.7rem;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--panel-border);
+}
+.country-name { font-size: 0.98rem; font-weight: 600; margin: 0; }
+.country-sub { font-size: 0.78rem; color: var(--panel-muted); margin: 0.1rem 0 0.5rem; }
+.country-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; font-size: 0.8rem; margin: 0.28rem 0; }
+.country-row .k { color: var(--panel-muted); }
+.country-row .swatch { margin-right: 0.4rem; }
+
 .credit {
   font-size: 0.68rem;
   color: var(--panel-muted);
