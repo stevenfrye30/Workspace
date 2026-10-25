@@ -20,8 +20,17 @@ mledoze/countries has one known bad flag: Vatican City (VAT) is marked
 unMember=true but the Holy See is a permanent observer, not a member — the
 193/2 split below corrects that by hand (verified against the UN's own
 193-member count).
+
+area_km2 is computed directly from this same Natural Earth geometry (no
+third dataset) using the Chamberlain & Duquette spherical-polygon formula,
+on the geometry as fetched — BEFORE the simplify() below. Simplifying at
+0.01 degrees (~1km) would meaningfully distort the area of city-state-sized
+features like Vatican City or Monaco, whose entire extent is smaller than
+that tolerance, so area is measured from the full-resolution shape even
+though the map only ever renders the simplified one.
 """
 import json
+import math
 import urllib.request
 from pathlib import Path
 
@@ -66,6 +75,47 @@ def round_coords(coords, nd=3):
     return [round_coords(c, nd) for c in coords]
 
 
+EARTH_RADIUS_M = 6371008.8  # authalic (equal-area) radius
+
+
+def ring_area(ring):
+    """Chamberlain & Duquette spherical polygon area, in m^2. `ring` is a
+    closed GeoJSON linear ring [[lon, lat], ...] with first == last point."""
+    n = len(ring)
+    if n < 3:
+        return 0.0
+    total = 0.0
+    for i in range(n):
+        if i == n - 2:
+            p1, p2, p3 = ring[n - 2], ring[n - 1], ring[0]
+        elif i == n - 1:
+            p1, p2, p3 = ring[n - 1], ring[0], ring[1]
+        else:
+            p1, p2, p3 = ring[i], ring[i + 1], ring[i + 2]
+        total += (math.radians(p3[0]) - math.radians(p1[0])) * math.sin(math.radians(p2[1]))
+    return abs(total * EARTH_RADIUS_M * EARTH_RADIUS_M / 2)
+
+
+def polygon_area(coords):
+    """coords = [exterior_ring, hole_ring, ...] (GeoJSON Polygon.coordinates)."""
+    if not coords:
+        return 0.0
+    area = ring_area(coords[0])
+    for hole in coords[1:]:
+        area -= ring_area(hole)
+    return area
+
+
+def geodesic_area_km2(geometry):
+    if geometry["type"] == "Polygon":
+        m2 = polygon_area(geometry["coordinates"])
+    elif geometry["type"] == "MultiPolygon":
+        m2 = sum(polygon_area(poly) for poly in geometry["coordinates"])
+    else:
+        m2 = 0.0
+    return m2 / 1_000_000
+
+
 def main():
     from shapely.geometry import shape, mapping
 
@@ -81,6 +131,9 @@ def main():
         iso3 = clean_iso3(p)
         status = classify(p, iso3, members_by_iso3)
         counts[status] += 1
+
+        area_km2 = round(geodesic_area_km2(f["geometry"]), 2)
+        area_log10 = round(math.log10(max(area_km2, 0.01)), 3)
 
         geom = shape(f["geometry"]).simplify(0.01, preserve_topology=True)
         geom_out = mapping(geom)
@@ -101,6 +154,8 @@ def main():
                 "iso_a3": iso3,
                 "pop_est": p.get("POP_EST"),
                 "un_status": status,
+                "area_km2": area_km2,
+                "area_log10": area_log10,
             },
             "geometry": geom_out,
         })
@@ -111,11 +166,22 @@ def main():
     assert counts["observer"] == 2, f"expected 2 UN observers, got {counts['observer']}"
     assert len(out_features) >= 240, f"expected ~242 shapes, got {len(out_features)}"
 
+    # Sanity-check the area formula itself against a distinctive, well-known
+    # figure (Russia, ~17.1M km^2) — catches a wrong radius/unit, not just a
+    # wrong classification.
+    russia_area = next(f["properties"]["area_km2"] for f in out_features if f["properties"]["iso_a3"] == "RUS")
+    assert 15_000_000 <= russia_area <= 19_000_000, f"Russia area looks wrong: {russia_area} km^2"
+
     out = {"type": "FeatureCollection", "features": out_features}
     OUT_PATH.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
+    by_area = sorted(out_features, key=lambda f: f["properties"]["area_km2"])
+    smallest, largest = by_area[0]["properties"], by_area[-1]["properties"]
+
     print(f"wrote {OUT_PATH} ({OUT_PATH.stat().st_size:,} bytes)")
     print(f"{len(out_features)} shapes — {counts['member']} members, {counts['observer']} observers, {counts['other']} other")
+    print(f"smallest: {smallest['name']} ({smallest['area_km2']:,} km^2)")
+    print(f"largest: {largest['name']} ({largest['area_km2']:,} km^2)")
 
 
 if __name__ == "__main__":

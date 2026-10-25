@@ -144,6 +144,82 @@ function showCountryDetail(props) {
   document.getElementById('countryDetail').hidden = false;
 }
 
+// --- Country areas (km^2 / mi^2) ------------------------------------------
+// Same shapes and same source data as the UN-view layer, shaded by land
+// area instead of UN status. Area is computed once, in build_countries.py,
+// from the *un-simplified* Natural Earth geometry (see that script for why).
+
+const AREA_SOURCE = 'countries-area';
+const AREA_FILL_LAYER = 'countries-area-fill';
+const AREA_LINE_LAYER = 'countries-area-line';
+const KM2_PER_MI2 = 2.58999;
+
+// Stops are in log10(km^2): -1 (~0.1 km^2, Vatican-scale) up to 7.3 (~20M
+// km^2, Russia-scale) — area spans too many orders of magnitude for a
+// linear scale to show anything but one giant country.
+const AREA_COLOR_EXPR = [
+  'interpolate', ['linear'], ['get', 'area_log10'],
+  -1, '#f7fcf5',
+  0, '#c7e9c0',
+  2, '#74c476',
+  4.5, '#238b45',
+  7.3, '#00441b',
+];
+
+function addArea(map) {
+  loadCountriesData().then((data) => {
+    if (map.getSource(AREA_SOURCE)) return;
+    map.addSource(AREA_SOURCE, { type: 'geojson', data });
+    const beforeId = firstSymbolLayerId(map);
+    map.addLayer({
+      id: AREA_FILL_LAYER,
+      type: 'fill',
+      source: AREA_SOURCE,
+      paint: { 'fill-color': AREA_COLOR_EXPR, 'fill-opacity': 0.55 },
+    }, beforeId);
+    map.addLayer({
+      id: AREA_LINE_LAYER,
+      type: 'line',
+      source: AREA_SOURCE,
+      paint: { 'line-color': '#0b2e18', 'line-width': 0.6, 'line-opacity': 0.5 },
+    }, beforeId);
+    showAreaStats(data);
+  });
+}
+
+function removeArea(map) {
+  if (map.getLayer(AREA_FILL_LAYER)) map.removeLayer(AREA_FILL_LAYER);
+  if (map.getLayer(AREA_LINE_LAYER)) map.removeLayer(AREA_LINE_LAYER);
+  if (map.getSource(AREA_SOURCE)) map.removeSource(AREA_SOURCE);
+  document.getElementById('areaBlock').hidden = true;
+  document.getElementById('areaDetail').hidden = true;
+}
+
+function fmtArea(km2) {
+  const mi2 = km2 / KM2_PER_MI2;
+  const round = (n) => (n < 10 ? n.toFixed(2) : Math.round(n).toLocaleString());
+  return { km2: round(km2), mi2: round(mi2) };
+}
+
+function showAreaStats(data) {
+  const withArea = data.features.filter((f) => f.properties.area_km2 > 0);
+  const smallest = withArea.reduce((a, b) => (a.properties.area_km2 < b.properties.area_km2 ? a : b));
+  const largest = withArea.reduce((a, b) => (a.properties.area_km2 > b.properties.area_km2 ? a : b));
+  const s = fmtArea(smallest.properties.area_km2);
+  const l = fmtArea(largest.properties.area_km2);
+  document.getElementById('areaSmallest').textContent = `${smallest.properties.name} — ${s.km2} km²`;
+  document.getElementById('areaLargest').textContent = `${largest.properties.name} — ${l.km2} km²`;
+  document.getElementById('areaBlock').hidden = false;
+}
+
+function showAreaDetail(props) {
+  const a = fmtArea(props.area_km2);
+  document.getElementById('adName').textContent = props.name;
+  document.getElementById('adKm2').textContent = a.km2;
+  document.getElementById('adMi2').textContent = a.mi2;
+  document.getElementById('areaDetail').hidden = false;
+}
+
 const LAYERS = [
   {
     id: 'graticule',
@@ -162,6 +238,15 @@ const LAYERS = [
     note: 'All ~242 Natural Earth shapes, colored by UN status.',
     add: addCountries,
     remove: removeCountries,
+  },
+  {
+    id: 'country-area',
+    label: 'Country areas (km² / mi²)',
+    status: 'ready',
+    defaultOn: false,
+    note: 'Shaded by land area — darker green is larger. Click for exact km² / mi².',
+    add: addArea,
+    remove: removeArea,
   },
   { id: 'elevation', label: 'Elevation / topography', status: 'planned', note: 'Land relief — GEBCO / ETOPO.' },
   { id: 'bathymetry', label: 'Ocean depth', status: 'planned', note: 'Seafloor bathymetry — GEBCO.' },
@@ -266,9 +351,14 @@ function showCoord(lngLat) {
 
 map.on('click', (e) => {
   showCoord(e.lngLat);
-  if (!map.getLayer(COUNTRIES_FILL_LAYER)) return;
-  const hit = map.queryRenderedFeatures(e.point, { layers: [COUNTRIES_FILL_LAYER] });
-  if (hit.length) showCountryDetail(hit[0].properties);
+  if (map.getLayer(COUNTRIES_FILL_LAYER)) {
+    const hit = map.queryRenderedFeatures(e.point, { layers: [COUNTRIES_FILL_LAYER] });
+    if (hit.length) showCountryDetail(hit[0].properties);
+  }
+  if (map.getLayer(AREA_FILL_LAYER)) {
+    const hit = map.queryRenderedFeatures(e.point, { layers: [AREA_FILL_LAYER] });
+    if (hit.length) showAreaDetail(hit[0].properties);
+  }
 });
 map.on('mousemove', (e) => showCoord(e.lngLat));
 
