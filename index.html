@@ -31,6 +31,7 @@
       --w-images:         #5a5a5e;   /* 7 gray tier */
       --w-business:       #5a5a5e;   /* 8 gray tier */
       --w-emoji:          #5a5a5e;   /* 9 gray tier (Games) */
+      --w-earth:          #5a5a5e;   /* 10 gray tier (Earth) */
       --w-caltracker:     #3b5a6e;   /* extras: Calibration Tracker */
       --w-foodtracer:     #5e6b32;   /* extras: Food Tracer */
       /* Doors no longer on the front page keep their old tints below. */
@@ -624,6 +625,25 @@
           <span class="doorway-kind">Play</span>
           <span class="doorway-name">Games</span>
           <span class="doorway-desc">Emoji Games, Flags, and Cosmos — the play shelf.</span>
+        </a>
+      </div>
+
+      <!-- 10 · Earth — gray. Starter map (2026-10-25): MapLibre on an
+           OpenFreeMap vector basemap, flat/globe toggle, lat/long grid as
+           its first overlay. More overlays (elevation, ocean depth,
+           currents, wind, pressure) build up over time — see earth/app.js. -->
+      <div class="doorway" style="--w: var(--w-earth);">
+        <a class="doorway-primary" href="earth/">
+          <span class="doorway-icon-wrap">
+            <svg class="doorway-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"/>
+              <ellipse cx="12" cy="12" rx="4" ry="9"/>
+              <path d="M3 12 H21 M4.2 7.5 H19.8 M4.2 16.5 H19.8"/>
+            </svg>
+          </span>
+          <span class="doorway-kind">Map</span>
+          <span class="doorway-name">Earth</span>
+          <span class="doorway-desc">A whole-Earth map — pan, zoom, spin. Lat/long grid now; elevation and ocean data to follow.</span>
         </a>
       </div>
 
