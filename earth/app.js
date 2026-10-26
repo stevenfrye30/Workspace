@@ -827,6 +827,7 @@ LAYERS.forEach((layer) => {
     else layer.remove(map);
     refreshLegend();
     renderDetail();
+    hideHoverTooltip();
   });
 
   const main = document.createElement('div');
@@ -895,22 +896,91 @@ function showCoord(lngLat) {
   coordOut.textContent = `${lngLat.lat.toFixed(3)}°, ${lngLat.lng.toFixed(3)}°`;
 }
 
-map.on('click', (e) => {
-  showCoord(e.lngLat);
-  // Every data layer's source is the same countries.geojson, so whichever
-  // active fill layer is hit first already carries every field any of
-  // them might want — no need to query each one separately.
+// Every data layer's source is the same countries.geojson, so whichever
+// active fill layer is hit first already carries every field any of them
+// might want — no need to query each one separately. Shared by the click
+// handler and the hover tooltip below.
+function findHitProps(point) {
   const candidates = LAYERS.filter((l) => l.status === 'ready' && l.fillLayerId && document.getElementById(`layer-${l.id}`).checked);
   for (const layer of candidates) {
     if (!map.getLayer(layer.fillLayerId)) continue;
-    const hit = map.queryRenderedFeatures(e.point, { layers: [layer.fillLayerId] });
-    if (hit.length) {
-      showDetail(hit[0].properties);
-      break;
-    }
+    const hit = map.queryRenderedFeatures(point, { layers: [layer.fillLayerId] });
+    if (hit.length) return hit[0].properties;
   }
+  return null;
+}
+
+map.on('click', (e) => {
+  showCoord(e.lngLat);
+  const props = findHitProps(e.point);
+  if (props) showDetail(props);
 });
-map.on('mousemove', (e) => showCoord(e.lngLat));
+
+// --- Hover tooltip (toggleable) -------------------------------------------
+// Off by default — clicking already gives a persistent detail card in the
+// panel. When on, this is a lightweight, read-only echo of the exact same
+// per-layer detailFields used there, in a box that follows the cursor
+// instead of requiring a click.
+
+let hoverMode = false;
+let hoveredName = null;
+
+function hideHoverTooltip() {
+  document.getElementById('hoverTooltip').hidden = true;
+  hoveredName = null;
+}
+
+function renderHoverTooltip(props) {
+  document.getElementById('hvName').textContent = props.name;
+  document.getElementById('hvFormal').textContent =
+    props.formal_name && props.formal_name !== props.name ? props.formal_name : '';
+  const rows = document.getElementById('hvRows');
+  rows.innerHTML = '';
+  dataLayersChecked('detailFields').forEach((layer) => {
+    const group = document.createElement('div');
+    group.className = 'detail-group';
+    layer.detailFields(props).forEach((f) => group.appendChild(buildDetailRow(f)));
+    rows.appendChild(group);
+  });
+}
+
+function positionHoverTooltip(point) {
+  const tooltip = document.getElementById('hoverTooltip');
+  const pad = 16;
+  const margin = 8;
+  let left = point.x + pad;
+  let top = point.y + pad;
+  if (left + tooltip.offsetWidth + margin > window.innerWidth) left = point.x - tooltip.offsetWidth - pad;
+  if (top + tooltip.offsetHeight + margin > window.innerHeight) top = window.innerHeight - tooltip.offsetHeight - margin;
+  tooltip.style.left = `${Math.max(margin, left)}px`;
+  tooltip.style.top = `${Math.max(margin, top)}px`;
+}
+
+document.getElementById('hoverModeToggle').addEventListener('change', (e) => {
+  hoverMode = e.target.checked;
+  if (!hoverMode) hideHoverTooltip();
+});
+
+document.getElementById('map').addEventListener('mouseleave', hideHoverTooltip);
+
+map.on('mousemove', (e) => {
+  showCoord(e.lngLat);
+  if (!hoverMode || !dataLayersChecked('detailFields').length) {
+    hideHoverTooltip();
+    return;
+  }
+  const props = findHitProps(e.point);
+  if (!props) {
+    hideHoverTooltip();
+    return;
+  }
+  if (props.name !== hoveredName) {
+    renderHoverTooltip(props);
+    hoveredName = props.name;
+  }
+  document.getElementById('hoverTooltip').hidden = false;
+  positionHoverTooltip(e.point);
+});
 
 // --- Panel collapse (handy on small screens) ------------------------------
 

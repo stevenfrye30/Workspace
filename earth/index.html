@@ -35,6 +35,14 @@
     </div>
 
     <div class="block">
+      <div class="row-head"><h2>Hover info</h2></div>
+      <label class="hover-toggle-row" for="hoverModeToggle">
+        <input type="checkbox" id="hoverModeToggle">
+        <span>Pop up a box with details on hover, not just on click</span>
+      </label>
+    </div>
+
+    <div class="block">
       <div class="row-head"><h2>Layers</h2></div>
       <ul class="layers" id="layerList"></ul>
     </div>
@@ -80,6 +88,12 @@
     </div>
     <p class="table-foot" id="tableFoot"></p>
   </div>
+</div>
+
+<div class="hover-tooltip" id="hoverTooltip" hidden>
+  <p class="country-name" id="hvName">—</p>
+  <p class="country-sub" id="hvFormal"></p>
+  <div id="hvRows"></div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@5.23.0/dist/maplibre-gl.js"></script>
