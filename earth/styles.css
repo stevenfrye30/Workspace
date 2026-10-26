@@ -114,6 +114,7 @@ html, body {
 .layer-row { display: flex; align-items: flex-start; gap: 0.5rem; }
 .layer-row input[type="checkbox"] { margin-top: 0.2rem; accent-color: var(--accent); }
 .layer-row.is-planned { opacity: 0.6; }
+.layer-row:has(input:disabled:not(:checked)) { opacity: 0.45; }
 .layer-main { display: flex; flex-direction: column; }
 .layer-label-row { display: flex; align-items: center; gap: 0.4rem; }
 .layer-label { font-size: 0.86rem; }
@@ -154,6 +155,20 @@ html, body {
 }
 .area-stat { font-size: 0.8rem; margin: 0.15rem 0; }
 .area-stat span { color: var(--panel-muted); }
+
+.pop-gradient {
+  height: 10px;
+  border-radius: 5px;
+  margin-bottom: 0.3rem;
+  background: linear-gradient(to right, #f2f0f7, #cbc9e2, #9e9ac8, #6a51a3, #3f007d);
+}
+.pop-gradient-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--panel-muted);
+  margin-bottom: 0.5rem;
+}
 
 .country-detail {
   margin-top: 0.7rem;

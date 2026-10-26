@@ -28,6 +28,18 @@ on the geometry as fetched — BEFORE the simplify() below. Simplifying at
 features like Vatican City or Monaco, whose entire extent is smaller than
 that tolerance, so area is measured from the full-resolution shape even
 though the map only ever renders the simplified one.
+
+pop_current/pop_year/pop_source come from the World Bank's SP.POP.TOTL
+indicator (CC BY-4.0), most-recent-value-per-country, refetched live each
+run — NOT Natural Earth's POP_EST, which is a one-time snapshot baked into
+the NE release and goes stale between NE releases. The World Bank's own
+"Aggregates" rows (regions/income groups like "Africa Eastern and
+Southern") are excluded via its /country list's region.id, so a region
+rollup can never masquerade as a real country's population. The ~20 NE
+shapes the World Bank doesn't cover at all (Vatican City, Taiwan, Western
+Sahara, Antarctica, a few other territories) fall back to NE's own
+POP_EST, flagged with pop_source="natural_earth_est" so the UI can
+disclose which figures are which.
 """
 import json
 import math
@@ -36,6 +48,8 @@ from pathlib import Path
 
 NE_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson"
 MLEDOZE_URL = "https://raw.githubusercontent.com/mledoze/countries/master/countries.json"
+WB_COUNTRY_URL = "https://api.worldbank.org/v2/country?format=json&per_page=400"
+WB_POP_URL = "https://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?format=json&per_page=400&mrv=1"
 OUT_PATH = Path(__file__).parent / "countries.geojson"
 
 OBSERVERS = {"VAT", "PSE"}  # Holy See, Palestine — UN permanent observers
@@ -116,15 +130,33 @@ def geodesic_area_km2(geometry):
     return m2 / 1_000_000
 
 
+def fetch_worldbank_population():
+    """Returns {iso3: (population, year)} for real countries only (the
+    World Bank's own region/income-group aggregate rows are excluded by
+    checking each code against the country list's region.id != 'NA')."""
+    countries = fetch_json(WB_COUNTRY_URL)[1]
+    real_iso3 = {c["id"] for c in countries if c["region"]["id"] != "NA"}
+
+    rows = fetch_json(WB_POP_URL)[1]
+    out = {}
+    for r in rows:
+        code = r.get("countryiso3code")
+        if code in real_iso3 and r.get("value") is not None:
+            out[code] = (int(r["value"]), r["date"])
+    return out
+
+
 def main():
     from shapely.geometry import shape, mapping
 
     ne = fetch_json(NE_URL)
     mledoze = fetch_json(MLEDOZE_URL)
     members_by_iso3 = {c["cca3"]: c for c in mledoze}
+    wb_pop = fetch_worldbank_population()
 
     out_features = []
     counts = {"member": 0, "observer": 0, "other": 0}
+    pop_sources = {"worldbank": 0, "natural_earth_est": 0}
 
     for f in ne["features"]:
         p = f["properties"]
@@ -134,6 +166,14 @@ def main():
 
         area_km2 = round(geodesic_area_km2(f["geometry"]), 2)
         area_log10 = round(math.log10(max(area_km2, 0.01)), 3)
+
+        wb = wb_pop.get(iso3) if iso3 else None
+        if wb:
+            pop_current, pop_year, pop_source = wb[0], wb[1], "worldbank"
+        else:
+            pop_current, pop_year, pop_source = p.get("POP_EST"), None, "natural_earth_est"
+        pop_sources[pop_source] += 1
+        pop_log10 = round(math.log10(max(pop_current or 1, 1)), 3)
 
         geom = shape(f["geometry"]).simplify(0.01, preserve_topology=True)
         geom_out = mapping(geom)
@@ -153,6 +193,10 @@ def main():
                 "iso_a2": p.get("ISO_A2_EH") if p.get("ISO_A2_EH") not in (None, "-99") else None,
                 "iso_a3": iso3,
                 "pop_est": p.get("POP_EST"),
+                "pop_current": pop_current,
+                "pop_year": pop_year,
+                "pop_source": pop_source,
+                "pop_log10": pop_log10,
                 "un_status": status,
                 "area_km2": area_km2,
                 "area_log10": area_log10,
@@ -172,16 +216,30 @@ def main():
     russia_area = next(f["properties"]["area_km2"] for f in out_features if f["properties"]["iso_a3"] == "RUS")
     assert 15_000_000 <= russia_area <= 19_000_000, f"Russia area looks wrong: {russia_area} km^2"
 
+    # The World Bank should cover the overwhelming majority of shapes; a
+    # near-zero count here means the API/filter broke, not that every
+    # country suddenly went uncovered — fail loudly rather than silently
+    # shipping an all-fallback population layer.
+    assert pop_sources["worldbank"] >= 180, f"World Bank population coverage looks wrong: {pop_sources}"
+    india_pop = next(f["properties"]["pop_current"] for f in out_features if f["properties"]["iso_a3"] == "IND")
+    assert 1_000_000_000 <= india_pop <= 2_000_000_000, f"India population looks wrong: {india_pop}"
+
     out = {"type": "FeatureCollection", "features": out_features}
     OUT_PATH.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
     by_area = sorted(out_features, key=lambda f: f["properties"]["area_km2"])
     smallest, largest = by_area[0]["properties"], by_area[-1]["properties"]
 
+    by_pop = sorted(out_features, key=lambda f: f["properties"]["pop_current"] or 0)
+    pop_smallest, pop_largest = by_pop[0]["properties"], by_pop[-1]["properties"]
+
     print(f"wrote {OUT_PATH} ({OUT_PATH.stat().st_size:,} bytes)")
     print(f"{len(out_features)} shapes — {counts['member']} members, {counts['observer']} observers, {counts['other']} other")
     print(f"smallest: {smallest['name']} ({smallest['area_km2']:,} km^2)")
     print(f"largest: {largest['name']} ({largest['area_km2']:,} km^2)")
+    print(f"population sources: {pop_sources}")
+    print(f"least populous: {pop_smallest['name']} ({pop_smallest['pop_current']:,}, {pop_smallest['pop_source']})")
+    print(f"most populous: {pop_largest['name']} ({pop_largest['pop_current']:,}, {pop_largest['pop_source']})")
 
 
 if __name__ == "__main__":

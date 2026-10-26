@@ -10,6 +10,18 @@ const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty';
 
 const GRATICULE_SOURCE = 'graticule';
 const GRATICULE_LAYER = 'graticule-lines';
+const GRATICULE_LABEL_LAYER = 'graticule-labels';
+
+function formatLon(lon) {
+  if (lon === 0) return '0°';
+  if (lon === 180 || lon === -180) return '180°';
+  return lon > 0 ? `${lon}°E` : `${-lon}°W`;
+}
+
+function formatLat(lat) {
+  if (lat === 0) return '0°';
+  return lat > 0 ? `${lat}°N` : `${-lat}°S`;
+}
 
 function buildGraticule(stepDeg, segmentDeg) {
   const features = [];
@@ -20,7 +32,7 @@ function buildGraticule(stepDeg, segmentDeg) {
     features.push({
       type: 'Feature',
       geometry: { type: 'LineString', coordinates: coords },
-      properties: { kind: 'meridian', major: lon === 0 },
+      properties: { kind: 'meridian', major: lon === 0, label: formatLon(lon) },
     });
   }
 
@@ -30,7 +42,7 @@ function buildGraticule(stepDeg, segmentDeg) {
     features.push({
       type: 'Feature',
       geometry: { type: 'LineString', coordinates: coords },
-      properties: { kind: 'parallel', major: lat === 0 },
+      properties: { kind: 'parallel', major: lat === 0, label: formatLat(lat) },
     });
   }
 
@@ -53,9 +65,27 @@ function addGraticule(map) {
       'line-opacity': ['case', ['get', 'major'], 0.85, 0.45],
     },
   });
+  map.addLayer({
+    id: GRATICULE_LABEL_LAYER,
+    type: 'symbol',
+    source: GRATICULE_SOURCE,
+    layout: {
+      'symbol-placement': 'line',
+      'symbol-spacing': 300,
+      'text-field': ['get', 'label'],
+      'text-size': 11,
+      'text-font': ['Noto Sans Regular'],
+    },
+    paint: {
+      'text-color': '#ff5a36',
+      'text-halo-color': 'rgba(255, 255, 255, 0.9)',
+      'text-halo-width': 1.2,
+    },
+  });
 }
 
 function removeGraticule(map) {
+  if (map.getLayer(GRATICULE_LABEL_LAYER)) map.removeLayer(GRATICULE_LABEL_LAYER);
   if (map.getLayer(GRATICULE_LAYER)) map.removeLayer(GRATICULE_LAYER);
   if (map.getSource(GRATICULE_SOURCE)) map.removeSource(GRATICULE_SOURCE);
 }
@@ -139,7 +169,7 @@ function showCountryDetail(props) {
   document.getElementById('cdType').textContent = props.type || '—';
   document.getElementById('cdCodes').textContent = `${props.iso_a2 || '—'} / ${props.iso_a3 || '—'}`;
   document.getElementById('cdPop').textContent =
-    props.pop_est && props.pop_est > 0 ? Math.round(props.pop_est).toLocaleString() : '—';
+    props.pop_current > 0 ? Math.round(props.pop_current).toLocaleString() : '—';
   document.getElementById('cdRegion').textContent =
     [props.continent, props.subregion].filter(Boolean).join(' · ') || '—';
   const a = fmtArea(props.area_km2);
@@ -222,6 +252,89 @@ function showAreaDetail(props) {
   document.getElementById('adKm2').textContent = a.km2;
   document.getElementById('adMi2').textContent = a.mi2;
   document.getElementById('areaDetail').hidden = false;
+}
+
+// --- Population (current) --------------------------------------------------
+// Same shapes again, shaded by population instead of area or UN status.
+// pop_current comes from the World Bank's SP.POP.TOTL, refetched live by
+// build_countries.py on every run — not Natural Earth's one-time POP_EST
+// snapshot. A small set of territories the World Bank doesn't track (Vatican
+// City, Taiwan, Western Sahara, Antarctica…) fall back to that NE estimate;
+// pop_source on each feature says which one you're looking at.
+
+const POP_SOURCE = 'countries-pop';
+const POP_FILL_LAYER = 'countries-pop-fill';
+const POP_LINE_LAYER = 'countries-pop-line';
+const POP_SOURCE_LABELS = { worldbank: 'World Bank', natural_earth_est: 'Natural Earth (older estimate)' };
+
+// Stops are in log10(population): 2.5 (~300, smallest inhabited territories)
+// up to 9.2 (~1.6B, India/China-scale) — population spans too many orders of
+// magnitude for a linear scale to show anything but one giant country.
+const POP_COLOR_EXPR = [
+  'interpolate', ['linear'], ['get', 'pop_log10'],
+  2.5, '#f2f0f7',
+  4, '#cbc9e2',
+  6, '#9e9ac8',
+  7.5, '#6a51a3',
+  9.2, '#3f007d',
+];
+
+function addPopulation(map) {
+  loadCountriesData().then((data) => {
+    if (map.getSource(POP_SOURCE)) return;
+    map.addSource(POP_SOURCE, { type: 'geojson', data });
+    const beforeId = firstSymbolLayerId(map);
+    map.addLayer({
+      id: POP_FILL_LAYER,
+      type: 'fill',
+      source: POP_SOURCE,
+      paint: { 'fill-color': POP_COLOR_EXPR, 'fill-opacity': 0.55 },
+    }, beforeId);
+    map.addLayer({
+      id: POP_LINE_LAYER,
+      type: 'line',
+      source: POP_SOURCE,
+      paint: { 'line-color': '#1a0f33', 'line-width': 0.6, 'line-opacity': 0.5 },
+    }, beforeId);
+    showPopStats(data);
+  });
+}
+
+function removePopulation(map) {
+  if (map.getLayer(POP_FILL_LAYER)) map.removeLayer(POP_FILL_LAYER);
+  if (map.getLayer(POP_LINE_LAYER)) map.removeLayer(POP_LINE_LAYER);
+  if (map.getSource(POP_SOURCE)) map.removeSource(POP_SOURCE);
+  document.getElementById('popBlock').hidden = true;
+  document.getElementById('popDetail').hidden = true;
+}
+
+function fmtPop(props) {
+  const n = props.pop_current;
+  return {
+    count: n > 0 ? Math.round(n).toLocaleString() : '0',
+    year: props.pop_year || '—',
+    source: POP_SOURCE_LABELS[props.pop_source] || '—',
+  };
+}
+
+function showPopStats(data) {
+  const withPop = data.features.filter((f) => f.properties.pop_current > 0);
+  const smallest = withPop.reduce((a, b) => (a.properties.pop_current < b.properties.pop_current ? a : b));
+  const largest = withPop.reduce((a, b) => (a.properties.pop_current > b.properties.pop_current ? a : b));
+  document.getElementById('popSmallest').textContent =
+    `${smallest.properties.name} — ${fmtPop(smallest.properties).count}`;
+  document.getElementById('popLargest').textContent =
+    `${largest.properties.name} — ${fmtPop(largest.properties).count}`;
+  document.getElementById('popBlock').hidden = false;
+}
+
+function showPopDetail(props) {
+  const p = fmtPop(props);
+  document.getElementById('ppName').textContent = props.name;
+  document.getElementById('ppCount').textContent = p.count;
+  document.getElementById('ppYear').textContent = p.year;
+  document.getElementById('ppSource').textContent = p.source;
+  document.getElementById('popDetail').hidden = false;
 }
 
 // --- Data table overlay (shared by any layer with a `table` config) -------
@@ -326,6 +439,7 @@ function selectTableRow(feature) {
   map.fitBounds(featureBBox(feature.geometry), { padding: 60, maxZoom: 5, duration: 600 });
   if (layer.id === 'countries') showCountryDetail(feature.properties);
   if (layer.id === 'country-area') showAreaDetail(feature.properties);
+  if (layer.id === 'population') showPopDetail(feature.properties);
 }
 
 document.getElementById('tableClose').addEventListener('click', closeTable);
@@ -340,7 +454,58 @@ document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape' && !document.getElementById('tableOverlay').hidden) closeTable();
 });
 
+// --- Explore view (a clean, high-contrast basemap for just looking) -------
+// Not a data overlay — a different basemap style (OpenFreeMap's "Bright":
+// same place/label set as the default "Liberty" style, but a bolder,
+// higher-contrast palette) with every other layer switched off, since data
+// shading and grid lines fight the "just look at the Earth" point of this
+// one. Turning it on disables (not just unchecks) every other ready layer's
+// checkbox so it really is the only thing open; turning it off restores the
+// default basemap and hands control back.
+
+const EXPLORE_STYLE_URL = 'https://tiles.openfreemap.org/styles/bright';
+
+function setOtherLayersEnabled(enabled, exceptId) {
+  LAYERS.forEach((layer) => {
+    if (layer.id === exceptId || layer.status !== 'ready') return;
+    const checkbox = document.getElementById(`layer-${layer.id}`);
+    if (!enabled && checkbox.checked) {
+      checkbox.checked = false;
+      layer.remove(map);
+    }
+    checkbox.disabled = !enabled;
+  });
+}
+
+function currentProjection() {
+  const active = document.querySelector('#projectionToggle .seg-btn.is-active');
+  return active ? active.dataset.proj : 'mercator';
+}
+
+function addExplore(map) {
+  setOtherLayersEnabled(false, 'explore');
+  map.setStyle(EXPLORE_STYLE_URL);
+  map.once('style.load', () => map.setProjection({ type: currentProjection() }));
+}
+
+function removeExplore(map) {
+  map.setStyle(STYLE_URL);
+  map.once('style.load', () => {
+    map.setProjection({ type: currentProjection() });
+    setOtherLayersEnabled(true, 'explore');
+  });
+}
+
 const LAYERS = [
+  {
+    id: 'explore',
+    label: 'Explore view',
+    status: 'ready',
+    defaultOn: false,
+    note: 'A clean, high-contrast map for just looking — countries, cities, and natural features all labeled. Switches off every other layer while it’s on.',
+    add: addExplore,
+    remove: removeExplore,
+  },
   {
     id: 'graticule',
     label: 'Lat / long grid',
@@ -366,7 +531,7 @@ const LAYERS = [
         { key: 'status', label: 'UN status', value: (p) => STATUS_SHORT[p.un_status], sort: (p) => STATUS_SHORT[p.un_status] },
         { key: 'type', label: 'Type', value: (p) => p.type || '—', sort: (p) => p.type || '' },
         { key: 'iso', label: 'ISO', value: (p) => `${p.iso_a2 || '—'} / ${p.iso_a3 || '—'}`, sort: (p) => p.iso_a3 || '' },
-        { key: 'pop', label: 'Population', align: 'right', value: (p) => (p.pop_est > 0 ? Math.round(p.pop_est).toLocaleString() : '—'), sort: (p) => p.pop_est || 0 },
+        { key: 'pop', label: 'Population', align: 'right', value: (p) => (p.pop_current > 0 ? Math.round(p.pop_current).toLocaleString() : '—'), sort: (p) => p.pop_current || 0 },
         { key: 'region', label: 'Region', value: (p) => [p.continent, p.subregion].filter(Boolean).join(' · ') || '—', sort: (p) => p.continent || '' },
       ],
     },
@@ -387,6 +552,26 @@ const LAYERS = [
         { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
         { key: 'km2', label: 'Area (km²)', align: 'right', value: (p) => fmtArea(p.area_km2).km2, sort: (p) => p.area_km2 },
         { key: 'mi2', label: 'Area (mi²)', align: 'right', value: (p) => fmtArea(p.area_km2).mi2, sort: (p) => p.area_km2 },
+      ],
+    },
+  },
+  {
+    id: 'population',
+    label: 'Population',
+    status: 'ready',
+    defaultOn: false,
+    note: 'Shaded by population — darker purple is larger. Current World Bank figures; a few territories fall back to an older Natural Earth estimate.',
+    add: addPopulation,
+    remove: removePopulation,
+    table: {
+      title: 'Population',
+      defaultSort: 'pop',
+      defaultDir: 'desc',
+      columns: [
+        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
+        { key: 'pop', label: 'Population', align: 'right', value: (p) => fmtPop(p).count, sort: (p) => p.pop_current || 0 },
+        { key: 'year', label: 'Year', align: 'right', value: (p) => fmtPop(p).year, sort: (p) => p.pop_year || '' },
+        { key: 'source', label: 'Source', value: (p) => fmtPop(p).source, sort: (p) => fmtPop(p).source },
       ],
     },
   },
@@ -509,6 +694,10 @@ map.on('click', (e) => {
   if (map.getLayer(AREA_FILL_LAYER)) {
     const hit = map.queryRenderedFeatures(e.point, { layers: [AREA_FILL_LAYER] });
     if (hit.length) showAreaDetail(hit[0].properties);
+  }
+  if (map.getLayer(POP_FILL_LAYER)) {
+    const hit = map.queryRenderedFeatures(e.point, { layers: [POP_FILL_LAYER] });
+    if (hit.length) showPopDetail(hit[0].properties);
   }
 });
 map.on('mousemove', (e) => showCoord(e.lngLat));
