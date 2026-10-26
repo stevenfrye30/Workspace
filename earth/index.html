@@ -39,53 +39,18 @@
       <ul class="layers" id="layerList"></ul>
     </div>
 
-    <div class="block countries" id="countriesBlock" hidden>
-      <div class="row-head"><h2>Countries</h2></div>
-      <ul class="legend-list">
-        <li><span class="swatch swatch-member"></span>UN member <span class="legend-count" id="countMember">—</span></li>
-        <li><span class="swatch swatch-observer"></span>UN observer <span class="legend-count" id="countObserver">—</span></li>
-        <li><span class="swatch swatch-other"></span>Other territory <span class="legend-count" id="countOther">—</span></li>
-      </ul>
+    <div class="block legends" id="legendBlock" hidden>
+      <div class="row-head"><h2>Legend</h2></div>
+      <div id="legendRows"></div>
       <p class="layer-note">Click a shape for details. Boundaries: Natural Earth (public domain).</p>
-      <div class="country-detail" id="countryDetail" hidden>
-        <p class="country-name" id="cdName">—</p>
-        <p class="country-sub" id="cdFormal"></p>
-        <p class="country-row"><span class="swatch" id="cdStatusDot"></span><span id="cdStatus"></span></p>
-        <p class="country-row"><span class="k">Type</span><span id="cdType"></span></p>
-        <p class="country-row"><span class="k">ISO</span><span id="cdCodes"></span></p>
-        <p class="country-row"><span class="k">Population (est.)</span><span id="cdPop"></span></p>
-        <p class="country-row"><span class="k">Region</span><span id="cdRegion"></span></p>
-        <p class="country-row"><span class="k">km²</span><span id="cdKm2"></span></p>
-        <p class="country-row"><span class="k">mi²</span><span id="cdMi2"></span></p>
-      </div>
     </div>
 
-    <div class="block area" id="areaBlock" hidden>
-      <div class="row-head"><h2>Country areas</h2></div>
-      <div class="area-gradient"></div>
-      <div class="area-gradient-labels"><span>smaller</span><span>larger</span></div>
-      <p class="area-stat">Largest: <span id="areaLargest">—</span></p>
-      <p class="area-stat">Smallest: <span id="areaSmallest">—</span></p>
-      <p class="layer-note">Click a shape for exact km² / mi². At this scale, Natural Earth draws the smallest states (Vatican, Monaco, Nauru…) larger than true size so they stay visible — their numbers run high for that reason.</p>
-      <div class="country-detail" id="areaDetail" hidden>
-        <p class="country-name" id="adName">—</p>
-        <p class="country-row"><span class="k">km²</span><span id="adKm2">—</span></p>
-        <p class="country-row"><span class="k">mi²</span><span id="adMi2">—</span></p>
-      </div>
-    </div>
-
-    <div class="block population" id="popBlock" hidden>
-      <div class="row-head"><h2>Population</h2></div>
-      <div class="pop-gradient"></div>
-      <div class="pop-gradient-labels"><span>smaller</span><span>larger</span></div>
-      <p class="area-stat">Largest: <span id="popLargest">—</span></p>
-      <p class="area-stat">Smallest: <span id="popSmallest">—</span></p>
-      <p class="layer-note">Click a shape for the figure, year, and source. Mostly current World Bank data; a few territories (Vatican City, Taiwan, Western Sahara, Antarctica…) fall back to an older Natural Earth estimate.</p>
-      <div class="country-detail" id="popDetail" hidden>
-        <p class="country-name" id="ppName">—</p>
-        <p class="country-row"><span class="k">Population</span><span id="ppCount">—</span></p>
-        <p class="country-row"><span class="k">Year</span><span id="ppYear">—</span></p>
-        <p class="country-row"><span class="k">Source</span><span id="ppSource">—</span></p>
+    <div class="block detail" id="detailBlock" hidden>
+      <div class="row-head"><h2>Selected</h2></div>
+      <div class="country-detail">
+        <p class="country-name" id="dtName">—</p>
+        <p class="country-sub" id="dtFormal"></p>
+        <div id="detailRows"></div>
       </div>
     </div>
 

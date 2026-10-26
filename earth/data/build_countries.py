@@ -40,6 +40,12 @@ shapes the World Bank doesn't cover at all (Vatican City, Taiwan, Western
 Sahara, Antarctica, a few other territories) fall back to NE's own
 POP_EST, flagged with pop_source="natural_earth_est" so the UI can
 disclose which figures are which.
+
+pop_density_km2 is simply pop_current / area_km2, computed here rather than
+left to the client so the log-scaled color ramp (pop_density_log10) can be
+precomputed too. It inherits both upstream caveats: NE's micro-state area
+oversizing (understates density for Monaco/Vatican-scale shapes) and, for
+the ~20 pop_source="natural_earth_est" territories, POP_EST's staleness.
 """
 import json
 import math
@@ -154,6 +160,21 @@ def main():
     members_by_iso3 = {c["cca3"]: c for c in mledoze}
     wb_pop = fetch_worldbank_population()
 
+    # A handful of NE's own Dependency/Geo-unit stubs (e.g. Indian Ocean
+    # Territory, Ashmore & Cartier Is.) get backfilled with their
+    # *administering* country's own ISO3 in the EH field, because the stub
+    # has no distinct code in NE's data — same quirk the module docstring
+    # already calls out for UN-membership classification. Left unguarded,
+    # looking those codes up against the World Bank hands a 3 km^2 island
+    # the sovereign country's entire national population. Detect the
+    # collision generically: codes already claimed by an ELIGIBLE_TYPES
+    # feature (an actual country) are off-limits for population lookups by
+    # any feature that ISN'T that eligible type.
+    eligible_iso3 = {
+        clean_iso3(f["properties"]) for f in ne["features"]
+        if f["properties"].get("TYPE") in ELIGIBLE_TYPES and clean_iso3(f["properties"])
+    }
+
     out_features = []
     counts = {"member": 0, "observer": 0, "other": 0}
     pop_sources = {"worldbank": 0, "natural_earth_est": 0}
@@ -167,13 +188,17 @@ def main():
         area_km2 = round(geodesic_area_km2(f["geometry"]), 2)
         area_log10 = round(math.log10(max(area_km2, 0.01)), 3)
 
-        wb = wb_pop.get(iso3) if iso3 else None
+        borrowed_code = iso3 in eligible_iso3 and p.get("TYPE") not in ELIGIBLE_TYPES
+        wb = wb_pop.get(iso3) if iso3 and not borrowed_code else None
         if wb:
             pop_current, pop_year, pop_source = wb[0], wb[1], "worldbank"
         else:
             pop_current, pop_year, pop_source = p.get("POP_EST"), None, "natural_earth_est"
         pop_sources[pop_source] += 1
         pop_log10 = round(math.log10(max(pop_current or 1, 1)), 3)
+
+        pop_density_km2 = round(pop_current / area_km2, 2) if area_km2 > 0 and pop_current else 0.0
+        pop_density_log10 = round(math.log10(max(pop_density_km2, 0.01)), 3)
 
         geom = shape(f["geometry"]).simplify(0.01, preserve_topology=True)
         geom_out = mapping(geom)
@@ -197,6 +222,8 @@ def main():
                 "pop_year": pop_year,
                 "pop_source": pop_source,
                 "pop_log10": pop_log10,
+                "pop_density_km2": pop_density_km2,
+                "pop_density_log10": pop_density_log10,
                 "un_status": status,
                 "area_km2": area_km2,
                 "area_log10": area_log10,
@@ -224,6 +251,22 @@ def main():
     india_pop = next(f["properties"]["pop_current"] for f in out_features if f["properties"]["iso_a3"] == "IND")
     assert 1_000_000_000 <= india_pop <= 2_000_000_000, f"India population looks wrong: {india_pop}"
 
+    # Density sanity check against Bangladesh — a large country, so its shape
+    # isn't inflated by Natural Earth's micro-state oversizing the way a
+    # Monaco or Vatican City would be, making it a clean cross-check that
+    # pop_current / area_km2 didn't get its units crossed somewhere.
+    bgd_density = next(f["properties"]["pop_density_km2"] for f in out_features if f["properties"]["iso_a3"] == "BGD")
+    assert 800 <= bgd_density <= 2000, f"Bangladesh density looks wrong: {bgd_density} /km^2"
+
+    # No real sub-2,000-km^2 shape has a population over ~8M (Hong Kong,
+    # the densest real place in this dataset, is 1,029 km^2 / 7.5M) — well
+    # clear of legitimate dense city-states (Singapore, Hong Kong, Bahrain),
+    # so a shape past this line is the borrowed-ISO3 bug class recurring.
+    for feat in out_features:
+        fp = feat["properties"]
+        if fp["area_km2"] < 2_000 and (fp["pop_current"] or 0) > 15_000_000:
+            raise AssertionError(f"{fp['name']} looks like a borrowed-ISO3 population: {fp['pop_current']:,} over {fp['area_km2']} km^2")
+
     out = {"type": "FeatureCollection", "features": out_features}
     OUT_PATH.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
 
@@ -240,6 +283,11 @@ def main():
     print(f"population sources: {pop_sources}")
     print(f"least populous: {pop_smallest['name']} ({pop_smallest['pop_current']:,}, {pop_smallest['pop_source']})")
     print(f"most populous: {pop_largest['name']} ({pop_largest['pop_current']:,}, {pop_largest['pop_source']})")
+
+    by_density = sorted(out_features, key=lambda f: f["properties"]["pop_density_km2"])
+    dens_smallest, dens_largest = by_density[0]["properties"], by_density[-1]["properties"]
+    print(f"least dense: {dens_smallest['name']} ({dens_smallest['pop_density_km2']:,}/km^2)")
+    print(f"most dense: {dens_largest['name']} ({dens_largest['pop_density_km2']:,}/km^2)")
 
 
 if __name__ == "__main__":

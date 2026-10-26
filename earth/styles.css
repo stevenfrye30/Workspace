@@ -131,7 +131,7 @@ html, body {
 
 .coord .mono { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 0.86rem; margin: 0; }
 
-.legend-list { list-style: none; margin: 0 0 0.5rem; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.82rem; }
+.legend-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.82rem; }
 .legend-list li { display: flex; align-items: center; }
 .legend-count { margin-left: auto; color: var(--panel-muted); font-variant-numeric: tabular-nums; }
 
@@ -140,46 +140,44 @@ html, body {
 .swatch-observer { background: #caa23c; }
 .swatch-other { background: #8a8a8a; }
 
-.area-gradient {
-  height: 10px;
-  border-radius: 5px;
-  margin-bottom: 0.3rem;
-  background: linear-gradient(to right, #f7fcf5, #c7e9c0, #74c476, #238b45, #00441b);
-}
-.area-gradient-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.68rem;
-  color: var(--panel-muted);
-  margin-bottom: 0.5rem;
-}
-.area-stat { font-size: 0.8rem; margin: 0.15rem 0; }
-.area-stat span { color: var(--panel-muted); }
+/* Legend block — one compact row per active data layer, stacked tightly
+   ("one over the other") rather than scattered as separate panel blocks. */
+.legend-row { padding: 0.45rem 0; }
+.legend-row + .legend-row { border-top: 1px solid var(--panel-border); }
+.legend-row-head { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--panel-muted); margin-bottom: 0.35rem; }
 
-.pop-gradient {
+.area-gradient, .pop-gradient, .density-gradient {
   height: 10px;
   border-radius: 5px;
   margin-bottom: 0.3rem;
-  background: linear-gradient(to right, #f2f0f7, #cbc9e2, #9e9ac8, #6a51a3, #3f007d);
 }
-.pop-gradient-labels {
+.area-gradient { background: linear-gradient(to right, #f7fcf5, #c7e9c0, #74c476, #238b45, #00441b); }
+.pop-gradient { background: linear-gradient(to right, #f2f0f7, #cbc9e2, #9e9ac8, #6a51a3, #3f007d); }
+.density-gradient { background: linear-gradient(to right, #ffffe5, #fed98e, #fe9929, #d95f0e, #993404); }
+
+.legend-gradient-labels {
   display: flex;
   justify-content: space-between;
   font-size: 0.68rem;
   color: var(--panel-muted);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.4rem;
 }
+.legend-stat { font-size: 0.8rem; margin: 0.15rem 0; }
+.legend-stat span { color: var(--panel-muted); }
 
 .country-detail {
-  margin-top: 0.7rem;
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--panel-border);
+  margin-top: 0.3rem;
 }
 .country-name { font-size: 0.98rem; font-weight: 600; margin: 0; }
 .country-sub { font-size: 0.78rem; color: var(--panel-muted); margin: 0.1rem 0 0.5rem; }
 .country-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; font-size: 0.8rem; margin: 0.28rem 0; }
 .country-row .k { color: var(--panel-muted); }
 .country-row .swatch { margin-right: 0.4rem; }
+
+/* Detail card — one row-group per active layer, stacked directly below
+   each other under the same country name, with a thin divider between
+   groups (but not above the first one). */
+.detail-group + .detail-group { margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px solid var(--panel-border); }
 
 .credit {
   font-size: 0.68rem;
