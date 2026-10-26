@@ -92,6 +92,19 @@ html, body {
   margin: 0 0 0.4rem;
   font-weight: 600;
 }
+.row-head-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.row-head-actions h2 { margin: 0; }
+.select-all-btn {
+  font-size: 0.7rem;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--panel-fg);
+  border-radius: 6px;
+  padding: 0.1rem 0.5rem;
+  cursor: pointer;
+}
+.select-all-btn:hover { background: var(--track); }
+.select-all-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
 .seg {
   display: inline-flex;

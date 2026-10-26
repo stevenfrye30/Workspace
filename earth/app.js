@@ -122,6 +122,28 @@ function firstSymbolLayerId(map) {
   return layer && layer.id;
 }
 
+// --- Color fill toggle (shared by every data layer below) -----------------
+// Each data layer's fill-opacity is wrapped in currentFillOpacity() at the
+// point it's painted, so when "Hide color fill" is on, every layer paints
+// at opacity 0 from the moment it's added — borders (never hidden) are
+// still visible, and clicking/hovering still works, since queryRendered-
+// Features hit-tests geometry, not painted opacity.
+
+let hideFillMode = false;
+
+function currentFillOpacity(normal) {
+  return hideFillMode ? 0 : normal;
+}
+
+function applyFillVisibility() {
+  LAYERS.forEach((layer) => {
+    if (!layer.fillLayerId || layer.fillOpacity === undefined) return;
+    if (map.getLayer(layer.fillLayerId)) {
+      map.setPaintProperty(layer.fillLayerId, 'fill-opacity', currentFillOpacity(layer.fillOpacity));
+    }
+  });
+}
+
 function addCountries(map) {
   loadCountriesData().then((data) => {
     if (map.getSource(COUNTRIES_SOURCE)) return;
@@ -131,7 +153,7 @@ function addCountries(map) {
       id: COUNTRIES_FILL_LAYER,
       type: 'fill',
       source: COUNTRIES_SOURCE,
-      paint: { 'fill-color': STATUS_COLOR_EXPR, 'fill-opacity': 0.42 },
+      paint: { 'fill-color': STATUS_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.42) },
     }, beforeId);
     map.addLayer({
       id: COUNTRIES_LINE_LAYER,
@@ -179,7 +201,7 @@ function addArea(map) {
       id: AREA_FILL_LAYER,
       type: 'fill',
       source: AREA_SOURCE,
-      paint: { 'fill-color': AREA_COLOR_EXPR, 'fill-opacity': 0.55 },
+      paint: { 'fill-color': AREA_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.55) },
     }, beforeId);
     map.addLayer({
       id: AREA_LINE_LAYER,
@@ -236,7 +258,7 @@ function addPopulation(map) {
       id: POP_FILL_LAYER,
       type: 'fill',
       source: POP_SOURCE,
-      paint: { 'fill-color': POP_COLOR_EXPR, 'fill-opacity': 0.55 },
+      paint: { 'fill-color': POP_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.55) },
     }, beforeId);
     map.addLayer({
       id: POP_LINE_LAYER,
@@ -294,7 +316,7 @@ function addPopulationDensity(map) {
       id: DENSITY_FILL_LAYER,
       type: 'fill',
       source: DENSITY_SOURCE,
-      paint: { 'fill-color': DENSITY_COLOR_EXPR, 'fill-opacity': 0.55 },
+      paint: { 'fill-color': DENSITY_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.55) },
     }, beforeId);
     map.addLayer({
       id: DENSITY_LINE_LAYER,
@@ -583,6 +605,7 @@ function setOtherLayersEnabled(enabled, exceptId) {
     }
     checkbox.disabled = !enabled;
   });
+  document.getElementById('selectAllBtn').disabled = !enabled;
 }
 
 function currentProjection() {
@@ -632,6 +655,7 @@ const LAYERS = [
     add: addCountries,
     remove: removeCountries,
     fillLayerId: COUNTRIES_FILL_LAYER,
+    fillOpacity: 0.42,
     legend: (data) => {
       const counts = { member: 0, observer: 0, other: 0 };
       data.features.forEach((f) => { counts[f.properties.un_status]++; });
@@ -681,6 +705,7 @@ const LAYERS = [
     add: addArea,
     remove: removeArea,
     fillLayerId: AREA_FILL_LAYER,
+    fillOpacity: 0.55,
     legend: (data) => {
       const withArea = data.features.filter((f) => f.properties.area_km2 > 0);
       const smallest = withArea.reduce((a, b) => (a.properties.area_km2 < b.properties.area_km2 ? a : b));
@@ -717,6 +742,7 @@ const LAYERS = [
     add: addPopulation,
     remove: removePopulation,
     fillLayerId: POP_FILL_LAYER,
+    fillOpacity: 0.55,
     legend: (data) => {
       const withPop = data.features.filter((f) => f.properties.pop_current > 0);
       const smallest = withPop.reduce((a, b) => (a.properties.pop_current < b.properties.pop_current ? a : b));
@@ -755,6 +781,7 @@ const LAYERS = [
     add: addPopulationDensity,
     remove: removePopulationDensity,
     fillLayerId: DENSITY_FILL_LAYER,
+    fillOpacity: 0.55,
     legend: (data) => {
       const withDensity = data.features.filter((f) => f.properties.pop_density_km2 > 0);
       const smallest = withDensity.reduce((a, b) => (a.properties.pop_density_km2 < b.properties.pop_density_km2 ? a : b));
@@ -959,6 +986,21 @@ function positionHoverTooltip(point) {
 document.getElementById('hoverModeToggle').addEventListener('change', (e) => {
   hoverMode = e.target.checked;
   if (!hoverMode) hideHoverTooltip();
+});
+
+document.getElementById('hideFillToggle').addEventListener('change', (e) => {
+  hideFillMode = e.target.checked;
+  applyFillVisibility();
+});
+
+document.getElementById('selectAllBtn').addEventListener('click', () => {
+  LAYERS.filter((l) => l.status === 'ready' && l.fillLayerId).forEach((l) => {
+    const checkbox = document.getElementById(`layer-${l.id}`);
+    if (!checkbox.disabled && !checkbox.checked) {
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event('change'));
+    }
+  });
 });
 
 document.getElementById('map').addEventListener('mouseleave', hideHoverTooltip);
