@@ -407,6 +407,14 @@ let lastClickedProps = null;
 function showDetail(props) {
   lastClickedProps = props;
   renderDetail();
+  // The detail card can sit well below the fold now that the layer list
+  // has grown (6 ready + 5 planned rows, plus the legend) — without this,
+  // clicking a country silently updates a card the user can't see, and
+  // looks like the click did nothing. Only fires on a deliberate selection
+  // (map click or table row), never on a plain checkbox toggle, and
+  // `block: 'nearest'` is a no-op if the card is already in view.
+  const block = document.getElementById('detailBlock');
+  if (!block.hidden) block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function renderDetail() {
