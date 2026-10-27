@@ -46,6 +46,24 @@ left to the client so the log-scaled color ramp (pop_density_log10) can be
 precomputed too. It inherits both upstream caveats: NE's micro-state area
 oversizing (understates density for Monaco/Vatican-scale shapes) and, for
 the ~20 pop_source="natural_earth_est" territories, POP_EST's staleness.
+
+gdp_usd, gdp_per_capita_usd, life_expectancy, and urban_pct are four more
+World Bank indicators (NY.GDP.MKTP.CD, NY.GDP.PCAP.CD, SP.DYN.LE00.IN,
+SP.URB.TOTL.IN.ZS), fetched and guarded the same way as population — same
+real-country filter, same borrowed-ISO3 protection, no Natural Earth
+fallback (a missing value here is just missing, shown as "—"). A fifth
+indicator, internet users %, was tried and dropped: World Bank's ITU-
+sourced series has barely reported anything since ~2021 (42 of 266
+economies had ANY recent value, and the US wasn't one of them) — too
+sparse to be worth the disclosure overhead.
+
+capital, flag_emoji, languages, currency, calling_code, tld, and neighbors
+come straight from the same mledoze/countries record already fetched for
+unMember — no extra request. neighbors resolves each ISO3 in `borders` to
+a name via that same dataset. mledoze's own `car`/`timezones` fields don't
+exist in the current schema (checked directly), so driving side and time
+zones aren't offered — rather than ship a field that's silently blank for
+every single country.
 """
 import json
 import math
@@ -55,7 +73,13 @@ from pathlib import Path
 NE_URL = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_admin_0_countries.geojson"
 MLEDOZE_URL = "https://raw.githubusercontent.com/mledoze/countries/master/countries.json"
 WB_COUNTRY_URL = "https://api.worldbank.org/v2/country?format=json&per_page=400"
-WB_POP_URL = "https://api.worldbank.org/v2/country/all/indicator/SP.POP.TOTL?format=json&per_page=400&mrv=1"
+WB_INDICATORS = {
+    "population": "SP.POP.TOTL",
+    "gdp": "NY.GDP.MKTP.CD",
+    "gdp_per_capita": "NY.GDP.PCAP.CD",
+    "life_expectancy": "SP.DYN.LE00.IN",
+    "urban_pct": "SP.URB.TOTL.IN.ZS",
+}
 OUT_PATH = Path(__file__).parent / "countries.geojson"
 
 OBSERVERS = {"VAT", "PSE"}  # Holy See, Palestine — UN permanent observers
@@ -136,20 +160,44 @@ def geodesic_area_km2(geometry):
     return m2 / 1_000_000
 
 
-def fetch_worldbank_population():
-    """Returns {iso3: (population, year)} for real countries only (the
-    World Bank's own region/income-group aggregate rows are excluded by
-    checking each code against the country list's region.id != 'NA')."""
+def real_country_iso3_set():
+    """The World Bank's own region/income-group aggregate rows (e.g.
+    "Africa Eastern and Southern") are excluded by checking each code
+    against the country list's region.id != 'NA' — shared by every
+    indicator fetch below so none of them can mistake a rollup for a
+    country."""
     countries = fetch_json(WB_COUNTRY_URL)[1]
-    real_iso3 = {c["id"] for c in countries if c["region"]["id"] != "NA"}
+    return {c["id"] for c in countries if c["region"]["id"] != "NA"}
 
-    rows = fetch_json(WB_POP_URL)[1]
+
+def fetch_worldbank_indicator(code, real_iso3):
+    """Returns {iso3: (value, year)}, most-recent-value-per-country."""
+    url = f"https://api.worldbank.org/v2/country/all/indicator/{code}?format=json&per_page=400&mrv=1"
+    rows = fetch_json(url)[1]
     out = {}
     for r in rows:
-        code = r.get("countryiso3code")
-        if code in real_iso3 and r.get("value") is not None:
-            out[code] = (int(r["value"]), r["date"])
+        iso3 = r.get("countryiso3code")
+        if iso3 in real_iso3 and r.get("value") is not None:
+            out[iso3] = (r["value"], r["date"])
     return out
+
+
+def format_calling_code(idd):
+    root = idd.get("root")
+    if not root:
+        return None
+    suffixes = idd.get("suffixes") or []
+    return root + suffixes[0] if len(suffixes) == 1 else root
+
+
+def format_currency(currencies):
+    parts = []
+    for code, info in currencies.items():
+        label = f"{code} — {info.get('name')}" if info.get("name") else code
+        if info.get("symbol"):
+            label += f" ({info['symbol']})"
+        parts.append(label)
+    return "; ".join(parts) or None
 
 
 def main():
@@ -158,7 +206,10 @@ def main():
     ne = fetch_json(NE_URL)
     mledoze = fetch_json(MLEDOZE_URL)
     members_by_iso3 = {c["cca3"]: c for c in mledoze}
-    wb_pop = fetch_worldbank_population()
+    name_by_iso3 = {c["cca3"]: c["name"]["common"] for c in mledoze}
+
+    real_iso3 = real_country_iso3_set()
+    wb = {key: fetch_worldbank_indicator(code, real_iso3) for key, code in WB_INDICATORS.items()}
 
     # A handful of NE's own Dependency/Geo-unit stubs (e.g. Indian Ocean
     # Territory, Ashmore & Cartier Is.) get backfilled with their
@@ -166,10 +217,11 @@ def main():
     # has no distinct code in NE's data — same quirk the module docstring
     # already calls out for UN-membership classification. Left unguarded,
     # looking those codes up against the World Bank hands a 3 km^2 island
-    # the sovereign country's entire national population. Detect the
-    # collision generically: codes already claimed by an ELIGIBLE_TYPES
-    # feature (an actual country) are off-limits for population lookups by
-    # any feature that ISN'T that eligible type.
+    # the sovereign country's entire national population (or GDP, or any
+    # other indicator). Detect the collision generically: codes already
+    # claimed by an ELIGIBLE_TYPES feature (an actual country) are
+    # off-limits for indicator lookups by any feature that ISN'T that
+    # eligible type.
     eligible_iso3 = {
         clean_iso3(f["properties"]) for f in ne["features"]
         if f["properties"].get("TYPE") in ELIGIBLE_TYPES and clean_iso3(f["properties"])
@@ -189,9 +241,13 @@ def main():
         area_log10 = round(math.log10(max(area_km2, 0.01)), 3)
 
         borrowed_code = iso3 in eligible_iso3 and p.get("TYPE") not in ELIGIBLE_TYPES
-        wb = wb_pop.get(iso3) if iso3 and not borrowed_code else None
-        if wb:
-            pop_current, pop_year, pop_source = wb[0], wb[1], "worldbank"
+
+        def wb_value(key):
+            return wb[key].get(iso3) if iso3 and not borrowed_code else None
+
+        pop_wb = wb_value("population")
+        if pop_wb:
+            pop_current, pop_year, pop_source = int(pop_wb[0]), pop_wb[1], "worldbank"
         else:
             pop_current, pop_year, pop_source = p.get("POP_EST"), None, "natural_earth_est"
         pop_sources[pop_source] += 1
@@ -199,6 +255,31 @@ def main():
 
         pop_density_km2 = round(pop_current / area_km2, 2) if area_km2 > 0 and pop_current else 0.0
         pop_density_log10 = round(math.log10(max(pop_density_km2, 0.01)), 3)
+
+        gdp = wb_value("gdp")
+        gdp_pc = wb_value("gdp_per_capita")
+        life_exp = wb_value("life_expectancy")
+        urban = wb_value("urban_pct")
+
+        # Same borrowed-code guard as the indicators above: a stub that
+        # inherited its administering country's ISO3 should not also
+        # inherit that country's capital, flag, languages, etc.
+        m = members_by_iso3.get(iso3) if iso3 and not borrowed_code else None
+        if m:
+            capital = ", ".join(m.get("capital") or []) or None
+            flag_emoji = m.get("flag")
+            # Comma-joined strings, not arrays: MapLibre's GeoJSON property
+            # model only supports primitives (string/number/boolean) — an
+            # array value gets silently JSON.stringify()'d into literal
+            # text like '["German"]' by the time it reaches the client, as
+            # a real-world .join() TypeError on this exact field caught.
+            languages = ", ".join(sorted((m.get("languages") or {}).values())) or None
+            currency = format_currency(m.get("currencies") or {})
+            calling_code = format_calling_code(m.get("idd") or {})
+            tld = ", ".join(m.get("tld") or []) or None
+            neighbors = ", ".join(name_by_iso3.get(b, b) for b in (m.get("borders") or [])) or None
+        else:
+            capital = flag_emoji = currency = calling_code = tld = languages = neighbors = None
 
         geom = shape(f["geometry"]).simplify(0.01, preserve_topology=True)
         geom_out = mapping(geom)
@@ -227,6 +308,21 @@ def main():
                 "un_status": status,
                 "area_km2": area_km2,
                 "area_log10": area_log10,
+                "capital": capital,
+                "flag_emoji": flag_emoji,
+                "languages": languages,
+                "currency": currency,
+                "calling_code": calling_code,
+                "tld": tld,
+                "neighbors": neighbors,
+                "gdp_usd": round(gdp[0]) if gdp else None,
+                "gdp_year": gdp[1] if gdp else None,
+                "gdp_per_capita_usd": round(gdp_pc[0], 2) if gdp_pc else None,
+                "gdp_per_capita_year": gdp_pc[1] if gdp_pc else None,
+                "life_expectancy": round(life_exp[0], 1) if life_exp else None,
+                "life_expectancy_year": life_exp[1] if life_exp else None,
+                "urban_pct": round(urban[0], 1) if urban else None,
+                "urban_pct_year": urban[1] if urban else None,
             },
             "geometry": geom_out,
         })
@@ -266,6 +362,29 @@ def main():
         fp = feat["properties"]
         if fp["area_km2"] < 2_000 and (fp["pop_current"] or 0) > 15_000_000:
             raise AssertionError(f"{fp['name']} looks like a borrowed-ISO3 population: {fp['pop_current']:,} over {fp['area_km2']} km^2")
+        if fp["area_km2"] < 2_000 and (fp["gdp_usd"] or 0) > 1_000_000_000_000:
+            raise AssertionError(f"{fp['name']} looks like a borrowed-ISO3 GDP: ${fp['gdp_usd']:,} over {fp['area_km2']} km^2")
+
+    # The two known borrowed-code offenders (same Australian stubs as the
+    # population fix) should come through with no mledoze-derived identity
+    # fields at all, not Australia's.
+    for bad_name in ("Indian Ocean Ter.", "Ashmore and Cartier Is."):
+        bad = next(f["properties"] for f in out_features if f["properties"]["name"] == bad_name)
+        assert bad["capital"] is None, f"{bad_name} should not have a borrowed capital, got {bad['capital']}"
+
+    # Coverage + a concrete regression check — not just a count, but a
+    # specific, verifiable fact (Germany's capital is Berlin).
+    deu = next(f["properties"] for f in out_features if f["properties"]["iso_a3"] == "DEU")
+    assert deu["capital"] == "Berlin", f"Germany capital looks wrong: {deu['capital']}"
+    assert deu["flag_emoji"], "Germany should have a flag emoji"
+
+    gdp_coverage = sum(1 for f in out_features if f["properties"]["gdp_usd"] is not None)
+    assert gdp_coverage >= 180, f"World Bank GDP coverage looks wrong: {gdp_coverage}"
+    usa_gdp = next(f["properties"]["gdp_usd"] for f in out_features if f["properties"]["iso_a3"] == "USA")
+    assert 10_000_000_000_000 <= usa_gdp <= 100_000_000_000_000, f"USA GDP looks wrong: {usa_gdp}"
+
+    jpn_life_exp = next(f["properties"]["life_expectancy"] for f in out_features if f["properties"]["iso_a3"] == "JPN")
+    assert 70 <= jpn_life_exp <= 95, f"Japan life expectancy looks wrong: {jpn_life_exp}"
 
     out = {"type": "FeatureCollection", "features": out_features}
     OUT_PATH.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
@@ -288,6 +407,10 @@ def main():
     dens_smallest, dens_largest = by_density[0]["properties"], by_density[-1]["properties"]
     print(f"least dense: {dens_smallest['name']} ({dens_smallest['pop_density_km2']:,}/km^2)")
     print(f"most dense: {dens_largest['name']} ({dens_largest['pop_density_km2']:,}/km^2)")
+
+    with_capital = sum(1 for f in out_features if f["properties"]["capital"])
+    print(f"identity fields (capital etc.): {with_capital}/{len(out_features)} shapes matched to mledoze")
+    print(f"GDP coverage: {gdp_coverage}/{len(out_features)}")
 
 
 if __name__ == "__main__":

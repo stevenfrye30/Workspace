@@ -92,20 +92,6 @@ html, body {
   margin: 0 0 0.4rem;
   font-weight: 600;
 }
-.row-head-actions { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
-.row-head-actions h2 { margin: 0; }
-.select-all-btn {
-  font-size: 0.7rem;
-  background: transparent;
-  border: 1px solid var(--panel-border);
-  color: var(--panel-fg);
-  border-radius: 6px;
-  padding: 0.1rem 0.5rem;
-  cursor: pointer;
-}
-.select-all-btn:hover { background: var(--track); }
-.select-all-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
 .seg {
   display: inline-flex;
   border: 1px solid var(--panel-border);
@@ -122,6 +108,9 @@ html, body {
 }
 .seg-btn + .seg-btn { border-left: 1px solid var(--panel-border); }
 .seg-btn.is-active { background: var(--accent); color: #fff; }
+
+.seg-small { margin-top: 0.4rem; }
+.seg-small .seg-btn { padding: 0.2rem 0.5rem; font-size: 0.72rem; }
 
 .hover-toggle-row { display: flex; align-items: flex-start; gap: 0.5rem; font-size: 0.82rem; cursor: pointer; }
 .hover-toggle-row input { margin-top: 0.15rem; accent-color: var(--accent); flex: none; }
@@ -186,9 +175,14 @@ html, body {
 }
 .country-name { font-size: 0.98rem; font-weight: 600; margin: 0; }
 .country-sub { font-size: 0.78rem; color: var(--panel-muted); margin: 0.1rem 0 0.5rem; }
-.country-row { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; font-size: 0.8rem; margin: 0.28rem 0; }
-.country-row .k { color: var(--panel-muted); }
+.country-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem; font-size: 0.8rem; margin: 0.28rem 0; }
+.country-row .k { color: var(--panel-muted); flex: none; }
 .country-row .swatch { margin-right: 0.4rem; }
+/* Some fields (Neighbors, Languages) run long — e.g. Russia borders 14
+   countries — so the value needs to wrap instead of overflowing the
+   panel. min-width: 0 is required for a flex item to actually shrink/wrap
+   rather than hold its unwrapped content width. */
+.country-row > span:last-child { text-align: right; overflow-wrap: break-word; min-width: 0; }
 
 /* Detail card — one row-group per active layer, stacked directly below
    each other under the same country name, with a thin divider between

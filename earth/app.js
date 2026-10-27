@@ -90,15 +90,19 @@ function removeGraticule(map) {
   if (map.getSource(GRATICULE_SOURCE)) map.removeSource(GRATICULE_SOURCE);
 }
 
-// --- Countries (UN view) --------------------------------------------------
-// Every country/territory Natural Earth draws (~242 shapes), classified by
-// UN status. See data/build_countries.py for how the classification is
-// derived and why it isn't a straight ISO-code lookup.
+// --- Countries ---------------------------------------------------------
+// One layer, one shared source — every ~242 Natural Earth shape, carrying
+// every field build_countries.py attaches (UN status, area, population,
+// density, and the identity/economic fields below). It used to be four
+// separate layers (one map fill per metric); now there's one fill whose
+// color is switchable ("Color by" below) while the click/hover info
+// always shows everything regardless of which metric is coloring the map.
 
 const COUNTRIES_SOURCE = 'countries';
 const COUNTRIES_FILL_LAYER = 'countries-fill';
 const COUNTRIES_LINE_LAYER = 'countries-line';
 const COUNTRIES_DATA_URL = 'data/countries.geojson';
+const KM2_PER_MI2 = 2.58999;
 
 const STATUS_COLORS = { member: '#2f6fdb', observer: '#caa23c', other: '#8a8a8a' };
 const STATUS_LABELS = { member: 'UN member state', observer: 'UN permanent observer', other: 'Other territory — not a UN member' };
@@ -109,6 +113,48 @@ const STATUS_COLOR_EXPR = [
   'observer', STATUS_COLORS.observer,
   STATUS_COLORS.other,
 ];
+
+// Stops are in log10 of the underlying value — area, population, and
+// density each span too many orders of magnitude for a linear scale to
+// show anything but one outlier.
+const AREA_COLOR_EXPR = [
+  'interpolate', ['linear'], ['get', 'area_log10'],
+  -1, '#f7fcf5',
+  0, '#c7e9c0',
+  2, '#74c476',
+  4.5, '#238b45',
+  7.3, '#00441b',
+];
+const POP_COLOR_EXPR = [
+  'interpolate', ['linear'], ['get', 'pop_log10'],
+  2.5, '#f2f0f7',
+  4, '#cbc9e2',
+  6, '#9e9ac8',
+  7.5, '#6a51a3',
+  9.2, '#3f007d',
+];
+const DENSITY_COLOR_EXPR = [
+  'interpolate', ['linear'], ['get', 'pop_density_log10'],
+  -1, '#ffffe5',
+  0.5, '#fed98e',
+  2, '#fe9929',
+  3, '#d95f0e',
+  4.5, '#993404',
+];
+
+const POP_SOURCE_LABELS = { worldbank: 'World Bank', natural_earth_est: 'Natural Earth (older estimate)' };
+
+// What the map's fill/line paint for each "Color by" mode. gradientClass
+// matches a CSS class in styles.css for the legend's mini-bar.
+const COLOR_MODES = {
+  status: { label: 'Status', fillExpr: STATUS_COLOR_EXPR, fillOpacity: 0.42, lineColor: STATUS_COLOR_EXPR, lineWidth: 1, lineOpacity: 0.9 },
+  area: { label: 'Area', fillExpr: AREA_COLOR_EXPR, fillOpacity: 0.55, lineColor: '#0b2e18', lineWidth: 0.6, lineOpacity: 0.5, gradientClass: 'area-gradient' },
+  population: { label: 'Population', fillExpr: POP_COLOR_EXPR, fillOpacity: 0.55, lineColor: '#1a0f33', lineWidth: 0.6, lineOpacity: 0.5, gradientClass: 'pop-gradient' },
+  density: { label: 'Density', fillExpr: DENSITY_COLOR_EXPR, fillOpacity: 0.55, lineColor: '#4a2511', lineWidth: 0.6, lineOpacity: 0.5, gradientClass: 'density-gradient' },
+};
+const COLOR_MODE_ORDER = ['status', 'area', 'population', 'density'];
+
+let colorByMode = 'status';
 
 let countriesDataPromise = null;
 function loadCountriesData() {
@@ -122,12 +168,12 @@ function firstSymbolLayerId(map) {
   return layer && layer.id;
 }
 
-// --- Color fill toggle (shared by every data layer below) -----------------
-// Each data layer's fill-opacity is wrapped in currentFillOpacity() at the
-// point it's painted, so when "Hide color fill" is on, every layer paints
-// at opacity 0 from the moment it's added — borders (never hidden) are
-// still visible, and clicking/hovering still works, since queryRendered-
-// Features hit-tests geometry, not painted opacity.
+// --- Color fill toggle -----------------------------------------------------
+// fill-opacity is wrapped in currentFillOpacity() at the point it's
+// painted, so when "Hide color fill" is on, the layer paints at opacity 0
+// from the moment it's added — the border (never hidden) is still
+// visible, and clicking/hovering still works, since queryRenderedFeatures
+// hit-tests geometry, not painted opacity.
 
 let hideFillMode = false;
 
@@ -136,12 +182,9 @@ function currentFillOpacity(normal) {
 }
 
 function applyFillVisibility() {
-  LAYERS.forEach((layer) => {
-    if (!layer.fillLayerId || layer.fillOpacity === undefined) return;
-    if (map.getLayer(layer.fillLayerId)) {
-      map.setPaintProperty(layer.fillLayerId, 'fill-opacity', currentFillOpacity(layer.fillOpacity));
-    }
-  });
+  if (map.getLayer(COUNTRIES_FILL_LAYER)) {
+    map.setPaintProperty(COUNTRIES_FILL_LAYER, 'fill-opacity', currentFillOpacity(COLOR_MODES[colorByMode].fillOpacity));
+  }
 }
 
 function addCountries(map) {
@@ -149,17 +192,18 @@ function addCountries(map) {
     if (map.getSource(COUNTRIES_SOURCE)) return;
     map.addSource(COUNTRIES_SOURCE, { type: 'geojson', data });
     const beforeId = firstSymbolLayerId(map);
+    const mode = COLOR_MODES[colorByMode];
     map.addLayer({
       id: COUNTRIES_FILL_LAYER,
       type: 'fill',
       source: COUNTRIES_SOURCE,
-      paint: { 'fill-color': STATUS_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.42) },
+      paint: { 'fill-color': mode.fillExpr, 'fill-opacity': currentFillOpacity(mode.fillOpacity) },
     }, beforeId);
     map.addLayer({
       id: COUNTRIES_LINE_LAYER,
       type: 'line',
       source: COUNTRIES_SOURCE,
-      paint: { 'line-color': STATUS_COLOR_EXPR, 'line-width': 1, 'line-opacity': 0.9 },
+      paint: { 'line-color': mode.lineColor, 'line-width': mode.lineWidth, 'line-opacity': mode.lineOpacity },
     }, beforeId);
   });
 }
@@ -170,109 +214,25 @@ function removeCountries(map) {
   if (map.getSource(COUNTRIES_SOURCE)) map.removeSource(COUNTRIES_SOURCE);
 }
 
-// --- Country areas (km^2 / mi^2) ------------------------------------------
-// Same shapes and same source data as the UN-view layer, shaded by land
-// area instead of UN status. Area is computed once, in build_countries.py,
-// from the *un-simplified* Natural Earth geometry (see that script for why).
-
-const AREA_SOURCE = 'countries-area';
-const AREA_FILL_LAYER = 'countries-area-fill';
-const AREA_LINE_LAYER = 'countries-area-line';
-const KM2_PER_MI2 = 2.58999;
-
-// Stops are in log10(km^2): -1 (~0.1 km^2, Vatican-scale) up to 7.3 (~20M
-// km^2, Russia-scale) — area spans too many orders of magnitude for a
-// linear scale to show anything but one giant country.
-const AREA_COLOR_EXPR = [
-  'interpolate', ['linear'], ['get', 'area_log10'],
-  -1, '#f7fcf5',
-  0, '#c7e9c0',
-  2, '#74c476',
-  4.5, '#238b45',
-  7.3, '#00441b',
-];
-
-function addArea(map) {
-  loadCountriesData().then((data) => {
-    if (map.getSource(AREA_SOURCE)) return;
-    map.addSource(AREA_SOURCE, { type: 'geojson', data });
-    const beforeId = firstSymbolLayerId(map);
-    map.addLayer({
-      id: AREA_FILL_LAYER,
-      type: 'fill',
-      source: AREA_SOURCE,
-      paint: { 'fill-color': AREA_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.55) },
-    }, beforeId);
-    map.addLayer({
-      id: AREA_LINE_LAYER,
-      type: 'line',
-      source: AREA_SOURCE,
-      paint: { 'line-color': '#0b2e18', 'line-width': 0.6, 'line-opacity': 0.5 },
-    }, beforeId);
-  });
+function setColorByMode(newMode) {
+  colorByMode = newMode;
+  const mode = COLOR_MODES[newMode];
+  if (map.getLayer(COUNTRIES_FILL_LAYER)) {
+    map.setPaintProperty(COUNTRIES_FILL_LAYER, 'fill-color', mode.fillExpr);
+    map.setPaintProperty(COUNTRIES_FILL_LAYER, 'fill-opacity', currentFillOpacity(mode.fillOpacity));
+    map.setPaintProperty(COUNTRIES_LINE_LAYER, 'line-color', mode.lineColor);
+    map.setPaintProperty(COUNTRIES_LINE_LAYER, 'line-width', mode.lineWidth);
+    map.setPaintProperty(COUNTRIES_LINE_LAYER, 'line-opacity', mode.lineOpacity);
+  }
+  refreshLegend();
 }
 
-function removeArea(map) {
-  if (map.getLayer(AREA_FILL_LAYER)) map.removeLayer(AREA_FILL_LAYER);
-  if (map.getLayer(AREA_LINE_LAYER)) map.removeLayer(AREA_LINE_LAYER);
-  if (map.getSource(AREA_SOURCE)) map.removeSource(AREA_SOURCE);
-}
+// --- Formatting helpers ------------------------------------------------
 
 function fmtArea(km2) {
   const mi2 = km2 / KM2_PER_MI2;
   const round = (n) => (n < 10 ? n.toFixed(2) : Math.round(n).toLocaleString());
   return { km2: round(km2), mi2: round(mi2) };
-}
-
-// --- Population (current) --------------------------------------------------
-// Same shapes again, shaded by population instead of area or UN status.
-// pop_current comes from the World Bank's SP.POP.TOTL, refetched live by
-// build_countries.py on every run — not Natural Earth's one-time POP_EST
-// snapshot. A small set of territories the World Bank doesn't track (Vatican
-// City, Taiwan, Western Sahara, Antarctica…) fall back to that NE estimate;
-// pop_source on each feature says which one you're looking at.
-
-const POP_SOURCE = 'countries-pop';
-const POP_FILL_LAYER = 'countries-pop-fill';
-const POP_LINE_LAYER = 'countries-pop-line';
-const POP_SOURCE_LABELS = { worldbank: 'World Bank', natural_earth_est: 'Natural Earth (older estimate)' };
-
-// Stops are in log10(population): 2.5 (~300, smallest inhabited territories)
-// up to 9.2 (~1.6B, India/China-scale) — population spans too many orders of
-// magnitude for a linear scale to show anything but one giant country.
-const POP_COLOR_EXPR = [
-  'interpolate', ['linear'], ['get', 'pop_log10'],
-  2.5, '#f2f0f7',
-  4, '#cbc9e2',
-  6, '#9e9ac8',
-  7.5, '#6a51a3',
-  9.2, '#3f007d',
-];
-
-function addPopulation(map) {
-  loadCountriesData().then((data) => {
-    if (map.getSource(POP_SOURCE)) return;
-    map.addSource(POP_SOURCE, { type: 'geojson', data });
-    const beforeId = firstSymbolLayerId(map);
-    map.addLayer({
-      id: POP_FILL_LAYER,
-      type: 'fill',
-      source: POP_SOURCE,
-      paint: { 'fill-color': POP_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.55) },
-    }, beforeId);
-    map.addLayer({
-      id: POP_LINE_LAYER,
-      type: 'line',
-      source: POP_SOURCE,
-      paint: { 'line-color': '#1a0f33', 'line-width': 0.6, 'line-opacity': 0.5 },
-    }, beforeId);
-  });
-}
-
-function removePopulation(map) {
-  if (map.getLayer(POP_FILL_LAYER)) map.removeLayer(POP_FILL_LAYER);
-  if (map.getLayer(POP_LINE_LAYER)) map.removeLayer(POP_LINE_LAYER);
-  if (map.getSource(POP_SOURCE)) map.removeSource(POP_SOURCE);
 }
 
 function fmtPop(props) {
@@ -284,65 +244,150 @@ function fmtPop(props) {
   };
 }
 
-// --- Population density -----------------------------------------------
-// pop_density_km2 (= pop_current / area_km2) is precomputed in
-// build_countries.py so it inherits both upstream caveats honestly:
-// the same micro-state area-oversizing that understates Monaco/Vatican's
-// true density, and — for the ~28 pop_source="natural_earth_est"
-// territories — POP_EST's staleness rather than a current figure.
-
-const DENSITY_SOURCE = 'countries-density';
-const DENSITY_FILL_LAYER = 'countries-density-fill';
-const DENSITY_LINE_LAYER = 'countries-density-line';
-
-// Stops are in log10(people/km^2): -1 (~0.1, near-empty) up to 4.5 (~31,600,
-// Macau-scale) — density spans too many orders of magnitude for a linear
-// scale to show anything but one outlier city-state.
-const DENSITY_COLOR_EXPR = [
-  'interpolate', ['linear'], ['get', 'pop_density_log10'],
-  -1, '#ffffe5',
-  0.5, '#fed98e',
-  2, '#fe9929',
-  3, '#d95f0e',
-  4.5, '#993404',
-];
-
-function addPopulationDensity(map) {
-  loadCountriesData().then((data) => {
-    if (map.getSource(DENSITY_SOURCE)) return;
-    map.addSource(DENSITY_SOURCE, { type: 'geojson', data });
-    const beforeId = firstSymbolLayerId(map);
-    map.addLayer({
-      id: DENSITY_FILL_LAYER,
-      type: 'fill',
-      source: DENSITY_SOURCE,
-      paint: { 'fill-color': DENSITY_COLOR_EXPR, 'fill-opacity': currentFillOpacity(0.55) },
-    }, beforeId);
-    map.addLayer({
-      id: DENSITY_LINE_LAYER,
-      type: 'line',
-      source: DENSITY_SOURCE,
-      paint: { 'line-color': '#4a2511', 'line-width': 0.6, 'line-opacity': 0.5 },
-    }, beforeId);
-  });
+function fmtDensity(props) {
+  const km2 = props.pop_density_km2 || 0;
+  const mi2 = km2 * KM2_PER_MI2;
+  const round = (n) => (n < 10 ? n.toFixed(2) : Math.round(n).toLocaleString());
+  return { km2: round(km2), mi2: round(mi2) };
 }
 
-function removePopulationDensity(map) {
-  if (map.getLayer(DENSITY_FILL_LAYER)) map.removeLayer(DENSITY_FILL_LAYER);
-  if (map.getLayer(DENSITY_LINE_LAYER)) map.removeLayer(DENSITY_LINE_LAYER);
-  if (map.getSource(DENSITY_SOURCE)) map.removeSource(DENSITY_SOURCE);
+// languages/neighbors arrive as plain comma-joined strings, not arrays —
+// MapLibre's GeoJSON property model only supports primitives, so an array
+// value gets silently JSON.stringify()'d into literal text like
+// '["German"]' by the time it reaches queryRenderedFeatures. Splitting
+// back on ", " is safe since no language or country name contains it.
+
+function fmtLanguages(str) {
+  if (!str) return '—';
+  const list = str.split(', ');
+  if (list.length <= 6) return str;
+  return `${list.slice(0, 6).join(', ')} +${list.length - 6} more`;
+}
+
+function fmtNeighbors(str) {
+  if (!str) return '—';
+  return `${str.split(', ').length} — ${str}`;
+}
+
+function fmtMoney(usd) {
+  if (usd == null) return '—';
+  const abs = Math.abs(usd);
+  if (abs >= 1e12) return `$${(usd / 1e12).toFixed(2)}T`;
+  if (abs >= 1e9) return `$${(usd / 1e9).toFixed(2)}B`;
+  if (abs >= 1e6) return `$${(usd / 1e6).toFixed(2)}M`;
+  return `$${Math.round(usd).toLocaleString()}`;
+}
+
+function fmtGdp(props) {
+  return props.gdp_usd != null ? `${fmtMoney(props.gdp_usd)} (${props.gdp_year})` : '—';
+}
+
+function fmtGdpPerCapita(props) {
+  return props.gdp_per_capita_usd != null ? `$${Math.round(props.gdp_per_capita_usd).toLocaleString()} (${props.gdp_per_capita_year})` : '—';
+}
+
+function fmtLifeExpectancy(props) {
+  return props.life_expectancy != null ? `${props.life_expectancy} yrs (${props.life_expectancy_year})` : '—';
+}
+
+function fmtUrbanPct(props) {
+  return props.urban_pct != null ? `${props.urban_pct}% (${props.urban_pct_year})` : '—';
+}
+
+function displayName(props) {
+  return props.flag_emoji ? `${props.flag_emoji} ${props.name}` : props.name;
+}
+
+// --- Legend for the current "Color by" mode ---------------------------
+
+function countriesLegend(data) {
+  if (colorByMode === 'status') {
+    const counts = { member: 0, observer: 0, other: 0 };
+    data.features.forEach((f) => { counts[f.properties.un_status]++; });
+    const wrap = document.createElement('div');
+    const list = document.createElement('ul');
+    list.className = 'legend-list';
+    [['member', 'UN member'], ['observer', 'UN observer'], ['other', 'Other territory']].forEach(([key, label]) => {
+      const li = document.createElement('li');
+      const sw = document.createElement('span');
+      sw.className = `swatch swatch-${key}`;
+      li.appendChild(sw);
+      li.appendChild(document.createTextNode(label));
+      const count = document.createElement('span');
+      count.className = 'legend-count';
+      count.textContent = counts[key];
+      li.appendChild(count);
+      list.appendChild(li);
+    });
+    wrap.appendChild(list);
+    return wrap;
+  }
+
+  if (colorByMode === 'area') {
+    const withArea = data.features.filter((f) => f.properties.area_km2 > 0);
+    const smallest = withArea.reduce((a, b) => (a.properties.area_km2 < b.properties.area_km2 ? a : b));
+    const largest = withArea.reduce((a, b) => (a.properties.area_km2 > b.properties.area_km2 ? a : b));
+    return buildGradientLegend('area-gradient', [
+      { label: 'Largest', text: `${largest.properties.name} — ${fmtArea(largest.properties.area_km2).km2} km²` },
+      { label: 'Smallest', text: `${smallest.properties.name} — ${fmtArea(smallest.properties.area_km2).km2} km²` },
+    ]);
+  }
+
+  if (colorByMode === 'population') {
+    const withPop = data.features.filter((f) => f.properties.pop_current > 0);
+    const smallest = withPop.reduce((a, b) => (a.properties.pop_current < b.properties.pop_current ? a : b));
+    const largest = withPop.reduce((a, b) => (a.properties.pop_current > b.properties.pop_current ? a : b));
+    return buildGradientLegend('pop-gradient', [
+      { label: 'Largest', text: `${largest.properties.name} — ${fmtPop(largest.properties).count}` },
+      { label: 'Smallest', text: `${smallest.properties.name} — ${fmtPop(smallest.properties).count}` },
+    ]);
+  }
+
+  // density
+  const withDensity = data.features.filter((f) => f.properties.pop_density_km2 > 0);
+  const smallest = withDensity.reduce((a, b) => (a.properties.pop_density_km2 < b.properties.pop_density_km2 ? a : b));
+  const largest = withDensity.reduce((a, b) => (a.properties.pop_density_km2 > b.properties.pop_density_km2 ? a : b));
+  return buildGradientLegend('density-gradient', [
+    { label: 'Densest', text: `${largest.properties.name} — ${fmtDensity(largest.properties).km2} /km²` },
+    { label: 'Sparsest', text: `${smallest.properties.name} — ${fmtDensity(smallest.properties).km2} /km²` },
+  ]);
+}
+
+// --- Detail fields — always all of it, regardless of "Color by" --------
+
+function countriesDetailFields(props) {
+  const a = fmtArea(props.area_km2);
+  const p = fmtPop(props);
+  const d = fmtDensity(props);
+  return [
+    { swatch: STATUS_COLORS[props.un_status], text: STATUS_LABELS[props.un_status] },
+    { label: 'Type', value: props.type || '—' },
+    { label: 'ISO', value: `${props.iso_a2 || '—'} / ${props.iso_a3 || '—'}` },
+    { label: 'Region', value: [props.continent, props.subregion].filter(Boolean).join(' · ') || '—' },
+    { label: 'km²', value: a.km2 },
+    { label: 'mi²', value: a.mi2 },
+    { label: 'Population', value: p.count },
+    { label: 'Pop. year', value: p.year },
+    { label: 'Pop. source', value: p.source },
+    { label: 'Density /km²', value: d.km2 },
+    { label: 'Density /mi²', value: d.mi2 },
+    { label: 'Capital', value: props.capital || '—' },
+    { label: 'Languages', value: fmtLanguages(props.languages) },
+    { label: 'Currency', value: props.currency || '—' },
+    { label: 'Calling code', value: props.calling_code || '—' },
+    { label: 'Domain', value: props.tld || '—' },
+    { label: 'Neighbors', value: fmtNeighbors(props.neighbors) },
+    { label: 'GDP', value: fmtGdp(props) },
+    { label: 'GDP / capita', value: fmtGdpPerCapita(props) },
+    { label: 'Life expectancy', value: fmtLifeExpectancy(props) },
+    { label: 'Urban population', value: fmtUrbanPct(props) },
+  ];
 }
 
 // --- Unified legend + detail panel ----------------------------------------
-// Every country-shaped data layer (countries/area/population/density)
-// declares a `legend` (compact swatches-or-gradient summary) and
-// `detailFields` (rows for the click-to-inspect card) instead of owning its
-// own block. With N of them checked at once, their legends stack as N
-// tight rows in one panel and their detail fields stack as N row-groups in
-// one card — "one over the other" for any combination, not just a
-// hardcoded pair. Field order follows LAYERS array order, so (for example)
-// the Countries layer's Region always lands before the Population layer's
-// fields, for any set of layers active together.
+// The Countries layer declares `legend` (compact swatches-or-gradient
+// summary, following the current Color-by mode) and `detailFields` (every
+// row for the click-to-inspect card) instead of owning its own block.
 
 function buildGradientLegend(gradientClass, stats) {
   const wrap = document.createElement('div');
@@ -405,9 +450,9 @@ function refreshLegend() {
     return;
   }
   loadCountriesData().then((data) => {
-    // A newer refreshLegend() call (e.g. from a second checkbox flipped in
-    // the same burst, as setOtherLayersEnabled does) may have already
-    // superseded this one — don't let a stale render win the race.
+    // A newer refreshLegend() call (e.g. switching Color by right after a
+    // checkbox toggle) may have already superseded this one — don't let a
+    // stale render win the race.
     if (requestId !== legendRequestId) return;
     container.innerHTML = '';
     active.forEach((layer) => {
@@ -429,11 +474,10 @@ let lastClickedProps = null;
 function showDetail(props) {
   lastClickedProps = props;
   renderDetail();
-  // The detail card can sit well below the fold now that the layer list
-  // has grown (6 ready + 5 planned rows, plus the legend) — without this,
-  // clicking a country silently updates a card the user can't see, and
-  // looks like the click did nothing. Only fires on a deliberate selection
-  // (map click or table row), never on a plain checkbox toggle, and
+  // The detail card can sit well below the fold — without this, clicking
+  // a country silently updates a card the user can't see, and looks like
+  // the click did nothing. Only fires on a deliberate selection (map
+  // click or table row), never on a plain checkbox toggle, and
   // `block: 'nearest'` is a no-op if the card is already in view.
   const block = document.getElementById('detailBlock');
   if (!block.hidden) block.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -447,7 +491,7 @@ function renderDetail() {
     return;
   }
   const props = lastClickedProps;
-  document.getElementById('dtName').textContent = props.name;
+  document.getElementById('dtName').textContent = displayName(props);
   document.getElementById('dtFormal').textContent =
     props.formal_name && props.formal_name !== props.name ? props.formal_name : '';
   const rows = document.getElementById('detailRows');
@@ -461,15 +505,8 @@ function renderDetail() {
   block.hidden = false;
 }
 
-function fmtDensity(props) {
-  const km2 = props.pop_density_km2 || 0;
-  const mi2 = km2 * KM2_PER_MI2;
-  const round = (n) => (n < 10 ? n.toFixed(2) : Math.round(n).toLocaleString());
-  return { km2: round(km2), mi2: round(mi2) };
-}
-
 // --- Data table overlay (shared by any layer with a `table` config) -------
-// Built from the same cached fetch as the map layers — opening the table
+// Built from the same cached fetch as the map layer — opening the table
 // never requires the layer itself to be toggled on first.
 
 let tableState = null;
@@ -605,7 +642,6 @@ function setOtherLayersEnabled(enabled, exceptId) {
     }
     checkbox.disabled = !enabled;
   });
-  document.getElementById('selectAllBtn').disabled = !enabled;
 }
 
 function currentProjection() {
@@ -648,164 +684,33 @@ const LAYERS = [
   },
   {
     id: 'countries',
-    label: 'Countries (UN view)',
+    label: 'Countries',
     status: 'ready',
     defaultOn: false,
-    note: 'All ~242 Natural Earth shapes, colored by UN status.',
+    note: 'All ~242 Natural Earth shapes. Click or hover any shape for its full profile — status, size, population, density, and more. Color the map by whichever one below.',
     add: addCountries,
     remove: removeCountries,
     fillLayerId: COUNTRIES_FILL_LAYER,
-    fillOpacity: 0.42,
-    legend: (data) => {
-      const counts = { member: 0, observer: 0, other: 0 };
-      data.features.forEach((f) => { counts[f.properties.un_status]++; });
-      const wrap = document.createElement('div');
-      const list = document.createElement('ul');
-      list.className = 'legend-list';
-      [['member', 'UN member'], ['observer', 'UN observer'], ['other', 'Other territory']].forEach(([key, label]) => {
-        const li = document.createElement('li');
-        const sw = document.createElement('span');
-        sw.className = `swatch swatch-${key}`;
-        li.appendChild(sw);
-        li.appendChild(document.createTextNode(label));
-        const count = document.createElement('span');
-        count.className = 'legend-count';
-        count.textContent = counts[key];
-        li.appendChild(count);
-        list.appendChild(li);
-      });
-      wrap.appendChild(list);
-      return wrap;
-    },
-    detailFields: (props) => [
-      { swatch: STATUS_COLORS[props.un_status], text: STATUS_LABELS[props.un_status] },
-      { label: 'Type', value: props.type || '—' },
-      { label: 'ISO', value: `${props.iso_a2 || '—'} / ${props.iso_a3 || '—'}` },
-      { label: 'Region', value: [props.continent, props.subregion].filter(Boolean).join(' · ') || '—' },
-    ],
+    colorBy: true,
+    legend: countriesLegend,
+    detailFields: countriesDetailFields,
     table: {
-      title: 'Countries (UN view)',
+      title: 'Countries',
       defaultSort: 'name',
       columns: [
-        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
-        { key: 'status', label: 'UN status', value: (p) => STATUS_SHORT[p.un_status], sort: (p) => STATUS_SHORT[p.un_status] },
-        { key: 'type', label: 'Type', value: (p) => p.type || '—', sort: (p) => p.type || '' },
-        { key: 'iso', label: 'ISO', value: (p) => `${p.iso_a2 || '—'} / ${p.iso_a3 || '—'}`, sort: (p) => p.iso_a3 || '' },
-        { key: 'pop', label: 'Population', align: 'right', value: (p) => (p.pop_current > 0 ? Math.round(p.pop_current).toLocaleString() : '—'), sort: (p) => p.pop_current || 0 },
+        { key: 'name', label: 'Country / territory', value: (p) => displayName(p), sort: (p) => p.name.toLowerCase() },
+        { key: 'status', label: 'Status', value: (p) => STATUS_SHORT[p.un_status], sort: (p) => STATUS_SHORT[p.un_status] },
+        { key: 'capital', label: 'Capital', value: (p) => p.capital || '—', sort: (p) => p.capital || '' },
         { key: 'region', label: 'Region', value: (p) => [p.continent, p.subregion].filter(Boolean).join(' · ') || '—', sort: (p) => p.continent || '' },
-      ],
-    },
-  },
-  {
-    id: 'country-area',
-    label: 'Country areas (km² / mi²)',
-    status: 'ready',
-    defaultOn: false,
-    note: 'Shaded by land area — darker green is larger. Click for exact km² / mi².',
-    add: addArea,
-    remove: removeArea,
-    fillLayerId: AREA_FILL_LAYER,
-    fillOpacity: 0.55,
-    legend: (data) => {
-      const withArea = data.features.filter((f) => f.properties.area_km2 > 0);
-      const smallest = withArea.reduce((a, b) => (a.properties.area_km2 < b.properties.area_km2 ? a : b));
-      const largest = withArea.reduce((a, b) => (a.properties.area_km2 > b.properties.area_km2 ? a : b));
-      return buildGradientLegend('area-gradient', [
-        { label: 'Largest', text: `${largest.properties.name} — ${fmtArea(largest.properties.area_km2).km2} km²` },
-        { label: 'Smallest', text: `${smallest.properties.name} — ${fmtArea(smallest.properties.area_km2).km2} km²` },
-      ]);
-    },
-    detailFields: (props) => {
-      const a = fmtArea(props.area_km2);
-      return [
-        { label: 'km²', value: a.km2 },
-        { label: 'mi²', value: a.mi2 },
-      ];
-    },
-    table: {
-      title: 'Country areas',
-      defaultSort: 'km2',
-      defaultDir: 'desc',
-      columns: [
-        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
         { key: 'km2', label: 'Area (km²)', align: 'right', value: (p) => fmtArea(p.area_km2).km2, sort: (p) => p.area_km2 },
-        { key: 'mi2', label: 'Area (mi²)', align: 'right', value: (p) => fmtArea(p.area_km2).mi2, sort: (p) => p.area_km2 },
-      ],
-    },
-  },
-  {
-    id: 'population',
-    label: 'Population',
-    status: 'ready',
-    defaultOn: false,
-    note: 'Shaded by population — darker purple is larger. Current World Bank figures; a few territories fall back to an older Natural Earth estimate.',
-    add: addPopulation,
-    remove: removePopulation,
-    fillLayerId: POP_FILL_LAYER,
-    fillOpacity: 0.55,
-    legend: (data) => {
-      const withPop = data.features.filter((f) => f.properties.pop_current > 0);
-      const smallest = withPop.reduce((a, b) => (a.properties.pop_current < b.properties.pop_current ? a : b));
-      const largest = withPop.reduce((a, b) => (a.properties.pop_current > b.properties.pop_current ? a : b));
-      return buildGradientLegend('pop-gradient', [
-        { label: 'Largest', text: `${largest.properties.name} — ${fmtPop(largest.properties).count}` },
-        { label: 'Smallest', text: `${smallest.properties.name} — ${fmtPop(smallest.properties).count}` },
-      ]);
-    },
-    detailFields: (props) => {
-      const p = fmtPop(props);
-      return [
-        { label: 'Population', value: p.count },
-        { label: 'Year', value: p.year },
-        { label: 'Source', value: p.source },
-      ];
-    },
-    table: {
-      title: 'Population',
-      defaultSort: 'pop',
-      defaultDir: 'desc',
-      columns: [
-        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
         { key: 'pop', label: 'Population', align: 'right', value: (p) => fmtPop(p).count, sort: (p) => p.pop_current || 0 },
-        { key: 'year', label: 'Year', align: 'right', value: (p) => fmtPop(p).year, sort: (p) => p.pop_year || '' },
-        { key: 'source', label: 'Source', value: (p) => fmtPop(p).source, sort: (p) => fmtPop(p).source },
-      ],
-    },
-  },
-  {
-    id: 'population-density',
-    label: 'Population density',
-    status: 'ready',
-    defaultOn: false,
-    note: 'People per km² / mi² — population ÷ land area. Inherits the same micro-state area caveat as Country areas, plus Population’s own source caveat.',
-    add: addPopulationDensity,
-    remove: removePopulationDensity,
-    fillLayerId: DENSITY_FILL_LAYER,
-    fillOpacity: 0.55,
-    legend: (data) => {
-      const withDensity = data.features.filter((f) => f.properties.pop_density_km2 > 0);
-      const smallest = withDensity.reduce((a, b) => (a.properties.pop_density_km2 < b.properties.pop_density_km2 ? a : b));
-      const largest = withDensity.reduce((a, b) => (a.properties.pop_density_km2 > b.properties.pop_density_km2 ? a : b));
-      return buildGradientLegend('density-gradient', [
-        { label: 'Densest', text: `${largest.properties.name} — ${fmtDensity(largest.properties).km2} /km²` },
-        { label: 'Sparsest', text: `${smallest.properties.name} — ${fmtDensity(smallest.properties).km2} /km²` },
-      ]);
-    },
-    detailFields: (props) => {
-      const d = fmtDensity(props);
-      return [
-        { label: 'Per km²', value: d.km2 },
-        { label: 'Per mi²', value: d.mi2 },
-      ];
-    },
-    table: {
-      title: 'Population density',
-      defaultSort: 'km2',
-      defaultDir: 'desc',
-      columns: [
-        { key: 'name', label: 'Country / territory', sort: (p) => p.name.toLowerCase() },
-        { key: 'km2', label: 'Per km²', align: 'right', value: (p) => fmtDensity(p).km2, sort: (p) => p.pop_density_km2 || 0 },
-        { key: 'mi2', label: 'Per mi²', align: 'right', value: (p) => fmtDensity(p).mi2, sort: (p) => p.pop_density_km2 || 0 },
+        { key: 'density', label: 'Density /km²', align: 'right', value: (p) => fmtDensity(p).km2, sort: (p) => p.pop_density_km2 || 0 },
+        { key: 'gdp', label: 'GDP', align: 'right', value: (p) => fmtGdp(p), sort: (p) => p.gdp_usd || 0 },
+        { key: 'gdp_pc', label: 'GDP / capita', align: 'right', value: (p) => fmtGdpPerCapita(p), sort: (p) => p.gdp_per_capita_usd || 0 },
+        { key: 'life_exp', label: 'Life exp.', align: 'right', value: (p) => fmtLifeExpectancy(p), sort: (p) => p.life_expectancy || 0 },
+        { key: 'urban', label: 'Urban %', align: 'right', value: (p) => fmtUrbanPct(p), sort: (p) => p.urban_pct || 0 },
+        { key: 'currency', label: 'Currency', value: (p) => p.currency || '—', sort: (p) => p.currency || '' },
+        { key: 'languages', label: 'Languages', value: (p) => fmtLanguages(p.languages), sort: (p) => p.languages || '' },
       ],
     },
   },
@@ -885,6 +790,26 @@ LAYERS.forEach((layer) => {
     main.appendChild(note);
   }
 
+  if (layer.colorBy) {
+    const seg = document.createElement('div');
+    seg.className = 'seg seg-small';
+    seg.setAttribute('role', 'group');
+    seg.setAttribute('aria-label', 'Color by');
+    COLOR_MODE_ORDER.forEach((key) => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'seg-btn' + (key === colorByMode ? ' is-active' : '');
+      btn.textContent = COLOR_MODES[key].label;
+      btn.addEventListener('click', () => {
+        seg.querySelectorAll('.seg-btn').forEach((b) => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+        setColorByMode(key);
+      });
+      seg.appendChild(btn);
+    });
+    main.appendChild(seg);
+  }
+
   if (layer.table) {
     const tableBtn = document.createElement('button');
     tableBtn.type = 'button';
@@ -923,10 +848,7 @@ function showCoord(lngLat) {
   coordOut.textContent = `${lngLat.lat.toFixed(3)}°, ${lngLat.lng.toFixed(3)}°`;
 }
 
-// Every data layer's source is the same countries.geojson, so whichever
-// active fill layer is hit first already carries every field any of them
-// might want — no need to query each one separately. Shared by the click
-// handler and the hover tooltip below.
+// Shared by the click handler and the hover tooltip below.
 function findHitProps(point) {
   const candidates = LAYERS.filter((l) => l.status === 'ready' && l.fillLayerId && document.getElementById(`layer-${l.id}`).checked);
   for (const layer of candidates) {
@@ -946,8 +868,8 @@ map.on('click', (e) => {
 // --- Hover tooltip (toggleable) -------------------------------------------
 // Off by default — clicking already gives a persistent detail card in the
 // panel. When on, this is a lightweight, read-only echo of the exact same
-// per-layer detailFields used there, in a box that follows the cursor
-// instead of requiring a click.
+// detailFields used there, in a box that follows the cursor instead of
+// requiring a click.
 
 let hoverMode = false;
 let hoveredName = null;
@@ -958,7 +880,7 @@ function hideHoverTooltip() {
 }
 
 function renderHoverTooltip(props) {
-  document.getElementById('hvName').textContent = props.name;
+  document.getElementById('hvName').textContent = displayName(props);
   document.getElementById('hvFormal').textContent =
     props.formal_name && props.formal_name !== props.name ? props.formal_name : '';
   const rows = document.getElementById('hvRows');
@@ -991,16 +913,6 @@ document.getElementById('hoverModeToggle').addEventListener('change', (e) => {
 document.getElementById('hideFillToggle').addEventListener('change', (e) => {
   hideFillMode = e.target.checked;
   applyFillVisibility();
-});
-
-document.getElementById('selectAllBtn').addEventListener('click', () => {
-  LAYERS.filter((l) => l.status === 'ready' && l.fillLayerId).forEach((l) => {
-    const checkbox = document.getElementById(`layer-${l.id}`);
-    if (!checkbox.disabled && !checkbox.checked) {
-      checkbox.checked = true;
-      checkbox.dispatchEvent(new Event('change'));
-    }
-  });
 });
 
 document.getElementById('map').addEventListener('mouseleave', hideHoverTooltip);
