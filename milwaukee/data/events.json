@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-02T20:51:32+00:00",
+ "generated_at": "2026-11-03T18:30:44+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
@@ -11,7 +11,7 @@
   "uwm": {
    "status": "stale",
    "error": "OSError: every department failed: arts: RemoteDisconnected, planetarium: RemoteDisconnected, libraries: RemoteDisconnected, stude",
-   "count": 207,
+   "count": 201,
    "as_of": "2026-11-01"
   },
   "boswell": {
@@ -22,39 +22,39 @@
    "status": "ok",
    "count": 66,
    "raw": 66,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "mpl": {
    "status": "ok",
-   "count": 69,
-   "raw": 69,
-   "as_of": "2026-11-02"
+   "count": 67,
+   "raw": 67,
+   "as_of": "2026-11-03"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 4,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "mam": {
    "status": "ok",
    "count": 80,
-   "raw": 108,
-   "as_of": "2026-11-02"
+   "raw": 113,
+   "as_of": "2026-11-03"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 5,
    "raw": 6,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "turners": {
    "status": "link"
   },
   "domes": {
    "status": "ok",
-   "count": 15,
-   "raw": 15,
-   "as_of": "2026-11-02"
+   "count": 16,
+   "raw": 16,
+   "as_of": "2026-11-03"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -62,25 +62,25 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "radio-milwaukee": {
    "status": "ok",
    "count": 60,
    "raw": 62,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 141,
-   "raw": 141,
-   "as_of": "2026-11-02"
+   "count": 143,
+   "raw": 143,
+   "as_of": "2026-11-03"
   },
   "marcus-center": {
    "status": "ok",
    "count": 11,
    "raw": 11,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "admirals": {
    "status": "error",
@@ -90,7 +90,7 @@
    "status": "ok",
    "count": 0,
    "raw": 0,
-   "as_of": "2026-11-02"
+   "as_of": "2026-11-03"
   },
   "eventbrite": {
    "status": "error",
@@ -102,9 +102,9 @@
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 828,
-   "raw": 831,
-   "as_of": "2026-11-02"
+   "count": 824,
+   "raw": 827,
+   "as_of": "2026-11-03"
   },
   "fiserv-forum": {
    "status": "error",
@@ -112,251 +112,6 @@
   }
  },
  "events": [
-  {
-   "title": "WIM North",
-   "start": "2026-11-02T08:30",
-   "end": "2026-11-02T16:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/wim-north/22210/",
-   "where": "The Westin Milwaukee",
-   "addr": "550 N. Van Buren Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Professional Development"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Brushwork II",
-   "start": "2026-11-02T09:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/brushwork-ii/22422/",
-   "where": "Kenilworth Square East",
-   "addr": "1925 East Kenilworth Pl",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "run_through": "2026-11-11",
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "St. Camillus Holiday Art & Craft Fair",
-   "start": "2026-11-02T10:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/st-camillus-holiday-art-%26-craft-fair/22133/",
-   "where": "St. Camillus East Residence",
-   "addr": "10100 E. Bluemound Road",
-   "zip": "53226",
-   "summary": "Recurring daily",
-   "tags": [
-    "Fairs & Markets",
-    "Food & Drink",
-    "Holiday Markets"
-   ],
-   "free": true,
-   "kind": "markets",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Panthers Vote Educational Table",
-   "start": "2026-11-02T12:00",
-   "end": "2026-11-02T14:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/panthers-vote-educational-table/2026-11-02/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join Panthers Vote for a voter information tabling event designed to help you prepare for upcoming elections. Panthers Vote will provide step-by-step guidance on how to register to vote, check your…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Student Goals"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Job Search and Resume Assistance",
-   "start": "2026-11-02T13:00",
-   "end": "2026-11-02T16:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/16871569",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "A Goodwill Consultant will be available to provide job search assistance, resume-building help, and interview preparation.",
-   "tags": [
-    "Jobs & Careers"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Monday Book Night",
-   "start": "2026-11-02T16:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/monday-book-night/17052/",
-   "where": "Pomeroy",
-   "addr": "723 S. 2nd Street",
-   "zip": "53204",
-   "summary": "Recurring weekly on Monday",
-   "tags": [
-    "Film & Literature",
-    "Arts & Culture",
-    "Community"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Cozy Crafting",
-   "start": "2026-11-02T17:30",
-   "end": "2026-11-02T19:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17054855",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Get comfy, craft, and meet up with friends and neighbors at Central Library!",
-   "tags": [
-    "Crafts, Games, & Play"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Intro to Wheel Throwing Session 2",
-   "start": "2026-11-02T18:00",
-   "end": "2026-11-02T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-02/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you curious to try out the pottery wheel? Join us for five weeks to familiarize yourself with the fundamentals of wheel throwing and clay! Between classes, participants will have access to the…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Printed Patches",
-   "start": "2026-11-02T18:00",
-   "end": "2026-11-02T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/printed-patches/2026-11-02/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Create your own unique patches to attach to clothing or bags with this foundational relief printmaking course! After creating and transferring the design participants will move into carving,…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Gaijin Pop-Up Dinner Event at Lupi & Iris",
-   "start": "2026-11-02T18:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/gaijin-pop-up-dinner-event-at-lupi-%26-iris/21871/",
-   "where": "Lupi & Iris",
-   "addr": "777 N. Van Buren Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Marquette Men's Basketball vs Mercyhurst",
-   "start": "2026-11-02T18:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/marquette-mens-basketball-vs-mercyhurst/22039/",
-   "where": "Fiserv Forum",
-   "addr": "1111 N Vel R Phillips Ave",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Just Steps From Broadway: An Evening With Milwaukee’s Musical Theatre Luminaries",
-   "start": "2026-11-02T19:00",
-   "end": "2026-11-02T20:15",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/just-steps-from-broadway-an-evening-with-milwaukees-musical-theatre-luminaries/",
-   "where": "Theatre Building, Mainstage Theatre",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Milwaukee is a vibrant musical theatre community, with artists whose talents extend from local stages to Broadway and beyond. In anticipation of UWM’s Distinguished Lecture Series featuring Tony and…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
   {
    "title": "Birding at Menomonee Valley",
    "start": "2026-11-03T08:00",
@@ -6164,10 +5919,10 @@
    "start": "2026-11-12T18:00",
    "end": "2026-11-12T19:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/raisins-into-gold%3a-amarone/22459/",
+   "url": "https://www.visitmilwaukee.org/event/raisins-into-gold%3a-amarone/20709/",
    "where": "Waterford Wine & Spirits",
-   "addr": "631 Genesee St",
-   "zip": "53018",
+   "addr": "2120 N. Farwell Ave",
+   "zip": "53202",
    "summary": "",
    "tags": [
     "Classes & Workshops",
@@ -6175,7 +5930,7 @@
    ],
    "free": false,
    "kind": "food",
-   "reach": "car",
+   "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -6313,10 +6068,7 @@
    "reach": "walk",
    "free": null,
    "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "uwm"
-   ]
+   "org": "radio-milwaukee"
   },
   {
    "title": "Hilary Duff",
@@ -16348,7 +16100,6 @@
    "via": "org",
    "org": "radio-milwaukee",
    "also": [
-    "uwm",
     "visit-milwaukee"
    ]
   },
@@ -19759,16 +19510,17 @@
    "start": "2026-12-10T17:30",
    "end": "2026-12-10T21:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22435/",
+   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22213/",
    "where": "Milwaukee County Zoo",
    "addr": "10001 W. Bluemound Rd.",
    "zip": "53226",
    "summary": "",
    "tags": [
-    "Holiday",
+    "Community",
+    "Family Friendly",
     "Museums & Attractions"
    ],
-   "free": null,
+   "free": false,
    "kind": "outdoors",
    "reach": "car",
    "via": "source",
@@ -21196,6 +20948,23 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Christmas with the Choristers",
+   "start": "2026-12-12T19:30",
+   "end": "2026-12-12T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/christmas-with-the-choristers-3/",
+   "where": "St. Monica Parish Whitefish Bay",
+   "addr": "5681 N. Santa Monica Blvd.",
+   "zip": "53217",
+   "summary": "Experience a festive tapestry of music from the majestic jubilation of Daniel Pinkham’s Christmas Cantata with organ and brass to the genre-hopping fun of “A Musicological Journey Through the 12 Days…",
+   "tags": [],
+   "kind": "music",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Winter Choral Extravaganza",
    "start": "2026-12-12T19:30",
    "end": "2026-12-12T21:15",
@@ -21734,6 +21503,23 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Christmas with the Choristers",
+   "start": "2026-12-13T15:00",
+   "end": "2026-12-13T15:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/christmas-with-the-choristers-4/",
+   "where": "St. Monica Parish Whitefish Bay",
+   "addr": "5681 N. Santa Monica Blvd.",
+   "zip": "53217",
+   "summary": "Experience a festive tapestry of music from the majestic jubilation of Daniel Pinkham’s Christmas Cantata with organ and brass to the genre-hopping fun of “A Musicological Journey Through the 12 Days…",
+   "tags": [],
+   "kind": "music",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Will Holiday’s Grand Ol’ Christmas Show",
@@ -23508,7 +23294,7 @@
    "start": "2026-12-19",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/lil-mo-mozzarella/18844/",
+   "url": "https://www.visitmilwaukee.org/event/lil-mo-mozzarella/19081/",
    "where": "Vivarium",
    "addr": "1818 N. Farwell Avenue",
    "zip": "53202",
@@ -27554,6 +27340,87 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "SIX",
+   "start": "2027-01-02",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/six/21890/",
+   "where": "Marcus Performing Arts Center",
+   "addr": "929 N. Water Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater",
+    "Arts & Culture",
+    "Milwaukee Theater District"
+   ],
+   "time_unknown": true,
+   "run_through": "2027-01-07",
+   "free": null,
+   "kind": "theater",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Open Late",
+   "start": "2027-01-02T09:00",
+   "end": "2027-01-02T20:00",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/open-late/2027-01-02/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "The Domes will remain open until 8:00 PM (last admission one hour before close).",
+   "tags": [
+    "Open Late"
+   ],
+   "kind": "outdoors",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
+   "title": "Twilight Tours at the Pabst Mansion",
+   "start": "2027-01-02T16:30",
+   "end": "2027-01-02T19:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/twilight-tours-at-the-pabst-mansion/22113/",
+   "where": "Pabst Mansion",
+   "addr": "2000 W. Wisconsin Avenue",
+   "zip": "53233",
+   "summary": "",
+   "tags": [
+    "Holiday",
+    "Museums & Attractions"
+   ],
+   "free": false,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2027-01-02T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -27584,26 +27451,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 250,
-   "theater": 155,
+   "music": 252,
+   "theater": 156,
    "comedy": 49,
    "film": 12,
-   "art": 125,
-   "talks": 172,
+   "art": 123,
+   "talks": 169,
    "books": 11,
-   "markets": 24,
-   "outdoors": 76,
-   "food": 153,
-   "sports": 42,
+   "markets": 23,
+   "outdoors": 77,
+   "food": 152,
+   "sports": 41,
    "family": 42,
-   "community": 219
+   "community": 217
   },
   "reach": {
-   "walk": 329,
-   "bus": 697,
-   "car": 238,
-   "unknown": 57
+   "walk": 326,
+   "bus": 692,
+   "car": 239,
+   "unknown": 58
   },
-  "free": 328
+  "free": 324
  }
 }
