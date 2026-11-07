@@ -1,17 +1,17 @@
 {
- "generated_at": "2026-11-06T18:01:44+00:00",
+ "generated_at": "2026-11-07T16:56:45+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
    "status": "stale",
    "error": "RemoteDisconnected: Remote end closed connection without response",
-   "count": 2,
+   "count": 1,
    "as_of": "2026-11-01"
   },
   "uwm": {
    "status": "stale",
    "error": "OSError: every department failed: arts: RemoteDisconnected, planetarium: RemoteDisconnected, libraries: RemoteDisconnected, stude",
-   "count": 175,
+   "count": 166,
    "as_of": "2026-11-01"
   },
   "boswell": {
@@ -20,41 +20,41 @@
   },
   "urban-ecology-center": {
    "status": "ok",
-   "count": 54,
-   "raw": 54,
-   "as_of": "2026-11-06"
+   "count": 53,
+   "raw": 53,
+   "as_of": "2026-11-07"
   },
   "mpl": {
    "status": "ok",
-   "count": 67,
-   "raw": 67,
-   "as_of": "2026-11-06"
+   "count": 68,
+   "raw": 68,
+   "as_of": "2026-11-07"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 5,
-   "as_of": "2026-11-06"
+   "as_of": "2026-11-07"
   },
   "mam": {
    "status": "ok",
    "count": 80,
    "raw": 113,
-   "as_of": "2026-11-06"
+   "as_of": "2026-11-07"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 4,
    "raw": 5,
-   "as_of": "2026-11-06"
+   "as_of": "2026-11-07"
   },
   "turners": {
    "status": "link"
   },
   "domes": {
    "status": "ok",
-   "count": 16,
-   "raw": 16,
-   "as_of": "2026-11-06"
+   "count": 17,
+   "raw": 17,
+   "as_of": "2026-11-07"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -62,25 +62,25 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-11-06"
+   "as_of": "2026-11-07"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 63,
-   "raw": 65,
-   "as_of": "2026-11-06"
+   "count": 61,
+   "raw": 63,
+   "as_of": "2026-11-07"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 137,
-   "raw": 137,
-   "as_of": "2026-11-06"
+   "count": 148,
+   "raw": 148,
+   "as_of": "2026-11-07"
   },
   "marcus-center": {
    "status": "ok",
-   "count": 12,
-   "raw": 12,
-   "as_of": "2026-11-06"
+   "count": 11,
+   "raw": 11,
+   "as_of": "2026-11-07"
   },
   "admirals": {
    "status": "error",
@@ -90,7 +90,7 @@
    "status": "ok",
    "count": 0,
    "raw": 0,
-   "as_of": "2026-11-06"
+   "as_of": "2026-11-07"
   },
   "eventbrite": {
    "status": "error",
@@ -102,9 +102,9 @@
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 843,
-   "raw": 846,
-   "as_of": "2026-11-06"
+   "count": 820,
+   "raw": 823,
+   "as_of": "2026-11-07"
   },
   "fiserv-forum": {
    "status": "error",
@@ -112,793 +112,6 @@
   }
  },
  "events": [
-  {
-   "title": "Mirror Mirror",
-   "start": "2026-11-06",
-   "end": "2026-11-08",
-   "all_day": false,
-   "url": "https://www.marcuscenter.org/event/mirror-mirror/",
-   "where": "Uihlein Hall",
-   "addr": "929 N Water St",
-   "zip": "53202",
-   "summary": "The age-old battles between good and evil, light and darkness, love and lust ensue in Michael Pink’s imaginative story of what happened between the evil stepmother, Claudia, and Snow White before she…",
-   "tags": [
-    "Milwaukee Ballet"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-08",
-   "kind": "theater",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "marcus-center"
-  },
-  {
-   "title": "Veterans Week Events",
-   "start": "2026-11-06",
-   "end": "2026-11-06",
-   "all_day": true,
-   "url": "https://uwm.edu/studentaffairs/event/veterans-week-events/2026-11-06/1/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In honor of the Veterans who both attend UW-Milwaukee and serve as employees, help us in celebrating their service, learning about their sacrifice, and fellow veterans, join us in several activities…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Reception/Open House"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Brigitte Calls Me Baby – Irreversible Tour",
-   "start": "2026-11-06",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/brigitte-calls-me-baby-%26%238211%3b-irreversible-tour/20382/",
-   "where": "Vivarium",
-   "addr": "1818 N. Farwell Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Great Junk Hunt",
-   "start": "2026-11-06",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/the-great-junk-hunt/20581/",
-   "where": "Exposition Center at the Wisconsin State Fair Park",
-   "addr": "640 S. 84th Street",
-   "zip": "53214",
-   "summary": "Recurring daily",
-   "tags": [
-    "Fairs & Markets"
-   ],
-   "time_unknown": true,
-   "free": false,
-   "kind": "markets",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Dolly Parton’s Threads: My Songs in Symphony",
-   "start": "2026-11-06",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/dolly-parton%e2%80%99s-threads%3a-my-songs-in-symphony/20763/",
-   "where": "Milwaukee Symphony Orchestra",
-   "addr": "Bradley Symphony Center",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-08",
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Ballet Presents 'Mirror Mirror'",
-   "start": "2026-11-06",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-ballet-presents-mirror-mirror/22344/",
-   "where": "",
-   "addr": "929 N. Water Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-08",
-   "free": null,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Washington Park ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-11-06T09:00",
-   "end": "2026-11-06T11:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4294",
-   "where": "UEC Washington Park",
-   "addr": "1859 N 40th St",
-   "zip": "53208",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Brushwork II",
-   "start": "2026-11-06T09:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/brushwork-ii/22422/",
-   "where": "Kenilworth Square East",
-   "addr": "1925 East Kenilworth Pl",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "run_through": "2026-11-11",
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "St. Camillus Holiday Art & Craft Fair",
-   "start": "2026-11-06T10:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/st-camillus-holiday-art-%26-craft-fair/22133/",
-   "where": "St. Camillus East Residence",
-   "addr": "10100 E. Bluemound Road",
-   "zip": "53226",
-   "summary": "Recurring daily",
-   "tags": [
-    "Fairs & Markets",
-    "Food & Drink",
-    "Holiday Markets"
-   ],
-   "free": true,
-   "kind": "markets",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Scholars to Storytellers",
-   "start": "2026-11-06T11:00",
-   "end": "2026-11-06T15:00",
-   "all_day": false,
-   "url": "https://uwm.edu/c21/event/scholars-storytellers/",
-   "where": "Curtin 118",
-   "addr": "3243 N Downer Ave",
-   "zip": "53211",
-   "summary": "Friday, November 6, 11:00 AM – 3:00 PM 118 Curtain Hall, 3243 N. Downer Ave. Prior registration required. Scholars are frequently called upon to share their expertise with a diverse range of publics…",
-   "tags": [
-    "Center for 21st Century Studies",
-    "Career and Leadership Development",
-    "Career and Leadership Development"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Ignite Retreat",
-   "start": "2026-11-06T11:30",
-   "end": "2026-11-06T16:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/ignite-retreat-3/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you tired of picturing the same people when you hear the word Leadership? Does the word Leadership freak you out? Redefine it at Ignite. One workshop gives you lifelong skills to put on your…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Chinese Language Table",
-   "start": "2026-11-06T12:00",
-   "end": "2026-11-06T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/chinese-language-table/2026-11-06/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Explore Chinese culture and language with other students and speakers of Mandarin. All levels welcome! Fridays, 12:00-1:30pm CRT 187 (Language Oasis)",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Brown Bag Lunch Series Continues – Friday, November 06, 2026",
-   "start": "2026-11-06T12:00",
-   "end": "2026-11-06T13:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/brown-bag-lunch-series-continues-friday-november-06-2026/",
-   "where": "Holton Hall 341",
-   "addr": "",
-   "zip": "",
-   "summary": "Brown Bag Flyer November 6, 2026 Join us on Friday, November 06, 2026 at noon in Holton Hall room 341 as we welcome David DiValerio as he presents “A Smorgasbord of Syllables: Translating The…",
-   "tags": [
-    "History"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Friday Films",
-   "start": "2026-11-06T15:00",
-   "end": "2026-11-06T17:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17289331",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Visit Central Library's Media Room for pop-up film showings Friday afternoons. Stay a while and browse Central Media's huge selection of DVDs, vinyl records, and CDs.",
-   "tags": [
-    "Arts, Music, & Culture"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Philosophy Colloquium: Sarah Stroud, University of North Carolina at Chapel Hill. Pluralism: Evaluative, Not Normative",
-   "start": "2026-11-06T15:30",
-   "end": "2026-11-06T17:30",
-   "all_day": false,
-   "url": "https://uwm.edu/philosophy/event/philosophy-colloquium-sarah-stroud-university-of-north-carolina-at-chapel-hill/",
-   "where": "Curtin Hall 175",
-   "addr": "3243 N Downer Ave",
-   "zip": "53211",
-   "summary": "The view usually called “normative pluralism” (which I call “NP”) both asserts the existence of multiple distinct ought s and denies the existence of an ought simpliciter . In this paper I endorse…",
-   "tags": [
-    "Colloquia"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm-philosophy"
-  },
-  {
-   "title": "Glazing Techniques Session 2",
-   "start": "2026-11-06T18:00",
-   "end": "2026-11-06T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/glazing-techniques-session-2/2026-11-06/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Learn basic techniques of surface decoration on ceramic forms! This course will cover underglaze techniques such as stenciling, shaving cream swirl, and Mishima inlay, as well as overglazing…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "12th Annual Military and Veterans Ball",
-   "start": "2026-11-06T18:00",
-   "end": "2026-11-06T23:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/12th-annual-military-and-veterans-ball/",
-   "where": "Hilton Milwaukee",
-   "addr": "509 W. Wisconsin Avenue",
-   "zip": "53203",
-   "summary": "The Military and Veterans Resource Center (MAVRC) at UW-Milwaukee presents a night of dinner, dancing, and camaraderie to all military-related students, alumni, and supporters.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Students"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Milwaukee Independent Film Awards",
-   "start": "2026-11-06T18:00",
-   "end": "2026-11-06T22:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/milwaukee-independent-film-awards-3/2026-11-06/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us at the Union Cinema for the 3nd annual Milwaukee Independent Film Awards, a vibrant celebration dedicated to the indomitable spirit of independent filmmakers. Nestled in the heart of…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Live Music Series Every Friday!",
-   "start": "2026-11-06T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/live-music-series-every-friday!/14538/",
-   "where": "Station 1846",
-   "addr": "215 W. Bruce Street",
-   "zip": "53204",
-   "summary": "Recurring weekly on Friday",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Nightlife"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Marquette Men's Soccer vs. Akron",
-   "start": "2026-11-06T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/marquette-mens-soccer-vs-akron/20224/",
-   "where": "Valley Fields",
-   "addr": "1818 W. Canal St.",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": true,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Lombardi Food & Wine Experience",
-   "start": "2026-11-06T18:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/lombardi-food-%26-wine-experience/22088/",
-   "where": "The Pfister Hotel",
-   "addr": "424 E. Wisconsin Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Fundraisers"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Napoleon Dynamite LIVE! 20th Anniversary Celebration",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T21:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/napoleon-dynamite-live-20th-anniversary-celebration-26-08-2026-02-40-15",
-   "where": "The Pabst Theater",
-   "addr": "",
-   "zip": "",
-   "summary": "A Very Special Evening with Jon Heder, Jon Gries & Efren Ramirez Event is BYOT (Bring Your Own Tots) The beloved indie classic \"Napoleon Dynamite\" was released 20 years ago. Since then, much has…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Ax and the Hatchetmen: The Late Checkout Tour 2026",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/ax-and-the-hatchetmen-the-late-checkout-tour-2026-12-10-2026-13-40-46",
-   "where": "Turner Hall Ballroom",
-   "addr": "",
-   "zip": "",
-   "summary": "Check out was hours ago, but Ax and the Hatchetmen aren’t leaving. The indie rock six piece, fronted by Axel Ellis, hit the road this fall for the “Late Check Out Tour” — a coast to coast run…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "El Santo Golpe",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/el-santo-golpe/",
-   "where": "Latino Arts, Inc.",
-   "addr": "1028 S. 9th St.",
-   "zip": "53204",
-   "summary": "El Santo Golpe, brings Afro-Latin rhythms, dynamic percussion, and nonstop energy that turns every performance into a celebration!",
-   "tags": [],
-   "kind": "community",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Northern Lights",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T20:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/northern-lights/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E .Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Enjoy the radiance of the night sky and colorful displays of dancing lights with a behind-the-scenes tour of the science behind one of nature’s most remarkable light shows.",
-   "tags": [],
-   "kind": "talks",
-   "reach": "walk",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Bucks vs Toronto Raptors",
-   "start": "2026-11-06T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bucks-vs-toronto-raptors/22249/",
-   "where": "Milwaukee Bucks",
-   "addr": "Fiserv Forum",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Nightlife",
-    "Spectator Sports",
-    "Family Friendly"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "ORÍGENES – SEXTO ANIVERSARIO DEL BALLET FOLKLÓRICO XANHARATI",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/or%c3%8dgenes-%26%238211%3b-sexto-aniversario-del-ballet-folkl%c3%93rico-xanharati/22518/",
-   "where": "Oak Creek Performing Arts and Education Center",
-   "addr": "340 E. Puetz Road",
-   "zip": "53154",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Community"
-   ],
-   "free": false,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Superopus LIVE",
-   "start": "2026-11-06T19:00",
-   "end": "2026-11-06T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/superopus-live/21674/",
-   "where": "Nashville North",
-   "addr": "1216 E. Brady Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Goose",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/goose/",
-   "where": "Miller High Life Theater",
-   "addr": "500 W. Kilbourn Ave.",
-   "zip": "53203",
-   "summary": "Live in concert.",
-   "tags": [],
-   "kind": "theater",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "La Perla",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/la-perla/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "La Perla is a percussive-vocal trio from Bogotá, Colombia created by Karen, Diana, and Roberta (Giovanna), and inspired by the music of the Great Caribbean mixed with sounds of the city. They began…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Great White Throne",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T19:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/great-white-throne/19482/",
-   "where": "Renaissance Theaterworks",
-   "addr": "255 S. Water Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Milwaukee Theater District"
-   ],
-   "run_through": "2026-11-08",
-   "free": false,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar"
-   ]
-  },
-  {
-   "title": "Béla Fleck: My Bluegrass Heart",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/b%c3%a9la-fleck%3a-my-bluegrass-heart/19782/",
-   "where": "Sharon Lynne Wilson Center for the Arts",
-   "addr": "3270 Mitchell Park Drive",
-   "zip": "53045",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Hot Mess high Featuring The Interchange Players",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/hot-mess-high-featuring-the-interchange-players/22445/",
-   "where": "Interchange Theater",
-   "addr": "628 N. 10th St",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Mary Mack at The Laughing Tap",
-   "start": "2026-11-06T19:30",
-   "end": "2026-11-06T21:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/mary-mack-at-the-laughing-tap/21989/",
-   "where": "The Laughing Tap",
-   "addr": "761 N Jefferson St",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv",
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MKE Unplugged",
-   "start": "2026-11-06T20:00",
-   "end": "2026-11-06T23:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/mke-unplugged-22-07-2026-21-24-25",
-   "where": "Shank Hall",
-   "addr": "",
-   "zip": "",
-   "summary": "MKE Unplugged brings the legendary acoustic vibe of the MTV Unplugged era straight to Milwaukee. Featuring powerful, dynamic performances from both male and female lead vocalists, this unique tribute…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Brother Ali: Midwest Trek '26 w/ DJ Abilities",
-   "start": "2026-11-06T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/brother-ali%3a-midwest-trek-26-w-dj-abilities/21044/",
-   "where": "The Argo",
-   "addr": "334 E. Silver Spring Drive",
-   "zip": "53217",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Nightlife",
-    "Community"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Live Music",
-   "start": "2026-11-06T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/live-music/19614/",
-   "where": "Vendetta Coffee Bar - Walker's Point",
-   "addr": "524 S. 2nd Street",
-   "zip": "53204",
-   "summary": "Recurring weekly on Friday",
-   "tags": [
-    "Food & Drink",
-    "LIVE Music",
-    "Community"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Wldlfe",
-   "start": "2026-11-06T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-wldlfe/21046/",
-   "where": "The Argo",
-   "addr": "334 E. Silver Spring Drive",
-   "zip": "53217",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Nightlife",
-    "Community"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
   {
    "title": "The Great Junk Hunt",
    "start": "2026-11-07",
@@ -1137,6 +350,23 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Family Free Day at the Zoo",
+   "start": "2026-11-07T09:30",
+   "end": "2026-11-07T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/family-free-day-at-the-zoo-5/",
+   "where": "Milwaukee County Zoo",
+   "addr": "10005 W. Blue Mound Rd.",
+   "zip": "53226",
+   "summary": "All guests receive free admission!",
+   "tags": [],
+   "kind": "family",
+   "reach": "car",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Family Free Day",
@@ -3481,6 +2711,26 @@
    "free": null,
    "via": "org",
    "org": "uwm"
+  },
+  {
+   "title": "Employ Milwaukee Resource Table",
+   "start": "2026-11-11T11:30",
+   "end": "2026-11-11T13:30",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/17808167",
+   "where": "Milwaukee Public Library East Branch",
+   "addr": "2320 N Cramer St",
+   "zip": "53211",
+   "summary": "Employ Milwaukee will be at the library to share information about employment opportunities, paid training programs, and much more!",
+   "tags": [
+    "Jobs & Careers",
+    "Community Event/Info Booth"
+   ],
+   "free": true,
+   "kind": "talks",
+   "reach": "walk",
+   "via": "org",
+   "org": "mpl"
   },
   {
    "title": "Aging & Disability Resource Center Info Session",
@@ -6133,6 +5383,25 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Spaghetti, Fellowship, & Fun",
+   "start": "2026-11-14T16:00",
+   "end": "2026-11-14T19:30",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/spaghetti-fellowship-amp-fun-06-11-2026-15-13-56",
+   "where": "St. Bernadette Parish-Milwaukee",
+   "addr": "",
+   "zip": "",
+   "summary": "Please join us on Saturday, November 14, from 4:00 to 7:30pm for a spaghetti dinner accompanied by a gift basket raffle and a bake sale. Your favorite gift baskets will be there—Packers, Brewers,…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "radio-milwaukee"
   },
   {
    "title": "John Lilly and the Earth Coincidence Control Office | Milwaukee premiere!",
@@ -9763,6 +9032,26 @@
    "free": true,
    "kind": "talks",
    "reach": "bus",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "Employ Milwaukee Resource Table",
+   "start": "2026-11-20T15:30",
+   "end": "2026-11-20T17:00",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/17815142",
+   "where": "Milwaukee Public Library East Branch",
+   "addr": "2320 N Cramer St",
+   "zip": "53211",
+   "summary": "Employ Milwaukee will be at the library to share information about employment opportunities, paid training programs, and much more!",
+   "tags": [
+    "Jobs & Careers",
+    "Community Event/Info Booth"
+   ],
+   "free": true,
+   "kind": "talks",
+   "reach": "walk",
    "via": "org",
    "org": "mpl"
   },
@@ -15135,6 +14424,26 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-03T19:30",
+   "end": "2026-12-03T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar",
+   "also": [
+    "visit-milwaukee"
+   ]
+  },
+  {
    "title": "An Improv Show",
    "start": "2026-12-03T19:30",
    "end": "2026-12-03T19:30",
@@ -15158,26 +14467,6 @@
    "also": [
     "urban-milwaukee-calendar"
    ]
-  },
-  {
-   "title": "Meet Me in St. Louis",
-   "start": "2026-12-03T19:30",
-   "end": "2026-12-03T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/meet-me-in-st-louis/22525/",
-   "where": "Bombshell Theatre Company",
-   "addr": "19700 W Bluemound Rd, Suite 6",
-   "zip": "53045",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Holiday"
-   ],
-   "free": false,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
   },
   {
    "title": "The Wildwoods at Vivarium in Milwaukee",
@@ -15643,6 +14932,23 @@
    "tags": [],
    "kind": "comedy",
    "reach": "walk",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-04T19:30",
+   "end": "2026-12-04T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-2/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
@@ -16336,6 +15642,23 @@
    "org": "mam"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-05T14:00",
+   "end": "2026-12-05T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-3/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Intro to Leatherworking: Craft Your Own Leather Goods",
    "start": "2026-12-05T14:00",
    "end": "",
@@ -16680,6 +16003,23 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-05T19:30",
+   "end": "2026-12-05T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-4/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Christmas at the Basilica: Uplifted",
@@ -17244,6 +16584,23 @@
     "urban-milwaukee-calendar",
     "visit-milwaukee"
    ]
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-06T14:00",
+   "end": "2026-12-06T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-5/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "The Boys from Baraboo",
@@ -18801,6 +18158,23 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-10T19:30",
+   "end": "2026-12-10T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-6/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "The Boys from Baraboo",
    "start": "2026-12-10T19:30",
    "end": "2026-12-10T19:30",
@@ -19274,6 +18648,23 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-11T19:30",
+   "end": "2026-12-11T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-7/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Musical Theatre Capstone",
@@ -19788,6 +19179,23 @@
    "org": "mam"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-12T14:00",
+   "end": "2026-12-12T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-8/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Storytime in Latin America",
    "start": "2026-12-12T14:00",
    "end": "2026-12-12T15:00",
@@ -20183,6 +19591,23 @@
    "also": [
     "urban-milwaukee-calendar"
    ]
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-12T19:30",
+   "end": "2026-12-12T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-9/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Winter Choral Extravaganza",
@@ -20654,6 +20079,23 @@
    "free": false,
    "via": "org",
    "org": "radio-milwaukee"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-13T14:00",
+   "end": "2026-12-13T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-10/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "The Boys from Baraboo",
@@ -21615,6 +21057,23 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-16T19:30",
+   "end": "2026-12-16T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-11/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Chris Isaak – On Tour For The Holidays",
    "start": "2026-12-16T19:30",
    "end": "2026-12-16T21:30",
@@ -21965,6 +21424,23 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-17T19:30",
+   "end": "2026-12-17T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-12/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "The Boys from Baraboo",
@@ -22457,6 +21933,23 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-18T19:30",
+   "end": "2026-12-18T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-13/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "The Boys from Baraboo",
    "start": "2026-12-18T19:30",
    "end": "2026-12-18T19:30",
@@ -22654,7 +22147,7 @@
    "start": "2026-12-19",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/lil-mo-mozzarella/19081/",
+   "url": "https://www.visitmilwaukee.org/event/lil-mo-mozzarella/18844/",
    "where": "Vivarium",
    "addr": "1818 N. Farwell Avenue",
    "zip": "53202",
@@ -23010,6 +22503,23 @@
    "org": "radio-milwaukee"
   },
   {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-19T14:00",
+   "end": "2026-12-19T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-14/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Intro to Leatherworking: Craft Your Own Leather Goods",
    "start": "2026-12-19T14:00",
    "end": "2026-12-19T17:00",
@@ -23215,6 +22725,23 @@
    "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-19T19:30",
+   "end": "2026-12-19T22:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-15/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Isaiah J. Thompson Quartet: A Guaraldi Holiday",
@@ -23680,6 +23207,23 @@
    "free": false,
    "via": "org",
    "org": "radio-milwaukee"
+  },
+  {
+   "title": "Meet Me in St. Louis",
+   "start": "2026-12-20T14:00",
+   "end": "2026-12-20T16:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/meet-me-in-st-louis-16/",
+   "where": "Bombshell Studio Theatre",
+   "addr": "19700 W. Bluemound Rd.",
+   "zip": "53045",
+   "summary": "This beloved musical features “Have Yourself a Merry Little Christmas,” “The Trolley Song,” and “The Boy Next Door.”",
+   "tags": [],
+   "kind": "theater",
+   "reach": "car",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "The Boys from Baraboo",
@@ -27135,6 +26679,91 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Buena Vista Social Club™",
+   "start": "2027-01-06",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/buena-vista-social-club%e2%84%a2/21886/",
+   "where": "Marcus Performing Arts Center",
+   "addr": "929 N. Water Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "LIVE Music",
+    "Arts & Culture",
+    "Milwaukee Theater District"
+   ],
+   "time_unknown": true,
+   "run_through": "2027-01-10",
+   "free": null,
+   "kind": "music",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "SIX",
+   "start": "2027-01-06",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/six/21890/",
+   "where": "Marcus Performing Arts Center",
+   "addr": "929 N. Water Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater",
+    "Arts & Culture",
+    "Milwaukee Theater District"
+   ],
+   "time_unknown": true,
+   "run_through": "2027-01-07",
+   "free": null,
+   "kind": "theater",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Wacky First Wednesdays",
+   "start": "2027-01-06T10:00",
+   "end": "2027-01-06T10:30",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/family-programs-event-2-2-2/2027-01-06/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Join the Milwaukee Domes Alliance as we explore all things that frolic and fly! Join us in the Domes lobby on the first Wednesday of each month . Monthly themes relate to our current or upcoming Show…",
+   "tags": [
+    "Featurette",
+    "Ongoing Programs"
+   ],
+   "kind": "outdoors",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2027-01-06T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -27171,26 +26800,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 257,
-   "theater": 161,
-   "comedy": 51,
-   "film": 11,
-   "art": 123,
-   "talks": 156,
+   "music": 249,
+   "theater": 172,
+   "comedy": 49,
+   "film": 10,
+   "art": 122,
+   "talks": 153,
    "books": 10,
-   "markets": 21,
+   "markets": 19,
    "outdoors": 72,
-   "food": 152,
-   "sports": 43,
-   "family": 42,
-   "community": 211
+   "food": 149,
+   "sports": 41,
+   "family": 43,
+   "community": 206
   },
   "reach": {
-   "walk": 295,
-   "bus": 716,
-   "car": 231,
-   "unknown": 61
+   "walk": 284,
+   "bus": 701,
+   "car": 241,
+   "unknown": 62
   },
-  "free": 325
+  "free": 320
  }
 }
