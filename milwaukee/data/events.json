@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-10T18:37:14+00:00",
+ "generated_at": "2026-11-11T18:36:17+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
@@ -11,51 +11,52 @@
   "uwm": {
    "status": "stale",
    "error": "OSError: every department failed: arts: RemoteDisconnected, planetarium: RemoteDisconnected, libraries: RemoteDisconnected, stude",
-   "count": 159,
+   "count": 150,
    "as_of": "2026-11-01"
   },
   "boswell": {
    "status": "ok",
-   "count": 15,
-   "raw": 25,
-   "as_of": "2026-11-10"
+   "count": 14,
+   "raw": 24,
+   "as_of": "2026-11-11"
   },
   "urban-ecology-center": {
    "status": "ok",
-   "count": 46,
-   "raw": 46,
-   "as_of": "2026-11-10"
+   "count": 43,
+   "raw": 43,
+   "as_of": "2026-11-11"
   },
   "mpl": {
    "status": "ok",
    "count": 63,
    "raw": 63,
-   "as_of": "2026-11-10"
+   "as_of": "2026-11-11"
   },
   "milwaukee-film": {
-   "status": "error",
-   "error": "HTTPError: HTTP Error 504: Gateway Timeout"
+   "status": "ok",
+   "posts": 5,
+   "as_of": "2026-11-11"
   },
   "mam": {
    "status": "ok",
    "count": 80,
    "raw": 106,
-   "as_of": "2026-11-10"
+   "as_of": "2026-11-11"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 4,
    "raw": 5,
-   "as_of": "2026-11-10"
+   "as_of": "2026-11-11"
   },
   "turners": {
    "status": "link"
   },
   "domes": {
    "status": "ok",
-   "count": 19,
-   "raw": 19,
-   "as_of": "2026-11-10"
+   "count": 28,
+   "raw": 28,
+   "as_of": "2026-11-11"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -63,37 +64,37 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-11-10"
+   "as_of": "2026-11-11"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 61,
-   "raw": 63,
-   "as_of": "2026-11-10"
+   "count": 60,
+   "raw": 61,
+   "as_of": "2026-11-11"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 143,
-   "raw": 143,
-   "as_of": "2026-11-10"
+   "count": 144,
+   "raw": 144,
+   "as_of": "2026-11-11"
   },
   "marcus-center": {
    "status": "ok",
-   "count": 10,
-   "raw": 10,
-   "as_of": "2026-11-10"
+   "count": 11,
+   "raw": 11,
+   "as_of": "2026-11-11"
   },
   "admirals": {
    "status": "ok",
-   "count": 3,
+   "count": 2,
    "raw": 8,
-   "as_of": "2026-11-10"
+   "as_of": "2026-11-11"
   },
   "brewers": {
    "status": "ok",
    "count": 0,
    "raw": 0,
-   "as_of": "2026-11-10"
+   "as_of": "2026-11-11"
   },
   "eventbrite": {
    "status": "error",
@@ -101,42 +102,24 @@
   },
   "pabst-theater-group": {
    "status": "ok",
-   "count": 72,
-   "raw": 72,
-   "as_of": "2026-11-10"
+   "count": 70,
+   "raw": 70,
+   "as_of": "2026-11-11"
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 788,
-   "raw": 793,
-   "as_of": "2026-11-10"
+   "count": 789,
+   "raw": 795,
+   "as_of": "2026-11-11"
   },
   "fiserv-forum": {
    "status": "ok",
-   "count": 34,
-   "raw": 34,
-   "as_of": "2026-11-10"
+   "count": 35,
+   "raw": 35,
+   "as_of": "2026-11-11"
   }
  },
  "events": [
-  {
-   "title": "BJ Hollars, author of Becoming Bobby Kennedy: The Transformative Life of an American Icon",
-   "start": "2026-11-10",
-   "end": "",
-   "all_day": true,
-   "url": "https://boswellbooks.com/event/2026-11-10/hollars-becoming-bobby",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "time_unknown": true,
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell"
-  },
   {
    "title": "Crossing Over",
    "start": "2026-11-10",
@@ -182,612 +165,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Birding at Menomonee Valley",
-   "start": "2026-11-10T08:00",
-   "end": "2026-11-10T10:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4175",
-   "where": "UEC Menomonee Valley",
-   "addr": "3700 W Pierce St",
-   "zip": "53215",
-   "summary": "Kick-start your day with fresh air and bird song. Join bird watchers of all ability levels and explore the park with us. Meet in front of the Menomonee Valley building. You may receive marketing…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Riverside Park ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-11-10T09:00",
-   "end": "2026-11-10T11:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4262",
-   "where": "Urban Ecology Center, Riverside Park",
-   "addr": "1500 E Park Pl",
-   "zip": "53211",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "walk",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Brushwork II",
-   "start": "2026-11-10T09:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/brushwork-ii/22422/",
-   "where": "Kenilworth Square East",
-   "addr": "1925 East Kenilworth Pl",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "run_through": "2026-11-11",
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Admirals vs Iowa Wild",
-   "start": "2026-11-10T10:30",
-   "end": "",
-   "all_day": false,
-   "url": "",
-   "where": "UW–Milwaukee Panther Arena",
-   "addr": "400 W Kilbourn Ave",
-   "zip": "53203",
-   "summary": "Watch the Milwaukee Admirals take on the Iowa Wild at UW–Milwaukee Panther Arena",
-   "tags": [],
-   "free": null,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "admirals"
-  },
-  {
-   "title": "Marquette Women's Basketball vs Presbyterian",
-   "start": "2026-11-10T11:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/marquette-womens-basketball-vs-presbyterian/22060/",
-   "where": "AL McGuire Center",
-   "addr": "770 N. 12th Street",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Spectator Sports"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Leadership Lunch & Learn",
-   "start": "2026-11-10T12:00",
-   "end": "2026-11-10T12:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/leadership-lunch-learn-2/2026-11-10/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Quick Hacks for Success Looking to level up your leadership skills in just 20 minutes? Drop in for a bite to eat and a quick interactive session on practical leadership hacks you can use right away.…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "LinkedIn Level Up",
-   "start": "2026-11-10T14:00",
-   "end": "2026-11-10T15:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/linkedin-level-up/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Whether you’re just joining or already a LinkedIn legend, join us to take your LinkedIn to the next level during First Gen Week! Learn quick tips to upgrade your profile, highlight your skills, and…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Prepare"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Washington Park ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-11-10T15:00",
-   "end": "2026-11-10T17:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4287",
-   "where": "UEC Washington Park",
-   "addr": "1859 N 40th St",
-   "zip": "53208",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Tuesday Tea",
-   "start": "2026-11-10T16:00",
-   "end": "2026-11-10T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/tuesday-tea-3/2026-11-10/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Ever wished for a space on campus to spill the tea or discuss important topics with supportive peers? Come join us for ” The Tuesday Tea,” a casual drop-in series where we dive into spicy…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Board Games in the Gasthaus",
-   "start": "2026-11-10T17:00",
-   "end": "2026-11-10T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/board-games-in-the-gasthaus/2026-11-10/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Looking for something fun to do or a new game to try? Stop by the Gasthaus for a casual night of board games, with plenty of options to choose from. Come with friends or come solo and sign up to be…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "The Studio Presents: Flavors of Home – A Filipino Dinner",
-   "start": "2026-11-10T18:00",
-   "end": "2026-11-10T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/the-studio-presents-flavors-of-home-a-filipino-dinner-17-08-2026-12-16-36",
-   "where": "Saint Kate - The Arts Hotel",
-   "addr": "",
-   "zip": "",
-   "summary": "For one night only, Sous Chef Katrina Panoske brings the flavors and spirit of the Philippines to the table with Flavors of Home, an intimate chef-led dining experience limited to just 16 guests.…",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Intro to Photography: Capturing on Black and White Film",
-   "start": "2026-11-10T18:00",
-   "end": "2026-11-10T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-photography-capturing-on-black-and-white-film-2/2026-11-10/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you interested in film photography? All skill levels are welcome for this hands-on black and white film photography workshop! We will cover the entire process from how to use a camera all the way…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Intro to Wheel Throwing Session 2",
-   "start": "2026-11-10T18:00",
-   "end": "2026-11-10T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-10/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you curious to try out the pottery wheel? Join us for five weeks to familiarize yourself with the fundamentals of wheel throwing and clay! Between classes, participants will have access to the…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Folk Art Workshop: Polish Christmas Ornaments (Part 1)",
-   "start": "2026-11-10T18:00",
-   "end": "2026-11-10T20:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/folk-art-workshop%3a-polish-christmas-ornaments-(part-1)/22014/",
-   "where": "Polish Center of Wisconsin",
-   "addr": "6941 S. 68th Street",
-   "zip": "53132",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "JCM Masterclass featuring Denin Slage-Koch, Jazz Guitarist",
-   "start": "2026-11-10T18:00",
-   "end": "2026-11-10T20:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/jcm-masterclass-featuring-denin-slage-koch-jazz-guitarist/22487/",
-   "where": "Wisconsin Conservatory of Music",
-   "addr": "1584 N. Prospect Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "LIVE Music",
-    "Arts & Culture"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Holton Heroes: A Veterans Day Program",
-   "start": "2026-11-10T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-holton-heroes%3a-a-veterans-day-program/19292/",
-   "where": "Oak Creek Performing Arts and Education Center",
-   "addr": "340 E. Puetz Road",
-   "zip": "53154",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "DANCE UNTIL YOUR DEAD",
-   "start": "2026-11-10T18:30",
-   "end": "2026-11-10T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/dance-until-your-dead-14-10-2026-23-49-36",
-   "where": "Cactus Club",
-   "addr": "",
-   "zip": "",
-   "summary": "November 10th Terminill Productions is hosting an all ages all inclusive show at the cactus club we are having a mixed lineup with emo bands, rapper, and metal bands.",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "StoryStretch Workshop",
-   "start": "2026-11-10T18:30",
-   "end": "2026-11-10T20:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/storystretch-workshop-4/",
-   "where": "Fruition MKE Co-Working Creative Space",
-   "addr": "825 N 27th St",
-   "zip": "53208",
-   "summary": "Looking to sharpen your storytelling skills? This workshop is for you.",
-   "tags": [
-    "Class"
-   ],
-   "kind": "talks",
-   "reach": "car",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "StoryStretch",
-   "start": "2026-11-10T18:30",
-   "end": "2026-11-10T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/storystretch/21613/",
-   "where": "Fruition MKE",
-   "addr": "819 N. 27th Street",
-   "zip": "53208",
-   "summary": "",
-   "tags": [
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "community",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Tabal Chocolate Cocktail Pairing",
-   "start": "2026-11-10T18:30",
-   "end": "2026-11-10T19:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/tabal-chocolate-cocktail-pairing/22034/",
-   "where": "Great Lakes Distillery, LLC",
-   "addr": "616 W. Virginia Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Food & Drink"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Daniel Sloss: BITTER",
-   "start": "2026-11-10T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/daniel-sloss-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "pabst-theater-group",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Distinguished Lecture Series Presents: Renée Elise Goldsberry",
-   "start": "2026-11-10T19:00",
-   "end": "2026-11-10T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/distinguished-lecture-series-presents-renee-elise-goldsberry/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us at the UWM Union for an evening with Renée Elise Goldsberry—Tony and Grammy Award winning, three time Emmy Award nominated actress and singer.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Lectures Conferences and Symposiums"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Distinguished Lecture Series: A Conversation with Renée Elise Goldsberry",
-   "start": "2026-11-10T19:00",
-   "end": "2026-11-10T22:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/distinguished-lecture-series-a-conversation-with-renee-elise-goldsberry/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us in the Wisconsin Room for an evening with Tony and Grammy Award-winning actress and singer Renée Elise Goldsberry. Goldsberry recently released her debut album, Who I Really Am, featuring…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Classical Arts Presents: Swan Lake",
-   "start": "2026-11-10T19:00",
-   "end": "2026-11-10T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/classical-arts-presents%3a-swan-lake/19812/",
-   "where": "Sharon Lynne Wilson Center for the Arts",
-   "addr": "3270 Mitchell Park Drive",
-   "zip": "53045",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Joanna's Drag Duets at Laughing Tap",
-   "start": "2026-11-10T19:00",
-   "end": "2026-11-10T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/joannas-drag-duets-at-laughing-tap/21993/",
-   "where": "The Laughing Tap",
-   "addr": "761 N Jefferson St",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv",
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MKE Unplugged",
-   "start": "2026-11-10T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
-   "where": "Shank Hall",
-   "addr": "1434 N. Farwell Avenue",
-   "zip": "",
-   "summary": "Recurring daily",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "UWM Distinguished Lecture Series: An Evening with Renée Elise Goldsberry",
-   "start": "2026-11-10T19:00",
-   "end": "2026-11-10T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/uwm-distinguished-lecture-series%3a-an-evening-with-ren%c3%a9e-elise-goldsberry/22462/",
-   "where": "UWM Union, Wisconsin Room (2nd floor)",
-   "addr": "2200 E Kenwood Blvd",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "free": true,
-   "kind": "theater",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Premieres of New Music",
-   "start": "2026-11-10T19:30",
-   "end": "2026-11-10T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/premieres-of-new-music/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The program includes six exciting new works by UWM composers Barb Albright, Día Frankowski-Ramos, Pearce Ritchie, Michael Chipchak, Aiden Braverman, and Brandon Rus. This diverse array of…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Andrew Bird with Milwaukee Symphony Orchestra",
-   "start": "2026-11-10T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/andrew-bird-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "pabst-theater-group",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Jack White",
-   "start": "2026-11-10T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/jack-white-26-05-2026-11-56-53",
-   "where": "Landmark Credit Union Live",
-   "addr": "",
-   "zip": "",
-   "summary": "Do not miss Jack White and his band at Landmark Credit Union Live on November 10 on the JACK WHITE LIVE 2026 tour! PLEASE NOTE: THIS IS A PHONE-FREE SHOW.",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
   },
   {
    "title": "Birding at Washington Park",
@@ -2134,6 +1511,26 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Hunger Games Trivia",
+   "start": "2026-11-12T19:00",
+   "end": "2026-11-12T21:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/hunger-games-trivia/22586/",
+   "where": "MobCraft Beer",
+   "addr": "505 S. 5th Street",
+   "zip": "53204",
+   "summary": "",
+   "tags": [
+    "Nightlife",
+    "Brew City Trail"
+   ],
+   "free": false,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "LOUNJ ACTS",
    "start": "2026-11-12T19:00",
    "end": "2026-11-12T21:00",
@@ -2483,6 +1880,27 @@
    "free": null,
    "via": "org",
    "org": "uwm"
+  },
+  {
+   "title": "Video Game Happy Hour",
+   "start": "2026-11-13T16:00",
+   "end": "2026-11-13T19:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/video-game-happy-hour/22587/",
+   "where": "MobCraft Beer",
+   "addr": "505 S. 5th Street",
+   "zip": "53204",
+   "summary": "",
+   "tags": [
+    "Food & Drink",
+    "Nightlife",
+    "Breweries"
+   ],
+   "free": true,
+   "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Finding Home Opening Reception",
@@ -4217,6 +3635,25 @@
    "src": "pabst-theater-group"
   },
   {
+   "title": "BOY MOB – The Ultimate Live Boy Band Experience",
+   "start": "2026-11-14T20:00",
+   "end": "2026-11-14T22:30",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/boy-mob-the-ultimate-live-boy-band-experience-20-10-2026-12-43-07",
+   "where": "The Argo",
+   "addr": "",
+   "zip": "",
+   "summary": "Doors at 7:00pm. Show at 8:00pm. Join us before the show! Our restaurant & lounge opens at 4:00pm with food, cocktails, and more. BOY MOB is The Ultimate Boy Band Experience — a high-energy live show…",
+   "tags": [
+    "Milwaukee Concerts"
+   ],
+   "kind": "music",
+   "reach": "bus",
+   "free": false,
+   "via": "org",
+   "org": "radio-milwaukee"
+  },
+  {
    "title": "Jason Bonham’s Led Zeppelin Evening",
    "start": "2026-11-14T20:00",
    "end": "2026-11-14T22:00",
@@ -4238,25 +3675,6 @@
     "pabst-theater-group",
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "BOY MOB – The Ultimate Live Boy Band Experience",
-   "start": "2026-11-14T20:00",
-   "end": "2026-11-14T22:30",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/boy-mob-the-ultimate-live-boy-band-experience-20-10-2026-12-43-07",
-   "where": "The Argo",
-   "addr": "",
-   "zip": "",
-   "summary": "Doors at 7:00pm. Show at 8:00pm. Join us before the show! Our restaurant & lounge opens at 4:00pm with food, cocktails, and more. BOY MOB is The Ultimate Boy Band Experience — a high-energy live show…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee"
   },
   {
    "title": "Laughing Liberally Milwaukee’s 10 Year Anniversary Extravaganza",
@@ -4535,7 +3953,30 @@
    "zip": "53217",
    "summary": "",
    "tags": [
-    "Festival"
+    "Festival",
+    "Food & Drink",
+    "Arts & Culture"
+   ],
+   "free": true,
+   "kind": "food",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Mobcraft Brewing Community Blood Drive",
+   "start": "2026-11-15T11:00",
+   "end": "2026-11-15T14:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mobcraft-brewing-community-blood-drive/22569/",
+   "where": "MobCraft Beer",
+   "addr": "508 Park Ave.",
+   "zip": "53172",
+   "summary": "",
+   "tags": [
+    "Social Impact & Nonprofit",
+    "Civic Engagement & Advocacy",
+    "Free"
    ],
    "free": true,
    "kind": "community",
@@ -5136,7 +4577,8 @@
    "summary": "",
    "tags": [
     "Breweries",
-    "Community"
+    "Community",
+    "Brew City Trail"
    ],
    "free": false,
    "kind": "community",
@@ -6096,6 +5538,27 @@
    "org": "urban-ecology-center"
   },
   {
+   "title": "All in Bucks & Jack Daniels Single Barrel Release Watch Party",
+   "start": "2026-11-18T17:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/all-in-bucks-%26-jack-daniels-single-barrel-release-watch-party/22582/",
+   "where": "Potawatomi Sportsbook",
+   "addr": "Potawatomi Casino | Hotel",
+   "zip": "53233",
+   "summary": "",
+   "tags": [
+    "Spectator Sports",
+    "Watch Party",
+    "Free"
+   ],
+   "free": true,
+   "kind": "sports",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Connecting Community Voices: Indigenous Experience in MKE Co.",
    "start": "2026-11-18T17:30",
    "end": "2026-11-18T18:30",
@@ -6242,7 +5705,8 @@
    "via": "org",
    "org": "uwm",
    "also": [
-    "visit-milwaukee"
+    "visit-milwaukee",
+    "urban-milwaukee-calendar"
    ]
   },
   {
@@ -8317,6 +7781,27 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "Mercadera Thanksgiving Market",
+   "start": "2026-11-21T10:00",
+   "end": "2026-11-21T17:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mercadera-thanksgiving-market/22579/",
+   "where": "3rd Street Market Hall",
+   "addr": "275 W. Wisconsin Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Community"
+   ],
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Story Time in the Galleries",
    "start": "2026-11-21T10:30",
    "end": "2026-11-21T11:00",
@@ -8438,21 +7923,28 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "The Girl, the Galaxy & the Giant Sound Wave",
+   "title": "The Girl, The Galaxy & The Giant Sound Wave",
    "start": "2026-11-21T12:00",
    "end": "2026-11-21T12:00",
    "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/the-girl-the-galaxy-the-giant-sound-wave/",
+   "url": "https://www.visitmilwaukee.org/event/the-girl-the-galaxy-%26-the-giant-sound-wave/22566/",
    "where": "Discovery World",
-   "addr": "500 N. Harbor Dr.",
+   "addr": "Todd Wehr Theater",
    "zip": "53202",
-   "summary": "Featuring the music of Danceworks’ longtime collaborator Allen Russell, this science-fiction-inspired concert blends dance, live music, and imaginative storytelling through scientific facts and the…",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater",
+    "Arts & Culture"
+   ],
+   "run_through": "2026-11-22",
    "free": false,
+   "kind": "theater",
+   "reach": "bus",
    "via": "source",
-   "src": "urban-milwaukee-calendar"
+   "src": "visit-milwaukee",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Thanksgiving Centerpiece Workshop",
@@ -8608,7 +8100,8 @@
    "summary": "",
    "tags": [
     "Food & Drink",
-    "Tours"
+    "Tours",
+    "Brew City Trail"
    ],
    "free": true,
    "kind": "food",
@@ -8657,6 +8150,27 @@
    "free": null,
    "via": "org",
    "org": "uwm"
+  },
+  {
+   "title": "Ladies Night Out(side)",
+   "start": "2026-11-21T17:30",
+   "end": "2026-11-21T21:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/ladies-night-out(side)/22572/",
+   "where": "The Landing at Hoyt Park Beer Garden",
+   "addr": "1800 N Swan Blvd",
+   "zip": "53226",
+   "summary": "",
+   "tags": [
+    "Food & Drink",
+    "Health & Wellness",
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "food",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Dinner Detective Milwaukee",
@@ -9160,21 +8674,27 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "The Girl, the Galaxy & the Giant Sound Wave",
+   "title": "The Girl, The Galaxy & The Giant Sound Wave",
    "start": "2026-11-22T11:00",
    "end": "2026-11-22T11:00",
    "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/the-girl-the-galaxy-the-giant-sound-wave-2/",
+   "url": "https://www.visitmilwaukee.org/event/the-girl-the-galaxy-%26-the-giant-sound-wave/22566/",
    "where": "Discovery World",
-   "addr": "500 N. Harbor Dr.",
+   "addr": "Todd Wehr Theater",
    "zip": "53202",
-   "summary": "Featuring the music of Danceworks’ longtime collaborator Allen Russell, this science-fiction-inspired concert blends dance, live music, and imaginative storytelling through scientific facts and the…",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater",
+    "Arts & Culture"
+   ],
    "free": false,
+   "kind": "theater",
+   "reach": "bus",
    "via": "source",
-   "src": "urban-milwaukee-calendar"
+   "src": "visit-milwaukee",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Marquette Men's Basketball vs Chicago State",
@@ -9277,23 +8797,6 @@
    "free": null,
    "via": "org",
    "org": "mam"
-  },
-  {
-   "title": "The Girl, the Galaxy & the Giant Sound Wave",
-   "start": "2026-11-22T14:00",
-   "end": "2026-11-22T14:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/the-girl-the-galaxy-the-giant-sound-wave-3/",
-   "where": "Discovery World",
-   "addr": "500 N. Harbor Dr.",
-   "zip": "53202",
-   "summary": "Featuring the music of Danceworks’ longtime collaborator Allen Russell, this science-fiction-inspired concert blends dance, live music, and imaginative storytelling through scientific facts and the…",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "83rd Holiday Folk Fair International",
@@ -12606,7 +12109,7 @@
    "tags": [
     "Food & Drink",
     "Holiday Markets",
-    "Beer Gardens"
+    "Family Friendly"
    ],
    "run_through": "2026-12-06",
    "free": true,
@@ -13022,7 +12525,7 @@
    "tags": [
     "Food & Drink",
     "Holiday Markets",
-    "Beer Gardens"
+    "Family Friendly"
    ],
    "run_through": "2026-12-06",
    "free": true,
@@ -13197,6 +12700,26 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "MIAD Holiday Sale",
+   "start": "2026-12-03T18:00",
+   "end": "2026-12-03T20:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/miad-holiday-sale/22576/",
+   "where": "Milwaukee Institute of Art & Design",
+   "addr": "273 E. Erie Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Arts & Culture",
+    "Free"
+   ],
+   "free": true,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Haberman Local Luminaries",
    "start": "2026-12-03T18:15",
    "end": "2026-12-03T19:15",
@@ -13241,6 +12764,26 @@
    "free": null,
    "via": "org",
    "org": "uwm"
+  },
+  {
+   "title": "Deer Creek Cheese & Holiday Cocktail Pairing",
+   "start": "2026-12-03T18:30",
+   "end": "2026-12-03T20:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/deer-creek-cheese-%26-holiday-cocktail-pairing/22585/",
+   "where": "Great Lakes Distillery, LLC",
+   "addr": "616 W. Virginia Street",
+   "zip": "53204",
+   "summary": "",
+   "tags": [
+    "Food & Drink",
+    "Holiday"
+   ],
+   "free": false,
+   "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Holiday Jazz Showcase: Ryan Meisel Quartet featuring Celia",
@@ -13401,7 +12944,10 @@
    "reach": "bus",
    "free": false,
    "via": "org",
-   "org": "radio-milwaukee"
+   "org": "radio-milwaukee",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "The Boys from Baraboo",
@@ -13651,7 +13197,7 @@
    "tags": [
     "Food & Drink",
     "Holiday Markets",
-    "Beer Gardens"
+    "Family Friendly"
    ],
    "run_through": "2026-12-06",
    "free": true,
@@ -13756,6 +13302,27 @@
    "free": false,
    "kind": "talks",
    "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "60th Anniversary Holiday Piano Concert at the David Barnett Gallery",
+   "start": "2026-12-04T18:00",
+   "end": "2026-12-04T20:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/60th-anniversary-holiday-piano-concert-at-the-david-barnett-gallery/22583/",
+   "where": "David Barnett Gallery",
+   "addr": "1024 E. State Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Galleries & Exhibitions",
+    "LIVE Music",
+    "Holiday Markets"
+   ],
+   "free": true,
+   "kind": "art",
+   "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -14320,7 +13887,9 @@
    "zip": "53226",
    "summary": "",
    "tags": [
-    "Food & Drink"
+    "Food & Drink",
+    "Holiday Markets",
+    "Community"
    ],
    "free": null,
    "kind": "food",
@@ -14529,7 +14098,7 @@
    "tags": [
     "Food & Drink",
     "Holiday Markets",
-    "Beer Gardens"
+    "Family Friendly"
    ],
    "run_through": "2026-12-06",
    "free": true,
@@ -14557,6 +14126,26 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
+  },
+  {
+   "title": "Storyteller Santa",
+   "start": "2026-12-05T13:00",
+   "end": "2026-12-05T15:00",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/storyteller-santa-4/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Domes fave, Storyteller Santa tells tall tales and engages kids of all ages in energetic activities.",
+   "tags": [
+    "Family Programs",
+    "Holiday"
+   ],
+   "kind": "family",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
   },
   {
    "title": "Books & Bonfires",
@@ -14859,6 +14448,27 @@
    "free": false,
    "kind": "community",
    "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "SAUCED Night Market",
+   "start": "2026-12-05T17:00",
+   "end": "2026-12-05T22:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/sauced-night-market/22591/",
+   "where": "Pilot Project Brewing",
+   "addr": "1128 N. 9th Street",
+   "zip": "53233",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Festival",
+    "Food & Drink"
+   ],
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -15498,7 +15108,7 @@
    "tags": [
     "Food & Drink",
     "Holiday Markets",
-    "Beer Gardens"
+    "Family Friendly"
    ],
    "free": true,
    "kind": "food",
@@ -16630,6 +16240,27 @@
    "org": "uwm"
   },
   {
+   "title": "C-Suite Stars",
+   "start": "2026-12-09T11:30",
+   "end": "2026-12-09T13:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/c-suite-stars/22584/",
+   "where": "The Pfister Hotel",
+   "addr": "424 E Wisconsin Ave",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Networking",
+    "Mixers & Happy Hours",
+    "Professional Development"
+   ],
+   "free": false,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Club Soda",
    "start": "2026-12-09T13:30",
    "end": "2026-12-09T14:30",
@@ -17652,6 +17283,25 @@
    ]
   },
   {
+   "title": "Jibaro Fest: A Puerto Rican Christmas Dinner and Show",
+   "start": "2026-12-11T18:00",
+   "end": "2026-12-11T22:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/jibaro-fest%3a-a-puerto-rican-christmas-dinner-and-show/22581/",
+   "where": "American Serb Hall",
+   "addr": "5101 W Oklahoma Ave",
+   "zip": "53219",
+   "summary": "",
+   "tags": [
+    "Fundraisers"
+   ],
+   "free": false,
+   "kind": "food",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Live Music Series Every Friday!",
    "start": "2026-12-11T18:00",
    "end": "",
@@ -17706,12 +17356,9 @@
    "tags": [],
    "kind": "music",
    "reach": "bus",
-   "free": false,
+   "free": null,
    "via": "source",
-   "src": "pabst-theater-group",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "src": "pabst-theater-group"
   },
   {
    "title": "Reverend Peyton and Adrian+Meredith",
@@ -17879,7 +17526,10 @@
    "reach": "walk",
    "free": null,
    "via": "org",
-   "org": "uwm"
+   "org": "uwm",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "The Boys from Baraboo",
@@ -18349,6 +17999,26 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "Storyteller Santa",
+   "start": "2026-12-12T13:00",
+   "end": "2026-12-12T15:00",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/storyteller-santa-5/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Domes fave, Storyteller Santa tells tall tales and engages kids of all ages in energetic activities.",
+   "tags": [
+    "Family Programs",
+    "Holiday"
+   ],
+   "kind": "family",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
    "title": "Drop-In Tour: Animals in Art",
    "start": "2026-12-12T14:00",
    "end": "2026-12-12T15:00",
@@ -18380,12 +18050,9 @@
    "tags": [],
    "kind": "music",
    "reach": "bus",
-   "free": false,
+   "free": null,
    "via": "source",
-   "src": "pabst-theater-group",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "src": "pabst-theater-group"
   },
   {
    "title": "Meet Me in St. Louis",
@@ -18896,7 +18563,8 @@
    "via": "org",
    "org": "uwm",
    "also": [
-    "urban-milwaukee-calendar"
+    "urban-milwaukee-calendar",
+    "visit-milwaukee"
    ]
   },
   {
@@ -19222,6 +18890,25 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Green Sails",
+   "start": "2026-12-13T12:00",
+   "end": "2026-12-13T13:00",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/green-sails/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Green Sails. Revel in this Milwaukee duo’s renditions of Irish and Celtic folk songs and instrumentals.",
+   "tags": [
+    "Music"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
    "title": "The Rock and Roll Playhouse plays Music of Grateful Dead + More for Kids",
    "start": "2026-12-13T12:00",
    "end": "",
@@ -19334,6 +19021,26 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Mount Carmel Bell Choir (with MDA’s Emily Lambrecht)",
+   "start": "2026-12-13T14:00",
+   "end": "2026-12-13T15:00",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/mount-carmel-bell-choir-with-mdas-emily-lambrecht/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Mount Carmel Bell Choir rings in the holidays with a special performance in the Show Dome. Our own Emily Lambrecht performs with the choir.",
+   "tags": [
+    "Holiday",
+    "Music"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
    "title": "Drop-In Tours: Built to Inspire: Architecture and Collection Highlights",
    "start": "2026-12-13T14:00",
    "end": "2026-12-13T15:00",
@@ -19366,12 +19073,9 @@
    "tags": [],
    "kind": "music",
    "reach": "bus",
-   "free": false,
+   "free": null,
    "via": "source",
-   "src": "pabst-theater-group",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "src": "pabst-theater-group"
   },
   {
    "title": "APERI presents MYSTERIUM",
@@ -19580,9 +19284,12 @@
    ],
    "kind": "music",
    "reach": "walk",
-   "free": null,
+   "free": true,
    "via": "org",
-   "org": "uwm"
+   "org": "uwm",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "Winter Wondermaze",
@@ -21972,6 +21679,27 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "David HB Drake – “Let There Be Light”",
+   "start": "2026-12-19T14:00",
+   "end": "2026-12-19T15:00",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/david-hb-drake-let-there-be-light/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "“Let There be Light” is David HB Drake’s musical ode to the holidays. David (“The Gentle Troubadour”) is a noted Milwaukee folk artist and a Domes favorite. Celebrate the season with this talented…",
+   "tags": [
+    "Holiday",
+    "Music",
+    "Open Late"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
    "title": "Drop-In Tour: Animals in Art",
    "start": "2026-12-19T14:00",
    "end": "2026-12-19T15:00",
@@ -22117,6 +21845,26 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "DJ Lucas Alamo",
+   "start": "2026-12-19T17:30",
+   "end": "2026-12-19T19:45",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/dj-lucas-alamo/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Enjoy the mellow Tropical groove as DJ Lucas Alamo weaves an aural tapestry in the “jungle” dome.",
+   "tags": [
+    "Music",
+    "Open Late"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
    "title": "Marquette Men's Basketball vs Xavier",
    "start": "2026-12-19T17:30",
    "end": "",
@@ -22181,6 +21929,26 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Cream City Hotclub",
+   "start": "2026-12-19T18:30",
+   "end": "2026-12-19T19:45",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/cream-city-hotclub/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Swing along with Milwaukee’s Cream City Hotclub as they recreate the look, the sound, the vibe of Paris’s Hot Club of the late 1930s. Pure fun.",
+   "tags": [
+    "Music",
+    "Open Late"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
   },
   {
    "title": "Blue Violin's Retro Rock & Roll Christmas",
@@ -22901,7 +22669,8 @@
    "summary": "",
    "tags": [
     "Holiday",
-    "Museums & Attractions"
+    "Museums & Attractions",
+    "Brew City Trail"
    ],
    "free": true,
    "kind": "community",
@@ -24083,6 +23852,28 @@
    ]
   },
   {
+   "title": "Christmas Eve Dinner",
+   "start": "2026-12-24T16:00",
+   "end": "2026-12-24T21:00",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/christmas-eve-dinner-14-09-2026-16-20-59",
+   "where": "Milwaukee ChopHouse",
+   "addr": "",
+   "zip": "",
+   "summary": "Join us for a special three-course prix fixe dinner featuring festive seasonal flavors, elevated holiday favorites, and decadent desserts. Our regular menu will also be available, giving you the…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "radio-milwaukee",
+   "also": [
+    "visit-milwaukee"
+   ]
+  },
+  {
    "title": "Latin Table: Spring Semester",
    "start": "2026-12-24T16:00",
    "end": "2026-12-24T17:00",
@@ -24101,25 +23892,6 @@
    "free": null,
    "via": "org",
    "org": "uwm"
-  },
-  {
-   "title": "Christmas Eve Dinner",
-   "start": "2026-12-24T16:00",
-   "end": "2026-12-24T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/christmas-eve-dinner/21514/",
-   "where": "Milwaukee ChopHouse",
-   "addr": "Hilton Milwaukee",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
   },
   {
    "title": "MKE Unplugged",
@@ -24189,20 +23961,22 @@
    "start": "2026-12-25T10:00",
    "end": "2026-12-25T15:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/christmas-celebration-brunch-2026/21507/",
+   "url": "https://radiomilwaukee.org/community-calendar/event/christmas-celebration-brunch-2026-14-09-2026-14-07-53",
    "where": "The Pfister Hotel",
-   "addr": "424 E. Wisconsin Avenue",
-   "zip": "53202",
-   "summary": "",
+   "addr": "",
+   "zip": "",
+   "summary": "A Pfister Christmas brunch begins with a complimentary mimosa or bloody mary in our elegantly decorated ballroom. Following cocktails is a spectacular buffet featuring a delicious assortment of fresh…",
    "tags": [
-    "Food & Drink",
-    "Holiday"
+    "Food/Drink"
    ],
-   "free": false,
    "kind": "food",
    "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
+   "free": false,
+   "via": "org",
+   "org": "radio-milwaukee",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "Holiday Tea at The Pfister",
@@ -24405,12 +24179,9 @@
    "tags": [],
    "kind": "music",
    "reach": "bus",
-   "free": false,
+   "free": null,
    "via": "source",
-   "src": "pabst-theater-group",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "src": "pabst-theater-group"
   },
   {
    "title": "Central Library Architectural Tour",
@@ -24517,6 +24288,27 @@
    ]
   },
   {
+   "title": "Ko-Thi Drummers (Kwanzaa)",
+   "start": "2026-12-26T18:30",
+   "end": "2026-12-26T19:45",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/ko-thi-drummers-kwanzaa/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Ko-Thi Drummers heat up the Show Dome with their incredible beats. It’s Kwanzaa!",
+   "tags": [
+    "Holiday",
+    "Music",
+    "Open Late"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
+  },
+  {
    "title": "MKE Unplugged",
    "start": "2026-12-26T19:00",
    "end": "",
@@ -24573,27 +24365,6 @@
    ],
    "free": true,
    "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Bluey's Big Play - Milwaukee",
-   "start": "2026-12-27",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/blueys-big-play-milwaukee/18082/",
-   "where": "Miller High Life Theatre",
-   "addr": "500 W. Kilbourn Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Family Friendly"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "theater",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
@@ -24697,7 +24468,8 @@
    "summary": "",
    "tags": [
     "Food & Drink",
-    "Tours"
+    "Tours",
+    "Brew City Trail"
    ],
    "free": true,
    "kind": "food",
@@ -25152,7 +24924,10 @@
    "reach": "car",
    "free": false,
    "via": "org",
-   "org": "domes"
+   "org": "domes",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Adventure Days for Grades K4-K5",
@@ -26154,13 +25929,34 @@
    "summary": "",
    "tags": [
     "Holiday",
-    "Museums & Attractions"
+    "Museums & Attractions",
+    "Brew City Trail"
    ],
    "free": false,
    "kind": "community",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Latin Sound System",
+   "start": "2027-01-02T18:30",
+   "end": "2027-01-02T19:45",
+   "all_day": false,
+   "url": "https://milwaukeedomes.org/event/latin-sound-system/",
+   "where": "Mitchell Park Domes",
+   "addr": "",
+   "zip": "",
+   "summary": "Latin Sound System keeps the rhythm intense",
+   "tags": [
+    "Music",
+    "Open Late"
+   ],
+   "kind": "music",
+   "reach": "car",
+   "free": null,
+   "via": "org",
+   "org": "domes"
   },
   {
    "title": "MKE Unplugged",
@@ -26216,7 +26012,8 @@
    "summary": "",
    "tags": [
     "Holiday",
-    "Museums & Attractions"
+    "Museums & Attractions",
+    "Brew City Trail"
    ],
    "free": false,
    "kind": "community",
@@ -26386,25 +26183,26 @@
   {
    "title": "Buena Vista Social Club™",
    "start": "2027-01-05",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/buena-vista-social-club%e2%84%a2/21886/",
-   "where": "Marcus Performing Arts Center",
-   "addr": "929 N. Water Street",
+   "end": "2027-01-10",
+   "all_day": false,
+   "url": "https://www.marcuscenter.org/event/buena-vista-social-club/",
+   "where": "Uihlein Hall",
+   "addr": "929 N Water St",
    "zip": "53202",
-   "summary": "",
+   "summary": "It’s been years since legendary singer Omara Portuondo last entered a recording studio. Once known as the “Queen of Feeling,” her voice was celebrated throughout Cuba – until she vanished from the…",
    "tags": [
-    "LIVE Music",
-    "Arts & Culture",
-    "Milwaukee Theater District"
+    "26-27 Broadway Series"
    ],
    "time_unknown": true,
    "run_through": "2027-01-10",
-   "free": null,
-   "kind": "music",
+   "kind": "theater",
    "reach": "bus",
+   "free": null,
    "via": "source",
-   "src": "visit-milwaukee"
+   "src": "marcus-center",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "SIX",
@@ -26643,7 +26441,7 @@
    "start": "2027-01-07T19:00",
    "end": "",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-clippers/22264/",
+   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-clippers/22265/",
    "where": "Fiserv Forum",
    "addr": "Fiserv Forum",
    "zip": "53203",
@@ -26937,31 +26735,177 @@
    "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Buena Vista Social Club™",
+   "start": "2027-01-10",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/buena-vista-social-club%e2%84%a2/21886/",
+   "where": "Marcus Performing Arts Center",
+   "addr": "929 N. Water Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "LIVE Music",
+    "Arts & Culture",
+    "Milwaukee Theater District"
+   ],
+   "time_unknown": true,
+   "free": null,
+   "kind": "music",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Monster Jam Freestyle Mania",
+   "start": "2027-01-10",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/monster-jam-freestyle-mania/21752/",
+   "where": "Fiserv Forum",
+   "addr": "1111 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Spectator Sports"
+   ],
+   "time_unknown": true,
+   "free": null,
+   "kind": "sports",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Monster Jam®",
+   "start": "2027-01-10T12:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.fiservforum.com/events/detail/monster-jam-4",
+   "where": "Fiserv Forum",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "kind": "music",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "fiserv-forum"
+  },
+  {
+   "title": "The Great Leap",
+   "start": "2027-01-10T17:00",
+   "end": "2027-01-10T17:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/the-great-leap/",
+   "where": "Next Act Theatre",
+   "addr": "255 S Water St,",
+   "zip": "53204",
+   "summary": "A dramatic comedy by Lauren Yee",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
+   "title": "Open Jam / Open Mic night",
+   "start": "2027-01-10T18:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/open-jam-open-mic-night/16943/",
+   "where": "The Interchange Theater",
+   "addr": "628 N. 10th St",
+   "zip": "53233",
+   "summary": "Recurring weekly on Sunday",
+   "tags": [
+    "Comedy & Improv",
+    "Performing Arts & Theater"
+   ],
+   "free": true,
+   "kind": "comedy",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2027-01-10T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
- "posts": [],
+ "posts": [
+  {
+   "title": "November Programmer for a Day: Jay Beckman",
+   "url": "https://mkefilm.org/news/november-programmer-for-a-day-jay-beckman/",
+   "published": "2026-11-04T15:38:35+00:00",
+   "org": "milwaukee-film"
+  },
+  {
+   "title": "November Programmer for a Day: Brett Bellmore",
+   "url": "https://mkefilm.org/news/november-programmer-for-a-day-brett-bellmore/",
+   "published": "2026-10-27T09:05:00+00:00",
+   "org": "milwaukee-film"
+  },
+  {
+   "title": "We Went to the Toronto International Film Festival",
+   "url": "https://mkefilm.org/news/we-went-to-the-toronto-international-film-festival/",
+   "published": "2026-10-23T15:42:29+00:00",
+   "org": "milwaukee-film"
+  },
+  {
+   "title": "October: Witches, 4K Restorations, and more!",
+   "url": "https://mkefilm.org/news/october-witches-4k-restorations-and-more/",
+   "published": "2026-10-05T17:54:04+00:00",
+   "org": "milwaukee-film"
+  },
+  {
+   "title": "October Programmer for a Day: Marie Gribbin",
+   "url": "https://mkefilm.org/news/october-programmer-for-a-day-marie-gribbin/",
+   "published": "2026-09-28T09:05:00+00:00",
+   "org": "milwaukee-film"
+  }
+ ],
  "counts": {
   "kinds": {
-   "music": 288,
-   "theater": 150,
+   "music": 284,
+   "theater": 152,
    "comedy": 43,
-   "film": 7,
+   "film": 6,
    "art": 120,
-   "talks": 148,
-   "books": 25,
-   "markets": 16,
-   "outdoors": 64,
-   "food": 148,
+   "talks": 145,
+   "books": 24,
+   "markets": 18,
+   "outdoors": 61,
+   "food": 150,
    "sports": 61,
-   "family": 40,
-   "community": 197
+   "family": 42,
+   "community": 195
   },
   "reach": {
-   "walk": 279,
-   "bus": 731,
-   "car": 229,
+   "walk": 266,
+   "bus": 733,
+   "car": 234,
    "unknown": 62
   },
-  "free": 302
+  "free": 306
  }
 }
