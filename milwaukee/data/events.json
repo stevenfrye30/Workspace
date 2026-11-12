@@ -1,62 +1,58 @@
 {
- "generated_at": "2026-11-11T18:36:17+00:00",
+ "generated_at": "2026-11-12T18:50:01+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
-   "status": "stale",
-   "error": "RemoteDisconnected: Remote end closed connection without response",
-   "count": 1,
-   "as_of": "2026-11-01"
+   "status": "error",
+   "error": "RemoteDisconnected: Remote end closed connection without response"
   },
   "uwm": {
-   "status": "stale",
-   "error": "OSError: every department failed: arts: RemoteDisconnected, planetarium: RemoteDisconnected, libraries: RemoteDisconnected, stude",
-   "count": 150,
-   "as_of": "2026-11-01"
+   "status": "error",
+   "error": "OSError: every department failed: arts: RemoteDisconnected, planetarium: RemoteDisconnected, libraries: RemoteDisconnected, stude"
   },
   "boswell": {
    "status": "ok",
    "count": 14,
    "raw": 24,
-   "as_of": "2026-11-11"
+   "as_of": "2026-11-12"
   },
   "urban-ecology-center": {
    "status": "ok",
-   "count": 43,
-   "raw": 43,
-   "as_of": "2026-11-11"
+   "count": 41,
+   "raw": 41,
+   "as_of": "2026-11-12"
   },
   "mpl": {
    "status": "ok",
-   "count": 63,
-   "raw": 63,
-   "as_of": "2026-11-11"
+   "count": 62,
+   "raw": 62,
+   "as_of": "2026-11-12"
   },
   "milwaukee-film": {
    "status": "ok",
-   "posts": 5,
-   "as_of": "2026-11-11"
+   "posts": 4,
+   "as_of": "2026-11-12"
   },
   "mam": {
    "status": "ok",
    "count": 80,
-   "raw": 106,
-   "as_of": "2026-11-11"
+   "raw": 105,
+   "as_of": "2026-11-12"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 4,
    "raw": 5,
-   "as_of": "2026-11-11"
+   "as_of": "2026-11-12"
   },
   "turners": {
    "status": "link"
   },
   "domes": {
    "status": "ok",
-   "count": 28,
-   "raw": 28,
-   "as_of": "2026-11-11"
+   "count": 27,
+   "raw": 27,
+   "as_of": "2026-11-12"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -64,37 +60,37 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-11-11"
+   "as_of": "2026-11-12"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 60,
-   "raw": 61,
-   "as_of": "2026-11-11"
+   "count": 54,
+   "raw": 55,
+   "as_of": "2026-11-12"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 144,
-   "raw": 144,
-   "as_of": "2026-11-11"
+   "count": 148,
+   "raw": 148,
+   "as_of": "2026-11-12"
   },
   "marcus-center": {
    "status": "ok",
    "count": 11,
    "raw": 11,
-   "as_of": "2026-11-11"
+   "as_of": "2026-11-12"
   },
   "admirals": {
    "status": "ok",
    "count": 2,
    "raw": 8,
-   "as_of": "2026-11-11"
+   "as_of": "2026-11-12"
   },
   "brewers": {
    "status": "ok",
    "count": 0,
    "raw": 0,
-   "as_of": "2026-11-11"
+   "as_of": "2026-11-12"
   },
   "eventbrite": {
    "status": "error",
@@ -102,761 +98,24 @@
   },
   "pabst-theater-group": {
    "status": "ok",
-   "count": 70,
-   "raw": 70,
-   "as_of": "2026-11-11"
+   "count": 68,
+   "raw": 68,
+   "as_of": "2026-11-12"
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 789,
-   "raw": 795,
-   "as_of": "2026-11-11"
+   "count": 781,
+   "raw": 787,
+   "as_of": "2026-11-12"
   },
   "fiserv-forum": {
    "status": "ok",
-   "count": 35,
-   "raw": 35,
-   "as_of": "2026-11-11"
+   "count": 34,
+   "raw": 34,
+   "as_of": "2026-11-12"
   }
  },
  "events": [
-  {
-   "title": "Crossing Over",
-   "start": "2026-11-10",
-   "end": "2026-12-11",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/crossing-over/",
-   "where": "UWM Union Art Gallery",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Students who received scholarships in the previous year are invited to display work in this exciting exhibition that spans a wide range of mediums and topics from emerging artists.",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Arts and Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-11",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Crossing Over – Exhibtion Run",
-   "start": "2026-11-10",
-   "end": "2026-12-11",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/crossing-over-exhibtion-run/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The fall student exhibition, Crossing Over, features work produced by undergraduate students in UWM’s Peck School of the Arts, Department of Art and Design who have received a scholarship and/or…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-11",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Birding at Washington Park",
-   "start": "2026-11-11T08:00",
-   "end": "2026-11-11T10:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4191",
-   "where": "UEC Washington Park",
-   "addr": "1859 N 40th St",
-   "zip": "53208",
-   "summary": "Kick-start your day with fresh air and bird song. Join bird watchers of all ability levels and explore the park with us. Meet in front of the Menomonee Valley building. You may receive marketing…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Brushwork II",
-   "start": "2026-11-11T09:00",
-   "end": "2026-11-11T14:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/brushwork-ii/22422/",
-   "where": "Kenilworth Square East",
-   "addr": "1925 East Kenilworth Pl",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Storytime at the Domes",
-   "start": "2026-11-11T10:00",
-   "end": "2026-11-11T10:30",
-   "all_day": false,
-   "url": "https://milwaukeedomes.org/event/storytime-at-the-domes-2-2-2/2026-11-11/",
-   "where": "Mitchell Park Domes",
-   "addr": "",
-   "zip": "",
-   "summary": "Milwaukee Domes Alliance hosts storytime every Wednesday. Join us for bilingual (Spanish/English) storytime the last Wednesday of the month! No pre-registration required. Cost: Included with…",
-   "tags": [
-    "Ongoing Programs",
-    "Storytime"
-   ],
-   "kind": "family",
-   "reach": "car",
-   "free": null,
-   "via": "org",
-   "org": "domes"
-  },
-  {
-   "title": "Festive Holiday Marketplace",
-   "start": "2026-11-11T10:00",
-   "end": "2026-11-11T17:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/festive-holiday-marketplace/2026-11-11/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "From festive seasonal drinks and treats to an expanded retail experience filled with unique gifts, there are even more reasons to make the Museum part of your holiday plans.",
-   "tags": [
-    "Free for Members",
-    "Free to the Public",
-    "Free with Admission"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Veterans Day",
-   "start": "2026-11-11T10:00",
-   "end": "2026-11-11T17:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/veterans-day-22-10-2026-13-30-44",
-   "where": "Harley-Davidson Museum",
-   "addr": "",
-   "zip": "",
-   "summary": "Join the Harley-Davidson Museum as we honor the brave men and women who have served our country with free Museum admission and special offers throughout campus. Veterans and active-duty military…",
-   "tags": [
-    "Milwaukee Festivals"
-   ],
-   "kind": "talks",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee"
-  },
-  {
-   "title": "Club Ñ: Spanish Conversation Table",
-   "start": "2026-11-11T10:00",
-   "end": "2026-11-11T11:00",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/club-n-spanish-conversation-table/2026-11-11/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Club Ñ: Spanish Conversation Table Wednesdays, 10-11am Curtin 187 (Language Oasis) Do you study Spanish? Speak Spanish? Just want to learn more about Spanish language and culture? Go to Club Ñ! Let’s…",
-   "tags": [
-    "Letters & Science",
-    "Humanities",
-    "Students"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "The S.T.E.A.M. of Motorcycles",
-   "start": "2026-11-11T10:00",
-   "end": "2026-11-11T16:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-s-t-e-a-m-of-motorcycles/19913/",
-   "where": "Harley-Davidson Museum",
-   "addr": "400 W Canal St",
-   "zip": "53201",
-   "summary": "",
-   "tags": [
-    "Museums & Attractions"
-   ],
-   "free": null,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Wag More Wednesday",
-   "start": "2026-11-11T11:00",
-   "end": "2026-11-11T18:00",
-   "all_day": false,
-   "url": "https://uwm.edu/libraries/event/wag-more-nov11/",
-   "where": "Daniel M. Soref Learning Commons, Golda Meir Library",
-   "addr": "",
-   "zip": "",
-   "summary": "College can be stressful, so take a moment to relax by petting a therapy dog! Volunteers from the Alliance of Therapy Dogs and Pet Partners will be bringing furry friends to the Daniel M. Soref…",
-   "tags": [
-    "UWM Libraries",
-    "Front Page Event",
-    "Health and Well-being"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Employ Milwaukee Resource Table",
-   "start": "2026-11-11T11:30",
-   "end": "2026-11-11T13:30",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17808167",
-   "where": "Milwaukee Public Library East Branch",
-   "addr": "2320 N Cramer St",
-   "zip": "53211",
-   "summary": "Employ Milwaukee will be at the library to share information about employment opportunities, paid training programs, and much more!",
-   "tags": [
-    "Jobs & Careers",
-    "Community Event/Info Booth"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "walk",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Aging & Disability Resource Center Info Session",
-   "start": "2026-11-11T12:00",
-   "end": "2026-11-11T13:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17624939",
-   "where": "Milwaukee Public Library East Branch",
-   "addr": "2320 N Cramer St",
-   "zip": "53211",
-   "summary": "A rep from the Milwaukee County Aging & Disability Resource Center will present information on how Milwaukeeans can apply for resources to help stay independent or secure short or long-term care.",
-   "tags": [
-    "Health & Wellness",
-    "Government & Civic Literacy"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "walk",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Menomonee Valley ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-11-11T13:00",
-   "end": "2026-11-11T15:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4233",
-   "where": "UEC Menomonee Valley",
-   "addr": "3700 W Pierce St",
-   "zip": "53215",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "First Gen Fest",
-   "start": "2026-11-11T13:00",
-   "end": "2026-11-11T15:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/first-gen-fest-2/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "As first-generation college students, we connect over our unique shared experiences. The First-Gen+ Resource Center is bringing together community for a celebration of first-gen+ excellence. Enjoy…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Fair/Festival"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Club Soda",
-   "start": "2026-11-11T13:30",
-   "end": "2026-11-11T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-11-11/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Health and Well-being"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Calm & Crafty: The Hunger Games Edition",
-   "start": "2026-11-11T14:00",
-   "end": "2026-11-11T16:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/calm-crafty-the-hunger-games-edition/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Drop in for The Hunger Games themed crafts as we wait for the release of Sunrise on the Reaping….",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Hermitage Piano Trio",
-   "start": "2026-11-11T14:00",
-   "end": "2026-11-11T16:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/hermitage-piano-trio/19798/",
-   "where": "Sharon Lynne Wilson Center for the Arts",
-   "addr": "3270 Mitchell Park Drive",
-   "zip": "53045",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Pokemon Trading Card Night",
-   "start": "2026-11-11T17:00",
-   "end": "2026-11-11T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/pokemon-trading-card-night/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Bring your favorite Pokémon cards and show off your collection at Pokémon Trading Card Night! Trade with other students, compete in binder competitions, or test your skills in recreational TCG…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Lyrical Sanctuary feat. Lazarus Halliwell",
-   "start": "2026-11-11T18:00",
-   "end": "2026-11-11T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/lyrical-sanctuary-feat-lazarus-halliwell/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Lyrical Sanctuary Featuring Lazarus Halliwell",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Soul Patrol | New release!",
-   "start": "2026-11-11T18:00",
-   "end": "2026-11-11T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/soul-patrol-new-release/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Soul Patrol uncovers a hidden chapter of American military history by focusing on the Vietnam War’s first Black special ops team, an elite unit operating deep behind enemy lines. With unprecedented…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Live Irish Music",
-   "start": "2026-11-11T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/live-irish-music/16748/",
-   "where": "Pomeroy",
-   "addr": "723 S. 2nd Street",
-   "zip": "53204",
-   "summary": "Recurring monthly on the 2nd Wednesday",
-   "tags": [
-    "LIVE Music",
-    "Nightlife",
-    "Free"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Intro to Weaving",
-   "start": "2026-11-11T18:30",
-   "end": "2026-11-11T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-weaving/2026-11-11/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this class, participants will discover basic frame tapestry-weaving techniques and develop their knowledge and vocabulary in fiber arts! Strategies developed throughout the course will enable…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Climb Night for Graduate Students",
-   "start": "2026-11-11T18:30",
-   "end": "2026-11-11T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/graduateschool/event/climb-night-for-graduate-students/",
-   "where": "Adventure Rock",
-   "addr": "2220 N. Commerce St.",
-   "zip": "",
-   "summary": "Wednesday, November 11, 2026, from 6:30 – 9:00 pm at Adventure Rock (2220 N. Commerce St., Milwaukee) Presented as a part of the Graduate Student Wellness Series in conjunction with Outdoor Pursuits…",
-   "tags": [
-    "Graduate School"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Antinori Wine Dinner",
-   "start": "2026-11-11T18:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/antinori-wine-dinner/21430/",
-   "where": "Lupi & Iris",
-   "addr": "777 N. Van Buren Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Books & Brews Literary Trivia with MPL",
-   "start": "2026-11-11T18:30",
-   "end": "2026-11-11T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/books-%26-brews-literary-trivia-with-mpl/22562/",
-   "where": "Dead Bird Brewing Co.",
-   "addr": "1726 N. Dr. William Finlayson Street",
-   "zip": "53212",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Breweries",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Irish Music Jam Session",
-   "start": "2026-11-11T18:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/irish-music-jam-session/17991/",
-   "where": "Black Husky Brewing",
-   "addr": "909 E .Locust St.",
-   "zip": "53212",
-   "summary": "Recurring monthly on the 2nd Wednesday",
-   "tags": [
-    "LIVE Music",
-    "Breweries",
-    "Free"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2026-11-11T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
-   "title": "Cream City Book Club: The Pirate Queen by Ariel Lawhon",
-   "start": "2026-11-11T19:00",
-   "end": "2026-11-11T20:30",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/cream-city-book-club-the-pirate-queen-by-ariel-lawhon/",
-   "where": "The Starling",
-   "addr": "102 N. Water St.",
-   "zip": "53202",
-   "summary": "Cream City Book Club is moderated by Nicole Mattke and meets at The Starling quarterly.",
-   "tags": [],
-   "kind": "books",
-   "reach": "bus",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Artists Now! Guest Lecture Series: Micah Alhadeff",
-   "start": "2026-11-11T19:00",
-   "end": "2026-11-11T20:50",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/artists-now-guest-lecture-series-micah-alhadeff/",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "Micah Alhadeff is a digital artist, curator, and educator whose work explores glitch aesthetics, virtual embodiment, and speculative transformation. Alhadeff’s work has been exhibited at Sotheby’s in…",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Artists Now!"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "United We Read: Student-Faculty Reading Series",
-   "start": "2026-11-11T19:00",
-   "end": "2026-11-11T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/english/event/united-we-read-student-faculty-reading-series/",
-   "where": "Kuumba Juice & Coffee (274 E. Keefe Avenue)",
-   "addr": "",
-   "zip": "",
-   "summary": "Student-Faculty Reading Series: United We Read event will be held on Wednesday, November 11 at 7 p.m. at Kuumba Juice & Coffee (274 E. Keefe Avenue) with Timothy Knapp, Hannah Olsson, Kurt Olsson,…",
-   "tags": [
-    "English",
-    "English Events"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Bucks vs Los Angeles Lakers",
-   "start": "2026-11-11T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-lakers/22251/",
-   "where": "Milwaukee Bucks",
-   "addr": "Fiserv Forum",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Nightlife",
-    "Spectator Sports",
-    "Family Friendly"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MKE Unplugged",
-   "start": "2026-11-11T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
-   "where": "Shank Hall",
-   "addr": "1434 N. Farwell Avenue",
-   "zip": "",
-   "summary": "Recurring daily",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "WLC Theatre: Cinderella",
-   "start": "2026-11-11T19:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/wlc-theatre%3a-cinderella/20755/",
-   "where": "Raabe Theatre",
-   "addr": "8815 W. Wisconsin Avenue",
-   "zip": "53226",
-   "summary": "Recurring daily",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture"
-   ],
-   "free": false,
-   "kind": "theater",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Micky Dolenz - 60 Years of The Monkees",
-   "start": "2026-11-11T20:00",
-   "end": "2026-11-11T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/micky-dolenz-60-years-of-the-monkees-28-08-2026-15-05-08",
-   "where": "The Pabst Theater",
-   "addr": "",
-   "zip": "",
-   "summary": "Micky Dolenz is an actor, singer, director, producer, writer, radio DJ, inventor, and all-around performer extraordinaire, and stands tall as a paragon of taste and accomplishment in the…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "pabst-theater-group",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Tyler Ballgame - For The First Time Again, On Tour",
-   "start": "2026-11-11T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/tyler-ballgame-for-the-first-time-again-on-tour/18509/",
-   "where": "Vivarium",
-   "addr": "1818 N. Farwell Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music",
-    "Milwaukee Theater District"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee",
-   "also": [
-    "pabst-theater-group"
-   ]
-  },
-  {
-   "title": "Veterans Day at the H-D Museum",
-   "start": "2026-11-11T22:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/veterans-day-at-the-h-d-museum/22097/",
-   "where": "Harley-Davidson Museum",
-   "addr": "400 W. Canal Street",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Community",
-    "Free",
-    "Holiday"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
   {
    "title": "Low Tickets! Rachel Maddow, author of Department of Fate, in conversation with Ben Wikler",
    "start": "2026-11-12",
@@ -877,29 +136,6 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "No Man’s Land",
-   "start": "2026-11-12",
-   "end": "2026-11-23",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/no-mans-land/",
-   "where": "Kenilworth Square East, 4th Floor Gallery",
-   "addr": "2155 N. Prospect Ave.",
-   "zip": "53202",
-   "summary": "No Man’s Land is an exhibition curated by students in Photography & Imaging’s Fall 2026 Contemporary Issues in Photography course.",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Arts and Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-23",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Birding at Riverside Park",
@@ -983,27 +219,6 @@
    "free": null,
    "via": "org",
    "org": "mam"
-  },
-  {
-   "title": "How to Fund Your Study Abroad Trip!",
-   "start": "2026-11-12T11:00",
-   "end": "2026-11-12T13:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/how-to-fund-your-study-abroad-trip/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The possibilities of a passport are endless. Join us to learn more about funding a study abroad trip. Hear from study abroad and financial aid experts to discover resources and support designed to…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Prepare",
-    "Students"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "A One-Day Pop-Up Exhibition",
@@ -1147,26 +362,6 @@
    "org": "urban-ecology-center"
   },
   {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-11-12T16:00",
-   "end": "2026-11-12T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-11-12/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Game Night/Noche de Juegos",
    "start": "2026-11-12T16:30",
    "end": "2026-11-12T17:30",
@@ -1184,26 +379,6 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
-  },
-  {
-   "title": "Power of the Pen: The Amazing & Absurd",
-   "start": "2026-11-12T16:30",
-   "end": "2026-11-12T17:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/power-of-the-pen-the-amazing-absurd/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Come write about the strange, the silly, and the unexpected in this fun edition of Power of the Pen! We’ll use creative prompts to spark poems and stories, share ideas, and see where our imaginations…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "District 1 Crime and Safety Meeting",
@@ -1247,46 +422,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Family Yoga",
-   "start": "2026-11-12T17:30",
-   "end": "2026-11-12T19:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/family-yoga/",
-   "where": "Northwest Quadrant Building (NWQ)",
-   "addr": "2025 E Newport Ave.",
-   "zip": "53211",
-   "summary": "Join the UWM Student Parent Success Program (SPSP) for a special Family Yoga evening designed to help parents and children connect, move, and enjoy time together. This welcoming, playful experience…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Exercise and Fitness"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Experiences from the Academic Job Search",
-   "start": "2026-11-12T17:30",
-   "end": "2026-11-12T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/graduateschool/event/experiences-from-the-academic-job-search/",
-   "where": "Online",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursday, November 12, 2026, from 5:30-7 p.m. ONLINE Presented as a part of the Graduate Student Wellness Series by UWM’s Graduate School Are you interested in working in academia after graduating?…",
-   "tags": [
-    "Graduate School"
-   ],
-   "kind": "community",
-   "reach": "online",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Rogers Behavioral Health Foundation's Annual Celebrate the Light Gala",
    "start": "2026-11-12T17:30",
    "end": "",
@@ -1304,69 +439,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Glazing Techniques Session 2",
-   "start": "2026-11-12T18:00",
-   "end": "2026-11-12T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/glazing-techniques-session-2/2026-11-12/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Learn basic techniques of surface decoration on ceramic forms! This course will cover underglaze techniques such as stenciling, shaving cream swirl, and Mishima inlay, as well as overglazing…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Fibers Made Easy: Crochet Hats",
-   "start": "2026-11-12T18:00",
-   "end": "2026-11-12T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/fibers-made-easy-crochet-hats/2026-11-12/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "This two-night class is a wonderful introduction to crocheting hats, whether you’re new to crochet or looking to refresh your skills!",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "NBA 2K E-Sports Tournament",
-   "start": "2026-11-12T18:00",
-   "end": "2026-11-12T22:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/nba-2k-e-sports-tournament/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Meet friends and become champions in our new E-Sport tournaments! Make a team, join a team, or become a free-agent.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Athletics and Recreation",
-    "Connect"
-   ],
-   "kind": "sports",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Artist Talk with John Hallett at the David Barnett Gallery",
@@ -1415,10 +487,10 @@
    "start": "2026-11-12T18:00",
    "end": "2026-11-12T19:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/raisins-into-gold%3a-amarone/20709/",
+   "url": "https://www.visitmilwaukee.org/event/raisins-into-gold%3a-amarone/22459/",
    "where": "Waterford Wine & Spirits",
-   "addr": "2120 N. Farwell Ave",
-   "zip": "53202",
+   "addr": "631 Genesee St",
+   "zip": "53018",
    "summary": "",
    "tags": [
     "Classes & Workshops",
@@ -1426,7 +498,7 @@
    ],
    "free": false,
    "kind": "food",
-   "reach": "walk",
+   "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -1469,27 +541,6 @@
     "pabst-theater-group",
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "Panther imProv Night",
-   "start": "2026-11-12T19:00",
-   "end": "2026-11-12T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/panther-improv-night/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join the Panther Prov Jesters in the Union Cinema for a night of Improv and interactivity! Co-sponsored by Panther imProv…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "comedy",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Drag Queen Bingo Fundraiser",
@@ -1800,27 +851,6 @@
    "org": "mam"
   },
   {
-   "title": "First Gen Week Brunch and Screenprinting",
-   "start": "2026-11-13T10:00",
-   "end": "2026-11-13T13:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/first-gen-week-brunch-and-screenprinting/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Celebrate our first gen community and unleash your creativity with our Brunch and Screen-Printing celebration. Bring your friends to enjoy breakfast treats and connect with students and staff while…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Students"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "You, Tended: Unfurl Into Love",
    "start": "2026-11-13T11:30",
    "end": "2026-11-13T13:00",
@@ -1838,48 +868,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Chinese Language Table",
-   "start": "2026-11-13T12:00",
-   "end": "2026-11-13T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/chinese-language-table/2026-11-13/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Explore Chinese culture and language with other students and speakers of Mandarin. All levels welcome! Fridays, 12:00-1:30pm CRT 187 (Language Oasis)",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Book Talk: Muslims in Milwaukee: Placemaking, Belonging, and Activism",
-   "start": "2026-11-13T15:00",
-   "end": "2026-11-13T16:00",
-   "all_day": false,
-   "url": "https://uwm.edu/c21/event/book-talk-mim/",
-   "where": "American Geographical Society Library",
-   "addr": "2311 E Hartford Ave",
-   "zip": "53211",
-   "summary": "November 13, 3:00 PM American Geographical Society Library Free & open to the public Muslims in Milwaukee explores the everyday lives, identities, and activism of Muslims in a midsized Midwestern…",
-   "tags": [
-    "Center for 21st Century Studies",
-    "Arts and Culture",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Video Game Happy Hour",
@@ -1920,48 +908,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Crossing Over – Opening Reception",
-   "start": "2026-11-13T17:00",
-   "end": "2026-11-13T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/crossing-over-opening-reception-2/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The fall student exhibition, Crossing Over, features work produced by undergraduate students in UWM’s Peck School of the Arts, Department of Art and Design who have received a scholarship and/or…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Close Encounters of the Third Kind | 35mm print!",
-   "start": "2026-11-13T17:00",
-   "end": "2026-11-13T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/close-encounters-of-the-third-kind-35mm-print/2026-11-13/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Richard Dreyfuss stars as cable worker Roy Neary, who along with several other stunned bystanders experience a close encounter of the first kind – witnessing UFOs soaring across the sky. After this…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Youthtopia: Annual Fundraiser & Community Gathering",
    "start": "2026-11-13T18:00",
    "end": "2026-11-13T21:00",
@@ -1986,8 +932,8 @@
    "start": "2026-11-13T18:00",
    "end": "2026-11-13T20:00",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/a-one-day-pop-up-exhibition/22450/",
-   "where": "Broadway Paper",
+   "url": "https://www.visitmilwaukee.org/event/a-one-day-pop-up-exhibition/22551/",
+   "where": "JK Art House",
    "addr": "191 N Broadway",
    "zip": "53202",
    "summary": "",
@@ -2274,31 +1220,6 @@
    ]
   },
   {
-   "title": "Choral & Orchestral Masterworks: Mozart, Copland & Florence Price",
-   "start": "2026-11-13T19:30",
-   "end": "2026-11-14",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/choral-orchestral-masterworks/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The UWM Symphony Orchestra and Choirs join forces for an evening of powerful choral-orchestral masterworks. In recognition of the 250th anniversary of the United States, the program features American…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "run_through": "2026-11-14",
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
    "title": "Broadminded Presents: But Is It Funny? A 20-year Retrospective",
    "start": "2026-11-13T19:30",
    "end": "",
@@ -2336,6 +1257,26 @@
    "free": false,
    "kind": "music",
    "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Choral & Orchestral Masterworks: Mozart, Copland & Florence Price",
+   "start": "2026-11-13T19:30",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/choral-%26-orchestral-masterworks%3a-mozart-copland-%26-florence-price/22238/",
+   "where": "UW-Milwaukee Peck School of the Arts",
+   "addr": "2419 E. Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "run_through": "2026-11-14",
+   "free": null,
+   "kind": "community",
+   "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -2497,27 +1438,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "John Lilly and the Earth Coincidence Control Office | Milwaukee premiere!",
-   "start": "2026-11-13T20:00",
-   "end": "2026-11-13T22:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/john-lilly-and-the-earth-coincidence-control-office-milwaukee-premiere/2026-11-13/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The daring experimenter Dr. John C. Lilly dedicated his life to radical self-investigation and unlocking the mysteries of consciousness and communication. Directors Michael Almareyda and Courtney…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Hovvdy",
@@ -2788,26 +1708,6 @@
    "org": "mam"
   },
   {
-   "title": "UWM String Academy Fall Group Concert",
-   "start": "2026-11-14T10:00",
-   "end": "2026-11-14T11:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/string-academy-concert/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Spend the morning with the UWM String Academy as students ages 4 through 18 perform an engaging program of music from around the world. This concert showcases the talent and hard work they’ve put in…",
-   "tags": [
-    "Peck School of the Arts",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Fall Into Winter Fest",
    "start": "2026-11-14T10:00",
    "end": "2026-11-14T16:00",
@@ -3012,6 +1912,29 @@
    "org": "radio-milwaukee"
   },
   {
+   "title": "Living Archives: An African Community Day",
+   "start": "2026-11-14T12:00",
+   "end": "2026-11-14T16:00",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/living-archives-an-african-community-day/",
+   "where": "Haggerty Museum of Art",
+   "addr": "1234 W. Tory Hill",
+   "zip": "53233",
+   "summary": "Living Archives invites visitors to experience the living traditions of the African diaspora through food, storytelling, dance, conversation, and art.",
+   "tags": [
+    "Food & Drink",
+    "History"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar",
+   "also": [
+    "visit-milwaukee"
+   ]
+  },
+  {
    "title": "Get to Know Your Watershed",
    "start": "2026-11-14T12:30",
    "end": "2026-11-14T14:00",
@@ -3029,31 +1952,6 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
-  },
-  {
-   "title": "Living Archives: An African Community Day at Haggerty Museum of Art",
-   "start": "2026-11-14T12:30",
-   "end": "2026-11-14T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/c21/event/living-archives-community-day/",
-   "where": "Marquette Haggerty Museum of Art",
-   "addr": "530 N 13th St",
-   "zip": "53233",
-   "summary": "Saturday, November 14th, 12:30 PM – 2:30 PM 1234 W Tory Hill St, Milwaukee, WI 53233 Free & open to the public; refreshments will be served Join Human Club for a trip to the Haggerty Museum of Art to…",
-   "tags": [
-    "Center for 21st Century Studies",
-    "Arts and Culture",
-    "Human Club"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
   },
   {
    "title": "Art for Heavens Sakes",
@@ -3153,27 +2051,6 @@
    "org": "mam"
   },
   {
-   "title": "Stars and Stories",
-   "start": "2026-11-14T14:00",
-   "end": "2026-11-14T16:00",
-   "all_day": false,
-   "url": "https://uwm.edu/planetarium/event/stars-and-stories/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E Kenwood Blvd #139",
-   "zip": "53211",
-   "summary": "@ Dr. Jean shares favorite highlights from over 20 years of directing the Planetarium in commemoration of its 60th anniversary. Enjoy a free 1-hour show starting at either 2:00 p.m. or 3:00 p.m.…",
-   "tags": [
-    "Manfred Olson Planetarium",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "WLC Theatre: Cinderella",
    "start": "2026-11-14T14:30",
    "end": "",
@@ -3233,27 +2110,6 @@
    "also": [
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "John Lilly and the Earth Coincidence Control Office | Milwaukee premiere!",
-   "start": "2026-11-14T17:00",
-   "end": "2026-11-14T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/john-lilly-and-the-earth-coincidence-control-office-milwaukee-premiere/2026-11-14/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The daring experimenter Dr. John C. Lilly dedicated his life to radical self-investigation and unlocking the mysteries of consciousness and communication. Directors Michael Almareyda and Courtney…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Coming Home Opening Reception at Kim Storage Gallery",
@@ -3413,27 +2269,6 @@
    "free": false,
    "via": "org",
    "org": "radio-milwaukee"
-  },
-  {
-   "title": "Close Encounters of the Third Kind | 35mm print!",
-   "start": "2026-11-14T19:00",
-   "end": "2026-11-14T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/close-encounters-of-the-third-kind-35mm-print/2026-11-14/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Richard Dreyfuss stars as cable worker Roy Neary, who along with several other stunned bystanders experience a close encounter of the first kind – witnessing UFOs soaring across the sky. After this…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "CelticMKE Céilí (Irish Social Dance & Live Music)",
@@ -4358,50 +3193,6 @@
    ]
   },
   {
-   "title": "Our Stories – Indigenous Veterans Display",
-   "start": "2026-11-16",
-   "end": "2026-11-20",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/our-stories-indigenous-veterans-display/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Stop by the Student Union Hallway, East to learn about the service and sacrifice of Indigenous US military veterans and read stories of heroism through adversity….",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Public"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-20",
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Panthers Against Sexual Assault (PASA) Informational Session",
-   "start": "2026-11-16T09:30",
-   "end": "2026-11-16T10:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/panthers-against-sexual-assault-pasa-informational-session/2026-11-16/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Learn more about how you can help revitalize an important student organization: Panthers Against Sexual Assault (PASA). If you want to help create a culture of respect and consent at UWM, join us!",
-   "tags": [
-    "Student Affairs & the Union",
-    "Health and Well-being",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Treasures of the Great Lakes",
    "start": "2026-11-16T11:30",
    "end": "2026-11-16T12:30",
@@ -4485,24 +3276,19 @@
    "start": "2026-11-16T17:00",
    "end": "2026-11-16T18:30",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/adam-unsworth-horn-recital/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
+   "url": "https://www.visitmilwaukee.org/event/adam-unsworth-horn-recital/22239/",
+   "where": "UW-Milwaukee Peck School of the Arts",
+   "addr": "2419 E. Kenwood Blvd.",
    "zip": "53211",
-   "summary": "Guest Adam Unsworth, Professor of Horn at Northwestern University, visits UWM’s campus to present a horn recital with Yasuko Oura, piano.",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
+    "Arts & Culture"
    ],
+   "free": null,
    "kind": "music",
    "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Cozy Crafting",
@@ -4522,48 +3308,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Intro to Wheel Throwing Session 2",
-   "start": "2026-11-16T18:00",
-   "end": "2026-11-16T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-16/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you curious to try out the pottery wheel? Join us for five weeks to familiarize yourself with the fundamentals of wheel throwing and clay! Between classes, participants will have access to the…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Intro to Stained Glass Session 3",
-   "start": "2026-11-16T18:00",
-   "end": "2026-11-16T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-stained-glass-session-3-3/2026-11-16/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this workshop, you will learn how to score, cut, foil, solder, and assemble your own stained-glass motif. Class participants will choose their own colors for a sunrise pattern which they will be…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Board Game Speed Dating",
@@ -4681,48 +3425,6 @@
    "org": "mpl"
   },
   {
-   "title": "Leadership Lunch & Learn",
-   "start": "2026-11-17T12:00",
-   "end": "2026-11-17T12:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/leadership-lunch-learn-2/2026-11-17/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Quick Hacks for Success Looking to level up your leadership skills in just 20 minutes? Drop in for a bite to eat and a quick interactive session on practical leadership hacks you can use right away.…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "The Hungry Games",
-   "start": "2026-11-17T13:00",
-   "end": "2026-11-17T15:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/the-hungry-games/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Get ready for The Hungry Games—where the only battle is against your appetite! Compete in outrageous food challenges, test your spice tolerance, and see if you have what it takes to out-eat, outlast,…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Student Life"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Washington Park ROOT (Restoring Our Outdoors Together)",
    "start": "2026-11-17T15:00",
    "end": "2026-11-17T17:00",
@@ -4740,90 +3442,6 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
-  },
-  {
-   "title": "Tuesday Tea",
-   "start": "2026-11-17T16:00",
-   "end": "2026-11-17T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/tuesday-tea-3/2026-11-17/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Ever wished for a space on campus to spill the tea or discuss important topics with supportive peers? Come join us for ” The Tuesday Tea,” a casual drop-in series where we dive into spicy…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "“As Seen On TikTok” Game Night",
-   "start": "2026-11-17T17:00",
-   "end": "2026-11-17T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/as-seen-on-tiktok-game-night/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Discover the games taking TikTok by storm at this unique game night! Play a variety of board and indoor games that have gone viral on TikTok, and see which ones become your new favorites.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Intro to Photography: Capturing on Black and White Film",
-   "start": "2026-11-17T18:00",
-   "end": "2026-11-17T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-photography-capturing-on-black-and-white-film-2/2026-11-17/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you interested in film photography? All skill levels are welcome for this hands-on black and white film photography workshop! We will cover the entire process from how to use a camera all the way…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Intro to Wheel Throwing Session 2",
-   "start": "2026-11-17T18:00",
-   "end": "2026-11-17T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-17/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you curious to try out the pottery wheel? Join us for five weeks to familiarize yourself with the fundamentals of wheel throwing and clay! Between classes, participants will have access to the…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Folk Art Workshop: Polish Christmas Ornaments (Part 2)",
@@ -4905,72 +3523,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Ice Skating the Pettit Center",
-   "start": "2026-11-17T18:30",
-   "end": "2026-11-17T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/ice-skating-the-pettit-center-2/",
-   "where": "Klotsche Center (KC)",
-   "addr": "3409 North Downer Ave.",
-   "zip": "53211",
-   "summary": "Are you looking to get involved with Outdoor Pursuits? Well, lace up your skates, grab your mittens and get ready for an ice skating experience! Join Outdoor Pursuits as we carve up a night of fun at…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Exercise and Fitness"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Experimental Tuesdays: From the Archives (curated by Alessandro Streccioni)",
-   "start": "2026-11-17T19:00",
-   "end": "2026-11-17T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/experimental-tuesdays-from-the-archives-curated-by-alessandro-streccioni/",
-   "where": "UWM Union Cinema",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Curated by MFA candidates from the Department of Film, Video, Animation and New Genres, these programs feature a unique opportunity to see some of the incredible 16mm prints from the UWM Cinema Arts…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Experimental Tuesdays"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "From the Archives: Alessandro Streccioni",
-   "start": "2026-11-17T19:00",
-   "end": "2026-11-17T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/from-the-archives-alessandro-streccioni/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Programmed by MFA candidate Alessandro Streccioni From the Archives offers a rare opportunity for UWM Cinematic Arts MFA candidates to select and exhibit a program of films from the incredible print…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Drag Queen Bingo: Dolly Horror Picture Show",
    "start": "2026-11-17T19:00",
    "end": "2026-11-17T21:00",
@@ -4988,6 +3540,26 @@
    "free": true,
    "kind": "community",
    "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Experimental Tuesdays: From the Archives (curated by Alessandro Streccioni)",
+   "start": "2026-11-17T19:00",
+   "end": "2026-11-17T21:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/experimental-tuesdays%3a-from-the-archives-(curated-by-alessandro-streccioni)/21959/",
+   "where": "UWM Union Cinema",
+   "addr": "2200 East Kenwood Blvd",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Film & Literature",
+    "Community"
+   ],
+   "free": true,
+   "kind": "community",
+   "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -5029,52 +3601,6 @@
    "org": "boswell"
   },
   {
-   "title": "New Dancemakers: Passing Through",
-   "start": "2026-11-18",
-   "end": "2026-11-21",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/new-dancemakers/",
-   "where": "Mitchell Hall, Studio 254",
-   "addr": "3203 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "New Dancemakers 2026: Passing Through presents an evening of deeply engaging dances that will reframe and expand your view of dance. Choreographed by eight of the department’s graduating seniors,…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Dance"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-21",
-   "kind": "theater",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "The Visit",
-   "start": "2026-11-18",
-   "end": "2026-11-22",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/the-visit/",
-   "where": "Theatre Building, Mainstage Theatre",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this tragicomic play, a grotesquely wealthy person returns to her hometown, which has suffered an economic downturn. In exchange for reversing their plight, she demands a high price—one that…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Feature"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-22",
-   "kind": "theater",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Reading Group: Readshop *ONLINE on Zoom*",
    "start": "2026-11-18",
    "end": "2026-11-18",
@@ -5110,27 +3636,6 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
-  },
-  {
-   "title": "Queer Women Coffee Hour",
-   "start": "2026-11-18T09:30",
-   "end": "2026-11-18T11:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/queer-women-coffee-hour-4/2026-11-18/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us for a slow coffee morning to meet fellow queer-identifying women/individuals and create a space to connect and find community! Join us for some queer joy, Coffee, genuine conversation,…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Storytime at the Domes",
@@ -5194,27 +3699,6 @@
    "org": "mpl"
   },
   {
-   "title": "Club Ñ: Spanish Conversation Table",
-   "start": "2026-11-18T10:00",
-   "end": "2026-11-18T11:00",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/club-n-spanish-conversation-table/2026-11-18/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Club Ñ: Spanish Conversation Table Wednesdays, 10-11am Curtin 187 (Language Oasis) Do you study Spanish? Speak Spanish? Just want to learn more about Spanish language and culture? Go to Club Ñ! Let’s…",
-   "tags": [
-    "Letters & Science",
-    "Humanities",
-    "Students"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Showers of Hope",
    "start": "2026-11-18T11:00",
    "end": "2026-11-18T14:00",
@@ -5232,27 +3716,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Wag More Wednesday",
-   "start": "2026-11-18T11:00",
-   "end": "2026-11-18T18:00",
-   "all_day": false,
-   "url": "https://uwm.edu/libraries/event/wag-more-nov18/",
-   "where": "Daniel M. Soref Learning Commons, Golda Meir Library",
-   "addr": "",
-   "zip": "",
-   "summary": "College can be stressful, so take a moment to relax by petting a therapy dog! Volunteers from the Alliance of Therapy Dogs and Pet Partners will be bringing furry friends to the Daniel M. Soref…",
-   "tags": [
-    "UWM Libraries",
-    "Front Page Event",
-    "Health and Well-being"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Brush Hour",
@@ -5292,46 +3755,6 @@
    "free": true,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Thesis and Dissertation Formatting Workshop",
-   "start": "2026-11-18T12:00",
-   "end": "2026-11-18T13:00",
-   "all_day": false,
-   "url": "https://uwm.edu/graduateschool/event/thesis-and-dissertation-formatting-workshop/",
-   "where": "Online",
-   "addr": "",
-   "zip": "",
-   "summary": "Wednesday, November 18, 2026, from 12-1 p.m. ONLINE Presented as a part of the Graduate Student Wellness Series by UWM’s Graduate School Join our Thesis and Dissertation Formatting Workshop to learn…",
-   "tags": [
-    "Graduate School"
-   ],
-   "kind": "talks",
-   "reach": "online",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Building Community Wealth with Community Land Trusts",
-   "start": "2026-11-18T12:00",
-   "end": "2026-11-18T13:00",
-   "all_day": false,
-   "url": "https://uwm.edu/architecture/event/building-community-wealth-with-community-land-trusts/",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "Community land trusts (CLTs) are emerging as one of the most effective tools for creating permanently affordable homeownership while building long-term community wealth. This session provides an…",
-   "tags": [
-    "Architecture & Urban Planning",
-    "Arts and Culture",
-    "Lectures Conferences and Symposiums"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Gallery Talk by Joseph Ogbonnaya",
@@ -5393,27 +3816,6 @@
    "org": "urban-ecology-center"
   },
   {
-   "title": "Club Soda",
-   "start": "2026-11-18T13:30",
-   "end": "2026-11-18T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-11-18/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Health and Well-being"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Aurora Mobile Health Clinic",
    "start": "2026-11-18T14:00",
    "end": "2026-11-18T16:30",
@@ -5435,47 +3837,22 @@
   {
    "title": "Art & Technology Exhibition: Charging",
    "start": "2026-11-18T14:00",
-   "end": "2026-11-21",
+   "end": "",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/art-and-technology-night/",
+   "url": "https://www.visitmilwaukee.org/event/art-%26-technology-exhibition%3a-charging/22294/",
    "where": "Kenilworth Square East Gallery",
-   "addr": "2155 N. Prospect Ave",
+   "addr": "1925 East Kenilworth Pl",
    "zip": "53202",
-   "summary": "This exhibition offers a unique opportunity to explore the vibrant intersections of creativity and technology, connecting the Milwaukee community with the next frontier of artistic expression.",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Arts and Culture"
+    "Arts & Culture"
    ],
    "run_through": "2026-11-21",
-   "kind": "art",
-   "reach": "walk",
    "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Courageous Conversations: Creativity vs. AI",
-   "start": "2026-11-18T14:00",
-   "end": "2026-11-18T15:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/courageous-conversations-creativity-vs-ai/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us for a conversation exploring the relationship between creativity and artificial intelligence. We’ll discuss how AI is changing the way we create, the questions it raises about originality and…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Student Life"
-   ],
-   "kind": "sports",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
+   "kind": "art",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "ASK DNS",
@@ -5580,27 +3957,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Fall Film Premiere: The Hunger Games Sunrise on the Reaping",
-   "start": "2026-11-18T18:00",
-   "end": "2026-11-18T22:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/fall-film-premiere-the-hunger-games-sunrise-on-the-reaping/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us for a special screening of Sunrise on the Reaping as we return to Panem for another unforgettable story. Grab your friends, settle in with some snacks, and experience the latest chapter of…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Film/Screening"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Holiday Chocolate & Wine Pairing with Fazio's Chocolates",
    "start": "2026-11-18T18:00",
    "end": "2026-11-18T19:30",
@@ -5642,27 +3998,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Intro to Weaving",
-   "start": "2026-11-18T18:30",
-   "end": "2026-11-18T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-weaving/2026-11-18/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this class, participants will discover basic frame tapestry-weaving techniques and develop their knowledge and vocabulary in fiber arts! Strategies developed throughout the course will enable…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Marquette Men's Basketball vs Northern Illinois",
    "start": "2026-11-18T18:30",
    "end": "",
@@ -5687,69 +4022,22 @@
   {
    "title": "Artists Now! Guest Lecture Series: Rachel David",
    "start": "2026-11-18T19:00",
-   "end": "2026-11-18T20:50",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/artists-now-guest-lecture-series-rachel-david/",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "Rachel David is a North Carolina-based blacksmith, sculptor, designer, and maker. Her metalwork practice is holistic; encompassing art, furniture, architectural elements, activism, collaborations,…",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Artists Now!"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee",
-    "urban-milwaukee-calendar"
-   ]
-  },
-  {
-   "title": "Rooftop Stargazing",
-   "start": "2026-11-18T19:00",
-   "end": "2026-11-18T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/planetarium/event/rooftop-stargazing/2026-11-18/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E Kenwood Blvd #139",
-   "zip": "53211",
-   "summary": "@ Gaze at the night sky through our telescopes! Weather permitting, view the Moon, planets, star clusters, and other astronomical objects. Telescope sessions are free and open to the public.…",
-   "tags": [
-    "Manfred Olson Planetarium",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Alaav: Hearth and Home",
-   "start": "2026-11-18T19:00",
    "end": "2026-11-18T21:00",
    "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/alaav-hearth-and-home/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Filmmaker in person! Alaav, is the story of Bhaveen Gossain, a 63-year-old son, taking care of Savitri, his ailing 95-year-old mother in their home nestled in a quiet suburb of New Delhi. Bhaveen…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
+   "url": "https://urbanmilwaukee.com/event/artists-now-guest-lecture-series-rachel-david/",
+   "where": "Virtual",
+   "addr": "",
+   "zip": "",
+   "summary": "Her metalwork practice is holistic; encompassing art, furniture, architectural elements, activism, collaborations, and gardening. Using the physical and technically demanding processes of forging,…",
+   "tags": [],
+   "kind": "talks",
+   "reach": "online",
+   "free": true,
+   "via": "source",
+   "src": "urban-milwaukee-calendar",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "METAL NIGHT",
@@ -6068,27 +4356,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Pudgie Pie Cooking",
-   "start": "2026-11-19T15:00",
-   "end": "2026-11-19T16:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/pudgie-pie-cooking/",
-   "where": "Klotsche Center (KC)",
-   "addr": "3409 North Downer Ave.",
-   "zip": "53211",
-   "summary": "What are pudgie pies?! To make a pudgie pie, you use a cast iron pie press with two pieces of bread and any filling you’d like and cook it over an open fire! Savory – make a pepperoni pizza pudgie…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Exercise and Fitness"
-   ],
-   "kind": "food",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Thursday Nights at MAM",
    "start": "2026-11-19T16:00",
    "end": "2026-11-19T20:00",
@@ -6148,26 +4415,6 @@
    "reach": "car",
    "via": "org",
    "org": "urban-ecology-center"
-  },
-  {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-11-19T16:00",
-   "end": "2026-11-19T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-11-19/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Game Night/Noche de Juegos",
@@ -6308,111 +4555,6 @@
    ]
   },
   {
-   "title": "Fibers Made Easy: Crochet Hats",
-   "start": "2026-11-19T18:00",
-   "end": "2026-11-19T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/fibers-made-easy-crochet-hats/2026-11-19/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "This two-night class is a wonderful introduction to crocheting hats, whether you’re new to crochet or looking to refresh your skills!",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Gelli Plate Monotypes",
-   "start": "2026-11-19T18:00",
-   "end": "2026-11-19T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/gelli-plate-monotypes/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Gelli plates are versatile printmaking tools that make it easy to create colorful, one-of-a-kind prints. Participants will explore techniques such as magazine image transfers, layered printing, and…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Ceramics Q&A",
-   "start": "2026-11-19T18:00",
-   "end": "2026-11-19T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/ceramics-qa/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Stop by for short demos, individualized advice from our Ceramics Technicians, or to chat with other Craft Centre ceramicists!",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "No Country For Mothers",
-   "start": "2026-11-19T18:00",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/no-country-for-mothers/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Panel discussion to follow No Country for Mothers explores the culture wars surrounding American motherhood and why both the “girl boss” and “trad wife” labels ultimately distract us from the real…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Film Screening: No Country For Mothers",
-   "start": "2026-11-19T18:00",
-   "end": "2026-11-19T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/film-screening-no-country-for-mothers/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "No Country for Mothers explores the culture wars surrounding American motherhood and why both the “girl boss” and “trad wife” labels ultimately distract us from the real issue: the lack of support…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "MKE History Trivia @ Three Lions Pub",
    "start": "2026-11-19T18:00",
    "end": "2026-11-19T21:00",
@@ -6432,27 +4574,6 @@
    "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Gasthaus Trivia",
-   "start": "2026-11-19T18:30",
-   "end": "2026-11-19T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/gasthaus-trivia/2026-11-19/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Calling all brainiacs and social butterflies! Join the fun at UWM Gasthaus for their epic trivia night. Teams can have 2-6 players, and if you fly solo, no worries! We’ll help you connect with fellow…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Milwaukee Holiday Lights Festival Kickoff Extravaganza",
@@ -6702,24 +4823,19 @@
    "start": "2026-11-19T19:30",
    "end": "2026-11-19T21:00",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/uwm-steel-panthers-steel-band-university-community-world-music-ensemble/",
-   "where": "Kenilworth Square East, Jan Serr Studio",
+   "url": "https://www.visitmilwaukee.org/event/uwm-steel-panthers-steel-band-%26-community-world-music-ensemble/22242/",
+   "where": "UW-Milwaukee Peck School of the Arts",
    "addr": "2155 N. Prospect Ave",
-   "zip": "53202",
-   "summary": "This exciting night of music will feature music from Guatemala and Trinidad and Tobago performed by UWM students and Milwaukee community members. The UWM Steel PANthers Steel Band and the new…",
+   "zip": "53211",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
+    "Arts & Culture"
    ],
+   "free": null,
    "kind": "music",
    "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Dane Erbach, author of Meat Bees",
@@ -6738,52 +4854,6 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "Middle School Honors Band Festival",
-   "start": "2026-11-20",
-   "end": "2026-11-22",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/music-middle-school-honors-band-festival/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The UWM Middle School Honors Band Festival is one of the longest-standing events of its kind. Our festival provides the region’s most motivated and accomplished middle school instrumentalists with an…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-22",
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "High School Honors Band & String Orchestra Festival",
-   "start": "2026-11-20",
-   "end": "2026-11-21",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/music-high-school-honors-band-string-orchestra/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The High School Honors Band & String Orchestra Festival provides the region’s most motivated and accomplished high school band and orchestra students an opportunity to work with each other and with…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-21",
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -6914,27 +4984,6 @@
    "org": "mam"
   },
   {
-   "title": "Chinese Language Table",
-   "start": "2026-11-20T12:00",
-   "end": "2026-11-20T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/chinese-language-table/2026-11-20/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Explore Chinese culture and language with other students and speakers of Mandarin. All levels welcome! Fridays, 12:00-1:30pm CRT 187 (Language Oasis)",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Lunch and Learn: Letters From the Front",
    "start": "2026-11-20T12:30",
    "end": "2026-11-20T13:30",
@@ -6954,25 +5003,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Brown Bag Lunch Series Continues – Friday, November 20, 2026",
-   "start": "2026-11-20T13:30",
-   "end": "2026-11-20T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/brown-bag-lunch-series-continues-friday-november-20-2026/",
-   "where": "Holton Hall 341",
-   "addr": "",
-   "zip": "",
-   "summary": "Join us on Friday, November 20, 20206 at 1:30 pm in Holton Hall room 341 as we welcome Brennan Pekelder as he presents “The Head of Lee is on Stone Mountain!: The complicated story of the world’s…",
-   "tags": [
-    "History"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Holiday Folk Fair International",
@@ -7092,27 +5122,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Tony Takitani | Haruki Murakami Double Bill",
-   "start": "2026-11-20T17:00",
-   "end": "2026-11-20T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/tony-takitani-haruki-murakami-double-bill/2026-11-20/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Tony Takitani is an illustrator who has been alone all his life, until he meets a beautiful woman who transforms his world. The only problem is that she has a secret, she is a compulsive shopper with…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Member and Volunteer Appreciation Night: Holiday Show (SOLD OUT)",
    "start": "2026-11-20T18:00",
    "end": "2026-11-20T21:00",
@@ -7207,27 +5216,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Burning | Haruki Murakami Double Bill",
-   "start": "2026-11-20T19:00",
-   "end": "2026-11-20T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/burning-haruki-murakami-double-bill/2026-11-20/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Burning is the searing examination of an alienated young man, Jongsu (Yoo Ah-in), a frustrated introvert whose already difficult life is complicated by the appearance of two people in his orbit:…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Film/Screening"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Bend and Break 90s Throwback Night",
@@ -7330,30 +5318,6 @@
    ]
   },
   {
-   "title": "UWM Wind Ensemble Concert",
-   "start": "2026-11-20T19:30",
-   "end": "2026-11-20T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/uwm-band-concert/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The UWM Middle School Honors Band Festival is one of the longest-standing events of its kind. Our festival provides the region’s most motivated and accomplished middle school instrumentalists with an…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
    "title": "Broadminded Presents: But Is It Funny? A 20-year Retrospective",
    "start": "2026-11-20T19:30",
    "end": "",
@@ -7371,6 +5335,25 @@
    "free": false,
    "kind": "comedy",
    "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "UWM Wind Ensemble Concert",
+   "start": "2026-11-20T19:30",
+   "end": "2026-11-20T21:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/uwm-wind-ensemble-concert/22155/",
+   "where": "UWM",
+   "addr": "2419 E Kenwood Blvd",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -8131,43 +6114,21 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Tony Takitani | Haruki Murakami Double Bill",
-   "start": "2026-11-21T17:00",
-   "end": "2026-11-21T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/tony-takitani-haruki-murakami-double-bill/2026-11-21/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Tony Takitani is an illustrator who has been alone all his life, until he meets a beautiful woman who transforms his world. The only problem is that she has a secret, she is a compulsive shopper with…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Ladies Night Out(side)",
    "start": "2026-11-21T17:30",
    "end": "2026-11-21T21:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/ladies-night-out(side)/22572/",
-   "where": "The Landing at Hoyt Park Beer Garden",
+   "url": "https://www.visitmilwaukee.org/event/ladies-night-out(side)/22571/",
+   "where": "Heat Haven at Hoyt park",
    "addr": "1800 N Swan Blvd",
    "zip": "53226",
    "summary": "",
    "tags": [
-    "Food & Drink",
-    "Health & Wellness",
-    "LIVE Music"
+    "Arts & Culture",
+    "Community"
    ],
    "free": false,
-   "kind": "food",
+   "kind": "outdoors",
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
@@ -8256,27 +6217,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Burning | Haruki Murakami Double Bill",
-   "start": "2026-11-21T19:00",
-   "end": "2026-11-21T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/burning-haruki-murakami-double-bill/2026-11-21/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Burning is the searing examination of an alienated young man, Jongsu (Yoo Ah-in), a frustrated introvert whose already difficult life is complicated by the appearance of two people in his orbit:…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Film/Screening"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Magic Men at Potawatomi",
    "start": "2026-11-21T19:00",
    "end": "2026-11-21T22:30",
@@ -8356,55 +6296,6 @@
    ]
   },
   {
-   "title": "Opera Scenes",
-   "start": "2026-11-21T19:30",
-   "end": "2026-11-22",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/opera-scenes/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "UWM Opera Scenes offers an evening of fully staged excerpts from some of opera’s most compelling works. Featuring a range of styles, languages, and characters, this performance highlights the work of…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "run_through": "2026-11-22",
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Honors String Orchestra & UWM Symphony Orchestra and High School Honors Band performance",
-   "start": "2026-11-21T19:30",
-   "end": "2026-11-21T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/uwm-wind-ensemble-2/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "This performance begins with a unique collaboration between the high school students selected for the 2026 UWM Honors String Orchestra and the UWM Symphony Orchestra, conducted by Prof. Jun Kim. The…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
    "title": "Broadminded Presents: But Is It Funny? A 20-year Retrospective",
    "start": "2026-11-21T19:30",
    "end": "",
@@ -8422,6 +6313,45 @@
    "free": false,
    "kind": "comedy",
    "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Honors String Orchestra & UWM Symphony Orchestra and High School Honors Band performance",
+   "start": "2026-11-21T19:30",
+   "end": "2026-11-21T21:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/honors-string-orchestra-%26-uwm-symphony-orchestra-and-high-school-honors-band-performance/22276/",
+   "where": "UW-Milwaukee Peck School of the Arts",
+   "addr": "2400 E. Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "free": null,
+   "kind": "music",
+   "reach": "walk",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Opera Scenes",
+   "start": "2026-11-21T19:30",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/opera-scenes/22275/",
+   "where": "UW-Milwaukee Peck School of the Arts",
+   "addr": "2400 E. Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "run_through": "2026-11-22",
+   "free": null,
+   "kind": "theater",
+   "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -9100,27 +7030,6 @@
    "org": "mpl"
   },
   {
-   "title": "Intro to Wheel Throwing Session 2",
-   "start": "2026-11-23T18:00",
-   "end": "2026-11-23T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-wheel-throwing-session-2-3/2026-11-23/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Are you curious to try out the pottery wheel? Join us for five weeks to familiarize yourself with the fundamentals of wheel throwing and clay! Between classes, participants will have access to the…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Sips & Stems Holiday Flower Arranging with Belle Fiori",
    "start": "2026-11-23T18:00",
    "end": "2026-11-23T19:30",
@@ -9290,26 +7199,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Let’s Talk Counseling in First-Gen+",
-   "start": "2026-11-24T11:00",
-   "end": "2026-11-24T12:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/lets-talk-counseling-in-first-gen/2026-11-24/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us in the First-Gen+ Resource Center (below the PantherShop) for drop-in conversations with SHAW counselor, Cady! Come talk about anything that’s going on in your life – school, family, friends,…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Health and Well-being"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "MPL Board Meeting",
    "start": "2026-11-24T16:00",
    "end": "2026-11-24T18:00",
@@ -9386,6 +7275,28 @@
    "time_unknown": true,
    "free": null,
    "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Packers Game Day Giveaway",
+   "start": "2026-11-25",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/packers-game-day-giveaway/22594/",
+   "where": "Potawatomi Sportsbook",
+   "addr": "Potawatomi Casino | Hotel",
+   "zip": "53233",
+   "summary": "",
+   "tags": [
+    "Food & Drink",
+    "Spectator Sports",
+    "Watch Party"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "kind": "food",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
@@ -9498,27 +7409,6 @@
    "free": null,
    "via": "org",
    "org": "mam"
-  },
-  {
-   "title": "Club Soda",
-   "start": "2026-11-25T13:30",
-   "end": "2026-11-25T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-11-25/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Health and Well-being"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Upper Bar Friendsgiving Party",
@@ -9882,26 +7772,6 @@
    "also": [
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-11-26T16:00",
-   "end": "2026-11-26T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-11-26/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "MKE Unplugged",
@@ -10583,6 +8453,25 @@
    "free": null,
    "via": "org",
    "org": "mam"
+  },
+  {
+   "title": "Small Business Saturday in the Village of Wauwatosa",
+   "start": "2026-11-28T10:00",
+   "end": "2026-11-28T17:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/small-business-saturday-in-the-village-of-wauwatosa/22600/",
+   "where": "Village of Wauwatosa",
+   "addr": "",
+   "zip": "53213",
+   "summary": "",
+   "tags": [
+    "Community"
+   ],
+   "free": null,
+   "kind": "community",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Story Time in the Galleries",
@@ -11540,24 +9429,19 @@
    "start": "2026-11-30T19:30",
    "end": "2026-11-30T21:00",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/university-community-band-concert/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
+   "url": "https://www.visitmilwaukee.org/event/university-community-band-fall-concert/22277/",
+   "where": "UW-Milwaukee Peck School of the Arts",
    "addr": "2419 E. Kenwood Blvd.",
    "zip": "53211",
-   "summary": "Join the University Community Band for our fall semester concert!",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
+    "Arts & Culture"
    ],
+   "free": null,
    "kind": "music",
    "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Rochelle Melander, author of Build A Book: : Designing a Nonfiction Book That Wows Readers",
@@ -11576,29 +9460,6 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "Experimental Tuesdays: The World and Works of Portia Cobb",
-   "start": "2026-12-01",
-   "end": "2026-12-02",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/experimental-tuesdays-the-world-and-works-of-portia-cobb/",
-   "where": "UWM Union Cinema",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us for two nights of works celebrating the radical work of the legendary Portia Cobb. Her interdisciplinary practice as an artist and filmmaker is deeply interested in telling stories that…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Experimental Tuesdays"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-02",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -11645,27 +9506,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Holiday Artist Fair",
-   "start": "2026-12-01T10:00",
-   "end": "2026-12-01T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/holiday-artist-fair/2026-12-01/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Please Join us in the Student Union Concourse for our annual Holiday Artist Fair. A variety of handmade items will be available from outside vendors, current students and alumni.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Fair/Festival",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Giving Tuesday Open House at Harmonic Harvest",
    "start": "2026-12-01T10:00",
    "end": "2026-12-01T17:00",
@@ -11706,48 +9546,6 @@
    "org": "mpl"
   },
   {
-   "title": "Tuesday Tea",
-   "start": "2026-12-01T16:00",
-   "end": "2026-12-01T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/tuesday-tea-3/2026-12-01/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Ever wished for a space on campus to spill the tea or discuss important topics with supportive peers? Come join us for ” The Tuesday Tea,” a casual drop-in series where we dive into spicy…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Unsolved Case File Night",
-   "start": "2026-12-01T17:00",
-   "end": "2026-12-01T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/unsolved-case-file-night/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Put your detective skills to the test with a night of unsolved mysteries! Work through clues, examine evidence, and piece together the details of intriguing cases as you compete to see if you can…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Romance Readers Book Club",
    "start": "2026-12-01T18:00",
    "end": "2026-12-01T19:00",
@@ -11765,27 +9563,6 @@
    "reach": "walk",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Rock Climbing Night",
-   "start": "2026-12-01T18:30",
-   "end": "2026-12-01T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/rock-climbing-night/",
-   "where": "Klotsche Center (KC)",
-   "addr": "3409 North Downer Ave.",
-   "zip": "53211",
-   "summary": "e will provide the harnesses, climbing shoes, chalk, and other equipment that you will need to have a fun night of climbing!",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Exercise and Fitness"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Marquette Men's Basketball vs Wagner",
@@ -11827,29 +9604,6 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Drawing for Print & Lithography Exhibition",
-   "start": "2026-12-02",
-   "end": "2026-12-16",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/drawing-for-print-lithography-exhibition/",
-   "where": "Kenilworth Square East, 5th Floor Gallery",
-   "addr": "2155 N. Prospect Ave.",
-   "zip": "53202",
-   "summary": "Presenting a selection of lithographic prints demonstrating each artist’s unique interpretation of their experiences and interests. Students produce diverse responses to themes such as Micro/Macro,…",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Arts and Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-16",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -11978,69 +9732,6 @@
    "org": "mam"
   },
   {
-   "title": "Holiday Artist Fair",
-   "start": "2026-12-02T10:00",
-   "end": "2026-12-02T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/holiday-artist-fair/2026-12-02/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Please Join us in the Student Union Concourse for our annual Holiday Artist Fair. A variety of handmade items will be available from outside vendors, current students and alumni.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Fair/Festival",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Club Ñ: Spanish Conversation Table",
-   "start": "2026-12-02T10:00",
-   "end": "2026-12-02T11:00",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/club-n-spanish-conversation-table/2026-12-02/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Club Ñ: Spanish Conversation Table Wednesdays, 10-11am Curtin 187 (Language Oasis) Do you study Spanish? Speak Spanish? Just want to learn more about Spanish language and culture? Go to Club Ñ! Let’s…",
-   "tags": [
-    "Letters & Science",
-    "Humanities",
-    "Students"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Wag More Wednesday",
-   "start": "2026-12-02T11:00",
-   "end": "2026-12-02T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/libraries/event/wag-more-dec2/",
-   "where": "Daniel M. Soref Learning Commons, Golda Meir Library",
-   "addr": "",
-   "zip": "",
-   "summary": "College can be stressful, so take a moment to relax by petting a therapy dog! Volunteers from the Alliance of Therapy Dogs and Pet Partners will be bringing furry friends to the Daniel M. Soref…",
-   "tags": [
-    "UWM Libraries",
-    "Front Page Event",
-    "Health and Well-being"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Wisconsin Herd vs. Cleveland Charge",
    "start": "2026-12-02T11:30",
    "end": "",
@@ -12119,27 +9810,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Club Soda",
-   "start": "2026-12-02T13:30",
-   "end": "2026-12-02T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-12-02/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Health and Well-being"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Village Tree Lighting",
    "start": "2026-12-02T17:00",
    "end": "",
@@ -12159,48 +9829,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Lyrical Sanctuary feat. Mad Static",
-   "start": "2026-12-02T18:00",
-   "end": "2026-12-02T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/lyrical-sanctuary-feat-mad-static/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Lyrical Sanctuary Featuring Mad Static",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Intro to Stained Glass Session 4",
-   "start": "2026-12-02T18:00",
-   "end": "2026-12-02T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-stained-glass-session-4-3/2026-12-02/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this workshop, you will learn how to score, cut, foil, solder, and assemble your own stained-glass motif. Class participants will choose their own colors for a sunrise pattern which they will be…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Glasses of Amber & Gold: The Magic of Aged Fortified Wine - Milwaukee",
@@ -12266,24 +9894,19 @@
    "start": "2026-12-02T19:00",
    "end": "2026-12-02T20:50",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/artists-now-guest-lecture-series-tyler-evans/",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "Tyler Evans is a visual communicator originally from Georgia, now living and working in Washington DC, using design and digital media to make politics more accessible to people in their daily lives.…",
+   "url": "https://www.visitmilwaukee.org/event/artists-now!-guest-lecture-series%3a-tyler-evans/22314/",
+   "where": "UWM Peck School of the Arts",
+   "addr": "2400 E. Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Artists Now!"
+    "Arts & Culture"
    ],
+   "free": null,
    "kind": "talks",
    "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Bucks vs New York Knicks",
@@ -12381,29 +10004,6 @@
    "org": "boswell"
   },
   {
-   "title": "2026 Object Jewelry Sale",
-   "start": "2026-12-03",
-   "end": "2026-12-04",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/object-jewelry-sale/",
-   "where": "Villa Terrace Museum & Gardens",
-   "addr": "2220 N Terrace Ave",
-   "zip": "53202",
-   "summary": "The 2026 Object Jewelry Sale will feature handmade student work from the Jewelry & Metalsmithing Area in the Department of Art & Design. At least 500 pieces of unique jewelry, sometimes outrageous in…",
-   "tags": [
-    "Peck School of the Arts",
-    "Alumni & Community",
-    "Art & Design"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-04",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
    "start": "2026-12-03",
    "end": "",
@@ -12492,27 +10092,6 @@
    "org": "mam"
   },
   {
-   "title": "Holiday Artist Fair",
-   "start": "2026-12-03T10:00",
-   "end": "2026-12-03T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/holiday-artist-fair/2026-12-03/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Please Join us in the Student Union Concourse for our annual Holiday Artist Fair. A variety of handmade items will be available from outside vendors, current students and alumni.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Fair/Festival",
-    "Public"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "The Village Christmas Market",
    "start": "2026-12-03T12:00",
    "end": "",
@@ -12576,47 +10155,6 @@
    "org": "mam"
   },
   {
-   "title": "Panthers Against Sexual Assault (PASA) Informational Session",
-   "start": "2026-12-03T16:00",
-   "end": "2026-12-03T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/panthers-against-sexual-assault-pasa-informational-session/2026-12-03/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Learn more about how you can help revitalize an important student organization: Panthers Against Sexual Assault (PASA). If you want to help create a culture of respect and consent at UWM, join us!",
-   "tags": [
-    "Student Affairs & the Union",
-    "Health and Well-being",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-12-03T16:00",
-   "end": "2026-12-03T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-12-03/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Tosa Cookie Trail",
    "start": "2026-12-03T16:00",
    "end": "2026-12-03T19:00",
@@ -12636,27 +10174,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Crossing Over – Artist Talks",
-   "start": "2026-12-03T17:00",
-   "end": "2026-12-03T19:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/crossing-over-artist-talks/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "The fall student exhibition, Crossing Over, features work produced by undergraduate students in UWM’s Peck School of the Arts, Department of Art and Design who have received a scholarship and/or…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Lectures Conferences and Symposiums"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Film To Fork: Dining With Shrek",
@@ -12700,26 +10217,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "MIAD Holiday Sale",
-   "start": "2026-12-03T18:00",
-   "end": "2026-12-03T20:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/miad-holiday-sale/22576/",
-   "where": "Milwaukee Institute of Art & Design",
-   "addr": "273 E. Erie Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture",
-    "Free"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
    "title": "Haberman Local Luminaries",
    "start": "2026-12-03T18:15",
    "end": "2026-12-03T19:15",
@@ -12743,27 +10240,6 @@
     "urban-milwaukee-calendar",
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "Gasthaus Trivia",
-   "start": "2026-12-03T18:30",
-   "end": "2026-12-03T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/gasthaus-trivia/2026-12-03/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Calling all brainiacs and social butterflies! Join the fun at UWM Gasthaus for their epic trivia night. Teams can have 2-6 players, and if you fly solo, no worries! We’ll help you connect with fellow…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Deer Creek Cheese & Holiday Cocktail Pairing",
@@ -12967,6 +10443,23 @@
    "src": "urban-milwaukee-calendar"
   },
   {
+   "title": "An Improv Show",
+   "start": "2026-12-03T19:30",
+   "end": "2026-12-03T19:30",
+   "all_day": false,
+   "url": "https://urbanmilwaukee.com/event/an-improv-show/",
+   "where": "UW-Milwaukee Arts Center Gallery",
+   "addr": "2400 E Kenwood Blvd.",
+   "zip": "53211",
+   "summary": "Quick-thinking performers create the performance on the spot with blend of imagination and wit.",
+   "tags": [],
+   "kind": "comedy",
+   "reach": "walk",
+   "free": false,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
+  },
+  {
    "title": "Meet Me in St. Louis",
    "start": "2026-12-03T19:30",
    "end": "2026-12-03T22:00",
@@ -12984,31 +10477,6 @@
    "src": "urban-milwaukee-calendar",
    "also": [
     "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "An Improv Show",
-   "start": "2026-12-03T19:30",
-   "end": "2026-12-03T19:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/improv/",
-   "where": "Arts Center Gallery",
-   "addr": "Theatre Building 2nd Floor | 2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Get ready for an engaging night where anything can happen and likely will! Our quick-thinking performers create the performance on the spot with blend of imagination and wit. The hilarious,…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Performances"
-   ],
-   "run_through": "2026-12-05",
-   "kind": "comedy",
-   "reach": "walk",
-   "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "urban-milwaukee-calendar"
    ]
   },
   {
@@ -13164,27 +10632,6 @@
    "org": "mam"
   },
   {
-   "title": "Chinese Language Table",
-   "start": "2026-12-04T12:00",
-   "end": "2026-12-04T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/chinese-language-table/2026-12-04/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Explore Chinese culture and language with other students and speakers of Mandarin. All levels welcome! Fridays, 12:00-1:30pm CRT 187 (Language Oasis)",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "The Village Christmas Market",
    "start": "2026-12-04T12:00",
    "end": "",
@@ -13224,23 +10671,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Philosophy Colloquium: Anthony Taylor, University of Fribourg",
-   "start": "2026-12-04T15:30",
-   "end": "2026-12-04T17:30",
-   "all_day": false,
-   "url": "https://uwm.edu/philosophy/event/philosophy-colloquium-anthony-taylor-university-of-fribourg/",
-   "where": "Curtin Hall 175",
-   "addr": "3243 N Downer Ave",
-   "zip": "53211",
-   "summary": "Anthony Taylor, University of Fribourg For more information on Anthony Taylor, visit https://www.unifr.ch/directory/en/people/363858/2ddf4 TITLE TBA",
-   "tags": [],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm-philosophy"
   },
   {
    "title": "'Tis The Season to Get LIT!",
@@ -13343,6 +10773,27 @@
    ],
    "free": null,
    "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "MIAD Holiday Sale",
+   "start": "2026-12-04T18:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/miad-holiday-sale/22576/",
+   "where": "Milwaukee Institute of Art & Design",
+   "addr": "273 E. Erie Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Arts & Culture",
+    "Free"
+   ],
+   "run_through": "2026-12-05",
+   "free": true,
+   "kind": "community",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
@@ -13498,27 +10949,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "UWM Symphony Orchestra",
-   "start": "2026-12-04T19:30",
-   "end": "2026-12-04T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/uwm-symphony-orchestra/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join the UWM Symphony Orchestra for a vibrant and seasonally inspired program celebrating the spirit of December.",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Christmas at the Basilica: Uplifted",
    "start": "2026-12-04T19:30",
    "end": "",
@@ -13604,27 +11034,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Nutcracker",
-   "start": "2026-12-05",
-   "end": "2026-12-26",
-   "all_day": false,
-   "url": "https://www.marcuscenter.org/event/the-nutcracker/",
-   "where": "Uihlein Hall",
-   "addr": "929 N Water St",
-   "zip": "53202",
-   "summary": "The most familiar of beloved holiday traditions is transformed into a wondrous dreamscape in Michael Pink’s The Nutcracker: Drosselmeyer’s Imaginarium . The Tannenbaum children are led on a magical…",
-   "tags": [
-    "Milwaukee Ballet"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-26",
-   "kind": "theater",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "marcus-center"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -14042,6 +11451,27 @@
    "also": [
     "visit-milwaukee"
    ]
+  },
+  {
+   "title": "Solstice in Stallis Makers Market",
+   "start": "2026-12-05T11:00",
+   "end": "2026-12-05T16:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/solstice-in-stallis-makers-market/22593/",
+   "where": "Ope! Brewing Co.",
+   "addr": "6751 W. National Avenue",
+   "zip": "53214",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Food & Drink",
+    "Holiday Markets"
+   ],
+   "free": true,
+   "kind": "markets",
+   "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Drawing Connections: Mini Alebrije Workshop",
@@ -14534,6 +11964,26 @@
    ]
   },
   {
+   "title": "MIAD Holiday Sale",
+   "start": "2026-12-05T18:00",
+   "end": "2026-12-05T20:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/miad-holiday-sale/22576/",
+   "where": "Milwaukee Institute of Art & Design",
+   "addr": "273 E. Erie Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Arts & Culture",
+    "Free"
+   ],
+   "free": true,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Wine Tasting Workshop: Learn the Secrets of Tasting Wine",
    "start": "2026-12-05T18:00",
    "end": "",
@@ -14573,27 +12023,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "WUWM Presents: Go Fact Yourself LIVE!",
-   "start": "2026-12-05T19:00",
-   "end": "2026-12-05T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/wuwm-presents-go-fact-yourself-live/",
-   "where": "UWM Union Cinema",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Go Fact Yourself is a pop culture trivia show hosted by J. Keith van Straaten (Ask Me Another, senior writer) and Helen Hong (Wait Wait… Don’t Tell Me, recurring panelist). Each week, van Straaten…",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "MKE Unplugged",
    "start": "2026-12-05T19:00",
    "end": "",
@@ -14611,6 +12040,29 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "The Nutcracker",
+   "start": "2026-12-05T19:30",
+   "end": "2026-12-05T19:30",
+   "all_day": false,
+   "url": "https://www.marcuscenter.org/event/the-nutcracker/",
+   "where": "Uihlein Hall",
+   "addr": "929 N Water St",
+   "zip": "53202",
+   "summary": "The most familiar of beloved holiday traditions is transformed into a wondrous dreamscape in Michael Pink’s The Nutcracker: Drosselmeyer’s Imaginarium . The Tannenbaum children are led on a magical…",
+   "tags": [
+    "Milwaukee Ballet"
+   ],
+   "run_through": "2026-12-26",
+   "kind": "theater",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "marcus-center",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Meet Me in St. Louis",
@@ -15054,27 +12506,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Suzuki & Pre-College Guitar Concert",
-   "start": "2026-12-06T12:00",
-   "end": "2026-12-06T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/suzuki-pre-college-guitar-student-concert/",
-   "where": "Music Building, Recital Hall",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join students of the Suzuki & Pre-College Guitar Program for the end-of-the-semester concert.",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Evergreen Wreath Workshop",
    "start": "2026-12-06T12:00",
    "end": "",
@@ -15136,23 +12567,21 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Wisconsin Intergenerational Orchestra Presents: Let’s Dance",
+   "title": "The Nutcracker",
    "start": "2026-12-06T13:00",
-   "end": "2026-12-06T14:45",
+   "end": "2026-12-06T13:00",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/wisconsin-intergenerational-orchestra-presents-lets-dance/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join WIO at their year end concert titled “Let’s Dance” which will, no doubt, have you dancing in your seats! WIO will feature a variety of pieces selected from a wide array of time periods with the…",
-   "tags": [
-    "Peck School of the Arts"
-   ],
-   "kind": "music",
-   "reach": "walk",
+   "url": "https://urbanmilwaukee.com/event/the-nutcracker-18/",
+   "where": "Marcus Performing Arts Center, Uihlein Hall",
+   "addr": "929 N. Water St.",
+   "zip": "53202",
+   "summary": "The most familiar of beloved holiday traditions is transformed into a wondrous dreamscape in Michael Pink’s The Nutcracker: Drosselmeyer’s Imaginarium.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
    "free": null,
-   "via": "org",
-   "org": "uwm"
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Watercolor Line Art: Paint with Purposeful Lines",
@@ -15494,26 +12923,21 @@
   {
    "title": "University Community Orchestra Fall Concert",
    "start": "2026-12-06T19:30",
-   "end": "2026-12-06T21:00",
+   "end": "",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/university-community-orchestra-fall-concert/",
+   "url": "https://www.visitmilwaukee.org/event/university-community-orchestra-fall-concert/22425/",
    "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
+   "addr": "2419 East Kenwood Blvd",
    "zip": "53211",
-   "summary": "Join the University Community Orchestra for a vibrant and festive December concert.",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
+    "Performing Arts & Theater"
    ],
-   "kind": "music",
-   "reach": "walk",
    "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "kind": "theater",
+   "reach": "walk",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Christmas at the Basilica: Uplifted",
@@ -15556,29 +12980,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Panther Pause 2026",
-   "start": "2026-12-07",
-   "end": "2026-12-11",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/panther-pause-2026/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Hey Panthers, take a ‘paw-se’ with CAB and find some down time before final exams. Check out all the Panther Pause events happening across campus and find your favorite way to relax, unwind, and take…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Health and Well-being",
-    "Prepare"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-11",
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -15642,48 +13043,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Sleep On It",
-   "start": "2026-12-07T15:00",
-   "end": "2026-12-07T16:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/sleep-on-it-3/2026-12-07/",
-   "where": "Northwest Quadrant Building (NWQ)",
-   "addr": "2025 E Newport Ave.",
-   "zip": "53211",
-   "summary": "Sleep is essential to academic performance, physical, and emotional health. In this workshop, you can expect to discuss the benefits of sleep, assess your own quality of sleep, learn effective sleep…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Health and Well-being",
-    "Students"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Book Talk: Uncanny Revivals: Designing an American Identity",
-   "start": "2026-12-07T16:00",
-   "end": "2026-12-07T18:00",
-   "all_day": false,
-   "url": "https://uwm.edu/c21/event/book-talk-uncanny-revivals/",
-   "where": "Curtin 939",
-   "addr": "3243 N Downer Ave",
-   "zip": "53211",
-   "summary": "December 7th, 4:00 PM Curtin 939 Free & open to the public Uncanny Revival: Designing an American Identity is an examination of how immersive colonial revival projects contributed to the formation of…",
-   "tags": [
-    "Center for 21st Century Studies",
-    "Arts and Culture",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Monday Book Night",
@@ -15768,24 +13127,19 @@
    "start": "2026-12-07T19:30",
    "end": "2026-12-07T21:00",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/new-music-ensemble-concert/",
-   "where": "Kenilworth Square East, Jan Serr Studio",
-   "addr": "2155 N. Prospect Ave",
-   "zip": "53202",
-   "summary": "The New Music Ensemble (NME) will perform contemporary music ranging from avant-garde to world premieres and student compositions. The NME is excited to perform this concert full of experimental and…",
+   "url": "https://www.visitmilwaukee.org/event/new-music-ensemble-fall-concert/22426/",
+   "where": "Jan Serr Studio",
+   "addr": "2155 N. Prospect Avenue",
+   "zip": "53203",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
+    "Arts & Culture"
    ],
+   "free": null,
    "kind": "music",
    "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Lee Mandelo, author of The Woods All Black, in conversation with Ben Pladek",
@@ -15850,27 +13204,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "A Night in Madagascar",
-   "start": "2026-12-08T08:00",
-   "end": "2026-12-08T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/a-night-in-madagascar/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Escape to the wild and vibrant world of Madagascar for one unforgettable night! Join us for an island-inspired experience filled with tropical vibes and lively music. From jungle beats to colorful…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Student Life"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Tech-splanation @ MPL",
    "start": "2026-12-08T12:00",
    "end": "2026-12-08T13:30",
@@ -15908,27 +13241,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Tuesday Tea",
-   "start": "2026-12-08T16:00",
-   "end": "2026-12-08T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/tuesday-tea-3/2026-12-08/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Ever wished for a space on campus to spill the tea or discuss important topics with supportive peers? Come join us for ” The Tuesday Tea,” a casual drop-in series where we dive into spicy…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Career and Leadership Development",
-    "Student Life"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Pressed Floral Frame",
@@ -15970,48 +13282,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Experimental Tuesdays: Expand/Contract – Performances for the Cinema",
-   "start": "2026-12-08T19:00",
-   "end": "2026-12-08T21:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/expand-contract-performances-for-the-cinema/",
-   "where": "UWM Union Cinema",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "An evening of expanded / contracted / living / breathing / doing / being (in the) cinema, performances for the room and for one night only by invited and commissioned artists, including Ruby Que,…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Experimental Tuesdays"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Collaborative Film Screening",
-   "start": "2026-12-08T19:00",
-   "end": "2026-12-08T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/collaborative-film-screening/",
-   "where": "The Cooperage",
-   "addr": "822 S Water St",
-   "zip": "53204",
-   "summary": "| Date & Time Tuesday, December 8, 2026 (7–8:30 p.m.) Location The Cooperage One semester. One collective vision. Two incredible films. A night of film screenings by the Collaborative Filmmaking…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Film & Animation"
-   ],
-   "kind": "film",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "MKE Unplugged",
    "start": "2026-12-08T19:00",
    "end": "",
@@ -16029,27 +13299,6 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "UWM Pop Ensemble",
-   "start": "2026-12-08T19:30",
-   "end": "2026-12-08T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/popular-music-ensemble-2/",
-   "where": "Kenilworth Square East, Jan Serr Studio",
-   "addr": "2155 N. Prospect Ave",
-   "zip": "53202",
-   "summary": "With Milwaukee’s skyline as the backdrop, Pop Ensemble heads to Jan Serr Studios for a performance in one of the city’s most unique downtown venues. The space brings a great energy and vibe, creating…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Brett Eldredge: Glow 10 Year Anniversary Tour",
@@ -16136,27 +13385,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Queer Women Coffee Hour",
-   "start": "2026-12-09T09:30",
-   "end": "2026-12-09T11:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/queer-women-coffee-hour-4/2026-12-09/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us for a slow coffee morning to meet fellow queer-identifying women/individuals and create a space to connect and find community! Join us for some queer joy, Coffee, genuine conversation,…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Connect"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Storytime at the Domes",
    "start": "2026-12-09T10:00",
    "end": "2026-12-09T10:30",
@@ -16198,48 +13426,6 @@
    "org": "mam"
   },
   {
-   "title": "Club Ñ: Spanish Conversation Table",
-   "start": "2026-12-09T10:00",
-   "end": "2026-12-09T11:00",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/club-n-spanish-conversation-table/2026-12-09/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Club Ñ: Spanish Conversation Table Wednesdays, 10-11am Curtin 187 (Language Oasis) Do you study Spanish? Speak Spanish? Just want to learn more about Spanish language and culture? Go to Club Ñ! Let’s…",
-   "tags": [
-    "Letters & Science",
-    "Humanities",
-    "Students"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Wag More Wednesday",
-   "start": "2026-12-09T11:00",
-   "end": "2026-12-09T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/libraries/event/wag-more-dec9/",
-   "where": "Daniel M. Soref Learning Commons, Golda Meir Library",
-   "addr": "",
-   "zip": "",
-   "summary": "College can be stressful, so take a moment to relax by petting a therapy dog! Volunteers from the Alliance of Therapy Dogs and Pet Partners will be bringing furry friends to the Daniel M. Soref…",
-   "tags": [
-    "UWM Libraries",
-    "Front Page Event",
-    "Health and Well-being"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "C-Suite Stars",
    "start": "2026-12-09T11:30",
    "end": "2026-12-09T13:30",
@@ -16259,27 +13445,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Club Soda",
-   "start": "2026-12-09T13:30",
-   "end": "2026-12-09T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-12-09/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Health and Well-being"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "The Boys from Baraboo",
@@ -16379,27 +13544,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Intro to Stained Glass Session 4",
-   "start": "2026-12-09T18:00",
-   "end": "2026-12-09T20:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/intro-to-stained-glass-session-4-3/2026-12-09/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "In this workshop, you will learn how to score, cut, foil, solder, and assemble your own stained-glass motif. Class participants will choose their own colors for a sunrise pattern which they will be…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Arts and Culture",
-    "Public"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "MKE History Trivia @ Sprecher Brewery",
@@ -16527,48 +13671,6 @@
     "pabst-theater-group",
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "Artists Now! Guest Lecture Series: Mich Dillon",
-   "start": "2026-12-09T19:00",
-   "end": "2026-12-09T20:50",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/artists-now-guest-lecture-series-mich-dillon/",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "Mich Dillon is a Milwaukee-based sculptor who received his MFA from UWM. He works with wood, rope and found objects and his work tells stories about patterns of connection, separation, and familial…",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Artists Now!"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
-   "title": "Club Penguin Night",
-   "start": "2026-12-09T19:00",
-   "end": "2026-12-09T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-penguin-night/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Bundle up and tap into your nostalgia at Club Penguin Night! A whole wintery world is waiting filled with throwback games, interactive challenges, and cozy, snow-day energy.",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Recreation/Games"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Laura Jane Grace",
@@ -16760,40 +13862,21 @@
    "org": "mam"
   },
   {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-12-10T16:00",
-   "end": "2026-12-10T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-12-10/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Cheers! Wild Lights",
    "start": "2026-12-10T17:30",
    "end": "2026-12-10T21:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22435/",
+   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22213/",
    "where": "Milwaukee County Zoo",
    "addr": "10001 W. Bluemound Rd.",
    "zip": "53226",
    "summary": "",
    "tags": [
-    "Holiday",
+    "Community",
+    "Family Friendly",
     "Museums & Attractions"
    ],
-   "free": null,
+   "free": false,
    "kind": "outdoors",
    "reach": "car",
    "via": "source",
@@ -16857,27 +13940,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Rooftop Stargazing",
-   "start": "2026-12-10T19:00",
-   "end": "2026-12-10T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/planetarium/event/rooftop-stargazing/2026-12-10/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E Kenwood Blvd #139",
-   "zip": "53211",
-   "summary": "@ Gaze at the night sky through our telescopes! Weather permitting, view the Moon, planets, star clusters, and other astronomical objects. Telescope sessions are free and open to the public.…",
-   "tags": [
-    "Manfred Olson Planetarium",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "MKE Unplugged",
@@ -16977,29 +14039,6 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
-  },
-  {
-   "title": "Art & Design BA/BFA Fall Exhibition",
-   "start": "2026-12-11",
-   "end": "2026-12-19",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/art-design-ba-bfa-fall-exhibition/",
-   "where": "Kenilworth Square East Gallery",
-   "addr": "2155 N. Prospect Ave",
-   "zip": "53202",
-   "summary": "A semiannual exhibition showcasing the work of graduating students in the BA and BFA programs. The exhibition traditionally takes place at the end of fall and spring semesters.",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Arts and Culture"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-19",
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "All is Calm: The Christmas Truce of 1914",
@@ -17115,27 +14154,6 @@
    ]
   },
   {
-   "title": "Chinese Language Table",
-   "start": "2026-12-11T12:00",
-   "end": "2026-12-11T13:30",
-   "all_day": false,
-   "url": "https://uwm.edu/letters-science/event/chinese-language-table/2026-12-11/",
-   "where": "UWM Language Oasis – Curtin 187",
-   "addr": "3243 N. Downer Ave.",
-   "zip": "53211",
-   "summary": "Explore Chinese culture and language with other students and speakers of Mandarin. All levels welcome! Fridays, 12:00-1:30pm CRT 187 (Language Oasis)",
-   "tags": [
-    "Letters & Science",
-    "Arts and Culture",
-    "Humanities"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Glow: The Inner Path to Joy Workshop",
    "start": "2026-12-11T12:00",
    "end": "2026-12-11T13:00",
@@ -17215,27 +14233,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Design & Visual Communication Showcase",
-   "start": "2026-12-11T17:00",
-   "end": "2026-12-11T20:00",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/design-showcase/",
-   "where": "Kenilworth Square East, 3rd Floor Gallery",
-   "addr": "2155 N. Prospect Ave.",
-   "zip": "53202",
-   "summary": "Seniors in the Design & Visual Communication program present their most recent and innovative work.",
-   "tags": [
-    "Peck School of the Arts",
-    "Art & Design",
-    "Arts and Culture"
-   ],
-   "kind": "art",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Candle Making Workshop",
@@ -17483,53 +14480,21 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Musical Theatre Capstone",
+   "title": "The Nutcracker",
    "start": "2026-12-11T19:30",
-   "end": "2026-12-11T22:30",
+   "end": "2026-12-11T19:30",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/musical-theatre-capstone/",
-   "where": "Arts Center Gallery",
-   "addr": "Theatre Building 2nd Floor | 2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Enjoy an evening of song from the Department’s Musical Theatre Majors!",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Feature"
-   ],
-   "run_through": "2026-12-12",
+   "url": "https://urbanmilwaukee.com/event/the-nutcracker-19/",
+   "where": "Marcus Performing Arts Center, Uihlein Hall",
+   "addr": "929 N. Water St.",
+   "zip": "53202",
+   "summary": "The most familiar of beloved holiday traditions is transformed into a wondrous dreamscape in Michael Pink’s The Nutcracker: Drosselmeyer’s Imaginarium.",
+   "tags": [],
    "kind": "theater",
-   "reach": "walk",
-   "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "UW-MESS Interactive Electronic Music Showcase",
-   "start": "2026-12-11T19:30",
-   "end": "2026-12-11T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/uw-mess-interactive-electronic-music-showcase/",
-   "where": "Music Building, Electronic Music Studios B60",
-   "addr": "2400 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Students enrolled in Interactive Electronic Music, representing UW-MESS (UWM Electroacoustic Sound Studios), will showcase their final projects in a concert featuring all-new works of interactive…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
+   "reach": "bus",
    "free": null,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "The Boys from Baraboo",
@@ -17572,6 +14537,44 @@
    "free": false,
    "kind": "music",
    "reach": "car",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Musical Theatre Capstone",
+   "start": "2026-12-11T19:30",
+   "end": "2026-12-11T22:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/musical-theatre-capstone/21458/",
+   "where": "",
+   "addr": "2400 East Kenwood Blvd",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "free": false,
+   "kind": "theater",
+   "reach": "walk",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "UW-MESS Interactive Electronic Music Showcase",
+   "start": "2026-12-11T19:30",
+   "end": "2026-12-11T21:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/uw-mess-interactive-electronic-music-showcase/22573/",
+   "where": "Music Building, Electronic Music Studios B60",
+   "addr": "2400 E. Kenwood Boulevard",
+   "zip": "53211",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "free": null,
+   "kind": "music",
+   "reach": "walk",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -17749,6 +14752,28 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Winter Choral Extravaganza",
+   "start": "2026-12-12T07:30",
+   "end": "2026-12-12T09:15",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/winter-choral-extravaganza/22574/",
+   "where": "Zelazo Center for the Performing Arts, Bader Hall",
+   "addr": "2419 East Kenwood Blvd",
+   "zip": "53212",
+   "summary": "",
+   "tags": [
+    "Arts & Culture"
+   ],
+   "free": true,
+   "kind": "music",
+   "reach": "walk",
+   "via": "source",
+   "src": "visit-milwaukee",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "December Lakefront Sauna Social (Grant Park Beach)",
@@ -18007,7 +15032,7 @@
    "where": "Mitchell Park Domes",
    "addr": "",
    "zip": "",
-   "summary": "Domes fave, Storyteller Santa tells tall tales and engages kids of all ages in energetic activities.",
+   "summary": "Storyteller Santa graces the Domes with his benevolent presence.",
    "tags": [
     "Family Programs",
     "Holiday"
@@ -18072,25 +15097,21 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Storytime in Latin America",
+   "title": "The Nutcracker",
    "start": "2026-12-12T14:00",
-   "end": "2026-12-12T15:00",
+   "end": "2026-12-12T14:00",
    "all_day": false,
-   "url": "https://uwm.edu/planetarium/event/storytime-in-latin-america/",
-   "where": "UWM Manfred Olson Planetarium",
-   "addr": "1900 E Kenwood Blvd #139",
-   "zip": "53211",
-   "summary": "@ Enjoy a read-a-long of two children’s books about Latin America featuring astronomical themes, followed by stargazing and a craft activity at the UWM Planetarium. This event is aimed at children…",
-   "tags": [
-    "Manfred Olson Planetarium",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "family",
-   "reach": "walk",
+   "url": "https://urbanmilwaukee.com/event/the-nutcracker-20/",
+   "where": "Marcus Performing Arts Center, Uihlein Hall",
+   "addr": "929 N. Water St.",
+   "zip": "53202",
+   "summary": "The most familiar of beloved holiday traditions is transformed into a wondrous dreamscape in Michael Pink’s The Nutcracker: Drosselmeyer’s Imaginarium.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
    "free": null,
-   "via": "org",
-   "org": "uwm"
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Milwaukee Men's Basketball vs. UIC",
@@ -18543,29 +15564,21 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Winter Choral Extravaganza",
+   "title": "The Nutcracker",
    "start": "2026-12-12T19:30",
-   "end": "2026-12-12T21:15",
+   "end": "2026-12-12T19:30",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/winter-choral-concert/",
-   "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join all of UWM’s five choirs (Concert Chorale, Bella Voce, Kameraden, Alta Voce, and Kameraden Plus) for their final concert of fall semester!",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
-   ],
-   "kind": "music",
-   "reach": "walk",
-   "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
+   "url": "https://urbanmilwaukee.com/event/the-nutcracker-21/",
+   "where": "Marcus Performing Arts Center, Uihlein Hall",
+   "addr": "929 N. Water St.",
+   "zip": "53202",
+   "summary": "The most familiar of beloved holiday traditions is transformed into a wondrous dreamscape in Michael Pink’s The Nutcracker: Drosselmeyer’s Imaginarium.",
+   "tags": [],
+   "kind": "theater",
+   "reach": "bus",
+   "free": null,
+   "via": "source",
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Sam Jay",
@@ -19272,24 +16285,20 @@
    "start": "2026-12-13T16:00",
    "end": "2026-12-13T17:30",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/uway-concert-2/",
+   "url": "https://www.visitmilwaukee.org/event/youth-wind-ensemble-(uway)-%26%238211%3b-music-for-the-season/22575/",
    "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "This program by the UW-Milwaukee Youth Wind and Percussion Ensembles program will include selections that we have embraced as tradition on our December concert!",
+   "addr": "2419 East Kenwood Blvd",
+   "zip": "53212",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Music"
+    "Arts & Culture",
+    "Milwaukee Theater District"
    ],
+   "free": true,
    "kind": "music",
    "reach": "walk",
-   "free": true,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Winter Wondermaze",
@@ -19629,24 +16638,19 @@
    "start": "2026-12-14T19:00",
    "end": "2026-12-14T20:30",
    "all_day": false,
-   "url": "https://uwm.edu/arts/event/african-salsa-merengue-and-hip-hop-showcase/",
+   "url": "https://www.visitmilwaukee.org/event/african-salsa-merengue-and-hip-hop-showcase/22290/",
    "where": "Zelazo Center for the Performing Arts, Bader Hall",
-   "addr": "2419 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Celebrate the end of the semester with a vibrant performance featuring students enrolled in African Dance, Salsa/Merengue, Hip Hop, and Tap. Showcasing choreography learned throughout the term and…",
+   "addr": "2419 East Kenwood Blvd",
+   "zip": "53212",
+   "summary": "",
    "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Dance"
+    "Arts & Culture"
    ],
-   "kind": "theater",
-   "reach": "walk",
    "free": false,
-   "via": "org",
-   "org": "uwm",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "kind": "music",
+   "reach": "walk",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "MKE Unplugged",
@@ -19710,26 +16714,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Let’s Talk Counseling in First-Gen+",
-   "start": "2026-12-15T11:00",
-   "end": "2026-12-15T12:00",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/lets-talk-counseling-in-first-gen/2026-12-15/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Join us in the First-Gen+ Resource Center (below the PantherShop) for drop-in conversations with SHAW counselor, Cady! Come talk about anything that’s going on in your life – school, family, friends,…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Health and Well-being"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "Hidden Chapter Book Club",
@@ -19934,27 +16918,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Club Soda",
-   "start": "2026-12-16T13:30",
-   "end": "2026-12-16T14:30",
-   "all_day": false,
-   "url": "https://uwm.edu/studentaffairs/event/club-soda-3/2026-12-16/",
-   "where": "UWM Student Union (UN)",
-   "addr": "2200 East Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Club Soda is a weekly get-together with students who choose not to use for whatever reason. It is a great place to meet like-minded people and share experiences, information, and resources. Drop in…",
-   "tags": [
-    "Student Affairs & the Union",
-    "Connect",
-    "Health and Well-being"
-   ],
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "The Boys from Baraboo",
@@ -20306,26 +17269,6 @@
    "org": "mam"
   },
   {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-12-17T16:00",
-   "end": "2026-12-17T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-12-17/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Creatives Night: Holiday Mixer with ImagineMKE",
    "start": "2026-12-17T17:00",
    "end": "2026-12-17T20:00",
@@ -20564,29 +17507,6 @@
    "free": null,
    "via": "source",
    "src": "pabst-theater-group"
-  },
-  {
-   "title": "Senior Screenings",
-   "start": "2026-12-18",
-   "end": "2026-12-19",
-   "all_day": false,
-   "url": "https://uwm.edu/arts/event/fall-senior-screenings/",
-   "where": "UWM Union Cinema",
-   "addr": "2200 E. Kenwood Blvd.",
-   "zip": "53211",
-   "summary": "Graduating seniors showcase their exceptional work with the culmination of years of hard work and artistic growth. Get a first look at what the next generation of filmmakers has in store for the…",
-   "tags": [
-    "Peck School of the Arts",
-    "Arts and Culture",
-    "Feature"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-12-19",
-   "kind": "community",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "All is Calm: The Christmas Truce of 1914",
@@ -20868,25 +17788,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Community Winter Coat, Hat & Glove Drive",
-   "start": "2026-12-18T17:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/community-winter-coat-hat-amp-glove-drive-20-09-2026-09-29-41",
-   "where": "TO BE ANNOUNCED",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee"
-  },
-  {
    "title": "Candle Making Workshop",
    "start": "2026-12-18T17:00",
    "end": "2026-12-18T21:00",
@@ -20980,27 +17881,6 @@
    "also": [
     "visit-milwaukee"
    ]
-  },
-  {
-   "title": "Ex Fabula StorySlam: Apologies",
-   "start": "2026-12-18T19:00",
-   "end": "2026-12-18T21:00",
-   "all_day": false,
-   "url": "https://uwm.edu/c21/event/ex-fabula-storyslam-apologies/",
-   "where": "Falcon Bowl",
-   "addr": "801 E Clarke St",
-   "zip": "53212",
-   "summary": "Friday, December 18 7:00 PM (Doors open at 6:30 PM) Falcon Bowl, 801 E Clarke St, Milwaukee, WI 53212 $15 advance / $20 at the door if tickets remain. C21 will provide a limited number of…",
-   "tags": [
-    "Center for 21st Century Studies",
-    "Alumni & Community",
-    "Arts and Culture"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": false,
-   "via": "org",
-   "org": "uwm"
   },
   {
    "title": "DR. SEUSS'S HOW THE GRINCH STOLE CHRISTMAS!",
@@ -21776,28 +18656,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Upper Bar Christmas Pajama Party",
-   "start": "2026-12-19T16:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/upper-bar-christmas-pajama-party-17-08-2026-12-35-10",
-   "where": "Upper Bar",
-   "addr": "",
-   "zip": "",
-   "summary": "Trade the ugly sweater for your favorite holiday pajamas and celebrate the season at Milwaukee's coziest holiday party. Slip into something festive and join us at Upper Bar for seasonal cocktails,…",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
    "title": "The Boys from Baraboo",
    "start": "2026-12-19T16:00",
    "end": "2026-12-19T16:00",
@@ -21821,6 +18679,25 @@
    "also": [
     "urban-milwaukee-calendar"
    ]
+  },
+  {
+   "title": "Upper Bar Christmas Pajama Party",
+   "start": "2026-12-19T16:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/upper-bar-christmas-pajama-party/20942/",
+   "where": "Upper Bar",
+   "addr": "111 E. Kilbourn Avenue",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Food & Drink"
+   ],
+   "free": true,
+   "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Winter Wondermaze",
@@ -22317,6 +19194,27 @@
    "tags": [
     "Art Studio",
     "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Festive Holiday Marketplace",
+   "start": "2026-12-20T10:00",
+   "end": "2026-12-20T17:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/festive-holiday-marketplace/2026-12-20/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "From festive seasonal drinks and treats to an expanded retail experience filled with unique gifts, there are even more reasons to make the Museum part of your holiday plans.",
+   "tags": [
+    "Free for Members",
+    "Free to the Public",
     "Free with Admission"
    ],
    "kind": "art",
@@ -23856,42 +20754,19 @@
    "start": "2026-12-24T16:00",
    "end": "2026-12-24T21:00",
    "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/christmas-eve-dinner-14-09-2026-16-20-59",
+   "url": "https://www.visitmilwaukee.org/event/christmas-eve-dinner/21514/",
    "where": "Milwaukee ChopHouse",
-   "addr": "",
-   "zip": "",
-   "summary": "Join us for a special three-course prix fixe dinner featuring festive seasonal flavors, elevated holiday favorites, and decadent desserts. Our regular menu will also be available, giving you the…",
+   "addr": "Hilton Milwaukee",
+   "zip": "53203",
+   "summary": "",
    "tags": [
-    "Food/Drink"
+    "Food & Drink"
    ],
+   "free": null,
    "kind": "food",
    "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-12-24T16:00",
-   "end": "2026-12-24T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-12-24/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "MKE Unplugged",
@@ -23961,22 +20836,20 @@
    "start": "2026-12-25T10:00",
    "end": "2026-12-25T15:30",
    "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/christmas-celebration-brunch-2026-14-09-2026-14-07-53",
+   "url": "https://www.visitmilwaukee.org/event/christmas-celebration-brunch-2026/21507/",
    "where": "The Pfister Hotel",
-   "addr": "",
-   "zip": "",
-   "summary": "A Pfister Christmas brunch begins with a complimentary mimosa or bloody mary in our elegantly decorated ballroom. Following cocktails is a spectacular buffet featuring a delicious assortment of fresh…",
+   "addr": "424 E. Wisconsin Avenue",
+   "zip": "53202",
+   "summary": "",
    "tags": [
-    "Food/Drink"
+    "Food & Drink",
+    "Holiday"
    ],
+   "free": false,
    "kind": "food",
    "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Holiday Tea at The Pfister",
@@ -24041,7 +20914,7 @@
   {
    "title": "The Unauthorized Hallmark(ish) Parody Musical",
    "start": "2026-12-26",
-   "end": "2026-12-30",
+   "end": "2026-12-27",
    "all_day": false,
    "url": "https://www.marcuscenter.org/event/the-unauthorized-hallmarkish-parody-musical/",
    "where": "Wilson Theater at Vogel Hall",
@@ -24050,7 +20923,7 @@
    "summary": "The Unauthorized Hallmark(ish) Parody Musical tells the story of our heroine, Holly, an overworked city executive forced to return to her quirky hometown to help her mother run the family business.…",
    "tags": [],
    "time_unknown": true,
-   "run_through": "2026-12-30",
+   "run_through": "2026-12-27",
    "kind": "theater",
    "reach": "bus",
    "free": null,
@@ -25466,26 +22339,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Latin Table: Spring Semester",
-   "start": "2026-12-31T16:00",
-   "end": "2026-12-31T17:00",
-   "all_day": false,
-   "url": "https://uwm.edu/history/event/latin-table-spring-semester/2026-12-31/",
-   "where": "Curtin Hall 866",
-   "addr": "",
-   "zip": "",
-   "summary": "Thursdays, 4:00–5:00pm Curtin Hall, Room 866 Practice spoken Latin! Everyone is welcome!",
-   "tags": [
-    "History",
-    "Classics"
-   ],
-   "kind": "talks",
-   "reach": "walk",
-   "free": null,
-   "via": "org",
-   "org": "uwm"
-  },
-  {
    "title": "Upper Bar New Year's Eve Party",
    "start": "2026-12-31T16:00",
    "end": "",
@@ -26441,7 +23294,7 @@
    "start": "2027-01-07T19:00",
    "end": "",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-clippers/22265/",
+   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-clippers/22264/",
    "where": "Fiserv Forum",
    "addr": "Fiserv Forum",
    "zip": "53203",
@@ -26850,6 +23703,66 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Monday Book Night",
+   "start": "2027-01-11T16:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/monday-book-night/17052/",
+   "where": "Pomeroy",
+   "addr": "723 S. 2nd Street",
+   "zip": "53204",
+   "summary": "Recurring weekly on Monday",
+   "tags": [
+    "Film & Literature",
+    "Arts & Culture",
+    "Community"
+   ],
+   "free": true,
+   "kind": "community",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Visible Mending",
+   "start": "2027-01-11T17:30",
+   "end": "2027-01-11T19:00",
+   "all_day": false,
+   "url": "https://mpl.libnet.info/event/17510239",
+   "where": "Milwaukee Public Library East Branch",
+   "addr": "2320 N Cramer St",
+   "zip": "53211",
+   "summary": "Learn simple and effective visible mending techniques to bring your beloved clothes back to new life.",
+   "tags": [
+    "Sustainability, Green, & Environmental",
+    "Crafts, Games, & Play"
+   ],
+   "free": true,
+   "kind": "talks",
+   "reach": "walk",
+   "via": "org",
+   "org": "mpl"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2027-01-11T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -26876,36 +23789,30 @@
    "url": "https://mkefilm.org/news/october-witches-4k-restorations-and-more/",
    "published": "2026-10-05T17:54:04+00:00",
    "org": "milwaukee-film"
-  },
-  {
-   "title": "October Programmer for a Day: Marie Gribbin",
-   "url": "https://mkefilm.org/news/october-programmer-for-a-day-marie-gribbin/",
-   "published": "2026-09-28T09:05:00+00:00",
-   "org": "milwaukee-film"
   }
  ],
  "counts": {
   "kinds": {
-   "music": 284,
-   "theater": 152,
-   "comedy": 43,
-   "film": 6,
-   "art": 120,
-   "talks": 145,
-   "books": 24,
-   "markets": 18,
-   "outdoors": 61,
-   "food": 150,
-   "sports": 61,
-   "family": 42,
-   "community": 195
+   "music": 266,
+   "theater": 154,
+   "comedy": 42,
+   "film": 0,
+   "art": 100,
+   "talks": 103,
+   "books": 23,
+   "markets": 19,
+   "outdoors": 60,
+   "food": 143,
+   "sports": 57,
+   "family": 40,
+   "community": 152
   },
   "reach": {
-   "walk": 266,
-   "bus": 733,
-   "car": 234,
+   "walk": 130,
+   "bus": 730,
+   "car": 232,
    "unknown": 62
   },
-  "free": 306
+  "free": 303
  }
 }
