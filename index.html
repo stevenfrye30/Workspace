@@ -91,71 +91,43 @@
     /* Compact the shared header so the page fits one screen */
     .atlas-nav { padding: 0.4rem var(--pad-x); }
 
-    /* ── The nine main cards — 3×3 grid ─────────────────────────── */
+    /* ── The doorways — one uniform grid, four across ───────────── */
+    /* 2026-11-16 — the old two-tier layout (2-up big plates + a
+       5-across small row) is retired: every door is the same size,
+       in one grid, four columns on a desk. */
 
     .doorways {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      column-gap: 1.25rem;
-      row-gap: 0.55rem;
+      grid-template-columns: repeat(4, 1fr);
+      column-gap: 1.1rem;
+      row-gap: 1rem;
       margin: 0 0 0.55rem 0;
       padding: 0.25rem 0;
       border-top: 1px solid var(--accent-deep);
       border-bottom: 1px solid var(--accent-deep);
     }
 
-    /* Task 52 — the three tiers share one card grammar */
-    .doorways.main { border-bottom: none; }
     /* Task 71b — the plates center: eyebrow, title, description,
        and sub-pills; the corner icon motif stays put. */
     .doorway { text-align: center; }
     .doorway-desc { margin-left: auto; margin-right: auto; }
     .doorway-subs { justify-content: center; }
-    /* Task 71 — the four mains step up: two-by-two, larger plates,
-       a deeper wash of each plate's own tint (the --w family — no
-       palette break, no emoji; the workspace keeps its look). */
-    .doorways.main { grid-template-columns: repeat(2, 1fr); row-gap: 1rem; }
-    .doorways.main .doorway {
-      min-height: 8.6rem;
-      padding: 0.9rem 1.15rem;
-      background: linear-gradient(
-        155deg,
-        color-mix(in srgb, var(--wash) 17%, var(--bg)) 0%,
-        color-mix(in srgb, var(--wash) 8%, var(--bg)) 58%,
-        color-mix(in srgb, var(--wash) 13%, var(--bg)) 100%
-      );
-      border-color: color-mix(in srgb, var(--w) 34%, transparent);
-    }
-    .doorways.main .doorway-name { font-size: 1.5rem; }
-    .doorways.main .doorway-desc { font-size: 0.8rem; }
-    .doorways.main .doorway-icon { width: 26px; height: 26px; }
-    .doorways.main .doorway-kind { font-size: 0.72rem; }
-    /* Task 71 — one small row beneath the mains (five since Business
-       joined, 2026-08-31) */
-    .doorways.small { grid-template-columns: repeat(5, 1fr); }
-    .doorways.regular { border-top: none; border-bottom: none; }
-    .doorways.regular .doorway { min-height: 5.2rem; }
-    .doorways.regular .doorway-name { font-size: 1.12rem; }
-    .doorways.small { border-top: none; }
-    .doorways.small .doorway { min-height: 0; padding: 0.45rem 0.8rem; }
-    .doorways.small .doorway-name { font-size: 1rem; }
-    .doorways.small .doorway-desc { font-size: 0.68rem; }
 
     .doorway {
       --wash: var(--w);   /* the plate's tint; a card may override it inline */
       position: relative;
       display: flex;
       flex-direction: column;
-      min-height: 6.2rem;
-      padding: 0.5rem 0.85rem;
+      min-height: 7.6rem;
+      padding: 0.85rem 1rem;
       background:
         linear-gradient(
           155deg,
-          color-mix(in srgb, var(--wash) 11%, var(--bg)) 0%,
-          color-mix(in srgb, var(--wash) 6%, var(--bg)) 60%,
-          color-mix(in srgb, var(--wash) 9%, var(--bg)) 100%
+          color-mix(in srgb, var(--wash) 15%, var(--bg)) 0%,
+          color-mix(in srgb, var(--wash) 7%, var(--bg)) 58%,
+          color-mix(in srgb, var(--wash) 11%, var(--bg)) 100%
         );
-      border: 1px solid color-mix(in srgb, var(--w) 22%, transparent);
+      border: 1px solid color-mix(in srgb, var(--w) 30%, transparent);
       border-radius: 2px;
       box-shadow:
         inset 0 1px 0 rgba(255, 252, 240, 0.6),
@@ -424,15 +396,14 @@
       /* Stacked layouts top-align and scroll naturally instead of
          vertically centering (avoids clipping when taller than viewport). */
       .atlas-main { justify-content: flex-start; padding-top: 0.9rem; }
-      /* 2026-09-14 — the tablet/phone column counts are written with
-         two classes so they outrank the desktop .doorways.main /
-         .doorways.small rules (which otherwise won the cascade and held
-         five columns on a phone: the sideways scroll). minmax(0, 1fr)
-         lets a card shrink below its longest word instead of forcing
-         the grid wide. */
-      .doorways { column-gap: 1rem; row-gap: 1rem; }
-      .doorways.main  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .doorways.small { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      /* minmax(0, 1fr) lets a card shrink below its longest word
+         instead of forcing the grid wide (the old sideways-scroll
+         trap on a phone). */
+      .doorways {
+        column-gap: 1rem;
+        row-gap: 1rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
       .doorway-name { font-size: 1.4rem; }
       .doorway-icon-wrap { width: 32px; height: 32px; }
       .doorway-icon { width: 20px; height: 20px; }
@@ -440,8 +411,7 @@
 
     @media (max-width: 600px) {
       .atlas-main { padding-top: 1rem; }
-      .doorways.main,
-      .doorways.small {
+      .doorways {
         grid-template-columns: minmax(0, 1fr);
         row-gap: 0.85rem;
       }
@@ -462,12 +432,12 @@
 
   <main class="atlas-main">
 
-    <!-- 2026-09-14 — the doors run in one fixed order: top to bottom on a
-         phone, and row by row on a desk. Digital Archive, Pantheons,
-         Mirror, Sound are the four plates; Milwaukee, Science & Math,
-         Images, Business, Games the small row. The tints follow the same
-         order: red, orange, yellow, green, blue, purple, then gray. -->
-    <nav class="doorways main" aria-label="Main doorways">
+    <!-- 2026-11-16 — one uniform grid, four doors per row on a desk,
+         stacking narrower on tablet/phone. Fixed order: Digital Archive,
+         Pantheons, Mirror, Sound Map, Milwaukee, Science & Math, Images,
+         Business, Games, Earth, Masri. Tints still run red, orange,
+         yellow, green, blue, purple, then gray. -->
+    <nav class="doorways" aria-label="Doorways">
 
       <!-- 1 · Digital Archive — red -->
       <div class="doorway" style="--w: var(--w-archive);">
@@ -540,11 +510,6 @@
       <!-- Task 52: the Philosophy card RETIRED — the project lives on
            the archive's Philosophy shelf; its doorway is the archive
            entrance. philosophy/ stays on disk (nothing deleted). -->
-    </nav>
-
-    <!-- Task 71: the regular tier retired — four plates + one small row -->
-
-    <nav class="doorways small" aria-label="Small entrances">
 
       <!-- 5 · Milwaukee — blue. The current-events desk (2026-09-13):
            milwaukee/ with data/*.json refreshed daily by an Action.
