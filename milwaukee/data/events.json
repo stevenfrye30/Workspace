@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-19T19:35:13+00:00",
+ "generated_at": "2026-11-20T19:10:12+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
@@ -13,37 +13,37 @@
   "boswell": {
    "status": "ok",
    "count": 10,
-   "raw": 20,
-   "as_of": "2026-11-19"
+   "raw": 19,
+   "as_of": "2026-11-20"
   },
   "urban-ecology-center": {
    "status": "ok",
-   "count": 25,
-   "raw": 25,
-   "as_of": "2026-11-19"
+   "count": 19,
+   "raw": 19,
+   "as_of": "2026-11-20"
   },
   "mpl": {
    "status": "ok",
-   "count": 46,
-   "raw": 46,
-   "as_of": "2026-11-19"
+   "count": 43,
+   "raw": 43,
+   "as_of": "2026-11-20"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 3,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "mam": {
    "status": "ok",
    "count": 80,
-   "raw": 95,
-   "as_of": "2026-11-19"
+   "raw": 92,
+   "as_of": "2026-11-20"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 3,
    "raw": 4,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "turners": {
    "status": "link"
@@ -52,7 +52,7 @@
    "status": "ok",
    "count": 27,
    "raw": 27,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -60,37 +60,37 @@
   "makerspace": {
    "status": "ok",
    "posts": 0,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 42,
-   "raw": 45,
-   "as_of": "2026-11-19"
+   "count": 39,
+   "raw": 42,
+   "as_of": "2026-11-20"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
-   "count": 191,
-   "raw": 191,
-   "as_of": "2026-11-19"
+   "count": 190,
+   "raw": 190,
+   "as_of": "2026-11-20"
   },
   "marcus-center": {
    "status": "ok",
    "count": 10,
    "raw": 10,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "admirals": {
    "status": "ok",
    "count": 1,
    "raw": 8,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "brewers": {
    "status": "ok",
    "count": 0,
    "raw": 0,
-   "as_of": "2026-11-19"
+   "as_of": "2026-11-20"
   },
   "eventbrite": {
    "status": "error",
@@ -99,786 +99,23 @@
   "pabst-theater-group": {
    "status": "stale",
    "error": "HTTPError: HTTP Error 406: Not Acceptable",
-   "count": 16,
+   "count": 12,
    "as_of": "2026-11-16"
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 751,
-   "raw": 757,
-   "as_of": "2026-11-19"
+   "count": 741,
+   "raw": 747,
+   "as_of": "2026-11-20"
   },
   "fiserv-forum": {
    "status": "stale",
    "error": "HTTPError: HTTP Error 406: Not Acceptable",
-   "count": 18,
+   "count": 17,
    "as_of": "2026-11-16"
   }
  },
  "events": [
-  {
-   "title": "Ty Landers, author of Baby Queen, in conversation with Tim Hennessy",
-   "start": "2026-11-19",
-   "end": "",
-   "all_day": true,
-   "url": "https://boswellbooks.com/event/2026-11-19/landers-baby-queen",
-   "where": "",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "time_unknown": true,
-   "free": null,
-   "kind": "books",
-   "reach": "walk",
-   "via": "org",
-   "org": "boswell"
-  },
-  {
-   "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
-   "start": "2026-11-19",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival-presented-by-johnson-financial-group/21953/",
-   "where": "",
-   "addr": "",
-   "zip": "53202",
-   "summary": "Recurring daily",
-   "tags": [
-    "Festival",
-    "Community",
-    "Family Friendly"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Holiday Lights Festival",
-   "start": "2026-11-19",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival/21795/",
-   "where": "Downtown Milwaukee",
-   "addr": "301 W. Wisconsin Avenue",
-   "zip": "53202",
-   "summary": "Recurring daily",
-   "tags": [
-    "Festival",
-    "Family Friendly",
-    "Free"
-   ],
-   "time_unknown": true,
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Birding at Riverside Park",
-   "start": "2026-11-19T08:00",
-   "end": "2026-11-19T10:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4181",
-   "where": "Urban Ecology Center, Riverside Park",
-   "addr": "1500 E Park Pl",
-   "zip": "53211",
-   "summary": "Kick-start your day with fresh air and bird song. Join bird watchers of all ability levels and explore the park with us. Meet in front of the Menomonee Valley building. You may receive marketing…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "walk",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Confessions of a Stand-Up",
-   "start": "2026-11-19T08:00",
-   "end": "2026-11-19T09:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/confessions-of-a-stand-up/22680/",
-   "where": "Interchange Theatre",
-   "addr": "628 N 10th St",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Comedy & Improv"
-   ],
-   "free": false,
-   "kind": "comedy",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Menomonee Valley ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-11-19T09:00",
-   "end": "2026-11-19T11:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4246",
-   "where": "UEC Menomonee Valley",
-   "addr": "3700 W Pierce St",
-   "zip": "53215",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Festive Holiday Marketplace",
-   "start": "2026-11-19T10:00",
-   "end": "2026-11-19T20:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/festive-holiday-marketplace/2026-11-19/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "From festive seasonal drinks and treats to an expanded retail experience filled with unique gifts, there are even more reasons to make the Museum part of your holiday plans.",
-   "tags": [
-    "Free for Members",
-    "Free to the Public",
-    "Free with Admission"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Covering Wisconsin: Get your Insurance Questions Answered",
-   "start": "2026-11-19T10:00",
-   "end": "2026-11-19T12:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17649684",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Get your Medicare and Healthcare.gov questions answered.",
-   "tags": [
-    "Community Event/Info Booth"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "TOSA Locally Made Holiday Pop-Up",
-   "start": "2026-11-19T10:00",
-   "end": "2026-11-19T15:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/tosa-locally-made-holiday-pop-up/22741/",
-   "where": "The Landing at Hoyt Park Beer Garden",
-   "addr": "1800 N. Swan Boulevard",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Fairs & Markets",
-    "Holiday Markets",
-    "Beer Gardens"
-   ],
-   "free": true,
-   "kind": "markets",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Gallery Talk: “The Shakers”",
-   "start": "2026-11-19T12:00",
-   "end": "2026-11-19T13:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/gallery-talk-the-shakers/2026-11-19/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "Join Shoshana Resnikoff for a one-hour exploration of themes and topics.",
-   "tags": [
-    "Baker/Rowland Galleries",
-    "Drop-In Tours",
-    "Free for Members"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "12-Year Grappa Spirit Release",
-   "start": "2026-11-19T12:00",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/12-year-grappa-spirit-release/22502/",
-   "where": "Great Lakes Distillery, LLC",
-   "addr": "616 W. Virginia Street",
-   "zip": "53204",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Nightlife",
-    "Free"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Riverside Park ROOT (Restoring Our Outdoors Together)",
-   "start": "2026-11-19T13:30",
-   "end": "2026-11-19T15:30",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4257",
-   "where": "Urban Ecology Center, Riverside Park",
-   "addr": "1500 E Park Pl",
-   "zip": "53211",
-   "summary": "Join us to improve the biodiversity and ecological integrity of the natural areas we manage! Activities include invasive species removal, trail work, planting, etc. You may receive marketing emails…",
-   "tags": [
-    "Volunteer Opportunities"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "walk",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Medicare Part D Prescription Coverage",
-   "start": "2026-11-19T14:00",
-   "end": "2026-11-19T15:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/16440088",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "Join us to learn more about how Part D covers your drugs and the payment structure.",
-   "tags": [
-    "Health & Wellness",
-    "Money Management/Financial Literacy"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Art & Technology Exhibition: Charging",
-   "start": "2026-11-19T14:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/art-%26-technology-exhibition%3a-charging/22294/",
-   "where": "Kenilworth Square East Gallery",
-   "addr": "1925 East Kenilworth Pl",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Arts & Culture"
-   ],
-   "run_through": "2026-11-21",
-   "free": true,
-   "kind": "art",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Thursday Nights at MAM",
-   "start": "2026-11-19T16:00",
-   "end": "2026-11-19T20:00",
-   "all_day": false,
-   "url": "https://mam.org/events/event/thursday-nights-at-mam/2026-11-19/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "Every Thursday night, meet up with friends for an artful evening together!",
-   "tags": [
-    "Free for Members",
-    "In-Person",
-    "Pay-What-You-Wish Admission"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "DIY Air Cleaner Workshop",
-   "start": "2026-11-19T16:00",
-   "end": "2026-11-19T18:00",
-   "all_day": false,
-   "url": "https://mpl.libnet.info/event/17349808",
-   "where": "Milwaukee Public Library Central Library",
-   "addr": "814 W Wisconsin Ave",
-   "zip": "53233",
-   "summary": "What's in the air you're breathing? Build your own DIY air cleaner to clean the air in your home in this workshop led by MKE Fresh Air Collective.",
-   "tags": [
-    "Health & Wellness",
-    "with MKE Fresh Air Collective"
-   ],
-   "free": true,
-   "kind": "talks",
-   "reach": "bus",
-   "via": "org",
-   "org": "mpl"
-  },
-  {
-   "title": "Friends & Families Game Night",
-   "start": "2026-11-19T16:00",
-   "end": "2026-11-19T18:00",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4338",
-   "where": "UEC Washington Park",
-   "addr": "1859 N 40th St",
-   "zip": "53208",
-   "summary": "Calling everyone for an unforgettable evening of laughter and friendly competition at Washington Park! Bring your favorite board games or choose from our selection. Come for popcorn and more! Any…",
-   "tags": [
-    "Classes and Workshops",
-    "After School and Kids Days Off"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Game Night/Noche de Juegos",
-   "start": "2026-11-19T16:30",
-   "end": "2026-11-19T17:30",
-   "all_day": false,
-   "url": "https://www.urbanecologycenter.org/calendar/event?id=4373",
-   "where": "UEC Menomonee Valley",
-   "addr": "3700 W Pierce St",
-   "zip": "53215",
-   "summary": "Come gather with community as we play games, craft, and sip tea together. Play a game you know, or learn a new one such as the traditional Mexican game of Lotería. Whether you've never played or are…",
-   "tags": [
-    "Community Events and Festivals"
-   ],
-   "free": true,
-   "kind": "community",
-   "reach": "car",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Campfire Cooking",
-   "start": "2026-11-19T17:00",
-   "end": "2026-11-19T18:30",
-   "all_day": false,
-   "url": "https://30781a.blackbaudhosting.com/30781a/Campfire-Cooking-19Nov2026",
-   "where": "Urban Ecology Center, Riverside Park",
-   "addr": "1500 E Park Pl",
-   "zip": "53211",
-   "summary": "Prepare a simple meal and sweet dessert while learning outdoor cooking basics. Bring reusable dishes, utensils, and water bottles. Camp chairs welcome. We can’t wait to cook together!",
-   "tags": [
-    "Family Programs"
-   ],
-   "free": false,
-   "kind": "family",
-   "reach": "walk",
-   "via": "org",
-   "org": "urban-ecology-center"
-  },
-  {
-   "title": "Beaujolais Celebration Tasting",
-   "start": "2026-11-19T17:00",
-   "end": "2026-11-19T19:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/beaujolais-celebration-tasting/22449/",
-   "where": "Waterford Wine & Spirits - Delafield",
-   "addr": "2120 N. Farwell Ave",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Food & Drink"
-   ],
-   "free": null,
-   "kind": "food",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Fall & Winter Holiday Wine Event",
-   "start": "2026-11-19T17:00",
-   "end": "2026-11-19T19:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/fall-%26-winter-holiday-wine-event/22094/",
-   "where": "Glorioso's Italian Market",
-   "addr": "1011 E. Brady Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Community"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "25th Silver Jubilee Leadership Event",
-   "start": "2026-11-19T17:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/25th-silver-jubilee-leadership-event/21002/",
-   "where": "The Wisconsin Club",
-   "addr": "900 W. Wisconsin Avenue",
-   "zip": "53233",
-   "summary": "",
-   "tags": [
-    "Fundraisers"
-   ],
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Wisconsin LGBT Chamber of Commerce's 2026 Business Awards",
-   "start": "2026-11-19T17:30",
-   "end": "2026-11-19T19:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/wisconsin-lgbt-chamber-of-commerces-2026-business-awards/21538/",
-   "where": "Schlitz Audubon Nature Center",
-   "addr": "1111 E. Brown Deer Road",
-   "zip": "53217",
-   "summary": "",
-   "tags": [
-    "Mixers & Happy Hours"
-   ],
-   "free": false,
-   "kind": "outdoors",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "StoryStarter: For the Culture Workshop",
-   "start": "2026-11-19T17:45",
-   "end": "2026-11-19T18:45",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/storystarter-for-the-culture-workshop/",
-   "where": "Radio Milwaukee",
-   "addr": "220 E. Pittsburgh Ave",
-   "zip": "53204",
-   "summary": "New to storytelling? Or in need of a refresh on the basics? Want to practice a story to tell at our StorySlam? This interactive workshop is for you!",
-   "tags": [
-    "Class"
-   ],
-   "kind": "talks",
-   "reach": "bus",
-   "free": true,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "MKE History Trivia @ Three Lions Pub",
-   "start": "2026-11-19T18:00",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/mke-history-trivia-%40-three-lions-pub/20174/",
-   "where": "Three Lions Pub",
-   "addr": "4515 N Oakland Ave.",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Nightlife",
-    "Community"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Holiday Lights Festival Kickoff Extravaganza",
-   "start": "2026-11-19T18:30",
-   "end": "2026-11-19T19:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival-kickoff-extravaganza/21952/",
-   "where": "Pere Marquette Park",
-   "addr": "900 N. Plankinton Avenue",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Festival",
-    "Community",
-    "Family Friendly"
-   ],
-   "free": true,
-   "kind": "outdoors",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Spelling Bee Showdown",
-   "start": "2026-11-19T18:30",
-   "end": "2026-11-19T20:30",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/spelling-bee-showdown/19064/",
-   "where": "Lakefront Brewery, Inc.",
-   "addr": "1872 N. Commerce Street",
-   "zip": "53212",
-   "summary": "",
-   "tags": [
-    "Food & Drink",
-    "Nightlife",
-    "Film & Literature"
-   ],
-   "free": true,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2026-11-19T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
-   "title": "Craig Finn & The Band of Forgiveness",
-   "start": "2026-11-19T19:00",
-   "end": "2026-11-19T22:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/88nine-presents-craig-finn-the-band-of-forgiveness-19-06-2026-14-42-58",
-   "where": "Vivarium",
-   "addr": "",
-   "zip": "",
-   "summary": "Presented by 88Nine. Craig Finn is a Minnesota-bred singer/songwriter based in New York City, best known as the singer of The Hold Steady. Finn spent the ’90's leading Minneapolis indie band Lifter…",
-   "tags": [
-    "Milwaukee Concerts"
-   ],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Adult Comedy & Magic Show",
-   "start": "2026-11-19T19:00",
-   "end": "2026-11-19T20:30",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/adult-comedy-amp-magic-show-03-11-2026-13-55-22",
-   "where": "The Laughing Tap",
-   "addr": "",
-   "zip": "",
-   "summary": "Live Adult Comedy and Magic Show presented by The Laughing Tap and Two Brothers One Mind! This unique night out will bring you the best in stand up comedy along side some of the top magicians in the…",
-   "tags": [
-    "Milwaukee Festivals"
-   ],
-   "kind": "comedy",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "urban-milwaukee-calendar",
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "AfterDark: For the Culture – A Night Celebrating Black and Brown Voices",
-   "start": "2026-11-19T19:00",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/afterdark-for-the-culture-a-night-celebrating-black-and-brown-voices/",
-   "where": "Radio Milwaukee",
-   "addr": "220 E. Pittsburgh Ave",
-   "zip": "53204",
-   "summary": "A non-competitive evening of live spoken word, poetry, and storytelling celebrates Black and Brown voices and brings together a blend of curated speakers with storytellers drawn from the audience.",
-   "tags": [],
-   "kind": "books",
-   "reach": "bus",
-   "free": true,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Beer Geek Library Society",
-   "start": "2026-11-19T19:00",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/beer-geek-library-society/22125/",
-   "where": "The Explorium Brewpub Southridge",
-   "addr": "5300 S. 76th Street",
-   "zip": "53129",
-   "summary": "",
-   "tags": [
-    "Classes & Workshops",
-    "Food & Drink",
-    "Breweries"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "car",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Bucks vs Portland Trailblazers",
-   "start": "2026-11-19T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bucks-vs-portland-trailblazers/22253/",
-   "where": "Milwaukee Bucks",
-   "addr": "Fiserv Forum",
-   "zip": "53203",
-   "summary": "",
-   "tags": [
-    "Nightlife",
-    "Spectator Sports",
-    "Family Friendly"
-   ],
-   "free": null,
-   "kind": "sports",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "LOUNJ ACTS",
-   "start": "2026-11-19T19:00",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/lounj-acts/22495/",
-   "where": "The Wicked Hop and Jackalope Lounj",
-   "addr": "345 N. Broadway",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "MKE Unplugged",
-   "start": "2026-11-19T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
-   "where": "Shank Hall",
-   "addr": "1434 N. Farwell Avenue",
-   "zip": "",
-   "summary": "Recurring daily",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "New Dancemakers",
-   "start": "2026-11-19T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/new-dancemakers/21864/",
-   "where": "UWM",
-   "addr": "3203 N Downer Ave",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater"
-   ],
-   "run_through": "2026-11-20",
-   "free": false,
-   "kind": "theater",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Gold Standard",
-   "start": "2026-11-19T19:00",
-   "end": "2026-11-19T22:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/the-gold-standard/21678/",
-   "where": "Nashville North",
-   "addr": "1216 E. Brady Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": true,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "UWM Steel PANthers Steel Band & Community World Music Ensemble",
-   "start": "2026-11-19T19:30",
-   "end": "2026-11-19T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/uwm-steel-panthers-steel-band-%26-community-world-music-ensemble/22242/",
-   "where": "UW-Milwaukee Peck School of the Arts",
-   "addr": "2155 N. Prospect Ave",
-   "zip": "53211",
-   "summary": "",
-   "tags": [
-    "Arts & Culture"
-   ],
-   "free": null,
-   "kind": "music",
-   "reach": "walk",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
   {
    "title": "Dane Erbach, author of Meat Bees",
    "start": "2026-11-20",
@@ -2627,6 +1864,29 @@
    "org": "radio-milwaukee"
   },
   {
+   "title": "Deer District Holiday Market",
+   "start": "2026-11-22",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Michigander",
    "start": "2026-11-22",
    "end": "",
@@ -2974,7 +2234,7 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Wild Lights",
+   "title": "Wild Lights Drive Thru",
    "start": "2026-11-22T17:00",
    "end": "2026-11-22T21:00",
    "all_day": false,
@@ -2982,32 +2242,16 @@
    "where": "Milwaukee County Zoo",
    "addr": "10005 W. Blue Mound Rd.",
    "zip": "53226",
-   "summary": "Experience the magic of the Zoo after dark, walking through hundreds of thousands of sparkling lights throughout the forest and pathways.",
+   "summary": "Enjoy Wild Lights from the comfort of your car!",
    "tags": [],
    "kind": "outdoors",
    "reach": "car",
-   "free": null,
-   "via": "source",
-   "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Wild Lights Drive Thru",
-   "start": "2026-11-22T17:00",
-   "end": "2026-11-22T21:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/wild-lights-drive-thru/22211/",
-   "where": "Milwaukee County Zoo",
-   "addr": "10001 W. Bluemound Road",
-   "zip": "53226",
-   "summary": "",
-   "tags": [
-    "Family Friendly"
-   ],
    "free": false,
-   "kind": "outdoors",
-   "reach": "car",
    "via": "source",
-   "src": "visit-milwaukee"
+   "src": "urban-milwaukee-calendar",
+   "also": [
+    "visit-milwaukee"
+   ]
   },
   {
    "title": "Slovenian Wine Dinner",
@@ -3496,6 +2740,29 @@
    "free": false,
    "kind": "music",
    "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Deer District Holiday Market",
+   "start": "2026-11-25",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -4057,6 +3324,29 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Deer District Holiday Market",
+   "start": "2026-11-27",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
    "start": "2026-11-27",
    "end": "",
@@ -4600,6 +3890,29 @@
    "time_unknown": true,
    "free": null,
    "kind": "music",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Deer District Holiday Market",
+   "start": "2026-11-28",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
@@ -5274,6 +4587,29 @@
    "org": "mpl"
   },
   {
+   "title": "Deer District Holiday Market",
+   "start": "2026-11-29",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
    "start": "2026-11-29",
    "end": "",
@@ -5594,10 +4930,10 @@
    "start": "2026-11-29T16:00",
    "end": "",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/firkins-%40-four%3a-small-brewery-sunday/22676/",
-   "where": "The Explorium Brewpub Wauwatosa",
-   "addr": "11200 W. Burleigh Street",
-   "zip": "53222",
+   "url": "https://www.visitmilwaukee.org/event/firkins-%40-four%3a-small-brewery-sunday/22674/",
+   "where": "The Explorium Brewpub Southridge",
+   "addr": "5300 S. 76th Street",
+   "zip": "53129",
    "summary": "",
    "tags": [
     "Food & Drink",
@@ -5704,6 +5040,29 @@
    "reach": "walk",
    "via": "org",
    "org": "boswell"
+  },
+  {
+   "title": "Deer District Holiday Market",
+   "start": "2026-11-30",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -5924,6 +5283,29 @@
    "org": "boswell"
   },
   {
+   "title": "Deer District Holiday Market",
+   "start": "2026-12-01",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
    "start": "2026-12-01",
    "end": "",
@@ -6082,6 +5464,29 @@
    "free": true,
    "kind": "community",
    "reach": "walk",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Deer District Holiday Market",
+   "start": "2026-12-02",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -6504,6 +5909,29 @@
    "org": "boswell"
   },
   {
+   "title": "Deer District Holiday Market",
+   "start": "2026-12-03",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "MIAD Holiday Sale",
    "start": "2026-12-03",
    "end": "",
@@ -6836,7 +6264,10 @@
    "reach": "bus",
    "free": false,
    "via": "org",
-   "org": "radio-milwaukee"
+   "org": "radio-milwaukee",
+   "also": [
+    "urban-milwaukee-calendar"
+   ]
   },
   {
    "title": "Blonde Johnny LIVE",
@@ -7077,6 +6508,29 @@
    "also": [
     "urban-milwaukee-calendar"
    ]
+  },
+  {
+   "title": "Deer District Holiday Market",
+   "start": "2026-12-04",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   },
   {
    "title": "MIAD Holiday Sale",
@@ -7660,6 +7114,29 @@
    ],
    "free": true,
    "kind": "food",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Deer District Holiday Market",
+   "start": "2026-12-05",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "run_through": "2026-12-06",
+   "free": true,
+   "kind": "markets",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
@@ -8952,6 +8429,28 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Deer District Holiday Market",
+   "start": "2026-12-06",
+   "end": "",
+   "all_day": true,
+   "url": "https://www.visitmilwaukee.org/event/deer-district-holiday-market/22768/",
+   "where": "Deer District",
+   "addr": "1134 Vel R. Phillips Avenue",
+   "zip": "53203",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Holiday Markets",
+    "Arts & Culture"
+   ],
+   "time_unknown": true,
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
    "title": "Harry Potter and the Chamber of Secrets™ in Concert",
    "start": "2026-12-06",
    "end": "",
@@ -9874,10 +9373,12 @@
    "zip": "53203",
    "summary": "",
    "tags": [
-    "Fundraisers"
+    "LIVE Music",
+    "Nightlife",
+    "Holiday"
    ],
    "free": true,
-   "kind": "community",
+   "kind": "music",
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
@@ -10695,16 +10196,17 @@
    "start": "2026-12-10T17:30",
    "end": "2026-12-10T21:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22435/",
+   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22213/",
    "where": "Milwaukee County Zoo",
    "addr": "10001 W. Bluemound Rd.",
    "zip": "53226",
    "summary": "",
    "tags": [
-    "Holiday",
+    "Community",
+    "Family Friendly",
     "Museums & Attractions"
    ],
-   "free": null,
+   "free": false,
    "kind": "outdoors",
    "reach": "car",
    "via": "source",
@@ -11228,6 +10730,7 @@
    "via": "org",
    "org": "mam",
    "also": [
+    "urban-milwaukee-calendar",
     "visit-milwaukee"
    ]
   },
@@ -11324,10 +10827,7 @@
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "pabst-theater-group"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "EVERYBODY",
@@ -12100,10 +11600,7 @@
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "pabst-theater-group"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "Milwaukee Men's Basketball vs. UIC",
@@ -13241,10 +12738,7 @@
    "reach": "bus",
    "free": false,
    "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "pabst-theater-group"
-   ]
+   "src": "urban-milwaukee-calendar"
   },
   {
    "title": "The Boys from Baraboo",
@@ -15469,7 +14963,7 @@
    "start": "2026-12-19",
    "end": "",
    "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/lil-mo-mozzarella/19081/",
+   "url": "https://www.visitmilwaukee.org/event/lil-mo-mozzarella/18844/",
    "where": "Vivarium",
    "addr": "1818 N. Farwell Avenue",
    "zip": "53202",
@@ -16678,28 +16172,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Vegan Holiday Pop-Up",
-   "start": "2026-12-20T12:00",
-   "end": "2026-12-20T16:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/milwaukee-vegan-holiday-pop-up-29-09-2026-16-22-14",
-   "where": "Beulah Brinton Community Center",
-   "addr": "",
-   "zip": "",
-   "summary": "The Milwaukee Vegan Holiday Pop-Up is happening on Sunday, December 20, 2026, at the Beulah Brinton Community Center! 🎁❄️ We’re excited to be back at Beulah Brinton for our second year! Please join…",
-   "tags": [
-    "Milwaukee Festivals"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
    "title": "Book Swap at Dead Bird Brewing Co.",
    "start": "2026-12-20T12:00",
    "end": "2026-12-20T15:00",
@@ -16713,6 +16185,27 @@
     "Film & Literature",
     "Breweries",
     "Community"
+   ],
+   "free": true,
+   "kind": "markets",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "Milwaukee Vegan Holiday Pop-Up",
+   "start": "2026-12-20T12:00",
+   "end": "2026-12-20T16:00",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/milwaukee-vegan-holiday-pop-up/21762/",
+   "where": "Beulah Brinton Community Center",
+   "addr": "2555 S. Bay Street",
+   "zip": "53207",
+   "summary": "",
+   "tags": [
+    "Fairs & Markets",
+    "Festival",
+    "Holiday Markets"
    ],
    "free": true,
    "kind": "markets",
@@ -20031,6 +19524,27 @@
    "org": "mam"
   },
   {
+   "title": "Drop-In Art Making: Meet Studio Artist Isa Castro",
+   "start": "2026-12-30T11:00",
+   "end": "2026-12-30T15:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-isa-castro-winter-break/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
    "title": "Holiday Tea at The Pfister",
    "start": "2026-12-30T11:00",
    "end": "",
@@ -20227,6 +19741,48 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Festive Holiday Marketplace",
+   "start": "2026-12-31T10:00",
+   "end": "2026-12-31T20:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/festive-holiday-marketplace/2026-12-31/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "From festive seasonal drinks and treats to an expanded retail experience filled with unique gifts, there are even more reasons to make the Museum part of your holiday plans.",
+   "tags": [
+    "Free for Members",
+    "Free to the Public",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
+  },
+  {
+   "title": "Drop-In Art Making: Mariposas",
+   "start": "2026-12-31T11:00",
+   "end": "2026-12-31T15:00",
+   "all_day": false,
+   "url": "https://mam.org/events/event/drop-in-art-making-mariposas-winter-break/2026-12-31/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
+   "reach": "bus",
+   "free": null,
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "Holiday Tea at The Pfister",
@@ -22623,6 +22179,62 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "Jessie Garcia, author of Bad Honeymoon",
+   "start": "2027-01-19",
+   "end": "",
+   "all_day": true,
+   "url": "https://boswellbooks.com/event/2027-01-19/garcia-bad-honeymoon",
+   "where": "",
+   "addr": "",
+   "zip": "",
+   "summary": "",
+   "tags": [],
+   "time_unknown": true,
+   "free": null,
+   "kind": "books",
+   "reach": "walk",
+   "via": "org",
+   "org": "boswell"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2027-01-19T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
+  },
+  {
+   "title": "MKE MVP - Milwaukee",
+   "start": "2027-01-19T19:30",
+   "end": "2027-01-19T21:30",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-mvp-milwaukee/21685/",
+   "where": "Milwaukee Repertory Theater",
+   "addr": "108 E. Wells Street",
+   "zip": "53202",
+   "summary": "",
+   "tags": [
+    "Performing Arts & Theater"
+   ],
+   "free": null,
+   "kind": "theater",
+   "reach": "bus",
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -22647,26 +22259,26 @@
  ],
  "counts": {
   "kinds": {
-   "music": 229,
+   "music": 226,
    "theater": 163,
-   "comedy": 37,
+   "comedy": 35,
    "film": 0,
-   "art": 91,
-   "talks": 89,
-   "books": 18,
-   "markets": 13,
-   "outdoors": 70,
-   "food": 146,
-   "sports": 66,
-   "family": 39,
-   "community": 148
+   "art": 90,
+   "talks": 85,
+   "books": 17,
+   "markets": 25,
+   "outdoors": 64,
+   "food": 139,
+   "sports": 64,
+   "family": 38,
+   "community": 142
   },
   "reach": {
-   "walk": 123,
-   "bus": 691,
-   "car": 228,
+   "walk": 114,
+   "bus": 686,
+   "car": 221,
    "unknown": 63
   },
-  "free": 263
+  "free": 256
  }
 }
