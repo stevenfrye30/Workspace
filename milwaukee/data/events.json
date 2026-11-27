@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-26T20:12:41+00:00",
+ "generated_at": "2026-11-27T20:01:12+00:00",
  "horizon_days": 60,
  "orgs": {
   "uwm-philosophy": {
@@ -14,36 +14,36 @@
    "status": "ok",
    "count": 10,
    "raw": 16,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "urban-ecology-center": {
    "status": "ok",
    "count": 17,
    "raw": 17,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "mpl": {
    "status": "ok",
    "count": 41,
    "raw": 41,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "milwaukee-film": {
    "status": "ok",
    "posts": 3,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "mam": {
    "status": "ok",
    "count": 80,
-   "raw": 97,
-   "as_of": "2026-11-26"
+   "raw": 96,
+   "as_of": "2026-11-27"
   },
   "woodland-pattern": {
    "status": "ok",
    "count": 3,
    "raw": 4,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "turners": {
    "status": "link"
@@ -52,7 +52,7 @@
    "status": "ok",
    "count": 25,
    "raw": 25,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "historic-milwaukee": {
    "status": "link"
@@ -60,249 +60,58 @@
   "makerspace": {
    "status": "ok",
    "posts": 1,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "radio-milwaukee": {
    "status": "ok",
-   "count": 45,
-   "raw": 48,
-   "as_of": "2026-11-26"
+   "count": 46,
+   "raw": 49,
+   "as_of": "2026-11-27"
   },
   "urban-milwaukee-calendar": {
    "status": "ok",
    "count": 183,
    "raw": 183,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "marcus-center": {
    "status": "ok",
    "count": 8,
    "raw": 8,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "admirals": {
    "status": "ok",
    "count": 1,
    "raw": 8,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "brewers": {
    "status": "ok",
    "count": 0,
    "raw": 0,
-   "as_of": "2026-11-26"
+   "as_of": "2026-11-27"
   },
   "eventbrite": {
    "status": "error",
    "error": "OSError: every Eventbrite page failed: https://www.eventbrite.com/d/wi--milwaukee/events/: HTTPError, https://www.eventbrite.com/"
   },
   "pabst-theater-group": {
-   "status": "stale",
-   "error": "HTTPError: HTTP Error 406: Not Acceptable",
-   "count": 12,
-   "as_of": "2026-11-16"
+   "status": "error",
+   "error": "HTTPError: HTTP Error 406: Not Acceptable"
   },
   "visit-milwaukee": {
    "status": "ok",
-   "count": 731,
-   "raw": 738,
-   "as_of": "2026-11-26"
+   "count": 725,
+   "raw": 731,
+   "as_of": "2026-11-27"
   },
   "fiserv-forum": {
-   "status": "stale",
-   "error": "HTTPError: HTTP Error 406: Not Acceptable",
-   "count": 16,
-   "as_of": "2026-11-16"
+   "status": "error",
+   "error": "HTTPError: HTTP Error 406: Not Acceptable"
   }
  },
  "events": [
-  {
-   "title": "Museum Closed",
-   "start": "2026-11-26",
-   "end": "2026-11-26",
-   "all_day": true,
-   "url": "https://mam.org/events/event/museum-closed-thanksgiving/",
-   "where": "Milwaukee Art Museum",
-   "addr": "700 N. Art Museum Drive",
-   "zip": "53202",
-   "summary": "The Museum is closed on Thursday, November 26.",
-   "tags": [
-    "Announcements"
-   ],
-   "kind": "art",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "mam"
-  },
-  {
-   "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
-   "start": "2026-11-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival-presented-by-johnson-financial-group/21953/",
-   "where": "",
-   "addr": "",
-   "zip": "53202",
-   "summary": "Recurring daily",
-   "tags": [
-    "Festival",
-    "Community",
-    "Family Friendly"
-   ],
-   "time_unknown": true,
-   "free": null,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Holiday Lights Festival",
-   "start": "2026-11-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/milwaukee-holiday-lights-festival/21795/",
-   "where": "Downtown Milwaukee",
-   "addr": "301 W. Wisconsin Avenue",
-   "zip": "53202",
-   "summary": "Recurring daily",
-   "tags": [
-    "Festival",
-    "Family Friendly",
-    "Free"
-   ],
-   "time_unknown": true,
-   "free": true,
-   "kind": "community",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Sound of Music",
-   "start": "2026-11-26",
-   "end": "",
-   "all_day": true,
-   "url": "https://www.visitmilwaukee.org/event/the-sound-of-music/21882/",
-   "where": "Marcus Performing Arts Center",
-   "addr": "929 N. Water Street",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Performing Arts & Theater",
-    "Arts & Culture",
-    "Milwaukee Theater District"
-   ],
-   "time_unknown": true,
-   "run_through": "2026-11-29",
-   "free": null,
-   "kind": "theater",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Turkey Trot 5K & 8K",
-   "start": "2026-11-26T07:30",
-   "end": "2026-11-26T12:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/milwaukee-turkey-trot-5k-amp-8k-09-12-2025-10-58-12",
-   "where": "McKinley/Veterans Park",
-   "addr": "",
-   "zip": "",
-   "summary": "Join the festive fun at the Milwaukee Turkey Trot 5K & 8K on Thursday, November 27, 2025! This annual Thanksgiving tradition invites participants of all ages to run or walk through the vibrant…",
-   "tags": [
-    "Sports"
-   ],
-   "kind": "sports",
-   "reach": "bus",
-   "free": true,
-   "via": "org",
-   "org": "radio-milwaukee"
-  },
-  {
-   "title": "Thanksgiving Bountiful Brunch 2026",
-   "start": "2026-11-26T11:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/thanksgiving-bountiful-brunch-2026-14-09-2026-13-10-48",
-   "where": "The Pfister Hotel",
-   "addr": "",
-   "zip": "",
-   "summary": "Immerse yourself in the breathtaking atmosphere of the Grand Ballroom, the perfect destination for your family’s cherished Thanksgiving. At our Thanksgiving Brunch, there is much to be thankful for:…",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": false,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "Thanksgiving Tea at The Pfister",
-   "start": "2026-11-26T11:00",
-   "end": "2026-11-26T14:00",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/thanksgiving-tea-at-the-pfister/18524/",
-   "where": "The Pfister Hotel",
-   "addr": "424 E. Wisconsin Avenue",
-   "zip": "53202",
-   "summary": "",
-   "tags": [
-    "Food & Drink"
-   ],
-   "free": false,
-   "kind": "food",
-   "reach": "bus",
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
-  {
-   "title": "Thanksgiving Day Dinner",
-   "start": "2026-11-26T15:00",
-   "end": "2026-11-26T21:00",
-   "all_day": false,
-   "url": "https://radiomilwaukee.org/community-calendar/event/thanksgiving-day-dinner-14-09-2026-16-01-37",
-   "where": "Milwaukee ChopHouse",
-   "addr": "",
-   "zip": "",
-   "summary": "Gather around the table and let Milwaukee ChopHouse handle the Thanksgiving feast. Join us for a special three-course prix fixe menu featuring seasonal favorites, from comforting fall starters and…",
-   "tags": [
-    "Food/Drink"
-   ],
-   "kind": "food",
-   "reach": "bus",
-   "free": null,
-   "via": "org",
-   "org": "radio-milwaukee",
-   "also": [
-    "visit-milwaukee"
-   ]
-  },
-  {
-   "title": "MKE Unplugged",
-   "start": "2026-11-26T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
-   "where": "Shank Hall",
-   "addr": "1434 N. Farwell Avenue",
-   "zip": "",
-   "summary": "Recurring daily",
-   "tags": [
-    "LIVE Music"
-   ],
-   "free": false,
-   "kind": "music",
-   "reach": null,
-   "via": "source",
-   "src": "visit-milwaukee"
-  },
   {
    "title": "Black Friday Beer Release",
    "start": "2026-11-27",
@@ -1462,23 +1271,6 @@
    "src": "admirals"
   },
   {
-   "title": "Milwaukee Bucks",
-   "start": "2026-11-28T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
    "title": "Bucks vs Oklahoma City Thunder",
    "start": "2026-11-28T19:00",
    "end": "",
@@ -2010,10 +1802,10 @@
    "start": "2026-11-29T16:00",
    "end": "",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/firkins-%40-four%3a-small-brewery-sunday/22674/",
-   "where": "The Explorium Brewpub Southridge",
-   "addr": "5300 S. 76th Street",
-   "zip": "53129",
+   "url": "https://www.visitmilwaukee.org/event/firkins-%40-four%3a-small-brewery-sunday/22675/",
+   "where": "The Explorium Brewpub Third Ward",
+   "addr": "143 W. St. Paul Avenue",
+   "zip": "53203",
    "summary": "",
    "tags": [
     "Food & Drink",
@@ -2022,7 +1814,7 @@
    ],
    "free": true,
    "kind": "food",
-   "reach": "car",
+   "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
   },
@@ -2083,23 +1875,6 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Gauri B: Years In The Breaking",
-   "start": "2026-11-29T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/gauri-b-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
   },
   {
    "title": "3rd St. Vintage Market",
@@ -2307,23 +2082,6 @@
    "reach": "bus",
    "via": "org",
    "org": "mpl"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2026-11-30T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
   },
   {
    "title": "Bucks vs San Antonio Spurs",
@@ -2757,23 +2515,6 @@
    "org": "mpl"
   },
   {
-   "title": "Wisconsin Herd vs. Cleveland Charge",
-   "start": "2026-12-02T11:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/wi-herd",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
    "title": "Crosswords, Coloring, and Community",
    "start": "2026-12-02T11:30",
    "end": "2026-12-02T12:30",
@@ -2917,23 +2658,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2026-12-02T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
   },
   {
    "title": "Artists Now! Guest Lecture Series: Tyler Evans",
@@ -5535,6 +5259,25 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "We Bare All 1st Annual Christmas Bash",
+   "start": "2026-12-05T18:30",
+   "end": "2026-12-05T21:30",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/we-bare-all-1st-annual-christmas-bash-23-11-2026-16-34-21",
+   "where": "LaCage",
+   "addr": "",
+   "zip": "",
+   "summary": "Ugly sweaters are optional. So are the pants! Join We Bare All at LaCage on Saturday, December 5, for a holiday celebration of body freedom. We’re the local nonprofit behind World Naked Bike Ride…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": false,
+   "via": "org",
+   "org": "radio-milwaukee"
+  },
+  {
    "title": "The Flamenco Nutcracker",
    "start": "2026-12-05T19:00",
    "end": "2026-12-05T19:00",
@@ -5655,6 +5398,29 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Drinks & Dreidels",
+   "start": "2026-12-05T20:00",
+   "end": "2026-12-05T23:00",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/drinks-amp-dreidels-25-11-2026-01-06-22",
+   "where": "Dandy",
+   "addr": "",
+   "zip": "",
+   "summary": "It's Milwaukee's premier Hanukkah party for 20's-30's. Pop open the champagne, schmooze over cocktails and join Young Jewish Professionals to mingle and party at the greatest Jewish social events of…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": false,
+   "via": "org",
+   "org": "radio-milwaukee",
+   "also": [
+    "urban-milwaukee-calendar",
+    "visit-milwaukee"
+   ]
+  },
+  {
    "title": "An Improv Show",
    "start": "2026-12-05T20:00",
    "end": "2026-12-05T20:00",
@@ -5670,26 +5436,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Drinks & Dreidels",
-   "start": "2026-12-05T20:00",
-   "end": "2026-12-05T23:00",
-   "all_day": false,
-   "url": "https://urbanmilwaukee.com/event/drinks-dreidels/",
-   "where": "Dandy",
-   "addr": "5020 W. Vliet St.",
-   "zip": "53208",
-   "summary": "Pop open the champagne, schmooze over cocktails and join Young Jewish Professionals to mingle and party at the greatest Jewish social events of the year.",
-   "tags": [],
-   "kind": "community",
-   "reach": "car",
-   "free": false,
-   "via": "source",
-   "src": "urban-milwaukee-calendar",
-   "also": [
-    "visit-milwaukee"
-   ]
   },
   {
    "title": "Harry Potter and the Chamber of Secrets™ in Concert",
@@ -7780,17 +7526,16 @@
    "start": "2026-12-10T17:30",
    "end": "2026-12-10T21:30",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22213/",
+   "url": "https://www.visitmilwaukee.org/event/cheers!-wild-lights/22435/",
    "where": "Milwaukee County Zoo",
    "addr": "10001 W. Bluemound Rd.",
    "zip": "53226",
    "summary": "",
    "tags": [
-    "Community",
-    "Family Friendly",
+    "Holiday",
     "Museums & Attractions"
    ],
-   "free": false,
+   "free": null,
    "kind": "outdoors",
    "reach": "car",
    "via": "source",
@@ -9637,6 +9382,25 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Tuba Christmas: A Holiday Celebration Like No Other",
+   "start": "2026-12-12T18:00",
+   "end": "2026-12-12T21:00",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/tuba-christmas-a-holiday-celebration-like-no-other-24-10-2026-22-55-20",
+   "where": "Plymouth Art Center",
+   "addr": "",
+   "zip": "",
+   "summary": "PLYMOUTH, WI – Celebrate the Christmas season with the rich, resonant sounds of tubas at Tuba Christmas, presented by the Plymouth Arts Center on Saturday, December 12, 2026. This unique holiday…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": false,
+   "via": "org",
+   "org": "radio-milwaukee"
+  },
+  {
    "title": "Dinner Detective Milwaukee",
    "start": "2026-12-12T18:00",
    "end": "2026-12-12T21:00",
@@ -10880,6 +10644,25 @@
    "src": "visit-milwaukee"
   },
   {
+   "title": "Brunch with Santa at Oak Barrel Public House!",
+   "start": "2026-12-13T23:30",
+   "end": "",
+   "all_day": false,
+   "url": "https://radiomilwaukee.org/community-calendar/event/brunch-with-santa-at-oak-barrel-public-house-04-11-2026-13-39-16",
+   "where": "Oak Barrel Public House",
+   "addr": "",
+   "zip": "",
+   "summary": "Spend a December Sunday morning with Santa in our private room. One ticket covers a breakfast buffet plus kids’ stations for sugar cookie decorating, a hot chocolate bar and letters to Santa. Every…",
+   "tags": [
+    "Food/Drink"
+   ],
+   "kind": "food",
+   "reach": "bus",
+   "free": true,
+   "via": "org",
+   "org": "radio-milwaukee"
+  },
+  {
    "title": "All is Calm: The Christmas Truce of 1914",
    "start": "2026-12-14",
    "end": "",
@@ -12104,23 +11887,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Gregg Allman: The Music Of My Soul",
-   "start": "2026-12-17T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/gregg-allman-music-of-my-soul-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
    "title": "All is Calm: The Christmas Truce of 1914",
    "start": "2026-12-18",
    "end": "",
@@ -12494,23 +12260,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2026-12-18T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
   },
   {
    "title": "StorySlam: Apologies",
@@ -14709,23 +14458,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Bucks",
-   "start": "2026-12-20T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
    "title": "Bucks vs Golden State Warriors",
    "start": "2026-12-20T19:00",
    "end": "",
@@ -15766,40 +15498,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "The Commercialists play the music of \"A Charlie Brown Christmas\"",
-   "start": "2026-12-23T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/the-commercialists-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "featuring Amanda Huff",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2026-12-23T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
    "title": "Bucks vs Minnesota Timerwolves",
    "start": "2026-12-23T19:00",
    "end": "",
@@ -15876,23 +15574,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "The Commercialists play the music of \"A Charlie Brown Christmas\"",
-   "start": "2026-12-23T20:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/the-commercialists-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "featuring Amanda Huff",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
   },
   {
    "title": "Milwaukee Holiday Lights Festival presented by Johnson Financial Group",
@@ -16420,23 +16101,6 @@
    "org": "mam"
   },
   {
-   "title": "Bluey’s Big Play Tour",
-   "start": "2026-12-26T10:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/bluey-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
    "title": "Story Time in the Galleries",
    "start": "2026-12-26T10:30",
    "end": "2026-12-26T11:00",
@@ -16560,23 +16224,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Bluey’s Big Play Tour",
-   "start": "2026-12-26T13:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/bluey-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
   },
   {
    "title": "Drop-In Tour: Animals in Art",
@@ -17615,23 +17262,6 @@
    "src": "urban-milwaukee-calendar"
   },
   {
-   "title": "Spafford",
-   "start": "2026-12-29T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/spafford-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "with special guests Tall Tall Trees (12/29), Hot Like Mars (12/30), & 3 Sets of Spafford (12/31)",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
    "title": "MKE Unplugged",
    "start": "2026-12-29T19:00",
    "end": "",
@@ -17981,23 +17611,6 @@
    "reach": "car",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Spafford",
-   "start": "2026-12-30T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/spafford-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "with special guests Tall Tall Trees (12/29), Hot Like Mars (12/30), & 3 Sets of Spafford (12/31)",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
   },
   {
    "title": "MKE Unplugged",
@@ -18519,23 +18132,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Spafford",
-   "start": "2026-12-31T21:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/spafford-2026",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "with special guests Tall Tall Trees (12/29), Hot Like Mars (12/30), & 3 Sets of Spafford (12/31)",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
    "title": "NYE 2027 Blacklight Glow Party ft Goth Barge and Subspace",
    "start": "2026-12-31T21:00",
    "end": "",
@@ -18619,23 +18215,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2027-01-01T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
   },
   {
    "title": "Bucks vs Philadelphia 76ers",
@@ -18783,21 +18362,25 @@
    "org": "mam"
   },
   {
-   "title": "Deer District Prep Showcase",
-   "start": "2027-01-02T11:00",
-   "end": "",
+   "title": "Drop-In Art Making: Meet Studio Artist Isa Castro",
+   "start": "2027-01-02T10:00",
+   "end": "2027-01-02T16:00",
    "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/deer-district-prep-showcase-1",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
+   "url": "https://mam.org/events/event/drop-in-art-making-isa-castro/2027-01-02/",
+   "where": "Milwaukee Art Museum",
+   "addr": "700 N. Art Museum Drive",
+   "zip": "53202",
+   "summary": "Drawing inspiration from the Museum’s Quadracci Pavilion and Collection, studio artist Isa Castro designed this project to highlight the beauty of migration, connectedness and movement.",
+   "tags": [
+    "Art Studio",
+    "Free for Members",
+    "Free with Admission"
+   ],
+   "kind": "art",
    "reach": "bus",
    "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
+   "via": "org",
+   "org": "mam"
   },
   {
    "title": "Milwaukee Panthers Women's Basketball vs. Cleveland State",
@@ -19022,23 +18605,6 @@
    "reach": "bus",
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2027-01-03T16:30",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
   },
   {
    "title": "Bucks vs Charlotte Hornets",
@@ -19440,28 +19006,11 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Bucks",
-   "start": "2027-01-07T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
    "title": "Bucks vs Los Angeles Clippers",
    "start": "2027-01-07T19:00",
    "end": "",
    "all_day": false,
-   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-clippers/22264/",
+   "url": "https://www.visitmilwaukee.org/event/bucks-vs-los-angeles-clippers/22265/",
    "where": "Fiserv Forum",
    "addr": "Fiserv Forum",
    "zip": "53203",
@@ -19645,57 +19194,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Monster Jam®",
-   "start": "2027-01-09T12:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/monster-jam-4",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
-   "title": "Monster Jam®",
-   "start": "2027-01-09T18:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/monster-jam-4",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
-   "title": "Time Warp Legends: with Substitute: Tales From The Who, Headley Grange, and Shattered",
-   "start": "2027-01-09T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/substitute-2027",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
    "title": "Milwaukee Men's Basketball vs. Northern Kentucky",
    "start": "2027-01-09T19:00",
    "end": "",
@@ -19838,23 +19336,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Monster Jam®",
-   "start": "2027-01-10T12:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/monster-jam-4",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
    "title": "The Great Leap",
    "start": "2027-01-10T17:00",
    "end": "2027-01-10T17:00",
@@ -19969,23 +19450,6 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
-  },
-  {
-   "title": "Milwaukee Bucks",
-   "start": "2027-01-12T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
   },
   {
    "title": "Bucks vs Denver Nuggets",
@@ -20264,40 +19728,6 @@
    "src": "visit-milwaukee"
   },
   {
-   "title": "Milwaukee Bucks",
-   "start": "2027-01-15T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.fiservforum.com/events/detail/milwaukee-bucks-26-27",
-   "where": "Fiserv Forum",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "sports",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "fiserv-forum"
-  },
-  {
-   "title": "Ali Siddiq: The Custom Fit Tour",
-   "start": "2027-01-15T19:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/ali-siddiq-2027",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
-  },
-  {
    "title": "Bucks vs Cleveland Cavaliers",
    "start": "2027-01-15T19:00",
    "end": "",
@@ -20353,23 +19783,6 @@
    "free": false,
    "via": "source",
    "src": "urban-milwaukee-calendar"
-  },
-  {
-   "title": "Galactic Masquerade Ball",
-   "start": "2027-01-15T20:00",
-   "end": "",
-   "all_day": false,
-   "url": "https://www.pabsttheatergroup.com/events/detail/galactic-masquerade-ball-2027",
-   "where": "Pabst Theater Group",
-   "addr": "",
-   "zip": "",
-   "summary": "A Celebration Honoring 50 Years of a Galaxy Far, Far Away",
-   "tags": [],
-   "kind": "music",
-   "reach": "bus",
-   "free": null,
-   "via": "source",
-   "src": "pabst-theater-group"
   },
   {
    "title": "Live Music",
@@ -21693,6 +21106,25 @@
    "reach": null,
    "via": "source",
    "src": "visit-milwaukee"
+  },
+  {
+   "title": "MKE Unplugged",
+   "start": "2027-01-26T19:00",
+   "end": "",
+   "all_day": false,
+   "url": "https://www.visitmilwaukee.org/event/mke-unplugged/20252/",
+   "where": "Shank Hall",
+   "addr": "1434 N. Farwell Avenue",
+   "zip": "",
+   "summary": "Recurring daily",
+   "tags": [
+    "LIVE Music"
+   ],
+   "free": false,
+   "kind": "music",
+   "reach": null,
+   "via": "source",
+   "src": "visit-milwaukee"
   }
  ],
  "posts": [
@@ -21723,8 +21155,8 @@
  ],
  "counts": {
   "kinds": {
-   "music": 217,
-   "theater": 162,
+   "music": 201,
+   "theater": 161,
    "comedy": 33,
    "film": 0,
    "art": 94,
@@ -21732,17 +21164,17 @@
    "books": 16,
    "markets": 21,
    "outdoors": 57,
-   "food": 137,
-   "sports": 60,
+   "food": 138,
+   "sports": 47,
    "family": 34,
-   "community": 147
+   "community": 144
   },
   "reach": {
    "walk": 103,
-   "bus": 687,
-   "car": 202,
+   "bus": 657,
+   "car": 200,
    "unknown": 64
   },
-  "free": 257
+  "free": 256
  }
 }
